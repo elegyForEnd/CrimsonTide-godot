@@ -71,6 +71,23 @@ func run() -> void:
 		await key(choice[0])
 		check(app.session.players[1].weapon==choice[1],"weapon hotkey reaches authoritative session")
 	await key(KEY_1)
+	Input.action_press("right")
+	await create_timer(0.12).timeout
+	check(app.session.players[1].motion=="walk","Movement enters walk state")
+	await capture("movement-walk")
+	Input.action_press("sprint")
+	for tick in 12:
+		await physics_frame
+	check(app.session.players[1].motion=="run","Shift enters run state: "+str(app.session.local_input)+" / "+str(app.session.players[1].motion)+" / "+str(app.session.players[1].p))
+	await capture("movement-run")
+	await key(KEY_SPACE)
+	await create_timer(0.06).timeout
+	check(app.session.players[1].motion=="dodge","Space enters dodge state")
+	await capture("movement-dodge")
+	Input.action_release("right")
+	Input.action_release("sprint")
+	await create_timer(0.3).timeout
+	check(app.session.players[1].motion=="idle","Movement returns to idle")
 	await capture("ui-game")
 	await key(KEY_TAB)
 	check(app.inventory_open,"Tab opens inventory through input system")

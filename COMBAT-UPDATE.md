@@ -1,5 +1,15 @@
 # 武器动作与光效更新
 
+## 移动动画与串图修复（追加）
+
+三名角色新增走路、奔跑、闪避各四姿势，共 36 帧。WASD 走路，按住 Shift 奔跑（1.45 倍移速），空格播放低身闪避与残影。闪避在 0.24 秒内移动 145 像素，逐步碰撞检测，保留两秒冷却；可打断普通攻击，倒地会结束闪避。移动时武器收起，攻击和待机切回当前武器动作。仍使用左右镜像朝向，没有增加八方向素材。
+
+旧攻击图集的长武器越过均分网格导致邻帧碎片。已用内置 imagegen 重制三张攻击图集，保留原文件备份；运行时查找透明间隔，并使用开启 `filter_clip` 的 AtlasTexture 隔离每一帧。新增 `scripts/character_frames.gd` 管理帧和脚底基线。
+
+新增素材位于 `assets/combat/attack-clean-0.png`、`attack-clean-1.png`、`attack-clean-2.png`，以及 `movement-0.png`、`movement-1.png`、`movement-2.png`。提示词完整记录见 `assets/combat/movement-prompts.json`，均使用内置 imagegen，以原角色图为身份参考。
+
+`tests/movement.gd`：83 项移动行为与 72 帧透明边界检查通过；`tests/animation_visual.gd` 生成全部姿势总览 `build/animation-frames.png`；`tests/ui.gd` 增加走路、奔跑、空格闪避和回到待机的实际状态切换检查。
+
 2026-09-22。三名角色均可使用三种新武器，保留原步枪。绯月默认单手剑，雪璃默认法杖，鸦羽默认双手剑。战斗中按 1 / 2 / 3 / 4 切换；攻击前摇、收招与施法期间禁止换武器。
 
 | 武器 | 节奏 | 演出 |

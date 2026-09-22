@@ -12,6 +12,7 @@ var expected := 4
 var saw_snapshot := false
 var got_combat := false
 var saw_weapon := false
+var saw_running := false
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -62,6 +63,12 @@ func _process(dt: float) -> bool:
 		elif not host_mode and session.players.has(session.my_id()) and not session.players[session.my_id()].ready:
 			session.configure({"name":"Client","hero":1,"ready":true})
 	if stage==2:
+		var since_start := age-started_at
+		if since_start<0.65:
+			session.local_input={"move":Vector2.RIGHT if since_start<0.32 else Vector2.LEFT,"aim":Vector2.RIGHT,"sprint":true}
+		for ally in session.players.values():
+			if ally.id!=session.my_id() and ally.motion=="run":
+				saw_running=true
 		if session.players[session.my_id()].weapon==2:
 			saw_weapon=true
 		if not host_mode and session.elapsed>1 and session.objectives==2 and Catalog.bag_value(session.players[session.my_id()].bag)==125:
@@ -70,8 +77,10 @@ func _process(dt: float) -> bool:
 			local_sent=true
 			session.action("weapon",{"index":2})
 			session.action("skill")
-		if not host_mode or age-started_at>6:
+		if (not host_mode and since_start>0.65) or age-started_at>6:
 			session.local_input={"move":Vector2.ZERO,"aim":Vector2.RIGHT,"fire":false,"interact":true}
+		elif host_mode and since_start>=0.65:
+			session.local_input={"move":Vector2.ZERO,"aim":Vector2.RIGHT}
 		if host_mode:
 			for p in session.players.values():
 				if p.id!=1 and p.status=="extracted" and session.players[1].status=="active":
@@ -80,7 +89,7 @@ func _process(dt: float) -> bool:
 
 func done() -> void:
 	stage=3
-	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and saw_weapon
+	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and saw_weapon and saw_running
 	for reward in session.results.values():
 		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==125
 	if host_mode:
