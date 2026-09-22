@@ -1,4 +1,8 @@
-[gd_resource type="AudioBusLayout" format=3]
+[gd_resource type="AudioBusLayout" load_steps=2 format=3]
+
+[sub_resource type="AudioEffectHardLimiter" id="AudioEffectHardLimiter_combat"]
+resource_name = "Combat peak limiter"
+ceiling_db = -1.0
 
 [resource]
 bus/0/name = &"Master"
@@ -7,3 +11,5 @@ bus/0/mute = false
 bus/0/bypass_fx = false
 bus/0/volume_db = -8.0
 bus/0/send = &""
+bus/0/effect/0/effect = SubResource("AudioEffectHardLimiter_combat")
+bus/0/effect/0/enabled = true

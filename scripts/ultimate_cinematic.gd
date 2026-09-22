@@ -2,6 +2,8 @@ class_name UltimateCinematic
 extends Control
 ## Independent viewport layer: never inherits the HUD's fixed-size letterboxing.
 signal burst
+signal ended
+signal began(hero: int, online: bool)
 const LENGTH := 2.6
 var age := 0.0
 var duration := LENGTH
@@ -47,15 +49,19 @@ func play(character: int, online: bool) -> void:
 	owns_pause=not online and not get_tree().paused
 	if owns_pause:
 		get_tree().paused=true
+	began.emit(hero,online)
 	queue_redraw()
 	light.queue_redraw()
 
 func stop() -> void:
+	var was_active := active
 	active=false
 	visible=false
 	if owns_pause:
 		get_tree().paused=false
 	owns_pause=false
+	if was_active:
+		ended.emit()
 
 func _exit_tree() -> void:
 	if owns_pause:

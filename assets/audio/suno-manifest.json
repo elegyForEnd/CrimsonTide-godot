@@ -1,0 +1,747 @@
+{
+  "provider": "https://api.apilio.ai",
+  "generator": "Suno",
+  "requested_model": "chirp-v4",
+  "note": "Sample-based edits of generated audio; not live synthesis or field recordings. Raw source files are in build/audio-source; playback is fully offline.",
+  "sources": {
+    "steel": {
+      "task_id": "9477d21c-ab0f-400b-9a4e-760f8c771100",
+      "request": {
+        "prompt": "[Instrumental]\n[Isolated sharp sword slash]\n[Silence]\n[Heavy steel blade impact, deep cinematic slam]\n[Silence]\n[Fast blade triple combo]\n[Silence]\n[End]",
+        "tags": "Cinematic fantasy game sound effects, isolated metal sword swooshes and blade clashes, sharp transients, deep impacts, foley, silence between hits, no melody, no beat, no vocals",
+        "negative_tags": "singing, speech, vocals, continuous music, drums, rhythm",
+        "mv": "chirp-v4",
+        "title": "Crimson Tide - Steel Combat Foley",
+        "make_instrumental": true
+      },
+      "clips": [
+        {
+          "file": "steel-0.mp3",
+          "clip_id": "0505a06d-79b2-4e80-8f7f-acb8a06119db",
+          "returned_model": "chirp-hawk",
+          "duration": 58.8,
+          "sha256": "e4c0fd57bdd10ea920f90e0c3e51a65c91deaaf877790bee732d06bc2ccbe9c1"
+        }
+      ]
+    },
+    "arcane": {
+      "task_id": "fc7880ae-7db0-41f7-9127-34ebbf57e477",
+      "request": {
+        "prompt": "[Instrumental]\n[Crystal spell shot]\n[Silence]\n[Electric arcane burst]\n[Silence]\n[Shimmering healing chimes]\n[Silence]\n[Massive magic explosion with sparkling decay]\n[End]",
+        "tags": "Isolated fantasy magic sound effects, crystal ice spell shots, sparkling glass chimes, electricity crackling, airy magical whooshes, deep arcane bursts, cinematic sound design, no vocals, no melody, no beat",
+        "negative_tags": "singing, speech, vocals, pop, rock, beat, drums",
+        "mv": "chirp-v4",
+        "title": "Crimson Tide - Arcane Ice and Raven Magic",
+        "make_instrumental": true
+      },
+      "clips": [
+        {
+          "file": "arcane-0.mp3",
+          "clip_id": "fc89314c-a8c4-489b-894a-f6ada296f0c3",
+          "returned_model": "chirp-hawk",
+          "duration": 59.56,
+          "sha256": "2ac55dd3c50960433466fd5fc3a6403819ed2a11ce683151724d2180f8c6f11d"
+        },
+        {
+          "file": "arcane-1.mp3",
+          "clip_id": "33079afc-e423-404c-973f-31d6c17cf458",
+          "returned_model": "chirp-hawk",
+          "duration": 72,
+          "sha256": "62c555dc0eda505667cc5441f80d97d6177f07e14dadd01f6703ad2d664b8186"
+        }
+      ]
+    },
+    "impact": {
+      "task_id": "5f2c5a8d-392b-4c02-aa70-54b1cfad18c0",
+      "request": {
+        "prompt": "[Instrumental]\n[Sharp explosive hit]\n[Silence]\n[Heavy armor impact]\n[Silence]\n[Fast air whoosh]\n[Silence]\n[Huge dark cinematic impact]\n[End]",
+        "tags": "Isolated cinematic game foley sound effects, punchy armor impacts, heavy metal clashes, deep explosive impacts, fast air swooshes, sharp gunshot-like transients, massive sub bass hits, no music, no vocals, no beat",
+        "negative_tags": "singing, speech, vocals, pop, rock, beat, drums",
+        "mv": "chirp-v4",
+        "title": "Crimson Tide - Dark Fantasy Combat Impacts",
+        "make_instrumental": true
+      },
+      "clips": [
+        {
+          "file": "impact-0.mp3",
+          "clip_id": "f010f49d-40bf-4e2f-b997-e934fbed1f98",
+          "returned_model": "chirp-hawk",
+          "duration": 49.96,
+          "sha256": "4c6864054a23db187821151b44107d85ba8bb78a281e053112dd2a9201240c43"
+        },
+        {
+          "file": "impact-1.mp3",
+          "clip_id": "05966b5b-6a6d-409a-8b9a-33ee5a56ea78",
+          "returned_model": "chirp-hawk",
+          "duration": 53.2,
+          "sha256": "fe977b4d9d9946ceb25727c27664a8c55bde31b7f0c99680ce8631cfd0d94af5"
+        }
+      ]
+    },
+    "ritual": {
+      "task_id": "5cab54d8-1bf5-4b72-901e-c45c2d02581d",
+      "request": {
+        "prompt": "[Instrumental]\n[Distant cathedral bell]\n[Silence]\n[Magic rising whoosh]\n[Massive cinematic impact]\n[Long shimmering reverb tail]\n[Ominous atmospheric drone]\n[End]",
+        "tags": "Dark fantasy cinematic sound design, enormous low cathedral bells, ethereal crystal shimmer, magical rising whoosh into massive orchestral impact, ominous dungeon drone, sparse ambient texture, no rhythm, no vocals",
+        "negative_tags": "singing, speech, vocals, pop, rock, beat, drums",
+        "mv": "chirp-v4",
+        "title": "Crimson Tide - Crimson Moon Awakening",
+        "make_instrumental": true
+      },
+      "clips": [
+        {
+          "file": "ritual-0.mp3",
+          "clip_id": "e321ca76-abe5-41b3-b0e0-ab036cd3bf8d",
+          "returned_model": "chirp-hawk",
+          "duration": 77.6,
+          "sha256": "a1a8937df0a6bfaf0799c3220a47a14a2bae2ea11c5325dff256fa4e84de70c9"
+        },
+        {
+          "file": "ritual-1.mp3",
+          "clip_id": "2fc8c828-e7b1-4703-a679-055fa50f25b1",
+          "returned_model": "chirp-hawk",
+          "duration": 67.96,
+          "sha256": "f54487d69866b6d18fdf5b4e0416a6321a91a43ffadc473c3867f0367422d282"
+        }
+      ]
+    }
+  },
+  "edits": {
+    "slash-0": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 2.3,
+          "duration": 0.3,
+          "high": 850,
+          "speed": 1.12
+        }
+      ],
+      "length": 0.3,
+      "decay": 2.8,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "slash-1": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 12.4,
+          "duration": 0.3,
+          "high": 850,
+          "speed": 1.1600000000000001
+        }
+      ],
+      "length": 0.3,
+      "decay": 2.8,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "slash-2": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 26.62,
+          "duration": 0.3,
+          "high": 850,
+          "speed": 1.2000000000000002
+        }
+      ],
+      "length": 0.3,
+      "decay": 2.8,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "heavy-0": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 8.28,
+          "duration": 0.58,
+          "high": 40,
+          "low": 6000,
+          "speed": 0.8
+        },
+        {
+          "name": "steel-0",
+          "at": 15.85,
+          "duration": 0.32,
+          "high": 1400,
+          "gain": 0.65
+        }
+      ],
+      "length": 0.58,
+      "decay": 3.1,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "heavy-1": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 22.02,
+          "duration": 0.58,
+          "high": 40,
+          "low": 6000,
+          "speed": 0.8
+        },
+        {
+          "name": "steel-0",
+          "at": 16.75,
+          "duration": 0.32,
+          "high": 1400,
+          "gain": 0.65
+        }
+      ],
+      "length": 0.58,
+      "decay": 3.1,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "heavy-2": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 35.6,
+          "duration": 0.58,
+          "high": 40,
+          "low": 6000,
+          "speed": 0.8
+        },
+        {
+          "name": "steel-0",
+          "at": 17.65,
+          "duration": 0.32,
+          "high": 1400,
+          "gain": 0.65
+        }
+      ],
+      "length": 0.58,
+      "decay": 3.1,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "magic-0": {
+      "layers": [
+        {
+          "name": "arcane-0",
+          "at": 8.83,
+          "duration": 0.62,
+          "high": 480,
+          "speed": 1.1
+        }
+      ],
+      "length": 0.62,
+      "decay": 2.3,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "magic-1": {
+      "layers": [
+        {
+          "name": "arcane-0",
+          "at": 28.31,
+          "duration": 0.62,
+          "high": 480,
+          "speed": 1.1
+        }
+      ],
+      "length": 0.62,
+      "decay": 2.3,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "magic-2": {
+      "layers": [
+        {
+          "name": "arcane-0",
+          "at": 37.0,
+          "duration": 0.62,
+          "high": 480,
+          "speed": 1.1
+        }
+      ],
+      "length": 0.62,
+      "decay": 2.3,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "hit-0": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 9.72,
+          "duration": 0.22,
+          "high": 80,
+          "low": 6500
+        }
+      ],
+      "length": 0.22,
+      "decay": 3.8,
+      "peak": 0.74,
+      "fade_out": 0.07
+    },
+    "hit-1": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 26.49,
+          "duration": 0.22,
+          "high": 80,
+          "low": 6500
+        }
+      ],
+      "length": 0.22,
+      "decay": 3.8,
+      "peak": 0.74,
+      "fade_out": 0.07
+    },
+    "hit-2": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 40.08,
+          "duration": 0.22,
+          "high": 80,
+          "low": 6500
+        }
+      ],
+      "length": 0.22,
+      "decay": 3.8,
+      "peak": 0.74,
+      "fade_out": 0.07
+    },
+    "impact-heavy-0": {
+      "layers": [
+        {
+          "name": "impact-1",
+          "at": 42.35,
+          "duration": 0.46,
+          "high": 35,
+          "low": 5000,
+          "speed": 0.78
+        }
+      ],
+      "length": 0.46,
+      "decay": 3.6,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "impact-heavy-1": {
+      "layers": [
+        {
+          "name": "impact-1",
+          "at": 46.56,
+          "duration": 0.46,
+          "high": 35,
+          "low": 5000,
+          "speed": 0.78
+        }
+      ],
+      "length": 0.46,
+      "decay": 3.6,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "dash-0": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 3.24,
+          "duration": 0.27,
+          "high": 1800,
+          "low": 11000,
+          "reverse": true
+        }
+      ],
+      "length": 0.27,
+      "decay": 0.8,
+      "peak": 0.65,
+      "fade_out": 0.07
+    },
+    "dash-1": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 4.41,
+          "duration": 0.27,
+          "high": 1800,
+          "low": 11000,
+          "reverse": true
+        }
+      ],
+      "length": 0.27,
+      "decay": 0.8,
+      "peak": 0.65,
+      "fade_out": 0.07
+    },
+    "shot-0": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 47.64,
+          "duration": 0.21,
+          "high": 90,
+          "low": 9000,
+          "speed": 1.35
+        }
+      ],
+      "length": 0.21,
+      "decay": 4.0,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "shot-1": {
+      "layers": [
+        {
+          "name": "impact-0",
+          "at": 48.4,
+          "duration": 0.21,
+          "high": 90,
+          "low": 9000,
+          "speed": 1.35
+        }
+      ],
+      "length": 0.21,
+      "decay": 4.0,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "hurt-0": {
+      "layers": [
+        {
+          "name": "impact-1",
+          "at": 29.12,
+          "duration": 0.25,
+          "high": 100,
+          "low": 2200,
+          "speed": 0.9
+        }
+      ],
+      "length": 0.25,
+      "decay": 3.6,
+      "peak": 0.7,
+      "fade_out": 0.07
+    },
+    "loot-0": {
+      "layers": [
+        {
+          "name": "arcane-1",
+          "at": 9.44,
+          "duration": 0.48,
+          "high": 1800,
+          "speed": 1.3
+        }
+      ],
+      "length": 0.48,
+      "decay": 3.2,
+      "peak": 0.55,
+      "fade_out": 0.07
+    },
+    "bell-0": {
+      "layers": [
+        {
+          "name": "ritual-0",
+          "at": 6.3,
+          "duration": 2.4,
+          "high": 100,
+          "low": 10000
+        }
+      ],
+      "length": 2.4,
+      "decay": 3.4,
+      "peak": 0.75,
+      "fade_out": 0.4
+    },
+    "skill-0": {
+      "layers": [
+        {
+          "name": "arcane-1",
+          "at": 39.22,
+          "duration": 1.15,
+          "high": 180
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.7,
+          "high": 40,
+          "low": 1800,
+          "gain": 0.45
+        }
+      ],
+      "length": 1.15,
+      "decay": 3.0,
+      "peak": 0.82,
+      "fade_out": 0.07
+    },
+    "ultimate-charge-0": {
+      "layers": [
+        {
+          "name": "ritual-0",
+          "at": 6.32,
+          "duration": 1.85,
+          "high": 90,
+          "reverse": true,
+          "gain": 0.55
+        },
+        {
+          "name": "steel-0",
+          "at": 32.2,
+          "duration": 1.85,
+          "high": 250,
+          "low": 9000,
+          "reverse": true
+        }
+      ],
+      "length": 1.85,
+      "decay": -0.8,
+      "peak": 0.7,
+      "fade_out": 0.08
+    },
+    "ultimate-burst-0": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 32.2,
+          "duration": 0.7,
+          "high": 60,
+          "low": 9000,
+          "gain": 0.9
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.7,
+          "high": 35,
+          "low": 2500,
+          "gain": 0.7
+        }
+      ],
+      "length": 0.7,
+      "decay": 3.1,
+      "peak": 0.88,
+      "fade_out": 0.18
+    },
+    "ultimate-charge-short-0": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 32.2,
+          "duration": 0.6,
+          "high": 250,
+          "low": 9000,
+          "reverse": true
+        }
+      ],
+      "length": 0.6,
+      "decay": -0.8,
+      "peak": 0.7,
+      "fade_out": 0.07
+    },
+    "ultimate-burst-short-0": {
+      "layers": [
+        {
+          "name": "steel-0",
+          "at": 32.2,
+          "duration": 0.21,
+          "high": 60,
+          "low": 9000
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.21,
+          "high": 35,
+          "low": 2500,
+          "gain": 0.7
+        }
+      ],
+      "length": 0.21,
+      "decay": 2.5,
+      "peak": 0.88,
+      "fade_out": 0.07
+    },
+    "ultimate-charge-1": {
+      "layers": [
+        {
+          "name": "ritual-0",
+          "at": 6.32,
+          "duration": 1.85,
+          "high": 90,
+          "reverse": true,
+          "gain": 0.55
+        },
+        {
+          "name": "arcane-1",
+          "at": 20.8,
+          "duration": 1.85,
+          "high": 250,
+          "low": 15000,
+          "reverse": true
+        }
+      ],
+      "length": 1.85,
+      "decay": -0.8,
+      "peak": 0.7,
+      "fade_out": 0.08
+    },
+    "ultimate-burst-1": {
+      "layers": [
+        {
+          "name": "arcane-1",
+          "at": 20.8,
+          "duration": 0.7,
+          "high": 60,
+          "low": 15000,
+          "gain": 0.9
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.7,
+          "high": 35,
+          "low": 2500,
+          "gain": 0.7
+        }
+      ],
+      "length": 0.7,
+      "decay": 3.1,
+      "peak": 0.88,
+      "fade_out": 0.18
+    },
+    "ultimate-charge-short-1": {
+      "layers": [
+        {
+          "name": "arcane-1",
+          "at": 20.8,
+          "duration": 0.6,
+          "high": 250,
+          "low": 15000,
+          "reverse": true
+        }
+      ],
+      "length": 0.6,
+      "decay": -0.8,
+      "peak": 0.7,
+      "fade_out": 0.07
+    },
+    "ultimate-burst-short-1": {
+      "layers": [
+        {
+          "name": "arcane-1",
+          "at": 20.8,
+          "duration": 0.21,
+          "high": 60,
+          "low": 15000
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.21,
+          "high": 35,
+          "low": 2500,
+          "gain": 0.7
+        }
+      ],
+      "length": 0.21,
+      "decay": 2.5,
+      "peak": 0.88,
+      "fade_out": 0.07
+    },
+    "ultimate-charge-2": {
+      "layers": [
+        {
+          "name": "ritual-0",
+          "at": 6.32,
+          "duration": 1.85,
+          "high": 90,
+          "reverse": true,
+          "gain": 0.55
+        },
+        {
+          "name": "impact-1",
+          "at": 35.04,
+          "duration": 1.85,
+          "high": 250,
+          "low": 6500,
+          "reverse": true
+        }
+      ],
+      "length": 1.85,
+      "decay": -0.8,
+      "peak": 0.7,
+      "fade_out": 0.08
+    },
+    "ultimate-burst-2": {
+      "layers": [
+        {
+          "name": "impact-1",
+          "at": 35.04,
+          "duration": 0.7,
+          "high": 60,
+          "low": 6500,
+          "gain": 0.9
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.7,
+          "high": 35,
+          "low": 2500,
+          "gain": 0.7
+        }
+      ],
+      "length": 0.7,
+      "decay": 3.1,
+      "peak": 0.88,
+      "fade_out": 0.18
+    },
+    "ultimate-charge-short-2": {
+      "layers": [
+        {
+          "name": "impact-1",
+          "at": 35.04,
+          "duration": 0.6,
+          "high": 250,
+          "low": 6500,
+          "reverse": true
+        }
+      ],
+      "length": 0.6,
+      "decay": -0.8,
+      "peak": 0.7,
+      "fade_out": 0.07
+    },
+    "ultimate-burst-short-2": {
+      "layers": [
+        {
+          "name": "impact-1",
+          "at": 35.04,
+          "duration": 0.21,
+          "high": 60,
+          "low": 6500
+        },
+        {
+          "name": "ritual-1",
+          "at": 10.0,
+          "duration": 0.21,
+          "high": 35,
+          "low": 2500,
+          "gain": 0.7
+        }
+      ],
+      "length": 0.21,
+      "decay": 2.5,
+      "peak": 0.88,
+      "fade_out": 0.07
+    },
+    "ambient": {
+      "source": "ritual-0",
+      "start": 12.0,
+      "source_length": 24.0,
+      "loop_crossfade": 2.0,
+      "length": 22.0
+    }
+  }
+}

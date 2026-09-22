@@ -74,9 +74,9 @@ func _ready() -> void:
 	session.combat_event.connect(func(data: Dictionary):
 		if field and data.p.distance_to(field.camera)<950:
 			if data.kind=="strike" and data.weapon>0:
-				sound.play(["shot","slash","heavy","magic"][data.weapon])
+				sound.play(["shot","slash","heavy","magic"][data.weapon],int(data.get("combo",0)))
 			elif data.kind=="impact":
-				sound.play("heavy" if data.get("heavy",false) else "hit")
+				sound.play("impact-heavy" if data.get("heavy",false) else "hit")
 	)
 	get_viewport().size_changed.connect(fit_ui)
 	fit_ui()
@@ -85,7 +85,9 @@ func _ready() -> void:
 	add_child(cinema_layer)
 	ultimate=UltimateCinematic.new()
 	cinema_layer.add_child(ultimate)
-	ultimate.burst.connect(func(): sound.play("heavy"); sound.play("magic"))
+	ultimate.burst.connect(func(): sound.burst_cinematic(ultimate.hero))
+	ultimate.ended.connect(sound.end_cinematic)
+	ultimate.began.connect(sound.begin_cinematic)
 	session.combat_event.connect(func(data: Dictionary):
 		if data.kind=="skill" and int(data.get("id",-1))==session.my_id() and page_name=="game":
 			ultimate.play(int(data.hero),session.online)
@@ -777,6 +779,9 @@ func on_finished() -> void:
 		label(page,"等待房主带领小队返回营地…",Vector2(987,814),18,GOLD)
 
 func on_effect(kind: String,pos: Vector2) -> void:
+	if kind=="skill" and ultimate and ultimate.active and session.players.has(session.my_id()):
+		if pos.distance_squared_to(session.players[session.my_id()].p)<1.0:
+			return
 	if pos.distance_to(field.camera)<850:
 		sound.play(kind)
 

@@ -21,4 +21,4 @@ environment/defaults/default_clear_color=Color(0.025, 0.03, 0.045, 1)
 textures/default_filters/use_nearest_mipmap_filter=false
 
 [audio]
-default_bus_layout="res://resources/audio_bus.tres"
+buses/default_bus_layout="res://resources/audio_bus.tres"
