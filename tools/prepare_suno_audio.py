@@ -14,7 +14,7 @@ from scipy.signal import butter, resample_poly, sosfilt
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "build/audio-source"
-OUT = ROOT / "assets/audio"
+OUT = ROOT / "build/audio-suno-legacy"
 OUT.mkdir(parents=True, exist_ok=True)
 RATE = 44100
 cache = {}

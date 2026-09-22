@@ -1,0 +1,4784 @@
+{
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "note": "Anime action revision: edited/layered CC0 source designs. Japanese voices are separately licensed under voices/.",
+  "sample_rate": 48000,
+  "sources": {
+    "swords": {
+      "author": "StarNinjas",
+      "url": "https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes"
+    },
+    "swishes": {
+      "author": "artisticdude",
+      "url": "https://opengameart.org/content/swishes-sound-pack"
+    },
+    "foley": {
+      "author": "Jan Schupke / Vehicle",
+      "url": "https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx"
+    },
+    "kenney": {
+      "author": "Kenney",
+      "url": "https://kenney.nl/assets/impact-sounds"
+    },
+    "spells": {
+      "author": "Lentikula",
+      "url": "https://lentikula.itch.io/freecc0-basic-spell-impacts-sfx"
+    },
+    "druid": {
+      "author": "Lentikula",
+      "url": "https://lentikula.itch.io/druid-spell-impacts"
+    },
+    "healing": {
+      "author": "Lentikula",
+      "url": "https://lentikula.itch.io/healing-spell-impacts"
+    },
+    "foley1": {
+      "author": "rubberduck",
+      "url": "https://opengameart.org/content/100-cc0-sfx"
+    },
+    "foley2": {
+      "author": "rubberduck",
+      "url": "https://opengameart.org/content/100-cc0-sfx-2"
+    },
+    "reload-source.wav": {
+      "author": "SpringySpringo",
+      "url": "https://opengameart.org/content/gun-reload-sounds"
+    },
+    "cock-source.wav": {
+      "author": "SpringySpringo",
+      "url": "https://opengameart.org/content/gun-reload-sounds"
+    },
+    "ambience.mp3": {
+      "author": "kindland",
+      "url": "https://opengameart.org/content/forgoten-tomb-ambience"
+    }
+  },
+  "source_files": {
+    "swishes/swishes/swish-1.wav": {
+      "sha256": "9a15c881345c1ce1c39cc31f52f081c8c4dc81fa41111e0079400f39d3ba0e45",
+      "source": "swishes"
+    },
+    "swords/sword - StarNinjas/sword.3.ogg": {
+      "sha256": "ce09eb2987531d1323415065d7811a9cf0ea8639766d9fa77655d602e7e14989",
+      "source": "swords"
+    },
+    "swishes/swishes/swish-2.wav": {
+      "sha256": "1ce7752cce3d43f16fc222ad7f7ffb69d9a5fc01e64b93d205765fc37b8e9b0d",
+      "source": "swishes"
+    },
+    "swords/sword - StarNinjas/sword.4.ogg": {
+      "sha256": "320aa8a77d35f9354c3d7e03a53e987ae67b0c5721f0dd2680100c5e6b5e4cc4",
+      "source": "swords"
+    },
+    "swishes/swishes/swish-4.wav": {
+      "sha256": "0060f4a7040edce4cc50d1daa10a9cb76764128a942e4688339e69cd1d5d784c",
+      "source": "swishes"
+    },
+    "swords/sword - StarNinjas/sword.6.ogg": {
+      "sha256": "5b6eaaac9c552ce364cfdea3c12cef846c89796fc9bb880181615f43ee4e4779",
+      "source": "swords"
+    },
+    "swishes/swishes/swish-5.wav": {
+      "sha256": "4db41f2d2f97caf94627be05ff2870217fecc86534cf30f2aab413b847a0d50a",
+      "source": "swishes"
+    },
+    "swishes/swishes/swish-7.wav": {
+      "sha256": "e6de737a34de16afed094d6170d7679149022f149e0a8356d2f029b0e8f4a4d7",
+      "source": "swishes"
+    },
+    "swords/sword - StarNinjas/sword.7.ogg": {
+      "sha256": "66f2a2e63182fa14470a63fc4a862ff77fa861f69a6a41d8e9874c9853c2d9dd",
+      "source": "swords"
+    },
+    "swishes/swishes/swish-9.wav": {
+      "sha256": "123883f006ce55feecbff11eea5f87c4493df4399989983037144570a23723c1",
+      "source": "swishes"
+    },
+    "swords/sword - StarNinjas/sword.5.ogg": {
+      "sha256": "135d1b26aad8d2f2205e56c14cd0162755a883e9419d6fd955cb978126a77452",
+      "source": "swords"
+    },
+    "swishes/swishes/swish-8.wav": {
+      "sha256": "113a3709ad889ad2fcf38eaceaf4eb9d67ffe1e96713fed93a6f0aed08769980",
+      "source": "swishes"
+    },
+    "swishes/swishes/swish-6.wav": {
+      "sha256": "edcaacf008da7ae692566f4fe0d6023ea68d0a014149889e95209be7ee0b746d",
+      "source": "swishes"
+    },
+    "kenney/Audio/impactPunch_heavy_000.ogg": {
+      "sha256": "b33a8f14068aec24ec69ba85e5e87fdc41228975f6a1a3e44a6e7d6fc3d9f8d8",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_heavy_001.ogg": {
+      "sha256": "f92f5cb6ba4ff2766497292ffd90865654317eeca976f5652e0708dbdcdc0dd9",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_heavy_002.ogg": {
+      "sha256": "7993dd4c156b9979ad69f17be5ebe31850b16039a3857f8477141be54dfee1b3",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_heavy_003.ogg": {
+      "sha256": "4ab53b26f4ea575120dcc1348526c9e0db2afc6af7a442aa0489bdead2ca80b6",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_heavy_004.ogg": {
+      "sha256": "f4c0c3eb8ab6517583b8218ed03f28923d1b687379aab4c1d5a6d4c10cf8e500",
+      "source": "kenney"
+    },
+    "druid/Earth Spell Impacts/Earth Spell Impact 1.wav": {
+      "sha256": "782c57d5b8684de2452a87336bbab79171b03971c67a53be99ab88228d61ad49",
+      "source": "druid"
+    },
+    "swords/sword_clash.2.ogg": {
+      "sha256": "e09f222b70d53f2967514d076e2ae50c21526ac640fe4919965f964af043da1a",
+      "source": "swords"
+    },
+    "spells/Ice Spell Impacts/Ice Spell Impact 1.wav": {
+      "sha256": "793bd970c9e4edf55acd4551335ae3a6e07415527022057369bbdb68ead355a4",
+      "source": "spells"
+    },
+    "kenney/Audio/impactGlass_medium_000.ogg": {
+      "sha256": "9252d50bfb85edb17d6073c4a7806e10cdb9de56d3dbfc93a4b9727146d2df6d",
+      "source": "kenney"
+    },
+    "healing/Impacts/Healing Spell Impact 4.wav": {
+      "sha256": "18a081619196646150ea31fff5e76f9b46b7b7f8f0da9fc886d42f1e76a762e7",
+      "source": "healing"
+    },
+    "foley/sfx-cc0/cloth-pouch-shake-01.wav": {
+      "sha256": "96e0cb2529817e56bb4c967fa0bdd42192e71fca76164c706263d5a0e7c302b6",
+      "source": "foley"
+    },
+    "kenney/Audio/footstep_concrete_000.ogg": {
+      "sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe",
+      "source": "kenney"
+    },
+    "foley/sfx-cc0/boots-leather-jump-01.wav": {
+      "sha256": "9b8b6e3ac1f0263df49c60c1e571974b421bfe12c576f26328397ee644bb3ac4",
+      "source": "foley"
+    },
+    "druid/Earth Spell Impacts/Earth Spell Impact 2.wav": {
+      "sha256": "cd389978587000cb2b793f6bedce6e6d41eb8daefe8bb43192604fe5010a1d87",
+      "source": "druid"
+    },
+    "swords/sword_clash.3.ogg": {
+      "sha256": "6c588bc79b7e4fe202e3b65fa849954d684d2d2342f6ad04813540854c421663",
+      "source": "swords"
+    },
+    "spells/Ice Spell Impacts/Ice Spell Impact 2.wav": {
+      "sha256": "01145fa8c776814046fdf73a0745858d91e7c1ad7021fdb0b02fc9dbb9ce446d",
+      "source": "spells"
+    },
+    "kenney/Audio/impactGlass_medium_001.ogg": {
+      "sha256": "d3d806cb3012c9ddd87010b30295ccb74d6d8b690077d19e67afd09a9d8feb03",
+      "source": "kenney"
+    },
+    "healing/Impacts/Healing Spell Impact 5.wav": {
+      "sha256": "88446a2bd1dba66ac6941f4bafebfcd1b53b81eb6117fab5585e46a04eacc434",
+      "source": "healing"
+    },
+    "kenney/Audio/footstep_concrete_001.ogg": {
+      "sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d",
+      "source": "kenney"
+    },
+    "druid/Earth Spell Impacts/Earth Spell Impact 3.wav": {
+      "sha256": "0d22086e18b58b02129f9a404650a371af959f920a9db3ff064db83aa1c492b0",
+      "source": "druid"
+    },
+    "swords/sword_clash.4.ogg": {
+      "sha256": "4c2c962f8703882b8a6f863c1f5a35c6ae518d0281755fac9a13e63a73b86fa5",
+      "source": "swords"
+    },
+    "spells/Ice Spell Impacts/Ice Spell Impact 3.wav": {
+      "sha256": "735223f61fbc20b45f4b2ef9090d45d95c81550258372613e87b3900817e9aa8",
+      "source": "spells"
+    },
+    "swishes/swishes/swish-3.wav": {
+      "sha256": "55b100e2c67fa43dad8510e31e85bbd51a68d5ce84a6e0259e21e19030083e24",
+      "source": "swishes"
+    },
+    "kenney/Audio/impactGlass_medium_002.ogg": {
+      "sha256": "48616f22c95589ed9fe55babf0fd012721d7b2ef1b9e85c2ad6408a2cd7c164f",
+      "source": "kenney"
+    },
+    "healing/Impacts/Healing Spell Impact 7.wav": {
+      "sha256": "4a6b67328a8c0d471b4c8d3d48b3039fc9adbbfb8d3c7720ef0e6f388fded40d",
+      "source": "healing"
+    },
+    "kenney/Audio/footstep_concrete_002.ogg": {
+      "sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13",
+      "source": "kenney"
+    },
+    "druid/Earth Spell Impacts/Earth Spell Impact 4.wav": {
+      "sha256": "be5ab862c196fdba7ea77416648d53dba8f72fdc7ac86e6a49e43b3b2cb0d8d9",
+      "source": "druid"
+    },
+    "swords/sword_clash.5.ogg": {
+      "sha256": "09e36369f2556e6a234ce78ec797447518ef7671f8224fc64747a7fa66ea229a",
+      "source": "swords"
+    },
+    "spells/Ice Spell Impacts/Ice Spell Impact 4.wav": {
+      "sha256": "1895df04d1a67b7781ee02e36642e4b3812b262d245d70cfb49032736a2e2253",
+      "source": "spells"
+    },
+    "kenney/Audio/impactGlass_medium_003.ogg": {
+      "sha256": "dccea1ecc3d942ee5fd217c684632638f6c039c97cd3ae59c75ab15d0c3f0b59",
+      "source": "kenney"
+    },
+    "healing/Impacts/Healing Spell Impact 9.wav": {
+      "sha256": "54db0e82b3e85cac71963db453b98cf8a05197b24b88b4cf5c7c066b1f009516",
+      "source": "healing"
+    },
+    "kenney/Audio/footstep_concrete_003.ogg": {
+      "sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b",
+      "source": "kenney"
+    },
+    "foley/sfx-cc0/boots-leather-step-01.wav": {
+      "sha256": "5b0de415a95f7ad5ef4541d8142415587b2898c43ac26a45862cf14756894a06",
+      "source": "foley"
+    },
+    "foley/sfx-cc0/cloth-pouch-shake-02.wav": {
+      "sha256": "1441af6eb1907eb85788bbab993524dda0070144a91c74ad9221d6c056476f92",
+      "source": "foley"
+    },
+    "kenney/Audio/footstep_concrete_004.ogg": {
+      "sha256": "24dd8db2413e5b81ad181e1205c12a1c7801da5f85715d471b92a4b2f632e45e",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_medium_000.ogg": {
+      "sha256": "486988aa2d6440ffc4c62a0e8ccf3c23673ba84424bd4723378d451b7255eb5c",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_medium_001.ogg": {
+      "sha256": "e71d23abcc3f10d9d6bc9615b2a431fff70b12333a5fcdd9964457564ace4349",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactPunch_medium_002.ogg": {
+      "sha256": "6492f9ccbc8d24dcef607bb1b48790b7870961474561f7fe5601e1c73a3018ef",
+      "source": "kenney"
+    },
+    "foley1/bell_01.ogg": {
+      "sha256": "b29cf8f3885eb2a266a16455227288dd3e004ea0414d2823b1a8677915f862d1",
+      "source": "foley1"
+    },
+    "healing/Impacts/Healing Spell Impact 2.wav": {
+      "sha256": "c090d7650315a38462d733b7e8c233da6ad78d3df1deb9a1f1a053254927bb03",
+      "source": "healing"
+    },
+    "foley/sfx-cc0/keyhole-lockbox-turn-01.wav": {
+      "sha256": "8a534c1cecba50a61ad031bb4fd2a2d085adb547b4652b960ec4e4fccc9bfb69",
+      "source": "foley"
+    },
+    "druid/Plant Spell Impacts/Plant Spell Impact 3.wav": {
+      "sha256": "7c376a16e5f2001ebd1d0a6de6338b52fae92aa9d0676ad444df9fda3aee36c0",
+      "source": "druid"
+    },
+    "foley/sfx-cc0/book-page-01.wav": {
+      "sha256": "d279158a5da1689941add3d5e148d827c38eb6b12f22834f499f72ddc47f0b44",
+      "source": "foley"
+    },
+    "reload-source.wav": {
+      "sha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f",
+      "source": "reload-source.wav"
+    },
+    "cock-source.wav": {
+      "sha256": "33e007321ba83301c861aef573f2c40b70bc62f8f24c0164877e6dd123e24371",
+      "source": "cock-source.wav"
+    },
+    "spells/Fire Spell Impacts/Fire Spell Impact 2.wav": {
+      "sha256": "4031d7b2b5577f310275dacaa902beb0a53d0849915cc17669abf3ff0f727269",
+      "source": "spells"
+    },
+    "foley2/sfx100v2_glass_01.ogg": {
+      "sha256": "9c664345b242c2ff06e4d00b0383a03afe1b7bf8a685ec9628fb605a1e43c196",
+      "source": "foley2"
+    },
+    "foley1/gong_01.ogg": {
+      "sha256": "4780a38e91688b59899b3679cf3534b4b75654b45a177af9d9fb681c447f7f9a",
+      "source": "foley1"
+    },
+    "foley/sfx-cc0/drawer-open-01.wav": {
+      "sha256": "ad0e4a6a5da53a3642b0a1d3819b0e057a2e80e66780b91ebe2ff888d3d8225f",
+      "source": "foley"
+    },
+    "foley/sfx-cc0/book-page-02.wav": {
+      "sha256": "b14e15141984eb84bcbe8841139d3f1d4715eac4e64cf52091acffd8fe440331",
+      "source": "foley"
+    },
+    "spells/Fire Spell Impacts/Fire Spell Impact 3.wav": {
+      "sha256": "5d54547593efd13eeda5ca237118774117591769ebc3421f0f06f9755b7b514d",
+      "source": "spells"
+    },
+    "foley1/bell_02.ogg": {
+      "sha256": "ea47ae29d3fe87c82414881084cf5dfa4a0a43c6def7437fcafbc21ffbf3ec72",
+      "source": "foley1"
+    },
+    "druid/Plant Spell Impacts/Plant Spell Impact 4.wav": {
+      "sha256": "6ae92579b2eeeca17b995fcb62251a33a9e40cf4b7d8cb063963b1e0911ebaff",
+      "source": "druid"
+    },
+    "druid/Wind Spell Impacts/Wind Spell Impact 1.wav": {
+      "sha256": "64e48fa68f74ee38bf8d666e9719443cc9071b1a5dcf0b235cfc5a93104acd85",
+      "source": "druid"
+    },
+    "healing/Impacts/Healing Spell Impact 11.wav": {
+      "sha256": "34aec152fbe6020f730851184e1b326e2cc0e1e57098a59fdd9704672181a382",
+      "source": "healing"
+    },
+    "druid/Wind Spell Impacts/Wind Spell Impact 2.wav": {
+      "sha256": "9d248b8d0d18c1d90912a3815300fe0d8378e16e702a59b39fa05e4af8200d1c",
+      "source": "druid"
+    },
+    "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav": {
+      "sha256": "15d3a0491e6e51e14cea718dbdb3d597163b0bc00e0fc0fadf1d1d68b0f8b853",
+      "source": "spells"
+    },
+    "druid/Wind Spell Impacts/Wind Spell Impact 3.wav": {
+      "sha256": "fb1e1fe8c7a22d2630de8ab80feb7fe2460901f02c406b0c2fcdeae0e0a7a055",
+      "source": "druid"
+    },
+    "ambience.mp3": {
+      "sha256": "989b26d4c6ec9fb90da2c9c892a396920e1b2e14a426052574310e275ebd01d0",
+      "source": "ambience.mp3"
+    },
+    "spells/Lightning Spell Impacts/Lightning Spell Impact 2.wav": {
+      "sha256": "5dbf51a905a0fba14586b8005b53184b197ae07b79f75c64e648a8b2004b01b1",
+      "source": "spells"
+    },
+    "spells/Lightning Spell Impacts/Lightning Spell Impact 3.wav": {
+      "sha256": "fcaf99ca9f27dce281344f4463bd1c2409f8de0b5e03c11d182abd82f0735536",
+      "source": "spells"
+    },
+    "spells/Lightning Spell Impacts/Lightning Spell Impact 4.wav": {
+      "sha256": "865fb8c398302d68dd198ae9f965a776002b202bec9495e76e875f45d6b98623",
+      "source": "spells"
+    },
+    "healing/Impacts/Healing Spell Impact 8.wav": {
+      "sha256": "0f9b9b738baf1d81ce86e7c916320ca09ea71eeea1ce4fca04942633714c58d0",
+      "source": "healing"
+    },
+    "healing/Impacts/Healing Spell Impact 6.wav": {
+      "sha256": "8176271ae8f6062be23e73a13342fd9d167d7c6769e2ec2878d5c9f00225a532",
+      "source": "healing"
+    },
+    "druid/Wind Spell Impacts/Wind Spell Impact 4.wav": {
+      "sha256": "25c6de2e7beea93b59f188679e76ba2a6861592e96a196610d6114c63cb2cfc4",
+      "source": "druid"
+    },
+    "healing/Impacts/Healing Spell Impact 10.wav": {
+      "sha256": "256076c554e8b3818ce9f872a622cb375da094e250f52510a596d93c1f77c3a3",
+      "source": "healing"
+    },
+    "kenney/Audio/impactMetal_light_000.ogg": {
+      "sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactGlass_light_000.ogg": {
+      "sha256": "d750cf88097d0c3e69920e6e14496e1444e1a9da01aa4cca8f5ec8cb44c57b4f",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactMetal_light_001.ogg": {
+      "sha256": "fba69c467ddd85da7b1d82e259f936b876d9ba6a3d6f1b24bdd10468e46bfe08",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactGlass_light_001.ogg": {
+      "sha256": "05e513fbd42829060eb37855f8c3866722ec5c39a8937c9bfde518cc609effa2",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactMetal_light_002.ogg": {
+      "sha256": "25a96f90a9a1f88a531e824e126f0519504625e5635e65a72e4f31611428db29",
+      "source": "kenney"
+    },
+    "kenney/Audio/impactGlass_light_002.ogg": {
+      "sha256": "710db7451bb7857b9140dfe6afe4621ea2188ad65eda3919c569d1bb285b933d",
+      "source": "kenney"
+    }
+  },
+  "cues": {
+    "slash-0": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-1.wav",
+          "gain": 0.85,
+          "speed": 1.3,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.3.ogg",
+          "gain": 0.32,
+          "speed": 1.5,
+          "high": 2100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.25,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.13,
+          "speed": 1.6,
+          "high": 3100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.15,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.28,
+      "tail": 0.08,
+      "room": 0.35,
+      "rise": false,
+      "rms": 0.19,
+      "width": 0.85,
+      "peak_db": -1.51
+    },
+    "slash-1": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-2.wav",
+          "gain": 0.85,
+          "speed": 1.3,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.4.ogg",
+          "gain": 0.32,
+          "speed": 1.5,
+          "high": 2100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.25,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 2.wav",
+          "gain": 0.13,
+          "speed": 1.6,
+          "high": 3100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.15,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.28,
+      "tail": 0.08,
+      "room": 0.35,
+      "rise": false,
+      "rms": 0.19,
+      "width": 0.85,
+      "peak_db": -1.43
+    },
+    "slash-2": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-4.wav",
+          "gain": 0.85,
+          "speed": 1.3,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.32,
+          "speed": 1.5,
+          "high": 2100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.25,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 3.wav",
+          "gain": 0.13,
+          "speed": 1.6,
+          "high": 3100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.15,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.28,
+      "tail": 0.08,
+      "room": 0.35,
+      "rise": false,
+      "rms": 0.19,
+      "width": 0.85,
+      "peak_db": -1.34
+    },
+    "slash-3": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-5.wav",
+          "gain": 0.85,
+          "speed": 1.3,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.3.ogg",
+          "gain": 0.32,
+          "speed": 1.5,
+          "high": 2100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.25,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 4.wav",
+          "gain": 0.13,
+          "speed": 1.6,
+          "high": 3100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.15,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.28,
+      "tail": 0.08,
+      "room": 0.35,
+      "rise": false,
+      "rms": 0.19,
+      "width": 0.85,
+      "peak_db": -1.4
+    },
+    "slash-4": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-7.wav",
+          "gain": 0.85,
+          "speed": 1.05,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.7.ogg",
+          "gain": 0.32,
+          "speed": 1.5,
+          "high": 2100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.25,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.13,
+          "speed": 1.6,
+          "high": 3100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.15,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.36,
+      "tail": 0.08,
+      "room": 0.35,
+      "rise": false,
+      "rms": 0.19,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "slash-5": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-9.wav",
+          "gain": 0.85,
+          "speed": 1.05,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.5.ogg",
+          "gain": 0.32,
+          "speed": 1.5,
+          "high": 2100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.25,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 2.wav",
+          "gain": 0.13,
+          "speed": 1.6,
+          "high": 3100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.15,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.36,
+      "tail": 0.08,
+      "room": 0.35,
+      "rise": false,
+      "rms": 0.19,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "heavy-0": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-7.wav",
+          "gain": 0.7,
+          "speed": 0.85,
+          "high": 200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 1.wav",
+          "gain": 0.4,
+          "speed": 1.45,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.32,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.7.ogg",
+          "gain": 0.38,
+          "speed": 1.15,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.26,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.46,
+      "tail": 0.08,
+      "room": 0.45,
+      "rise": false,
+      "rms": 0.21,
+      "width": 0.85,
+      "peak_db": -1.66
+    },
+    "heavy-1": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-8.wav",
+          "gain": 0.7,
+          "speed": 0.85,
+          "high": 200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 2.wav",
+          "gain": 0.4,
+          "speed": 1.45,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.32,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.7.ogg",
+          "gain": 0.38,
+          "speed": 1.19,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.26,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.46,
+      "tail": 0.08,
+      "room": 0.45,
+      "rise": false,
+      "rms": 0.21,
+      "width": 0.85,
+      "peak_db": -1.35
+    },
+    "heavy-2": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-9.wav",
+          "gain": 0.7,
+          "speed": 0.85,
+          "high": 200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 3.wav",
+          "gain": 0.4,
+          "speed": 1.45,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.32,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.7.ogg",
+          "gain": 0.38,
+          "speed": 1.23,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.26,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.46,
+      "tail": 0.08,
+      "room": 0.45,
+      "rise": false,
+      "rms": 0.21,
+      "width": 0.85,
+      "peak_db": -1.34
+    },
+    "heavy-3": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-6.wav",
+          "gain": 0.7,
+          "speed": 0.85,
+          "high": 200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.4,
+          "speed": 1.45,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.32,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.7.ogg",
+          "gain": 0.38,
+          "speed": 1.27,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.26,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.46,
+      "tail": 0.08,
+      "room": 0.45,
+      "rise": false,
+      "rms": 0.21,
+      "width": 0.85,
+      "peak_db": -1.42
+    },
+    "hit-0": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_heavy_000.ogg",
+          "gain": 0.45,
+          "speed": 1.35,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.55,
+          "speed": 1.9,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.18,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.2,
+      "width": 0.85,
+      "peak_db": -1.56
+    },
+    "hit-1": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_heavy_001.ogg",
+          "gain": 0.45,
+          "speed": 1.35,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 2.wav",
+          "gain": 0.55,
+          "speed": 1.9,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.18,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.2,
+      "width": 0.85,
+      "peak_db": -2.77
+    },
+    "hit-2": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_heavy_002.ogg",
+          "gain": 0.45,
+          "speed": 1.35,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 3.wav",
+          "gain": 0.55,
+          "speed": 1.9,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.18,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.2,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "hit-3": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_heavy_003.ogg",
+          "gain": 0.45,
+          "speed": 1.35,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 4.wav",
+          "gain": 0.55,
+          "speed": 1.9,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.18,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.2,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "hit-4": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_heavy_004.ogg",
+          "gain": 0.45,
+          "speed": 1.35,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.55,
+          "speed": 1.9,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.18,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.2,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-heavy-0": {
+      "layers": [
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.72,
+          "speed": 1.4,
+          "high": 65,
+          "low": 2200,
+          "at": 0.0,
+          "duration": 0.34,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.52,
+          "speed": 1.4,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactGlass_medium_000.ogg",
+          "gain": 0.2,
+          "speed": 1.5,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.48,
+      "tail": 0.14,
+      "room": 0.55,
+      "rise": false,
+      "rms": 0.22,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-metal-0": {
+      "layers": [
+        {
+          "path": "swords/sword_clash.2.ogg",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 1.wav",
+          "gain": 0.18,
+          "speed": 1.6,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.1,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -3.29
+    },
+    "magic-0": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 2.wav",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 1.wav",
+          "gain": 0.38,
+          "speed": 1.45,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.36,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swishes/swishes/swish-1.wav",
+          "gain": 0.32,
+          "speed": 1.6,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.5,
+      "tail": 0.18,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.7
+    },
+    "impact-magic-0": {
+      "layers": [
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 1.wav",
+          "gain": 0.65,
+          "speed": 1.45,
+          "high": 650,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 0.4,
+          "speed": 1.8,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.56,
+      "tail": 0.22,
+      "room": 0.6,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -2.31
+    },
+    "magic-windup-0": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 4.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.42,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.19,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.025,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -4.93
+    },
+    "dash-0": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-7.wav",
+          "gain": 1.0,
+          "speed": 1.45,
+          "high": 900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 1.wav",
+          "gain": 0.18,
+          "speed": 1.7,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.2,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.42
+    },
+    "land-0": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_000.ogg",
+          "gain": 1.0,
+          "speed": 0.83,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-jump-01.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.34,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-heavy-1": {
+      "layers": [
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 2.wav",
+          "gain": 0.72,
+          "speed": 1.4,
+          "high": 65,
+          "low": 2200,
+          "at": 0.0,
+          "duration": 0.34,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 2.wav",
+          "gain": 0.52,
+          "speed": 1.4,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactGlass_medium_001.ogg",
+          "gain": 0.2,
+          "speed": 1.5,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.48,
+      "tail": 0.14,
+      "room": 0.55,
+      "rise": false,
+      "rms": 0.22,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-metal-1": {
+      "layers": [
+        {
+          "path": "swords/sword_clash.3.ogg",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.18,
+          "speed": 1.6,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.1,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -3.32
+    },
+    "magic-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 4.wav",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.38,
+          "speed": 1.45,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.36,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swishes/swishes/swish-2.wav",
+          "gain": 0.32,
+          "speed": 1.6,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.5,
+      "tail": 0.18,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.92
+    },
+    "impact-magic-1": {
+      "layers": [
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.65,
+          "speed": 1.45,
+          "high": 650,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 8.wav",
+          "gain": 0.4,
+          "speed": 1.8,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.56,
+      "tail": 0.22,
+      "room": 0.6,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.54
+    },
+    "magic-windup-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 5.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.42,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.19,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.025,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -11.63
+    },
+    "dash-1": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-8.wav",
+          "gain": 1.0,
+          "speed": 1.45,
+          "high": 900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 2.wav",
+          "gain": 0.18,
+          "speed": 1.7,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.2,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.35
+    },
+    "land-1": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_001.ogg",
+          "gain": 1.0,
+          "speed": 0.83,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-jump-01.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.34,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-heavy-2": {
+      "layers": [
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 3.wav",
+          "gain": 0.72,
+          "speed": 1.4,
+          "high": 65,
+          "low": 2200,
+          "at": 0.0,
+          "duration": 0.34,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 3.wav",
+          "gain": 0.52,
+          "speed": 1.4,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactGlass_medium_002.ogg",
+          "gain": 0.2,
+          "speed": 1.5,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.48,
+      "tail": 0.14,
+      "room": 0.55,
+      "rise": false,
+      "rms": 0.22,
+      "width": 0.85,
+      "peak_db": -1.33
+    },
+    "impact-metal-2": {
+      "layers": [
+        {
+          "path": "swords/sword_clash.4.ogg",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 3.wav",
+          "gain": 0.18,
+          "speed": 1.6,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.1,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -1.45
+    },
+    "magic-2": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 3.wav",
+          "gain": 0.38,
+          "speed": 1.45,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.36,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swishes/swishes/swish-3.wav",
+          "gain": 0.32,
+          "speed": 1.6,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.5,
+      "tail": 0.18,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-magic-2": {
+      "layers": [
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 3.wav",
+          "gain": 0.65,
+          "speed": 1.45,
+          "high": 650,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 9.wav",
+          "gain": 0.4,
+          "speed": 1.8,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.56,
+      "tail": 0.22,
+      "room": 0.6,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "magic-windup-2": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.42,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.19,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.025,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -3.3
+    },
+    "dash-2": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-9.wav",
+          "gain": 1.0,
+          "speed": 1.45,
+          "high": 900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 3.wav",
+          "gain": 0.18,
+          "speed": 1.7,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.2,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.79
+    },
+    "land-2": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_002.ogg",
+          "gain": 1.0,
+          "speed": 0.83,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-jump-01.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.34,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "impact-heavy-3": {
+      "layers": [
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 4.wav",
+          "gain": 0.72,
+          "speed": 1.4,
+          "high": 65,
+          "low": 2200,
+          "at": 0.0,
+          "duration": 0.34,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 4.wav",
+          "gain": 0.52,
+          "speed": 1.4,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactGlass_medium_003.ogg",
+          "gain": 0.2,
+          "speed": 1.5,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.48,
+      "tail": 0.14,
+      "room": 0.55,
+      "rise": false,
+      "rms": 0.22,
+      "width": 0.85,
+      "peak_db": -1.58
+    },
+    "impact-metal-3": {
+      "layers": [
+        {
+          "path": "swords/sword_clash.5.ogg",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 4.wav",
+          "gain": 0.18,
+          "speed": 1.6,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.17,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.1,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "magic-3": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.65,
+          "speed": 1.6,
+          "high": 1100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 4.wav",
+          "gain": 0.38,
+          "speed": 1.45,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.36,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swishes/swishes/swish-4.wav",
+          "gain": 0.32,
+          "speed": 1.6,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.5,
+      "tail": 0.18,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.45
+    },
+    "impact-magic-3": {
+      "layers": [
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 4.wav",
+          "gain": 0.65,
+          "speed": 1.45,
+          "high": 650,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 10.wav",
+          "gain": 0.4,
+          "speed": 1.8,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.56,
+      "tail": 0.22,
+      "room": 0.6,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.33
+    },
+    "magic-windup-3": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 9.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.42,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.19,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.025,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -2.09
+    },
+    "dash-3": {
+      "layers": [
+        {
+          "path": "swishes/swishes/swish-6.wav",
+          "gain": 1.0,
+          "speed": 1.45,
+          "high": 900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.18,
+          "speed": 1.7,
+          "high": 1700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.2,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.96
+    },
+    "land-3": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_003.ogg",
+          "gain": 1.0,
+          "speed": 0.83,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-jump-01.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.34,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "step-0": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_000.ogg",
+          "gain": 1.0,
+          "speed": 0.95,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -7.11
+    },
+    "run-0": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_000.ogg",
+          "gain": 1.0,
+          "speed": 0.96,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "step-1": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_001.ogg",
+          "gain": 1.0,
+          "speed": 1.02,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -6.43
+    },
+    "run-1": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_001.ogg",
+          "gain": 1.0,
+          "speed": 0.975,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "step-2": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_002.ogg",
+          "gain": 1.0,
+          "speed": 0.99,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -7.29
+    },
+    "run-2": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_002.ogg",
+          "gain": 1.0,
+          "speed": 0.99,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.87
+    },
+    "step-3": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_003.ogg",
+          "gain": 1.0,
+          "speed": 1.08,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -7.58
+    },
+    "run-3": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_003.ogg",
+          "gain": 1.0,
+          "speed": 1.005,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.73
+    },
+    "step-4": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_004.ogg",
+          "gain": 1.0,
+          "speed": 0.97,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -6.31
+    },
+    "run-4": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_004.ogg",
+          "gain": 1.0,
+          "speed": 1.02,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "step-5": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_000.ogg",
+          "gain": 1.0,
+          "speed": 1.05,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -6.53
+    },
+    "run-5": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_000.ogg",
+          "gain": 1.0,
+          "speed": 1.035,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "step-6": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_001.ogg",
+          "gain": 1.0,
+          "speed": 1,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -6.47
+    },
+    "run-6": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_001.ogg",
+          "gain": 1.0,
+          "speed": 1.05,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "step-7": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_002.ogg",
+          "gain": 1.0,
+          "speed": 1.03,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/boots-leather-step-01.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.25,
+      "tail": 0.045,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -7.02
+    },
+    "run-7": {
+      "layers": [
+        {
+          "path": "kenney/Audio/footstep_concrete_002.ogg",
+          "gain": 1.0,
+          "speed": 1.065,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-02.wav",
+          "gain": 0.2,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.24,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.52
+    },
+    "shot-0": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.65,
+          "speed": 1.65,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactMetal_light_000.ogg",
+          "gain": 0.18,
+          "speed": 1.45,
+          "high": 1900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "shot-1": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 2.wav",
+          "gain": 0.65,
+          "speed": 1.65,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactMetal_light_001.ogg",
+          "gain": 0.18,
+          "speed": 1.45,
+          "high": 1900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.34
+    },
+    "shot-2": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 3.wav",
+          "gain": 0.65,
+          "speed": 1.65,
+          "high": 700,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "kenney/Audio/impactMetal_light_002.ogg",
+          "gain": 0.18,
+          "speed": 1.45,
+          "high": 1900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.17,
+      "width": 0.85,
+      "peak_db": -1.71
+    },
+    "hurt-0": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_medium_000.ogg",
+          "gain": 0.6,
+          "speed": 1.3,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 1.wav",
+          "gain": 0.16,
+          "speed": 1.5,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.14,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -7.2
+    },
+    "hurt-1": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_medium_001.ogg",
+          "gain": 0.6,
+          "speed": 1.3,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.16,
+          "speed": 1.5,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.14,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -7.15
+    },
+    "hurt-2": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactPunch_medium_002.ogg",
+          "gain": 0.6,
+          "speed": 1.3,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 3.wav",
+          "gain": 0.16,
+          "speed": 1.5,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.14,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -6.42
+    },
+    "down-0": {
+      "layers": [
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.5,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1800,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.15,
+          "speed": 1.0,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.55,
+      "tail": 0.22,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -4.23
+    },
+    "down-1": {
+      "layers": [
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 2.wav",
+          "gain": 0.5,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1800,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 3.wav",
+          "gain": 0.15,
+          "speed": 1.0,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.55,
+      "tail": 0.22,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -1.33
+    },
+    "loot-0": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 4.wav",
+          "gain": 0.55,
+          "speed": 1.85,
+          "high": 1900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/bell_01.ogg",
+          "gain": 0.18,
+          "speed": 1.4,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.38,
+      "tail": 0.13,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -4.36
+    },
+    "ui-0": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactGlass_light_000.ogg",
+          "gain": 1.0,
+          "speed": 1.8,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.08,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.1,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.07,
+      "width": 0.85,
+      "peak_db": -10.34
+    },
+    "skill-0": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
+          "gain": 0.7,
+          "speed": 1.3,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.75,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.4,
+          "speed": 1.5,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.9,
+      "tail": 0.3,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.16,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "death-0": {
+      "layers": [
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 1.wav",
+          "gain": 0.55,
+          "speed": 1.25,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 1.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.45,
+      "tail": 0.16,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -4.88
+    },
+    "loot-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 0.55,
+          "speed": 1.85,
+          "high": 1900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/bell_01.ogg",
+          "gain": 0.18,
+          "speed": 1.52,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.38,
+      "tail": 0.13,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -2.58
+    },
+    "ui-1": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactGlass_light_001.ogg",
+          "gain": 1.0,
+          "speed": 1.8,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.08,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.1,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.07,
+      "width": 0.85,
+      "peak_db": -9.97
+    },
+    "skill-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.7,
+          "speed": 1.3,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.75,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.4,
+          "speed": 1.5,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.9,
+      "tail": 0.3,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.16,
+      "width": 0.85,
+      "peak_db": -1.53
+    },
+    "death-1": {
+      "layers": [
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 2.wav",
+          "gain": 0.55,
+          "speed": 1.25,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.45,
+      "tail": 0.16,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -5.06
+    },
+    "loot-2": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.55,
+          "speed": 1.85,
+          "high": 1900,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/bell_01.ogg",
+          "gain": 0.18,
+          "speed": 1.64,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.27,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.38,
+      "tail": 0.13,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.11,
+      "width": 0.85,
+      "peak_db": -3.86
+    },
+    "ui-2": {
+      "layers": [
+        {
+          "path": "kenney/Audio/impactGlass_light_002.ogg",
+          "gain": 1.0,
+          "speed": 1.8,
+          "high": 1800,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.08,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.1,
+      "tail": 0.04,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.07,
+      "width": 0.85,
+      "peak_db": -8.42
+    },
+    "skill-2": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.7,
+          "speed": 1.3,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.75,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.4,
+          "speed": 1.5,
+          "high": 1500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.9,
+      "tail": 0.3,
+      "room": 0.5,
+      "rise": false,
+      "rms": 0.16,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "death-2": {
+      "layers": [
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 3.wav",
+          "gain": 0.55,
+          "speed": 1.25,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.4,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 3.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.45,
+      "tail": 0.16,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -4.66
+    },
+    "ui-open-0": {
+      "layers": [
+        {
+          "path": "foley/sfx-cc0/book-page-01.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.26,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-01.wav",
+          "gain": 0.15,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.2,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -6.67
+    },
+    "ui-close-0": {
+      "layers": [
+        {
+          "path": "foley/sfx-cc0/book-page-01.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -4.71
+    },
+    "reload-0": {
+      "layers": [
+        {
+          "path": "reload-source.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 1.12,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -1.35
+    },
+    "reload-end-0": {
+      "layers": [
+        {
+          "path": "cock-source.wav",
+          "gain": 1.0,
+          "speed": 0.93,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.27,
+      "tail": 0.055,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -3.97
+    },
+    "heal-0": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 4.wav",
+          "gain": 1.0,
+          "speed": 1.3,
+          "high": 500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.0,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/bell_01.ogg",
+          "gain": 0.12,
+          "speed": 1.8,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 1.05,
+      "tail": 0.32,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -1.4
+    },
+    "burn-0": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley2/sfx100v2_glass_01.ogg",
+          "gain": 0.24,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 1.45,
+      "tail": 0.4,
+      "room": 0.3,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.35
+    },
+    "bell-0": {
+      "layers": [
+        {
+          "path": "foley1/bell_01.ogg",
+          "gain": 1.0,
+          "speed": 0.48,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/gong_01.ogg",
+          "gain": 0.35,
+          "speed": 0.66,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 3.2,
+      "tail": 0.8,
+      "room": 1.4,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "enemy-cast-0": {
+      "layers": [
+        {
+          "path": "druid/Plant Spell Impacts/Plant Spell Impact 3.wav",
+          "gain": 1.0,
+          "speed": 0.8,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.5,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.62,
+      "tail": 0.2,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.12,
+      "width": 0.85,
+      "peak_db": -2.46
+    },
+    "chest-0": {
+      "layers": [
+        {
+          "path": "foley/sfx-cc0/keyhole-lockbox-turn-01.wav",
+          "gain": 1.0,
+          "speed": 0.95,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/drawer-open-01.wav",
+          "gain": 0.5,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.55,
+          "reverse": false,
+          "delay": 0.06,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.75,
+      "tail": 0.15,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.38
+    },
+    "ui-open-1": {
+      "layers": [
+        {
+          "path": "foley/sfx-cc0/book-page-02.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.26,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/cloth-pouch-shake-01.wav",
+          "gain": 0.15,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.2,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -6.67
+    },
+    "ui-close-1": {
+      "layers": [
+        {
+          "path": "foley/sfx-cc0/book-page-02.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.26,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.1,
+      "width": 0.85,
+      "peak_db": -4.7
+    },
+    "reload-1": {
+      "layers": [
+        {
+          "path": "reload-source.wav",
+          "gain": 1.0,
+          "speed": 1.025,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 1.12,
+      "tail": 0.08,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "reload-end-1": {
+      "layers": [
+        {
+          "path": "cock-source.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.27,
+      "tail": 0.055,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.15,
+      "width": 0.85,
+      "peak_db": -3.8
+    },
+    "heal-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 1.0,
+          "speed": 1.3,
+          "high": 500,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.0,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/bell_01.ogg",
+          "gain": 0.12,
+          "speed": 1.8,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 1.05,
+      "tail": 0.32,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.13,
+      "width": 0.85,
+      "peak_db": -1.4
+    },
+    "burn-1": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 3.wav",
+          "gain": 1.0,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.3,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley2/sfx100v2_glass_01.ogg",
+          "gain": 0.24,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 1.45,
+      "tail": 0.4,
+      "room": 0.3,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.37
+    },
+    "bell-1": {
+      "layers": [
+        {
+          "path": "foley1/bell_02.ogg",
+          "gain": 1.0,
+          "speed": 0.48,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley1/gong_01.ogg",
+          "gain": 0.35,
+          "speed": 0.66,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 3.2,
+      "tail": 0.8,
+      "room": 1.4,
+      "rise": false,
+      "rms": 0.14,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "enemy-cast-1": {
+      "layers": [
+        {
+          "path": "druid/Plant Spell Impacts/Plant Spell Impact 4.wav",
+          "gain": 1.0,
+          "speed": 0.8,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.5,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.62,
+      "tail": 0.2,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.12,
+      "width": 0.85,
+      "peak_db": -1.34
+    },
+    "chest-1": {
+      "layers": [
+        {
+          "path": "foley/sfx-cc0/keyhole-lockbox-turn-01.wav",
+          "gain": 1.0,
+          "speed": 1.05,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "foley/sfx-cc0/drawer-open-01.wav",
+          "gain": 0.5,
+          "speed": 0.92,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.55,
+          "reverse": false,
+          "delay": 0.08499999999999999,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.75,
+      "tail": 0.15,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.18,
+      "width": 0.85,
+      "peak_db": -1.32
+    },
+    "equip-0": {
+      "layers": [
+        {
+          "path": "swords/sword - StarNinjas/sword.3.ogg",
+          "gain": 0.5,
+          "speed": 1.6,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 4.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2400,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.12,
+      "width": 0.85,
+      "peak_db": -3.14
+    },
+    "equip-1": {
+      "layers": [
+        {
+          "path": "swords/sword - StarNinjas/sword.4.ogg",
+          "gain": 0.5,
+          "speed": 1.6,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 5.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2400,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.12,
+      "width": 0.85,
+      "peak_db": -4.7
+    },
+    "equip-2": {
+      "layers": [
+        {
+          "path": "swords/sword - StarNinjas/sword.7.ogg",
+          "gain": 0.5,
+          "speed": 1.6,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 6.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2400,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.12,
+      "width": 0.85,
+      "peak_db": -2.24
+    },
+    "equip-3": {
+      "layers": [
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.5,
+          "speed": 1.6,
+          "high": 1200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.22,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 0.2,
+          "speed": 1.8,
+          "high": 2400,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.19,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.3,
+      "tail": 0.09,
+      "room": 0.0,
+      "rise": false,
+      "rms": 0.12,
+      "width": 0.85,
+      "peak_db": -2.78
+    },
+    "ultimate-charge-0": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
+          "gain": 0.55,
+          "speed": 1.0,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.837,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.38,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.837,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 1.wav",
+          "gain": 0.3,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.837,
+          "trim": true
+        }
+      ],
+      "length": 2.837,
+      "tail": 0.035,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 1.1,
+      "peak_db": -1.56
+    },
+    "ultimate-burst-0": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
+          "gain": 0.62,
+          "speed": 1.2,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.48,
+          "speed": 1.4,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.35,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1300,
+          "at": 0.0,
+          "duration": 0.28,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 2.364,
+      "tail": 0.35,
+      "room": 1.0,
+      "rise": false,
+      "rms": 0.19,
+      "width": 1.15,
+      "peak_db": -1.4
+    },
+    "ultimate-charge-short-0": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
+          "gain": 0.55,
+          "speed": 1.0,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.38,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 1.wav",
+          "gain": 0.3,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        }
+      ],
+      "length": 0.6,
+      "tail": 0.035,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 1.1,
+      "peak_db": -1.56
+    },
+    "ultimate-burst-short-0": {
+      "layers": [
+        {
+          "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
+          "gain": 0.62,
+          "speed": 1.2,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.48,
+          "speed": 1.4,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.35,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1300,
+          "at": 0.0,
+          "duration": 0.28,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.07,
+      "room": 1.0,
+      "rise": false,
+      "rms": 0.19,
+      "width": 1.15,
+      "peak_db": -1.38
+    },
+    "ultimate-charge-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.55,
+          "speed": 1.0,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.439,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.38,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.439,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 2.wav",
+          "gain": 0.3,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.439,
+          "trim": true
+        }
+      ],
+      "length": 2.439,
+      "tail": 0.035,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 1.1,
+      "peak_db": -1.56
+    },
+    "ultimate-burst-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.62,
+          "speed": 1.2,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.48,
+          "speed": 1.4,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1300,
+          "at": 0.0,
+          "duration": 0.28,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 3.135,
+      "tail": 0.35,
+      "room": 1.0,
+      "rise": false,
+      "rms": 0.19,
+      "width": 1.15,
+      "peak_db": -1.71
+    },
+    "ultimate-charge-short-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.55,
+          "speed": 1.0,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.38,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 2.wav",
+          "gain": 0.3,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        }
+      ],
+      "length": 0.6,
+      "tail": 0.035,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 1.1,
+      "peak_db": -2.37
+    },
+    "ultimate-burst-short-1": {
+      "layers": [
+        {
+          "path": "healing/Impacts/Healing Spell Impact 11.wav",
+          "gain": 0.62,
+          "speed": 1.2,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
+          "gain": 0.48,
+          "speed": 1.4,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.12,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1300,
+          "at": 0.0,
+          "duration": 0.28,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.07,
+      "room": 1.0,
+      "rise": false,
+      "rms": 0.19,
+      "width": 1.15,
+      "peak_db": -6.39
+    },
+    "ultimate-charge-2": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.55,
+          "speed": 1.0,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.87,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.38,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.87,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 3.wav",
+          "gain": 0.3,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 2.87,
+          "trim": true
+        }
+      ],
+      "length": 2.87,
+      "tail": 0.035,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 1.1,
+      "peak_db": -1.34
+    },
+    "ultimate-burst-2": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.62,
+          "speed": 1.2,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.48,
+          "speed": 1.4,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.35,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1300,
+          "at": 0.0,
+          "duration": 0.28,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 3.398,
+      "tail": 0.35,
+      "room": 1.0,
+      "rise": false,
+      "rms": 0.19,
+      "width": 1.15,
+      "peak_db": -1.4
+    },
+    "ultimate-charge-short-2": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.55,
+          "speed": 1.0,
+          "high": 600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.38,
+          "speed": 1.0,
+          "high": 1600,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.65,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 3.wav",
+          "gain": 0.3,
+          "speed": 1.0,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 1.6,
+          "reverse": true,
+          "delay": 0.0,
+          "stretch": 0.6,
+          "trim": true
+        }
+      ],
+      "length": 0.6,
+      "tail": 0.035,
+      "room": 0.0,
+      "rise": true,
+      "rms": 0.13,
+      "width": 1.1,
+      "peak_db": -1.33
+    },
+    "ultimate-burst-short-2": {
+      "layers": [
+        {
+          "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
+          "gain": 0.62,
+          "speed": 1.2,
+          "high": 65,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.48,
+          "speed": 1.4,
+          "high": 2000,
+          "low": 17000,
+          "at": 0.0,
+          "duration": null,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.35,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1300,
+          "at": 0.0,
+          "duration": 0.28,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        }
+      ],
+      "length": 0.22,
+      "tail": 0.07,
+      "room": 1.0,
+      "rise": false,
+      "rms": 0.19,
+      "width": 1.15,
+      "peak_db": -4.12
+    },
+    "ambient": {
+      "source": "ambience.mp3",
+      "start": 15,
+      "duration": 48,
+      "crossfade": 4,
+      "length": 44
+    }
+  },
+  "style": "anime-action-2026-09-22"
+}

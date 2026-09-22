@@ -2,9 +2,9 @@ class_name Catalog
 extends RefCounted
 
 const HEROES = [
-	{"name":"绯月", "title":"赤刃守夜姬", "desc":"绯红剑舞。猩红齐射贯穿近处敌群；可切换四类武器。", "color":Color("da6474"), "hair":Color("e8dce0"), "hp":110.0, "speed":220.0, "damage":23.0, "rate":0.23, "clip":16, "skill":"猩红齐射"},
-	{"name":"雪璃", "title":"晨钟祈愿者", "desc":"星辉法杖。晨光祈愿治疗附近的所有队友。", "color":Color("70c4bc"), "hair":Color("c9e0ef"), "hp":95.0, "speed":230.0, "damage":32.0, "rate":0.42, "clip":10, "skill":"晨光祈愿"},
-	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"重剑处刑。夜鸦斩清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦斩"}
+	{"name":"绯月", "title":"赤刃守夜姬", "desc":"绯红剑舞。红莲月华贯穿近处敌群；可切换四类武器。", "color":Color("da6474"), "hair":Color("e8dce0"), "hp":110.0, "speed":220.0, "damage":23.0, "rate":0.23, "clip":16, "skill":"红莲月华"},
+	{"name":"雪璃", "title":"晨钟祈愿者", "desc":"星辉法杖。拂晓之祈治疗附近的所有队友。", "color":Color("70c4bc"), "hair":Color("c9e0ef"), "hp":95.0, "speed":230.0, "damage":32.0, "rate":0.42, "clip":10, "skill":"拂晓之祈"},
+	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"重剑处刑。夜鸦断罪清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦断罪"}
 ]
 const ITEMS = {
 	"crystal":{"name":"血晶", "size":Vector2i(1,1), "value":18, "color":Color("e45c74"), "desc":"血香 +8；按 B 可燃烧一枚，驱散血香并恢复理智。"},

@@ -25,12 +25,21 @@ func run() -> void:
 	for hero in 3:
 		cg.play(hero,false)
 		cg.set_process(false)
-		cg.age=0.9
+		cg.age=cg.impact_time*.65
 		cg.queue_redraw()
 		cg.light.queue_redraw()
+		cg.captions.queue_redraw()
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png("res://build/ultimate-"+str(hero)+".png")
+		cg.age=cg.impact_time+.20
+		cg.fired=true
+		cg.queue_redraw()
+		cg.light.queue_redraw()
+		cg.captions.queue_redraw()
+		await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("res://build/ultimate-burst-"+str(hero)+".png")
 		cg.stop()
 		cg.set_process(true)
 	cg.play(1,true)
@@ -46,9 +55,19 @@ func run() -> void:
 	check(not cg.active and not paused,"skip restores simulation")
 	check(not app.modal,"skip key does not also open pause menu")
 	cg.play(0,false)
-	await create_timer(2.8).timeout
+	await create_timer(cg.duration+.2).timeout
 	check(not cg.active and not paused,"full version automatically restores simulation")
+	app.show_title()
+	app.show_settings()
+	await process_frame
+	await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png("res://build/voice-settings.png")
+	app.show_credits()
+	await process_frame
+	await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png("res://build/voice-credits.png")
 	app.queue_free()
 	await process_frame
+	await create_timer(.15).timeout
 	print("ULTIMATE CG: ",failures," failures")
 	quit(1 if failures else 0)

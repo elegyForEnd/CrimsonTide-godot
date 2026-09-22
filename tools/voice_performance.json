@@ -1,0 +1,65 @@
+{
+  "0": {
+    "ultimate-burst": {
+      "text": "奥義！<#0.10#>グレンゲッカッ！！",
+      "voice_setting": {
+        "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+        "speed": 1.12,
+        "vol": 1,
+        "pitch": 0,
+        "emotion": "surprised"
+      }
+    },
+    "ultimate-short": {
+      "text": "グレンゲッカッ！！",
+      "voice_setting": {
+        "emotion": "surprised",
+        "speed": 1.12
+      }
+    }
+  },
+  "1": {
+    "ultimate-burst": {
+      "text": "聖域展開！<#0.10#>アカツキノイノリぃーっ！！",
+      "voice_setting": {
+        "voice_id": "Japanese_GracefulMaiden",
+        "speed": 1.04,
+        "vol": 1,
+        "pitch": 0,
+        "emotion": "happy"
+      }
+    },
+    "ultimate-short": {
+      "text": "アカツキノイノリぃーっ！！",
+      "voice_setting": {
+        "voice_id": "Japanese_GracefulMaiden",
+        "speed": 1.04,
+        "vol": 1,
+        "pitch": 0,
+        "emotion": "happy"
+      }
+    }
+  },
+  "2": {
+    "ultimate-burst": {
+      "text": "禁式解放！<#0.10#>ヨガラスダンザイぃーっ！！",
+      "voice_setting": {
+        "voice_id": "Japanese_ColdQueen",
+        "speed": 1.04,
+        "vol": 1,
+        "pitch": -1,
+        "emotion": "surprised"
+      }
+    },
+    "ultimate-short": {
+      "text": "ヨガラスダンザイッ！！",
+      "voice_setting": {
+        "voice_id": "Japanese_ColdQueen",
+        "speed": 1.12,
+        "vol": 1,
+        "pitch": -1,
+        "emotion": "surprised"
+      }
+    }
+  }
+}

@@ -287,6 +287,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			p.hp=minf(p.max_hp,p.hp+45)
 			p.sanity=minf(100,p.sanity+10)
 			emit_effect("skill",p.p)
+			broadcast_audio("heal",p)
 		return
 	if p.status!="active":
 		return
@@ -299,6 +300,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p.weapon=selected
 				p.reload=0.0
 				p.combo=0
+				broadcast_audio("equip",p,selected)
 				changed.emit()
 		"reload": reload_player(p)
 		"dash":
@@ -324,6 +326,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p.scent=maxf(0,p.scent-25)
 				p.sanity=minf(100,p.sanity+18)
 				emit_effect("skill",p.p)
+				broadcast_audio("burn",p)
 		"skill":
 			if p.skill<=0:
 				p.skill=18.0
@@ -343,7 +346,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 						var offset: Vector2=e.p-p.p
 						var reach := 210 if p.hero==2 else 460
 						if offset.length()<reach and ruins.clear_line(p.p,e.p) and (p.hero==2 or offset.normalized().dot(p.aim)>0.35):
-							damage_enemy(e,115.0,p.id,offset.normalized(),40.0)
+							damage_enemy(e,115.0,p.id,offset.normalized(),40.0,4)
 		"bag_move":
 			var index := int(payload.get("index",-1))
 			if index>=0 and index<p.bag.size():
@@ -370,6 +373,7 @@ func reload_player(p: Dictionary) -> void:
 		p.reserve+=48
 	if p.reserve>0:
 		p.reload=1.3
+		broadcast_audio("reload",p)
 
 func simulate(dt: float) -> void:
 	elapsed+=dt
@@ -403,6 +407,7 @@ func simulate(dt: float) -> void:
 				var count: int=mini(16-p.ammo,p.reserve)
 				p.ammo+=count
 				p.reserve-=count
+				broadcast_audio("reload-end",p)
 		var cmd: Dictionary=inputs.get(id,{})
 		var direction: Vector2=cmd.get("move",Vector2.ZERO)
 		p.aim=cmd.get("aim",Vector2.RIGHT)
@@ -480,6 +485,7 @@ func down(p: Dictionary) -> void:
 	p.motion="idle"
 	p.channel=0
 	emit_effect("hurt",p.p)
+	broadcast_audio("down",p)
 
 func attack(p: Dictionary) -> void:
 	if p.attack>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or p.status!="active":
@@ -511,14 +517,14 @@ func release_strike(p: Dictionary) -> void:
 		for e in enemies:
 			var v: Vector2=e.p-p.p
 			if e.hp>0 and v.length()<w.reach and v.normalized().dot(direction)>-0.1 and ruins.clear_line(p.p,e.p):
-				damage_enemy(e,damage,p.id,direction,w.knock)
+				damage_enemy(e,damage,p.id,direction,w.knock,int(p.weapon))
 	else:
 		if p.weapon==0:
 			p.ammo-=1
 			emit_effect("shot",p.p)
 		bullets.append({"p":p.p+direction*23,"v":direction*(850 if p.weapon==0 else 620),"life":1.1,"damage":damage,"owner":p.id,"weapon":p.weapon})
 
-func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float) -> void:
+func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	e.hp-=damage
 	e.last=owner
 	e["flash"]=0.14
@@ -527,7 +533,10 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 	e.p=ruins.move(e.p,direction*knock)
 	if players.has(owner):
 		players[owner].hitstop=0.045 if knock<40 else 0.085
-	broadcast_combat({"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner})
+	broadcast_combat({"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"enemy_type":e.type})
+
+func broadcast_audio(cue: String, p: Dictionary, variant: int = -1) -> void:
+	broadcast_combat({"kind":"audio","cue":cue,"p":p.p,"id":p.get("id",0),"variant":variant})
 
 func broadcast_combat(data: Dictionary) -> void:
 	combat_event.emit(data)
@@ -595,6 +604,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			players[index].hp=players[index].max_hp*0.4
 			players[index].invuln=2
 			emit_effect("skill",p.p)
+			broadcast_audio("heal",p)
 		"shrine":
 			ruins.shrines[index].done=true
 			objectives+=1
@@ -615,6 +625,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 					chest.items.remove_at(j)
 					taken=true
 			if taken:
+				broadcast_audio("chest",p)
 				emit_effect("loot",p.p)
 
 func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
@@ -668,6 +679,7 @@ func update_enemies(dt: float) -> void:
 		if e.cd<=0:
 			if ranged:
 				e.cd=2.0
+				broadcast_audio("enemy-cast",e)
 				bullets.append({"p":e.p,"v":direction*245,"life":2.0,"damage":13.0,"owner":0})
 			elif best<45 and ruins.clear_line(e.p,target.p):
 				e.cd=0.85
@@ -682,6 +694,8 @@ func hurt(p: Dictionary, damage: float) -> void:
 	emit_effect("hurt",p.p)
 	if p.hp<=0:
 		down(p)
+	else:
+		broadcast_audio("hurt",p)
 
 func update_bullets(dt: float) -> void:
 	for i in range(bullets.size()-1,-1,-1):
@@ -701,7 +715,7 @@ func update_bullets(dt: float) -> void:
 			else:
 				for e in enemies:
 					if Geometry2D.get_closest_point_to_segment(e.p,old,b.p).distance_to(e.p)<(27 if e.type==3 else 19):
-						damage_enemy(e,b.damage,b.owner,b.v.normalized(),16.0)
+						damage_enemy(e,b.damage,b.owner,b.v.normalized(),16.0,int(b.get("weapon",0)))
 						b.life=0
 						break
 		if b.life<=0:

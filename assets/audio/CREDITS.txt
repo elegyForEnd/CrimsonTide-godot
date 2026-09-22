@@ -1,0 +1,41 @@
+CRIMSON TIDE — ANIME ACTION SOUND EFFECTS
+114 CC0 sound effects / ambience from 85 source files.
+The separate Japanese voice bank is NOT CC0; see VOICE-CREDITS.txt.
+SFX license: https://creativecommons.org/publicdomain/zero/1.0/
+
+StarNinjas
+https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes
+
+artisticdude
+https://opengameart.org/content/swishes-sound-pack
+
+Jan Schupke / Vehicle
+https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx
+
+Kenney
+https://kenney.nl/assets/impact-sounds
+
+Lentikula
+https://lentikula.itch.io/freecc0-basic-spell-impacts-sfx
+
+Lentikula
+https://lentikula.itch.io/druid-spell-impacts
+
+Lentikula
+https://lentikula.itch.io/healing-spell-impacts
+
+rubberduck
+https://opengameart.org/content/100-cc0-sfx
+
+rubberduck
+https://opengameart.org/content/100-cc0-sfx-2
+
+SpringySpringo
+https://opengameart.org/content/gun-reload-sounds
+
+kindland
+https://opengameart.org/content/forgoten-tomb-ambience
+
+Game edits: transient cuts, pitch/time treatment, crystalline layers, stereo reflections and mastering.
+Provenance and recipes: assets/audio/library-manifest.json (AUDIO-MANIFEST.json in the portable package).
+Source libraries, synthesis caches and model runtimes are excluded from the game distribution.

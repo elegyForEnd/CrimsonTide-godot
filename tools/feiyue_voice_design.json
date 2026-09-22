@@ -1,0 +1,16 @@
+{
+  "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+  "extra_info": {
+    "usage_characters": 53,
+    "charge_method": "voice_design",
+    "charge_model": "preview_text"
+  },
+  "base_resp": {
+    "status_code": 0,
+    "status_msg": "success"
+  },
+  "request": {
+    "prompt": "A completely original Japanese anime heroine voice. Young adult woman, sweet and bright, clear musical upper register, cute and warm without sounding childish. Lively and courageous magical swordfighter, lightly smiling timbre. Confident, energetic Japanese battle calls, with the final stressed vowel soaring UPWARD in pitch and ending high, never falling into vocal fry. Normal recording loudness, no distortion, no imitation of any real person. Native Japanese pronunciation.",
+    "preview_text": "私は緋月。さあ、一緒に行こう！紅き月よ、我が刃に宿れ！奥義、グレンゲッカーッ！！"
+  }
+}

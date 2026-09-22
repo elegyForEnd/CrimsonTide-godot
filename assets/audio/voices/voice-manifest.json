@@ -1,0 +1,1610 @@
+{
+  "engine": "MiniMax speech-2.8-hd",
+  "provider": "MiniMax",
+  "language": "ja",
+  "endpoint": "https://api.minimax.cn/v1/t2a_v2",
+  "note": "AI-synthesized original game dialogue; system and text-designed Japanese voices, no voice cloning. Not CC0.",
+  "terms": [
+    "https://platform.minimaxi.com/docs/api-reference/speech-t2a-http"
+  ],
+  "heroes": [
+    {
+      "name": "绯月",
+      "credit": "MiniMax speech-2.8-hd / ttv-voice-2026092214390726-WEnHawap",
+      "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+      "lines": {
+        "attack": [
+          {
+            "file": "hero-0-attack-0.wav",
+            "ja": "はっ！",
+            "zh": "喝！",
+            "spoken_text": "はっ！",
+            "length": 0.3309,
+            "sha256": "69f7cf9cb6bda0c43947e8eb3c8220c497c0b55cf3c0d24ea943886b74e1d43d",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.27,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570a9b47dfe541d7caf10cf15fca",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-0-attack-1.wav",
+            "ja": "やっ！",
+            "zh": "呀！",
+            "spoken_text": "やっ！",
+            "length": 0.2794,
+            "sha256": "971a2c4a379de0823096302ba3b088901c7eb32509f3f5611c9c6bda8805b04c",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.27,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570a4f5205398ed77af657062834",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-0-attack-2.wav",
+            "ja": "せいっ！",
+            "zh": "嘿！",
+            "spoken_text": "せいっ！",
+            "length": 0.5932,
+            "sha256": "c1980f5b4abcfc63d700ba5fa4157e1b7d802a07f75188ca73403623dd14a38a",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.27,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570b3deccc22f29321273e1d0009",
+            "usage_characters": 4
+          },
+          {
+            "file": "hero-0-attack-3.wav",
+            "ja": "たあっ！",
+            "zh": "哈！",
+            "spoken_text": "たあっ！",
+            "length": 0.3767,
+            "sha256": "692d548a3ab8e543cecc329d351408b49b48498dc243bbaf94b0d350ff7647e8",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.27,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570be19f824407f667c7cde89e6b",
+            "usage_characters": 4
+          }
+        ],
+        "heavy": [
+          {
+            "file": "hero-0-heavy-0.wav",
+            "ja": "叩き斬る！",
+            "zh": "一刀斩断！",
+            "spoken_text": "叩き斬る！",
+            "length": 0.672,
+            "sha256": "3824a474326da4f196aa209150710622cb0476cd4ed357e102f7cc9be36fba9c",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570c9969cd1fab820424080e87e5",
+            "usage_characters": 7
+          },
+          {
+            "file": "hero-0-heavy-1.wav",
+            "ja": "砕け散れ！",
+            "zh": "粉碎吧！",
+            "spoken_text": "砕け散れ！",
+            "length": 0.9023,
+            "sha256": "7d6bafa5f136fd274772278b431bb9eece65c2e63658c4fd329a63aa2ba4eaf9",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570ce5f544d74f7cff5f3d17add7",
+            "usage_characters": 7
+          }
+        ],
+        "magic": [
+          {
+            "file": "hero-0-magic-0.wav",
+            "ja": "紅蓮よ！",
+            "zh": "红莲啊！",
+            "spoken_text": "紅蓮よ！",
+            "length": 0.5795,
+            "sha256": "12c07e2e8a3ab23db3477d2ecc848fcda0e9927d882853b4bc0f9cc00a7af51c",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570c5f5a878f1b5cbfd938926e0f",
+            "usage_characters": 6
+          },
+          {
+            "file": "hero-0-magic-1.wav",
+            "ja": "貫け！",
+            "zh": "贯穿吧！",
+            "spoken_text": "貫け！",
+            "length": 0.7207,
+            "sha256": "0b9a1e4209e3e8662fc10955c088bdcc24339bbab7db35a0e212101c5f8a2268",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570c0f7da1d01428a16d7a6c7854",
+            "usage_characters": 4
+          }
+        ],
+        "dash": [
+          {
+            "file": "hero-0-dash-0.wav",
+            "ja": "遅い！",
+            "zh": "太慢了！",
+            "spoken_text": "遅い！",
+            "length": 0.4203,
+            "sha256": "69106de42005c47965cbb14a746c9d4550a3bb891901b01de22eda5303ff4ba9",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570ddf48e045fc91a1e640e4f64d",
+            "usage_characters": 4
+          },
+          {
+            "file": "hero-0-dash-1.wav",
+            "ja": "見切った！",
+            "zh": "看穿了！",
+            "spoken_text": "見切った！",
+            "length": 0.4866,
+            "sha256": "e119877565b6a71df08d34874dbbc9c3da75c518a3276eed790af871c246d78d",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570da4a5d7c346588a1af007252c",
+            "usage_characters": 7
+          }
+        ],
+        "hurt": [
+          {
+            "file": "hero-0-hurt-0.wav",
+            "ja": "くっ！",
+            "zh": "唔！",
+            "spoken_text": "くっ！",
+            "length": 0.4955,
+            "sha256": "47d1a20eb656c74871478d436d4bb0420cc7d20e55f7da7315a9098cd76d37d0",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "fearful"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570d2e80505d3e8022cc4fc7d17e",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-0-hurt-1.wav",
+            "ja": "まだよ！",
+            "zh": "还没完！",
+            "spoken_text": "まだよ！",
+            "length": 0.6807,
+            "sha256": "6c60f6573385c183326c1c574882a570a455e8bfdb4ae7d67f451681d14a028d",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "fearful"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570d5328f3a342873cabe6204fa8",
+            "usage_characters": 4
+          }
+        ],
+        "heal": [
+          {
+            "file": "hero-0-heal-0.wav",
+            "ja": "まだ、戦える！",
+            "zh": "我还能战斗！",
+            "spoken_text": "まだ、戦える！",
+            "length": 1.5347,
+            "sha256": "be8cc8b0b188c30a4cdd451d67c76107a2962e7e66f3b4bd1410f3fe3ac0abf8",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570e7b78c93af3dddd5bc06aa628",
+            "usage_characters": 8
+          }
+        ],
+        "down": [
+          {
+            "file": "hero-0-down-0.wav",
+            "ja": "こんな、ところで……",
+            "zh": "怎能倒在……这里……",
+            "spoken_text": "こんな、ところで……",
+            "length": 1.5341,
+            "sha256": "5c7b71e3979d90ff376edb0937601a9fc9e8d11470dc35b53441bfda4c1773e7",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "sad"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570ebc29346df03084f8ccb42dcc",
+            "usage_characters": 10
+          }
+        ],
+        "ultimate-charge": [
+          {
+            "file": "hero-0-ultimate-charge-0.wav",
+            "ja": "紅き月よ、我が刃に宿れ！",
+            "zh": "绯红之月，寄宿于我刃！",
+            "spoken_text": "紅き月よ！<#0.10#>我が刃に宿れ！",
+            "length": 2.7171,
+            "sha256": "eb10285ab2d523bb8d8310ceb5998f34ee2ec5738c649051d51e2192df41f99f",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570f666aba83970bc2c92d3c0e5e",
+            "usage_characters": 25
+          }
+        ],
+        "ultimate-burst": [
+          {
+            "file": "hero-0-ultimate-burst-0.wav",
+            "ja": "奥義、紅蓮月華！",
+            "zh": "奥义——红莲月华！",
+            "spoken_text": "奥義！<#0.10#>グレンゲッカッ！！",
+            "length": 2.1437,
+            "sha256": "f9295ec814148bae077685cced6fced1afb918534514aaac2a7a89461e3b84a0",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "surprised"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "070157b0732269fed4cf36d292350d32",
+            "usage_characters": 22
+          }
+        ],
+        "ultimate-short": [
+          {
+            "file": "hero-0-ultimate-short-0.wav",
+            "ja": "紅蓮月華！",
+            "zh": "红莲月华！",
+            "spoken_text": "グレンゲッカッ！！",
+            "length": 0.9647,
+            "sha256": "7fcaf0d80f27a6af5488d7e9b07d462210b883f57324126785946cab5c9996a9",
+            "model": "speech-2.8-hd",
+            "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+            "voice_setting": {
+              "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "surprised"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570f40697aec8da596f11faf83ef",
+            "usage_characters": 9
+          }
+        ]
+      },
+      "voice_design": {
+        "voice_id": "ttv-voice-2026092214390726-WEnHawap",
+        "extra_info": {
+          "usage_characters": 53,
+          "charge_method": "voice_design",
+          "charge_model": "preview_text"
+        },
+        "base_resp": {
+          "status_code": 0,
+          "status_msg": "success"
+        },
+        "request": {
+          "prompt": "A completely original Japanese anime heroine voice. Young adult woman, sweet and bright, clear musical upper register, cute and warm without sounding childish. Lively and courageous magical swordfighter, lightly smiling timbre. Confident, energetic Japanese battle calls, with the final stressed vowel soaring UPWARD in pitch and ending high, never falling into vocal fry. Normal recording loudness, no distortion, no imitation of any real person. Native Japanese pronunciation.",
+          "preview_text": "私は緋月。さあ、一緒に行こう！紅き月よ、我が刃に宿れ！奥義、グレンゲッカーッ！！"
+        }
+      },
+      "charge_time": 2.837,
+      "burst_time": 2.364
+    },
+    {
+      "name": "雪璃",
+      "credit": "MiniMax speech-2.8-hd / Japanese_GracefulMaiden",
+      "voice_id": "Japanese_GracefulMaiden",
+      "lines": {
+        "attack": [
+          {
+            "file": "hero-1-attack-0.wav",
+            "ja": "えいっ！",
+            "zh": "嘿！",
+            "spoken_text": "えいっ！",
+            "length": 0.5198,
+            "sha256": "ad34fc50c98425e34358d09d86ba4ec5847e9c998a875075570754817a731b0f",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fc8b583be1d9835b0d76affe63c",
+            "usage_characters": 4
+          },
+          {
+            "file": "hero-1-attack-1.wav",
+            "ja": "はっ！",
+            "zh": "喝！",
+            "spoken_text": "はっ！",
+            "length": 0.2221,
+            "sha256": "6a3ccebc268f542190d48f36956950e8979bd10e54382dc18b5cd584910c7760",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fcae8c28af88a0e6dffb52ee164",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-1-attack-2.wav",
+            "ja": "やあっ！",
+            "zh": "呀！",
+            "spoken_text": "やあっ！",
+            "length": 0.5564,
+            "sha256": "85af90583e6998cb29ac3899fd0a51b5236df44bba0d23a0dcc5616b0cafc5c8",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fcba204df49c63876745d004f7f",
+            "usage_characters": 4
+          },
+          {
+            "file": "hero-1-attack-3.wav",
+            "ja": "たっ！",
+            "zh": "哈！",
+            "spoken_text": "たっ！",
+            "length": 0.3468,
+            "sha256": "9089aed334783ae848df877e5ca2ded6f3cb676d39f5691301d69f756dbddad9",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fcd359fd601d6eb6f469ebd4c09",
+            "usage_characters": 3
+          }
+        ],
+        "heavy": [
+          {
+            "file": "hero-1-heavy-0.wav",
+            "ja": "退いて！",
+            "zh": "退下！",
+            "spoken_text": "退いて！",
+            "length": 0.9233,
+            "sha256": "82ea986d8a3a5b51356d9bc4b6b8480ba362854af62f49a9140d4d6de1864f7a",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b5ce2b091f2c89f0f1b34fffec4",
+            "usage_characters": 5
+          },
+          {
+            "file": "hero-1-heavy-1.wav",
+            "ja": "打ち砕け！",
+            "zh": "击碎吧！",
+            "spoken_text": "打ち砕け！",
+            "length": 0.8142,
+            "sha256": "e1aed7ba1eaed90ce599e6bc70296ccfd7cbd8a0823b172a90763dd5c7d48423",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b5c13d673c7146e442f50a61d8a",
+            "usage_characters": 7
+          }
+        ],
+        "magic": [
+          {
+            "file": "hero-1-magic-0.wav",
+            "ja": "星よ、穿て！",
+            "zh": "星辰啊，贯穿吧！",
+            "spoken_text": "星よ、穿て！",
+            "length": 0.9081,
+            "sha256": "5a98cbb803e4ebd529d487d5039ef2bf2f65824e81479d3ac020eb10c3af0185",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b5c8c53d7f13c7c9ae1b5797aa1",
+            "usage_characters": 8
+          },
+          {
+            "file": "hero-1-magic-1.wav",
+            "ja": "きらめけ！",
+            "zh": "闪耀吧！",
+            "spoken_text": "きらめけ！",
+            "length": 0.8165,
+            "sha256": "6eadeaa53083cb2e3a7a53afd53690872ee8b926cb11c2cdb892fa8eb742715f",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b5e92cd806232a74bdd177cb01a",
+            "usage_characters": 5
+          }
+        ],
+        "dash": [
+          {
+            "file": "hero-1-dash-0.wav",
+            "ja": "こっちです！",
+            "zh": "在这边！",
+            "spoken_text": "こっちです！",
+            "length": 0.7063,
+            "sha256": "e5777a728411bc3e18c22a97c75134c89568036bfe4a5d8ff51b06ee5d8ccf3b",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b5e669bdd1ef3a5e51a54196b76",
+            "usage_characters": 6
+          },
+          {
+            "file": "hero-1-dash-1.wav",
+            "ja": "当たりません！",
+            "zh": "打不中哦！",
+            "spoken_text": "当たりません！",
+            "length": 0.7443,
+            "sha256": "ba58e0e9258cf9c5e32d5ebe622ea2bab9ecc1acab17ae19abae625929256caa",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014bffed331c11c963415cf0e1357e",
+            "usage_characters": 8
+          }
+        ],
+        "hurt": [
+          {
+            "file": "hero-1-hurt-0.wav",
+            "ja": "あっ！",
+            "zh": "啊！",
+            "spoken_text": "あっ！",
+            "length": 0.4419,
+            "sha256": "a5735d12499cea1d15bd2816ef3719af892d9bebeff793d5077339ee9a0a2704",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "fearful"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b66bacd00cac80f567fec684563",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-1-hurt-1.wav",
+            "ja": "大丈夫！",
+            "zh": "没关系！",
+            "spoken_text": "大丈夫！",
+            "length": 0.732,
+            "sha256": "67d60d3ffcf49d5ab682232d99822ba2a351be4a19cabe45f52122f359c26ba9",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "fearful"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b617c629ddd067328a502b66229",
+            "usage_characters": 7
+          }
+        ],
+        "heal": [
+          {
+            "file": "hero-1-heal-0.wav",
+            "ja": "癒やしの光よ！",
+            "zh": "治愈之光啊！",
+            "spoken_text": "癒やしの光よ！",
+            "length": 1.0903,
+            "sha256": "f3a724d83797fdb30fd8775777e3cb2a04cfaa3714a6503f78cb122138081f70",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b6378d02338eb254b028337115b",
+            "usage_characters": 9
+          }
+        ],
+        "down": [
+          {
+            "file": "hero-1-down-0.wav",
+            "ja": "みんな、ごめんね……",
+            "zh": "大家，对不起……",
+            "spoken_text": "みんな、ごめんね……",
+            "length": 1.5764,
+            "sha256": "b4446721fa8bac79479048ea55709e4bb68006b5a8cb5100be5ae106e0a5c095",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "sad"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b6b6477cc725aaeaa92ccb300ac",
+            "usage_characters": 10
+          }
+        ],
+        "ultimate-charge": [
+          {
+            "file": "hero-1-ultimate-charge-0.wav",
+            "ja": "星の祝福よ、この夜を照らせ！",
+            "zh": "群星的祝福，照亮此夜！",
+            "spoken_text": "星の祝福よ！<#0.10#>この夜を照らせ！",
+            "length": 2.3194,
+            "sha256": "2607322133dfad07b93d1c15a30130156d6375cd0bc6fee53cee6d6035cdb9c0",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "0701570fba520c7d6ec8cc81114fa4be",
+            "usage_characters": 27
+          }
+        ],
+        "ultimate-burst": [
+          {
+            "file": "hero-1-ultimate-burst-0.wav",
+            "ja": "聖域展開、暁の祈り！",
+            "zh": "圣域展开——拂晓之祈！",
+            "spoken_text": "聖域展開！<#0.10#>アカツキノイノリぃーっ！！",
+            "length": 2.9151,
+            "sha256": "ef8156cf97b2a58b41fccbf40650718c35d4cfbb67d30e352f28078c89ef0ae4",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.04,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "070154853213fa3cddb83c22caed287b",
+            "usage_characters": 30
+          }
+        ],
+        "ultimate-short": [
+          {
+            "file": "hero-1-ultimate-short-0.wav",
+            "ja": "暁の祈り！",
+            "zh": "拂晓之祈！",
+            "spoken_text": "アカツキノイノリぃーっ！！",
+            "length": 1.1319,
+            "sha256": "b2e66a6043e9a732a79857ddabd69bcd0e404535f19a757bd6ca0222a682aba9",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_GracefulMaiden",
+            "voice_setting": {
+              "voice_id": "Japanese_GracefulMaiden",
+              "speed": 1.04,
+              "vol": 1,
+              "pitch": 0,
+              "emotion": "happy"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "070154864d175c0db72e2b68e282b1fc",
+            "usage_characters": 13
+          }
+        ]
+      },
+      "charge_time": 2.439,
+      "burst_time": 3.135
+    },
+    {
+      "name": "鸦羽",
+      "credit": "MiniMax speech-2.8-hd / Japanese_ColdQueen",
+      "voice_id": "Japanese_ColdQueen",
+      "lines": {
+        "attack": [
+          {
+            "file": "hero-2-attack-0.wav",
+            "ja": "ふっ！",
+            "zh": "哼！",
+            "spoken_text": "ふっ！",
+            "length": 0.261,
+            "sha256": "4a97ea63520dfb580d27fc94c5308124244def90a74028df7cf025214f176492",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fd2f61105ee5cce58d158246c24",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-2-attack-1.wav",
+            "ja": "はっ！",
+            "zh": "喝！",
+            "spoken_text": "はっ！",
+            "length": 0.5083,
+            "sha256": "fe34d068c71ce97d185f85a8bd127d4a3ce7eb3282311f701e0c4005b02686ec",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fd43e0f233cdf19188a918b30b6",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-2-attack-2.wav",
+            "ja": "せいっ！",
+            "zh": "嘿！",
+            "spoken_text": "せいっ！",
+            "length": 0.5268,
+            "sha256": "e94df848ccb7f8d7a7616bd2d9951666978e0a83fe8f210e1c25e9ff0b24348d",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fd538b055ec7703af0b037225ea",
+            "usage_characters": 4
+          },
+          {
+            "file": "hero-2-attack-3.wav",
+            "ja": "はあっ！",
+            "zh": "哈！",
+            "spoken_text": "はあっ！",
+            "length": 0.2634,
+            "sha256": "e1afcfddf8d864e8ada53e20499bbf88b36c48ec8ef66d18b0817b746d2810eb",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.25,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {
+              "intensity": -30
+            },
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014fd66aef8239577ca5ba0f4913fc",
+            "usage_characters": 4
+          }
+        ],
+        "heavy": [
+          {
+            "file": "hero-2-heavy-0.wav",
+            "ja": "跪け！",
+            "zh": "跪下！",
+            "spoken_text": "跪け！",
+            "length": 0.9539,
+            "sha256": "ab8b7a69c3af7031e09ea63981fd4f6347cb08bff11aa2e91e815bb83d4e6ad2",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014c02a35b16a8601e58fe6e8b32a0",
+            "usage_characters": 4
+          },
+          {
+            "file": "hero-2-heavy-1.wav",
+            "ja": "断ち切る！",
+            "zh": "斩断！",
+            "spoken_text": "断ち切る！",
+            "length": 0.6794,
+            "sha256": "abc3e0c7e295660b377ac25306de5a55d969c241bb8881210a59461f175bbfb1",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b7f2e011de1ff41ada1a20ced06",
+            "usage_characters": 7
+          }
+        ],
+        "magic": [
+          {
+            "file": "hero-2-magic-0.wav",
+            "ja": "闇に沈め！",
+            "zh": "沉入黑暗！",
+            "spoken_text": "闇に沈め！",
+            "length": 0.943,
+            "sha256": "b8b7b0e0efbd370f2b6169da40680b58d0c816ab1331b01ccc2f7f6d8e607fcc",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b8763d28ed834956c3ccbdfd077",
+            "usage_characters": 7
+          },
+          {
+            "file": "hero-2-magic-1.wav",
+            "ja": "消え失せろ！",
+            "zh": "消失吧！",
+            "spoken_text": "消え失せろ！",
+            "length": 0.8801,
+            "sha256": "40251aee87ad33e4dc9d84583821c62efe95afd71437f4f874e53b3ccbe90d55",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b813381403ef2be749cc3bcd4b2",
+            "usage_characters": 8
+          }
+        ],
+        "dash": [
+          {
+            "file": "hero-2-dash-0.wav",
+            "ja": "残像だ！",
+            "zh": "只是残影！",
+            "spoken_text": "残像だ！",
+            "length": 1.0384,
+            "sha256": "9f4098cf956a7e0e0f8233a54c53692c3bbc9118a05d66224cf0f3063aa5a6ad",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b8405af1a9703cf18a6f7cb8089",
+            "usage_characters": 6
+          },
+          {
+            "file": "hero-2-dash-1.wav",
+            "ja": "甘い！",
+            "zh": "太天真！",
+            "spoken_text": "甘い！",
+            "length": 0.5343,
+            "sha256": "76ce049e15e80cf7f83f615d93c058767d58aaaba6593992e329e2c13bee663a",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014c027d126ae4f76a6512833495ac",
+            "usage_characters": 4
+          }
+        ],
+        "hurt": [
+          {
+            "file": "hero-2-hurt-0.wav",
+            "ja": "くっ！",
+            "zh": "唔！",
+            "spoken_text": "くっ！",
+            "length": 0.201,
+            "sha256": "fb44b0e9f6d60171bc7cc9f7620b1e3073f27fe5c10ab5e85775f7ce75003da9",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "fearful"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b8ad52d9fe985fef8f029ec1eb0",
+            "usage_characters": 3
+          },
+          {
+            "file": "hero-2-hurt-1.wav",
+            "ja": "その程度か！",
+            "zh": "就这点本事？",
+            "spoken_text": "その程度か！",
+            "length": 1.4832,
+            "sha256": "880a776c7074ce286424cb1e2015c2041d51b9cbfc6a56e7ace8e63b15e9525e",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "fearful"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b9a92aff48aa6273f16e19b9d6c",
+            "usage_characters": 8
+          }
+        ],
+        "heal": [
+          {
+            "file": "hero-2-heal-0.wav",
+            "ja": "終わりは、まだだ！",
+            "zh": "还未到终结之时！",
+            "spoken_text": "終わりは、まだだ！",
+            "length": 1.4173,
+            "sha256": "0116f17244c30c657ee060a663fc42bf4a58cd1f85a3907304fe1edd514796c5",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "calm"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b8e0310df058a68d83db1937554",
+            "usage_characters": 10
+          }
+        ],
+        "down": [
+          {
+            "file": "hero-2-down-0.wav",
+            "ja": "翼は、まだ……",
+            "zh": "我的羽翼……还……",
+            "spoken_text": "翼は、まだ……",
+            "length": 2.0785,
+            "sha256": "06068c3dabecfcd4c98a47a249bccff13c9d8548aea1c60d82f46ef72e5d0deb",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.1,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "sad"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07014b907a0260cfcd3b6e105995a86e",
+            "usage_characters": 8
+          }
+        ],
+        "ultimate-charge": [
+          {
+            "file": "hero-2-ultimate-charge-0.wav",
+            "ja": "終焉を告げる、黒き翼よ！",
+            "zh": "宣告终焉的漆黑羽翼！",
+            "spoken_text": "終焉を告げる！<#0.10#>黒き翼よ！",
+            "length": 2.75,
+            "sha256": "a2a2f9da580cfc1810fcaf0638b378f9af605a17b01b0395c5836ec1746c124b",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "angry"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "070157105fcde714b0ae7bdc539e4259",
+            "usage_characters": 25
+          }
+        ],
+        "ultimate-burst": [
+          {
+            "file": "hero-2-ultimate-burst-0.wav",
+            "ja": "禁式解放、夜鴉断罪！",
+            "zh": "禁式解放——夜鸦断罪！",
+            "spoken_text": "禁式解放！<#0.10#>ヨガラスダンザイぃーっ！！",
+            "length": 3.178,
+            "sha256": "ce5344a20b2ea0cda15cf80f71b11b7d242707fc56024fe006765c8fe8cdf699",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.04,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "surprised"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "07015486ab1937e28e42f64b1ee66acd",
+            "usage_characters": 30
+          }
+        ],
+        "ultimate-short": [
+          {
+            "file": "hero-2-ultimate-short-0.wav",
+            "ja": "夜鴉断罪！",
+            "zh": "夜鸦断罪！",
+            "spoken_text": "ヨガラスダンザイッ！！",
+            "length": 1.2805,
+            "sha256": "77b1947cd4972e3ab9200f0d6e6752a0da828ab5bb434028bc6af0a10b512479",
+            "model": "speech-2.8-hd",
+            "voice_id": "Japanese_ColdQueen",
+            "voice_setting": {
+              "voice_id": "Japanese_ColdQueen",
+              "speed": 1.12,
+              "vol": 1,
+              "pitch": -1,
+              "emotion": "surprised"
+            },
+            "voice_modify": {},
+            "prosody": {
+              "source": "MiniMax synthesis",
+              "local_pitch_edit": false
+            },
+            "mastering": {
+              "target_rms": 0.19,
+              "ending_emphasis_db": 0.0,
+              "true_peak_limit": 0.82
+            },
+            "trace_id": "070154d73167a97278219500ea56224c",
+            "usage_characters": 11
+          }
+        ]
+      },
+      "charge_time": 2.87,
+      "burst_time": 3.398
+    }
+  ]
+}

@@ -2,11 +2,10 @@ class_name UltimateCinematic
 extends Control
 ## Independent viewport layer: never inherits the HUD's fixed-size letterboxing.
 signal burst
-signal ended
+signal ended(interrupted: bool)
 signal began(hero: int, online: bool)
-const LENGTH := 2.6
 var age := 0.0
-var duration := LENGTH
+var duration := 0.85
 var hero := 0
 var active := false
 var owns_pause := false
@@ -15,8 +14,12 @@ var art: Array[AtlasTexture] = []
 var face: Font = preload("res://assets/NotoSerifSC.ttf")
 var fx: Texture2D = preload("res://assets/combat/vfx-atlas.png")
 var light: Node2D
+var captions: Node2D
+var voice_info: Array = []
+var impact_time := 1.872
 
 func _ready() -> void:
+	voice_info=JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/voices/voice-manifest.json")).heroes
 	process_mode=Node.PROCESS_MODE_ALWAYS
 	mouse_filter=Control.MOUSE_FILTER_IGNORE
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -35,13 +38,18 @@ func _ready() -> void:
 	light.material=additive
 	light.draw.connect(draw_light)
 	add_child(light)
+	captions=Node2D.new()
+	captions.z_index=2
+	captions.draw.connect(draw_captions)
+	add_child(captions)
 	visible=false
 
 func play(character: int, online: bool) -> void:
 	if active:
 		return
 	hero=clampi(character,0,2)
-	duration=0.85 if online else LENGTH
+	duration=0.85 if online else float(voice_info[hero].charge_time)+float(voice_info[hero].burst_time)
+	impact_time=.612 if online else float(voice_info[hero].charge_time)
 	age=0.0
 	fired=false
 	active=true
@@ -52,8 +60,9 @@ func play(character: int, online: bool) -> void:
 	began.emit(hero,online)
 	queue_redraw()
 	light.queue_redraw()
+	captions.queue_redraw()
 
-func stop() -> void:
+func stop(interrupted: bool = true) -> void:
 	var was_active := active
 	active=false
 	visible=false
@@ -61,7 +70,7 @@ func stop() -> void:
 		get_tree().paused=false
 	owns_pause=false
 	if was_active:
-		ended.emit()
+		ended.emit(interrupted)
 
 func _exit_tree() -> void:
 	if owns_pause:
@@ -78,20 +87,23 @@ func _process(dt: float) -> void:
 	if not active:
 		return
 	age+=dt
-	if age/duration>=0.72 and not fired:
+	if age>=impact_time and not fired:
 		fired=true
 		burst.emit()
 	if age>=duration:
-		stop()
+		stop(false)
 	queue_redraw()
 	light.queue_redraw()
+	captions.queue_redraw()
+
+func visual_progress() -> float:
+	return .72*age/impact_time if age<=impact_time else .72+.28*(age-impact_time)/maxf(.01,duration-impact_time)
 
 func _draw() -> void:
 	if not active:
 		return
-	var t := age/duration
+	var t := visual_progress()
 	var fade := 1.0-smoothstep(0.86,1.0,t)
-	var tint := Catalog.HEROES[hero].color as Color
 	draw_rect(Rect2(Vector2.ZERO,size),Color(0.008,0.004,0.02,fade))
 	var tex := art[hero]
 	var base := maxf(size.x/tex.get_width(),size.y/tex.get_height())
@@ -104,16 +116,30 @@ func _draw() -> void:
 	var bars := size.y*lerpf(0.48,0.055,smoothstep(0,0.13,t))
 	draw_rect(Rect2(0,0,size.x,bars),Color(0.008,0.004,0.015,fade))
 	draw_rect(Rect2(0,size.y-bars,size.x,bars),Color(0.008,0.004,0.015,fade))
+	var flash := 0.48*exp(-absf(t-0.035)*100)+0.65*exp(-absf(t-0.74)*95)
+	draw_rect(Rect2(Vector2.ZERO,size),Color(0.85,0.92,1,flash*fade))
+
+func draw_captions() -> void:
+	if not active:
+		return
+	var t := visual_progress()
+	var fade := 1.0-smoothstep(0.86,1.0,t)
+	var tint := Catalog.HEROES[hero].color as Color
 	var reveal := smoothstep(0.10,0.26,t)*fade
 	var unit := minf(size.x/1440,size.y/900)
 	var at := Vector2(size.x*0.065-35*(1-reveal),size.y*0.77)
 	var title := str(Catalog.HEROES[hero].skill)
-	draw_string(face,at+Vector2(3,4),title,HORIZONTAL_ALIGNMENT_LEFT,-1,int(66*unit),Color(0.02,0,0.03,reveal))
-	draw_string(face,at,title,HORIZONTAL_ALIGNMENT_LEFT,-1,int(66*unit),Color(1,0.96,0.91,reveal))
-	draw_string(face,at-Vector2(0,70*unit),str(Catalog.HEROES[hero].name)+"  /  奥义解放",HORIZONTAL_ALIGNMENT_LEFT,-1,int(22*unit),Color(tint, reveal))
-	draw_string(face,Vector2(size.x-240*unit,size.y-22*unit),"任意键 / 点击跳过",HORIZONTAL_ALIGNMENT_LEFT,-1,int(16*unit),Color(0.9,0.9,1,fade*0.75))
-	var flash := 0.48*exp(-absf(t-0.035)*100)+0.65*exp(-absf(t-0.74)*95)
-	draw_rect(Rect2(Vector2.ZERO,size),Color(0.85,0.92,1,flash*fade))
+	# Dialogue is above additive VFX and the flash, with a quiet readable backing.
+	captions.draw_rect(Rect2(size*Vector2(.048,.655),size*Vector2(.55,.28)),Color(.012,.008,.025,.72*reveal))
+	captions.draw_string(face,at+Vector2(3,4),title,HORIZONTAL_ALIGNMENT_LEFT,-1,int(66*unit),Color(0.02,0,0.03,reveal))
+	captions.draw_string(face,at,title,HORIZONTAL_ALIGNMENT_LEFT,-1,int(66*unit),Color(1,0.96,0.91,reveal))
+	captions.draw_string(face,at-Vector2(0,70*unit),str(Catalog.HEROES[hero].name)+"  /  奥义解放",HORIZONTAL_ALIGNMENT_LEFT,-1,int(22*unit),Color(tint, reveal))
+	var dialogue: Dictionary=voice_info[hero].lines["ultimate-burst" if fired else "ultimate-charge"][0]
+	if duration<1.0:
+		dialogue=voice_info[hero].lines["ultimate-short"][0]
+	captions.draw_string(face,Vector2(size.x*.067,size.y*.86),str(dialogue.ja),HORIZONTAL_ALIGNMENT_LEFT,-1,int(25*unit),Color(1,.97,.93,reveal))
+	captions.draw_string(face,Vector2(size.x*.067,size.y*.905),str(dialogue.zh),HORIZONTAL_ALIGNMENT_LEFT,-1,int(20*unit),Color(.85,.88,.96,reveal))
+	captions.draw_string(face,Vector2(size.x-240*unit,size.y-22*unit),"任意键 / 点击跳过",HORIZONTAL_ALIGNMENT_LEFT,-1,int(16*unit),Color(0.9,0.9,1,fade*0.75))
 
 func stamp(cell: int, at: Vector2, extent: Vector2, angle: float, tint: Color) -> void:
 	var unit := fx.get_size()/3.0
@@ -124,7 +150,7 @@ func stamp(cell: int, at: Vector2, extent: Vector2, angle: float, tint: Color) -
 func draw_light() -> void:
 	if not active:
 		return
-	var t := age/duration
+	var t := visual_progress()
 	var envelope := smoothstep(0,0.12,t)*(1-smoothstep(0.8,1,t))
 	var color: Color=Catalog.HEROES[hero].color
 	var unit := size.x/1440

@@ -1,7 +1,7 @@
 class_name Profile
 extends RefCounted
 
-var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"fullscreen":false,"best":0}
+var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"voice_volume":0.9,"fullscreen":false,"best":0}
 var path := "user://profile.json"
 
 func load_profile() -> void:

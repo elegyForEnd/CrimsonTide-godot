@@ -71,13 +71,7 @@ func _ready() -> void:
 	session.changed.connect(on_lobby)
 	session.message.connect(notify)
 	session.effect.connect(on_effect)
-	session.combat_event.connect(func(data: Dictionary):
-		if field and data.p.distance_to(field.camera)<950:
-			if data.kind=="strike" and data.weapon>0:
-				sound.play(["shot","slash","heavy","magic"][data.weapon],int(data.get("combo",0)))
-			elif data.kind=="impact":
-				sound.play("impact-heavy" if data.get("heavy",false) else "hit")
-	)
+	session.combat_event.connect(on_combat_audio)
 	get_viewport().size_changed.connect(fit_ui)
 	fit_ui()
 	var cinema_layer := CanvasLayer.new()
@@ -93,6 +87,7 @@ func _ready() -> void:
 			ultimate.play(int(data.hero),session.online)
 	)
 	set_volume(float(profile.data.volume))
+	set_voice_volume(float(profile.data.voice_volume))
 	if profile.data.fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	show_title()
@@ -203,7 +198,7 @@ func button(parent: Node, text: String, at: Vector2, size: Vector2, callback: Ca
 	b.size=size
 	b.focus_mode=Control.FOCUS_NONE
 	b.mouse_default_cursor_shape=Control.CURSOR_POINTING_HAND
-	b.pressed.connect(func(): sound.play("loot"); callback.call())
+	b.pressed.connect(func(): sound.play("ui"); callback.call())
 	parent.add_child(b)
 	return b
 
@@ -295,6 +290,7 @@ func new_page(name_value: String) -> void:
 	modal=false
 	inventory_open=false
 	page_name=name_value
+	sound.set_scene(name_value)
 	toast_time=0
 	field.visible=name_value=="game"
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
@@ -523,7 +519,7 @@ func on_started() -> void:
 	hud.team=label(page,"",Vector2(31,125),15,INK,Vector2(320,180))
 	hud.team.add_theme_constant_override("line_spacing",10)
 	button(page,"背包  TAB",Vector2(1175,310),Vector2(234,39),toggle_bag)
-	button(page,"地图  M",Vector2(1175,360),Vector2(111,38),func(): field.map_open=not field.map_open)
+	button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
 	button(page,"菜单",Vector2(1298,360),Vector2(111,38),pause_menu)
 	hud.notice=label(page,"",Vector2(375,664),22,GOLD,Vector2(690,50))
 	hud.notice.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -553,6 +549,7 @@ func _process(dt: float) -> void:
 	toast.visible=toast_time>0
 	if page_name!="game" or not session.running:
 		return
+	sound.update_world(field.camera,session.players,dt)
 	var blocked := inventory_open or modal or field.map_open
 	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":field.aim(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint")}
 	time_ui+=dt
@@ -585,7 +582,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("map") and not inventory_open:
-		field.map_open=not field.map_open
+		toggle_map()
 	if inventory_open:
 		for action in ["heal","burn"]:
 			if event.is_action_pressed(action):
@@ -669,14 +666,21 @@ func toggle_bag() -> void:
 	if inventory_open:
 		close_bag()
 	else:
+		sound.play("ui-open")
 		inventory_open=true
 		selected=-1
 		rotated=false
 		show_inventory()
 
 func close_bag() -> void:
+	if inventory_open:
+		sound.play("ui-close")
 	inventory_open=false
 	clear(overlay)
+
+func toggle_map() -> void:
+	field.map_open=not field.map_open
+	sound.play("ui-open" if field.map_open else "ui-close")
 
 func show_inventory() -> void:
 	clear(overlay)
@@ -779,11 +783,48 @@ func on_finished() -> void:
 		label(page,"等待房主带领小队返回营地…",Vector2(987,814),18,GOLD)
 
 func on_effect(kind: String,pos: Vector2) -> void:
-	if kind=="skill" and ultimate and ultimate.active and session.players.has(session.my_id()):
-		if pos.distance_squared_to(session.players[session.my_id()].p)<1.0:
-			return
-	if pos.distance_to(field.camera)<850:
-		sound.play(kind)
+	# These legacy events still drive VFX. Their sound is emitted once via combat events.
+	if kind in ["shot","skill","hurt"]:
+		return
+	if page_name=="game":
+		sound.listener.global_position=field.camera
+		sound.play("death" if kind=="hit" else kind,-1,pos)
+
+func on_combat_audio(data: Dictionary) -> void:
+	if page_name!="game":
+		return
+	sound.listener.global_position=field.camera
+	var emitter := int(data.get("id",0))
+	var speaker: Dictionary=session.players.get(emitter,{})
+	var voice_hero := int(speaker.get("hero",0))
+	sound.dialogue.local_id=session.my_id()
+	match str(data.kind):
+		"strike":
+			sound.attack(int(data.weapon),int(data.get("combo",0)),data.p,emitter)
+			sound.dialogue.play_line(voice_hero,"attack",emitter,data.p,field.camera)
+		"windup":
+			if int(data.weapon)==3:
+				sound.play("magic-windup",-1,data.p,0.0,emitter)
+		"impact":
+			var weapon := int(data.get("weapon",-1))
+			var cue := "impact-magic" if weapon==3 else "impact-heavy" if data.get("heavy",false) else "hit"
+			sound.play(cue,-1,data.p)
+			if int(data.get("enemy_type",0)) in [2,3] and weapon in [0,1,2]:
+				sound.play("impact-metal",-1,data.p,-4.0)
+		"audio":
+			if str(data.cue) in ["equip","down"]:
+				sound.stop_cue("reload",emitter)
+				sound.stop_cue("magic-windup",emitter)
+			sound.play(str(data.cue),int(data.get("variant",-1)),data.p,0.0,emitter)
+			if str(data.cue) in ["heal","hurt","down"]:
+				sound.dialogue.play_line(voice_hero,str(data.cue),emitter,data.p,field.camera)
+		"dodge":
+			sound.stop_cue("magic-windup",emitter)
+			sound.dialogue.play_line(voice_hero,"dash",emitter,data.p,field.camera)
+		"skill":
+			if emitter!=session.my_id():
+				sound.play("skill",int(data.hero),data.p,0.0,emitter)
+				sound.dialogue.play_line(int(data.hero),"ultimate-short",emitter,data.p,field.camera)
 
 func notify(text: String) -> void:
 	toast.text=text
@@ -830,7 +871,7 @@ func leave_to_title() -> void:
 	show_title()
 
 func show_settings() -> void:
-	var at := modal_box("设置",Vector2(740,440))
+	var at := modal_box("设置",Vector2(740,510))
 	label(overlay,"主音量",at+Vector2(37,112),20)
 	var slider := HSlider.new()
 	slider.position=at+Vector2(185,127)
@@ -841,13 +882,28 @@ func show_settings() -> void:
 	slider.value=profile.data.volume
 	slider.value_changed.connect(func(value: float): set_volume(value); profile.data.volume=value; profile.save_profile())
 	overlay.add_child(slider)
-	button(overlay,"切换全屏 / 窗口",at+Vector2(37,208),Vector2(665,56),func():
+	label(overlay,"角色语音",at+Vector2(37,187),20)
+	var voice_slider := HSlider.new()
+	voice_slider.position=at+Vector2(185,202)
+	voice_slider.size=Vector2(480,30)
+	voice_slider.min_value=0
+	voice_slider.max_value=1
+	voice_slider.step=.01
+	voice_slider.value=profile.data.voice_volume
+	voice_slider.value_changed.connect(func(value: float): set_voice_volume(value); profile.data.voice_volume=value; profile.save_profile())
+	overlay.add_child(voice_slider)
+	button(overlay,"切换全屏 / 窗口",at+Vector2(37,278),Vector2(665,56),func():
 		profile.data.fullscreen=not profile.data.fullscreen
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if profile.data.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		profile.save_profile()
 	)
-	label(overlay,"存档位置：user://profile.json",at+Vector2(37,298),15,MUTED)
-	label(overlay,"成长自动保存；联机使用固定 UDP 24872 端口。",at+Vector2(37,340),15,MUTED)
+	label(overlay,"日语角色语音 · 奥义配有中文字幕",at+Vector2(37,368),16,MUTED)
+	label(overlay,"成长自动保存；联机使用固定 UDP 24872 端口。",at+Vector2(37,410),15,MUTED)
+
+func set_voice_volume(value: float) -> void:
+	var bus := AudioServer.get_bus_index("Dialogue")
+	AudioServer.set_bus_volume_db(bus,linear_to_db(maxf(.001,value)))
+	AudioServer.set_bus_mute(bus,value<.005)
 
 func set_volume(value: float) -> void:
 	AudioServer.set_bus_volume_db(0,linear_to_db(maxf(0.001,value)))
@@ -870,7 +926,7 @@ func show_help() -> void:
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:
-	var at := modal_box("制作组 / 资源说明",Vector2(830,500))
+	var at := modal_box("制作组 / 资源说明",Vector2(830,620))
 	label(overlay,"血潮守望 · Crimson Tide",at+Vector2(37,107),29,GOLD)
-	label(overlay,"游戏实现  /  Godot 4 · GDScript\n主视觉、立绘与精灵  /  AI 原创插画\n界面与场景  /  Godot 原生绘制与手绘材质\n音效与氛围  /  原创程序合成\n字体  /  Noto Serif & Sans SC · SIL OFL",at+Vector2(37,178),19,MUTED,Vector2(750,230)).add_theme_constant_override("line_spacing",15)
-	label(overlay,"献给每一位在长夜中守望黎明的人。",at+Vector2(37,429),18,INK)
+	label(overlay,"游戏实现  /  Godot 4 · GDScript\n主视觉、立绘与精灵  /  AI 原创插画\n音效  /  Lentikula · Kenney 等 CC0 素材再设计\n日语合成语音  /  MiniMax speech-2.8-hd\n绯月 · 雪璃 · 鸦羽  /  三套独立日语声线\n攻击 · 施法 · 受伤 · 专属奥义咏唱\n原创台词 · 日语语音 · 中文奥义字幕\n完整鸣谢  /  AUDIO-CREDITS.txt · VOICE-CREDITS.txt\n字体  /  Noto Serif & Sans SC · SIL OFL",at+Vector2(37,172),18,MUTED,Vector2(750,340)).add_theme_constant_override("line_spacing",10)
+	label(overlay,"献给每一位在长夜中守望黎明的人。",at+Vector2(37,550),18,INK)

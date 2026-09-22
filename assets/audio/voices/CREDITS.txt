@@ -1,0 +1,15 @@
+CRIMSON TIDE — JAPANESE CHARACTER VOICES
+
+Generated with MiniMax speech-2.8-hd using the project's authorized MiniMax account.
+Original fictional-character dialogue; system and text-designed voices, no cloning or impersonation.
+AI-generated speech, not recordings by hired voice actors. These voice assets are not CC0.
+Use and redistribution are subject to the applicable MiniMax account and service terms.
+
+绯月: ttv-voice-2026092214390726-WEnHawap
+雪璃: Japanese_GracefulMaiden
+鸦羽: Japanese_ColdQueen
+
+Original Japanese dialogue and Chinese subtitles: tools/voice_dialogue.json.
+Voice IDs, performance settings, trace IDs, durations and hashes: voice-manifest.json.
+https://platform.minimaxi.com/docs/api-reference/speech-t2a-http
+Only offline rendered audio ships. No API credential, model runtime or network access is needed to play.

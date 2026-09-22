@@ -13,6 +13,7 @@ var saw_snapshot := false
 var got_combat := false
 var saw_weapon := false
 var saw_running := false
+var got_audio := false
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -27,6 +28,8 @@ func run() -> void:
 	root.add_child(session)
 	session.effect.connect(func(_kind: String,_pos: Vector2): got_effect=true)
 	session.combat_event.connect(func(data: Dictionary):
+		if data.kind=="audio" and data.id!=session.my_id() and data.get("cue","")=="equip":
+			got_audio=true
 		if data.kind=="skill" and data.id!=session.my_id():
 			got_combat=true
 	)
@@ -89,7 +92,7 @@ func _process(dt: float) -> bool:
 
 func done() -> void:
 	stage=3
-	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and saw_weapon and saw_running
+	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and got_audio and saw_weapon and saw_running
 	for reward in session.results.values():
 		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==125
 	if host_mode:
