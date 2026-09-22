@@ -1,5 +1,4 @@
 .godot/
 build/
-dist/
 *.log
 *.tmp

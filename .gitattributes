@@ -1,3 +1,5 @@
 /Godot_v4.7.2-stable_win64.exe filter=lfs diff=lfs merge=lfs -text
+/dist/CrimsonTide.exe filter=lfs diff=lfs merge=lfs -text
+/dist/CrimsonTide.pck filter=lfs diff=lfs merge=lfs -text
 /assets/NotoSerifSC.ttf filter=lfs diff=lfs merge=lfs -text
 /assets/NotoSansSC.ttf filter=lfs diff=lfs merge=lfs -text
