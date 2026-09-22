@@ -10,6 +10,7 @@ var local_sent := false
 var saw_independent := false
 var expected := 4
 var saw_snapshot := false
+var saw_pocket := false
 var got_combat := false
 var saw_weapon := false
 var saw_running := false
@@ -61,7 +62,8 @@ func _process(dt: float) -> bool:
 				session.spawn_timer=999
 				for p in session.players.values():
 					p.p=session.ruins.exits[0]
-					Catalog.insert(p.bag,"relic")
+					Catalog.add_item(p.backpack,"relic")
+					Catalog.add_item(p.pocket,"scrap")
 				session.objectives=2
 		elif not host_mode and session.players.has(session.my_id()) and not session.players[session.my_id()].ready:
 			session.configure({"name":"Client","hero":1,"ready":true})
@@ -74,8 +76,10 @@ func _process(dt: float) -> bool:
 				saw_running=true
 		if session.players[session.my_id()].weapon==2:
 			saw_weapon=true
-		if not host_mode and session.elapsed>1 and session.objectives==2 and Catalog.bag_value(session.players[session.my_id()].bag)==125:
+		if not host_mode and session.elapsed>1 and session.objectives==2 and Catalog.container_value(session.players[session.my_id()].backpack)==125:
 			saw_snapshot=true
+		if not host_mode and session.elapsed>1 and Catalog.container_count(session.players[session.my_id()].pocket,"scrap")==1:
+			saw_pocket=true
 		if age-started_at>0.8 and not local_sent:
 			local_sent=true
 			session.action("weapon",{"index":2})
@@ -94,11 +98,12 @@ func done() -> void:
 	stage=3
 	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and got_audio and saw_weapon and saw_running
 	for reward in session.results.values():
-		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==125
+		# 125 from the relic in the backpack plus 32 from the scrap in the pocket.
+		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==157
 	if host_mode:
 		pass_test=pass_test and saw_independent
 	else:
-		pass_test=pass_test and saw_snapshot
+		pass_test=pass_test and saw_snapshot and saw_pocket
 	print("NETWORK %s %d PLAYERS: %s" % ["HOST" if host_mode else "CLIENT",expected,"PASS" if pass_test else "FAIL"])
 	if not pass_test:
 		print("NETWORK DETAILS: ",{"results":session.results,"seed":session.seed_value,"effect":got_effect,"combat":got_combat,"audio":got_audio,"weapon":saw_weapon,"running":saw_running,"snapshot":saw_snapshot,"independent":saw_independent})

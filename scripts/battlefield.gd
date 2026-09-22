@@ -29,7 +29,10 @@ func _ready() -> void:
 	ground=load("res://assets/courtyard.png")
 	enemy_art=load("res://assets/enemies.png")
 	for kind in Catalog.ITEMS:
-		loot_icons[kind]=load("res://assets/icons/"+kind+".svg")
+		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
+	# Field equipment resolves to its own weapon / slot icon, so preload those too.
+	for icon in Catalog.WEAPON_ICONS+Catalog.GEAR_ICONS:
+		loot_icons[icon]=load("res://assets/icons/"+icon+".svg")
 	combat=CombatVisuals.new()
 	combat.field=self
 	add_child(combat)
@@ -168,17 +171,38 @@ func _draw() -> void:
 	for chest in world.chests:
 		var pos: Vector2=chest.p
 		var empty: bool=chest.items.is_empty()
+		var deep: bool=int(chest.get("class",1))>=2
+		var revealed: int=int(chest.get("searched",0))
 		draw_rect(Rect2(pos-Vector2(21,12),Vector2(46,31)),Color(0,0,0,0.35))
-		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("333039") if empty else Color("665544"))
-		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("4a4650") if empty else Color("c2a277"),false,1.5)
+		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("333039") if empty else (Color("554466") if deep else Color("665544")))
+		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("6a5a7a") if deep else Color("c2a277"),false,1.5)
 		draw_line(pos+Vector2(-20,-5),pos+Vector2(20,-5),Color("29242b"),3)
 		draw_rect(Rect2(pos-Vector2(3,7),Vector2(6,12)),Color("5a555a") if empty else Color("e1ba76"))
-		if not empty:
+		if not empty and revealed>0:
 			draw_circle(pos+Vector2(0,-23),2+sin(clock*3),Color("e2c186"))
-	for drop in session.drops:
-		var color: Color=Catalog.ITEMS[drop.kind].color
-		draw_circle(drop.p,17,Color(color,0.1))
-		draw_texture_rect(loot_icons[drop.kind],Rect2(drop.p+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
+		# A chest being searched shows a small progress arc above the lid.
+		var units := 0
+		for item in Catalog.container_items(chest):
+			units+=int(item.get("count",1)) if Catalog.stacks(str(item.kind)) else 1
+		if revealed>0 and revealed<units:
+			draw_arc(pos+Vector2(0,-30),9,-PI/2,-PI/2+TAU*float(revealed)/float(maxi(1,units)),20,Color("9fd0c2"),3)
+	# Bags dropped by dead players, and loose enemy loot.
+	for bag in session.world_drops:
+		var at: Vector2=bag.p
+		var is_bag := str(bag.get("key","")).begins_with("bag:")
+		if is_bag:
+			var bag_colour: Color=Catalog.tier(str(bag.key).substr(4)).color
+			draw_rect(Rect2(at-Vector2(13,15),Vector2(26,30)),Color(bag_colour.darkened(0.68),0.95))
+			draw_rect(Rect2(at-Vector2(13,15),Vector2(26,30)),Color(bag_colour,0.9),false,1.5)
+			draw_arc(at-Vector2(0,15),10,PI,TAU,14,Color(bag_colour.lightened(0.2)),2.5)
+			draw_line(at-Vector2(13,0),at+Vector2(13,0),Color(bag_colour.darkened(0.3)),1)
+			label(at+Vector2(-30,-40),Catalog.bag_quality({"key":str(bag.key).substr(4)})+"背包",12,bag_colour.lightened(0.25))
+		else:
+			for item in Catalog.container_items(bag):
+				var colour: Color=Catalog.item_color(item)
+				draw_circle(at,17,Color(colour,0.1))
+				draw_texture_rect(loot_icons[Catalog.item_icon(item)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
+				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
 	for e in session.enemies:
 		monster(e)
 	for p in session.players.values():
