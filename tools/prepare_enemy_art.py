@@ -1,10 +1,13 @@
 """Remove chroma green and pack stable, foot-aligned 4x3 animation atlases."""
 from pathlib import Path
 from PIL import Image, ImageDraw
+import argparse
 import numpy as np
 from scipy import ndimage
 
-names=['crystal-hare','moonbell-spirit','rose-armiger','redmoon-fox']
+parser=argparse.ArgumentParser()
+parser.add_argument('--names',nargs='+',default=['crystal-hare','moonbell-spirit','rose-armiger','redmoon-fox'])
+names=parser.parse_args().names
 for name in names:
     im=Image.open(Path('output/imagegen')/(name+'.png')).convert('RGBA')
     a=np.array(im)
@@ -60,5 +63,5 @@ for i,name in enumerate(names):
         crop=sheet.crop(((index%4)*256,(index//4)*256,(index%4+1)*256,(index//4+1)*256))
         crop=crop.resize((256,192))
         preview.paste(crop,(col*256,i*192),crop)
-preview.save('output/imagegen/enemy-preview.jpg')
+preview.save('output/imagegen/'+ ('knight-preview.jpg' if names==['banished-knight'] else 'enemy-preview.jpg'))
 

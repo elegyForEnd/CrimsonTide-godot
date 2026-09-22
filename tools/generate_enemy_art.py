@@ -1,11 +1,12 @@
 """Compatibility adapter for image APIs returning URLs instead of base64."""
-import os, json, base64, concurrent.futures
+import os, json, base64, concurrent.futures, argparse
 from pathlib import Path
 import requests
 from PIL import Image
 
 def generate(job):
     out=Path('output/imagegen')/job['out']
+    out.parent.mkdir(parents=True,exist_ok=True)
     response=requests.post(os.environ['OPENAI_BASE_URL'].rstrip('/')+'/images/generations',headers={'Authorization':'Bearer '+os.environ['OPENAI_API_KEY']},json={'model':'gpt-image-2.5-sunburst','prompt':job['prompt'],'size':'1536x1024','quality':'high','n':1,'response_format':'b64_json'},timeout=240)
     response.raise_for_status()
     payload=response.json()
@@ -26,6 +27,9 @@ def generate(job):
     raise RuntimeError('No image data; returned fields: '+str(list(payload)))
 
 if __name__=='__main__':
-    jobs=[json.loads(line) for line in Path('assets/enemies/generation-prompts.jsonl').read_text().splitlines() if line]
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--jobs',default='assets/enemies/generation-prompts.jsonl')
+    args=parser.parse_args()
+    jobs=[json.loads(line) for line in Path(args.jobs).read_text(encoding='utf-8').splitlines() if line]
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         list(pool.map(generate,jobs))

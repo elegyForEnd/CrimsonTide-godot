@@ -129,6 +129,9 @@ func _ready() -> void:
 	toast=label(root,"",Vector2(230,752),19,GOLD,Vector2(980,38))
 	toast.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	toast.z_index=50
+	session.map_changed.connect(func():
+		close_bag()
+		notify("进入晨曦王城 · 击败失乡骑士，带走王庭珍藏；倒计时仍在继续。" if session.map_id=="city" else "返回月冠边境 · 前往撤离点保全战利品。"))
 	session.started.connect(on_started)
 	session.finished.connect(on_finished)
 	session.changed.connect(on_lobby)
@@ -612,7 +615,7 @@ func on_started() -> void:
 	extra_meds=0
 	ready_local=false
 	new_page("game")
-	field.camera=Vector2(300,1100)
+	field.camera=Ruins.SPAWN
 	field.explored.clear()
 	field.map_open=false
 	hud.clear()
@@ -651,7 +654,7 @@ func on_started() -> void:
 	label(page,"F 拾取/搜索/急救 · TAB 背包 · M 地图",Vector2(1170,828),11,MUTED,Vector2(241,20))
 	hud.loadout=label(page,"",Vector2(1170,858),11,GOLD,Vector2(241,18))
 	hud.loadout2=label(page,"",Vector2(1170,876),11,MUTED,Vector2(241,18))
-	notify("已抵达灰烬废墟。点亮封印，带回战利品。")
+	notify("已抵达月冠边境。M 查看地标与撤离路线。")
 
 func _process(dt: float) -> void:
 	toast_time-=dt
@@ -763,6 +766,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		if modal:
 			close_modal()
+		elif field.map_open:
+			toggle_map()
 		elif inventory_open:
 			close_bag()
 		elif page_name=="game":
@@ -770,12 +775,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if page_name!="game" or modal:
 		return
-	if event.is_action_pressed("bag"):
+	if event.is_action_pressed("bag") and not field.map_open:
 		toggle_bag()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("map") and not inventory_open:
 		toggle_map()
+	if field.map_open:
+		return
 	if event.is_action_pressed("loot") and not event.is_echo():
 		# F is one key with two jobs: loot what is in reach, and fall through to the
 		# medkit when there is nothing left to grab or search. Going down always
@@ -884,7 +891,7 @@ func update_hud() -> void:
 		return
 	var remaining := maxi(0,int(session.duration-session.elapsed))
 	hud.time.text="%02d:%02d  /  %s" % [remaining/60,remaining%60,"毒雾正在收缩" if session.threat>0.45 else "血月初升"]
-	hud.mission.text="晨钟封印    %d / 3" % session.objectives
+	hud.mission.text="王城探索 · 从城门返回边境撤离" if session.map_id=="city" else "晨钟封印    %d / 3" % session.objectives
 	hud.health.text="生命   %d / %d" % [maxf(0,p.hp),p.max_hp]
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.sanity.text="理智  %d%%    ·    血香  %d" % [p.sanity,p.scent]
@@ -920,6 +927,9 @@ func update_hud() -> void:
 		if ally.id!=p.id and ally.status=="down" and p.p.distance_to(ally.p)<75:
 			hud.prompt.text="长按 [E] 3 秒救援 "+ally.name
 			return
+	if p.p.distance_to(session.portal_position())<85:
+		hud.prompt.text=("长按 [E] 1.5 秒返回边境" if session.map_id=="city" else "长按 [E] 1.5 秒进入王城") if session.party_at_gate() else "全体存活队友需在城门附近集合；先救起倒地队友"
+		return
 	for exit_pos in session.ruins.exits:
 		if p.p.distance_to(exit_pos)<83:
 			hud.prompt.text="长按 [E] 4 秒独立撤离 · 受伤会打断"
@@ -988,6 +998,8 @@ func detach_drag_nodes() -> void:
 
 func toggle_map() -> void:
 	field.map_open=not field.map_open
+	page.visible=not field.map_open
+	if field.map_open: toast_time=0; toast.visible=false
 	sound.play("ui-open" if field.map_open else "ui-close")
 
 func stop_drag() -> void:
@@ -2112,7 +2124,7 @@ func show_help() -> void:
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var right := at+Vector2(554,100)
 	label(overlay,"03  /  一同出征，独立撤离",right,23,GOLD)
-	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 E 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点。长按 E 4 秒撤离，受伤中断。先撤离的玩家可以观战，队友无需同时离开。",right+Vector2(0,51),18,MUTED,Vector2(463,237))
+	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 E 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点（中央也有晨钟归途）。长按 E 4 秒撤离，受伤中断。先撤离的玩家可以观战，队友无需同时离开。",right+Vector2(0,51),18,MUTED,Vector2(463,237))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	label(overlay,"04  /  不要遗忘时间",right+Vector2(0,308),23,GOLD)
 	var danger := label(overlay,"后半局毒雾从外围收缩，圈外持续损失生命与理智。到达时限，未撤离者全部阵亡。\n\n倒地后队友可长按 E 救援，但背包与身上装备当场散落。地上的武器（2×2）和护甲 / 瞄具 / 轻靴（1×2）可以捡起来装备，本局立刻变强。\n\n全员离场才统一结算：撤离成功保留背包与口袋价值，阵亡只剩次元口袋。",right+Vector2(0,356),18,MUTED,Vector2(463,220))

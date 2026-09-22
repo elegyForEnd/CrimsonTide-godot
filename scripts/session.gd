@@ -2,6 +2,7 @@ class_name TideSession
 extends Node
 
 signal changed
+signal map_changed
 signal started
 signal finished
 signal message(text: String)
@@ -16,6 +17,9 @@ const ONLINE_ULTIMATE_DURATION := 0.85
 var players: Dictionary = {}
 var inputs: Dictionary = {}
 var ruins := Ruins.new()
+var map_id := "border"
+var map_states: Dictionary = {}
+const CITY_GATE := Vector2(3860,1880)
 var enemies: Array = []
 var bullets: Array = []
 var world_drops: Array = []
@@ -124,7 +128,7 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	var gear := clampi(int(config.get("gear",0)),0,2)
 	var hp: float=Catalog.HEROES[h].hp+talents[0]*12+Catalog.GEAR[gear].hp
 	var storage := storage_from_config(config)
-	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Vector2(300,1100),"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	return player
 
@@ -399,6 +403,7 @@ func container_at(index: int) -> Dictionary:
 	return {}
 
 func container_title(container: Dictionary) -> String:
+	if container.has("title"): return str(container.title)
 	if container.is_empty():
 		return "容器"
 	var key := str(container.get("key","container"))
@@ -415,7 +420,7 @@ func begin_search(p: Dictionary, index: int) -> void:
 	var container := container_at(index)
 	if container.is_empty():
 		return
-	if container.items.is_empty() and not container_is_bag(container):
+	if container.items.is_empty() and not container_is_bag(container) and not container.get("fixed_loot",false):
 		for entry in chest_loot(bool(container.get("bonus",false)),0.3,loot_floor()):
 			place_entry(container,entry)
 	p["search"]=0.0
@@ -646,7 +651,7 @@ func launch(long_run: bool = false, fixed_seed: int = 0) -> bool:
 	for id in players:
 		var old: Dictionary=players[id]
 		players[id]=make_player(id,old)
-		players[id].p=Vector2(280+i*42,1100)
+		players[id].p=Ruins.SPAWN+Vector2(i*42,0)
 		players[id].invuln=5.0
 		for m in players[id].meds:
 			# Bought medkits ride in the backpack, so losing them is a real risk.
@@ -657,8 +662,9 @@ func launch(long_run: bool = false, fixed_seed: int = 0) -> bool:
 	begin(seed_value,duration,players)
 	if online:
 		begin.rpc(seed_value,duration,players)
-	for j in 20:
-		spawn_enemy()
+	for site in ruins.sites:
+		for j in (4 if site.tier==2 else 2):
+			spawn_enemy(site.p+Vector2(-120+j*80,-40),3 if site.tier==2 and j==0 else [0,2,1,0,1,2][site.biome])
 	return true
 
 @rpc("authority","call_remote","reliable")
@@ -666,6 +672,9 @@ func begin(value: int, seconds: float, roster: Dictionary) -> void:
 	seed_value=value
 	duration=seconds
 	players=roster
+	map_id="border"
+	map_states.clear()
+	ruins=Ruins.new()
 	ruins.generate(value)
 	rng.seed=value+71
 	enemies.clear()
@@ -700,7 +709,7 @@ func _physics_process(delta: float) -> void:
 	sync_timer-=delta
 	if online and sync_timer<=0:
 		sync_timer=0.08
-		var packet := var_to_bytes([players,enemies,bullets,world_drops,ruins.chests,ruins.shrines,elapsed,objectives,threat,results])
+		var packet := var_to_bytes([players,enemies,bullets,world_drops,ruins.chests,ruins.shrines,elapsed,objectives,threat,results,map_id])
 		snapshot.rpc(packet.compress(FileAccess.COMPRESSION_GZIP))
 
 @rpc("any_peer","call_remote","unreliable_ordered",1)
@@ -719,8 +728,13 @@ func snapshot(packet: PackedByteArray) -> void:
 	if not running:
 		return
 	var data = bytes_to_var(packet.decompress_dynamic(2097152,FileAccess.COMPRESSION_GZIP))
-	if not data is Array or data.size()!=10:
+	if not data is Array or data.size()!=11:
 		return
+	if map_id!=str(data[10]):
+		map_id=str(data[10])
+		ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
+		ruins.generate(seed_value)
+		map_changed.emit()
 	players=data[0]
 	enemies=data[1]
 	bullets=data[2]
@@ -1239,7 +1253,7 @@ func simulate(dt: float) -> void:
 	elapsed+=dt
 	threat=elapsed/duration
 	spawn_timer-=dt
-	if spawn_timer<=0 and enemies.size()<65:
+	if map_id=="border" and spawn_timer<=0 and enemies.size()<65:
 		spawn_timer=maxf(2.0,9.0-threat*6.0)
 		for i in players.size():
 			spawn_enemy()
@@ -1282,12 +1296,12 @@ func simulate(dt: float) -> void:
 		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
 		p.scent=move_toward(p.scent,float(crystals_carried(p)*8),dt*0.5)
 		p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
-		if p.p.distance_to(Ruins.CENTER)>safe_radius():
+		if map_id=="border" and p.p.distance_to(Ruins.CENTER)>safe_radius():
 			p.hp-=dt*(4+threat*5)
 			p.sanity=maxf(0,p.sanity-dt*1.4)
 		if p.sanity<=0:
 			p.hp-=dt*3
-		if p.scent>38 and rng.randf()<dt*0.04 and enemies.size()<70:
+		if map_id=="border" and p.scent>38 and rng.randf()<dt*0.04 and enemies.size()<70:
 			spawn_enemy(p.p+Vector2(300,0),3)
 			p.scent-=10
 		if bool(cmd.get("fire",false)):
@@ -1303,7 +1317,9 @@ func simulate(dt: float) -> void:
 		if e.hp<=0:
 			if players.has(e.last):
 				players[e.last].kills+=1
-			if rng.randf()<0.42 or e.type==3:
+			if e.type==4:
+				knight_reward(e.p)
+			elif rng.randf()<0.42 or e.type==3:
 				var loot := enemy_loot(e)
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
@@ -1321,7 +1337,8 @@ func simulate(dt: float) -> void:
 		settle()
 
 func safe_radius() -> float:
-	return lerpf(1800,290,clampf((elapsed/duration-0.45)/0.55,0,1))
+	if map_id=="city": return 10000.0
+	return lerpf(Ruins.SIZE.length()/2+100,650,clampf((elapsed/duration-0.45)/0.55,0,1))
 
 func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
 	var before: Vector2=p.p
@@ -1402,9 +1419,18 @@ func release_strike(p: Dictionary) -> void:
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	e.hp-=damage
 	e.last=owner
-	e["attack_time"]=0.0
 	e["flash"]=0.14
-	e["stagger"]=0.12 if knock<40 else 0.26
+	if e.type==4:
+		e["poise"]=float(e.get("poise",0))+damage
+		if e.poise>=220:
+			e.poise=0.0
+			e["attack_time"]=0.0
+			e["stagger"]=1.1
+			e.cd=1.5
+		knock*=0.12
+	else:
+		e["attack_time"]=0.0
+		e["stagger"]=0.12 if knock<40 else 0.26
 	var impact: Vector2=e.p
 	e.p=ruins.move(e.p,direction*knock)
 	if players.has(owner):
@@ -1430,6 +1456,9 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 		return
 	var target := ""
 	var seconds := 0.25
+	if p.p.distance_to(portal_position())<85 and party_at_gate():
+		target="portal:0"
+		seconds=1.5
 	for other in players.values():
 		if other.id!=p.id and other.status=="down" and p.p.distance_to(other.p)<75:
 			target="revive:%d" % other.id
@@ -1461,6 +1490,8 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 	var parts := target.split(":")
 	var index := int(parts[1])
 	match parts[0]:
+		"portal":
+			travel_city()
 		"exit":
 			p.status="extracted"
 			emit_effect("bell",p.p)
@@ -1522,28 +1553,42 @@ func visible_items(container: Dictionary) -> Array:
 func peek_items(container: Dictionary) -> Array:
 	return Catalog.container_items(container)
 
+func random_patrol_position() -> Vector2:
+	# Reinforcements stay relevant on the larger map and never spawn on players.
+	var active: Array=[]
+	for p in players.values():
+		if p.status=="active": active.append(p)
+	if not active.is_empty():
+		var p: Dictionary=active[rng.randi_range(0,active.size()-1)]
+		return (p.p+Vector2.from_angle(rng.randf()*TAU)*rng.randf_range(600,1050)).clamp(Vector2(100,100),Ruins.SIZE-Vector2(100,100))
+	return ruins.sites[rng.randi_range(0,ruins.sites.size()-1)].p
+
 func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 	var pos := at
+	var near := false
 	if pos==Vector2.ZERO:
-		pos=Vector2(rng.randf_range(400,2680),rng.randf_range(230,1970))
+		pos=random_patrol_position()
 	for i in 24:
-		var near := false
+		near=false
 		for p in players.values():
 			if p.status=="active" and p.p.distance_to(pos)<260:
 				near=true
 		if not ruins.blocked(pos,25) and not near:
 			break
-		pos=Vector2(rng.randf_range(380,2680),rng.randf_range(230,1970))
-	if ruins.blocked(pos,25):
+		pos=random_patrol_position()
+	if ruins.blocked(pos,25) or near:
 		return
 	var kind := type if type>=0 else rng.randi_range(0,2)
-	var health: float = [58.0,42.0,125.0,310.0][kind]*(1+0.3*(players.size()-1))
+	var health: float = [58.0,42.0,125.0,310.0,1800.0][kind]*(1+0.3*(players.size()-1))
 	enemies.append({"id":next_enemy,"p":pos,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU),"facing":1.0,"motion_phase":0.0,"moving":false,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_target":0,"attack_aim":Vector2.RIGHT})
 	next_enemy+=1
 
 func update_enemies(dt: float) -> void:
 	for e in enemies:
 		if e.hp<=0:
+			continue
+		if e.type==4:
+			update_knight(e,dt)
 			continue
 		e["flash"]=maxf(0,float(e.get("flash",0))-dt)
 		e["stagger"]=maxf(0,float(e.get("stagger",0))-dt)
@@ -1707,3 +1752,121 @@ func return_to_camp() -> void:
 		else:
 			players[id].ready=id==1
 	push_lobby()
+
+func portal_position() -> Vector2:
+	return RoyalCity.GATE if map_id=="city" else CITY_GATE
+
+func party_at_gate() -> bool:
+	for p in players.values():
+		if p.status=="down": return false
+		if p.status=="active" and p.p.distance_to(portal_position())>240: return false
+	return true
+
+func travel_city() -> bool:
+	if not authority() or not running or not party_at_gate(): return false
+	map_states[map_id]={"ruins":ruins,"enemies":enemies,"drops":world_drops}
+	map_id="city" if map_id=="border" else "border"
+	var fresh := not map_states.has(map_id)
+	if fresh:
+		ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
+		ruins.generate(seed_value)
+		enemies=[]
+		world_drops=[]
+	else:
+		var saved: Dictionary=map_states[map_id]
+		ruins=saved.ruins
+		enemies=saved.enemies
+		world_drops=saved.drops
+	bullets.clear()
+	pending_ultimates.clear()
+	var index := 0
+	for p in players.values():
+		stop_search(p)
+		p.channel=0.0
+		p.target=""
+		p.pending_strike=false
+		p.swing_time=0.0
+		p.dodge_time=0.0
+		p.cast_time=0.0
+		if p.status=="active":
+			p.p=portal_position()+Vector2((index-1)*42,-140 if map_id=="city" else 140)
+			p.invuln=2.0
+			index+=1
+	if fresh and map_id=="city":
+		spawn_enemy(RoyalCity.BOSS,4)
+		for pos in [Vector2(950,1300),Vector2(1850,1300),Vector2(1050,900),Vector2(1750,900)]:
+			spawn_enemy(pos,2)
+	map_changed.emit()
+	return true
+
+func knight_reward(at: Vector2) -> void:
+	var chest := loot_container(at,Vector2i(6,6),3,true)
+	chest["fixed_loot"]=true
+	chest["title"]="失乡骑士的王庭珍藏"
+	for i in 6: place_entry(chest,{"kind":"relic"})
+	place_entry(chest,Catalog.make_equipment("weapon",2,5))
+	for i in 3: place_entry(chest,Catalog.make_equipment("gear",i,4))
+	place_entry(chest,{"kind":"backpack","key":"gold"})
+	chest["open"]=true
+	ruins.chests.append(chest)
+	emit_effect("bell",at)
+
+func update_knight(e: Dictionary, dt: float) -> void:
+	e["flash"]=maxf(0,float(e.get("flash",0))-dt)
+	e["stagger"]=maxf(0,float(e.get("stagger",0))-dt)
+	e["moving"]=false
+	e.cd=maxf(0,e.cd-dt)
+	if e.stagger>0: return
+	if e.attack_time>0:
+		var before: float=e.attack_total-e.attack_time
+		e.attack_time=maxf(0,e.attack_time-dt)
+		var passed: float=e.attack_total-e.attack_time
+		var move_name: String=e.get("move_name","combo")
+		var marks: Array=[0.65,1.10,1.65] if move_name=="combo" else ([0.85] if move_name=="thrust" else [1.15])
+		# Locked aim is never retargeted after anticipation begins.
+		if move_name=="thrust" and passed>0.85 and before<1.20:
+			var step: float=maxf(0,minf(passed,1.20)-maxf(before,0.85))
+			e.p=ruins.move(e.p,e.attack_aim*800*step)
+			e["moving"]=true
+			e.motion_phase+=step*20
+			for p in players.values():
+				if not e.get("hit_ids",[]).has(p.id) and p.p.distance_to(e.p)<75 and ruins.clear_line(e.p,p.p):
+					hurt(p,32)
+					e.hit_ids.append(p.id)
+		for strike in marks.size():
+			if before<marks[strike] and passed>=marks[strike]:
+				e["attack_released"]=true
+				broadcast_audio("enemy-cast",e)
+				for p in players.values():
+					var delta: Vector2=p.p-e.p
+					var reach := 225.0 if move_name=="storm" else (110.0 if move_name=="thrust" else 155.0)
+					var arc := PI if move_name=="storm" else 1.35
+					if delta.length()<reach and absf(e.attack_aim.angle_to(delta))<arc and ruins.clear_line(e.p,p.p):
+						hurt(p,36 if move_name=="storm" else (32 if move_name=="thrust" else 18+strike*3))
+		return
+	var target: Dictionary={}
+	var best := 780.0
+	for p in players.values():
+		if p.status=="active" and p.p.distance_to(e.p)<best:
+			best=p.p.distance_to(e.p)
+			target=p
+	if target.is_empty(): return
+	var aim: Vector2=(target.p-e.p).normalized()
+	if absf(aim.x)>0.05: e.facing=signf(aim.x)
+	if e.cd<=0 and best<360 and ruins.clear_line(e.p,target.p):
+		var sequence := int(e.get("sequence",0))
+		var move_name := "storm" if e.hp<=e.max_hp*0.5 and sequence%3==2 else ("thrust" if best>190 or sequence%3==1 else "combo")
+		e["sequence"]=sequence+1
+		e["move_name"]=move_name
+		e["hit_ids"]=[]
+		e.attack_aim=aim
+		e.attack_total=2.65 if move_name=="combo" else (2.35 if move_name=="thrust" else 2.75)
+		e.attack_time=e.attack_total
+		e.attack_released=false
+		e.cd=e.attack_total+0.65
+	elif best>115:
+		var previous: Vector2=e.p
+		e.p=ruins.move(e.p,aim*115*dt)
+		if e.p.distance_to(previous)<1: e.p=ruins.move(e.p,aim.orthogonal()*115*dt)
+		e.moving=e.p.distance_to(previous)>0.01
+		e.motion_phase+=e.p.distance_to(previous)/12

@@ -120,7 +120,7 @@ func run() -> void:
 		twin.generate(seed_value)
 		check(str(map.chests)==str(twin.chests),"deterministic loot seed %d" % seed_value)
 		var visited: Dictionary={}
-		var queue: Array[Vector2i]=[Vector2i(6,27)]
+		var queue: Array[Vector2i]=[Vector2i(Ruins.SPAWN/40)]
 		visited[queue[0]]=true
 		var cursor := 0
 		while cursor<queue.size():
@@ -128,7 +128,7 @@ func run() -> void:
 			cursor+=1
 			for delta in [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
 				var next: Vector2i=cell+delta
-				if next.x<1 or next.y<1 or next.x>68 or next.y>53 or visited.has(next):
+				if next.x<1 or next.y<1 or next.x>int(Ruins.SIZE.x/40)-2 or next.y>int(Ruins.SIZE.y/40)-2 or visited.has(next):
 					continue
 				if not map.blocked(Vector2(next)*40):
 					visited[next]=true

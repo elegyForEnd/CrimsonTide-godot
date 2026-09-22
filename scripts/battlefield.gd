@@ -2,10 +2,13 @@ class_name Battlefield
 extends Node2D
 
 var session: TideSession
-var camera := Vector2(300,1100)
+var camera := Ruins.SPAWN
 var offset := Vector2.ZERO
 var clock := 0.0
 var map_open := false
+var waypoint := Vector2(-1,-1)
+var map_filter := 0
+var world_art: WorldArt
 var font: Font
 var follow_id := 1
 var explored: Dictionary = {}
@@ -28,6 +31,8 @@ func _ready() -> void:
 	font=face
 	sentinels=load("res://assets/sentinels.png")
 	ground=load("res://assets/courtyard.png")
+	world_art=WorldArt.new()
+	texture_repeat=CanvasItem.TEXTURE_REPEAT_ENABLED
 	enemy_frames=EnemyFrames.new()
 	for kind in Catalog.ITEMS:
 		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
@@ -45,7 +50,8 @@ func _ready() -> void:
 			var fallen := event.duplicate()
 			fallen["age"]=0.0
 			defeated_enemies.append(fallen))
-	session.started.connect(func(): defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
+	session.map_changed.connect(func(): waypoint=Vector2(-1,-1); explored.clear(); defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); camera=session.players.get(session.my_id(),{"p":RoyalCity.GATE}).p)
+	session.started.connect(func(): waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
 
 func _process(dt: float) -> void:
 	if not visible:
@@ -65,7 +71,7 @@ func _process(dt: float) -> void:
 					follow_id=ally.id
 		var target: Vector2=session.players.get(follow_id,p).p
 		var half := get_viewport_rect().size/2
-		target=target.clamp(half,Ruins.SIZE-half)
+		target=target.clamp(half,session.ruins.extent-half)
 		camera=camera.lerp(target,1-exp(-dt*10))
 		for ally in session.players.values():
 			var old_pos: Vector2=previous_positions.get(ally.id,ally.p)
@@ -96,73 +102,13 @@ func _draw() -> void:
 		return
 	draw_set_transform(offset)
 	var world := session.ruins
-	draw_rect(Rect2(Vector2.ZERO,Ruins.SIZE),Color("171c25"))
-	# Painterly stone material preserves readability without flat debug tiles.
-	for x in range(0,2800,420):
-		for y in range(0,2200,420):
-			if Vector2(x,y).distance_to(camera)>1050:
-				continue
-			draw_texture_rect(ground,Rect2(x,y,420,420),false,Color(0.56,0.56,0.64,1))
-	for y in [1100]:
-		draw_rect(Rect2(50,y-93,2700,186),Color(0.23,0.18,0.23,0.23))
-		for x in range(70,2720,100):
-			draw_line(Vector2(x,y-84),Vector2(x+96,y-84),Color("625360"),1)
-			draw_line(Vector2(x,y+84),Vector2(x+96,y+84),Color("625360"),1)
+	world_art.terrain(self,world,camera,clock)
+	var gate := session.portal_position()
+	draw_arc(gate,45,0,TAU,48,Color("a5ebed"),4,true)
+	label(gate+Vector2(-95,-58),"返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]",18,Color("ecdfba"))
 	for site in world.sites:
-		var rect: Rect2=site.rect
-		draw_rect(rect.grow(12),Color("0e111a"))
-		draw_texture_rect(ground,rect,false,Color(0.68,0.52,0.57,1) if site.tier==2 else Color(0.5,0.57,0.66,1))
-		for i in 5:
-			draw_line(rect.position+Vector2(30+i*90,20),rect.position+Vector2(30+i*90,rect.size.y-20),Color("30313c"),1)
-		draw_circle(site.p,105,Color(0.4,0.19,0.25,0.09))
-		draw_arc(site.p,104,0,TAU,64,Color("463440"),1.5)
-		draw_line(site.p-Vector2(90,0),site.p+Vector2(90,0),Color("41323e"),1)
-		draw_line(site.p-Vector2(0,90),site.p+Vector2(0,90),Color("41323e"),1)
-		label(site.p+Vector2(-90,-155),site.name,18,Color("777987"))
-		for side in [-1,1]:
-			var candle: Vector2=site.p+Vector2(side*(rect.size.x/2-55),-100)
-			for glow in range(4,0,-1):
-				draw_circle(candle,float(glow*16),Color(0.9,0.37,0.19,0.022))
-			draw_line(candle,candle+Vector2(0,30),Color("151521"),6)
-			draw_line(candle+Vector2(-11,6),candle+Vector2(11,6),Color("685344"),2)
-			for flame in [-9,0,9]:
-				draw_line(candle+Vector2(flame,4),candle+Vector2(flame,-5),Color("b69873"),3)
-				draw_circle(candle+Vector2(flame,-7),2.5+sin(clock*7+flame)*0.5,Color("efb47a"))
-	for stone in world.decor:
-		if stone.p.distance_to(camera)>1000:
-			continue
-		if stone.type==0:
-			draw_rect(Rect2(stone.p,Vector2(stone.r*2,stone.r)),Color("383c48"))
-		elif stone.type==1:
-			draw_line(stone.p,stone.p+Vector2(17,9),Color("101720"),2)
-		else:
-			draw_circle(stone.p,stone.r*2,Color(0.28,0.07,0.12,0.18))
-	# Broken memorials in the outer lanes frame the ruined city.
-	for i in 22:
-		var grave := Vector2(140+i*120,110 if i%2==0 else 2075)
-		draw_rect(Rect2(grave+Vector2(-14,-21),Vector2(28,42)),Color("303544"))
-		draw_arc(grave-Vector2(0,21),14,PI,TAU,16,Color("5c6070"),3)
-		cross(grave-Vector2(0,7),8,Color("60616c"))
-		draw_rect(Rect2(grave+Vector2(-20,19),Vector2(40,7)),Color("3d4050"))
-	for wall in world.walls:
-		draw_rect(Rect2(wall.position+Vector2(5,8),wall.size+Vector2(5,14)),Color(0,0,0,0.48))
-		draw_rect(wall,Color("292b37"))
-		var top := Rect2(wall.position-Vector2(0,12),wall.size)
-		draw_texture_rect(ground,top,false,Color(0.95,0.83,0.86,1))
-		draw_rect(top,Color("65606d"),false,1)
-		draw_line(top.position,top.position+Vector2(top.size.x,0),Color("99909a"),1)
-		if wall.size.y>100:
-			for y in range(int(wall.position.y),int(wall.end.y),40):
-				draw_line(Vector2(wall.position.x,y),Vector2(wall.end.x,y),Color("262b35"),2)
-		else:
-			for x in range(int(wall.position.x),int(wall.end.x),38):
-				draw_line(Vector2(x,wall.position.y),Vector2(x,wall.end.y),Color("262b35"),1)
-		for endpoint in [wall.position,wall.end-Vector2(18,18)]:
-			var cap: Vector2=endpoint+Vector2(9,-4)
-			draw_rect(Rect2(cap-Vector2(13,13),Vector2(26,26)),Color("252430"))
-			draw_rect(Rect2(cap-Vector2(10,13),Vector2(20,19)),Color("53505d"))
-			draw_rect(Rect2(cap-Vector2(10,13),Vector2(20,19)),Color("817784"),false,1)
-			diamond(cap-Vector2(0,3),5,Color("aea090"))
+		if site.p.distance_to(camera)<1000:
+			label(site.p+Vector2(-80,-site.rect.size.y/2-45),site.name,19,Color("fff1db"))
 	for i in world.exits.size():
 		var pos: Vector2=world.exits[i]
 		var pulse := 0.5+sin(clock*2)*0.12
@@ -170,7 +116,7 @@ func _draw() -> void:
 		draw_arc(pos,70+sin(clock*2)*4,0,TAU,60,Color(0.4,0.8,0.73,pulse),2)
 		draw_arc(pos,50,0,TAU,48,Color("467b77"),1)
 		cross(pos,20,Color("80cabc"))
-		label(pos+Vector2(-52,103),["西门撤离点","东门撤离点","北门撤离点"][i],15,Color("89b8b0"))
+		label(pos+Vector2(-52,103),Ruins.EXIT_NAMES[i],15,Color("89b8b0"))
 	for shrine in world.shrines:
 		var pos: Vector2=shrine.p
 		var color := Color("7accb4") if shrine.done else Color("ddb675")
@@ -180,7 +126,11 @@ func _draw() -> void:
 		label(pos+Vector2(-40,45),"已点亮" if shrine.done else "晨钟封印",14,color)
 	for chest in world.chests:
 		var pos: Vector2=chest.p
-		var empty: bool=chest.items.is_empty()
+		var empty: bool=chest.open and chest.items.is_empty()
+		if chest.get("fixed_loot",false) and not empty:
+			draw_circle(pos,48,Color(0.95,0.72,0.37,0.16))
+			draw_line(pos,pos-Vector2(0,85),Color(1,0.85,0.53,0.5),5,true)
+			label(pos+Vector2(-92,-94),"王庭珍藏 · [F] 搜索",16,Color("ffe2aa"))
 		var deep: bool=int(chest.get("class",1))>=2
 		var revealed: int=int(chest.get("searched",0))
 		draw_rect(Rect2(pos-Vector2(21,12),Vector2(46,31)),Color(0,0,0,0.35))
@@ -218,11 +168,24 @@ func _draw() -> void:
 		draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
 		draw_texture_rect_region(enemy_frames.sheets[int(fallen.type)],Rect2(-height*0.75,-height+12,height*1.5,height*1.5),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
 		draw_set_transform(offset)
+	# Sort architecture, trees, actors and enemies together by their ground anchor.
+	var drawables: Array=[]
+	for item in world.decor:
+		if item.p.distance_to(camera)<1150: drawables.append({"p":item.p,"kind":0,"data":item})
 	for e in session.enemies:
-		monster(e)
+		if e.p.distance_to(camera)<1100: drawables.append({"p":e.p,"kind":1,"data":e})
 	for p in session.players.values():
-		if p.status!="extracted":
-			actor(p)
+		if p.status!="extracted": drawables.append({"p":p.p,"kind":2,"data":p})
+	drawables.sort_custom(func(a: Dictionary,b: Dictionary): return a.p.y<b.p.y)
+	var me: Vector2=session.players.get(session.my_id(),{"p":camera}).p
+	for item in drawables:
+		match item.kind:
+			0: world_art.prop(self,item.data,camera,me,clock)
+			1: monster(item.data)
+			2: actor(item.data)
+	if waypoint.x>=0:
+		draw_arc(waypoint,28+sin(clock*3)*3,0,TAU,32,Color("ffe1a1"),2)
+		diamond(waypoint-Vector2(0,40),9,Color("ffe1a1"))
 	for number in combat.numbers:
 		var alpha: float=1.0-number.age/0.7
 		var at: Vector2=number.p+Vector2(12*number.age,-44*number.age)
@@ -230,27 +193,46 @@ func _draw() -> void:
 		label(at,number.value,23 if number.heavy else 17,Color(1,0.82,0.48,alpha) if number.heavy else Color(1,0.96,0.85,alpha))
 	# Translucent fog outside the shrinking safety circle.
 	var safe := session.safe_radius()
-	for x in range(0,2800,100):
-		for y in range(0,2200,100):
+	for x in range(maxi(0,int((camera.x-900)/100)*100),mini(int(session.ruins.extent.x),int(camera.x+900)),100):
+		for y in range(maxi(0,int((camera.y-600)/100)*100),mini(int(session.ruins.extent.y),int(camera.y+600)),100):
 			var dist := Vector2(x+50,y+50).distance_to(Ruins.CENTER)
 			if dist>safe:
 				draw_rect(Rect2(x,y,100,100),Color(0.34,0.11,0.28,clampf((dist-safe)/220,0,0.44)))
 	draw_arc(Ruins.CENTER,safe,0,TAU,160,Color(0.79,0.31,0.47,0.65),4)
 	draw_set_transform(Vector2.ZERO)
 	var size := get_viewport_rect().size
-	# Framing and a restrained red ambience.
+	if world.interior:
+		for e in session.enemies:
+			if e.type!=4 or e.p.distance_to(me)>850: continue
+			var bar := Rect2(size.x/2-240,130,480,10)
+			draw_rect(Rect2(bar.position-Vector2(15,42),Vector2(510,88)),Color(0.12,0.1,0.17,0.85))
+			draw_rect(bar,Color("342c3a"))
+			draw_rect(Rect2(bar.position,Vector2(bar.size.x*maxf(0,e.hp/e.max_hp),10)),Color("d6af83"))
+			label(bar.position+Vector2(0,-14),"失乡骑士 · 王庭守誓者"+("  /  风暴觉醒" if e.hp<=e.max_hp*0.5 else ""),20,Color("f7e1b6"))
+			label(bar.position+Vector2(0,32),"观察金色预警 · 闪避后反击 · 连续攻击使其失衡",14,Color("ead0b8"))
+	# Night air outdoors; warm drifting motes in the candlelit palace.
 	draw_rect(Rect2(0,0,size.x,110),Color(0.02,0.025,0.04,0.38))
 	draw_rect(Rect2(0,size.y-100,size.x,100),Color(0.02,0.025,0.04,0.36))
 	for i in 30:
 		var pt := Vector2(fmod(i*127.1+clock*(5+i%4),size.x),fmod(i*79.3-clock*9+size.y*100,size.y))
-		draw_circle(pt,1.2,Color(0.9,0.45,0.48,0.18))
+		draw_circle(pt,1.2,Color(1,0.72,0.38,0.20) if world.interior else Color(1,0.25,0.34,0.25))
 	draw_map(Rect2(size.x-250,124,220,174),false)
 	if map_open:
 		draw_rect(Rect2(Vector2.ZERO,size),Color(0.01,0.015,0.025,0.88))
-		draw_map(Rect2(size/2-Vector2(490,340),Vector2(980,690)),true)
-		label(size/2+Vector2(-470,-360),"废墟战术地图   /   M 关闭     绿色：撤离  ·  金色：目标  ·  红色：毒雾",19,Color("dad3c9"))
-		label(size/2+Vector2(-470,380),"保持通讯。每位守夜人都可以独立撤离。",17,Color("969caa"))
+		draw_map(map_rect(),true)
+		label(size/2+Vector2(-470,-352),("晨曦王城" if world.interior else "月冠边境")+"  /  M 关闭   ·   左键标记目的地   ·   右键清除",19,Color("dad3c9"))
+		label(size/2+Vector2(-470,389),"当前显示："+["全部地标","已探索物资","封印与撤离"][map_filter],13,Color("e2c795"))
+		label(size/2+Vector2(-470,369),"1 全部  ·  2 物资  ·  3 封印与撤离   |   金菱形：封印   绿十字：撤离   红圈：血潮边界",17,Color("969caa"))
 	else:
+		label(Vector2(32,325),"晨曦王城 · 烛火长夜" if world.interior else Ruins.BIOME_NAMES[world.biome_at(me)]+" · 血月之夜",22,Color("f1dfbf"))
+		if not world.interior:
+			var moon := Vector2(46,394)
+			for radius in [25,21,17]: draw_circle(moon,radius,Color(0.8,0.08,0.16,0.07))
+			draw_circle(moon,12,Color("cc485a"))
+			draw_circle(moon+Vector2(-4,-3),3,Color(0.32,0.05,0.11,0.35))
+			draw_circle(moon+Vector2(4,4),4,Color(0.32,0.05,0.11,0.25))
+			label(Vector2(68,400),"血月当空",13,Color("d794a2"))
+		if waypoint.x>=0: label(Vector2(32,355),"目的地  %d m" % int(me.distance_to(waypoint)/40),15,Color("e4c7a1"))
 		var mouse := get_global_mouse_position()
 		draw_arc(mouse,7,0,TAU,20,Color("e4c7b2"),1)
 		draw_line(mouse-Vector2(12,0),mouse-Vector2(4,0),Color("e4c7b2"),1)
@@ -323,7 +305,7 @@ func actor(p: Dictionary) -> void:
 	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46,3)),Color("322a35"))
 	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46*maxf(0,p.hp/p.max_hp),3)),color)
 	if p.channel>0:
-		var seconds := 4.0 if p.target.begins_with("exit") else (3.0 if p.target.begins_with("shrine") or p.target.begins_with("revive") else 0.6)
+		var seconds := 4.0 if p.target.begins_with("exit") else (3.0 if p.target.begins_with("shrine") or p.target.begins_with("revive") else (1.5 if p.target.begins_with("portal") else 0.6))
 		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/seconds),40,Color("d9ca91"),4)
 
 func monster(e: Dictionary) -> void:
@@ -336,8 +318,9 @@ func monster(e: Dictionary) -> void:
 	draw_circle(pos+Vector2(0,8),25 if kind==3 else 19,Color(0,0,0,0.24))
 	if float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
-		var progress: float=clampf((e.attack_total-e.attack_time)/[0.26,0.42,0.56,0.32][kind],0,1)
+		var progress: float=clampf((e.attack_total-e.attack_time)/[0.26,0.42,0.56,0.32,0.85][kind],0,1)
 		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,0.4+progress*0.5),2.5,true)
+	if kind==4: knight_telegraph(e)
 	var hover := sin(clock*4+e.id)*3 if kind==1 else 0.0
 	# All frames share a fixed canvas and foot anchor; mirroring never shifts feet.
 	draw_set_transform(offset+pos+Vector2(0,hover),0,Vector2(facing,1))
@@ -350,7 +333,7 @@ func monster(e: Dictionary) -> void:
 			draw_arc(pos+aim*24,12,0,TAU,24,Color(color,0.8),2,true)
 		else:
 			draw_arc(pos,38 if kind!=2 else 46,aim.angle()-0.8,aim.angle()+0.8,20,Color(color,0.85),3 if kind!=2 else 5,true)
-	if kind==3:
+	if kind in [3,4]:
 		draw_arc(pos+Vector2(0,9),35,0,TAU,40,Color(color,0.25),2,true)
 		label(pos+Vector2(-28,-height-6),EnemyFrames.NAMES[kind],12,color)
 	if e.hp<e.max_hp:
@@ -366,15 +349,38 @@ func draw_map(rect: Rect2, big: bool) -> void:
 	draw_polyline(corners,Color("7b6471"),1,true)
 	for corner in [rect.position,rect.end,Vector2(rect.end.x,rect.position.y),Vector2(rect.position.x,rect.end.y)]:
 		diamond(corner,3,Color("ba9d84"))
-	var scale := rect.size/Ruins.SIZE
+	var scale := rect.size/session.ruins.extent
+	world_art.atlas(self,session.ruins,rect,big)
+	var gate := rect.position+session.portal_position()*scale
+	diamond(gate,8 if big else 4,Color("9de8f3"))
+	if big: label(gate+Vector2(12,30),"城门 · 长按 E 切换地图",13,Color("9de8f3"))
 	for site in session.ruins.sites:
-		draw_rect(Rect2(rect.position+site.rect.position*scale,site.rect.size*scale),Color("3f3d49"))
+		var at: Vector2=rect.position+site.p*scale
+		var discovered := explored.has(Vector2i(site.p/160))
 		if big:
-			label(rect.position+site.p*scale+Vector2(-48,-16),site.name,14,Color("9793a3"))
-	for shrine in session.ruins.shrines:
-		diamond(rect.position+shrine.p*scale,6 if big else 3,Color("7bc0af") if shrine.done else Color("e0b86e"))
-	for pos in session.ruins.exits:
-		cross(rect.position+pos*scale,8 if big else 4,Color("82cabb"))
+			draw_rect(Rect2(at-Vector2(7,6),Vector2(14,12)),Color("b5a585") if site.tier==1 else Color("c57b8e"),false,2)
+			draw_rect(Rect2(at+Vector2(8,-23),Vector2(site.name.length()*14+8,36)),Color(0.1,0.13,0.14,0.82))
+			label(at+Vector2(11,-8),site.name,14,Color("fff1d3"))
+			label(at+Vector2(11,8),"高危 · 珍藏" if site.tier==2 else "野外 · 补给",10,Color("e1a3b0") if site.tier==2 else Color("b7c8b8"))
+		else: draw_circle(at,2,Color("bcb2a0"))
+		if discovered: draw_arc(at,11,0,TAU,16,Color("b9d8ba"),1)
+	if big and map_filter!=2:
+		for chest in session.ruins.chests:
+			if not explored.has(Vector2i(chest.p/160)): continue
+			var at: Vector2=rect.position+chest.p*scale
+			draw_rect(Rect2(at-Vector2(2,2),Vector2(4,4)),Color("847e76") if chest.open and chest.items.is_empty() else Color("f3d794"))
+	if not big or map_filter!=1:
+		for shrine in session.ruins.shrines:
+			diamond(rect.position+shrine.p*scale,6 if big else 3,Color("7bc0af") if shrine.done else Color("ffe0a0"))
+		for i in session.ruins.exits.size():
+			var pos: Vector2=session.ruins.exits[i]
+			cross(rect.position+pos*scale,8 if big else 4,Color("9bf8d6"))
+			if big: label(rect.position+pos*scale+Vector2(-28,23),Ruins.EXIT_NAMES[i],11,Color("aeefce"))
+	if waypoint.x>=0:
+		var at: Vector2=rect.position+waypoint*scale
+		diamond(at,8 if big else 4,Color("fff1a6"))
+		var player: Dictionary=session.players.get(session.my_id(),{})
+		if not player.is_empty(): draw_dashed_line(rect.position+player.p*scale,at,Color("e7d99d"),1,5)
 	for p in session.players.values():
 		if p.status in ["active","down"]:
 			draw_circle(rect.position+p.p*scale,5 if big else 3,Catalog.HEROES[p.hero].color)
@@ -390,6 +396,7 @@ func draw_map(rect: Rect2, big: bool) -> void:
 		prev=point
 
 func label(at: Vector2, text: String, size: int, color: Color) -> void:
+	draw_string(font,at+Vector2(1,1),text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,Color(0.06,0.08,0.09,color.a*0.9))
 	draw_string(font,at,text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,color)
 
 func diamond(pos: Vector2, radius: float, color: Color) -> void:
@@ -398,3 +405,40 @@ func diamond(pos: Vector2, radius: float, color: Color) -> void:
 func cross(pos: Vector2, radius: float, color: Color) -> void:
 	draw_line(pos-Vector2(0,radius),pos+Vector2(0,radius),color,2)
 	draw_line(pos-Vector2(radius*0.7,0),pos+Vector2(radius*0.7,0),color,2)
+
+func map_rect() -> Rect2:
+	return Rect2(get_viewport_rect().size/2-Vector2(440,330),Vector2(880,660))
+
+func _input(event: InputEvent) -> void:
+	if not visible or not map_open: return
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index==MOUSE_BUTTON_RIGHT:
+			waypoint=Vector2(-1,-1)
+		elif event.button_index==MOUSE_BUTTON_LEFT and map_rect().has_point(get_global_mouse_position()):
+			var point := (get_global_mouse_position()-map_rect().position)/map_rect().size*session.ruins.extent
+			if not session.ruins.blocked(point): waypoint=point
+	if event is InputEventKey and event.pressed:
+		var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+		if code in [KEY_1,KEY_2,KEY_3]: map_filter=code-KEY_1
+
+func knight_telegraph(e: Dictionary) -> void:
+	if e.attack_time<=0: return
+	var passed: float=e.attack_total-e.attack_time
+	var name: String=e.get("move_name","combo")
+	var marks: Array=[0.65,1.10,1.65] if name=="combo" else ([0.85] if name=="thrust" else [1.15])
+	var last: float=marks.back()
+	if passed>last+0.2 and not (name=="thrust" and passed<1.2): return
+	var direction: Vector2=e.attack_aim
+	var col := Color(1.0,0.61,0.37,0.24+sin(clock*18)*0.06)
+	if name=="thrust":
+		var side := direction.orthogonal()*48
+		draw_colored_polygon(PackedVector2Array([e.p-side,e.p+side,e.p+direction*340+side,e.p+direction*340-side]),col)
+		draw_line(e.p,e.p+direction*340,Color("ffdea5"),3,true)
+	else:
+		var radius := 225.0 if name=="storm" else 155.0
+		var arc := PI if name=="storm" else 1.35
+		var poly := PackedVector2Array([e.p])
+		for i in 49: poly.append(e.p+Vector2.from_angle(direction.angle()-arc+2*arc*i/48)*radius)
+		draw_colored_polygon(poly,col)
+		draw_arc(e.p,radius,direction.angle()-arc,direction.angle()+arc,48,Color("ffe1b6"),2,true)
+	label(e.p+Vector2(-60,-178),{"combo":"誓约三连斩","thrust":"逐风突刺","storm":"失乡风暴"}[name],16,Color("ffe1b6"))
