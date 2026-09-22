@@ -1,11 +1,12 @@
 class_name Profile
 extends RefCounted
 
-var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"fullscreen":false,"best":0}
+var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"fullscreen":false,"best":0,"pocket":{"key":"white","items":[],"gw":4,"gh":4,"next":1},"bag_key":"white","bags":[{"key":"white","items":[],"next":1}]}
 var path := "user://profile.json"
 
 func load_profile() -> void:
 	if not FileAccess.file_exists(path):
+		sanitize_storage()
 		return
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if parsed is Dictionary and parsed.get("version",0) == 1:
@@ -22,6 +23,28 @@ func load_profile() -> void:
 			data.talents = [0,0,0]
 		for i in 3:
 			data.talents[i] = clampi(int(data.talents[i]),0,5)
+	sanitize_storage()
+
+# The dimensional pocket always keeps its 4x4 grid; the backpack only changes
+# quality, and both are repaired here so a hand-edited save cannot break a run.
+func sanitize_storage() -> void:
+	data.pocket=Catalog.clean_container(data.get("pocket",{}),Catalog.POCKET_GRID)
+	data.bag_key=data.bag_key if Catalog.has_tier(str(data.bag_key)) else Catalog.DEFAULT_BAG_KEY
+	var bags: Array = data.get("bags",[])
+	var result: Array = []
+	for entry in bags:
+		if not entry is Dictionary:
+			continue
+		var key := str(entry.get("key",Catalog.DEFAULT_BAG_KEY))
+		result.append(Catalog.clean_container(entry,Catalog.tier(key).grid))
+	if result.is_empty():
+		result.append(Catalog.clean_container({"key":data.bag_key,"items":[]},Catalog.tier(data.bag_key).grid))
+	data.bags=result
+
+# Only the pocket and the spare backpacks travel through the save file.
+func storage_payload() -> Dictionary:
+	sanitize_storage()
+	return {"pocket":data.pocket.duplicate(true),"bags":data.bags.duplicate(true),"bag_key":str(data.bag_key)}
 
 func save_profile() -> void:
 	var file := FileAccess.open(path+".tmp",FileAccess.WRITE)

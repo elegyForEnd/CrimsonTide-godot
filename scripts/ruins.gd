@@ -37,13 +37,9 @@ func generate(value: int) -> void:
 				walls.append(Rect2(rect.position+Vector2(dx,0),Vector2(shoulder,18)))
 				walls.append(Rect2(rect.position+Vector2(dx,room_size.y-18),Vector2(shoulder,18)))
 			for j in 3:
-				var kinds: Array = ["scrap","crystal","medicine","ammo","charm"]
-				var loot: Array = []
-				for k in rng.randi_range(2,4):
-					loot.append(kinds[rng.randi_range(0,kinds.size()-1)])
-				if col==2 or rng.randf()<0.2:
-					loot.append("relic")
-				chests.append({"p":pos+Vector2(-130+j*130,rng.randf_range(-90,90)),"items":loot,"open":false})
+				# Contents are rolled the first time a chest is searched. The grid
+				# is roomier in the deeper tier, so those runs carry more loot.
+				chests.append({"p":pos+Vector2(-130+j*130,rng.randf_range(-90,90)),"key":"container","items":[],"open":false,"searched":0,"bonus":col==2 or rng.randf()<0.2,"class":2 if col==2 else 1})
 			if i in [1,2,4]:
 				shrines.append({"p":pos+Vector2(0,125),"done":false,"progress":0.0})
 	for i in 230:
