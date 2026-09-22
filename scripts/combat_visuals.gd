@@ -32,6 +32,8 @@ func event(data: Dictionary) -> void:
 	var angle := aim_dir.angle()
 	var weapon := int(data.get("weapon",0))
 	match data.kind:
+		"dodge":
+			spawn(7,at,Vector2(85,45),0.25,angle,Color(0.5,0.55,1,0.35))
 		"windup":
 			if weapon==3:
 				spawn(6,at+aim_dir*27-Vector2(0,27),Vector2(62,62),0.26)

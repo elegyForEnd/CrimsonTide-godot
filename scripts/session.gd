@@ -9,6 +9,9 @@ signal effect(kind: String, pos: Vector2)
 signal combat_event(data: Dictionary)
 
 const PORT := 24872
+const DODGE_DURATION := 0.24
+const DODGE_DISTANCE := 145.0
+const RUN_MULTIPLIER := 1.45
 var players: Dictionary = {}
 var inputs: Dictionary = {}
 var ruins := Ruins.new()
@@ -114,7 +117,9 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 		talents[i]=clampi(int(talents[i]),0,5)
 	var gear := clampi(int(config.get("gear",0)),0,2)
 	var hp: float=Catalog.HEROES[h].hp+talents[0]*12+Catalog.GEAR[gear].hp
-	return {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"ready":id==1,"p":Vector2(300,1100),"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","bag":[],"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"ready":id==1,"p":Vector2(300,1100),"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","bag":[],"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
+	return player
 
 func configure(config: Dictionary) -> void:
 	local_config=config
@@ -235,7 +240,7 @@ func input_packet(packet: Dictionary) -> void:
 		return
 	if not packet.move.is_finite() or not packet.aim.is_finite():
 		return
-	inputs[id]={"move":packet.move.limit_length(1),"aim":packet.aim.normalized(),"fire":bool(packet.get("fire",false)),"interact":bool(packet.get("interact",false))}
+	inputs[id]={"move":packet.move.limit_length(1),"aim":packet.aim.normalized(),"fire":bool(packet.get("fire",false)),"interact":bool(packet.get("interact",false)),"sprint":bool(packet.get("sprint",false))}
 
 @rpc("authority","call_remote","reliable",2)
 func snapshot(packet: PackedByteArray) -> void:
@@ -285,6 +290,8 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		return
 	if p.status!="active":
 		return
+	if p.dodge_time>0 and kind in ["weapon","skill","reload"]:
+		return
 	match kind:
 		"weapon":
 			var selected := int(payload.get("index",-1))
@@ -299,9 +306,18 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				var direction: Vector2=inputs.get(id,{}).get("move",p.aim)
 				if direction.length()<0.1:
 					direction=p.aim
-				p.p=ruins.move(p.p,direction.normalized()*145)
+				if direction.length()<0.1:
+					direction=Vector2.RIGHT
+				p.dodge_dir=direction.normalized()
+				p.dodge_time=DODGE_DURATION
+				p.motion="dodge"
+				p.pending_strike=false
+				p.swing_time=0.0
+				p.cast_time=0.0
+				p.channel=0.0
 				p.dash=2.0
-				p.invuln=0.4
+				p.invuln=maxf(p.invuln,0.4)
+				broadcast_combat({"kind":"dodge","p":p.p,"aim":p.dodge_dir,"id":id})
 				emit_effect("dash",p.p)
 		"burn":
 			if Catalog.consume(p.bag,"crystal"):
@@ -391,7 +407,7 @@ func simulate(dt: float) -> void:
 		var direction: Vector2=cmd.get("move",Vector2.ZERO)
 		p.aim=cmd.get("aim",Vector2.RIGHT)
 		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed
-		p.p=ruins.move(p.p,direction.limit_length(1)*speed*dt*(0.48 if p.swing_time>0 and p.weapon==2 else 1.0))
+		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
 		p.scent=move_toward(p.scent,float(Catalog.count(p.bag,"crystal")*8),dt*0.5)
 		p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
 		if p.p.distance_to(Ruins.CENTER)>safe_radius():
@@ -404,7 +420,7 @@ func simulate(dt: float) -> void:
 			p.scent-=10
 		if bool(cmd.get("fire",false)):
 			attack(p)
-		interact(p,bool(cmd.get("interact",false)),dt)
+		interact(p,bool(cmd.get("interact",false)) and p.dodge_time<=0,dt)
 		if p.hp<=0:
 			down(p)
 	update_enemies(dt)
@@ -432,17 +448,41 @@ func simulate(dt: float) -> void:
 func safe_radius() -> float:
 	return lerpf(1800,290,clampf((elapsed/duration-0.45)/0.55,0,1))
 
+func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
+	var before: Vector2=p.p
+	if p.dodge_time>0:
+		var step := minf(dt,p.dodge_time)
+		p.p=ruins.move(p.p,p.dodge_dir*(DODGE_DISTANCE/DODGE_DURATION)*step)
+		p.dodge_time=maxf(0,p.dodge_time-dt)
+		p.move_dir=p.dodge_dir
+		p.motion="dodge" if p.dodge_time>0 else "idle"
+	else:
+		var active_attack: bool=p.swing_time>0 or p.cast_time>0
+		var running_now := sprint and not active_attack and direction.length()>0.1
+		var multiplier := RUN_MULTIPLIER if running_now else 1.0
+		if p.swing_time>0 and p.weapon==2:
+			multiplier*=0.48
+		p.p=ruins.move(p.p,direction.limit_length(1)*speed*dt*multiplier)
+		if direction.length()>0.1:
+			p.move_dir=direction.normalized()
+		p.motion="run" if running_now else "walk"
+		if before.distance_to(p.p)<0.01:
+			p.motion="idle"
+	p.move_speed=before.distance_to(p.p)/maxf(dt,0.001)
+
 func down(p: Dictionary) -> void:
 	p.hp=0
 	p.status="down"
 	p.bleed=35
 	p.pending_strike=false
 	p.swing_time=0.0
+	p.dodge_time=0.0
+	p.motion="idle"
 	p.channel=0
 	emit_effect("hurt",p.p)
 
 func attack(p: Dictionary) -> void:
-	if p.attack>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.status!="active":
+	if p.attack>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or p.status!="active":
 		return
 	var weapon: Dictionary=Catalog.WEAPONS[p.weapon]
 	if p.weapon==0 and p.ammo<=0:

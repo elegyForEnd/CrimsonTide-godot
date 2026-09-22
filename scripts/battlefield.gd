@@ -17,7 +17,8 @@ var velocity_visual: Dictionary = {}
 var previous_positions: Dictionary = {}
 var loot_icons: Dictionary = {}
 var combat: CombatVisuals
-var action_sheets: Array[Texture2D] = []
+var character_frames: CharacterFrames
+var move_phases: Dictionary = {}
 
 func _ready() -> void:
 	var face := FontVariation.new()
@@ -32,11 +33,10 @@ func _ready() -> void:
 	combat=CombatVisuals.new()
 	combat.field=self
 	add_child(combat)
-	for hero in 3:
-		action_sheets.append(load("res://assets/combat/hero-"+str(hero)+".png"))
+	character_frames=CharacterFrames.new()
 	session.effect.connect(combat.legacy)
 	session.combat_event.connect(combat.event)
-	session.started.connect(func(): combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear())
+	session.started.connect(func(): combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
 
 func _process(dt: float) -> void:
 	if not visible:
@@ -58,6 +58,11 @@ func _process(dt: float) -> void:
 			var old_pos: Vector2=previous_positions.get(ally.id,ally.p)
 			velocity_visual[ally.id]=float(velocity_visual.get(ally.id,0.0))*0.8+old_pos.distance_to(ally.p)/maxf(dt,0.001)*0.2
 			previous_positions[ally.id]=ally.p
+			var cadence := 11.5 if ally.motion=="run" else 7.0
+			if ally.motion in ["walk","run"]:
+				move_phases[ally.id]=float(move_phases.get(ally.id,0.0))+dt*cadence
+			else:
+				move_phases[ally.id]=0.0
 			var last: Vector2=smooth_positions.get(ally.id,ally.p)
 			smooth_positions[ally.id]=last.lerp(ally.p,1-exp(-dt*22)) if last.distance_to(ally.p)<220 else ally.p
 		for x in range(-2,3):
@@ -232,7 +237,10 @@ func actor(p: Dictionary) -> void:
 		draw_arc(Vector2(0,8),22,0,TAU,36,Color(color,0.65),1.5)
 	var moving := minf(1.0,float(velocity_visual.get(p.id,0.0))/100)
 	var sway := sin(clock*(4+moving*9)+p.id)*(1.3+moving*2.0)
-	var direction: Vector2=p.strike_aim if p.swing_time>0 else p.aim
+	var travelling: bool=p.motion in ["walk","run","dodge"] and p.swing_time<=0 and p.cast_time<=0
+	var direction: Vector2=p.move_dir if travelling else p.strike_aim if p.swing_time>0 else p.aim
+	if p.motion=="dodge":
+		direction=p.dodge_dir
 	var facing := -1.0 if direction.x<0 else 1.0
 	var progress := 1.0-float(p.swing_time)/maxf(0.001,p.swing_total)
 	var frame := 0
@@ -246,17 +254,24 @@ func actor(p: Dictionary) -> void:
 	if p.cast_time>0:
 		frame=1 if p.cast_time>0.55 else 2 if p.cast_time>0.2 else 3
 		lean=-0.06*facing
-	if p.weapon>0:
-		var sheet: Texture2D=action_sheets[p.hero]
-		var cell := sheet.get_size()/Vector2(4,3)
-		var source := Rect2(Vector2(frame,p.weapon-1)*cell+Vector2.ONE*2,cell-Vector2.ONE*4)
-		# Four authored full-body poses, eased motion and trailing silhouettes.
+	if travelling:
+		var pose := character_frames.motion_frame(p.hero,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
+		if p.motion=="dodge":
+			for ghost in [3,2,1]:
+				draw_set_transform(offset+pos-direction*ghost*17,0,Vector2(facing,1))
+				draw_texture_rect(pose.texture,pose.rect,false,Color(color,0.21/ghost))
+		draw_set_transform(offset+pos,0,Vector2(facing,1))
+		draw_texture_rect(pose.texture,pose.rect,false)
+	elif p.weapon>0:
+		var pose := character_frames.attack_frame(p.hero,p.weapon,frame)
+		var sprite_rect: Rect2=pose.rect
+		sprite_rect.position.y+=sway*0.35
 		if frame==2 and p.swing_time>0:
 			for ghost in [2,1]:
 				draw_set_transform(offset+pos+lunge-direction*ghost*12,lean,Vector2(facing,1))
-				draw_texture_rect_region(sheet,Rect2(-56,-92+sway,112,112),source,Color(color,0.12/ghost))
+				draw_texture_rect(pose.texture,sprite_rect,false,Color(color,0.12/ghost))
 		draw_set_transform(offset+pos+lunge,lean,Vector2(facing,1))
-		draw_texture_rect_region(sheet,Rect2(-56,-92+sway,112,112),source)
+		draw_texture_rect(pose.texture,sprite_rect,false)
 	else:
 		var sheet_size := sentinels.get_size()
 		draw_set_transform(offset+pos-direction*(5 if p.swing_time>0 else 0),lean,Vector2(facing,1))

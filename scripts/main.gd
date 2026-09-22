@@ -102,7 +102,7 @@ func fit_ui() -> void:
 	root.position=(view-Vector2(1440,900)*scale_factor)/2
 
 func setup_inputs() -> void:
-	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"heal":KEY_F,"burn":KEY_B,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE,"weapon_0":KEY_4,"weapon_1":KEY_1,"weapon_2":KEY_2,"weapon_3":KEY_3}
+	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"burn":KEY_B,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE,"weapon_0":KEY_4,"weapon_1":KEY_1,"weapon_2":KEY_2,"weapon_3":KEY_3}
 	for action in keys:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -528,7 +528,8 @@ func on_started() -> void:
 	item_icon(page,"skill",Vector2(728,801),Vector2(40,40))
 	hud.skill=label(page,"",Vector2(792,793),17,Color("d4c0de"),Vector2(283,33))
 	hud.items=label(page,"",Vector2(792,842),13,MUTED,Vector2(315,30))
-	label(page,"WASD 移动   鼠标 攻击",Vector2(1170,795),12,MUTED,Vector2(241,28))
+	label(page,"WASD 走路 · SHIFT 奔跑",Vector2(1170,786),12,MUTED,Vector2(241,28))
+	label(page,"SPACE 闪避 · 鼠标攻击",Vector2(1170,812),12,MUTED,Vector2(241,28))
 	label(page,"1 单剑  2 重剑  3 法杖  4 枪",Vector2(1170,837),12,MUTED,Vector2(241,28))
 	notify("已抵达灰烬废墟。点亮封印，带回战利品。")
 
@@ -538,7 +539,7 @@ func _process(dt: float) -> void:
 	if page_name!="game" or not session.running:
 		return
 	var blocked := inventory_open or modal or field.map_open
-	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":field.aim(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact")}
+	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":field.aim(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint")}
 	time_ui+=dt
 	if time_ui>0.1:
 		time_ui=0
