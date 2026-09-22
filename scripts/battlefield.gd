@@ -268,7 +268,7 @@ func actor(p: Dictionary) -> void:
 	var lean := 0.0
 	var lunge := Vector2.ZERO
 	if p.swing_time>0:
-		var windup: float=Catalog.WEAPONS[p.weapon].windup/maxf(0.001,p.swing_total)
+		var windup: float=Catalog.weapon(p.weapon).windup/maxf(0.001,p.swing_total)
 		frame=1 if progress<windup else (2 if progress<windup+0.23 else 3)
 		lean=(-0.08 if frame==1 else 0.12 if frame==2 else 0.04)*facing
 		lunge=direction*(12 if frame==2 else -3 if frame==1 else 4)
@@ -283,8 +283,8 @@ func actor(p: Dictionary) -> void:
 				draw_texture_rect(pose.texture,pose.rect,false,Color(color,0.21/ghost))
 		draw_set_transform(offset+pos,0,Vector2(facing,1))
 		draw_texture_rect(pose.texture,pose.rect,false)
-	elif p.weapon>0:
-		var pose := character_frames.attack_frame(p.hero,p.weapon,frame)
+	elif Catalog.weapon_family(p.weapon)>0:
+		var pose := character_frames.attack_frame(p.hero,Catalog.weapon_family(p.weapon),frame)
 		var sprite_rect: Rect2=pose.rect
 		sprite_rect.position.y+=sway*0.35
 		if frame==2 and p.swing_time>0:

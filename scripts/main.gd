@@ -209,7 +209,7 @@ func fit_ui() -> void:
 	root.position=(view-Vector2(1440,900)*scale_factor)/2
 
 func setup_inputs() -> void:
-	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"burn":KEY_B,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE,"weapon_0":KEY_4,"weapon_1":KEY_1,"weapon_2":KEY_2,"weapon_3":KEY_3}
+	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"burn":KEY_B,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
 	for action in keys:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -541,7 +541,7 @@ func show_camp() -> void:
 		item_icon(page,icon,Vector2(x+31,251),Vector2(52,52))
 		label(page,gear.name,Vector2(x,310),15,INK if profile.data.gear==i else MUTED,Vector2(113,31)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	label(page,Catalog.GEAR[profile.data.gear].desc,Vector2(584,356),15,GOLD)
-	label(page,"局内搜到的武器与装备可当场穿上，本局立即生效",Vector2(584,380),12,MUTED,Vector2(384,20))
+	label(page,"开局只有角色的临时武器；局内捡到的武器装备后才能换用",Vector2(584,380),12,MUTED,Vector2(384,20))
 	ornament(page,Vector2(578,406),Vector2(384,12))
 	label(page,"灵契天赋",Vector2(583,431),27,INK,Vector2(250,45))
 	for i in 3:
@@ -642,7 +642,7 @@ func on_started() -> void:
 	hud.sanity=label(page,"",Vector2(132,841),13,Color("b5b8d4"),Vector2(280,30))
 	rect(page,Vector2(134,832),Vector2(220,5),Color("3c2333"))
 	hud.hpbar=rect(page,Vector2(134,832),Vector2(220,5),RED)
-	item_icon(page,"rifle",Vector2(404,791),Vector2(39,39))
+	hud.weapon_icon=item_icon(page,"rifle",Vector2(404,791),Vector2(39,39))
 	hud.ammo=label(page,"",Vector2(454,791),18,INK,Vector2(267,35))
 	hud.scent=label(page,"",Vector2(412,842),13,GOLD,Vector2(260,33))
 	ornament(page,Vector2(722,785),Vector2(48,85),"seal",Color("b8a0c8"))
@@ -650,7 +650,7 @@ func on_started() -> void:
 	hud.skill=label(page,"",Vector2(792,793),17,Color("d4c0de"),Vector2(283,33))
 	hud.items=label(page,"",Vector2(792,842),13,MUTED,Vector2(315,30))
 	label(page,"WASD 走路 · SHIFT 奔跑 · 鼠标攻击",Vector2(1170,784),11,MUTED,Vector2(241,20))
-	label(page,"SPACE 闪避 · R 装填 · 1-4 换武器",Vector2(1170,806),11,MUTED,Vector2(241,20))
+	label(page,"SPACE 闪避 · R 装填 · 武器只能捡到后装备",Vector2(1170,806),11,MUTED,Vector2(241,20))
 	label(page,"F 拾取/搜索/急救 · TAB 背包 · M 地图",Vector2(1170,828),11,MUTED,Vector2(241,20))
 	hud.loadout=label(page,"",Vector2(1170,858),11,GOLD,Vector2(241,18))
 	hud.loadout2=label(page,"",Vector2(1170,876),11,MUTED,Vector2(241,18))
@@ -806,9 +806,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if field.map_open:
 		return
-	for weapon in 4:
-		if event.is_action_pressed("weapon_"+str(weapon)) and not event.is_echo():
-			session.action("weapon",{"index":weapon})
 	for action in ["reload","skill","dash"]:
 		if event.is_action_pressed(action) and not event.is_echo():
 			session.action(action)
@@ -895,7 +892,12 @@ func update_hud() -> void:
 	hud.health.text="生命   %d / %d" % [maxf(0,p.hp),p.max_hp]
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.sanity.text="理智  %d%%    ·    血香  %d" % [p.sanity,p.scent]
-	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if p.weapon==0 else " · 三连击" if p.weapon==1 else ""))
+	var family := Catalog.weapon_family(p.weapon)
+	# The HUD icon follows whatever is in hand, looted or temporary.
+	if int(hud.get("weapon_family",-1))!=family:
+		hud.weapon_family=family
+		hud.weapon_icon.texture=load("res://assets/icons/"+Catalog.WEAPON_ICONS[family]+".svg")
+	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if family==0 else " · 三连击" if family==1 else ""))
 	hud.scent.text="战利品  %d ◈   /   击杀 %d" % [loot_total(p),p.kills]
 	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  就绪")
 	hud.items.text="[F] 急救针 ×%d    [B] 血晶 ×%d    /    %s" % [session.carried(p,"medicine"),session.carried(p,"crystal"),session.backpack_label(p)]
@@ -1619,10 +1621,19 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 		var index := int(entry.slot)
 		equip_zones["weapon" if kind=="weapon" else "gear%d" % index]=Rect2(bx,by,box,box)
 		var filled := not item.is_empty()
+		# An empty weapon socket still means a weapon in hand: the temporary issue
+		# weapon. It is drawn greyed out and without an unequip tab, so it can
+		# never be mistaken for a piece of worn loot.
+		var issue := kind=="weapon" and not filled
 		var accent: Color=Catalog.quality_color(int(item.get("tier",0))) if filled else Color("565064")
 		var socket := rect(overlay,Vector2(bx,by),Vector2(box,box),Color(accent.darkened(0.84),0.9) if filled else Color(0.06,0.05,0.08,0.7),accent)
 		socket.mouse_filter=Control.MOUSE_FILTER_IGNORE
-		socket.tooltip_text=("%s\n%s" % [Catalog.item_name(item),equipment_bonus_text(item,kind)]) if filled else "%s槽 · 拖拽对应装备到此穿上" % entry.title
+		if filled:
+			socket.tooltip_text="%s\n%s" % [Catalog.item_name(item),equipment_bonus_text(item,kind)]
+		elif issue:
+			socket.tooltip_text="临时武器 %s\n捡到武器并装备到此槽后即可换用。" % Catalog.weapon_name(p.weapon)
+		else:
+			socket.tooltip_text="%s槽 · 拖拽对应装备到此穿上" % entry.title
 		if filled:
 			item_icon(overlay,Catalog.item_icon(item),Vector2(bx+17,by+5),Vector2(44,44))
 			rect(overlay,Vector2(bx+1,by+box-17),Vector2(box-2,16),Color(0.035,0.025,0.04,0.78))
@@ -1630,6 +1641,11 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 			name_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 			var off := button(overlay,"卸",Vector2(bx+box-19,by+1),Vector2(18,15),func(): unequip_slot(kind,index),false,9)
 			off.tooltip_text="卸下 "+Catalog.item_name(item)
+		elif issue:
+			item_icon(overlay,Catalog.WEAPON_ICONS[Catalog.weapon_family(p.weapon)],Vector2(bx+17,by+5),Vector2(44,44)).modulate=Color(1,1,1,0.42)
+			rect(overlay,Vector2(bx+1,by+box-17),Vector2(box-2,16),Color(0.035,0.025,0.04,0.6))
+			var issue_label := label(overlay,Catalog.weapon_name(p.weapon),Vector2(bx+1,by+box-16),10,Color("9d94a6"),Vector2(box-2,14))
+			issue_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		else:
 			var glyph := label(overlay,"◇",Vector2(bx,by+22),22,Color("6a6470"),Vector2(box,30))
 			glyph.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -1638,6 +1654,8 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 		var status := "空槽"
 		if filled:
 			status="伤+%d%%" % int(round(Catalog.weapon_bonus(item)*100.0)) if kind=="weapon" else equipment_bonus_text(item,kind)
+		elif issue:
+			status="临时"
 		var status_label := label(overlay,status,Vector2(bx,by+box+20),11,GOLD if filled else Color("6a6470"),Vector2(box,16))
 		status_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 
@@ -1841,7 +1859,7 @@ func use_action(item: Dictionary, p: Dictionary) -> Dictionary:
 		"ammo":
 			return {"text":"使用 · 补充 48 发弹药","enabled":true}
 		"weapon":
-			return {"text":"装备 · 伤害 +%d%%  攻速 +%d%%" % [int(round(Catalog.weapon_bonus(item)*100.0)),int(round(Catalog.weapon_rate_bonus(item)*100.0))],"enabled":true}
+			return {"text":"装备到手上 · 伤害 +%d%%  攻速 +%d%%" % [int(round(Catalog.weapon_bonus(item)*100.0)),int(round(Catalog.weapon_rate_bonus(item)*100.0))],"enabled":true}
 		"gear":
 			return {"text":"装备 · "+Catalog.gear_desc(item),"enabled":true}
 		"backpack":
@@ -1870,10 +1888,11 @@ func quick_use_slots(p: Dictionary) -> Array:
 	return out
 
 func weapon_title(p: Dictionary) -> String:
-	var title: String=Catalog.WEAPONS[p.weapon].name
+	var title: String=Catalog.weapon_name(p.weapon)
 	if session.weapon_kit_active(p):
-		title+=" 强化+%d%%" % int(round(Catalog.weapon_bonus(session.kit_weapon(p))*100.0))
-	return title
+		return title+" 强化+%d%%" % int(round(Catalog.weapon_bonus(session.kit_weapon(p))*100.0))
+	# An issue weapon is temporary: say so, so nobody mistakes it for a real one.
+	return title+" · 临时"
 
 # Two compact HUD lines: how many slots are filled, and what they add up to.
 func loadout_lines(p: Dictionary) -> Array:
@@ -1891,7 +1910,13 @@ func loadout_lines(p: Dictionary) -> Array:
 	for entry in session.kit_gear(p):
 		if entry is Dictionary and not entry.is_empty():
 			worn+=1
-	return ["本局装备  %d / %d" % [worn,1+Catalog.GEAR.size()]," ".join(PackedStringArray(parts)) if not parts.is_empty() else "在背包里点击武器 / 装备即可穿上"]
+	if parts.is_empty():
+		# Nothing adds a bonus yet, so the line reports what is actually in hand:
+		# the temporary issue weapon, or a looted weapon whose quality is white.
+		if session.issue_weapon_active(p):
+			return ["本局装备  %d / %d" % [worn,1+Catalog.GEAR.size()],"临时武器 %s · 捡到武器装备后才能换用" % Catalog.weapon_name(p.weapon)]
+		return ["本局装备  %d / %d" % [worn,1+Catalog.GEAR.size()],"手持 "+Catalog.item_name(session.kit_weapon(p))]
+	return ["本局装备  %d / %d" % [worn,1+Catalog.GEAR.size()]," ".join(PackedStringArray(parts))]
 
 func move_item(x: int,y: int) -> void:
 	place_selected(x,y)
@@ -2118,7 +2143,7 @@ func show_help() -> void:
 	var at := modal_box("守夜手册",Vector2(1060,720))
 	var left := at+Vector2(36,100)
 	label(overlay,"01  /  活着带回去",left,23,GOLD)
-	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击\n1 单手剑 · 2 双手剑 · 3 法杖 · 4 步枪\n空格闪避 · Q 技能 · R 装填\nF 拾取 / 搜索 / 没东西可捡时急救 · B 燃烧血晶 / 自救\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),18,INK,Vector2(480,190)).add_theme_constant_override("line_spacing",13)
+	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击\n开局只有角色的临时武器，不能切换\n捡到武器后装备，才能换用更强的武器\n空格闪避 · Q 技能 · R 装填\nF 拾取 / 搜索 / 没东西可捡时急救 · B 燃烧血晶 / 自救\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,190)).add_theme_constant_override("line_spacing",11)
 	label(overlay,"02  /  搜刮要慢慢来",left+Vector2(0,240),23,GOLD)
 	var risk := label(overlay,"对着物资箱按 [F] 开始搜索，物品会每隔约 1.2 秒浮出一件，搜索框和背包可以同时开着；卡片的大小就是它在背包里占的格子。\n\n用鼠标把搜出的物品拖进角色背包或次元口袋即可拿走；担心被偷袭就随时按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽（或双击）就能换装。\n\n背包内按 [R]（或右键）旋转物品，拖动途中按 [R] 图片与占格会一起翻转；点选物品后也可以用面板按钮使用。地上的掉落物直接按 [F] 秒拾。",left+Vector2(0,291),17,MUTED,Vector2(462,268))
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -2127,7 +2152,7 @@ func show_help() -> void:
 	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 E 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点（中央也有晨钟归途）。长按 E 4 秒撤离，受伤中断。先撤离的玩家可以观战，队友无需同时离开。",right+Vector2(0,51),18,MUTED,Vector2(463,237))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	label(overlay,"04  /  不要遗忘时间",right+Vector2(0,308),23,GOLD)
-	var danger := label(overlay,"后半局毒雾从外围收缩，圈外持续损失生命与理智。到达时限，未撤离者全部阵亡。\n\n倒地后队友可长按 E 救援，但背包与身上装备当场散落。地上的武器（2×2）和护甲 / 瞄具 / 轻靴（1×2）可以捡起来装备，本局立刻变强。\n\n全员离场才统一结算：撤离成功保留背包与口袋价值，阵亡只剩次元口袋。",right+Vector2(0,356),18,MUTED,Vector2(463,220))
+	var danger := label(overlay,"后半局毒雾从外围收缩，圈外持续损失生命与理智。到达时限，未撤离者全部阵亡。\n\n倒地后队友可长按 E 救援，但背包与身上装备当场散落，手上的临时武器会立刻收回。地上的武器（2×2）和护甲 / 瞄具 / 轻靴（1×2）可以捡起来装备，本局立刻变强。\n\n全员离场才统一结算：撤离成功保留背包与口袋价值，阵亡只剩次元口袋。",right+Vector2(0,356),18,MUTED,Vector2(463,220))
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:

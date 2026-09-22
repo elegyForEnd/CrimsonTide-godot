@@ -168,10 +168,10 @@ func run() -> void:
 	for i in 4:
 		app.session.spawn_enemy(Vector2(1700+i*95,1110),i)
 	await create_timer(0.5).timeout
-	for choice in [[KEY_1,1],[KEY_2,2],[KEY_3,3],[KEY_4,0]]:
-		await key(choice[0])
-		check(app.session.players[1].weapon==choice[1],"weapon hotkey reaches authoritative session")
-	await key(KEY_1)
+	check(app.session.issue_weapon_active(app.session.players[1]),"a raid begins with the hero's temporary weapon")
+	for key_code in [KEY_1,KEY_2,KEY_3,KEY_4]:
+		await key(key_code)
+	check(app.session.issue_weapon_active(app.session.players[1]),"1-4 no longer choose a weapon")
 	Input.action_press("right")
 	await create_timer(0.12).timeout
 	check(app.session.players[1].motion=="walk","Movement enters walk state")
@@ -246,6 +246,8 @@ func run() -> void:
 	app.unequip_slot("weapon",0)
 	await create_timer(0.15).timeout
 	check(app.session.kit_weapon(app.session.players[1]).is_empty(),"the HUD can take the weapon off again")
+	check(app.session.issue_weapon_active(app.session.players[1]),"taking the looted weapon off brings the temporary weapon back")
+	check(int(app.session.players[1].weapon)==Catalog.starter_index(0),"the temporary weapon of the hero is the one restored")
 	await key(KEY_TAB)
 	check(not app.inventory_open,"Tab closes inventory")
 	# F falls through to the medkit when there is nothing in reach to loot: this is

@@ -2,9 +2,9 @@ class_name Catalog
 extends RefCounted
 
 const HEROES = [
-	{"name":"绯月", "title":"赤刃守夜姬", "desc":"绯红剑舞。红莲月华贯穿近处敌群；可切换四类武器。", "color":Color("da6474"), "hair":Color("e8dce0"), "hp":110.0, "speed":220.0, "damage":23.0, "rate":0.23, "clip":16, "skill":"红莲月华"},
-	{"name":"雪璃", "title":"晨钟祈愿者", "desc":"星辉法杖。拂晓之祈治疗附近的所有队友。", "color":Color("70c4bc"), "hair":Color("c9e0ef"), "hp":95.0, "speed":230.0, "damage":32.0, "rate":0.42, "clip":10, "skill":"拂晓之祈"},
-	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"重剑处刑。夜鸦断罪清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦断罪"}
+	{"name":"绯月", "title":"赤刃守夜姬", "desc":"黑铁短剑：攻击距离短、攻速快、伤害低。红莲月华贯穿近处敌群。", "color":Color("da6474"), "hair":Color("e8dce0"), "hp":110.0, "speed":220.0, "damage":23.0, "rate":0.23, "clip":16, "skill":"红莲月华"},
+	{"name":"雪璃", "title":"晨钟祈愿者", "desc":"祭祀短杖：远程法术攻击，伤害低，释放前需要短暂吟唱。拂晓之祈治疗附近的所有队友。", "color":Color("70c4bc"), "hair":Color("c9e0ef"), "hp":95.0, "speed":230.0, "damage":32.0, "rate":0.42, "clip":10, "skill":"拂晓之祈"},
+	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"破碎大剑：攻速慢、伤害略高、范围大。夜鸦断罪清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦断罪"}
 ]
 const ITEMS = {
 	"crystal":{"name":"血晶", "size":Vector2i(1,1), "value":18, "color":Color("e45c74"), "desc":"血香 +8；按 B 可燃烧一枚，驱散血香并恢复理智。"},
@@ -14,15 +14,34 @@ const ITEMS = {
 	"charm":{"name":"银鸦护符", "size":Vector2i(1,2), "value":70, "color":Color("b79ade"), "desc":"拾取后，本局伤害提高 12%，最多叠加三枚。"},
 	"ammo":{"name":"弹药匣", "size":Vector2i(2,1), "value":20, "color":Color("c4ad82"), "desc":"按 F 优先治疗；弹药不足时自动消耗弹药匣补充 48 发。"},
 	"backpack":{"name":"背包", "size":Vector2i(1,1), "value":40, "color":Color("cfc6bb"), "desc":"可背在身上的独立储物空间；阵亡时连同包内物资一起掉落。"},
-	"weapon":{"name":"武器", "size":Vector2i(2,2), "value":85, "color":Color("c9a06a"), "desc":"战场上捡到的强化武器。装备后本局立即换成这把武器；拿着它攻击时获得品质加成。阵亡会掉落。"},
+	"weapon":{"name":"武器", "size":Vector2i(2,2), "value":85, "color":Color("c9a06a"), "desc":"战场上捡到的武器。只有装备到武器槽后才会握在手里；拿着它攻击时获得品质加成。阵亡会掉落。"},
 	"gear":{"name":"装备", "size":Vector2i(1,2), "value":55, "color":Color("8fb6d8"), "desc":"护甲 / 瞄具 / 轻靴。装备到对应槽位后本局提升生命、火力或移速。阵亡会掉落。"}
 }
 const TALENTS = ["生命强化", "火力校准", "轻装步伐"]
+# The four weapons that exist in the world. They are loot and nothing else: a
+# Watcher can only ever hold one of them by finding it and putting it on, so the
+# index below is also the index a looted weapon stores in its "weapon" field.
 const WEAPONS = [
 	{"name":"守夜步枪", "rate":0.23, "windup":0.0, "damage":23.0, "reach":680.0, "knock":9.0},
 	{"name":"绯红单手剑", "rate":0.38, "windup":0.10, "damage":38.0, "reach":112.0, "knock":20.0},
 	{"name":"破晓双手剑", "rate":0.88, "windup":0.34, "damage":88.0, "reach":158.0, "knock":58.0},
 	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":46.0, "reach":700.0, "knock":16.0}
+]
+# The temporary weapon every hero sets out with, one per hero, appended after the
+# four field weapons so the whole game keeps addressing a weapon by a single int.
+# They exist so a Watcher can fight on the way to their first pickup and nothing
+# more: each one is strictly weaker than the field weapon it imitates, it can
+# never be found, never drops and never takes a quality bonus. "family" names the
+# field weapon whose attack art, slash VFX and impact audio it borrows.
+#
+# STARTER_BASE is the first issue index. GDScript will not fold WEAPONS.size()
+# into a constant, so this literal has to track the table above; tests/systems.gd
+# asserts the two stay equal.
+const STARTER_BASE := 4
+const STARTER_WEAPONS = [
+	{"name":"黑铁短剑", "rate":0.30, "windup":0.05, "damage":13.0, "reach":84.0, "knock":10.0, "family":1},
+	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":15.0, "reach":520.0, "knock":8.0, "family":3},
+	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":30.0, "reach":150.0, "knock":40.0, "family":2}
 ]
 const GEAR = [
 	{"name":"守夜护甲", "desc":"最大生命 +20", "hp":20.0,"damage":0.0,"speed":0.0},
@@ -91,6 +110,31 @@ static func bag_quality(bag: Dictionary) -> String:
 static func bag_color(bag: Dictionary) -> Color:
 	return tier(bag_key(bag)).color
 
+# --- the weapon in hand ------------------------------------------------------
+# One int addresses every weapon a player can hold: 0..3 are the field weapons a
+# raid can hand out, STARTER_BASE.. are the three temporary issue weapons. Every
+# combat, animation and audio consumer reads stats through weapon() and reads the
+# four-way art/effect family through weapon_family(), so a hero issue weapon
+# behaves like the field weapon it imitates without ever being one.
+static func starter_index(hero: int) -> int:
+	return STARTER_BASE+clampi(hero,0,STARTER_WEAPONS.size()-1)
+
+static func is_starter(index: int) -> bool:
+	return index>=STARTER_BASE and index<STARTER_BASE+STARTER_WEAPONS.size()
+
+static func weapon(index: int) -> Dictionary:
+	if is_starter(index):
+		return STARTER_WEAPONS[index-STARTER_BASE]
+	return WEAPONS[clampi(index,0,WEAPONS.size()-1)]
+
+static func weapon_name(index: int) -> String:
+	return str(weapon(index).name)
+
+static func weapon_family(index: int) -> int:
+	if is_starter(index):
+		return clampi(int(weapon(index).family),0,WEAPONS.size()-1)
+	return clampi(index,0,WEAPONS.size()-1)
+
 # --- weapons and gear found in the field ------------------------------------
 # Quality index 0..5 follows BAG_TIERS. A looted weapon remembers which of the
 # four weapons it upgrades, a looted gear piece which of the three slots it fills.
@@ -106,6 +150,8 @@ static func quality_color(value: int) -> Color:
 static func is_equipment(kind: String) -> bool:
 	return kind=="weapon" or kind=="gear"
 
+# A piece of loot is always one of the four field weapons: the hero issue weapons
+# have no item form and can neither be found nor dropped.
 static func make_equipment(kind: String, index: int, tier: int) -> Dictionary:
 	if kind=="weapon":
 		return {"kind":"weapon","weapon":clampi(index,0,WEAPONS.size()-1),"tier":tier_of(tier),"x":0,"y":0,"rot":false}

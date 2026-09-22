@@ -39,7 +39,7 @@ func run() -> void:
 	check(not p.pending_strike and p.swing_time==0,"Dodge cancels pending attack")
 	var old_weapon: int=p.weapon
 	session.perform(1,"weapon",{"index":3})
-	check(p.weapon==old_weapon,"Cannot switch weapon during dodge")
+	check(p.weapon==old_weapon and Catalog.is_starter(old_weapon),"The removed weapon hotkey leaves the issue weapon in hand")
 	for i in 12:
 		session.move_player(p,Vector2.LEFT,true,0.02,220)
 	check(is_equal_approx(p.p.x-origin.x,145.0),"Dodge covers exactly 145 pixels and ignores movement reversal")

@@ -98,8 +98,11 @@ func run() -> void:
 	player.ammo=0
 	app.session.action("reload")
 	check(playing_kind(sound,"reload")==1,"Accepted reload emits the recorded magazine sound")
-	app.session.action("weapon",{"index":1})
-	check(playing_kind(sound,"reload")==0 and player.reload==0.0,"Switching weapon cancels its active reload sound through game events")
+	# A weapon only changes hands by being found and equipped, and that equip still
+	# cancels the reload sound it interrupts.
+	Catalog.place_item(player.backpack,Catalog.make_equipment("weapon",1,2))
+	app.session.action("equip",{"slot":"backpack","index":player.backpack.items.size()-1})
+	check(playing_kind(sound,"reload")==0 and player.reload==0.0,"Equipping a looted weapon cancels its active reload sound through game events")
 	app.session.action("skill")
 	check(paused and app.ultimate.active,"Accepted skill starts cinematic")
 	check(sound.cinema_charge.playing and not sound.cinema_charge.stream_paused,"Charge continues while battle is paused")

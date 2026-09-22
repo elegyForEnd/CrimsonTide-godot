@@ -128,7 +128,10 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	var gear := clampi(int(config.get("gear",0)),0,2)
 	var hp: float=Catalog.HEROES[h].hp+talents[0]*12+Catalog.GEAR[gear].hp
 	var storage := storage_from_config(config)
-	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	# A raid starts with nothing but the hero issue weapon: the four field weapons
+	# are loot, so the only way into a Watcher's hands is picking one up and
+	# equipping it. make_player therefore never reads a weapon from the config.
+	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":Catalog.starter_index(h),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	return player
 
@@ -156,6 +159,20 @@ func kit_gear(p: Dictionary) -> Array:
 func weapon_kit_active(p: Dictionary) -> bool:
 	var item := kit_weapon(p)
 	return not item.is_empty() and int(item.get("weapon",-1))==int(p.weapon)
+
+# True while the player is still holding the temporary weapon they set out with.
+# Issue weapons are never upgradable, which is what keeps them below every piece
+# of field loot.
+func issue_weapon_active(p: Dictionary) -> bool:
+	return Catalog.is_starter(int(p.get("weapon",0)))
+
+# Drops the field weapon and puts the hero issue weapon back in hand, so removing
+# a weapon never leaves a Watcher swinging at nothing.
+func restore_issue_weapon(p: Dictionary) -> void:
+	p["weapon"]=Catalog.starter_index(int(p.get("hero",0)))
+	p["reload"]=0.0
+	p["combo"]=0
+	p["pending_strike"]=false
 
 func gear_bonus_of(p: Dictionary, slot: int) -> float:
 	var total := 0.0
@@ -380,6 +397,9 @@ func spill_storage(p: Dictionary) -> void:
 		kit["searched"]=container_units(kit)
 		world_drops.append(kit)
 	p["equipped"]=empty_equipment()
+	# The worn field weapon is on the ground now, so the temporary issue weapon is
+	# back in hand the moment the Watcher goes down.
+	restore_issue_weapon(p)
 	var replacement := Catalog.make_bag(Catalog.DEFAULT_BAG_KEY)
 	replacement["gw"]=Catalog.bag_grid(replacement).x
 	replacement["gh"]=Catalog.bag_grid(replacement).y
@@ -777,17 +797,9 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		return
 	if p.status!="active":
 		return
-	if p.dodge_time>0 and kind in ["weapon","skill","reload"]:
+	if p.dodge_time>0 and kind in ["skill","reload"]:
 		return
 	match kind:
-		"weapon":
-			var selected := int(payload.get("index",-1))
-			if selected>=0 and selected<Catalog.WEAPONS.size() and p.attack<=0 and p.swing_time<=0 and p.cast_time<=0:
-				p.weapon=selected
-				p.reload=0.0
-				p.combo=0
-				broadcast_audio("equip",p,selected)
-				changed.emit()
 		"reload": reload_player(p)
 		"dash":
 			if p.dash<=0:
@@ -826,7 +838,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 					seconds=float(timing.charge_time)+float(timing.burst_time)
 				p.cast_time=seconds
 				pending_ultimates[id]={"remaining":seconds,"aim":p.aim}
-				broadcast_combat({"kind":"ultimate-start","p":p.p,"aim":p.aim,"hero":p.hero,"weapon":p.weapon,"id":p.id})
+				broadcast_combat({"kind":"ultimate-start","p":p.p,"aim":p.aim,"hero":p.hero,"weapon":Catalog.weapon_family(p.weapon),"id":p.id})
 		"bag_move":
 			var index := int(payload.get("index",-1))
 			var slot := str(payload.get("slot","backpack"))
@@ -1109,7 +1121,10 @@ func equip_item(p: Dictionary, slot: String, index: int) -> bool:
 		stow_equipment(p,old)
 	refresh_max_hp(p)
 	if kind=="weapon":
-		message.emit("已装备 %s：伤害 +%d%%、攻速 +%d%%。" % [Catalog.item_name(entry),int(round(Catalog.weapon_bonus(entry)*100.0)),int(round(Catalog.weapon_rate_bonus(entry)*100.0))])
+		# Equipping is the one moment a field weapon changes hands, so it is also
+		# the cue that replaced the old free weapon switch.
+		broadcast_audio("equip",p)
+		message.emit("已装备 %s：伤害 +%d%%、攻速 +%d%%。临时武器收起了。" % [Catalog.item_name(entry),int(round(Catalog.weapon_bonus(entry)*100.0)),int(round(Catalog.weapon_rate_bonus(entry)*100.0))])
 	else:
 		message.emit("已装备 %s（%s槽）：%s。" % [Catalog.item_name(entry),Catalog.gear_slot_name(entry),Catalog.gear_desc(entry)])
 	return true
@@ -1119,12 +1134,17 @@ func unequip_item(p: Dictionary, type: String, index: int = 0) -> bool:
 	if not equipped is Dictionary:
 		return false
 	var entry: Dictionary={}
+	var dropped_weapon := false
 	if type=="weapon":
 		var worn = equipped.get("weapon",{})
 		if not worn is Dictionary or worn.is_empty():
 			return false
 		entry=worn
 		equipped["weapon"]={}
+		# Taking the looted weapon off puts the temporary issue weapon back in
+		# hand; a Watcher never ends up empty handed.
+		restore_issue_weapon(p)
+		dropped_weapon=true
 	else:
 		equipped["gear"]=gear_slots(equipped)
 		var slots: Array=equipped["gear"]
@@ -1137,7 +1157,8 @@ func unequip_item(p: Dictionary, type: String, index: int = 0) -> bool:
 	p["equipped"]=equipped
 	stow_equipment(p,entry)
 	refresh_max_hp(p)
-	message.emit("已卸下 "+Catalog.item_name(entry)+"。")
+	var tail := "，换回 %s。" % Catalog.weapon_name(p.weapon) if dropped_weapon else "。"
+	message.emit("已卸下 "+Catalog.item_name(entry)+tail)
 	return true
 
 # Three ordered gear slots, rebuilt defensively because the whole player
@@ -1222,7 +1243,7 @@ func release_ultimate(id: int) -> void:
 		return
 	p.cast_time=0.75
 	var aim: Vector2=cast.aim
-	broadcast_combat({"kind":"skill","p":p.p,"aim":aim,"hero":p.hero,"weapon":p.weapon,"id":p.id})
+	broadcast_combat({"kind":"skill","p":p.p,"aim":aim,"hero":p.hero,"weapon":Catalog.weapon_family(p.weapon),"id":p.id})
 	emit_effect("skill",p.p)
 	if p.hero==1:
 		for ally in players.values():
@@ -1239,7 +1260,9 @@ func release_ultimate(id: int) -> void:
 
 func reload_player(p: Dictionary) -> void:
 	var clip: int=16
-	if p.weapon!=0:
+	# Only the rifle family consumes ammunition; the issue weapons never do, so
+	# R on a sword, greatsword or staff is simply ignored.
+	if Catalog.weapon_family(p.weapon)!=0:
 		return
 	if clip==0 or p.reload>0 or p.ammo>=clip:
 		return
@@ -1276,7 +1299,7 @@ func simulate(dt: float) -> void:
 			p.hitstop=maxf(0,p.hitstop-dt)
 		else:
 			p.swing_time=maxf(0,p.swing_time-dt)
-			if p.pending_strike and p.swing_total-p.swing_time>=Catalog.WEAPONS[p.weapon].windup:
+			if p.pending_strike and p.swing_total-p.swing_time>=Catalog.weapon(p.weapon).windup:
 				p.pending_strike=false
 				release_strike(p)
 		if p.reload>0:
@@ -1352,7 +1375,7 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 		var active_attack: bool=p.swing_time>0 or p.cast_time>0
 		var running_now := sprint and not active_attack and direction.length()>0.1
 		var multiplier := RUN_MULTIPLIER if running_now else 1.0
-		if p.swing_time>0 and p.weapon==2:
+		if p.swing_time>0 and Catalog.weapon_family(p.weapon)==2:
 			multiplier*=0.48
 		p.p=ruins.move(p.p,direction.limit_length(1)*speed*dt*multiplier)
 		if direction.length()>0.1:
@@ -1380,41 +1403,45 @@ func down(p: Dictionary) -> void:
 func attack(p: Dictionary) -> void:
 	if p.attack>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or p.status!="active":
 		return
-	var weapon: Dictionary=Catalog.WEAPONS[p.weapon]
-	if p.weapon==0 and p.ammo<=0:
+	var family := Catalog.weapon_family(p.weapon)
+	var weapon: Dictionary=Catalog.weapon(p.weapon)
+	if family==0 and p.ammo<=0:
 		reload_player(p)
 		return
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
 	p.combo_timeout=1.2
-	# A looted weapon of matching quality swings faster than the camp issue one.
+	# A looted weapon of matching quality swings faster than the issue weapon.
 	var rate: float=weapon.rate*equipment_rate(p)
 	p.attack=rate
 	p.swing_total=rate
 	p.swing_time=rate
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=true
-	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":p.weapon,"id":p.id,"combo":p.combo})
+	# Every consumer of a combat event wants the four-way art/effect family, not
+	# the index of the exact weapon; a hero issue weapon borrows its family's.
+	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":family,"id":p.id,"combo":p.combo})
 	if weapon.windup==0:
 		p.pending_strike=false
 		release_strike(p)
 
 func release_strike(p: Dictionary) -> void:
-	var w: Dictionary=Catalog.WEAPONS[p.weapon]
+	var family := Catalog.weapon_family(p.weapon)
+	var w: Dictionary=Catalog.weapon(p.weapon)
 	var direction: Vector2=p.strike_aim
 	var damage: float=w.damage*(1+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
-	if p.weapon==1 and p.combo==2:
+	if family==1 and p.combo==2:
 		damage*=1.4
-	broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":p.weapon,"id":p.id,"combo":p.combo})
-	if p.weapon in [1,2]:
+	broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"id":p.id,"combo":p.combo})
+	if family in [1,2]:
 		for e in enemies:
 			var v: Vector2=e.p-p.p
 			if e.hp>0 and v.length()<w.reach and v.normalized().dot(direction)>-0.1 and ruins.clear_line(p.p,e.p):
-				damage_enemy(e,damage,p.id,direction,w.knock,int(p.weapon))
+				damage_enemy(e,damage,p.id,direction,w.knock,family)
 	else:
-		if p.weapon==0:
+		if family==0:
 			p.ammo-=1
 			emit_effect("shot",p.p)
-		bullets.append({"p":p.p+direction*23,"v":direction*(850 if p.weapon==0 else 620),"life":1.1,"damage":damage,"owner":p.id,"weapon":p.weapon})
+		bullets.append({"p":p.p+direction*23,"v":direction*(850 if family==0 else 620),"life":1.1,"damage":damage,"owner":p.id,"weapon":family})
 
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	e.hp-=damage

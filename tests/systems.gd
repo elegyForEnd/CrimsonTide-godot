@@ -333,6 +333,36 @@ func run() -> void:
 	restored.sanitize_storage()
 	check(restored.data.pocket.items.is_empty() and restored.data.pocket.gw==4,"loading repairs a broken pocket")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save.path))
+	# --- the temporary weapon every hero sets out with ------------------------
+	# One int addresses every weapon in the game, so the issue weapons live in the
+	# same table as the four field weapons and every consumer can stay unchanged.
+	check(Catalog.STARTER_WEAPONS.size()==Catalog.HEROES.size(),"one issue weapon per hero")
+	check(Catalog.STARTER_BASE==Catalog.WEAPONS.size(),"issue weapons sit after the four field weapons")
+	for hero in Catalog.HEROES.size():
+		var issue_index: int=Catalog.starter_index(hero)
+		check(Catalog.is_starter(issue_index),"hero %d issues a temporary weapon" % hero)
+		check(Catalog.weapon_name(issue_index)==str(Catalog.STARTER_WEAPONS[hero].name),"the issue weapon names itself")
+		check(Catalog.weapon_family(issue_index)==int(Catalog.STARTER_WEAPONS[hero].family),"the issue weapon borrows a field family")
+		check(Catalog.weapon_family(issue_index)<Catalog.WEAPONS.size(),"that family is a real field weapon")
+	for index in Catalog.WEAPONS.size():
+		check(Catalog.weapon_family(index)==index,"field weapon %d reports its own family" % index)
+		check(not Catalog.is_starter(index),"field weapon %d is not an issue weapon" % index)
+		check(Catalog.weapon(index).name==Catalog.WEAPONS[index].name,"weapon() reads the field half of the table")
+	check(Catalog.weapon_name(Catalog.starter_index(0))=="黑铁短剑","绯月 issues the black iron shortsword")
+	check(Catalog.weapon_name(Catalog.starter_index(1))=="祭祀短杖","雪璃 issues the sacrificial short staff")
+	check(Catalog.weapon_name(Catalog.starter_index(2))=="破碎大剑","鸦羽 issues the broken greatsword")
+	check(Catalog.weapon(99).name==str(Catalog.WEAPONS[Catalog.WEAPONS.size()-1].name),"an out-of-range weapon clamps to field loot")
+	# Loot can never be an issue weapon, however the index is rolled.
+	for junk in 24:
+		var rolled := Catalog.make_equipment("weapon",junk,3)
+		check(not Catalog.is_starter(int(rolled.weapon)),"loot never hands out a temporary weapon")
+		check(int(rolled.weapon)<Catalog.WEAPONS.size(),"a looted weapon stays inside the field table")
+	# Every issue weapon is deliberately weaker than the field weapon it imitates.
+	for hero in Catalog.HEROES.size():
+		var issue: Dictionary=Catalog.STARTER_WEAPONS[hero]
+		var field: Dictionary=Catalog.WEAPONS[int(issue.family)]
+		check(float(issue.damage)<float(field.damage),"%s hits softer than %s" % [issue.name,field.name])
+		check(float(issue.reach)<=float(field.reach),"%s has no more reach than %s" % [issue.name,field.name])
 	# --- weapon and gear found in the field ---------------------------------
 	check(Catalog.ITEMS.has("weapon") and Catalog.ITEMS.has("gear"),"weapons and gear are loot kinds")
 	check(Catalog.ITEMS["weapon"].size==Vector2i(2,2),"a weapon takes a 2x2 block")
@@ -425,8 +455,8 @@ func run() -> void:
 	kit_session.release_strike(k)
 	check(kit_session.bullets.size()==1,"a ranged strike creates exactly one bullet")
 	var shot: Dictionary=kit_session.bullets.back()
-	var expected_hit: float=Catalog.WEAPONS[0].damage*(1+kit_session.equipment_damage(k))
-	check(float(shot.damage)>Catalog.WEAPONS[0].damage,"a shot with worn gear hits harder than the base weapon")
+	var expected_hit: float=Catalog.weapon(0).damage*(1+kit_session.equipment_damage(k))
+	check(float(shot.damage)>Catalog.weapon(0).damage,"a shot with worn gear hits harder than the base weapon")
 	check(abs(float(shot.damage)-expected_hit)<0.01,"the shot damage matches the equipment bonus")
 	kit_session.bullets.clear()
 	# Taking gear off returns it to storage and gives the health back.
@@ -437,6 +467,8 @@ func run() -> void:
 	check(kit_session.unequip_item(k,"weapon"),"the weapon can be taken off")
 	check(kit_session.kit_weapon(k).is_empty(),"the weapon slot is empty again")
 	check(index_of(k.backpack,"weapon")>=0,"the removed weapon is back in the backpack")
+	check(k.weapon==Catalog.starter_index(0),"taking the looted weapon off returns the issue weapon")
+	check(kit_session.issue_weapon_active(k),"the temporary weapon is what is left in hand")
 	check(kit_session.unequip_item(k,"gear",0)==false,"an empty gear slot cannot be removed")
 	# --- using items straight out of the backpack ---------------------------
 	k.backpack.items.clear()
@@ -536,6 +568,7 @@ func run() -> void:
 				spilled_gear+=1
 	check(spilled_gear==1,"the worn weapon hits the ground on death")
 	check(kit_session.kit_weapon(doomed_kit).is_empty(),"death clears the worn weapon")
+	check(doomed_kit.weapon==Catalog.starter_index(0),"death hands the temporary weapon back")
 	kit_session.queue_free()
 	session.queue_free()
 	print("SYSTEM TESTS: %d checks, %d failures" % [checks,failures])

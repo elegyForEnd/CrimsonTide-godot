@@ -7,6 +7,7 @@ var age := 0.0
 var started_at := 0.0
 var got_effect := false
 var local_sent := false
+var local_skilled := false
 var saw_independent := false
 var expected := 4
 var saw_snapshot := false
@@ -58,6 +59,10 @@ func _process(dt: float) -> bool:
 				all_ready=all_ready and p.ready
 			if all_ready:
 				session.launch(false,54321)
+				# A weapon can only be used after it has been found and equipped,
+				# so every Watcher is handed one piece of field loot to put on.
+				for p in session.players.values():
+					Catalog.place_item(p.backpack,Catalog.make_equipment("weapon",2,2))
 				session.enemies.clear()
 				session.spawn_timer=999
 				for p in session.players.values():
@@ -81,8 +86,17 @@ func _process(dt: float) -> bool:
 		if not host_mode and session.elapsed>1 and Catalog.container_count(session.players[session.my_id()].pocket,"scrap")==1:
 			saw_pocket=true
 		if age-started_at>0.8 and not local_sent:
-			local_sent=true
-			session.action("weapon",{"index":2})
+			# Every peer equips the looted weapon sitting in its own backpack; the
+			# other peers must see the change of hand and hear the equip cue.
+			var me: Dictionary=session.players.get(session.my_id(),{})
+			var items: Array=Catalog.container_items(me.get("backpack",{}))
+			for i in items.size():
+				if str(items[i].kind)=="weapon":
+					local_sent=true
+					session.action("equip",{"slot":"backpack","index":i})
+					break
+		if age-started_at>0.95 and not local_skilled:
+			local_skilled=true
 			session.action("skill")
 		if (not host_mode and since_start>0.65) or age-started_at>6:
 			session.local_input={"move":Vector2.ZERO,"aim":Vector2.RIGHT,"fire":false,"interact":true}

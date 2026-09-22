@@ -21,7 +21,9 @@ func run() -> void:
 	p.aim=Vector2.RIGHT
 	app.field.camera=p.p
 	for hero in 3:
-		for weapon in [1,2,3]:
+		# The temporary issue weapon first, then the three field weapons a raid can
+		# hand out; every one of them has to animate.
+		for weapon in [Catalog.starter_index(hero),1,2,3]:
 			app.field.combat.reset()
 			app.session.bullets.clear()
 			p.hero=hero
@@ -30,8 +32,8 @@ func run() -> void:
 			p.swing_time=0.0
 			p.cast_time=0.0
 			app.session.attack(p)
-			await create_timer(Catalog.WEAPONS[weapon].windup).timeout
-			p.swing_time=p.swing_total-Catalog.WEAPONS[weapon].windup-0.04
+			await create_timer(Catalog.weapon(weapon).windup).timeout
+			p.swing_time=p.swing_total-Catalog.weapon(weapon).windup-0.04
 			app.session.release_strike(p)
 			await create_timer(0.065).timeout
 			await capture("combat-h%d-w%d" % [hero,weapon])
@@ -42,5 +44,5 @@ func run() -> void:
 		await app.ultimate.ended
 		await create_timer(0.23).timeout
 		await capture("combat-skill-%d" % hero)
-	print("COMBAT VISUAL: 12 captures completed")
+	print("COMBAT VISUAL: 21 captures completed")
 	quit()
