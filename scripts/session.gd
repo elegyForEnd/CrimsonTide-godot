@@ -41,6 +41,8 @@ var rng := RandomNumberGenerator.new()
 var report_paid := false
 var request_cooldowns: Dictionary = {}
 var pending_ultimates: Dictionary = {}
+var raid: Dictionary = {}
+var expedition = preload("res://scripts/expedition.gd").new()
 
 const SEARCH_SECONDS := 1.2
 const SEARCH_RANGE := 86.0
@@ -440,9 +442,10 @@ func begin_search(p: Dictionary, index: int) -> void:
 	var container := container_at(index)
 	if container.is_empty():
 		return
-	if container.items.is_empty() and not container_is_bag(container) and not container.get("fixed_loot",false):
+	if container.items.is_empty() and not container.get("open",false) and not container_is_bag(container) and not container.get("fixed_loot",false):
 		for entry in chest_loot(bool(container.get("bonus",false)),0.3,loot_floor()):
 			place_entry(container,entry)
+	container["open"]=true
 	p["search"]=0.0
 	p["search_ref"]=index
 
@@ -684,7 +687,7 @@ func launch(long_run: bool = false, fixed_seed: int = 0) -> bool:
 		begin.rpc(seed_value,duration,players)
 	for site in ruins.sites:
 		for j in (4 if site.tier==2 else 2):
-			spawn_enemy(site.p+Vector2(-120+j*80,-40),3 if site.tier==2 and j==0 else [0,2,1,0,1,2][site.biome])
+			spawn_enemy(site.p+Vector2(-120+j*80,-40),Ecology.POOLS[int(site.biome)][j%Ecology.POOLS[int(site.biome)].size()])
 	return true
 
 @rpc("authority","call_remote","reliable")
@@ -711,6 +714,7 @@ func begin(value: int, seconds: float, roster: Dictionary) -> void:
 	next_enemy=0
 	report_paid=false
 	running=true
+	expedition.reset(self)
 	started.emit()
 
 func _physics_process(delta: float) -> void:
@@ -729,7 +733,7 @@ func _physics_process(delta: float) -> void:
 	sync_timer-=delta
 	if online and sync_timer<=0:
 		sync_timer=0.08
-		var packet := var_to_bytes([players,enemies,bullets,world_drops,ruins.chests,ruins.shrines,elapsed,objectives,threat,results,map_id])
+		var packet := var_to_bytes([players,enemies,bullets,world_drops,ruins.chests,ruins.shrines,elapsed,objectives,threat,results,map_id,raid,ruins.sites])
 		snapshot.rpc(packet.compress(FileAccess.COMPRESSION_GZIP))
 
 @rpc("any_peer","call_remote","unreliable_ordered",1)
@@ -748,7 +752,7 @@ func snapshot(packet: PackedByteArray) -> void:
 	if not running:
 		return
 	var data = bytes_to_var(packet.decompress_dynamic(2097152,FileAccess.COMPRESSION_GZIP))
-	if not data is Array or data.size()!=11:
+	if not data is Array or data.size() not in [12,13]:
 		return
 	if map_id!=str(data[10]):
 		map_id=str(data[10])
@@ -761,9 +765,11 @@ func snapshot(packet: PackedByteArray) -> void:
 	world_drops=data[3]
 	ruins.chests=data[4]
 	ruins.shrines=data[5]
+	if data.size()==13: ruins.sites=data[12]
 	elapsed=data[6]
 	objectives=data[7]
 	threat=data[8]
+	raid=data[11]
 	# Results only arrive with the authoritative settlement packet; a late snapshot
 	# must never wipe a finished run's report.
 	if results.is_empty():
@@ -784,6 +790,9 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 	if not running or not players.has(id):
 		return
 	var p: Dictionary=players[id]
+	if kind=="raid_choice":
+		expedition.choose(self,id,str(payload.get("choice","")))
+		return
 	if pending_ultimates.has(id):
 		return
 	if p.status not in ["active","down"]:
@@ -1274,9 +1283,17 @@ func reload_player(p: Dictionary) -> void:
 
 func simulate(dt: float) -> void:
 	elapsed+=dt
-	threat=elapsed/duration
+	expedition.tick(self,dt)
+	# Entering a habitat commits its current defenders. Refill and scent spawns
+	# cannot prolong an encounter after the party has started clearing it.
+	if map_id=="border":
+		for p in players.values():
+			if p.status!="active": continue
+			var block := Ecology.block_at(ruins,p.p)
+			if block>=0 and Ecology.remaining(self,block)>0: ruins.sites[block].engaged=true
+	threat=clampf(float(raid.day-1)*0.35+float(raid.time)/duration,0,1.6)
 	spawn_timer-=dt
-	if map_id=="border" and spawn_timer<=0 and enemies.size()<65:
+	if raid.phase=="explore" and map_id=="border" and spawn_timer<=0 and enemies.size()<65:
 		spawn_timer=maxf(2.0,9.0-threat*6.0)
 		for i in players.size():
 			spawn_enemy()
@@ -1318,14 +1335,15 @@ func simulate(dt: float) -> void:
 		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed+equipment_speed(p)
 		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
 		p.scent=move_toward(p.scent,float(crystals_carried(p)*8),dt*0.5)
-		p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
-		if map_id=="border" and p.p.distance_to(Ruins.CENTER)>safe_radius():
+		if raid.phase not in ["choice","complete"]:
+			p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
+		if map_id=="border" and p.p.distance_to(safe_center())>safe_radius():
 			p.hp-=dt*(4+threat*5)
 			p.sanity=maxf(0,p.sanity-dt*1.4)
-		if p.sanity<=0:
+		if p.sanity<=0 and raid.phase not in ["choice","complete"]:
 			p.hp-=dt*3
-		if map_id=="border" and p.scent>38 and rng.randf()<dt*0.04 and enemies.size()<70:
-			spawn_enemy(p.p+Vector2(300,0),3)
+		if raid.phase=="explore" and map_id=="border" and p.scent>38 and rng.randf()<dt*0.04 and enemies.size()<70:
+			spawn_enemy(p.p+Vector2(300,0))
 			p.scent-=10
 		if bool(cmd.get("fire",false)):
 			attack(p)
@@ -1335,23 +1353,28 @@ func simulate(dt: float) -> void:
 			down(p)
 	update_enemies(dt)
 	update_bullets(dt)
+	var defeated_boss := false
 	for i in range(enemies.size()-1,-1,-1):
 		var e: Dictionary=enemies[i]
 		if e.hp<=0:
+			resolve_site_defeat(e)
 			if players.has(e.last):
 				players[e.last].kills+=1
-			if e.type==4:
-				knight_reward(e.p)
+			if e.get("raid_boss",false):
+				defeated_boss=true
+			elif e.type==4:
+				if map_id=="city": ruins.sites[0]["boss_defeated"]=true
 			elif rng.randf()<0.42 or e.type==3:
 				var loot := enemy_loot(e)
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
-			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0)})
+			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1)})
 			enemies.remove_at(i)
-	if elapsed>=duration:
-		for p in players.values():
-			if p.status in ["active","down"]:
-				p.status="dead"
+	if map_id=="city" and ruins.sites[0].get("boss_defeated",false) and not ruins.sites[0].get("cleared",false) and enemies.is_empty():
+		ruins.sites[0]["cleared"]=true
+		knight_reward(RoyalCity.BOSS)
+	if defeated_boss:
+		expedition.victory(self)
 	var alive := false
 	for p in players.values():
 		if p.status in ["active","down"]:
@@ -1359,9 +1382,26 @@ func simulate(dt: float) -> void:
 	if not alive:
 		settle()
 
+func safe_center() -> Vector2:
+	return raid.get("center",Ruins.CENTER)
+
 func safe_radius() -> float:
 	if map_id=="city": return 10000.0
-	return lerpf(Ruins.SIZE.length()/2+100,650,clampf((elapsed/duration-0.45)/0.55,0,1))
+	if raid.is_empty(): return Ruins.SIZE.length()
+	if raid.phase in ["choice","complete"]: return Ruins.SIZE.length()
+	var final_radius := 620.0 if raid.day==3 else 540.0
+	if raid.phase=="boss": return final_radius
+	# Start large enough to cover every corner even for an off-centre arena.
+	var center := safe_center()
+	var full := maxf(center.distance_to(Vector2.ZERO),center.distance_to(Ruins.SIZE))
+	full=maxf(full,maxf(center.distance_to(Vector2(Ruins.SIZE.x,0)),center.distance_to(Vector2(0,Ruins.SIZE.y))))+100
+	return lerpf(full,final_radius,clampf((float(raid.time)/duration-0.50)/0.50,0,1))
+
+func can_extract() -> bool:
+	return not raid.is_empty() and (raid.day==2 or raid.phase=="complete")
+
+func can_travel() -> bool:
+	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<duration*0.5)
 
 func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
 	var before: Vector2=p.p
@@ -1444,10 +1484,14 @@ func release_strike(p: Dictionary) -> void:
 		bullets.append({"p":p.p+direction*23,"v":direction*(850 if family==0 else 620),"life":1.1,"damage":damage,"owner":p.id,"weapon":family})
 
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
+	var block := int(e.get("habitat",-1))
+	if map_id=="border" and block>=0 and damage>0: ruins.sites[block].engaged=true
 	e.hp-=damage
 	e.last=owner
 	e["flash"]=0.14
-	if e.type==4:
+	if e.get("raid_boss",false):
+		knock=0.0
+	elif e.type==4:
 		e["poise"]=float(e.get("poise",0))+damage
 		if e.poise>=220:
 			e.poise=0.0
@@ -1455,6 +1499,14 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 			e["stagger"]=1.1
 			e.cd=1.5
 		knock*=0.12
+	elif e.type>=14:
+		e["poise"]=float(e.get("poise",0))+damage
+		if e.poise>=150:
+			e.poise=0.0
+			e["attack_time"]=0.0
+			e["stagger"]=0.65
+			e.cd=1.0
+		knock*=0.08
 	else:
 		e["attack_time"]=0.0
 		e["stagger"]=0.12 if knock<40 else 0.26
@@ -1483,7 +1535,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 		return
 	var target := ""
 	var seconds := 0.25
-	if p.p.distance_to(portal_position())<85 and party_at_gate():
+	if can_travel() and p.p.distance_to(portal_position())<85 and party_at_gate():
 		target="portal:0"
 		seconds=1.5
 	for other in players.values():
@@ -1493,13 +1545,13 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			break
 	if target.is_empty():
 		for i in ruins.exits.size():
-			if p.p.distance_to(ruins.exits[i])<83:
+			if can_extract() and p.p.distance_to(ruins.exits[i])<83:
 				target="exit:%d" % i
 				seconds=4.0
 				break
 	if target.is_empty():
 		for i in ruins.shrines.size():
-			if not ruins.shrines[i].done and p.p.distance_to(ruins.shrines[i].p)<72:
+			if raid.phase not in ["choice","complete"] and not ruins.shrines[i].done and p.p.distance_to(ruins.shrines[i].p)<72:
 				target="shrine:%d" % i
 				seconds=3.0
 				break
@@ -1533,7 +1585,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			objectives+=1
 			p.sanity=minf(100,p.sanity+20)
 			emit_effect("bell",p.p)
-			spawn_enemy(ruins.shrines[index].p+Vector2(0,240),3)
+			spawn_enemy(ruins.shrines[index].p+Vector2(0,240))
 
 # A loot container is a grid plus a search counter: items become visible one at
 # a time while somebody searches it.
@@ -1580,39 +1632,102 @@ func visible_items(container: Dictionary) -> Array:
 func peek_items(container: Dictionary) -> Array:
 	return Catalog.container_items(container)
 
-func random_patrol_position() -> Vector2:
-	# Reinforcements stay relevant on the larger map and never spawn on players.
-	var active: Array=[]
-	for p in players.values():
-		if p.status=="active": active.append(p)
-	if not active.is_empty():
-		var p: Dictionary=active[rng.randi_range(0,active.size()-1)]
-		return (p.p+Vector2.from_angle(rng.randf()*TAU)*rng.randf_range(600,1050)).clamp(Vector2(100,100),Ruins.SIZE-Vector2(100,100))
-	return ruins.sites[rng.randi_range(0,ruins.sites.size()-1)].p
-
 func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
+	if type < -1 or type>=Ecology.HEALTH.size(): return
 	var pos := at
-	var near := false
-	if pos==Vector2.ZERO:
-		pos=random_patrol_position()
-	for i in 24:
-		near=false
-		for p in players.values():
-			if p.status=="active" and p.p.distance_to(pos)<260:
-				near=true
-		if not ruins.blocked(pos,25) and not near:
+	var kind := type
+	var block := -1
+	if map_id=="border" and type!=4:
+		# Retries remain within an eligible habitat, never on arbitrary map terrain.
+		var candidates: Array[int]=[]
+		for i in ruins.sites.size():
+			if ruins.sites[i].get("cleared",false) or ruins.sites[i].get("engaged",false): continue
+			if type<0 or type in Ecology.POOLS[int(ruins.sites[i].biome)]: candidates.append(i)
+		if candidates.is_empty(): return
+		if at!=Vector2.ZERO:
+			var requested := Ecology.block_at(ruins,at)
+			if requested>=0 and (ruins.sites[requested].get("cleared",false) or ruins.sites[requested].get("engaged",false)): return
+			if requested in candidates:
+				candidates=[requested]
+			else:
+				var closest: int=candidates[0]
+				for index in candidates:
+					if ruins.sites[index].p.distance_squared_to(at)<ruins.sites[closest].p.distance_squared_to(at): closest=index
+				candidates=[closest]
+		var found := false
+		for attempt in 80:
+			if attempt==0 and at!=Vector2.ZERO:
+				block=Ecology.block_at(ruins,pos)
+			else:
+				block=candidates[rng.randi_range(0,candidates.size()-1)]
+				var area: Rect2=ruins.sites[block].rect.grow(145)
+				pos=area.position+Vector2(rng.randf(),rng.randf())*area.size
+			if block<0 or not block in candidates or Ecology.block_at(ruins,pos)!=block: continue
+			var count := 0
+			for resident in enemies:
+				if int(resident.get("habitat",-1))==block and resident.hp>0: count+=1
+			if count>=5: continue
+			var near := false
+			for p in players.values():
+				if p.status=="active" and p.p.distance_to(pos)<260: near=true
+			var pool: Array=Ecology.POOLS[int(ruins.sites[block].biome)]
+			kind=type if type>=0 else Ecology.random_kind(pool,rng)
+			# Keep the same minimum terrain clearance guaranteed by the original
+			# ecology contract, while still reserving extra room for large elites.
+			if near or ruins.blocked(pos,maxf(25.0,Ecology.RADIUS[kind])): continue
+			found=true
 			break
-		pos=random_patrol_position()
-	if ruins.blocked(pos,25) or near:
-		return
-	var kind := type if type>=0 else rng.randi_range(0,2)
-	var health: float = [58.0,42.0,125.0,310.0,1800.0][kind]*(1+0.3*(players.size()-1))
-	enemies.append({"id":next_enemy,"p":pos,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU),"facing":1.0,"motion_phase":0.0,"moving":false,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_target":0,"attack_aim":Vector2.RIGHT})
+		if not found: return
+	else:
+		if kind<0: kind=2
+		if ruins.blocked(pos,25): return
+	var health: float=Ecology.HEALTH[kind]*(1+0.3*(players.size()-1))
+	enemies.append({"id":next_enemy,"p":pos,"home":pos,"habitat":block,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU),"facing":1.0,"motion_phase":0.0,"moving":false,"flash":0.0,"poise":0.0,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_target":0,"attack_aim":Vector2.RIGHT})
 	next_enemy+=1
+
+# Rewards are driven by actual defender deaths, never by an empty list during
+# travel or boss transitions. Habitat ownership survives chasing out of a site.
+func resolve_site_defeat(e: Dictionary) -> void:
+	if not authority() or map_id!="border" or e.get("raid_boss",false): return
+	var block := int(e.get("habitat",-1))
+	if block<0 or block>=ruins.sites.size(): return
+	var site: Dictionary=ruins.sites[block]
+	if site.get("cleared",false): return
+	site.engaged=true
+	site.defeated=int(site.get("defeated",0))+1
+	if Ecology.remaining(self,block)>0: return
+	site.cleared=true
+	var quality := Ecology.difficulty(site)
+	var size := 4 if quality==1 else (5 if quality==2 else 6)
+	var chest := loot_container(site.p+Vector2(0,40),Vector2i(size,size),quality,true)
+	chest.merge({"fixed_loot":true,"site_reward":block,"reward_tier":quality,"title":str(site.name)+" · "+Ecology.reward_label(site)})
+	# Guaranteed equipment matches the site's danger, independent of the first
+	# player's backpack. Place the valuable items before optional supplies.
+	place_entry(chest,Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),quality))
+	place_entry(chest,Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),quality))
+	place_entry(chest,{"kind":"backpack","key":Catalog.BAG_TIERS[quality].key})
+	for i in quality-1: place_entry(chest,"relic")
+	place_entry(chest,"medicine")
+	place_entry(chest,"ammo")
+	append_chest(chest)
+	emit_effect("bell",chest.p)
+
+func append_chest(chest: Dictionary) -> void:
+	# Ground containers are indexed after chests; keep ongoing searches attached
+	# to the same dropped bag when a new reward is inserted in front of them.
+	for p in players.values():
+		if search_reference(p)>=ruins.chests.size(): p.search_ref+=1
+	ruins.chests.append(chest)
 
 func update_enemies(dt: float) -> void:
 	for e in enemies:
 		if e.hp<=0:
+			continue
+		if e.get("raid_boss",false):
+			expedition.update_boss(self,e,dt)
+			continue
+		if e.type>=5:
+			Ecology.update(self,e,dt)
 			continue
 		if e.type==4:
 			update_knight(e,dt)
@@ -1689,6 +1804,11 @@ func update_bullets(dt: float) -> void:
 	for i in range(bullets.size()-1,-1,-1):
 		var b: Dictionary=bullets[i]
 		var old: Vector2=b.p
+		if b.has("return_after"):
+			b.age+=dt
+			if not b.reversed and b.age>=b.return_after:
+				b.v=-b.v
+				b.reversed=true
 		b.p+=b.v*dt
 		b.life-=dt
 		if not ruins.clear_line(old,b.p):
@@ -1702,7 +1822,7 @@ func update_bullets(dt: float) -> void:
 						break
 			else:
 				for e in enemies:
-					if Geometry2D.get_closest_point_to_segment(e.p,old,b.p).distance_to(e.p)<(27 if e.type==3 else 19):
+					if Geometry2D.get_closest_point_to_segment(e.p,old,b.p).distance_to(e.p)<Ecology.RADIUS[e.type]:
 						damage_enemy(e,b.damage,b.owner,b.v.normalized(),16.0,int(b.get("weapon",0)))
 						b.life=0
 						break
@@ -1728,7 +1848,7 @@ func settle() -> void:
 		# Extraction banks both containers; death already scattered the backpack
 		# in down(), so only the sealed pocket survives it.
 		var loot := (Catalog.container_value(p.backpack)+Catalog.container_value(p.pocket)) if extracted else 0
-		var shared := objectives*55+(100 if objectives==3 else 0)
+		var shared := objectives*55+(100 if objectives==3 else 0)+int(p.get("boss_reward",0))
 		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":loot+shared,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted),"worn":worn_names(p)}
 	running=false
 	finished.emit()
@@ -1789,8 +1909,9 @@ func party_at_gate() -> bool:
 		if p.status=="active" and p.p.distance_to(portal_position())>240: return false
 	return true
 
-func travel_city() -> bool:
-	if not authority() or not running or not party_at_gate(): return false
+func travel_city(forced: bool = false) -> bool:
+	if not authority() or not running: return false
+	if not forced and (not can_travel() or not party_at_gate()): return false
 	map_states[map_id]={"ruins":ruins,"enemies":enemies,"drops":world_drops}
 	map_id="city" if map_id=="border" else "border"
 	var fresh := not map_states.has(map_id)
@@ -1815,7 +1936,7 @@ func travel_city() -> bool:
 		p.swing_time=0.0
 		p.dodge_time=0.0
 		p.cast_time=0.0
-		if p.status=="active":
+		if p.status in ["active","down"]:
 			p.p=portal_position()+Vector2((index-1)*42,-140 if map_id=="city" else 140)
 			p.invuln=2.0
 			index+=1
@@ -1835,7 +1956,7 @@ func knight_reward(at: Vector2) -> void:
 	for i in 3: place_entry(chest,Catalog.make_equipment("gear",i,4))
 	place_entry(chest,{"kind":"backpack","key":"gold"})
 	chest["open"]=true
-	ruins.chests.append(chest)
+	append_chest(chest)
 	emit_effect("bell",at)
 
 func update_knight(e: Dictionary, dt: float) -> void:

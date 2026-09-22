@@ -32,7 +32,7 @@ func _process(dt: float) -> bool:
 			assert(session.travel_city())
 			stage=1
 		elif stage==1 and run_age>4:
-			session.enemies[0].hp=0
+			for e in session.enemies: e.hp=0
 			stage=2
 		elif stage==2 and run_age>6:
 			gather()
@@ -49,7 +49,7 @@ func _process(dt: float) -> bool:
 		if session.map_id=="city":
 			assert(session.ruins is RoyalCity)
 			seen_city=true
-			if session.ruins.chests.size()==3: seen_reward=true
+			if session.ruins.chests.size()==1: seen_reward=true
 			if seen_border and seen_reward:
 				var alive_knight := false
 				for e in session.enemies:

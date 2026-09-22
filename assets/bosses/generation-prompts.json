@@ -1,0 +1,35 @@
+{
+  "note": "Final prompt specifications and layout revision recorded for regeneration; generated with built-in image_gen.",
+  "assets": [
+    {
+      "boss": "bell-hierophant",
+      "tool": "built-in image_gen",
+      "prompt_spec": {
+        "portrait": "Japanese 2D anime gacha game illustration, expressive anime face, delicate ink lineart, cel-shaded light and shadow, ivory and saturated jewel colors. No photorealism or 3D rendering. Scarlet Funeral Bell Hierophant: adult male, pale lavender long hair, white blindfold, ivory bishop mitre, violet crystal, crescent halo with three funeral bells, ivory and violet ceremonial robes, crimson seals, silver bell crozier. Full body, 1024x1536, complete accessories, transparent alpha, no scenery or text. Use project portrait and moonbell sprite sheet as style references.",
+        "animation": "Japanese 2D anime gacha game illustration, expressive anime face, delicate ink lineart, cel-shaded light and shadow, ivory and saturated jewel colors. No photorealism or 3D rendering. Scarlet Funeral Bell Hierophant: adult male, pale lavender long hair, white blindfold, ivory bishop mitre, violet crystal, crescent halo with three funeral bells, ivory and violet ceremonial robes, crimson seals, silver bell crozier. Preserve portrait identity. Exactly 12 complete full-body poses in four columns and three rows: four movement frames, attack ready, windup, release, recovery, two idle, hurt, collapsed defeat. Face right, consistent scale and feet baseline. No labels or gridlines.",
+        "layout_revision": "Preserve all twelve designs and poses. Scale poses to 65% cell height and at most 72% width; generous transparent gutters; complete weapons and accessories inside their cells; no overlap; clean alpha edges.",
+        "hud": "Single game-ready illustrated boss health bar frame. Silver cathedral filigree, violet crystal, bishop mitre and three bells. Wide 3:1 canvas, ornate medallion at left, empty horizontal dark health trough, quiet dark nameplate above and move-name plate below. No words, numbers, health fill, portrait or scenery. Transparent exterior."
+      }
+    },
+    {
+      "boss": "thorn-huntsman",
+      "tool": "built-in image_gen",
+      "prompt_spec": {
+        "portrait": "Japanese 2D anime gacha game illustration, expressive anime face, delicate ink lineart, cel-shaded light and shadow, ivory and saturated jewel colors. No photorealism or 3D rendering. Thorn Oath Huntsman King: adult male, dark teal hair, amber eyes, half deer-skull mask, branching crimson antlers, broad white fur mantle, navy burgundy hunter armor, torn cape and long thorn spear. Full body, 1024x1536, complete accessories, transparent alpha, no scenery or text. Use project portrait and moonbell sprite sheet as style references.",
+        "animation": "Japanese 2D anime gacha game illustration, expressive anime face, delicate ink lineart, cel-shaded light and shadow, ivory and saturated jewel colors. No photorealism or 3D rendering. Thorn Oath Huntsman King: adult male, dark teal hair, amber eyes, half deer-skull mask, branching crimson antlers, broad white fur mantle, navy burgundy hunter armor, torn cape and long thorn spear. Preserve portrait identity. Exactly 12 complete full-body poses in four columns and three rows: four movement frames, attack ready, windup, release, recovery, two idle, hurt, collapsed defeat. Face right, consistent scale and feet baseline. No labels or gridlines.",
+        "layout_revision": "Preserve all twelve designs and poses. Scale poses to 65% cell height and at most 72% width; generous transparent gutters; complete weapons and accessories inside their cells; no overlap; clean alpha edges.",
+        "hud": "Single game-ready illustrated boss health bar frame. Crimson thorns, ivory deer skull, ruby antlers and spear finials. Wide 3:1 canvas, ornate medallion at left, empty horizontal dark health trough, quiet dark nameplate above and move-name plate below. No words, numbers, health fill, portrait or scenery. Transparent exterior."
+      }
+    },
+    {
+      "boss": "blood-queen",
+      "tool": "built-in image_gen",
+      "prompt_spec": {
+        "portrait": "Japanese 2D anime gacha game illustration, expressive anime face, delicate ink lineart, cel-shaded light and shadow, ivory and saturated jewel colors. No photorealism or 3D rendering. Blood Tide Queen: regal adult woman, silver-white hair, crimson eyes, floating ruby crown, ivory black gothic dress with burgundy roses and gold filigree, six ruby stained-glass blade wings and crimson rapier. Full body, 1024x1536, complete accessories, transparent alpha, no scenery or text. Use project portrait and moonbell sprite sheet as style references.",
+        "animation": "Japanese 2D anime gacha game illustration, expressive anime face, delicate ink lineart, cel-shaded light and shadow, ivory and saturated jewel colors. No photorealism or 3D rendering. Blood Tide Queen: regal adult woman, silver-white hair, crimson eyes, floating ruby crown, ivory black gothic dress with burgundy roses and gold filigree, six ruby stained-glass blade wings and crimson rapier. Preserve portrait identity. Exactly 12 complete full-body poses in four columns and three rows: four movement frames, attack ready, windup, release, recovery, two idle, hurt, collapsed defeat. Face right, consistent scale and feet baseline. No labels or gridlines.",
+        "layout_revision": "Preserve all twelve designs and poses. Scale poses to 65% cell height and at most 72% width; generous transparent gutters; complete weapons and accessories inside their cells; no overlap; clean alpha edges.",
+        "hud": "Single game-ready illustrated boss health bar frame. Antique gold, ruby moon crown, six stained-glass wings and rose finials. Wide 3:1 canvas, ornate medallion at left, empty horizontal dark health trough, quiet dark nameplate above and move-name plate below. No words, numbers, health fill, portrait or scenery. Transparent exterior."
+      }
+    }
+  ]
+}

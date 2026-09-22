@@ -40,8 +40,8 @@ func run() -> void:
 	session.launch(false,1729)
 	session.set_physics_process(false)
 	check(session.safe_radius()>Ruins.CENTER.length(),"Full map starts safe")
-	session.elapsed=session.duration
-	check(session.ruins.exits[3].distance_to(Ruins.CENTER)<session.safe_radius(),"Late extraction stays inside final ring")
+	session.raid.time=session.duration
+	check(is_equal_approx(session.safe_radius(),540) and not session.ruins.blocked(session.safe_center()),"Dawn circle surrounds a walkable random arena")
 	for enemy in session.enemies: check(not session.ruins.blocked(enemy.p,25),"Enemy spawns on land")
 	session.queue_free()
 	await process_frame

@@ -59,6 +59,7 @@ func _process(dt: float) -> bool:
 				all_ready=all_ready and p.ready
 			if all_ready:
 				session.launch(false,54321)
+				session.expedition.prepare_day(session,2)
 				# A weapon can only be used after it has been found and equipped,
 				# so every Watcher is handed one piece of field loot to put on.
 				for p in session.players.values():

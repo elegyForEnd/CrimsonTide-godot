@@ -7,6 +7,7 @@ const SPAWN := Vector2(560,2400)
 const EXIT_NAMES := ["西境驿站","东岸渡口","北境钟门","晨钟归途"]
 const BIOME_NAMES := ["风铃原野","白垩旧城","月晶高地","蔷薇庭域","雾汐湿地","圣血王庭"]
 const COLORS := [Color("809d83"),Color("b1a28c"),Color("9990b5"),Color("ae7f8c"),Color("689c9b"),Color("c9b99c")]
+const WILDERNESS_CHESTS := 6
 var extent := SIZE
 var interior := false
 var walls: Array[Rect2] = []
@@ -71,16 +72,13 @@ func generate(value: int) -> void:
 		var pos: Vector2=spec[1]
 		var room := Vector2(500,400) if i not in [5,15] else Vector2(780,620)
 		var rect := Rect2(pos-room/2,room)
-		sites.append({"p":pos,"rect":rect,"name":spec[0],"biome":spec[2],"tier":spec[3],"prop":spec[4]})
+		sites.append({"p":pos,"rect":rect,"name":spec[0],"biome":spec[2],"tier":spec[3],"prop":spec[4],"engaged":false,"cleared":false,"defeated":0})
 		# Open ruins have four entrances; no sealed rectangular rooms.
 		if i%3!=2:
 			for side in [-1,1]:
 				for end in [-1,1]:
 					walls.append(Rect2(pos+Vector2(side*room.x/2-12,end*room.y/2-75),Vector2(24,150)))
 					walls.append(Rect2(pos+Vector2(end*room.x/2-100,side*room.y/2-12),Vector2(200,24)))
-		for j in (4 if spec[3]==2 else 3):
-			var at := pos+Vector2(-150+(j%3)*150,40+(j/3)*90)
-			chests.append({"p":at,"key":"container","items":[],"open":false,"searched":0,"bonus":spec[3]==2 or rng.randf()<0.18,"class":spec[3]})
 		if i in [3,10,15]:
 			shrines.append({"p":pos+Vector2(0,145),"done":false,"progress":0.0})
 		decor.append({"p":pos+Vector2(0,-110),"type":spec[4],"size":510.0 if i==5 else (290.0 if i==15 else 210.0),"landmark":true})
@@ -150,6 +148,22 @@ func generate(value: int) -> void:
 		var kind: int=[1,3,2,1,4,5][biome]
 		decor.append({"p":pos,"type":kind,"size":rng.randf_range(95,175),"landmark":false})
 	indexed_wall_count=walls.size()
+	# One sparse cache per biome, outside every habitat. Keep caches near the
+	# connected road network so a random lake or cliff cannot strand supplies.
+	var cache_rng := RandomNumberGenerator.new()
+	cache_rng.seed=value+1307
+	for biome in WILDERNESS_CHESTS:
+		for attempt in 2500:
+			var at := Vector2(cache_rng.randf_range(400,SIZE.x-400),cache_rng.randf_range(400,SIZE.y-400)).snapped(Vector2(40,40))
+			if biome_at(at)!=biome or blocked(at,45) or not near_road(at,100): continue
+			var close := false
+			for site in sites:
+				if site.rect.grow(220).has_point(at): close=true; break
+			for chest in chests:
+				if chest.p.distance_to(at)<700: close=true; break
+			if close: continue
+			chests.append({"p":at,"key":"container","items":[],"open":false,"searched":0,"bonus":false,"class":1,"title":"野外遗落物资箱"})
+			break
 
 static func river_x(y: float) -> float:
 	return 3200+sin(y/610.0)*170
@@ -184,15 +198,15 @@ func blocked(pos: Vector2, radius: float = 15.0) -> bool:
 			if wall.grow(radius).has_point(pos): return true
 	return false
 
-func move(from: Vector2, velocity: Vector2) -> Vector2:
+func move(from: Vector2, velocity: Vector2, radius: float = 15.0) -> Vector2:
 	var result := from
 	var steps := maxi(1,int(ceil(velocity.length()/9.0)))
 	var step := velocity/steps
 	for i in steps:
 		var x := result+Vector2(step.x,0)
-		if not blocked(x): result=x
+		if not blocked(x,radius): result=x
 		var y := result+Vector2(0,step.y)
-		if not blocked(y): result=y
+		if not blocked(y,radius): result=y
 	return result
 
 func clear_line(a: Vector2,b: Vector2) -> bool:

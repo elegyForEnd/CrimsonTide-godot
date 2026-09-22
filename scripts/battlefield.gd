@@ -1,6 +1,5 @@
 class_name Battlefield
 extends Node2D
-
 var session: TideSession
 var camera := Ruins.SPAWN
 var offset := Vector2.ZERO
@@ -16,6 +15,9 @@ var sentinels: Texture2D
 var smooth_positions: Dictionary = {}
 var ground: Texture2D
 var enemy_frames: EnemyFrames
+var boss_frames: BossFrames
+var boss_seen: Dictionary={}
+var boss_health: Dictionary={}
 var defeated_enemies: Array = []
 var velocity_visual: Dictionary = {}
 var previous_positions: Dictionary = {}
@@ -34,6 +36,13 @@ func _ready() -> void:
 	world_art=WorldArt.new()
 	texture_repeat=CanvasItem.TEXTURE_REPEAT_ENABLED
 	enemy_frames=EnemyFrames.new()
+	boss_frames=BossFrames.new()
+	var boss_layer := CanvasLayer.new()
+	boss_layer.layer=1
+	add_child(boss_layer)
+	var boss_hud := preload("res://scripts/boss_hud.gd").new()
+	boss_hud.field=self
+	boss_layer.add_child(boss_hud)
 	for kind in Catalog.ITEMS:
 		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
 	# Field equipment resolves to its own weapon / slot icon, so preload those too.
@@ -51,15 +60,20 @@ func _ready() -> void:
 			fallen["age"]=0.0
 			defeated_enemies.append(fallen))
 	session.map_changed.connect(func(): waypoint=Vector2(-1,-1); explored.clear(); defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); camera=session.players.get(session.my_id(),{"p":RoyalCity.GATE}).p)
-	session.started.connect(func(): waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
+	session.started.connect(func(): boss_seen.clear(); boss_health.clear(); waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
 
 func _process(dt: float) -> void:
 	if not visible:
 		return
 	clock+=dt
+	for e in session.enemies:
+		if not e.get("raid_boss",false): continue
+		if not boss_seen.has(e.id): boss_seen[e.id]=clock
+		var ratio: float=clampf(e.hp/e.max_hp,0,1)
+		boss_health[e.id]=move_toward(float(boss_health.get(e.id,ratio)),ratio,dt*0.35)
 	for i in range(defeated_enemies.size()-1,-1,-1):
 		defeated_enemies[i].age+=dt
-		if defeated_enemies[i].age>=0.55:
+		if defeated_enemies[i].age>=(1.6 if defeated_enemies[i].get("boss_kind",-1)>=0 else 0.55):
 			defeated_enemies.remove_at(i)
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if not p.is_empty():
@@ -105,7 +119,7 @@ func _draw() -> void:
 	world_art.terrain(self,world,camera,clock)
 	var gate := session.portal_position()
 	draw_arc(gate,45,0,TAU,48,Color("a5ebed"),4,true)
-	label(gate+Vector2(-95,-58),"返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]",18,Color("ecdfba"))
+	label(gate+Vector2(-95,-58),("返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]") if session.can_travel() else "血潮封锁 · 城门关闭",18,Color("ecdfba"))
 	for site in world.sites:
 		if site.p.distance_to(camera)<1000:
 			label(site.p+Vector2(-80,-site.rect.size.y/2-45),site.name,19,Color("fff1db"))
@@ -116,7 +130,7 @@ func _draw() -> void:
 		draw_arc(pos,70+sin(clock*2)*4,0,TAU,60,Color(0.4,0.8,0.73,pulse),2)
 		draw_arc(pos,50,0,TAU,48,Color("467b77"),1)
 		cross(pos,20,Color("80cabc"))
-		label(pos+Vector2(-52,103),Ruins.EXIT_NAMES[i],15,Color("89b8b0"))
+		label(pos+Vector2(-52,103),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else ""),15,Color("89b8b0"))
 	for shrine in world.shrines:
 		var pos: Vector2=shrine.p
 		var color := Color("7accb4") if shrine.done else Color("ddb675")
@@ -128,9 +142,11 @@ func _draw() -> void:
 		var pos: Vector2=chest.p
 		var empty: bool=chest.open and chest.items.is_empty()
 		if chest.get("fixed_loot",false) and not empty:
-			draw_circle(pos,48,Color(0.95,0.72,0.37,0.16))
-			draw_line(pos,pos-Vector2(0,85),Color(1,0.85,0.53,0.5),5,true)
-			label(pos+Vector2(-92,-94),"王庭珍藏 · [F] 搜索",16,Color("ffe2aa"))
+			var reward_color: Color=Catalog.BAG_TIERS[int(chest.get("reward_tier",4))].color
+			draw_circle(pos,48,Color(reward_color,0.16))
+			draw_line(pos,pos-Vector2(0,85),Color(reward_color,0.5),5,true)
+			var caption := session.container_title(chest)+" · [F] 搜索"
+			label(pos+Vector2(-font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,16).x/2,-94),caption,16,reward_color)
 		var deep: bool=int(chest.get("class",1))>=2
 		var revealed: int=int(chest.get("searched",0))
 		draw_rect(Rect2(pos-Vector2(21,12),Vector2(46,31)),Color(0,0,0,0.35))
@@ -164,10 +180,17 @@ func _draw() -> void:
 				draw_texture_rect(loot_icons[Catalog.item_icon(item)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
 				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
 	for fallen in defeated_enemies:
-		var height: float=EnemyFrames.HEIGHTS[int(fallen.type)]
+		if int(fallen.get("boss_kind",-1))>=0:
+			var kind: int=fallen.boss_kind
+			draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
+			draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,1-fallen.age/1.6))
+			draw_set_transform(offset)
+			continue
 		draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
-		draw_texture_rect_region(enemy_frames.sheets[int(fallen.type)],Rect2(-height*0.75,-height+12,height*1.5,height*1.5),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
+		draw_texture_rect_region(enemy_frames.sheets[int(fallen.type)],EnemyFrames.sprite_rect(int(fallen.type)),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
 		draw_set_transform(offset)
+	if not world.interior:
+		draw_raid_world()
 	# Sort architecture, trees, actors and enemies together by their ground anchor.
 	var drawables: Array=[]
 	for item in world.decor:
@@ -195,10 +218,10 @@ func _draw() -> void:
 	var safe := session.safe_radius()
 	for x in range(maxi(0,int((camera.x-900)/100)*100),mini(int(session.ruins.extent.x),int(camera.x+900)),100):
 		for y in range(maxi(0,int((camera.y-600)/100)*100),mini(int(session.ruins.extent.y),int(camera.y+600)),100):
-			var dist := Vector2(x+50,y+50).distance_to(Ruins.CENTER)
+			var dist := Vector2(x+50,y+50).distance_to(session.safe_center())
 			if dist>safe:
 				draw_rect(Rect2(x,y,100,100),Color(0.34,0.11,0.28,clampf((dist-safe)/220,0,0.44)))
-	draw_arc(Ruins.CENTER,safe,0,TAU,160,Color(0.79,0.31,0.47,0.65),4)
+	draw_arc(session.safe_center(),safe,0,TAU,160,Color(0.79,0.31,0.47,0.65),4)
 	draw_set_transform(Vector2.ZERO)
 	var size := get_viewport_rect().size
 	if world.interior:
@@ -221,8 +244,8 @@ func _draw() -> void:
 		draw_rect(Rect2(Vector2.ZERO,size),Color(0.01,0.015,0.025,0.88))
 		draw_map(map_rect(),true)
 		label(size/2+Vector2(-470,-352),("晨曦王城" if world.interior else "月冠边境")+"  /  M 关闭   ·   左键标记目的地   ·   右键清除",19,Color("dad3c9"))
-		label(size/2+Vector2(-470,389),"当前显示："+["全部地标","已探索物资","封印与撤离"][map_filter],13,Color("e2c795"))
-		label(size/2+Vector2(-470,369),"1 全部  ·  2 物资  ·  3 封印与撤离   |   金菱形：封印   绿十字：撤离   红圈：血潮边界",17,Color("969caa"))
+		label(size/2+Vector2(-470,389),"当前显示："+["全部地标","已探索物资","封印与撤离","怪物栖息区"][map_filter],13,Color("e2c795"))
+		label(size/2+Vector2(-470,369),"1 全部  ·  2 物资  ·  3 封印与撤离   4 栖息区   |   金菱形：封印   绿十字：撤离   红圈：血潮边界",17,Color("969caa"))
 	else:
 		label(Vector2(32,325),"晨曦王城 · 烛火长夜" if world.interior else Ruins.BIOME_NAMES[world.biome_at(me)]+" · 血月之夜",22,Color("f1dfbf"))
 		if not world.interior:
@@ -309,23 +332,71 @@ func actor(p: Dictionary) -> void:
 		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/seconds),40,Color("d9ca91"),4)
 
 func monster(e: Dictionary) -> void:
+	if e.get("raid_boss",false):
+		draw_boss(e)
+		return
 	var pos: Vector2=e.p
 	var kind: int=e.type
 	var color: Color=EnemyFrames.COLORS[kind]
 	var height: float=EnemyFrames.HEIGHTS[kind]
 	var frame := EnemyFrames.pose(e,clock)
 	var facing: float=e.get("facing",1.0)
-	draw_circle(pos+Vector2(0,8),25 if kind==3 else 19,Color(0,0,0,0.24))
+	var biome: int=Ecology.BIOMES[kind] if kind>=5 else (session.ruins.biome_at(pos) if not session.ruins.interior else 5)
+	var aura: Color=Ruins.COLORS[biome].darkened(0.28)
+	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind]+(5 if kind>=14 else 2),Color(aura,0.22 if kind>=5 else 0.0))
+	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind],Color(0,0,0,0.24))
 	if float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
-		var progress: float=clampf((e.attack_total-e.attack_time)/[0.26,0.42,0.56,0.32,0.85][kind],0,1)
+		var progress: float=clampf((e.attack_total-e.attack_time)/Ecology.WINDUP[kind],0,1)
 		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,0.4+progress*0.5),2.5,true)
-	if kind==4: knight_telegraph(e)
-	var hover := sin(clock*4+e.id)*3 if kind==1 else 0.0
+	if kind>=5 and float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
+		var aim: Vector2=e.attack_aim
+		if kind in [8,10,11]:
+			var point: Vector2=e.get("attack_point",pos)
+			var radius := 60.0 if kind==11 else (76.0 if kind==8 else 100.0)
+			draw_circle(point,radius,Color(color,0.16))
+			draw_arc(point,radius,0,TAU,48,Color(color,0.85),2,true)
+			if kind==11: draw_line(pos,point,Color(color,0.55),2,true)
+		elif kind==7:
+			draw_line(pos,pos+aim*235,Color(color,0.17),65,true)
+			draw_line(pos,pos+aim*235,Color(color,0.9),2,true)
+		elif kind==9:
+			draw_arc(pos,85,0,TAU,40,Color(color,0.65),2,true)
+		elif kind==12:
+			for angle in [-0.5,0.0,0.5]:
+				draw_line(pos,pos+aim.rotated(angle)*195,Color(color,0.4),2,true)
+		elif kind==13:
+			var sector := PackedVector2Array([pos])
+			for i in 25: sector.append(pos+aim.rotated(lerpf(-1.05,1.05,i/24.0))*190)
+			draw_colored_polygon(sector,Color(color,0.15))
+			draw_arc(pos,190,aim.angle()-1.05,aim.angle()+1.05,32,Color(color,0.8),2,true)
+		elif kind==14:
+			draw_circle(pos,135,Color(color,0.13))
+			draw_arc(pos,135,0,TAU,48,Color(color,0.85),3,true)
+			for n in 12: draw_line(pos+Vector2.from_angle(n*TAU/12)*55,pos+Vector2.from_angle(n*TAU/12)*135,Color(color,0.42),2,true)
+		elif kind==15:
+			draw_arc(pos,145,0,TAU,48,Color(color,0.75),3,true)
+			draw_arc(pos,85,0,TAU,40,Color(color,0.4),2,true)
+		elif kind==16:
+			var point: Vector2=e.get("attack_point",pos)
+			draw_circle(point,145,Color(color,0.15))
+			draw_arc(point,145,0,TAU,48,Color(color,0.85),3,true)
+			draw_line(pos,point,Color(color,0.6),3,true)
+	if kind==13 and e.get("attack_released",false) and float(e.get("attack_time",0))>0.35:
+		var aim: Vector2=e.attack_aim
+		var sweep: float=clampf((e.attack_total-e.attack_time-Ecology.WINDUP[kind])/0.25,0,1)
+		var end: Vector2=pos+aim.rotated(lerpf(-1.05,1.05,sweep))*190
+		draw_dashed_line(pos,end,Color("bd9874"),3,8,true)
+		draw_circle(end,9,Color("d6b88c"))
+	if kind==4 and not e.get("raid_boss",false): knight_telegraph(e)
+	var hover := sin(clock*4+e.id)*3 if kind in [1,5,6,9,12] else 0.0
+	if kind==11 and float(e.get("attack_time",0))>0:
+		var progress: float=clampf((e.attack_total-e.attack_time-Ecology.WINDUP[kind])/0.48,0,1)
+		hover=-sin(progress*PI)*44
 	# All frames share a fixed canvas and foot anchor; mirroring never shifts feet.
 	draw_set_transform(offset+pos+Vector2(0,hover),0,Vector2(facing,1))
 	var tint := Color(1.6,1.5,1.5) if float(e.get("flash",0))>0 else Color.WHITE
-	draw_texture_rect_region(enemy_frames.sheets[kind],Rect2(-height*0.75,-height+12,height*1.5,height*1.5),enemy_frames.region(frame),tint)
+	draw_texture_rect_region(enemy_frames.sheets[kind],EnemyFrames.sprite_rect(kind),enemy_frames.region(frame),tint)
 	draw_set_transform(offset)
 	if frame==6:
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
@@ -333,12 +404,13 @@ func monster(e: Dictionary) -> void:
 			draw_arc(pos+aim*24,12,0,TAU,24,Color(color,0.8),2,true)
 		else:
 			draw_arc(pos,38 if kind!=2 else 46,aim.angle()-0.8,aim.angle()+0.8,20,Color(color,0.85),3 if kind!=2 else 5,true)
-	if kind in [3,4]:
-		draw_arc(pos+Vector2(0,9),35,0,TAU,40,Color(color,0.25),2,true)
-		label(pos+Vector2(-28,-height-6),EnemyFrames.NAMES[kind],12,color)
+	if kind in [3,4] or kind>=14:
+		draw_arc(pos+Vector2(0,9),Ecology.RADIUS[kind]+8,0,TAU,40,Color(color,0.25),2,true)
+		label(pos+Vector2(-28,-height-6),str(e.get("boss_name",EnemyFrames.NAMES[kind])),12,color)
 	if e.hp<e.max_hp:
-		draw_rect(Rect2(pos+Vector2(-18,-height-1),Vector2(36,3)),Color("292431"))
-		draw_rect(Rect2(pos+Vector2(-18,-height-1),Vector2(36*maxf(0,e.hp/e.max_hp),3)),color)
+		var width := 80.0 if kind>=14 else 36.0
+		draw_rect(Rect2(pos+Vector2(-width/2,-height-1),Vector2(width,4 if kind>=14 else 3)),Color("292431"))
+		draw_rect(Rect2(pos+Vector2(-width/2,-height-1),Vector2(width*maxf(0,e.hp/e.max_hp),4 if kind>=14 else 3)),color)
 
 func draw_map(rect: Rect2, big: bool) -> void:
 	var outer := rect.grow(7)
@@ -353,29 +425,43 @@ func draw_map(rect: Rect2, big: bool) -> void:
 	world_art.atlas(self,session.ruins,rect,big)
 	var gate := rect.position+session.portal_position()*scale
 	diamond(gate,8 if big else 4,Color("9de8f3"))
-	if big: label(gate+Vector2(12,30),"城门 · 长按 E 切换地图",13,Color("9de8f3"))
-	for site in session.ruins.sites:
+	if big: label(gate+Vector2(12,30),"城门 · 长按 E 切换地图" if session.can_travel() else "城门 · 血潮封锁",13,Color("9de8f3"))
+	for site_index in session.ruins.sites.size():
+		var site: Dictionary=session.ruins.sites[site_index]
 		var at: Vector2=rect.position+site.p*scale
 		var discovered := explored.has(Vector2i(site.p/160))
 		if big:
+			var ecology_view: bool=not session.ruins.interior and map_filter==3
+			if ecology_view:
+				var area: Rect2=site.rect.grow(170)
+				var corners_block := PackedVector2Array([area.position,Vector2(area.end.x,area.position.y),area.end,Vector2(area.position.x,area.end.y)])
+				for polygon in Geometry2D.intersect_polygons(corners_block,session.ruins.regions[int(site.biome)].polygon):
+					var outline := PackedVector2Array()
+					for point in polygon: outline.append(rect.position+point*scale)
+					draw_colored_polygon(outline,Color(0.15,0.12,0.2,0.35))
+					outline.append(outline[0])
+					draw_polyline(outline,Color("eac698"),1.5,true)
 			draw_rect(Rect2(at-Vector2(7,6),Vector2(14,12)),Color("b5a585") if site.tier==1 else Color("c57b8e"),false,2)
-			draw_rect(Rect2(at+Vector2(8,-23),Vector2(site.name.length()*14+8,36)),Color(0.1,0.13,0.14,0.82))
+			var caption: String=Ecology.RESIDENTS[int(site.biome)] if ecology_view else ("高危 · 珍藏" if site.tier==2 else "野外 · 补给")
+			if not session.ruins.interior: caption=Ecology.site_status(session,site_index)
+			var width: float=maxf(site.name.length()*14+8,caption.length()*11+8)
+			draw_rect(Rect2(at+Vector2(8,-23),Vector2(width,38)),Color(0.06,0.075,0.085,0.93))
 			label(at+Vector2(11,-8),site.name,14,Color("fff1d3"))
-			label(at+Vector2(11,8),"高危 · 珍藏" if site.tier==2 else "野外 · 补给",10,Color("e1a3b0") if site.tier==2 else Color("b7c8b8"))
-		else: draw_circle(at,2,Color("bcb2a0"))
+			label(at+Vector2(11,8),caption,11,Color("eed6ba") if ecology_view else (Color("e1a3b0") if site.tier==2 else Color("b7c8b8")))
+		else: draw_circle(at,3 if site.get("cleared",false) else 2,Color("8fc39a") if site.get("cleared",false) else Color("bcb2a0"))
 		if discovered: draw_arc(at,11,0,TAU,16,Color("b9d8ba"),1)
-	if big and map_filter!=2:
+	if big and map_filter in [0,1]:
 		for chest in session.ruins.chests:
 			if not explored.has(Vector2i(chest.p/160)): continue
 			var at: Vector2=rect.position+chest.p*scale
 			draw_rect(Rect2(at-Vector2(2,2),Vector2(4,4)),Color("847e76") if chest.open and chest.items.is_empty() else Color("f3d794"))
-	if not big or map_filter!=1:
+	if not big or map_filter in [0,2]:
 		for shrine in session.ruins.shrines:
 			diamond(rect.position+shrine.p*scale,6 if big else 3,Color("7bc0af") if shrine.done else Color("ffe0a0"))
 		for i in session.ruins.exits.size():
 			var pos: Vector2=session.ruins.exits[i]
 			cross(rect.position+pos*scale,8 if big else 4,Color("9bf8d6"))
-			if big: label(rect.position+pos*scale+Vector2(-28,23),Ruins.EXIT_NAMES[i],11,Color("aeefce"))
+			if big: label(rect.position+pos*scale+Vector2(-28,23),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else ""),11,Color("aeefce"))
 	if waypoint.x>=0:
 		var at: Vector2=rect.position+waypoint*scale
 		diamond(at,8 if big else 4,Color("fff1a6"))
@@ -386,8 +472,12 @@ func draw_map(rect: Rect2, big: bool) -> void:
 			draw_circle(rect.position+p.p*scale,5 if big else 3,Catalog.HEROES[p.hero].color)
 			if big:
 				label(rect.position+p.p*scale+Vector2(8,4),p.name,12,Color("efdfd0"))
+	if not session.ruins.interior and not session.raid.is_empty():
+		var mark := rect.position+session.safe_center()*scale
+		diamond(mark,10 if big else 5,Color("ff98b4"))
+		if big: label(mark+Vector2(12,-14),"黎明印记 · "+session.expedition.NAMES[int(session.raid.kind)],14,Color("ffb8ca"))
 	# Fog radius is clipped mathematically to the map rectangle.
-	var center := rect.position+Ruins.CENTER*scale
+	var center := rect.position+session.safe_center()*scale
 	var prev := Vector2.ZERO
 	for i in 181:
 		var point := center+Vector2.from_angle(float(i)/180*TAU)*session.safe_radius()*scale
@@ -419,7 +509,7 @@ func _input(event: InputEvent) -> void:
 			if not session.ruins.blocked(point): waypoint=point
 	if event is InputEventKey and event.pressed:
 		var code: int=event.physical_keycode if event.physical_keycode else event.keycode
-		if code in [KEY_1,KEY_2,KEY_3]: map_filter=code-KEY_1
+		if code in [KEY_1,KEY_2,KEY_3,KEY_4]: map_filter=code-KEY_1
 
 func knight_telegraph(e: Dictionary) -> void:
 	if e.attack_time<=0: return
@@ -442,3 +532,51 @@ func knight_telegraph(e: Dictionary) -> void:
 		draw_colored_polygon(poly,col)
 		draw_arc(e.p,radius,direction.angle()-arc,direction.angle()+arc,48,Color("ffe1b6"),2,true)
 	label(e.p+Vector2(-60,-178),{"combo":"誓约三连斩","thrust":"逐风突刺","storm":"失乡风暴"}[name],16,Color("ffe1b6"))
+
+func draw_raid_world() -> void:
+	if session.raid.is_empty(): return
+	var center := session.safe_center()
+	if session.raid.phase=="explore":
+		draw_arc(center,65,0,TAU,64,Color("ed8faf"),3,true)
+		diamond(center,22,Color("b66d9b"))
+		label(center+Vector2(-125,-85),"黎明印记 · 缩圈完成后降临",17,Color("ffd2df"))
+	for h in session.raid.hazards:
+		var col := Color("e999bd")
+		var progress: float=1.0-clampf(h.time/h.total,0,1)
+		var fill := Color(col,0.14+progress*0.18 if not h.fired else 0.62)
+		var at: Vector2=h.p
+		var aim: Vector2=h.aim
+		var radius: float=h.radius
+		if h.shape=="line":
+			var side := aim.orthogonal()*44
+			var poly := PackedVector2Array([at-side-aim*22,at+side-aim*22,at+aim*radius+side,at+aim*radius-side])
+			draw_colored_polygon(poly,fill)
+			poly.append(poly[0])
+			draw_polyline(poly,col,2,true)
+		elif h.shape=="cone":
+			var poly := PackedVector2Array([at])
+			for i in 41: poly.append(at+Vector2.from_angle(aim.angle()-1.05+2.1*i/40)*radius)
+			draw_colored_polygon(poly,fill)
+			draw_arc(at,radius,aim.angle()-1.05,aim.angle()+1.05,40,col,2,true)
+		else:
+			if h.inner>0:
+				for i in 64:
+					var a := Vector2.from_angle(TAU*i/64)
+					var b := Vector2.from_angle(TAU*(i+1)/64)
+					draw_colored_polygon(PackedVector2Array([at+a*h.inner,at+a*radius,at+b*radius,at+b*h.inner]),fill)
+				draw_arc(at,h.inner,0,TAU,64,col,2,true)
+			else: draw_circle(at,radius,fill)
+			draw_arc(at,radius,0,TAU,80,col,2,true)
+
+func draw_boss(e: Dictionary) -> void:
+	var kind: int=e.boss_kind
+	var pos: Vector2=e.p
+	var color: Color=BossFrames.COLORS[kind]
+	var hover := sin(clock*2.6)*3.0 if kind!=1 else 0.0
+	draw_set_transform(offset+pos,0,Vector2(1,0.34))
+	draw_circle(Vector2.ZERO,45,Color(0.04,0.025,0.06,0.40))
+	draw_arc(Vector2.ZERO,51,0,TAU,56,Color(color,0.38),3,true)
+	draw_set_transform(offset+pos+Vector2(0,hover),0,Vector2(float(e.get("facing",1)),1))
+	var tint := Color(1.3,1.2,1.2) if float(e.get("flash",0))>0 else Color.WHITE
+	draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(BossFrames.pose(e,clock)),tint)
+	draw_set_transform(offset)

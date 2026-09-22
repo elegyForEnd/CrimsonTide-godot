@@ -117,13 +117,13 @@ func run() -> void:
 	p.p=s.CITY_GATE
 	s.players[2].p=s.CITY_GATE
 	s.travel_city()
-	var packet := var_to_bytes([s.players,s.enemies,s.bullets,s.world_drops,s.ruins.chests,s.ruins.shrines,s.elapsed,s.objectives,s.threat,s.results,s.map_id])
+	var packet := var_to_bytes([s.players,s.enemies,s.bullets,s.world_drops,s.ruins.chests,s.ruins.shrines,s.elapsed,s.objectives,s.threat,s.results,s.map_id,s.raid])
 	client.snapshot(packet.compress(FileAccess.COMPRESSION_GZIP))
 	check(client.map_id=="city" and client.ruins is RoyalCity,"Snapshot selects correct geometry")
-	check(client.ruins.chests.size()==3 and client.enemies.is_empty(),"Snapshot keeps boss reward and defeat")
-	s.elapsed=s.duration-0.001
+	check(client.ruins.chests.size()==1 and client.enemies.is_empty(),"Snapshot keeps clear reward and defeat without ambient city chests")
+	s.raid.time=s.duration-0.001
 	s.simulate(0.01)
-	check(p.status=="dead","Interior does not bypass expedition deadline")
+	check(s.map_id=="border" and s.raid.phase=="boss" and p.status=="active","Interior cannot bypass dawn boss battle")
 	print("CITY TESTS: %d/%d" % [checks-failures,checks])
 	s.queue_free()
 	client.queue_free()
