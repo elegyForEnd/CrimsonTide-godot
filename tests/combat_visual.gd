@@ -1,0 +1,45 @@
+extends SceneTree
+
+func _initialize() -> void:
+	call_deferred("run")
+
+func capture(file: String) -> void:
+	await process_frame
+	await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png("res://build/"+file+".png")
+
+func run() -> void:
+	var app: Node=load("res://scenes/main.tscn").instantiate()
+	root.add_child(app)
+	app.profile.path="user://test-combat-visual.json"
+	app.session.solo({"hero":0})
+	app.session.launch(false,1729)
+	app.session.set_physics_process(false)
+	app.session.enemies.clear()
+	var p: Dictionary=app.session.players[1]
+	p.p=Vector2(1300,1100)
+	p.aim=Vector2.RIGHT
+	app.field.camera=p.p
+	for hero in 3:
+		for weapon in [1,2,3]:
+			app.field.combat.reset()
+			app.session.bullets.clear()
+			p.hero=hero
+			p.weapon=weapon
+			p.attack=0.0
+			p.swing_time=0.0
+			p.cast_time=0.0
+			app.session.attack(p)
+			await create_timer(Catalog.WEAPONS[weapon].windup).timeout
+			p.swing_time=p.swing_total-Catalog.WEAPONS[weapon].windup-0.04
+			app.session.release_strike(p)
+			await create_timer(0.065).timeout
+			await capture("combat-h%d-w%d" % [hero,weapon])
+		p.swing_time=0.0
+		p.skill=0.0
+		app.field.combat.reset()
+		app.session.perform(1,"skill")
+		await create_timer(0.23).timeout
+		await capture("combat-skill-%d" % hero)
+	print("COMBAT VISUAL: 12 captures completed")
+	quit()

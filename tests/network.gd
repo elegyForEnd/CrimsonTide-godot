@@ -1,0 +1,93 @@
+extends SceneTree
+
+var session: TideSession
+var host_mode := false
+var stage := 0
+var age := 0.0
+var started_at := 0.0
+var got_effect := false
+var local_sent := false
+var saw_independent := false
+var expected := 4
+var saw_snapshot := false
+var got_combat := false
+var saw_weapon := false
+
+func _initialize() -> void:
+	call_deferred("run")
+
+func run() -> void:
+	var args := OS.get_cmdline_user_args()
+	host_mode="--server" in args
+	if "--two" in args:
+		expected=2
+	session=TideSession.new()
+	session.name="Session"
+	root.add_child(session)
+	session.effect.connect(func(_kind: String,_pos: Vector2): got_effect=true)
+	session.combat_event.connect(func(data: Dictionary):
+		if data.kind=="skill" and data.id!=session.my_id():
+			got_combat=true
+	)
+	session.started.connect(func(): stage=2; started_at=age)
+	session.finished.connect(done)
+	var err: Error
+	if host_mode:
+		err=session.host({"name":"Host","hero":0})
+	else:
+		err=session.join("127.0.0.1",{"name":"Client","hero":1})
+	if err!=OK:
+		push_error("NETWORK setup failed")
+		quit(1)
+	stage=1
+
+func _process(dt: float) -> bool:
+	age+=dt
+	if age>24:
+		push_error("NETWORK timeout stage %d roster %d" % [stage,session.players.size()])
+		quit(1)
+	if stage==1:
+		if host_mode and session.players.size()==expected:
+			var all_ready := true
+			for p in session.players.values():
+				all_ready=all_ready and p.ready
+			if all_ready:
+				session.launch(false,54321)
+				session.enemies.clear()
+				session.spawn_timer=999
+				for p in session.players.values():
+					p.p=session.ruins.exits[0]
+					Catalog.insert(p.bag,"relic")
+				session.objectives=2
+		elif not host_mode and session.players.has(session.my_id()) and not session.players[session.my_id()].ready:
+			session.configure({"name":"Client","hero":1,"ready":true})
+	if stage==2:
+		if session.players[session.my_id()].weapon==2:
+			saw_weapon=true
+		if not host_mode and session.elapsed>1 and session.objectives==2 and Catalog.bag_value(session.players[session.my_id()].bag)==125:
+			saw_snapshot=true
+		if age-started_at>0.8 and not local_sent:
+			local_sent=true
+			session.action("weapon",{"index":2})
+			session.action("skill")
+		if not host_mode or age-started_at>6:
+			session.local_input={"move":Vector2.ZERO,"aim":Vector2.RIGHT,"fire":false,"interact":true}
+		if host_mode:
+			for p in session.players.values():
+				if p.id!=1 and p.status=="extracted" and session.players[1].status=="active":
+					saw_independent=true
+	return false
+
+func done() -> void:
+	stage=3
+	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and saw_weapon
+	for reward in session.results.values():
+		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==125
+	if host_mode:
+		pass_test=pass_test and saw_independent
+	else:
+		pass_test=pass_test and saw_snapshot
+	print("NETWORK %s %d PLAYERS: %s" % ["HOST" if host_mode else "CLIENT",expected,"PASS" if pass_test else "FAIL"])
+	await create_timer(0.6).timeout
+	session.disconnect_room()
+	quit(0 if pass_test else 1)
