@@ -1,5 +1,11 @@
 # 武器动作与光效更新
 
+## 全屏奥义 CG 演出
+
+Q 技能成功释放后播放当前角色专属 CG：绯月血色剑光、雪璃冰蓝法阵、鸦羽紫焰夜鸦。插画推镜叠加旋转法阵、流光、粒子、冲击波、短闪光和爆发音效。单人演出 2.6 秒并暂停战场；任意键或点击跳过，自动恢复。联机只在施法者客户端展示 0.85 秒短版，不暂停网络或其他玩家，保留原有技能结算和冷却。此次为插画分层动态演出，不是逐帧角色动画视频。
+
+插画使用内置 image_gen 生成，项目素材：`assets/combat/ultimate-cg.png`，完整提示词：`assets/combat/ultimate-prompt.txt`。`tests/ultimate.gd` 验证实际技能触发、冷却、单人暂停与恢复、联机短版、跳过按键不穿透、自动结束，并输出三个角色截图到 `build/ultimate-0.png` 至 `build/ultimate-2.png`。
+
 ## 单手剑连段刀光偏移修复（追加）
 
 反向挥斩之前向 `draw_texture_rect_region` 传入负高度矩形，翻转时会偏离预期中心。现改为正尺寸矩形配合绘制变换镜像，两层刀光都围绕各自原定中心翻转。`tests/slash_alignment.gd` 覆盖三个连段、四个朝向，截图输出到 `build/slash-alignment.png`。

@@ -30,6 +30,7 @@ var modal := false
 var ready_local := false
 var time_ui := 0.0
 var title_font: Font
+var ultimate: UltimateCinematic
 
 func _ready() -> void:
 	profile.load_profile()
@@ -79,6 +80,16 @@ func _ready() -> void:
 	)
 	get_viewport().size_changed.connect(fit_ui)
 	fit_ui()
+	var cinema_layer := CanvasLayer.new()
+	cinema_layer.layer=100
+	add_child(cinema_layer)
+	ultimate=UltimateCinematic.new()
+	cinema_layer.add_child(ultimate)
+	ultimate.burst.connect(func(): sound.play("heavy"); sound.play("magic"))
+	session.combat_event.connect(func(data: Dictionary):
+		if data.kind=="skill" and int(data.get("id",-1))==session.my_id() and page_name=="game":
+			ultimate.play(int(data.hero),session.online)
+	)
 	set_volume(float(profile.data.volume))
 	if profile.data.fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -275,6 +286,8 @@ func background(dim: float = 0.0) -> void:
 		rect(page,Vector2.ZERO,Vector2(1440,900),Color(0.02,0.03,0.06,dim))
 
 func new_page(name_value: String) -> void:
+	if ultimate and ultimate.active:
+		ultimate.stop()
 	clear(page)
 	clear(overlay)
 	modal=false
@@ -728,6 +741,7 @@ func move_item(x: int,y: int) -> void:
 	show_inventory()
 
 func on_finished() -> void:
+	ultimate.stop()
 	var reward: Dictionary=session.results.get(session.my_id(),{})
 	if not session.report_paid and not reward.is_empty():
 		profile.data.coins+=reward.coins
