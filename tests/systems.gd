@@ -86,6 +86,32 @@ func run() -> void:
 	check(Catalog.container_count(carrier.backpack,"crystal")==1,"swap keeps the carried loot")
 	check(carrier.bags[0].key=="white","the old backpack moves into the cabinet")
 	check(not Catalog.swap_bags(carrier,5),"missing cabinet slot is rejected")
+	# A swap has to carry every field the save file knows about: rebuilding the
+	# entries from kind/x/y/rot alone used to collapse stacks and strip looted
+	# equipment, so swapping backpacks quietly destroyed part of the haul.
+	var haul_bag: Dictionary = Catalog.make_bag("blue")
+	haul_bag["gw"]=5
+	haul_bag["gh"]=5
+	var haul := {"backpack":haul_bag,"bags":[Catalog.make_bag("red")]}
+	for i in 3:
+		Catalog.place_loot(haul_bag,"crystal")
+	Catalog.place_item(haul_bag,Catalog.make_equipment("weapon",2,4))
+	Catalog.place_item(haul_bag,{"kind":"backpack","quality":"gold","x":0,"y":0,"rot":false})
+	check(Catalog.swap_bags(haul,0),"swap to the red backpack")
+	var stack: Dictionary={}
+	var blade: Dictionary={}
+	var spare: Dictionary={}
+	for entry in Catalog.container_items(haul.backpack):
+		match str(entry.kind):
+			"crystal": stack=entry
+			"weapon": blade=entry
+			"backpack": spare=entry
+	check(int(stack.get("count",0))==3,"a swap keeps the size of a crystal stack")
+	check(int(blade.get("weapon",-1))==2 and int(blade.get("tier",-1))==4,"a swap keeps the looted weapon's index and quality")
+	check(str(spare.get("quality",""))=="gold","a swap keeps the carried backpack's quality")
+	check(Catalog.bag_grid(haul.backpack)==Vector2i(8,8),"the swapped-in blood-moon backpack is 8x8")
+	check(haul.bags[0].key=="blue","the blue backpack moves into the cabinet")
+	check(Catalog.container_items(haul.bags[0]).is_empty(),"the old backpack is emptied by the swap")
 	# --- deterministic ruins ------------------------------------------------
 	for seed_value in range(1,31):
 		var map := Ruins.new()

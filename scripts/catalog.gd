@@ -393,7 +393,17 @@ static func swap_bags(p: Dictionary, index: int) -> bool:
 	candidate["gh"]=bag_grid(candidate).y
 	var moved: Array = []
 	for item in space:
-		var entry := {"kind":str(item.get("kind","")),"x":int(item.get("x",0)),"y":int(item.get("y",0)),"rot":bool(item.get("rot",false))}
+		# Everything the save file knows about an item travels with it: rebuilding
+		# the entry from only kind/x/y/rot used to strip stack counts and every
+		# equipment field, so swapping bags quietly destroyed loot.
+		var entry: Dictionary = {}
+		for field in SAVED_ITEM_KEYS:
+			if item.has(field):
+				entry[field]=item[field]
+		entry["kind"]=str(item.get("kind",""))
+		entry["x"]=int(item.get("x",0))
+		entry["y"]=int(item.get("y",0))
+		entry["rot"]=bool(item.get("rot",false))
 		if not can_place(moved,entry,Vector2i(entry.x,entry.y),-1,bag_grid(candidate)):
 			return false
 		moved.append(entry)
