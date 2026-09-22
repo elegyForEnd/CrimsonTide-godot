@@ -110,13 +110,64 @@ func run() -> void:
 		check(Catalog.bag_grid(app.session.players[1].backpack)==Catalog.tier(key).grid,"%s backpack resizes the grid" % key)
 	check(Catalog.container_count(app.session.players[1].backpack,"crystal")>0,"swapping backpacks keeps loot")
 	await capture("ui-inventory-equipped")
+	# R turns the item selected inside the backpack.
+	app.session.players[1].backpack.items.clear()
+	check(Catalog.add_item(app.session.players[1].backpack,"medicine"),"a medkit waits to be rotated")
+	app.pick_item("backpack",0)
+	var rot_before := bool(app.session.players[1].backpack.items[0].get("rot",false))
+	await key(KEY_R)
+	check(bool(app.session.players[1].backpack.items[0].get("rot",false))!=rot_before,"R rotates the selected backpack item")
+	await key(KEY_R)
+	check(bool(app.session.players[1].backpack.items[0].get("rot",false))==rot_before,"R rotates it back")
+	# A medkit in the backpack can be used without closing the bag.
+	app.session.players[1].backpack.items.clear()
+	check(Catalog.add_item(app.session.players[1].backpack,"medicine"),"a medkit sits in the backpack")
+	app.session.players[1].hp=20.0
+	app.use_item("backpack",0)
+	await create_timer(0.15).timeout
+	check(int(app.session.players[1].hp)==65,"the inventory use button heals the player")
+	check(app.session.carried(app.session.players[1],"medicine")==0,"the used medkit is consumed")
+	# Weapons and gear found in the field can be worn from the backpack.
+	app.session.players[1].backpack.items.clear()
+	app.session.players[1].backpack.items.append(Catalog.make_equipment("weapon",1,4))
+	app.equip_slot("backpack",0)
+	await create_timer(0.15).timeout
+	check(int(app.session.players[1].weapon)==1,"equipping a looted weapon puts it in hand")
+	check(app.session.weapon_kit_active(app.session.players[1]),"the worn weapon is active")
+	check(app.session.equipment_damage(app.session.players[1])>0.0,"the worn weapon raises damage")
+	check(app.session.equipment_rate(app.session.players[1])<1.0,"the worn weapon swings faster")
+	check(app.session.players[1].backpack.items.is_empty(),"the equipped weapon left the backpack")
+	check(Catalog.add_item(app.session.players[1].backpack,"gear"),"a gear piece sits in the backpack")
+	app.session.players[1].backpack.items[0]["gear"]=0
+	app.session.players[1].backpack.items[0]["tier"]=5
+	var hp_before: float=app.session.players[1].max_hp
+	app.equip_slot("backpack",0)
+	await create_timer(0.15).timeout
+	check(app.session.players[1].max_hp>hp_before,"worn armour raises the health ceiling")
+	await capture("ui-inventory-equipment")
+	app.unequip_slot("weapon",0)
+	await create_timer(0.15).timeout
+	check(app.session.kit_weapon(app.session.players[1]).is_empty(),"the HUD can take the weapon off again")
 	await key(KEY_TAB)
 	check(not app.inventory_open,"Tab closes inventory")
+	# F falls through to the medkit when there is nothing in reach to loot: this is
+	# the key conflict that used to make backpack supplies unusable.
+	var stash_chests: Array=app.session.ruins.chests.duplicate()
+	var stash_drops: Array=app.session.world_drops.duplicate()
+	app.session.ruins.chests.clear()
+	app.session.world_drops.clear()
+	check(Catalog.add_item(app.session.players[1].backpack,"medicine"),"a medkit waits for the F key")
+	app.session.players[1].hp=20.0
+	await key(KEY_F)
+	check(int(app.session.players[1].hp)==65,"F heals when nothing is lootable")
+	app.session.ruins.chests=stash_chests
+	app.session.world_drops=stash_drops
 	# --- searching a container and dragging loot out ------------------------
 	var walker: Dictionary=app.session.players[1]
 	app.session.spawn_timer=9999
 	app.session.enemies.clear()
 	walker.backpack.items.clear()
+	check(Catalog.add_item(walker.backpack,"medicine"),"a medkit rides along for the quick-use bar")
 	var chest: Dictionary=app.session.ruins.chests[0]
 	walker.p=chest.p
 	app.field.camera=chest.p
@@ -133,6 +184,14 @@ func run() -> void:
 	check(app.session.visible_units(chest)>=1,"loot surfaces by itself while the search window is open")
 	check(app.session.visible_units(chest)<app.session.container_units(chest),"a container is not searched instantly")
 	await capture("ui-loot-revealed")
+	# Supplies stay usable while the search window has the player's attention.
+	walker.hp=25.0
+	var quick: Array=app.quick_use_slots(walker)
+	check(quick.size()>0,"the loot window offers quick-use items")
+	app.use_item(str(quick[0].slot),int(quick[0].index))
+	await create_timer(0.15).timeout
+	check(walker.hp>25.0,"the quick-use chip works while the search window is open")
+	check(app.session.carried(walker,"medicine")==0,"the quick-use medkit is consumed")
 	# Drag the first revealed item from the search window into the backpack.
 	var before_bag: int=walker.backpack.items.size()
 	var loot_grid: Dictionary=app.grids["loot"]

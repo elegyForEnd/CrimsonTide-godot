@@ -9,6 +9,19 @@ func check(value: bool, description: String) -> void:
 		failures+=1
 		push_error("FAIL: "+description)
 
+func index_of(container: Dictionary, kind: String) -> int:
+	var items: Array=Catalog.container_items(container)
+	for i in items.size():
+		if str(items[i].kind)==kind:
+			return i
+	return -1
+
+func spare_index_in(p: Dictionary, key: String) -> int:
+	for i in p.bags.size():
+		if str(p.bags[i].key)==key:
+			return i
+	return -1
+
 func _initialize() -> void:
 	call_deferred("run")
 
@@ -257,6 +270,7 @@ func run() -> void:
 	check(session.results[1].bags[0].key=="green","an extracted player keeps the equipped backpack")
 	check(session.results[1].loot>=Catalog.container_value(session.results[1].pocket),"extracted loot covers the pocket")
 	check(session.results[1].loot>54,"extracted player also banks backpack value")
+	check(session.results[1].has("worn"),"the report records what was worn")
 	check(session.results[2].pocket.items.is_empty(),"a dead player settles no pocket loot")
 	check(session.results[2].bags[0].key=="white","a dead player restarts from the white backpack")
 	check(session.results[2].loot==0,"dead player loses backpack loot")
@@ -293,6 +307,210 @@ func run() -> void:
 	restored.sanitize_storage()
 	check(restored.data.pocket.items.is_empty() and restored.data.pocket.gw==4,"loading repairs a broken pocket")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save.path))
+	# --- weapon and gear found in the field ---------------------------------
+	check(Catalog.ITEMS.has("weapon") and Catalog.ITEMS.has("gear"),"weapons and gear are loot kinds")
+	check(Catalog.ITEMS["weapon"].size==Vector2i(2,2),"a weapon takes a 2x2 block")
+	check(Catalog.ITEMS["gear"].size==Vector2i(1,2),"a gear piece takes a 1x2 block")
+	var white_blade := Catalog.make_equipment("weapon",2,0)
+	var red_blade := Catalog.make_equipment("weapon",2,5)
+	check(int(white_blade.tier)==0 and int(red_blade.tier)==5,"equipment remembers its quality")
+	check(Catalog.item_value(white_blade)==85,"a white weapon is worth its base value")
+	check(Catalog.item_value(red_blade)>Catalog.item_value(white_blade)*2,"a red weapon is worth far more")
+	check(Catalog.item_name(red_blade)==Catalog.quality_name(5)+" "+Catalog.WEAPONS[2].name,"red weapon names itself")
+	check(Catalog.item_icon(red_blade)=="heavy" and Catalog.item_icon(Catalog.make_equipment("gear",1,2))=="sight","equipment resolves its own icon")
+	check(Catalog.weapon_bonus(red_blade)>Catalog.weapon_bonus(white_blade),"a better weapon hits harder")
+	check(Catalog.weapon_rate_bonus(red_blade)>0.0,"a better weapon also swings faster")
+	check(Catalog.gear_bonus(Catalog.make_equipment("gear",0,5))==Catalog.GEAR_HP[5],"armour scales with quality")
+	check(Catalog.gear_desc(Catalog.make_equipment("gear",1,2)).contains("%"),"the sight describes a damage bonus")
+	# Equipment fields must survive the save file, together with stack counts.
+	var saved_gun := Catalog.make_equipment("weapon",3,4)
+	var saved_vest := Catalog.make_equipment("gear",2,1)
+	saved_vest["x"]=2
+	saved_vest["y"]=0
+	var saved_pack := Catalog.clean_container({"items":[
+		saved_gun,
+		saved_vest,
+		{"kind":"ammo","x":3,"y":0,"rot":true,"count":3},
+		{"kind":"backpack","x":4,"y":0,"rot":false,"quality":"gold"},
+		{"kind":"medicine","x":0,"y":2,"rot":false,"provision":true}],"gw":8,"gh":8},Vector2i(8,8))
+	var saved_weapon := index_of(saved_pack,"weapon")
+	var saved_gear := index_of(saved_pack,"gear")
+	var saved_ammo := index_of(saved_pack,"ammo")
+	check(saved_weapon>=0 and int(saved_pack.items[saved_weapon].weapon)==3 and int(saved_pack.items[saved_weapon].tier)==4,"a saved weapon keeps its weapon and quality")
+	check(saved_gear>=0 and int(saved_pack.items[saved_gear].gear)==2 and int(saved_pack.items[saved_gear].tier)==1,"a saved gear piece keeps its slot and quality")
+	check(saved_ammo>=0 and int(saved_pack.items[saved_ammo].count)==3,"a saved stack keeps its count")
+	check(Catalog.container_count(saved_pack,"backpack")==1 and str(saved_pack.items[index_of(saved_pack,"backpack")].quality)=="gold","a saved loose backpack keeps its quality")
+	check(bool(saved_pack.items[index_of(saved_pack,"medicine")].get("provision",false)),"a saved provision keeps its free flag")
+	# Re-packing a looted container must not strip what an item is.
+	var chest_pack := {"items":[],"gw":4,"gh":4,"next":1}
+	Catalog.place_loot(chest_pack,"crystal")
+	Catalog.place_loot(chest_pack,"crystal")
+	Catalog.place_loot(chest_pack,"weapon")
+	chest_pack.items[index_of(chest_pack,"weapon")]["weapon"]=2
+	chest_pack.items[index_of(chest_pack,"weapon")]["tier"]=3
+	Catalog.place_loot(chest_pack,"backpack")
+	chest_pack.items[index_of(chest_pack,"backpack")]["quality"]="purple"
+	Catalog.tidy(chest_pack)
+	var tidied_weapon := index_of(chest_pack,"weapon")
+	var tidied_bag := index_of(chest_pack,"backpack")
+	check(tidied_weapon>=0 and int(chest_pack.items[tidied_weapon].weapon)==2 and int(chest_pack.items[tidied_weapon].tier)==3,"re-packing keeps a weapon's identity")
+	check(tidied_bag>=0 and str(chest_pack.items[tidied_bag].quality)=="purple","re-packing keeps a loose backpack's quality")
+	check(Catalog.container_count(chest_pack,"crystal")==1 and int(chest_pack.items[index_of(chest_pack,"crystal")].count)==2,"re-packing merges a stack back together")
+	var kit_session := TideSession.new()
+	kit_session.name="KitSession"
+	root.add_child(kit_session)
+	kit_session.set_physics_process(false)
+	kit_session.solo({"name":"Kit","hero":0,"talents":[0,0,0],"bag_key":"red","bags":[],"pocket":Catalog.make_container([],Catalog.POCKET_GRID)})
+	check(kit_session.launch(false,777),"the equipment run launches")
+	var k: Dictionary=kit_session.players[1]
+	var base_hp: float=k.max_hp
+	var base_speed: float=Catalog.HEROES[0].speed
+	# Loot a weapon, a full set of gear and some supplies, then wear them.
+	check(kit_session.store_loot(k,"weapon",false,"",kit_session.loot_meta(Catalog.make_equipment("weapon",2,5))),"the weapon reaches the backpack")
+	check(kit_session.store_loot(k,"gear",false,"",kit_session.loot_meta(Catalog.make_equipment("gear",0,5))),"armour reaches the backpack")
+	check(kit_session.store_loot(k,"gear",false,"",kit_session.loot_meta(Catalog.make_equipment("gear",1,3))),"the sight reaches the backpack")
+	check(kit_session.store_loot(k,"gear",false,"",kit_session.loot_meta(Catalog.make_equipment("gear",2,4))),"the boots reach the backpack")
+	var weapon_index := index_of(k.backpack,"weapon")
+	check(weapon_index>=0 and int(k.backpack.items[weapon_index].tier)==5,"the looted weapon kept its quality in the backpack")
+	check(kit_session.equip_item(k,"backpack",weapon_index),"equipping the weapon succeeds")
+	check(k.weapon==2 and not kit_session.kit_weapon(k).is_empty(),"equipping a weapon puts it in hand")
+	check(kit_session.weapon_kit_active(k),"the worn weapon pays out while it is in hand")
+	check(kit_session.equipment_damage(k)>=Catalog.WEAPON_DAMAGE_BONUS[5],"the worn weapon grants its damage bonus")
+	check(kit_session.equipment_rate(k)<1.0,"the worn weapon swings faster")
+	check(index_of(k.backpack,"weapon")<0,"the equipped weapon left the backpack")
+	check(kit_session.equip_item(k,"backpack",index_of(k.backpack,"gear")),"equipping armour succeeds")
+	check(abs(kit_session.equipment_hp(k)-Catalog.GEAR_HP[5])<0.01,"armour adds its health bonus")
+	check(abs(k.max_hp-(base_hp+Catalog.GEAR_HP[5]))<0.01,"equipping armour raises the health ceiling")
+	check(abs(k.hp-k.max_hp)<0.01,"the fresh health arrives immediately")
+	check(kit_session.equip_item(k,"backpack",index_of(k.backpack,"gear")),"equipping the sight succeeds")
+	check(kit_session.equipment_damage(k)>=Catalog.WEAPON_DAMAGE_BONUS[5]+Catalog.GEAR_DAMAGE[3]-0.001,"the sight stacks with the weapon")
+	check(kit_session.equip_item(k,"backpack",index_of(k.backpack,"gear")),"equipping the boots succeeds")
+	check(abs(kit_session.equipment_speed(k)-Catalog.GEAR_SPEED[4])<0.01,"the boots add movement speed")
+	# A second weapon swaps the first one back into the backpack.
+	check(kit_session.store_loot(k,"weapon",false,"",kit_session.loot_meta(Catalog.make_equipment("weapon",0,1))),"a second weapon reaches the backpack")
+	check(kit_session.equip_item(k,"backpack",index_of(k.backpack,"weapon")),"the second weapon equips")
+	check(k.weapon==0,"the weapon in hand follows the equip")
+	check(int(kit_session.kit_weapon(k).get("tier",-1))==1,"the new weapon is the worn one")
+	var returned := index_of(k.backpack,"weapon")
+	check(returned>=0 and int(k.backpack.items[returned].tier)==5,"the replaced weapon goes back into the backpack")
+	# Damage actually rises with the worn weapon: fire one shot and read it back.
+	k.pending_strike=false
+	kit_session.bullets.clear()
+	kit_session.release_strike(k)
+	check(kit_session.bullets.size()==1,"a ranged strike creates exactly one bullet")
+	var shot: Dictionary=kit_session.bullets.back()
+	var expected_hit: float=Catalog.WEAPONS[0].damage*(1+kit_session.equipment_damage(k))
+	check(float(shot.damage)>Catalog.WEAPONS[0].damage,"a shot with worn gear hits harder than the base weapon")
+	check(abs(float(shot.damage)-expected_hit)<0.01,"the shot damage matches the equipment bonus")
+	kit_session.bullets.clear()
+	# Taking gear off returns it to storage and gives the health back.
+	check(kit_session.unequip_item(k,"gear",0),"armour can be taken off")
+	check(kit_session.equipment_hp(k)<0.01,"the armour bonus is gone")
+	check(abs(k.max_hp-base_hp)<0.01,"the health ceiling returns to the camp loadout")
+	check(index_of(k.backpack,"gear")>=0,"the removed armour is back in the backpack")
+	check(kit_session.unequip_item(k,"weapon"),"the weapon can be taken off")
+	check(kit_session.kit_weapon(k).is_empty(),"the weapon slot is empty again")
+	check(index_of(k.backpack,"weapon")>=0,"the removed weapon is back in the backpack")
+	check(kit_session.unequip_item(k,"gear",0)==false,"an empty gear slot cannot be removed")
+	# --- using items straight out of the backpack ---------------------------
+	k.backpack.items.clear()
+	k.pocket.items.clear()
+	k.hp=k.max_hp*0.2
+	var low_hp: float=k.hp
+	check(kit_session.store_loot(k,"medicine"),"a medkit sits in the backpack")
+	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"medicine")),"the inventory use action runs the medkit")
+	check(abs(k.hp-(low_hp+45.0))<0.01,"using a medkit restores 45 health")
+	check(kit_session.carried(k,"medicine")==0,"using a medkit consumes exactly one")
+	check(kit_session.store_loot(k,"medicine"),"a second medkit sits in the backpack")
+	k.hp=k.max_hp
+	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"medicine"))==false,"a medkit is refused at full health")
+	check(kit_session.carried(k,"medicine")==1,"a refused medkit is not consumed")
+	check(kit_session.store_loot(k,"crystal"),"a crystal sits in the backpack")
+	k.scent=40
+	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"crystal")),"the inventory use action burns a crystal")
+	check(int(k.scent)==15 and kit_session.carried(k,"crystal")==0,"burning a crystal spends it for scent")
+	check(kit_session.store_loot(k,"ammo"),"an ammo box sits in the backpack")
+	var reserve_before: int=k.reserve
+	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"ammo")),"the inventory use action opens an ammo box")
+	check(k.reserve==reserve_before+48,"an ammo box adds 48 rounds")
+	check(kit_session.store_loot(k,"scrap"),"scrap sits in the backpack")
+	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"scrap"))==false,"plain loot cannot be used")
+	# The F hotkey heals when there is nothing left to loot through the session.
+	k.pocket.items.clear()
+	check(kit_session.store_loot(k,"medicine"),"a medkit waits in the backpack")
+	k.hp=10
+	kit_session.perform(1,"heal")
+	check(int(k.hp)==55,"the heal action still restores 45 out of the backpack")
+	check(kit_session.carried(k,"medicine")==0,"the heal action spends the medkit")
+	# --- rotating keeps or slides the item ----------------------------------
+	k.backpack.items.clear()
+	Catalog.add_item(k.backpack,"medicine")
+	var rotate_index := index_of(k.backpack,"medicine")
+	var before_rot := bool(k.backpack.items[rotate_index].get("rot",false))
+	check(kit_session.rotate_item(k,"backpack",rotate_index),"the rotate action turns an item")
+	check(bool(k.backpack.items[rotate_index].get("rot",false))!=before_rot,"the item reports the opposite orientation")
+	check(Catalog.can_place(k.backpack.items,k.backpack.items[rotate_index],Vector2i(int(k.backpack.items[rotate_index].x),int(k.backpack.items[rotate_index].y)),rotate_index,Catalog.container_grid(k.backpack)),"a rotated item still fits where it landed")
+	# Moving between the two containers keeps what the item is: the one-click
+	# button used to rebuild it from its kind, losing quality and stack counts.
+	k.backpack.items.clear()
+	k.pocket.items.clear()
+	check(kit_session.store_loot(k,"weapon",false,"",kit_session.loot_meta(Catalog.make_equipment("weapon",3,2))),"a weapon waits in the backpack")
+	check(kit_session.move_between(k,"backpack","pocket",index_of(k.backpack,"weapon"),Vector2i(0,0),false),"the weapon moves to the pocket")
+	var pocket_weapon := index_of(k.pocket,"weapon")
+	check(pocket_weapon>=0 and int(k.pocket.items[pocket_weapon].weapon)==3 and int(k.pocket.items[pocket_weapon].tier)==2,"the moved weapon keeps its identity")
+	k.backpack.items.clear()
+	k.pocket.items.clear()
+	check(Catalog.add_item(k.pocket,"crystal"),"a stack sits in the pocket")
+	var stacked := index_of(k.pocket,"crystal")
+	k.pocket.items[stacked]["count"]=6
+	var room := {"p":k.p,"key":"container","items":[],"grid":Vector2i(4,4),"searched":0,"open":false,"class":1,"bonus":false,"next":1}
+	kit_session.world_drops.append(room)
+	check(kit_session.move_between(k,"pocket","loot:"+str(kit_session.container_count()-1),stacked,Vector2i(0,0),false),"a stack can be handed to a chest")
+	check(int(Catalog.container_items(room)[0].get("count",1))==6,"the whole stack arrives in the chest")
+	check(index_of(k.pocket,"crystal")<0,"the moved stack left the pocket")
+	# A chest with room for one more unit must not swallow the rest of the pile.
+	var tight := {"p":k.p,"key":"container","items":[{"kind":"crystal","x":0,"y":0,"rot":false,"count":5}],"grid":Vector2i(1,1),"searched":1,"open":false,"class":1,"bonus":false,"next":2}
+	kit_session.world_drops.append(tight)
+	check(Catalog.add_item(k.pocket,"crystal"),"a fresh stack for a partial transfer")
+	var fresh := index_of(k.pocket,"crystal")
+	k.pocket.items[fresh]["count"]=6
+	check(kit_session.move_between(k,"pocket","loot:"+str(kit_session.container_count()-1),fresh,Vector2i(0,0),false),"a stack hands over only what fits")
+	check(int(Catalog.container_items(tight)[0].count)==6,"the chest stack tops out at six")
+	check(int(k.pocket.items[index_of(k.pocket,"crystal")].count)==5,"the units that did not fit stay behind")
+	check(not Catalog.can_hold({"items":[],"grid":Vector2i(1,1),"searched":0},"relic"),"a 1x1 loot container cannot take a 2x2 relic")
+	check(Catalog.can_hold({"items":[],"grid":Vector2i(5,5),"searched":0},"relic"),"the 5x5 cathedral chest has room for a relic")
+	# A backpack found in the field is worn through the session action.
+	k.backpack.items.clear()
+	k.bags=[Catalog.make_bag("white")]
+	Catalog.add_item(k.backpack,"backpack")
+	k.backpack.items[0]["quality"]="blue"
+	check(kit_session.equip_bag(k,"backpack",0),"wearing a looted backpack succeeds")
+	check(str(k.backpack.key)=="blue","the looted backpack becomes the worn one")
+	check(spare_index_in(k,"white")>=0,"the old backpack waits in the cabinet")
+	# Loot tables actually hand out field equipment.
+	var equipment_seen := 0
+	for i in 240:
+		for entry in kit_session.chest_loot(false,0.3,0):
+			if entry is Dictionary and Catalog.is_equipment(str(entry.kind)):
+				equipment_seen+=1
+	check(equipment_seen>0,"chests hand out weapons and gear over time")
+	# Dying scatters the worn kit as well as the backpack.
+	var doomed_kit: Dictionary=kit_session.make_player(7,{"name":"Worn"})
+	kit_session.players[7]=doomed_kit
+	Catalog.add_item(doomed_kit.backpack,"weapon")
+	doomed_kit.backpack.items[0]["weapon"]=1
+	doomed_kit.backpack.items[0]["tier"]=3
+	check(kit_session.equip_item(doomed_kit,"backpack",0),"the doomed player wears a weapon")
+	var kit_before: int=kit_session.world_drops.size()
+	kit_session.down(doomed_kit)
+	var spilled_gear := 0
+	for i in range(kit_before,kit_session.world_drops.size()):
+		for item in Catalog.container_items(kit_session.world_drops[i]):
+			if str(item.kind)=="weapon" and int(item.get("tier",0))==3:
+				spilled_gear+=1
+	check(spilled_gear==1,"the worn weapon hits the ground on death")
+	check(kit_session.kit_weapon(doomed_kit).is_empty(),"death clears the worn weapon")
+	kit_session.queue_free()
 	session.queue_free()
 	print("SYSTEM TESTS: %d checks, %d failures" % [checks,failures])
 	quit(0 if failures==0 else 1)

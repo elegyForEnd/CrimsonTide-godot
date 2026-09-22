@@ -121,9 +121,71 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	var gear := clampi(int(config.get("gear",0)),0,2)
 	var hp: float=Catalog.HEROES[h].hp+talents[0]*12+Catalog.GEAR[gear].hp
 	var storage := storage_from_config(config)
-	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"ready":id==1,"p":Vector2(300,1100),"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":clampi(int(config.get("weapon",[1,3,2][h])),0,3),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Vector2(300,1100),"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	return player
+
+# What the player wears on top of the camp loadout: one weapon plus the three
+# gear slots. It is run-local loot, so it is deliberately never written to the
+# save file: wear it now or carry it home, never both.
+func empty_equipment() -> Dictionary:
+	return {"weapon":{},"gear":[{},{},{}]}
+
+func kit_weapon(p: Dictionary) -> Dictionary:
+	var kit = p.get("equipped",{})
+	if not kit is Dictionary:
+		return {}
+	var weapon = kit.get("weapon",{})
+	return weapon if weapon is Dictionary else {}
+
+func kit_gear(p: Dictionary) -> Array:
+	var kit = p.get("equipped",{})
+	if not kit is Dictionary:
+		return []
+	var gear = kit.get("gear",[])
+	return gear if gear is Array else []
+
+# A looted weapon only pays out while it is the weapon in hand.
+func weapon_kit_active(p: Dictionary) -> bool:
+	var item := kit_weapon(p)
+	return not item.is_empty() and int(item.get("weapon",-1))==int(p.weapon)
+
+func gear_bonus_of(p: Dictionary, slot: int) -> float:
+	var total := 0.0
+	for entry in kit_gear(p):
+		if entry is Dictionary and not entry.is_empty() and Catalog.gear_slot(entry)==slot:
+			total+=Catalog.gear_bonus(entry)
+	return total
+
+func equipment_hp(p: Dictionary) -> float:
+	return gear_bonus_of(p,0)
+
+func equipment_damage(p: Dictionary) -> float:
+	var total := gear_bonus_of(p,1)
+	if weapon_kit_active(p):
+		total+=Catalog.weapon_bonus(kit_weapon(p))
+	return total
+
+func equipment_speed(p: Dictionary) -> float:
+	return gear_bonus_of(p,2)
+
+# Attack interval scale: an upgraded weapon swings faster.
+func equipment_rate(p: Dictionary) -> float:
+	if not weapon_kit_active(p):
+		return 1.0
+	return maxf(0.4,1.0-Catalog.weapon_rate_bonus(kit_weapon(p)))
+
+func stat_max_hp(p: Dictionary) -> float:
+	return Catalog.HEROES[p.hero].hp+p.talents[0]*12+Catalog.GEAR[p.gear].hp+equipment_hp(p)
+
+# Recomputes the ceiling after gear changes: putting armour on grants the extra
+# health immediately, taking it off only clamps.
+func refresh_max_hp(p: Dictionary) -> void:
+	var value := maxf(1.0,stat_max_hp(p))
+	var gain := value-float(p.max_hp)
+	p.max_hp=value
+	p.hp=minf(value,float(p.hp)+maxf(0.0,gain))
+
 
 # Every player carries two storages: a permanent 4x4 dimensional pocket that is
 # written back into the save file, and an equipped backpack whose size follows
@@ -195,21 +257,36 @@ func backpack_label(p: Dictionary) -> String:
 
 # Loot routing: relics are sunk into the safe pocket first, everything else fills
 # the backpack the player is carrying. Returns false when both containers are full.
-func store_loot(p: Dictionary, kind: String, provision: bool = false, key: String = "") -> bool:
+# "meta" carries the fields that make a piece of loot itself (quality, weapon
+# index, gear index, tier, stack count) so nothing is lost on the way in.
+func store_loot(p: Dictionary, kind: String, provision: bool = false, key: String = "", meta: Dictionary = {}) -> bool:
 	var order: Array = ["pocket","backpack"] if Catalog.prefers_pocket(kind) else ["backpack","pocket"]
 	for name in order:
 		var container: Dictionary=p[name]
-		var fits := Catalog.can_hold(container,kind) if kind=="backpack" else Catalog.add_item(container,kind)
-		if not fits:
+		if not Catalog.can_hold(container,kind):
 			continue
+		if not Catalog.add_item(container,kind):
+			continue
+		var placed: Dictionary=container.items.back()
+		placed["provision"]=provision
 		if kind=="backpack":
 			# A loose backpack is stored as a 1x1 pack item carrying its quality.
-			if not Catalog.add_item(container,"backpack"):
-				continue
-			container.items.back()["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
-		container.items.back()["provision"]=provision
+			placed["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
+		for field in meta:
+			placed[field]=meta[field]
 		return true
 	return false
+
+# The descriptive fields of a loot entry, used to keep weapons, gear and stacks
+# intact when loot moves between a container, the ground and the player. Stack
+# counts travel as whole units instead, so they are deliberately left out.
+static func loot_meta(item: Dictionary) -> Dictionary:
+	var meta: Dictionary = {}
+	for field in Catalog.SAVED_ITEM_KEYS:
+		if item.has(field) and field!="count" and field!="provision":
+			meta[field]=item[field]
+	return meta
+
 
 # A carried backpack is itself loot: it remembers which quality it was, so it can
 # be worn again by whoever picks it up (or by the player who finds a better one).
@@ -223,13 +300,16 @@ func spilled(container: Dictionary, item: Dictionary, spread: float) -> Dictiona
 
 # Loose ground loot is a 1x1 "container" holding a single item, so pressing F can
 # grab it instantly through the same code path that feeds searched containers.
-func ground_drop(at: Vector2, kind: String, key: String = "", provision: bool = false) -> Dictionary:
+func ground_drop(at: Vector2, kind: String, key: String = "", provision: bool = false, meta: Dictionary = {}) -> Dictionary:
 	var container := loot_container(at,Catalog.chest_grid(0))
 	container.items.append({"kind":kind,"x":0,"y":0,"rot":false,"count":1})
+	var item: Dictionary=container.items[0]
 	if not key.is_empty():
-		container.items[0]["quality"]=key
+		item["quality"]=key
 	if provision:
-		container.items[0]["provision"]=true
+		item["provision"]=true
+	for field in meta:
+		item[field]=meta[field]
 	container["searched"]=1
 	# A dropped backpack names itself so it can be worn again.
 	if kind=="backpack":
@@ -257,7 +337,8 @@ func drop_item(p: Dictionary, slot: String, index: int, key: String = "") -> boo
 	return true
 
 # Death scatters everything in carried storage. The pocket is untouched: sealing
-# it against death is the whole point of the dimensional pocket.
+# it against death is the whole point of the dimensional pocket. Worn weapons and
+# gear are dropped as well, because wearing loot is a risk, not a bank.
 func spill_storage(p: Dictionary) -> void:
 	var carried_containers: Array = [p.backpack]
 	for bag in p.bags:
@@ -273,11 +354,31 @@ func spill_storage(p: Dictionary) -> void:
 		bag["p"]=p.p+Vector2(rng.randf_range(-42,42),rng.randf_range(-34,34))
 		world_drops.append(bag)
 		container.items.clear()
+	# The equipped kit is worn, so it hits the ground as its own pile.
+	var worn: Array = []
+	var weapon := kit_weapon(p)
+	if not weapon.is_empty():
+		worn.append(weapon)
+	for entry in kit_gear(p):
+		if entry is Dictionary and not entry.is_empty():
+			worn.append(entry)
+	if not worn.is_empty():
+		var kit := loot_container(p.p+Vector2(rng.randf_range(-30,30),rng.randf_range(-24,24)),Catalog.chest_grid(0))
+		for entry in worn:
+			var copy: Dictionary=entry.duplicate()
+			copy["x"]=0
+			copy["y"]=0
+			copy["rot"]=false
+			kit.items.append(copy)
+		kit["searched"]=container_units(kit)
+		world_drops.append(kit)
+	p["equipped"]=empty_equipment()
 	var replacement := Catalog.make_bag(Catalog.DEFAULT_BAG_KEY)
 	replacement["gw"]=Catalog.bag_grid(replacement).x
 	replacement["gh"]=Catalog.bag_grid(replacement).y
 	p["backpack"]=replacement
 	p["bags"]=[]
+	refresh_max_hp(p)
 
 # Reading and writing world containers goes through one place so the search model
 # stays identical for chests and for whatever a dead player left behind.
@@ -353,7 +454,7 @@ func pick_up_ground(p: Dictionary) -> bool:
 			continue
 		var item: Dictionary=bag.items[0]
 		var key := str(item.get("quality",Catalog.bag_key({"key":str(bag.get("key","")).substr(4)})))
-		if not store_loot(p,str(item.kind),bool(item.get("provision",false)),key):
+		if not store_loot(p,str(item.kind),bool(item.get("provision",false)),key,loot_meta(item)):
 			return false
 		bag.items.remove_at(0)
 		bag["searched"]=container_units(bag)
@@ -376,9 +477,10 @@ func take_loot(p: Dictionary, container_index: int, slot: int) -> bool:
 	var count := int(want.get("count",1)) if Catalog.stacks(kind) else 1
 	var key := str(want.get("quality",""))
 	var provision := bool(want.get("provision",false))
+	var meta := loot_meta(want)
 	var moved := 0
 	for i in count:
-		if not store_loot(p,kind,provision,key):
+		if not store_loot(p,kind,provision,key,meta):
 			break
 		moved+=1
 	if moved<=0:
@@ -401,8 +503,9 @@ func remove_units(container: Dictionary, kind: String, units: int) -> void:
 	container["searched"]=searched_units(container)-units
 	Catalog.tidy(container)
 
-# Chests hold supplies and valuables, and now and then a better backpack.
-# Entries are either a kind string or {"kind":"backpack","key":<quality>}.
+# Chests hold supplies and valuables, and now and then a better backpack or a
+# piece of field equipment. Entries are either a kind string or a dictionary
+# carrying the fields that make the loot itself.
 func chest_loot(bonus_relic: bool = false, backpack_chance: float = 0.3, floor_index: int = 0) -> Array:
 	var kinds: Array = ["scrap","crystal","medicine","ammo","charm"]
 	var loot: Array = []
@@ -412,6 +515,12 @@ func chest_loot(bonus_relic: bool = false, backpack_chance: float = 0.3, floor_i
 		loot.append("relic")
 	if rng.randf()<backpack_chance:
 		loot.append({"kind":"backpack","key":backpack_drop(floor_index)})
+	# Field equipment: weapons are rarer than gear, and both scale with how deep
+	# the raid has gone.
+	if rng.randf()<0.24:
+		loot.append(Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(floor_index)))
+	if rng.randf()<0.16:
+		loot.append(Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(floor_index)))
 	return loot
 
 # The single place that turns a loot-table entry into an item in a container.
@@ -421,12 +530,22 @@ func place_entry(container: Dictionary, entry) -> bool:
 		return false
 	if not Catalog.place_loot(container,kind):
 		return false
+	if not entry is Dictionary:
+		return true
+	var placed: Dictionary=Catalog.container_items(container).back()
 	if kind=="backpack":
-		var key := str(entry.get("key",Catalog.DEFAULT_BAG_KEY)) if entry is Dictionary else Catalog.DEFAULT_BAG_KEY
-		Catalog.container_items(container).back()["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
+		var key := str(entry.get("key",Catalog.DEFAULT_BAG_KEY))
+		placed["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
+	elif kind=="weapon":
+		placed["weapon"]=clampi(int(entry.get("weapon",0)),0,Catalog.WEAPONS.size()-1)
+		placed["tier"]=Catalog.tier_of(int(entry.get("tier",0)))
+	elif kind=="gear":
+		placed["gear"]=clampi(int(entry.get("gear",0)),0,Catalog.GEAR.size()-1)
+		placed["tier"]=Catalog.tier_of(int(entry.get("tier",0)))
 	return true
-# Loot tables never hand out a backpack worse than the one already carried.
-func backpack_drop(floor_index: int) -> String:
+
+# How good the loot is: the deeper the raid, the less likely a white item is.
+func roll_quality(floor_index: int) -> int:
 	var start := clampi(floor_index,0,Catalog.BAG_TIERS.size()-1)
 	var weights := [0.42,0.27,0.15,0.09,0.05,0.02]
 	var total := 0.0
@@ -436,8 +555,12 @@ func backpack_drop(floor_index: int) -> String:
 	for i in range(start,Catalog.BAG_TIERS.size()):
 		roll-=weights[i]
 		if roll<=0.0:
-			return Catalog.BAG_TIERS[i].key
-	return Catalog.BAG_TIERS[start].key
+			return i
+	return start
+
+# Loot tables never hand out a backpack worse than the one already carried.
+func backpack_drop(floor_index: int) -> String:
+	return Catalog.BAG_TIERS[roll_quality(floor_index)].key
 
 # Quality floor for the loot tables: chests follow whoever opens them, and the
 # ruins generate their contents before anyone is standing there.
@@ -449,11 +572,17 @@ func loot_floor() -> int:
 func enemy_loot(e: Dictionary) -> Dictionary:
 	var entry := {"kind":"ammo" if rng.randf()<0.35 else "crystal"}
 	if e.type==3:
-		# The blood-scented hunter always leaves its pack behind.
-		entry["kind"]="backpack"
-		entry["key"]=Catalog.BAG_TIERS[rng.randi_range(1,Catalog.BAG_TIERS.size()-1)].key
+		# The blood-scented hunter always leaves its pack behind, and often the
+		# weapon it was carrying.
+		if rng.randf()<0.45:
+			entry=Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(loot_floor()+1))
+		else:
+			entry["kind"]="backpack"
+			entry["key"]=Catalog.BAG_TIERS[rng.randi_range(1,Catalog.BAG_TIERS.size()-1)].key
 	elif rng.randf()<0.55:
 		entry["kind"]="relic"
+	elif rng.randf()<0.18:
+		entry=Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(loot_floor()))
 	return entry
 
 
@@ -622,13 +751,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		if p.status=="down" and not p.self_revive:
 			return
 		if p.hp<p.max_hp and spend(p,"medicine"):
-			if p.status=="down":
-				p.self_revive=false
-				p.status="active"
-				p.invuln=3.0
-			p.hp=minf(p.max_hp,p.hp+45)
-			p.sanity=minf(100,p.sanity+10)
-			emit_effect("skill",p.p)
+			apply_medkit(p)
 		return
 	if p.status!="active":
 		return
@@ -699,6 +822,16 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 					item.x=at.x
 					item.y=at.y
 					list[index]=item
+		"bag_rotate":
+			rotate_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
+		"use":
+			use_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
+		"equip":
+			equip_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
+		"unequip":
+			unequip_item(p,str(payload.get("type","weapon")),int(payload.get("index",0)))
+		"equip_bag":
+			equip_bag(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
 		"bag_swap":
 			var selected := int(payload.get("index",-1))
 			if selected>=0 and selected<p.bags.size():
@@ -718,17 +851,19 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			# mouse dragging in the inventory screen ultimately calls.
 			move_between(p,str(payload.get("from","backpack")),str(payload.get("to","")),int(payload.get("index",-1)),Vector2i(int(payload.get("x",0)),int(payload.get("y",0))),bool(payload.get("rot",false)))
 		"move_to":
+			# The one-click "put it in the other container" button: it goes through
+			# the same mover as a drag, so stacks, quality and equipment fields all
+			# travel with the item instead of being rebuilt from the kind alone.
 			var from := str(payload.get("from","backpack"))
 			var to := "pocket" if from=="backpack" else "backpack"
-			var source: Dictionary=p[from]
 			var move_index := int(payload.get("index",-1))
-			if move_index>=0 and move_index<source.items.size():
-				var moved_kind := str(source.items[move_index].kind)
-				if Catalog.can_hold(p[to],moved_kind):
-					source.items.remove_at(move_index)
-					Catalog.add_item(p[to],moved_kind)
-				else:
-					message.emit(Catalog.POCKET_NAME+"空间不足。" if to=="pocket" else "背包空间不足。")
+			var source: Dictionary=p.get(from,{})
+			var source_items: Array=Catalog.container_items(source)
+			if move_index<0 or move_index>=source_items.size():
+				return
+			var keep_rot := bool(source_items[move_index].get("rot",false))
+			if not move_between(p,from,to,move_index,Vector2i(0,0),keep_rot):
+				message.emit(Catalog.POCKET_NAME+"空间不足。" if to=="pocket" else "背包空间不足。")
 
 # Quality of the backpack a dragged item would become, so a dropped pack keeps it.
 func bag_key_of(p: Dictionary, slot: String, index: int) -> String:
@@ -754,11 +889,20 @@ func move_between(p: Dictionary, from: String, to: String, index: int, spot: Vec
 			return false
 		var kind := str(list[index].kind)
 		if int(list[index].get("count",1))>1 and Catalog.stacks(kind):
-			# Whole stacks travel together when there is room for them.
-			if not Catalog.can_hold(target,kind):
+			# Whole stacks travel together, one unit at a time, so a container that
+			# only has room for part of the pile takes exactly that part.
+			var units := int(list[index].get("count",1))
+			var moved := 0
+			for i in units:
+				if not Catalog.place_loot(target,kind):
+					break
+				moved+=1
+			if moved<=0:
 				return false
-			Catalog.place_loot(target,kind)
-			list.remove_at(index)
+			if moved>=units:
+				list.remove_at(index)
+			else:
+				list[index]["count"]=units-moved
 			return true
 		var probe: Dictionary=list[index].duplicate()
 		probe["rot"]=rot
@@ -836,6 +980,212 @@ func resolve_drop(items: Array, grid: Vector2i, entry: Dictionary, at: Vector2i,
 				best=cell
 	return best
 
+# --- using and equipping what is in the backpack ----------------------------
+# Rotating keeps the item where it is when the turned footprint still fits, and
+# otherwise slides it to the nearest legal cell, exactly like a drop would. It
+# only refuses when the container has no room for the turned shape at all.
+func rotate_item(p: Dictionary, slot: String, index: int) -> bool:
+	if slot!="backpack" and slot!="pocket":
+		return false
+	var list: Array=Catalog.container_items(p[slot])
+	if index<0 or index>=list.size():
+		return false
+	var item: Dictionary=list[index]
+	if not move_between(p,slot,slot,index,Vector2i(int(item.x),int(item.y)),not bool(item.get("rot",false))):
+		message.emit("空间不足，无法旋转这件物品。")
+		return false
+	return true
+
+func apply_medkit(p: Dictionary) -> bool:
+	if p.status=="down":
+		if not p.self_revive:
+			return false
+		p.self_revive=false
+		p.status="active"
+		p.invuln=3.0
+	p.hp=minf(p.max_hp,p.hp+45)
+	p.sanity=minf(100,p.sanity+10)
+	emit_effect("skill",p.p)
+	return true
+
+# One entry point for using a selected inventory item. The medkit and the blood
+# crystal run the same effects as the F and B hotkeys; a backpack, weapon or gear
+# piece goes to its own equip path. Consuming removes exactly the clicked entry,
+# so a stack of supplies never eats the wrong slot.
+func use_item(p: Dictionary, slot: String, index: int) -> bool:
+	if slot!="backpack" and slot!="pocket":
+		return false
+	var list: Array=Catalog.container_items(p[slot])
+	if index<0 or index>=list.size():
+		return false
+	var kind := str(list[index].kind)
+	if kind=="backpack":
+		return equip_bag(p,slot,index)
+	if Catalog.is_equipment(kind):
+		return equip_item(p,slot,index)
+	if kind=="medicine":
+		if p.status=="down" and not p.self_revive:
+			message.emit("本局的自救机会已经用过了。")
+			return false
+		if p.hp>=p.max_hp:
+			message.emit("生命已满，急救针留着。")
+			return false
+		list.remove_at(index)
+		apply_medkit(p)
+		return true
+	if kind=="crystal":
+		list.remove_at(index)
+		p.scent=maxf(0,p.scent-25)
+		p.sanity=minf(100,p.sanity+18)
+		emit_effect("skill",p.p)
+		return true
+	if kind=="ammo":
+		list.remove_at(index)
+		p.reserve+=48
+		emit_effect("loot",p.p)
+		return true
+	message.emit(Catalog.item_name(list[index])+"无法直接使用。")
+	return false
+
+# Equipping is the point of the field equipment: the weapon in hand changes at
+# once and gear lands in its own slot. Whatever was worn before goes back into
+# storage (or onto the ground when everything is full), so a swap never destroys
+# an item.
+func equip_item(p: Dictionary, slot: String, index: int) -> bool:
+	if slot!="backpack" and slot!="pocket":
+		return false
+	var list: Array=Catalog.container_items(p[slot])
+	if index<0 or index>=list.size():
+		return false
+	var kind := str(list[index].kind)
+	if not Catalog.is_equipment(kind):
+		message.emit(Catalog.item_name(list[index])+"不能装备。")
+		return false
+	var entry: Dictionary=list[index].duplicate()
+	for field in ["x","y","rot","count"]:
+		entry.erase(field)
+	var equipped: Dictionary=p.get("equipped",empty_equipment())
+	if not equipped is Dictionary:
+		equipped=empty_equipment()
+	var old: Dictionary={}
+	if kind=="weapon":
+		var previous = equipped.get("weapon",{})
+		if previous is Dictionary:
+			old=previous
+		equipped["weapon"]=entry
+		p["weapon"]=clampi(int(entry.get("weapon",p.weapon)),0,Catalog.WEAPONS.size()-1)
+		p["reload"]=0.0
+		p["combo"]=0
+		p["pending_strike"]=false
+	else:
+		equipped["gear"]=gear_slots(equipped)
+		var slots: Array=equipped["gear"]
+		var gear_index: int=Catalog.gear_slot(entry)
+		var previous = slots[gear_index]
+		if previous is Dictionary:
+			old=previous
+		slots[gear_index]=entry
+	p["equipped"]=equipped
+	list.remove_at(index)
+	if not old.is_empty():
+		stow_equipment(p,old)
+	refresh_max_hp(p)
+	if kind=="weapon":
+		message.emit("已装备 %s：伤害 +%d%%、攻速 +%d%%。" % [Catalog.item_name(entry),int(round(Catalog.weapon_bonus(entry)*100.0)),int(round(Catalog.weapon_rate_bonus(entry)*100.0))])
+	else:
+		message.emit("已装备 %s（%s槽）：%s。" % [Catalog.item_name(entry),Catalog.gear_slot_name(entry),Catalog.gear_desc(entry)])
+	return true
+
+func unequip_item(p: Dictionary, type: String, index: int = 0) -> bool:
+	var equipped: Dictionary=p.get("equipped",empty_equipment())
+	if not equipped is Dictionary:
+		return false
+	var entry: Dictionary={}
+	if type=="weapon":
+		var worn = equipped.get("weapon",{})
+		if not worn is Dictionary or worn.is_empty():
+			return false
+		entry=worn
+		equipped["weapon"]={}
+	else:
+		equipped["gear"]=gear_slots(equipped)
+		var slots: Array=equipped["gear"]
+		var gear_index: int=clampi(index,0,Catalog.GEAR.size()-1)
+		var worn = slots[gear_index]
+		if not worn is Dictionary or worn.is_empty():
+			return false
+		entry=worn
+		slots[gear_index]={}
+	p["equipped"]=equipped
+	stow_equipment(p,entry)
+	refresh_max_hp(p)
+	message.emit("已卸下 "+Catalog.item_name(entry)+"。")
+	return true
+
+# Three ordered gear slots, rebuilt defensively because the whole player
+# dictionary travels through ENet snapshots.
+func gear_slots(equipped: Dictionary) -> Array:
+	var slots = equipped.get("gear",[])
+	if not slots is Array:
+		slots=[]
+	while slots.size()<Catalog.GEAR.size():
+		slots.append({})
+	return slots
+
+# Returns a piece of equipment to the player's own storage; when both containers
+# are full it lands on the ground instead of vanishing.
+func stow_equipment(p: Dictionary, item: Dictionary, prefer: String = "backpack") -> bool:
+	var order: Array = ["backpack","pocket"] if prefer!="pocket" else ["pocket","backpack"]
+	for slot in order:
+		var container: Dictionary=p[slot]
+		if not Catalog.can_hold(container,str(item.kind)):
+			continue
+		if not Catalog.add_item(container,str(item.kind)):
+			continue
+		var placed: Dictionary=container.items.back()
+		for field in Catalog.SAVED_ITEM_KEYS:
+			if item.has(field):
+				placed[field]=item[field]
+		return true
+	var bag := loot_container(p.p+Vector2(28,18),Catalog.chest_grid(0))
+	var copy: Dictionary=item.duplicate()
+	copy["x"]=0
+	copy["y"]=0
+	copy["rot"]=false
+	bag.items.append(copy)
+	bag["searched"]=container_units(bag)
+	world_drops.append(bag)
+	return false
+
+# A loose backpack found in the field is worn on the spot: the pack it replaces
+# becomes a spare, and the swap is refused (never forced) when the carried loot
+# would not fit inside the new one.
+func equip_bag(p: Dictionary, slot: String, index: int) -> bool:
+	if slot!="backpack" and slot!="pocket":
+		return false
+	var list: Array=Catalog.container_items(p[slot])
+	if index<0 or index>=list.size() or str(list[index].kind)!="backpack":
+		return false
+	var entry: Dictionary=list[index].duplicate()
+	var key := str(entry.get("quality",Catalog.DEFAULT_BAG_KEY))
+	list.remove_at(index)
+	var candidate := Catalog.make_bag(key)
+	candidate["gw"]=Catalog.bag_grid(candidate).x
+	candidate["gh"]=Catalog.bag_grid(candidate).y
+	p.bags.append(candidate)
+	if not Catalog.swap_bags(p,p.bags.size()-1):
+		p.bags.remove_at(p.bags.size()-1)
+		if Catalog.can_hold(p[slot],"backpack"):
+			Catalog.add_item(p[slot],"backpack")
+			p[slot].items.back()["quality"]=Catalog.tier(key).key
+		else:
+			stow_equipment(p,entry,slot)
+		message.emit("背包空间不足：先腾空当前背包内的物资。")
+		return false
+	var tier: Dictionary=Catalog.tier(key)
+	message.emit("已装备 %s%s。" % [tier.quality,tier.name])
+	return true
+
 func reload_player(p: Dictionary) -> void:
 	var clip: int=16
 	if p.weapon!=0:
@@ -882,7 +1232,7 @@ func simulate(dt: float) -> void:
 		var cmd: Dictionary=inputs.get(id,{})
 		var direction: Vector2=cmd.get("move",Vector2.ZERO)
 		p.aim=cmd.get("aim",Vector2.RIGHT)
-		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed
+		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed+equipment_speed(p)
 		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
 		p.scent=move_toward(p.scent,float(crystals_carried(p)*8),dt*0.5)
 		p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
@@ -909,7 +1259,7 @@ func simulate(dt: float) -> void:
 				players[e.last].kills+=1
 			if rng.randf()<0.42 or e.type==3:
 				var loot := enemy_loot(e)
-				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false))
+				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
 			enemies.remove_at(i)
 	if elapsed>=duration:
@@ -970,9 +1320,11 @@ func attack(p: Dictionary) -> void:
 		return
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
 	p.combo_timeout=1.2
-	p.attack=weapon.rate
-	p.swing_total=weapon.rate
-	p.swing_time=weapon.rate
+	# A looted weapon of matching quality swings faster than the camp issue one.
+	var rate: float=weapon.rate*equipment_rate(p)
+	p.attack=rate
+	p.swing_total=rate
+	p.swing_time=rate
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=true
 	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":p.weapon,"id":p.id,"combo":p.combo})
@@ -983,7 +1335,7 @@ func attack(p: Dictionary) -> void:
 func release_strike(p: Dictionary) -> void:
 	var w: Dictionary=Catalog.WEAPONS[p.weapon]
 	var direction: Vector2=p.strike_aim
-	var damage: float=w.damage*(1+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage)
+	var damage: float=w.damage*(1+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
 	if p.weapon==1 and p.combo==2:
 		damage*=1.4
 	broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":p.weapon,"id":p.id,"combo":p.combo})
@@ -1226,11 +1578,23 @@ func settle() -> void:
 		# in down(), so only the sealed pocket survives it.
 		var loot := (Catalog.container_value(p.backpack)+Catalog.container_value(p.pocket)) if extracted else 0
 		var shared := objectives*55+(100 if objectives==3 else 0)
-		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":loot+shared,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted)}
+		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":loot+shared,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted),"worn":worn_names(p)}
 	running=false
 	finished.emit()
 	if online:
 		receive_results.rpc(results,players)
+
+# What the player was wearing when the run ended, for the report screen: worn
+# equipment never travels home, so the report is where it is accounted for.
+func worn_names(p: Dictionary) -> Array:
+	var names: Array = []
+	var weapon := kit_weapon(p)
+	if not weapon.is_empty():
+		names.append(Catalog.item_name(weapon))
+	for entry in kit_gear(p):
+		if entry is Dictionary and not entry.is_empty():
+			names.append(Catalog.item_name(entry))
+	return names
 
 # What the save file keeps after the expedition: the pocket is always preserved,
 # the equipped backpack and every spare only when the player walked out alive.

@@ -6,14 +6,37 @@ var primary := false
 var menu := false
 var selected := false
 var heat := 0.0
-var item_kind := ""
 var slot := false
 var serif: Font
 var item_texture: Texture2D
+# A slot must never be resized by its own caption: a button grows to fit its text
+# unless clip_text is on, and a long name like "金色 守夜护甲" was widening a 1x2
+# cell until the icon and the label spilled over the neighbouring slots.
+var rotated := false
+# Optional shorter caption ("守夜护甲" instead of "红色 守夜护甲") used when the
+# slot is too narrow for the full name.
+var short_caption := ""
+# Assigning the kind loads the art immediately. Loading it lazily in _process
+# meant every rebuilt grid (a rotation, a drag, a stack change) drew one frame of
+# empty cells, which read as the item icon vanishing.
+var item_kind := "":
+	set(value):
+		item_kind=value
+		item_texture=null if value.is_empty() else load("res://assets/icons/"+value+".svg")
+		queue_redraw()
 
-func _ready() -> void:
+func _init() -> void:
+	# A slot has to keep exactly the size it is given, and a Control clamps
+	# set_size() to its minimum size. Both the default Button theme (content
+	# margins + text width) and a long item name would inflate the cell, which is
+	# what made "红色 守夜护甲" draw over its neighbours. Doing this in _init
+	# matters: callers assign text and size before the node ever enters the tree,
+	# so setting it in _ready would already be too late.
+	clip_text=true
 	for state in ["normal","hover","pressed","focus","disabled"]:
 		add_theme_stylebox_override(state,StyleBoxEmpty.new())
+
+func _ready() -> void:
 	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color","font_disabled_color"]:
 		add_theme_color_override(state,Color.TRANSPARENT)
 	set_process(true)
@@ -23,6 +46,16 @@ func _process(dt: float) -> void:
 		item_texture=load("res://assets/icons/"+item_kind+".svg")
 	heat=move_toward(heat,1.0 if (is_hovered() or has_focus() or selected) and not disabled else 0.0,dt*7)
 	queue_redraw()
+
+# Names are cut to the cell and given an ellipsis instead of being drawn over the
+# next cell; the full name lives in the tooltip and the details panel.
+func fit_caption(face: Font, value: String, limit: float, font_size: int) -> String:
+	if face.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x<=limit:
+		return value
+	var shortened := value
+	while shortened.length()>1 and face.get_string_size(shortened+"…",HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x>limit:
+		shortened=shortened.substr(0,shortened.length()-1)
+	return shortened+"…"
 
 func _draw() -> void:
 	var w := size.x
@@ -34,12 +67,28 @@ func _draw() -> void:
 	if slot:
 		draw_style_box(_slot_style(),Rect2(Vector2.ZERO,size))
 		if not item_kind.is_empty():
-			var edge := minf(w-14,h-27)
-			if item_texture:
-				draw_texture_rect(item_texture,Rect2(Vector2((w-edge)/2,(h-edge)/2-6),Vector2.ONE*edge),false)
-			var face := get_theme_font("font")
-			var tw := face.get_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x
-			draw_string(face,Vector2((w-tw)/2,h-8),text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,ink)
+			# The icon owns the cell; the name rides a translucent strip along the
+			# bottom so it never covers the art or the neighbouring slot.
+			var edge := minf(w-6.0,h-6.0)
+			if item_texture and edge>0.0:
+				if rotated:
+					# The art turns with the item: a 1x2 piece laid on its side has to
+					# look laid on its side, not like the same upright picture.
+					draw_set_transform(Vector2(w/2.0,h/2.0),PI*0.5,Vector2.ONE)
+					draw_texture_rect(item_texture,Rect2(Vector2.ONE*(-edge/2.0),Vector2.ONE*edge),false)
+					draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
+				else:
+					draw_texture_rect(item_texture,Rect2(Vector2((w-edge)/2.0,(h-edge)/2.0),Vector2.ONE*edge),false)
+			if h>=30.0 and not text.is_empty():
+				var face := get_theme_font("font")
+				# Narrow cells drop the quality prefix and shrink the type instead of
+				# showing "红色 …"; the full name is on the tooltip and the panel.
+				var font_size := 10 if w>=58.0 else 9
+				var caption := text
+				if not short_caption.is_empty() and face.get_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x>w-5.0:
+					caption=short_caption
+				draw_rect(Rect2(0,h-13.0,w,13.0),Color(0.035,0.025,0.04,0.78),true)
+				draw_string(face,Vector2(0,h-3.0),fit_caption(face,caption,w-5.0,font_size),HORIZONTAL_ALIGNMENT_CENTER,w,font_size,ink)
 		return
 	# Feathered crimson illumination, no opaque rectangular button body.
 	if glow>0:

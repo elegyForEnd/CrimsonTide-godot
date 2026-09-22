@@ -29,7 +29,10 @@ func _ready() -> void:
 	ground=load("res://assets/courtyard.png")
 	enemy_art=load("res://assets/enemies.png")
 	for kind in Catalog.ITEMS:
-		loot_icons[kind]=load("res://assets/icons/"+kind+".svg")
+		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
+	# Field equipment resolves to its own weapon / slot icon, so preload those too.
+	for icon in Catalog.WEAPON_ICONS+Catalog.GEAR_ICONS:
+		loot_icons[icon]=load("res://assets/icons/"+icon+".svg")
 	combat=CombatVisuals.new()
 	combat.field=self
 	add_child(combat)
@@ -196,9 +199,9 @@ func _draw() -> void:
 			label(at+Vector2(-30,-40),Catalog.bag_quality({"key":str(bag.key).substr(4)})+"背包",12,bag_colour.lightened(0.25))
 		else:
 			for item in Catalog.container_items(bag):
-				var colour: Color=Catalog.ITEMS[str(item.kind)].color
+				var colour: Color=Catalog.item_color(item)
 				draw_circle(at,17,Color(colour,0.1))
-				draw_texture_rect(loot_icons[str(item.kind)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
+				draw_texture_rect(loot_icons[Catalog.item_icon(item)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
 				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
 	for e in session.enemies:
 		monster(e)
