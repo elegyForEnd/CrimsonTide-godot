@@ -12,7 +12,8 @@ var explored: Dictionary = {}
 var sentinels: Texture2D
 var smooth_positions: Dictionary = {}
 var ground: Texture2D
-var enemy_art: Texture2D
+var enemy_frames: EnemyFrames
+var defeated_enemies: Array = []
 var velocity_visual: Dictionary = {}
 var previous_positions: Dictionary = {}
 var loot_icons: Dictionary = {}
@@ -27,7 +28,7 @@ func _ready() -> void:
 	font=face
 	sentinels=load("res://assets/sentinels.png")
 	ground=load("res://assets/courtyard.png")
-	enemy_art=load("res://assets/enemies.png")
+	enemy_frames=EnemyFrames.new()
 	for kind in Catalog.ITEMS:
 		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
 	# Field equipment resolves to its own weapon / slot icon, so preload those too.
@@ -39,12 +40,21 @@ func _ready() -> void:
 	character_frames=CharacterFrames.new()
 	session.effect.connect(combat.legacy)
 	session.combat_event.connect(combat.event)
-	session.started.connect(func(): combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
+	session.combat_event.connect(func(event: Dictionary):
+		if event.kind=="enemy_defeated":
+			var fallen := event.duplicate()
+			fallen["age"]=0.0
+			defeated_enemies.append(fallen))
+	session.started.connect(func(): defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
 
 func _process(dt: float) -> void:
 	if not visible:
 		return
 	clock+=dt
+	for i in range(defeated_enemies.size()-1,-1,-1):
+		defeated_enemies[i].age+=dt
+		if defeated_enemies[i].age>=0.55:
+			defeated_enemies.remove_at(i)
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if not p.is_empty():
 		if p.status in ["active","down"]:
@@ -203,6 +213,11 @@ func _draw() -> void:
 				draw_circle(at,17,Color(colour,0.1))
 				draw_texture_rect(loot_icons[Catalog.item_icon(item)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
 				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
+	for fallen in defeated_enemies:
+		var height: float=EnemyFrames.HEIGHTS[int(fallen.type)]
+		draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
+		draw_texture_rect_region(enemy_frames.sheets[int(fallen.type)],Rect2(-height*0.75,-height+12,height*1.5,height*1.5),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
+		draw_set_transform(offset)
 	for e in session.enemies:
 		monster(e)
 	for p in session.players.values():
@@ -313,20 +328,31 @@ func actor(p: Dictionary) -> void:
 
 func monster(e: Dictionary) -> void:
 	var pos: Vector2=e.p
-	var color: Color=[Color("a66172"),Color("a68abf"),Color("847b88"),Color("e05870")][e.type]
-	var radius := 25.0 if e.type==3 else 17.0
-	draw_circle(pos+Vector2(0,10),radius+3,Color(0,0,0,0.3))
-	var dims := enemy_art.get_size()
-	var bounds: Array=[Vector2(0,0.25),Vector2(0.25,0.5),Vector2(0.5,0.79),Vector2(0.79,1.0)]
-	var interval: Vector2=bounds[e.type]
-	var region := Rect2(interval.x*dims.x,0,(interval.y-interval.x)*dims.x,dims.y)
-	var height: float=[80.0,92.0,104.0,132.0][e.type]
-	var width := height*region.size.x/region.size.y
-	var sway := sin(clock*(3 if e.type==1 else 7)+e.id)*2
-	draw_texture_rect_region(enemy_art,Rect2(pos+Vector2(-width/2,-height+20+sway),Vector2(width,height)),region,Color(3.5,3.2,3.0,1) if float(e.get("flash",0))>0 else Color(1.15,1.06,1.1,1))
-	if e.type==3:
+	var kind: int=e.type
+	var color: Color=EnemyFrames.COLORS[kind]
+	var height: float=EnemyFrames.HEIGHTS[kind]
+	var frame := EnemyFrames.pose(e,clock)
+	var facing: float=e.get("facing",1.0)
+	draw_circle(pos+Vector2(0,8),25 if kind==3 else 19,Color(0,0,0,0.24))
+	if float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
+		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
+		var progress: float=clampf((e.attack_total-e.attack_time)/[0.26,0.42,0.56,0.32][kind],0,1)
+		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,0.4+progress*0.5),2.5,true)
+	var hover := sin(clock*4+e.id)*3 if kind==1 else 0.0
+	# All frames share a fixed canvas and foot anchor; mirroring never shifts feet.
+	draw_set_transform(offset+pos+Vector2(0,hover),0,Vector2(facing,1))
+	var tint := Color(1.6,1.5,1.5) if float(e.get("flash",0))>0 else Color.WHITE
+	draw_texture_rect_region(enemy_frames.sheets[kind],Rect2(-height*0.75,-height+12,height*1.5,height*1.5),enemy_frames.region(frame),tint)
+	draw_set_transform(offset)
+	if frame==6:
+		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
+		if kind==1:
+			draw_arc(pos+aim*24,12,0,TAU,24,Color(color,0.8),2,true)
+		else:
+			draw_arc(pos,38 if kind!=2 else 46,aim.angle()-0.8,aim.angle()+0.8,20,Color(color,0.85),3 if kind!=2 else 5,true)
+	if kind==3:
 		draw_arc(pos+Vector2(0,9),35,0,TAU,40,Color(color,0.25),2,true)
-		label(pos+Vector2(-28,-height+8),"血香猎手",12,color)
+		label(pos+Vector2(-28,-height-6),EnemyFrames.NAMES[kind],12,color)
 	if e.hp<e.max_hp:
 		draw_rect(Rect2(pos+Vector2(-18,-height-1),Vector2(36,3)),Color("292431"))
 		draw_rect(Rect2(pos+Vector2(-18,-height-1),Vector2(36*maxf(0,e.hp/e.max_hp),3)),color)

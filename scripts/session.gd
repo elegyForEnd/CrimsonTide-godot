@@ -1307,6 +1307,7 @@ func simulate(dt: float) -> void:
 				var loot := enemy_loot(e)
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
+			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0)})
 			enemies.remove_at(i)
 	if elapsed>=duration:
 		for p in players.values():
@@ -1401,6 +1402,7 @@ func release_strike(p: Dictionary) -> void:
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	e.hp-=damage
 	e.last=owner
+	e["attack_time"]=0.0
 	e["flash"]=0.14
 	e["stagger"]=0.12 if knock<40 else 0.26
 	var impact: Vector2=e.p
@@ -1536,7 +1538,7 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 		return
 	var kind := type if type>=0 else rng.randi_range(0,2)
 	var health: float = [58.0,42.0,125.0,310.0][kind]*(1+0.3*(players.size()-1))
-	enemies.append({"id":next_enemy,"p":pos,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU)})
+	enemies.append({"id":next_enemy,"p":pos,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU),"facing":1.0,"motion_phase":0.0,"moving":false,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_target":0,"attack_aim":Vector2.RIGHT})
 	next_enemy+=1
 
 func update_enemies(dt: float) -> void:
@@ -1545,9 +1547,25 @@ func update_enemies(dt: float) -> void:
 			continue
 		e["flash"]=maxf(0,float(e.get("flash",0))-dt)
 		e["stagger"]=maxf(0,float(e.get("stagger",0))-dt)
-		if e.stagger>0:
-			continue
+		e["moving"]=false
 		e.cd=maxf(0,e.cd-dt)
+		if e.stagger>0:
+			# A stagger interrupts the windup before its contact frame.
+			e["attack_time"]=0.0
+			continue
+		if float(e.get("attack_time",0))>0:
+			e.attack_time=maxf(0,e.attack_time-dt)
+			var passed: float=e.attack_total-e.attack_time
+			var windup: float=[0.26,0.42,0.56,0.32][e.type]
+			if not e.attack_released and passed>=windup:
+				e.attack_released=true
+				var victim: Dictionary=players.get(e.attack_target,{})
+				if e.type==1:
+					broadcast_audio("enemy-cast",e)
+					bullets.append({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":13.0,"owner":0})
+				elif not victim.is_empty() and victim.status=="active" and e.p.distance_to(victim.p)<58 and ruins.clear_line(e.p,victim.p):
+					hurt(victim,[12,8,20,25][e.type])
+			continue
 		var target: Dictionary={}
 		var best := 440.0+threat*300
 		for p in players.values():
@@ -1557,25 +1575,31 @@ func update_enemies(dt: float) -> void:
 			if dist<best+p.scent*4:
 				best=dist
 				target=p
+		var before: Vector2=e.p
 		if target.is_empty():
 			e.p=ruins.move(e.p,e.wander*18*dt)
-			continue
-		var direction: Vector2=(target.p-e.p).normalized()
-		var speed: float=[110,95,68,140][e.type]*(1+threat*0.3)
-		var ranged: bool=e.type==1 and best<330 and ruins.clear_line(e.p,target.p)
-		if not ranged and best>32:
-			var before: Vector2=e.p
-			e.p=ruins.move(e.p,direction*speed*dt)
-			if e.p.distance_to(before)<speed*dt*0.2:
-				e.p=ruins.move(e.p,direction.orthogonal()*speed*dt)
-		if e.cd<=0:
-			if ranged:
-				e.cd=2.0
-				broadcast_audio("enemy-cast",e)
-				bullets.append({"p":e.p,"v":direction*245,"life":2.0,"damage":13.0,"owner":0})
-			elif best<45 and ruins.clear_line(e.p,target.p):
-				e.cd=0.85
-				hurt(target,[12,8,20,25][e.type])
+		else:
+			var direction: Vector2=(target.p-e.p).normalized()
+			if absf(direction.x)>0.05:
+				e["facing"]=signf(direction.x)
+			var speed: float=[110,95,68,140][e.type]*(1+threat*0.3)
+			var ranged: bool=e.type==1 and best<330 and ruins.clear_line(e.p,target.p)
+			if e.cd<=0 and (ranged or (best<45 and ruins.clear_line(e.p,target.p))):
+				e["attack_total"]=[0.62,0.84,1.0,0.72][e.type]
+				e["attack_time"]=e.attack_total
+				e["attack_released"]=false
+				e["attack_target"]=target.id
+				e["attack_aim"]=direction
+				e.cd=2.0 if ranged else e.attack_total+0.35
+			elif not ranged and best>32:
+				e.p=ruins.move(e.p,direction*speed*dt)
+				if e.p.distance_to(before)<speed*dt*0.2:
+					e.p=ruins.move(e.p,direction.orthogonal()*speed*dt)
+		var travelled: float=e.p.distance_to(before)
+		e["moving"]=travelled>0.01
+		e["motion_phase"]=float(e.get("motion_phase",0))+travelled/12.0
+		if travelled>0.01 and absf(e.p.x-before.x)>0.01:
+			e["facing"]=signf(e.p.x-before.x)
 
 func hurt(p: Dictionary, damage: float) -> void:
 	if p.invuln>0 or p.status!="active":
