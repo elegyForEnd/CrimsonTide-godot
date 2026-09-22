@@ -591,7 +591,7 @@ func show_camp() -> void:
 		else: notify("物资已满或银币不足。")
 	)
 	supply.disabled=extra_meds>=2
-	var mode := button(page,"长局 · 15 分钟" if long_run else "标准局 · 8 分钟",Vector2(1024,735),Vector2(349,43),func(): long_run=not long_run; show_camp())
+	var mode := button(page,"长局 · 每天 15 分钟" if long_run else "标准局 · 每天 8 分钟",Vector2(1024,735),Vector2(349,43),func(): long_run=not long_run; show_camp())
 	mode.disabled=not session.authority()
 	ornament(page,Vector2(62,814),Vector2(1314,10))
 	button(page,"← 离开营地",Vector2(60,839),Vector2(183,43),leave_to_title)
@@ -623,7 +623,7 @@ func on_started() -> void:
 	label(page,"血潮守望",Vector2(29,17),24).add_theme_font_override("font",title_font)
 	hud.time=label(page,"",Vector2(30,54),15,GOLD)
 	hud.mission=label(page,"",Vector2(550,18),20,INK)
-	label(page,"共 同 目 标  /  点 亮 晨 钟",Vector2(550,53),11,GOLD)
+	hud.area=label(page,"",Vector2(550,49),14,GOLD,Vector2(610,25))
 	ornament(page,Vector2(540,83),Vector2(300,10))
 	hud.seed=label(page,"遗迹 #"+str(session.seed_value),Vector2(1175,26),14,MUTED)
 	hud.team=label(page,"",Vector2(31,125),15,INK,Vector2(320,180))
@@ -654,7 +654,11 @@ func on_started() -> void:
 	label(page,"F 拾取/搜索/急救 · TAB 背包 · M 地图",Vector2(1170,828),11,MUTED,Vector2(241,20))
 	hud.loadout=label(page,"",Vector2(1170,858),11,GOLD,Vector2(241,18))
 	hud.loadout2=label(page,"",Vector2(1170,876),11,MUTED,Vector2(241,18))
-	notify("已抵达月冠边境。M 查看地标与撤离路线。")
+	hud.raid_continue=button(page,"留下挑战 [Y]",Vector2(400,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"continue"}))
+	hud.raid_extract=button(page,"安全撤离 [N]",Vector2(618,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"extract"}))
+	hud.raid_wait=button(page,"取消就绪 [U]",Vector2(836,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"wait"}))
+	for key in ["raid_continue","raid_extract","raid_wait"]: hud[key].hide()
+	notify("第一天无法撤离。M 查看黎明印记；血潮收缩完成后迎战 Boss。")
 
 func _process(dt: float) -> void:
 	toast_time-=dt
@@ -775,6 +779,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if page_name!="game" or modal:
 		return
+	if event is InputEventKey and event.pressed and not event.echo and session.raid.get("phase","") in ["choice","complete"]:
+		var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+		if code in [KEY_Y,KEY_N,KEY_U]:
+			session.action("raid_choice",{"choice":"continue" if code==KEY_Y else ("extract" if code==KEY_N else "wait")})
+			get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed("bag") and not field.map_open:
 		toggle_bag()
 		get_viewport().set_input_as_handled()
@@ -889,9 +899,15 @@ func update_hud() -> void:
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty() or hud.is_empty():
 		return
-	var remaining := maxi(0,int(session.duration-session.elapsed))
-	hud.time.text="%02d:%02d  /  %s" % [remaining/60,remaining%60,"毒雾正在收缩" if session.threat>0.45 else "血月初升"]
-	hud.mission.text="王城探索 · 从城门返回边境撤离" if session.map_id=="city" else "晨钟封印    %d / 3" % session.objectives
+	var choosing: bool=session.raid.get("phase","")=="choice" and p.status=="active"
+	hud.raid_continue.visible=choosing
+	hud.raid_wait.visible=choosing
+	hud.raid_extract.visible=(choosing or session.raid.get("phase","")=="complete") and p.status=="active"
+	var remaining := maxi(0,int(ceil(session.duration-float(session.raid.get("time",0)))))
+	hud.time.text="第 %d 天 · %02d:%02d / %s" % [session.raid.get("day",1),remaining/60,remaining%60,{"explore":"血潮收缩" if float(session.raid.get("time",0))>=session.duration*0.5 else "血月初升","boss":"黎明决战","choice":"黎明抉择","complete":"终夜已破"}.get(session.raid.get("phase","explore"),"")]
+	hud.mission.text="王城探索 · 缩圈前自动返回边境" if session.map_id=="city" else ("晨钟封印 %d/3 · %s" % [session.objectives,"可撤离" if session.can_extract() else "撤离封锁 · 击败黎明 Boss"])
+	var block := Ecology.block_at(session.ruins,p.p) if session.map_id=="border" else -1
+	hud.area.text=str(session.ruins.sites[block].name)+" · "+Ecology.site_status(session,block) if block>=0 else ("击败骑士与全部守卫，领取王庭珍藏" if session.map_id=="city" else "野外稀有补给 · 清理据点获得宝箱")
 	hud.health.text="生命   %d / %d" % [maxf(0,p.hp),p.max_hp]
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.sanity.text="理智  %d%%    ·    血香  %d" % [p.sanity,p.scent]
@@ -917,26 +933,26 @@ func update_hud() -> void:
 		hud.notice.text="撤离成功 · 战利品已保全" if p.status=="extracted" else "守夜终结 · 背包与身上装备已散落，次元口袋仍在"
 		hud.prompt.text="正在观战队友；所有人撤离或阵亡后统一结算。"
 		return
-	if p.p.distance_to(Ruins.CENTER)>session.safe_radius():
-		hud.notice.text="你正处于毒雾中！向地图中央移动"
+	if session.map_id=="border" and p.p.distance_to(session.safe_center())>session.safe_radius():
+		hud.notice.text="你正处于血潮中！向地图上的黎明印记移动"
 	elif p.scent>32:
-		hud.notice.text="血香浓烈 · 猎手将至   [B] 燃烧血晶"
+		hud.notice.text="血香浓烈 · 当地使魔警觉   [B] 燃烧血晶"
 	elif p.sanity<25:
 		hud.notice.text="理智濒临崩坏 · 燃晶、治疗或尽快撤离"
 	for ally in session.players.values():
 		if ally.id!=p.id and ally.status=="down" and p.p.distance_to(ally.p)<75:
 			hud.prompt.text="长按 [E] 3 秒救援 "+ally.name
 			return
-	if p.p.distance_to(session.portal_position())<85:
+	if p.p.distance_to(session.portal_position())<85 and session.can_travel():
 		hud.prompt.text=("长按 [E] 1.5 秒返回边境" if session.map_id=="city" else "长按 [E] 1.5 秒进入王城") if session.party_at_gate() else "全体存活队友需在城门附近集合；先救起倒地队友"
 		return
 	for exit_pos in session.ruins.exits:
 		if p.p.distance_to(exit_pos)<83:
-			hud.prompt.text="长按 [E] 4 秒独立撤离 · 受伤会打断"
+			hud.prompt.text="长按 [E] 4 秒独立撤离 · 受伤会打断" if session.can_extract() else "撤离封锁 · 第一天需击败黎明 Boss；终局需击败女王"
 			return
 	for shrine in session.ruins.shrines:
-		if not shrine.done and p.p.distance_to(shrine.p)<72:
-			hud.prompt.text="长按 [E] 3 秒点亮封印 · 引来精英 · 全队 +55 ◈"
+		if session.raid.phase not in ["choice","complete"] and not shrine.done and p.p.distance_to(shrine.p)<72:
+			hud.prompt.text="长按 [E] 3 秒点亮封印 · 惊动当地守军 · 全队 +55 ◈"
 			return
 	for i in session.container_count():
 		var container: Dictionary=session.container_at(i)
@@ -2124,10 +2140,10 @@ func show_help() -> void:
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var right := at+Vector2(554,100)
 	label(overlay,"03  /  一同出征，独立撤离",right,23,GOLD)
-	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 E 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点（中央也有晨钟归途）。长按 E 4 秒撤离，受伤中断。先撤离的玩家可以观战，队友无需同时离开。",right+Vector2(0,51),18,MUTED,Vector2(463,237))
+	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 E 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点。第一天封锁；第二天长按 E 4 秒独立撤离，受伤中断。第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),18,MUTED,Vector2(463,237))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	label(overlay,"04  /  不要遗忘时间",right+Vector2(0,308),23,GOLD)
-	var danger := label(overlay,"后半局毒雾从外围收缩，圈外持续损失生命与理智。到达时限，未撤离者全部阵亡。\n\n倒地后队友可长按 E 救援，但背包与身上装备当场散落。地上的武器（2×2）和护甲 / 瞄具 / 轻靴（1×2）可以捡起来装备，本局立刻变强。\n\n全员离场才统一结算：撤离成功保留背包与口袋价值，阵亡只剩次元口袋。",right+Vector2(0,356),18,MUTED,Vector2(463,220))
+	var danger := label(overlay,"前两天后半程围绕黎明印记缩圈，圈完成后 Boss 降临。首日胜利进入第二天并重置圈；第三天直接挑战三阶段血潮女王，胜利后 N 撤离。\n\n倒地可长按 E 救援，背包与身上装备会掉落。搜到的武器和装备可立即穿戴变强。\n\n全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,356),18,MUTED,Vector2(463,220))
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:

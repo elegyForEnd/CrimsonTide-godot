@@ -131,5 +131,8 @@ func _draw() -> void:
 	for bullet in field.session.bullets:
 		var magic: bool=bullet.get("weapon",0)==3
 		var tint := Color(1,0.45,0.65) if bullet.owner==0 else Color.WHITE
+		if int(bullet.get("enemy_type",-1))==12:
+			tint=Color("91b8af") if not bullet.get("reversed",false) else Color("c4cbb0")
+			draw_arc(bullet.p,11,0,TAU,20,Color(tint,0.85),2,true)
 		stamp(2 if magic or bullet.owner==0 else 5,bullet.p-bullet.v.normalized()*13,Vector2(94,44) if magic else Vector2(36,16),bullet.v.angle(),tint)
 	draw_set_transform(Vector2.ZERO)

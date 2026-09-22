@@ -58,6 +58,7 @@ func _process(dt: float) -> bool:
 				all_ready=all_ready and p.ready
 			if all_ready:
 				session.launch(false,54321)
+				session.expedition.prepare_day(session,2)
 				session.enemies.clear()
 				session.spawn_timer=999
 				for p in session.players.values():

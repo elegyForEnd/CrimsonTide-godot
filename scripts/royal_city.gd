@@ -24,8 +24,6 @@ func generate(value: int) -> void:
 	for x in [640,2160]:
 		for y in [380,700,1210,1740]:
 			walls.append(Rect2(x-32,y-32,64,64))
-	for pos in [Vector2(460,1280),Vector2(2340,1280)]:
-		chests.append({"p":pos,"key":"container","items":[],"open":false,"searched":0,"bonus":true,"class":2})
 	decor.append({"p":Vector2(1400,360),"type":5,"size":240.0,"landmark":true})
 	for x in [930,1870]:
 		decor.append({"p":Vector2(x,1790),"type":3,"size":165.0,"landmark":true})

@@ -309,10 +309,13 @@ func run() -> void:
 	check(Catalog.container_count(session.players[1].pocket,"relic")==1,"the pocket follows the save file into the next run")
 	check(Catalog.bag_grid(session.players[1].backpack)==Vector2i(3,3),"a fresh run starts from the white backpack")
 	session.enemies.clear()
-	session.elapsed=899.99
+	session.raid.time=899.99
+	session.players[1].p=session.safe_center()
 	session.simulate(0.1)
-	check(not session.running and not session.results[1].escaped,"deadline kills unextracted player")
-	check(session.results[1].pocket.items.size()==1,"even a timeout keeps the pocket")
+	check(session.running and session.raid.phase=="boss","deadline begins dawn boss battle")
+	session.players[1].status="dead"
+	session.settle()
+	check(session.results[1].pocket.items.size()==1,"even a failed dawn battle keeps the pocket")
 	# --- save file round trip ----------------------------------------------
 	var save := Profile.new()
 	save.path="res://tests/_tmp-profile.json"
