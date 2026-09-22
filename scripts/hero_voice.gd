@@ -1,7 +1,7 @@
 class_name HeroVoice
 extends Node
 
-## Original Japanese dialogue rendered offline; see VOICE-CREDITS.txt.
+## Licensed prerecorded Japanese performances; see VOICE-CREDITS.txt.
 const PRIORITIES := {"attack":1,"dash":1,"heavy":2,"magic":2,"heal":3,"hurt":3,"down":4,"ultimate-short":5}
 var metadata: Dictionary
 var banks: Array[Dictionary] = []
@@ -83,8 +83,24 @@ func play_line(hero: int, kind: String, emitter: int, at: Vector2, listener_at: 
 	next_allowed[emitter]={"at":now+int((voice.stream.get_length()+gap)*1000),"rank":rank}
 	return true
 
+func play_selection(hero: int) -> bool:
+	hero=clampi(hero,0,banks.size()-1)
+	var bus := AudioServer.get_bus_index("Dialogue")
+	if AudioServer.is_bus_mute(bus) or AudioServer.get_bus_volume_db(bus)< -55.0:
+		return false
+	if narrator.playing and narrator.get_meta("cue","")=="select" and narrator_hero==hero:
+		return false
+	# A single centered voice follows the latest clicked portrait, without overlap.
+	narrator.stop()
+	narrator_hero=hero
+	narrator.set_meta("cue","select")
+	narrator.stream=banks[hero]["select"][0]
+	narrator.play()
+	return true
+
 func begin_ultimate(hero: int, online: bool) -> void:
 	narrator.stop()
+	narrator.set_meta("cue","ultimate")
 	narrator_hero=clampi(hero,0,2)
 	narrator_online=online
 	for speaker in speakers:

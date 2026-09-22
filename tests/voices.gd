@@ -59,7 +59,7 @@ func run() -> void:
 		check(paused and voice.narrator.playing and not voice.narrator.stream_paused,"Full CG dialogue continues during pause")
 		check(voice.narrator.stream==voice.banks[hero]["ultimate-charge"][0],"CG starts the correct hero invocation")
 		await create_timer(app.ultimate.impact_time+.06).timeout
-		check(voice.narrator.stream==voice.banks[hero]["ultimate-burst"][0] and voice.narrator.playing,"Burst switches to the named ultimate")
+		check(voice.narrator.stream==voice.banks[hero]["ultimate-burst"][0] and voice.narrator.playing,"Burst switches to the licensed battle call")
 		await create_timer(float(voice.metadata.heroes[hero].burst_time)+.08).timeout
 		check(not paused and not app.ultimate.active and not voice.narrator.playing,"Full voice completes before the CG resumes play")
 	app.ultimate.play(1,true)

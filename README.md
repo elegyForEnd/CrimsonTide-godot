@@ -4,6 +4,8 @@ Godot 4 / GDScript 原生桌面合作搜打撤游戏。当前交付为可反复�
 
 ## 启动
 
+最新大招调整：Q 先播放 CG，结束后同步释放技能、战场特效与独立爆发音效；三角色 CC0 素材来源、试听和验证说明见 [ULTIMATE-AUDIO.md](ULTIMATE-AUDIO.md)。
+
 - 直接双击根目录 `Start-Game.cmd`，使用目录内已有的 Godot 4.7.2 运行。
 - 可携带版本位于 `dist`：双击 `CrimsonTide.exe`，同目录的 `CrimsonTide.pck` 必须保留。
 - 编辑源码：使用 Godot 4.7.2 导入 `project.godot`，按 F6/F5 运行主场景。
@@ -50,10 +52,11 @@ Godot 4 / GDScript 原生桌面合作搜打撤游戏。当前交付为可反复�
 - 宋体标题、物品图标、菱形游标、渐隐红色纵向菜单、原生悬停动画：本地资源与 Godot CanvasItem。
 - Noto Serif SC：SIL OFL，见 `assets/SERIF-LICENSE.txt`。
 - Noto Sans SC：SIL OFL，见 `assets/FONT-LICENSE.txt`。
+- Suno 原创纯器乐背景音乐：菜单／营地《营地守望》（2:43），战局《血潮废墟》（2:07）。本地 Ogg 循环、1.8 秒场景交叉淡化，角色语音和奥义期间自动压低音乐；设置可独立调节音乐。生成记录、提示词与文件哈希见 `assets/audio/music/music-manifest.json`，制作说明见 `MUSIC.md`。
 - 114 条二次元动作音效与环境音：短促刀光、晶亮法术、灵能枪声、爆发命中、移动和交互；支持方位、距离衰减和分组混音。音效采用 CC0 素材再设计，来源与配方：`assets/audio/library-manifest.json`。
-- 51 条日语角色语音素材。所有武器的普攻只使用短促发力声；闪避、受伤、治疗、倒地及专属奥义保留台词，重击与施法台词作为备用素材。大招使用 MiniMax 新生成的报招表演，响度恢复原始水平。绯月「红莲月华」、雪璃「拂晓之祈」、鸦羽「夜鸦断罪」，奥义提供中日字幕。设置内可独立调节或关闭角色语音。
-- 语音使用 MiniMax `speech-2.8-hd`。绯月采用 MiniMax 文字设计的原创甜美元气女声，雪璃、鸦羽分别使用 `Japanese_GracefulMaiden`、`Japanese_ColdQueen`。通过 API 生成后离线播放，为 AI 合成而非真人录音，不属于 CC0；使用遵循相应服务条款。详见 `VOICE-CREDITS.txt`、`assets/audio/voices/voice-manifest.json`。游戏包不含密钥，运行时不调用 API。
-- 便携包内的 `Audio-Preview.mp3` 是游戏引擎实际混音试听；完整音频鸣谢随包附带于 `AUDIO-CREDITS.txt`。
+- 30 条免费授权的日语真人录音，映射到 48 个角色语音槽。绯月使用元气少女、雪璃使用文静少女、鸦羽使用冷酷少女演绎，同角色保持统一音色。普攻使用短促发力声，奥义采用通用出招台词；画面恢复最初的原创技能名及中日咏唱文字，与现成真人录音分别管理。设置可独立调节或关闭语音。营地点击人物会播放对应选人台词；重复点击不打断同一句，切换角色会替换当前语音，离开营地立即停止。
+- 语音来源：フリーボイス素材屋すぱらんど。/すぱるな瀟洒。允许免费商用、编辑及嵌入游戏发布，不属于 CC0；禁止独立再分发音频或用于 AI 训练。仅修剪首尾静音、统一音量和采样格式，不变调、不合成。详见 `VOICE-CREDITS.txt` 和 `assets/audio/voices/voice-manifest.json`。可用 `python tools/prepare_free_voices.py` 按固定来源及哈希重建，随后运行 `python tools/prepare_anime_audio.py` 同步大招音效时长。
+- 角色语音随游戏播放；便携包不单独分发语音试听文件。完整音频鸣谢见 `AUDIO-CREDITS.txt`、`VOICE-CREDITS.txt`。
 - Godot 引擎许可证见便携包 `GODOT-LICENSE.txt`。
 
 ## 工程与验证

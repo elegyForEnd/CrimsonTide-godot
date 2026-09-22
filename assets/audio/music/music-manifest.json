@@ -1,0 +1,61 @@
+{
+  "provider": "https://api.apilio.ai",
+  "generator": "Suno",
+  "note": "Generated instrumental music; not part of the CC0 SFX bank. Provider/account terms apply. Offline playback; no credentials included.",
+  "tracks": {
+    "camp": {
+      "title": "营地守望 · Lanterns of the Watch",
+      "file": "camp.ogg",
+      "task_id": "9c3669f7-0105-4542-964f-62b0b5cf7616",
+      "clip_id": "fb2f7d49-651d-4ff8-954e-b6f7362b1a9d",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Lanterns of the Watch",
+        "tags": "Instrumental gothic anime RPG soundtrack, intimate felt piano, solo cello, delicate celesta, soft chamber strings, distant cathedral bells, D minor, 72 bpm, wistful, tender hope, restrained dynamics, elegant nocturnal sanctuary, no vocals",
+        "prompt": "[Instrumental]\n[Soft piano motif, four descending notes D A F E]\n[Warm cello answers, delicate celesta over sustained chamber strings]\n[Quiet lantern-lit sanctuary, melancholy with fragile hope]\n[Gentle variation, restrained arrangement, no sudden climax]\n[Return to opening motif, sustained ending]",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, choir, lyrics, pop song, EDM drop, distorted guitars, loud brass"
+      },
+      "source_file": "camp-0.mp3",
+      "source_sha256": "4208a3caa43a7aaa96f879294fc50f044878c50321d59eba8627558959de5184",
+      "sha256": "c3274a77487642ac840bb7fde97933c34c1e87d9f68f244305b26753e2c71654",
+      "duration_seconds": 162.9009977324263,
+      "editing": {
+        "trim_start_seconds": 3,
+        "trim_end_seconds": 8,
+        "loop_crossfade_seconds": 4,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "ruins": {
+      "title": "血潮废墟 · Beneath the Blood Mist",
+      "file": "ruins.ogg",
+      "task_id": "5ecce7c8-cb3c-4a97-ab74-3c2d93dd0c1a",
+      "clip_id": "234fa554-c54c-4381-9f7b-be0b1cbda561",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Beneath the Blood Mist",
+        "tags": "Instrumental gothic anime action RPG exploration score, dark chamber orchestra, pulsing low strings, delicate piano motif, distant tubular bells, muted taiko, D minor, 104 bpm, tense mysterious ruined cathedral, restrained combat underscore, no vocals",
+        "prompt": "[Instrumental]\n[Low string pulse, sparse piano motif D A F E]\n[Exploring moonlit cathedral ruins, constant quiet dread]\n[Rhythmic cello ostinato, muted low percussion, shimmering upper strings]\n[Blood mist approaches, controlled tension, room for combat sound effects]\n[Return to steady exploration pulse, no big ending]",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, choir, lyrics, pop song, EDM drop, distorted guitars, loud brass"
+      },
+      "source_file": "ruins-0.mp3",
+      "source_sha256": "bde351f22c4e47e4b9d12ab36c7a4f700966053afd257f4230af8bc4fd79555d",
+      "sha256": "b06fddf9c21e80ad04d6d7f930422ff34b52cb532832ab3a10762fb6bc3dcbc7",
+      "duration_seconds": 127.30897959183673,
+      "editing": {
+        "trim_start_seconds": 3,
+        "trim_end_seconds": 8,
+        "loop_crossfade_seconds": 4,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    }
+  }
+}

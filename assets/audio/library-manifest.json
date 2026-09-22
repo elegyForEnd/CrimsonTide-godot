@@ -3122,12 +3122,25 @@
       "layers": [
         {
           "path": "spells/Fire Spell Impacts/Fire Spell Impact 2.wav",
-          "gain": 0.7,
-          "speed": 1.3,
+          "gain": 0.95,
+          "speed": 0.95,
           "high": 65,
           "low": 17000,
           "at": 0.0,
-          "duration": 0.75,
+          "duration": 1.35,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.5,
+          "speed": 1.0,
+          "high": 65,
+          "low": 1400,
+          "at": 0.0,
+          "duration": 0.45,
           "reverse": false,
           "delay": 0.0,
           "stretch": null,
@@ -3135,25 +3148,91 @@
         },
         {
           "path": "swords/sword - StarNinjas/sword.6.ogg",
-          "gain": 0.4,
-          "speed": 1.5,
-          "high": 1500,
+          "gain": 0.5,
+          "speed": 1.15,
+          "high": 1300,
           "low": 17000,
           "at": 0.0,
-          "duration": 0.65,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.435,
+          "speed": 1.25,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.055,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.37,
+          "speed": 1.3499999999999999,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.11,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.305,
+          "speed": 1.45,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.165,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "swords/sword - StarNinjas/sword.6.ogg",
+          "gain": 0.24,
+          "speed": 1.5499999999999998,
+          "high": 1300,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.38,
+          "reverse": false,
+          "delay": 0.22,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.45,
+          "speed": 1.0,
+          "high": 450,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.8,
           "reverse": false,
           "delay": 0.0,
           "stretch": null,
           "trim": true
         }
       ],
-      "length": 0.9,
-      "tail": 0.3,
-      "room": 0.5,
+      "length": 1.45,
+      "tail": 0.38,
+      "room": 0.8,
       "rise": false,
-      "rms": 0.16,
-      "width": 0.85,
-      "peak_db": -1.32
+      "rms": 0.25,
+      "width": 1.1,
+      "peak_db": -1.32,
+      "sha256": "263f5c11f0d0f31e8c9a1df9143eccf051ac195d4d54b3575a82abc2cb269171"
     },
     "death-0": {
       "layers": [
@@ -3257,12 +3336,12 @@
       "layers": [
         {
           "path": "healing/Impacts/Healing Spell Impact 11.wav",
-          "gain": 0.7,
-          "speed": 1.3,
+          "gain": 1.0,
+          "speed": 0.9,
           "high": 65,
           "low": 17000,
           "at": 0.0,
-          "duration": 0.75,
+          "duration": 1.75,
           "reverse": false,
           "delay": 0.0,
           "stretch": null,
@@ -3270,25 +3349,52 @@
         },
         {
           "path": "spells/Ice Spell Impacts/Ice Spell Impact 2.wav",
-          "gain": 0.4,
-          "speed": 1.5,
-          "high": 1500,
+          "gain": 0.65,
+          "speed": 1.0,
+          "high": 650,
           "low": 17000,
           "at": 0.0,
-          "duration": 0.65,
+          "duration": 1.25,
+          "reverse": false,
+          "delay": 0.1,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 1.wav",
+          "gain": 0.28,
+          "speed": 1.0,
+          "high": 65,
+          "low": 950,
+          "at": 0.0,
+          "duration": 0.3,
           "reverse": false,
           "delay": 0.0,
           "stretch": null,
           "trim": true
+        },
+        {
+          "path": "healing/Impacts/Healing Spell Impact 7.wav",
+          "gain": 0.38,
+          "speed": 1.45,
+          "high": 2200,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.85,
+          "reverse": false,
+          "delay": 0.2,
+          "stretch": null,
+          "trim": true
         }
       ],
-      "length": 0.9,
-      "tail": 0.3,
-      "room": 0.5,
+      "length": 1.85,
+      "tail": 0.38,
+      "room": 0.8,
       "rise": false,
-      "rms": 0.16,
-      "width": 0.85,
-      "peak_db": -1.53
+      "rms": 0.25,
+      "width": 1.1,
+      "peak_db": -1.56,
+      "sha256": "f9b006666d11b2eaf15c53ee088c87d55f6a671a7a109ff70033ff0b74e2cf94"
     },
     "death-1": {
       "layers": [
@@ -3392,12 +3498,25 @@
       "layers": [
         {
           "path": "spells/Lightning Spell Impacts/Lightning Spell Impact 1.wav",
-          "gain": 0.7,
-          "speed": 1.3,
+          "gain": 1.0,
+          "speed": 0.85,
           "high": 65,
           "low": 17000,
           "at": 0.0,
-          "duration": 0.75,
+          "duration": 1.45,
+          "reverse": false,
+          "delay": 0.0,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Earth Spell Impacts/Earth Spell Impact 4.wav",
+          "gain": 0.8,
+          "speed": 0.8,
+          "high": 65,
+          "low": 2100,
+          "at": 0.0,
+          "duration": 1.0,
           "reverse": false,
           "delay": 0.0,
           "stretch": null,
@@ -3405,25 +3524,52 @@
         },
         {
           "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
-          "gain": 0.4,
-          "speed": 1.5,
-          "high": 1500,
+          "gain": 0.45,
+          "speed": 1.2,
+          "high": 1100,
           "low": 17000,
           "at": 0.0,
-          "duration": 0.65,
+          "duration": 0.45,
           "reverse": false,
           "delay": 0.0,
           "stretch": null,
           "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.39,
+          "speed": 1.3,
+          "high": 1100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.45,
+          "reverse": false,
+          "delay": 0.09,
+          "stretch": null,
+          "trim": true
+        },
+        {
+          "path": "druid/Wind Spell Impacts/Wind Spell Impact 4.wav",
+          "gain": 0.33,
+          "speed": 1.4,
+          "high": 1100,
+          "low": 17000,
+          "at": 0.0,
+          "duration": 0.45,
+          "reverse": false,
+          "delay": 0.18,
+          "stretch": null,
+          "trim": true
         }
       ],
-      "length": 0.9,
-      "tail": 0.3,
-      "room": 0.5,
+      "length": 1.6,
+      "tail": 0.38,
+      "room": 0.8,
       "rise": false,
-      "rms": 0.16,
-      "width": 0.85,
-      "peak_db": -1.32
+      "rms": 0.25,
+      "width": 1.1,
+      "peak_db": -1.35,
+      "sha256": "5e68419624cb3b1e7e33270567cecbd692f4f222a2fc1a3703631f5c5a04ea4a"
     },
     "death-2": {
       "layers": [
@@ -4184,7 +4330,7 @@
           "duration": 1.6,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.837,
+          "stretch": 1.205,
           "trim": true
         },
         {
@@ -4197,7 +4343,7 @@
           "duration": 0.65,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.837,
+          "stretch": 1.205,
           "trim": true
         },
         {
@@ -4210,17 +4356,17 @@
           "duration": 1.6,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.837,
+          "stretch": 1.205,
           "trim": true
         }
       ],
-      "length": 2.837,
+      "length": 1.205,
       "tail": 0.035,
       "room": 0.0,
       "rise": true,
       "rms": 0.13,
       "width": 1.1,
-      "peak_db": -1.56
+      "peak_db": -1.43
     },
     "ultimate-burst-0": {
       "layers": [
@@ -4264,7 +4410,7 @@
           "trim": true
         }
       ],
-      "length": 2.364,
+      "length": 1.487,
       "tail": 0.35,
       "room": 1.0,
       "rise": false,
@@ -4384,7 +4530,7 @@
           "duration": 1.6,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.439,
+          "stretch": 1.149,
           "trim": true
         },
         {
@@ -4397,7 +4543,7 @@
           "duration": 0.65,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.439,
+          "stretch": 1.149,
           "trim": true
         },
         {
@@ -4410,17 +4556,17 @@
           "duration": 1.6,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.439,
+          "stretch": 1.149,
           "trim": true
         }
       ],
-      "length": 2.439,
+      "length": 1.149,
       "tail": 0.035,
       "room": 0.0,
       "rise": true,
       "rms": 0.13,
       "width": 1.1,
-      "peak_db": -1.56
+      "peak_db": -2.13
     },
     "ultimate-burst-1": {
       "layers": [
@@ -4464,7 +4610,7 @@
           "trim": true
         }
       ],
-      "length": 3.135,
+      "length": 1.665,
       "tail": 0.35,
       "room": 1.0,
       "rise": false,
@@ -4584,7 +4730,7 @@
           "duration": 1.6,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.87,
+          "stretch": 1.145,
           "trim": true
         },
         {
@@ -4597,7 +4743,7 @@
           "duration": 0.65,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.87,
+          "stretch": 1.145,
           "trim": true
         },
         {
@@ -4610,17 +4756,17 @@
           "duration": 1.6,
           "reverse": true,
           "delay": 0.0,
-          "stretch": 2.87,
+          "stretch": 1.145,
           "trim": true
         }
       ],
-      "length": 2.87,
+      "length": 1.145,
       "tail": 0.035,
       "room": 0.0,
       "rise": true,
       "rms": 0.13,
       "width": 1.1,
-      "peak_db": -1.34
+      "peak_db": -1.32
     },
     "ultimate-burst-2": {
       "layers": [
@@ -4664,7 +4810,7 @@
           "trim": true
         }
       ],
-      "length": 3.398,
+      "length": 0.88,
       "tail": 0.35,
       "room": 1.0,
       "rise": false,
@@ -4780,5 +4926,6 @@
       "length": 44
     }
   },
-  "style": "anime-action-2026-09-22"
+  "style": "anime-action-2026-09-22",
+  "ultimate_release_revision": "post-cinematic-2026-09-22"
 }

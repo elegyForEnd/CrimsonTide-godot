@@ -7,7 +7,7 @@ const VARIANTS := {"shot":3,"hit":5,"loot":3,"skill":3,"dash":4,"bell":2,
 	"impact-metal":4,"impact-magic":4,"magic-windup":4,"step":8,"run":8,"land":4,
 	"ui":3,"ui-open":2,"ui-close":2,"equip":4,"reload":2,"reload-end":2,
 	"heal":2,"burn":2,"death":3,"enemy-cast":2,"chest":2}
-const LEVELS := {"shot":-12.0,"hit":-10.0,"loot":-14.0,"skill":-11.0,"dash":-11.0,
+const LEVELS := {"shot":-12.0,"hit":-10.0,"loot":-14.0,"skill":-5.0,"dash":-11.0,
 	"bell":-10.0,"hurt":-8.0,"down":-7.0,"slash":-8.0,"heavy":-7.0,"magic":-10.0,
 	"impact-heavy":-7.0,"impact-metal":-13.0,"impact-magic":-11.0,"magic-windup":-17.0,
 	"step":-17.0,"run":-14.0,"land":-13.0,"ui":-14.0,"ui-open":-17.0,"ui-close":-17.0,
@@ -35,8 +35,12 @@ var scene_kind := "title"
 var sequence := 0
 var dialogue: HeroVoice
 var dialogue_duck := 0.0
+var music: TideMusic
 
 func _process(dt: float) -> void:
+	if music:
+		music.cinematic=cinema_active
+		music.speaking=dialogue and dialogue.is_speaking()
 	var target := -5.0 if dialogue and dialogue.is_speaking() else 0.0
 	dialogue_duck=move_toward(dialogue_duck,target,dt*(45.0 if target<dialogue_duck else 14.0))
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Combat"),-1.5+dialogue_duck)
@@ -90,8 +94,11 @@ func _ready() -> void:
 	ambience.stream=loop
 	ambience.volume_db=-24.0
 	ambience.play()
+	music=TideMusic.new()
+	add_child(music)
 
 func priority(kind: String) -> int:
+	if kind=="skill": return 95
 	if kind in ["hurt","down","bell"]: return 90
 	if kind in ["slash","heavy","magic","shot"]: return 70
 	if kind in ["step","run","land","death"]: return 15
@@ -172,7 +179,11 @@ func attack(weapon: int, combo: int, at: Vector2, emitter: int) -> void:
 	play(kind,variant,at,1.5 if weapon==1 and combo==2 else 0.0,emitter)
 
 func set_scene(value: String) -> void:
+	# Lobby updates rebuild the camp UI; let an ongoing selection line finish.
+	if value=="camp" and scene_kind=="camp":
+		return
 	scene_kind=value
+	music.set_scene(value)
 	dialogue.stop_all()
 	motion_state.clear()
 	last_played.clear()

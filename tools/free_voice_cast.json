@@ -1,0 +1,385 @@
+{
+  "provider": "Spaland",
+  "credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
+  "terms": "https://soalunashosya.jimdofree.com/利用規約/",
+  "terms_checked": "2026-09-22",
+  "heroes": [
+    {
+      "name": "绯月",
+      "voice_id": "shozyo2",
+      "character_type": "少女元気め",
+      "lines": {
+        "attack": [
+          "shozyo2-torya.mp3",
+          "shozyo2-eiya.mp3",
+          "shozyo2-ta.mp3"
+        ],
+        "heavy": [
+          "shozyo2-ta.mp3",
+          "shozyo2-atare.mp3"
+        ],
+        "magic": [
+          "shozyo2-atare.mp3"
+        ],
+        "dash": [
+          "shozyo2-ta.mp3",
+          "shozyo2-eiya.mp3"
+        ],
+        "hurt": [
+          "shozyo2-u.mp3",
+          "shozyo2-ita.mp3"
+        ],
+        "heal": [
+          "shozyo2-ok.mp3"
+        ],
+        "down": [
+          "shozyo2-yarareta.mp3"
+        ],
+        "ultimate-charge": [
+          "shozyo2-makaseteku.mp3"
+        ],
+        "ultimate-burst": [
+          "shozyo2-atare.mp3"
+        ],
+        "ultimate-short": [
+          "shozyo2-ikuyo.mp3"
+        ],
+        "select": [
+          "shozyo2-makaseteku.mp3"
+        ]
+      }
+    },
+    {
+      "name": "雪璃",
+      "voice_id": "shozyo1",
+      "character_type": "少女おとなしめ",
+      "lines": {
+        "attack": [
+          "shozyo1-ei.mp3",
+          "shozyo1-to.mp3",
+          "shozyo1-ya.mp3"
+        ],
+        "heavy": [
+          "shozyo1-to.mp3",
+          "shozyo1-ya.mp3"
+        ],
+        "magic": [
+          "shozyo1-atattekudasai.mp3"
+        ],
+        "dash": [
+          "shozyo1-ei.mp3",
+          "shozyo1-ya.mp3"
+        ],
+        "hurt": [
+          "shozyo1-kya.mp3",
+          "shozyo1-himei2.mp3"
+        ],
+        "heal": [
+          "shozyo1-arigatou.mp3"
+        ],
+        "down": [
+          "shozyo1-gomennasai.mp3"
+        ],
+        "ultimate-charge": [
+          "shozyo1-makasetekudasai.mp3"
+        ],
+        "ultimate-burst": [
+          "shozyo1-ganbari2.mp3"
+        ],
+        "ultimate-short": [
+          "shozyo1-makasetekudasai.mp3"
+        ],
+        "select": [
+          "shozyo1-ganbari2.mp3"
+        ]
+      }
+    },
+    {
+      "name": "鸦羽",
+      "voice_id": "syozyo3",
+      "character_type": "少女クール",
+      "lines": {
+        "attack": [
+          "syozyo3-ta.mp3",
+          "syozyo3-ya.mp3",
+          "syozyo3-torya.mp3"
+        ],
+        "heavy": [
+          "syozyo3-torya.mp3",
+          "syozyo3-atatte.mp3"
+        ],
+        "magic": [
+          "syozyo3-atatte.mp3"
+        ],
+        "dash": [
+          "syozyo3-ta.mp3",
+          "syozyo3-ya.mp3"
+        ],
+        "hurt": [
+          "syozyo3-u.mp3",
+          "syozyo3-ku.mp3"
+        ],
+        "heal": [
+          "syozyo3-mondainai.mp3"
+        ],
+        "down": [
+          "syozyo3-itai.mp3"
+        ],
+        "ultimate-charge": [
+          "syozyo3-ikimasyo.mp3"
+        ],
+        "ultimate-burst": [
+          "syozyo3-atatte.mp3"
+        ],
+        "ultimate-short": [
+          "syozyo3-ikuyo.mp3"
+        ],
+        "select": [
+          "syozyo3-ikimasyo.mp3"
+        ]
+      }
+    }
+  ],
+  "sources": {
+    "shozyo1-arigatou.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-arigatou.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "ありがとう 【試聴・DL】",
+      "ja": "ありがとう。",
+      "zh": "谢谢。",
+      "sha256": "588f7bb57e0f41894e0adbacc0b02274501dcd783cd360648ba6067dc6a09ae7"
+    },
+    "shozyo1-atattekudasai.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-atattekudasai.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "あたってください 【試聴・DL】",
+      "ja": "あたってください！",
+      "zh": "请命中吧！",
+      "sha256": "93d587686fd6d5120aab0a91edfca6e9a2df0ba0e32d6a5049128b4ac44f3c09"
+    },
+    "shozyo1-ei.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ei.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "えい！ 【試聴・DL】",
+      "ja": "えい！",
+      "zh": "嘿！",
+      "sha256": "89a81a746d8a70fd60b4a035578c748bbc969bf58764f8e1a333845729d4e6a1"
+    },
+    "shozyo1-ganbari2.mp3": {
+      "url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/shozyo1-ganbari2.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "がんばります2 【試聴・DL】",
+      "ja": "がんばります！",
+      "zh": "我会努力的！",
+      "sha256": "7cdbca5f233701ff6212464d95cbabf01bb5bf0a69d4d4e8c4e2cbca29c0f34b"
+    },
+    "shozyo1-gomennasai.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-gomennasai.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "ごめんなさい 【試聴・DL】",
+      "ja": "ごめんなさい……",
+      "zh": "对不起……",
+      "sha256": "b33f2daa39109a604aabb5b5cf87ec4a3123c07a355074d54ef6370a9ee36e8f"
+    },
+    "shozyo1-himei2.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-himei2.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "悲鳴２ 【試聴・DL】",
+      "ja": "（悲鳴）",
+      "zh": "（痛呼）",
+      "sha256": "1ff263c35a8304e512ab041e599fbd7dfab173783da3b8c7eaa7c2df507bac55"
+    },
+    "shozyo1-kya.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-kya.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "悲鳴１ 【試聴・DL】",
+      "ja": "きゃっ！",
+      "zh": "呀！",
+      "sha256": "4c3aa1db4c695bd0c35d3f2bd363d8adf12da84447a30e5b818b1a2d04e00e3a"
+    },
+    "shozyo1-makasetekudasai.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-makasetekudasai.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "まかせてください 【試聴・DL】",
+      "ja": "まかせてください。",
+      "zh": "请交给我吧。",
+      "sha256": "c2fc5c663a99140766d7e1d835a243523e57661ad2b5ee28480d9847db3434e5"
+    },
+    "shozyo1-to.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-to.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "とお！ 【試聴・DL】",
+      "ja": "とお！",
+      "zh": "喝！",
+      "sha256": "132851bff080f6e47140c5d37af46f462dfeea809d2131f418d118d13b291981"
+    },
+    "shozyo1-ya.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "やあ！ 【試聴・DL】",
+      "ja": "やあ！",
+      "zh": "呀！",
+      "sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6"
+    },
+    "shozyo2-atare.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "あたれ！ 【試聴・DL】",
+      "ja": "あたれ！",
+      "zh": "击中吧！",
+      "sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e"
+    },
+    "shozyo2-eiya.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-eiya.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "えいや！ 【試聴・DL】",
+      "ja": "えいや！",
+      "zh": "嘿呀！",
+      "sha256": "147cbc9d86591c29751c1b9a31ee4969f1408337cee9d37d9cd4b6f7fff9e962"
+    },
+    "shozyo2-ikuyo.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ikuyo.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "いくよ！ 【試聴・DL】",
+      "ja": "いくよ！",
+      "zh": "上了！",
+      "sha256": "9958888b7312aa718ea2e9b8bb0760ac46ba4bc0d746eb7ef5f72b40c6cc2ee9"
+    },
+    "shozyo2-ita.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ita.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "いったぁ！ 【試聴・DL】",
+      "ja": "いったぁ！",
+      "zh": "好痛！",
+      "sha256": "005b8edbbbc7d784927d36ddef7bd96f2a8cfdd0b612d9a4f4cd6f0801ea0aa4"
+    },
+    "shozyo2-makaseteku.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-makaseteku.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "任せてください！ 【試聴・DL】",
+      "ja": "任せてください！",
+      "zh": "交给我吧！",
+      "sha256": "652a4ee643cd6e9d9d095a4b8c696f00df38ba0fdca4c890eafd07b25c07438f"
+    },
+    "shozyo2-ok.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ok.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "おっけー 【試聴・DL】",
+      "ja": "おっけー！",
+      "zh": "好了！",
+      "sha256": "717d1df6379bf047fd50ea66a8d8feeb93ad85b8bc323dcaced35c0b61b932e6"
+    },
+    "shozyo2-ta.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "たあ！ 【試聴・DL】",
+      "ja": "たあ！",
+      "zh": "哈！",
+      "sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c"
+    },
+    "shozyo2-torya.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-torya.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "とりゃ！ 【試聴・DL】",
+      "ja": "とりゃ！",
+      "zh": "喝！",
+      "sha256": "8d899310f6ea37584cfab7387910c8f9dbc3260714d0a978227877d138959b32"
+    },
+    "shozyo2-u.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-u.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "うっ 【試聴・DL】",
+      "ja": "うっ！",
+      "zh": "唔！",
+      "sha256": "993c276a6ec41bbe47cd244a856bcdfe34710e3f9bfdb92f3c0e6511ca4aa0af"
+    },
+    "shozyo2-yarareta.mp3": {
+      "url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-yarareta.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "やられたぁ 【試 聴・DL】",
+      "ja": "やられたぁ……",
+      "zh": "被打倒了……",
+      "sha256": "5ff61e2004a506fbd3070d980826b2ca4142fa60d69fdeb875a1495132629117"
+    },
+    "syozyo3-atatte.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "あたって 【試聴・DL】",
+      "ja": "あたって！",
+      "zh": "击中吧！",
+      "sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312"
+    },
+    "syozyo3-ikimasyo.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikimasyo.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "いきましょう 【試聴・DL】",
+      "ja": "いきましょう。",
+      "zh": "出发吧。",
+      "sha256": "60be1388d2ff9bc435a79f928674922ea159e346ac661acc2daac31e9da74055"
+    },
+    "syozyo3-ikuyo.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikuyo.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "いくよ 【試聴・DL】",
+      "ja": "いくよ。",
+      "zh": "上了。",
+      "sha256": "8b8409cb4d9411f3cdb0347c2b5f03b73415331aeab1c60e79e74f1e74c48b82"
+    },
+    "syozyo3-itai.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-itai.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "痛い 【試聴・DL】",
+      "ja": "痛い……",
+      "zh": "好痛……",
+      "sha256": "ff4920f3111c2b1b9c65bf2408e314cfe2b7f8b4331d35463880e26ced1776ed"
+    },
+    "syozyo3-ku.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ku.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "くっ 【試聴・DL】",
+      "ja": "くっ！",
+      "zh": "呃！",
+      "sha256": "b0c65d00634d86f39b489299ec08f6d243a606ffc857eb4ccb6cbbd1728092e9"
+    },
+    "syozyo3-mondainai.mp3": {
+      "url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/syozyo3-mondainai.mp3",
+      "page": "https://soalunashosya.jimdofree.com/少女/",
+      "source_label": "問題ない 【試聴・DL】",
+      "ja": "問題ない。",
+      "zh": "没问题。",
+      "sha256": "bbd3cb3f77dcc7e4be0aff934670cd4e82b02759097517426277d358099cbade"
+    },
+    "syozyo3-ta.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ta.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "たぁ！ 【試聴・DL】",
+      "ja": "たぁ！",
+      "zh": "哈！",
+      "sha256": "d810bc1d5fc2c69953a6491b998af37ee793f095ffff108ee95e72822d73d6fd"
+    },
+    "syozyo3-torya.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-torya.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "とりゃ！ 【試聴・DL】",
+      "ja": "とりゃ！",
+      "zh": "喝！",
+      "sha256": "bd92a3c46df3ce26212236295015bf8b33427dbb6450aed633e2fbdcad93a292"
+    },
+    "syozyo3-u.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-u.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+      "source_label": "うっ 【試聴・DL】",
+      "ja": "うっ！",
+      "zh": "唔！",
+      "sha256": "6a526a703f9216d4d1ae75edb6a6df4c09e32c25ec2f92faeb0f5baecac641e3"
+    },
+    "syozyo3-ya.mp3": {
+      "url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ya.mp3",
+      "page": "https://soalunashosya.jimdofree.com/戦闘系/",
+      "source_label": "やぁ！ 【試聴・DL】",
+      "ja": "やぁ！",
+      "zh": "呀！",
+      "sha256": "24eed1cbb68d53219d40c2fdeddbac5458fac3f049aa5926b9279193b763b5b5"
+    }
+  }
+}

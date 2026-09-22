@@ -39,3 +39,8 @@ https://opengameart.org/content/forgoten-tomb-ambience
 Game edits: transient cuts, pitch/time treatment, crystalline layers, stereo reflections and mastering.
 Provenance and recipes: assets/audio/library-manifest.json (AUDIO-MANIFEST.json in the portable package).
 Source libraries, synthesis caches and model runtimes are excluded from the game distribution.
+
+BACKGROUND MUSIC — SUNO
+Lanterns of the Watch / Beneath the Blood Mist. Generated via https://api.apilio.ai.
+These generated tracks are separate from the CC0 SFX bank; provider/account terms apply.
+Prompts, returned model, clip IDs, mastering details and hashes: assets/audio/music/music-manifest.json.

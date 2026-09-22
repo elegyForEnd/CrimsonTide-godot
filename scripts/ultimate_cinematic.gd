@@ -1,6 +1,24 @@
 class_name UltimateCinematic
 extends Control
 ## Independent viewport layer: never inherits the HUD's fixed-size letterboxing.
+## Original cinematic text is independent of the licensed spoken recordings.
+const INVOCATIONS := [
+	{
+		"charge":{"ja":"紅き月よ、我が刃に宿れ！","zh":"绯红之月，寄宿于我刃！"},
+		"burst":{"ja":"奥義、紅蓮月華！","zh":"奥义——红莲月华！"},
+		"short":{"ja":"紅蓮月華！","zh":"红莲月华！"}
+	},
+	{
+		"charge":{"ja":"星の祝福よ、この夜を照らせ！","zh":"群星的祝福，照亮此夜！"},
+		"burst":{"ja":"聖域展開、暁の祈り！","zh":"圣域展开——拂晓之祈！"},
+		"short":{"ja":"暁の祈り！","zh":"拂晓之祈！"}
+	},
+	{
+		"charge":{"ja":"終焉を告げる、黒き翼よ！","zh":"宣告终焉的漆黑羽翼！"},
+		"burst":{"ja":"禁式解放、夜鴉断罪！","zh":"禁式解放——夜鸦断罪！"},
+		"short":{"ja":"夜鴉断罪！","zh":"夜鸦断罪！"}
+	}
+]
 signal burst
 signal ended(interrupted: bool)
 signal began(hero: int, online: bool)
@@ -48,7 +66,7 @@ func play(character: int, online: bool) -> void:
 	if active:
 		return
 	hero=clampi(character,0,2)
-	duration=0.85 if online else float(voice_info[hero].charge_time)+float(voice_info[hero].burst_time)
+	duration=TideSession.ONLINE_ULTIMATE_DURATION if online else float(voice_info[hero].charge_time)+float(voice_info[hero].burst_time)
 	impact_time=.612 if online else float(voice_info[hero].charge_time)
 	age=0.0
 	fired=false
@@ -134,9 +152,9 @@ func draw_captions() -> void:
 	captions.draw_string(face,at+Vector2(3,4),title,HORIZONTAL_ALIGNMENT_LEFT,-1,int(66*unit),Color(0.02,0,0.03,reveal))
 	captions.draw_string(face,at,title,HORIZONTAL_ALIGNMENT_LEFT,-1,int(66*unit),Color(1,0.96,0.91,reveal))
 	captions.draw_string(face,at-Vector2(0,70*unit),str(Catalog.HEROES[hero].name)+"  /  奥义解放",HORIZONTAL_ALIGNMENT_LEFT,-1,int(22*unit),Color(tint, reveal))
-	var dialogue: Dictionary=voice_info[hero].lines["ultimate-burst" if fired else "ultimate-charge"][0]
+	var dialogue: Dictionary=INVOCATIONS[hero]["burst" if fired else "charge"]
 	if duration<1.0:
-		dialogue=voice_info[hero].lines["ultimate-short"][0]
+		dialogue=INVOCATIONS[hero]["short"]
 	captions.draw_string(face,Vector2(size.x*.067,size.y*.86),str(dialogue.ja),HORIZONTAL_ALIGNMENT_LEFT,-1,int(25*unit),Color(1,.97,.93,reveal))
 	captions.draw_string(face,Vector2(size.x*.067,size.y*.905),str(dialogue.zh),HORIZONTAL_ALIGNMENT_LEFT,-1,int(20*unit),Color(.85,.88,.96,reveal))
 	captions.draw_string(face,Vector2(size.x-240*unit,size.y-22*unit),"任意键 / 点击跳过",HORIZONTAL_ALIGNMENT_LEFT,-1,int(16*unit),Color(0.9,0.9,1,fade*0.75))

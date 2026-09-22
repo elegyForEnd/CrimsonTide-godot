@@ -31,6 +31,8 @@ var ready_local := false
 var time_ui := 0.0
 var title_font: Font
 var ultimate: UltimateCinematic
+var damage_overlay: ColorRect
+var damage_tween: Tween
 
 func _ready() -> void:
 	profile.load_profile()
@@ -74,6 +76,18 @@ func _ready() -> void:
 	session.combat_event.connect(on_combat_audio)
 	get_viewport().size_changed.connect(fit_ui)
 	fit_ui()
+	var damage_layer := CanvasLayer.new()
+	damage_layer.layer=50
+	add_child(damage_layer)
+	damage_overlay=ColorRect.new()
+	damage_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	damage_overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	damage_overlay.color=Color(0.75,0.035,0.09,0.25)
+	var damage_material := ShaderMaterial.new()
+	damage_material.shader=preload("res://resources/damage_vignette.gdshader")
+	damage_overlay.material=damage_material
+	damage_layer.add_child(damage_overlay)
+	damage_overlay.hide()
 	var cinema_layer := CanvasLayer.new()
 	cinema_layer.layer=100
 	add_child(cinema_layer)
@@ -81,13 +95,18 @@ func _ready() -> void:
 	cinema_layer.add_child(ultimate)
 	ultimate.burst.connect(func(): sound.burst_cinematic(ultimate.hero))
 	ultimate.ended.connect(sound.end_cinematic)
+	ultimate.ended.connect(func(_interrupted: bool):
+		if not session.online and page_name=="game":
+			session.release_ultimate(session.my_id())
+	)
 	ultimate.began.connect(sound.begin_cinematic)
 	session.combat_event.connect(func(data: Dictionary):
-		if data.kind=="skill" and int(data.get("id",-1))==session.my_id() and page_name=="game":
+		if data.kind=="ultimate-start" and int(data.get("id",-1))==session.my_id() and page_name=="game":
 			ultimate.play(int(data.hero),session.online)
 	)
 	set_volume(float(profile.data.volume))
 	set_voice_volume(float(profile.data.voice_volume))
+	set_music_volume(float(profile.data.music_volume))
 	if profile.data.fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	show_title()
@@ -283,6 +302,9 @@ func background(dim: float = 0.0) -> void:
 		rect(page,Vector2.ZERO,Vector2(1440,900),Color(0.02,0.03,0.06,dim))
 
 func new_page(name_value: String) -> void:
+	clear_damage_feedback()
+	if name_value!="game" and not session.online:
+		session.cancel_ultimate(session.my_id())
 	if ultimate and ultimate.active:
 		ultimate.stop()
 	clear(page)
@@ -408,10 +430,12 @@ func show_camp() -> void:
 	for i in 3:
 		var h: Dictionary=Catalog.HEROES[i]
 		var b := button(page,h.name,Vector2(66+i*160,750),Vector2(147,50),func():
-			profile.data.hero=i
-			ready_local=false
-			profile.save_profile()
-			session.configure(config())
+			if profile.data.hero!=i:
+				profile.data.hero=i
+				ready_local=false
+				profile.save_profile()
+				session.configure(config())
+			sound.dialogue.play_selection(i)
 		) as GothicButton
 		b.selected=profile.data.hero==i
 		b.accent=h.color
@@ -790,6 +814,22 @@ func on_effect(kind: String,pos: Vector2) -> void:
 		sound.listener.global_position=field.camera
 		sound.play("death" if kind=="hit" else kind,-1,pos)
 
+func flash_damage_feedback() -> void:
+	if damage_tween:
+		damage_tween.kill()
+	damage_overlay.modulate.a=1.0
+	damage_overlay.show()
+	damage_tween=create_tween()
+	damage_tween.tween_interval(0.045)
+	damage_tween.tween_property(damage_overlay,"modulate:a",0.0,0.48).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	damage_tween.tween_callback(damage_overlay.hide)
+
+func clear_damage_feedback() -> void:
+	if damage_tween:
+		damage_tween.kill()
+	if damage_overlay:
+		damage_overlay.hide()
+
 func on_combat_audio(data: Dictionary) -> void:
 	if page_name!="game":
 		return
@@ -799,6 +839,9 @@ func on_combat_audio(data: Dictionary) -> void:
 	var voice_hero := int(speaker.get("hero",0))
 	sound.dialogue.local_id=session.my_id()
 	match str(data.kind):
+		"ultimate-start":
+			sound.stop_cue("reload",emitter)
+			sound.stop_cue("magic-windup",emitter)
 		"strike":
 			sound.attack(int(data.weapon),int(data.get("combo",0)),data.p,emitter)
 			sound.dialogue.play_line(voice_hero,"attack",emitter,data.p,field.camera)
@@ -812,6 +855,9 @@ func on_combat_audio(data: Dictionary) -> void:
 			if int(data.get("enemy_type",0)) in [2,3] and weapon in [0,1,2]:
 				sound.play("impact-metal",-1,data.p,-4.0)
 		"audio":
+			# Authoritative hurt/down events also reach clients; only flash the victim's screen.
+			if emitter==session.my_id() and str(data.cue) in ["hurt","down"]:
+				flash_damage_feedback()
 			if str(data.cue) in ["equip","down"]:
 				sound.stop_cue("reload",emitter)
 				sound.stop_cue("magic-windup",emitter)
@@ -822,8 +868,11 @@ func on_combat_audio(data: Dictionary) -> void:
 			sound.stop_cue("magic-windup",emitter)
 			sound.dialogue.play_line(voice_hero,"dash",emitter,data.p,field.camera)
 		"skill":
+			# A host release may arrive just before the final local CG frame.
+			if emitter==session.my_id() and ultimate.active:
+				ultimate.stop(false)
+			sound.play("skill",int(data.hero),data.p,0.0,emitter)
 			if emitter!=session.my_id():
-				sound.play("skill",int(data.hero),data.p,0.0,emitter)
 				sound.dialogue.play_line(int(data.hero),"ultimate-short",emitter,data.p,field.camera)
 
 func notify(text: String) -> void:
@@ -871,7 +920,7 @@ func leave_to_title() -> void:
 	show_title()
 
 func show_settings() -> void:
-	var at := modal_box("设置",Vector2(740,510))
+	var at := modal_box("设置",Vector2(740,585))
 	label(overlay,"主音量",at+Vector2(37,112),20)
 	var slider := HSlider.new()
 	slider.position=at+Vector2(185,127)
@@ -892,13 +941,28 @@ func show_settings() -> void:
 	voice_slider.value=profile.data.voice_volume
 	voice_slider.value_changed.connect(func(value: float): set_voice_volume(value); profile.data.voice_volume=value; profile.save_profile())
 	overlay.add_child(voice_slider)
-	button(overlay,"切换全屏 / 窗口",at+Vector2(37,278),Vector2(665,56),func():
+	label(overlay,"背景音乐",at+Vector2(37,262),20)
+	var music_slider := HSlider.new()
+	music_slider.position=at+Vector2(185,277)
+	music_slider.size=Vector2(480,30)
+	music_slider.min_value=0
+	music_slider.max_value=1
+	music_slider.step=.01
+	music_slider.value=profile.data.music_volume
+	music_slider.value_changed.connect(func(value: float): set_music_volume(value); profile.data.music_volume=value; profile.save_profile())
+	overlay.add_child(music_slider)
+	button(overlay,"切换全屏 / 窗口",at+Vector2(37,353),Vector2(665,56),func():
 		profile.data.fullscreen=not profile.data.fullscreen
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if profile.data.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		profile.save_profile()
 	)
-	label(overlay,"日语角色语音 · 奥义配有中文字幕",at+Vector2(37,368),16,MUTED)
-	label(overlay,"成长自动保存；联机使用固定 UDP 24872 端口。",at+Vector2(37,410),15,MUTED)
+	label(overlay,"日语角色语音 · 奥义配有中文字幕",at+Vector2(37,443),16,MUTED)
+	label(overlay,"成长自动保存；联机使用固定 UDP 24872 端口。",at+Vector2(37,485),15,MUTED)
+
+func set_music_volume(value: float) -> void:
+	var bus := AudioServer.get_bus_index("Music")
+	AudioServer.set_bus_volume_db(bus,linear_to_db(maxf(.001,value)))
+	AudioServer.set_bus_mute(bus,value<.005)
 
 func set_voice_volume(value: float) -> void:
 	var bus := AudioServer.get_bus_index("Dialogue")
@@ -928,5 +992,5 @@ func show_help() -> void:
 func show_credits() -> void:
 	var at := modal_box("制作组 / 资源说明",Vector2(830,620))
 	label(overlay,"血潮守望 · Crimson Tide",at+Vector2(37,107),29,GOLD)
-	label(overlay,"游戏实现  /  Godot 4 · GDScript\n主视觉、立绘与精灵  /  AI 原创插画\n音效  /  Lentikula · Kenney 等 CC0 素材再设计\n日语合成语音  /  MiniMax speech-2.8-hd\n绯月 · 雪璃 · 鸦羽  /  三套独立日语声线\n攻击 · 施法 · 受伤 · 专属奥义咏唱\n原创台词 · 日语语音 · 中文奥义字幕\n完整鸣谢  /  AUDIO-CREDITS.txt · VOICE-CREDITS.txt\n字体  /  Noto Serif & Sans SC · SIL OFL",at+Vector2(37,172),18,MUTED,Vector2(750,340)).add_theme_constant_override("line_spacing",10)
+	label(overlay,"游戏实现  /  Godot 4 · GDScript\n主视觉、立绘与精灵  /  AI 原创插画\n音效  /  Lentikula · Kenney 等 CC0 素材再设计\n日语真人语音  /  フリーボイス素材屋すぱらんど\n声优  /  すぱるな瀟洒 · 三套角色演绎\n攻击 · 施法 · 受伤 · 奥义出招\n免费授权录音 · 日语台词 · 中文奥义字幕\n完整鸣谢  /  AUDIO-CREDITS.txt · VOICE-CREDITS.txt\n字体  /  Noto Serif & Sans SC · SIL OFL",at+Vector2(37,172),18,MUTED,Vector2(750,340)).add_theme_constant_override("line_spacing",10)
 	label(overlay,"献给每一位在长夜中守望黎明的人。",at+Vector2(37,550),18,INK)

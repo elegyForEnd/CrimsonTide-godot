@@ -12,6 +12,7 @@ const PORT := 24872
 const DODGE_DURATION := 0.24
 const DODGE_DISTANCE := 145.0
 const RUN_MULTIPLIER := 1.45
+const ONLINE_ULTIMATE_DURATION := 0.85
 var players: Dictionary = {}
 var inputs: Dictionary = {}
 var ruins := Ruins.new()
@@ -35,6 +36,7 @@ var local_input := {"move":Vector2.ZERO,"aim":Vector2.RIGHT,"fire":false,"intera
 var rng := RandomNumberGenerator.new()
 var report_paid := false
 var request_cooldowns: Dictionary = {}
+var pending_ultimates: Dictionary = {}
 
 func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_peer_left)
@@ -80,6 +82,7 @@ func join(address: String, config: Dictionary) -> Error:
 
 func disconnect_room() -> void:
 	running=false
+	pending_ultimates.clear()
 	if multiplayer.multiplayer_peer:
 		multiplayer.multiplayer_peer.close()
 	multiplayer.multiplayer_peer=OfflineMultiplayerPeer.new()
@@ -155,6 +158,7 @@ func _peer_left(id: int) -> void:
 	if not authority():
 		return
 	inputs.erase(id)
+	pending_ultimates.erase(id)
 	if running and players.has(id):
 		players[id].connected=false
 		if players[id].status in ["active","down"]:
@@ -203,6 +207,7 @@ func begin(value: int, seconds: float, roster: Dictionary) -> void:
 	results.clear()
 	inputs.clear()
 	request_cooldowns.clear()
+	pending_ultimates.clear()
 	objectives=0
 	elapsed=0.0
 	threat=0.0
@@ -274,6 +279,8 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 	if not running or not players.has(id):
 		return
 	var p: Dictionary=players[id]
+	if pending_ultimates.has(id):
+		return
 	if p.status not in ["active","down"]:
 		return
 	if kind=="heal":
@@ -332,21 +339,15 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p.skill=18.0
 				p.pending_strike=false
 				p.swing_time=0.0
-				p.cast_time=0.75
-				broadcast_combat({"kind":"skill","p":p.p,"aim":p.aim,"hero":p.hero,"weapon":p.weapon,"id":p.id})
-				emit_effect("skill",p.p)
-				if p.hero==1:
-					for ally in players.values():
-						if ally.status=="active" and ally.p.distance_to(p.p)<300:
-							ally.hp=minf(ally.max_hp,ally.hp+45)
-							ally.sanity=minf(100,ally.sanity+15)
-				else:
-					p.invuln=1.0
-					for e in enemies:
-						var offset: Vector2=e.p-p.p
-						var reach := 210 if p.hero==2 else 460
-						if offset.length()<reach and ruins.clear_line(p.p,e.p) and (p.hero==2 or offset.normalized().dot(p.aim)>0.35):
-							damage_enemy(e,115.0,p.id,offset.normalized(),40.0,4)
+				p.reload=0.0
+				p.channel=0.0
+				var seconds := ONLINE_ULTIMATE_DURATION
+				if not online:
+					var timing: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/voices/voice-manifest.json")).heroes[p.hero]
+					seconds=float(timing.charge_time)+float(timing.burst_time)
+				p.cast_time=seconds
+				pending_ultimates[id]={"remaining":seconds,"aim":p.aim}
+				broadcast_combat({"kind":"ultimate-start","p":p.p,"aim":p.aim,"hero":p.hero,"weapon":p.weapon,"id":p.id})
 		"bag_move":
 			var index := int(payload.get("index",-1))
 			if index>=0 and index<p.bag.size():
@@ -362,6 +363,39 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			if index>=0 and index<p.bag.size():
 				drops.append({"p":p.p+Vector2(25,20),"kind":p.bag[index].kind,"provision":p.bag[index].get("provision",false)})
 				p.bag.remove_at(index)
+
+func cancel_ultimate(id: int) -> void:
+	pending_ultimates.erase(id)
+	if players.has(id):
+		players[id].cast_time=0.0
+
+func release_ultimate(id: int) -> void:
+	# Only the host settles damage; clients cannot shorten the online windup.
+	if not authority() or not pending_ultimates.has(id):
+		return
+	var cast: Dictionary=pending_ultimates[id]
+	pending_ultimates.erase(id)
+	if not running or not players.has(id):
+		return
+	var p: Dictionary=players[id]
+	if p.status!="active" or not p.connected:
+		return
+	p.cast_time=0.75
+	var aim: Vector2=cast.aim
+	broadcast_combat({"kind":"skill","p":p.p,"aim":aim,"hero":p.hero,"weapon":p.weapon,"id":p.id})
+	emit_effect("skill",p.p)
+	if p.hero==1:
+		for ally in players.values():
+			if ally.status=="active" and ally.p.distance_to(p.p)<300:
+				ally.hp=minf(ally.max_hp,ally.hp+45)
+				ally.sanity=minf(100,ally.sanity+15)
+	else:
+		p.invuln=maxf(p.invuln,1.0)
+		for e in enemies:
+			var offset: Vector2=e.p-p.p
+			var reach := 210 if p.hero==2 else 460
+			if offset.length()<reach and ruins.clear_line(p.p,e.p) and (p.hero==2 or offset.normalized().dot(aim)>0.35):
+				damage_enemy(e,115.0,p.id,offset.normalized(),40.0,4)
 
 func reload_player(p: Dictionary) -> void:
 	var clip: int=16
@@ -394,6 +428,10 @@ func simulate(dt: float) -> void:
 			continue
 		if p.status!="active":
 			continue
+		if pending_ultimates.has(id):
+			pending_ultimates[id].remaining-=dt
+			if pending_ultimates[id].remaining<=0:
+				release_ultimate(id)
 		if p.hitstop>0:
 			p.hitstop=maxf(0,p.hitstop-dt)
 		else:
@@ -410,7 +448,10 @@ func simulate(dt: float) -> void:
 				broadcast_audio("reload-end",p)
 		var cmd: Dictionary=inputs.get(id,{})
 		var direction: Vector2=cmd.get("move",Vector2.ZERO)
-		p.aim=cmd.get("aim",Vector2.RIGHT)
+		if pending_ultimates.has(id):
+			direction=Vector2.ZERO
+		else:
+			p.aim=cmd.get("aim",Vector2.RIGHT)
 		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed
 		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
 		p.scent=move_toward(p.scent,float(Catalog.count(p.bag,"crystal")*8),dt*0.5)
@@ -425,7 +466,7 @@ func simulate(dt: float) -> void:
 			p.scent-=10
 		if bool(cmd.get("fire",false)):
 			attack(p)
-		interact(p,bool(cmd.get("interact",false)) and p.dodge_time<=0,dt)
+		interact(p,bool(cmd.get("interact",false)) and p.dodge_time<=0 and not pending_ultimates.has(id),dt)
 		if p.hp<=0:
 			down(p)
 	update_enemies(dt)
@@ -476,6 +517,7 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 	p.move_speed=before.distance_to(p.p)/maxf(dt,0.001)
 
 func down(p: Dictionary) -> void:
+	cancel_ultimate(p.id)
 	p.hp=0
 	p.status="down"
 	p.bleed=35

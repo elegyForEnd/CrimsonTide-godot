@@ -30,6 +30,7 @@ func run() -> void:
 	var sound := TideSound.new()
 	root.add_child(sound)
 	sound.ambience.stop()
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Music"),true)
 	AudioServer.set_bus_volume_db(0,0)
 	var left: PackedByteArray=await capture(sound,Vector2(-400,0))
 	var right: PackedByteArray=await capture(sound,Vector2(400,0))
@@ -80,10 +81,11 @@ func run() -> void:
 		await create_timer(float(sound.dialogue.metadata.heroes[hero].burst_time)).timeout
 		paused=false
 		sound.end_cinematic()
-		await create_timer(.30).timeout
+		sound.play("skill",hero)
+		await create_timer(2.0).timeout
 	record.set_recording_active(false)
 	var stream := record.get_recording()
-	stream.save_to_wav("res://build/minimax-game-mix.wav")
+	stream.save_to_wav("res://build/free-voice-game-mix.wav")
 	AudioServer.remove_bus_effect(0,AudioServer.get_bus_effect_count(0)-1)
 	sound.queue_free()
 	await create_timer(.15).timeout

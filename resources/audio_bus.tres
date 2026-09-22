@@ -28,3 +28,6 @@ bus/4/send = &"Master"
 bus/5/name = &"Dialogue"
 bus/5/volume_db = 0.0
 bus/5/send = &"Master"
+bus/6/name = &"Music"
+bus/6/volume_db = 0.0
+bus/6/send = &"Master"

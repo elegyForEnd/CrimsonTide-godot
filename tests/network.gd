@@ -100,6 +100,8 @@ func done() -> void:
 	else:
 		pass_test=pass_test and saw_snapshot
 	print("NETWORK %s %d PLAYERS: %s" % ["HOST" if host_mode else "CLIENT",expected,"PASS" if pass_test else "FAIL"])
+	if not pass_test:
+		print("NETWORK DETAILS: ",{"results":session.results,"seed":session.seed_value,"effect":got_effect,"combat":got_combat,"audio":got_audio,"weapon":saw_weapon,"running":saw_running,"snapshot":saw_snapshot,"independent":saw_independent})
 	await create_timer(0.6).timeout
 	session.disconnect_room()
 	quit(0 if pass_test else 1)

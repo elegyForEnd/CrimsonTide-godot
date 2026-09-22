@@ -1,12 +1,14 @@
 """Rebuild the CC0 bank with bright, compact anime-action layering.
 
-Run prepare_minimax_voices.py first; cinematic effects follow its speech timing.
+Run prepare_free_voices.py first; cinematic effects follow its speech timing.
 The original library builder supplies licensed source readers and the quiet foley.
 """
 import json
 import shutil
 from pathlib import Path
 import prepare_library_audio as b
+
+b.build_bank()
 
 layer, cue = b.layer, b.cue
 sw, sword, spell, druid, heal, k, f = b.sw, b.sword, b.spell, b.druid, b.heal, b.k, b.f
@@ -103,3 +105,7 @@ credits += ["Game edits: transient cuts, pitch/time treatment, crystalline layer
 for target in [b.ROOT/"AUDIO-CREDITS.txt",b.ROOT/"assets/audio/CREDITS.txt"]:
     target.write_text("\n".join(credits)+"\n",encoding="utf-8")
 print("ANIME SOUND BANK:",len(b.CUES),"cues; voices remain independently licensed")
+
+# Preserve the stronger post-CG release cues when rebuilding the full bank.
+from prepare_ultimate_audio import build as build_ultimate_releases
+build_ultimate_releases()

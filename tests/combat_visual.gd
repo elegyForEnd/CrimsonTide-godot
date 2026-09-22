@@ -39,6 +39,7 @@ func run() -> void:
 		p.skill=0.0
 		app.field.combat.reset()
 		app.session.perform(1,"skill")
+		await app.ultimate.ended
 		await create_timer(0.23).timeout
 		await capture("combat-skill-%d" % hero)
 	print("COMBAT VISUAL: 12 captures completed")
