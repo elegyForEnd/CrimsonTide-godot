@@ -112,8 +112,12 @@ func stamp(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> 
 	var unit := atlas.get_size()/3.0
 	# Inset removes sampling bleed between neighbouring atlas tiles.
 	var source := Rect2(Vector2(cell%3,cell/3)*unit+Vector2.ONE*3,unit-Vector2.ONE*6)
-	draw_set_transform(at,angle)
-	draw_texture_rect_region(atlas,Rect2(-size/2,size),source,tint)
+	# Negative Rect2 extents do not mirror around their centre in CanvasItem.
+	# Mirror the transform instead, keeping both slash layers on their pivot.
+	var extent := size.abs()
+	var mirror := Vector2(-1.0 if size.x<0 else 1.0,-1.0 if size.y<0 else 1.0)
+	draw_set_transform(at,angle,mirror)
+	draw_texture_rect_region(atlas,Rect2(-extent/2,extent),source,tint)
 
 func _draw() -> void:
 	for fx in motes:

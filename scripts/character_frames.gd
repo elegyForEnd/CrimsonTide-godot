@@ -6,10 +6,10 @@ var movement: Array = []
 
 func _init() -> void:
 	for hero in 3:
-		attacks.append(read_sheet("res://assets/combat/attack-clean-%d.png" % hero))
-		movement.append(read_sheet("res://assets/combat/movement-%d.png" % hero))
+		attacks.append(read_sheet("res://assets/combat/attack-clean-%d.png" % hero,CharacterMetrics.ATTACK[hero]))
+		movement.append(read_sheet("res://assets/combat/movement-%d.png" % hero,CharacterMetrics.MOVEMENT[hero]))
 
-func read_sheet(path: String) -> Array:
+func read_sheet(path: String, landmarks: Array) -> Array:
 	var sheet: Texture2D=load(path)
 	var cell := Vector2i(sheet.get_size()/Vector2(4,3))
 	var source := sheet.get_image()
@@ -17,25 +17,20 @@ func read_sheet(path: String) -> Array:
 	# Generated sheets are not mathematically perfect grids. Locate real empty
 	# gutters so a boot or weapon near the nominal boundary stays in its frame.
 	var ys := [0,find_gutter(source,cell.y,cell.y,true,0,source.get_width()),find_gutter(source,cell.y*2,cell.y,true,0,source.get_width()),source.get_height()]
-	var reference := source.get_region(Rect2i(0,0,cell.x,ys[1])).get_used_rect()
-	var scale := 90.0/maxf(1,reference.size.y)
 	for row in 3:
 		var frames: Array=[]
-		var baseline := 0.0
 		var xs := [0,find_gutter(source,cell.x,cell.x,false,ys[row],ys[row+1]),find_gutter(source,cell.x*2,cell.x,false,ys[row],ys[row+1]),find_gutter(source,cell.x*3,cell.x,false,ys[row],ys[row+1]),source.get_width()]
 		var bounds: Array[Rect2i]=[]
 		for column in 4:
 			var region := Rect2i(xs[column],ys[row],xs[column+1]-xs[column],ys[row+1]-ys[row])
-			var used := source.get_region(region).get_used_rect()
-			baseline=maxf(baseline,used.end.y)
 			bounds.append(region)
 		for column in 4:
 			var texture := AtlasTexture.new()
 			texture.atlas=sheet
 			texture.region=Rect2(bounds[column])
 			texture.filter_clip=true
-			var extent := Vector2(bounds[column].size)
-			frames.append({"texture":texture,"rect":Rect2(Vector2(-extent.x*0.5,-baseline)*scale+Vector2(0,16),extent*scale)})
+			var landmark: Vector3=landmarks[row][column]
+			frames.append({"texture":texture,"rect":CharacterMetrics.layout(texture.region,sheet.get_size(),landmark),"landmark":landmark})
 		rows.append(frames)
 	return rows
 
