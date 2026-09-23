@@ -7,13 +7,13 @@ const HEROES = [
 	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"破碎大剑：攻速慢、伤害略高、范围大。夜鸦断罪清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦断罪"}
 ]
 const ITEMS = {
-	"crystal":{"name":"血晶", "size":Vector2i(1,1), "value":18, "color":Color("e45c74"), "desc":"血香 +8；按 B 可燃烧一枚，驱散血香并恢复理智。"},
+	"crystal":{"name":"血晶", "size":Vector2i(1,1), "value":18, "color":Color("e45c74"), "desc":"拾取后直接计入血晶数量，不占背包格子；靠近即可自动吸附。"},
 	"scrap":{"name":"古城零件", "size":Vector2i(2,1), "value":32, "color":Color("b0b6c5"), "desc":"晨钟城工坊急需的机械零件。"},
-	"relic":{"name":"月蚀遗物", "size":Vector2i(2,2), "value":125, "color":Color("d2ac66"), "desc":"占据四格的珍贵遗物；拾取时优先沉入次元口袋，永不掉落。"},
+	"relic":{"name":"月蚀遗物", "size":Vector2i(2,2), "value":125, "color":Color("d2ac66"), "desc":"占据四格的珍贵遗物；双击收纳时和其他白色物资一样先进背包，金色与红色的高品质装备才会优先沉入次元口袋。"},
 	"medicine":{"name":"急救针", "size":Vector2i(1,2), "value":25, "color":Color("78cbb5"), "desc":"按 F 消耗一支，恢复 45 生命；倒地时可用于自救。"},
 	"charm":{"name":"银鸦护符", "size":Vector2i(1,2), "value":70, "color":Color("b79ade"), "desc":"拾取后，本局伤害提高 12%，最多叠加三枚。"},
 	"ammo":{"name":"弹药匣", "size":Vector2i(2,1), "value":20, "color":Color("c4ad82"), "desc":"按 F 优先治疗；弹药不足时自动消耗弹药匣补充 48 发。"},
-	"backpack":{"name":"背包", "size":Vector2i(1,1), "value":40, "color":Color("cfc6bb"), "desc":"可背在身上的独立储物空间；阵亡时连同包内物资一起掉落。"},
+	"backpack":{"name":"背包", "size":Vector2i(1,1), "value":40, "color":Color("cfc6bb"), "desc":"可背在身上的独立储物空间，本身就是一件装备：双击或 Ctrl+左键即可换装，换下的旧包进背包柜。紫色及以上品质的包占 2×2 格。"},
 	"weapon":{"name":"武器", "size":Vector2i(2,2), "value":85, "color":Color("c9a06a"), "desc":"战场上捡到的武器。只有装备到武器槽后才会握在手里；拿着它攻击时获得品质加成。阵亡会掉落。"},
 	"gear":{"name":"装备", "size":Vector2i(1,2), "value":55, "color":Color("8fb6d8"), "desc":"护甲 / 瞄具 / 轻靴。装备到对应槽位后本局提升生命、火力或移速。阵亡会掉落。"}
 }
@@ -150,6 +150,13 @@ static func quality_color(value: int) -> Color:
 static func is_equipment(kind: String) -> bool:
 	return kind=="weapon" or kind=="gear"
 
+# Which kinds the item bar's interact key can actually operate. A lootable relic,
+# a stack of scrap or a blood crystal is treasure and nothing else, so a socket
+# holding one is deliberately inert: the key falls through to whatever else it
+# does rather than swallowing the press for no effect.
+static func slot_operable(kind: String) -> bool:
+	return is_equipment(kind) or kind=="backpack" or kind=="medicine" or kind=="ammo"
+
 # A piece of loot is always one of the four field weapons: the hero issue weapons
 # have no item form and can neither be found nor dropped.
 static func make_equipment(kind: String, index: int, tier: int) -> Dictionary:
@@ -257,18 +264,47 @@ static func grid_of(grid: Vector2i) -> Vector2i:
 static func make_bag(key: String = DEFAULT_BAG_KEY) -> Dictionary:
 	return {"key":key if not key.is_empty() else DEFAULT_BAG_KEY,"items":[],"next":1}
 
+# A loose backpack is a piece of equipment the player can wear, so it occupies
+# cells like one: the roomier packs are physical objects rather than a 1x1 token.
+# Purple is where they start taking a 2x2 block.
+const BULKY_BAG_TIER := 3
+
+static func backpack_cells(key: String) -> Vector2i:
+	return Vector2i(2,2) if tier_index(key)>=BULKY_BAG_TIER else Vector2i(1,1)
+
+# A bag on the floor or in a container remembers its quality in "quality"; the
+# equipped one keeps it in "key". Reading both is what makes a loose purple pack
+# really take its 2x2 block instead of claiming a single cell.
+static func bag_key_of_item(item: Dictionary) -> String:
+	return bag_key({"key":str(item.get("quality",item.get("key",DEFAULT_BAG_KEY)))})
+
 static func item_size(item: Dictionary) -> Vector2i:
+	if str(item.get("kind",""))=="backpack":
+		return backpack_cells(bag_key_of_item(item))
 	var s: Vector2i = ITEMS[item.kind].size
 	return Vector2i(s.y,s.x) if item.get("rot",false) else s
+
+# Two items overlap when they share a cell. This is spelled out as four integer
+# comparisons rather than handed to Rect2i.intersects(), which in this build
+# answers false for rectangles that plainly share cells — a 1x2 beside a 1x2,
+# and a 2x1 scrap lying across the top of one. The whole packing rule stands on
+# this one answer, so it is computed here and nowhere else.
+static func overlaps(at: Vector2i, size: Vector2i, other: Dictionary) -> bool:
+	var other_at := Vector2i(int(other.x),int(other.y))
+	var other_size := item_size(other)
+	if at.x+size.x <= other_at.x or other_at.x+other_size.x <= at.x:
+		return false
+	if at.y+size.y <= other_at.y or other_at.y+other_size.y <= at.y:
+		return false
+	return true
 
 static func can_place(bag: Array, item: Dictionary, at: Vector2i, ignore: int = -1, grid: Vector2i = Vector2i.ZERO) -> bool:
 	var dims := grid_of(grid)
 	var s := item_size(item)
 	if at.x < 0 or at.y < 0 or at.x+s.x > dims.x or at.y+s.y > dims.y:
 		return false
-	var rect := Rect2i(at,s)
 	for i in bag.size():
-		if i != ignore and rect.intersects(Rect2i(Vector2i(bag[i].x,bag[i].y),item_size(bag[i]))):
+		if i != ignore and overlaps(at,s,bag[i]):
 			return false
 	return true
 
@@ -354,8 +390,27 @@ static func add_item(container: Dictionary, kind: String) -> bool:
 	container["next"]=int(container.get("next",1))+1
 	return true
 
-# Which container should receive a piece of loot: valuable relics are sunk into
-# the safe pocket, everything else stays in the backpack it was found with.
+# Which container should receive a piece of loot: high quality is worth the safe
+# pocket, everything else fills the backpack the player is carrying. The quality
+# is read from the fields loot really carries — a weapon or a gear piece stores
+# it in "tier", a loose backpack in "quality" — so plain supplies such as
+# crystals, scrap and relics are white by default and go to the bag.
+const POCKET_TIER := 4
+
+static func item_tier(item: Dictionary) -> int:
+	if item.has("tier"):
+		return tier_of(int(item.get("tier",0)))
+	if str(item.get("kind",""))=="backpack":
+		return tier_index(str(item.get("quality",DEFAULT_BAG_KEY)))
+	return 0
+
+static func high_quality(item: Dictionary) -> bool:
+	return item_tier(item)>=POCKET_TIER
+
+# Which container field loot belongs in: valuable relics are sunk into the safe
+# pocket, everything else stays in the backpack it was found with. Unchanged by
+# the quality rule below, which only steers the double click in the search
+# window.
 static func prefers_pocket(kind: String) -> bool:
 	return kind=="relic"
 
@@ -498,3 +553,250 @@ static func bag_value(bag: Array) -> int:
 
 static func container_value(container: Dictionary) -> int:
 	return bag_value(container_items(container))
+
+# A fingerprint of where every item sits. A tidy that turns out not to help is
+# rolled back to this exact layout, so a refusal never leaves a half-sorted bag
+# behind — comparing the fingerprint is how the caller sees that it changed.
+static func container_state(container: Dictionary) -> String:
+	var text := ""
+	for item in container_items(container):
+		text+=str(item)
+	return text
+
+# --- auto storage ------------------------------------------------------------
+# One search rules every automatic placement in the game: the first cell that
+# fits when the grid is read top to bottom, left to right. An item is measured
+# upright first and only then turned, so a shape that would fit either way keeps
+# the orientation it was found in. This differs from can_place() by taking the
+# raw item list every caller already holds.
+static func first_cell(bag: Array, item: Dictionary, grid: Vector2i) -> Vector2i:
+	var dims := grid_of(grid)
+	for y in dims.y:
+		for x in dims.x:
+			var at := Vector2i(x,y)
+			if can_place(bag,item,at,-1,dims):
+				return at
+	return Vector2i(-1,-1)
+
+static func empty_cells(grid: Vector2i) -> Array:
+	var taken: Array = []
+	taken.resize(grid.x*grid.y)
+	taken.fill(false)
+	return taken
+
+# Throws a placed item over every cell it covers.
+static func mark_cells(taken: Array, grid: Vector2i, entry: Dictionary, at: Vector2i) -> void:
+	var size := item_size(entry)
+	for y in range(at.y,at.y+size.y):
+		for x in range(at.x,at.x+size.x):
+			taken[y*grid.x+x]=true
+
+# The first free cells of a given shape, scanning top to bottom and left to
+# right. This is the single placement rule every automatic fill is built on.
+static func first_cell_in(taken: Array, grid: Vector2i, size: Vector2i) -> Vector2i:
+	for y in range(0,grid.y-size.y+1):
+		for x in range(0,grid.x-size.x+1):
+			var free := true
+			for cy in range(y,y+size.y):
+				for cx in range(x,x+size.x):
+					if taken[cy*grid.x+cx]:
+						free=false
+						break
+				if not free:
+					break
+			if free:
+				return Vector2i(x,y)
+	return Vector2i(-1,-1)
+
+# Where one item would sit: the first free cells it fits, or the same cells
+# turned. Returns {at, rot}, or an empty dictionary when it cannot be seated at
+# all. Everything below works in these plain positions, so a fill that runs out
+# of room never leaves a stray coordinate on a real item.
+static func find_seat(taken: Array, grid: Vector2i, kind: String) -> Dictionary:
+	var base: Vector2i=ITEMS[kind].size
+	for rotate in [false,true]:
+		var size := Vector2i(base.y,base.x) if rotate else base
+		var spot := first_cell_in(taken,grid,size)
+		if spot.x>=0:
+			return {"at":spot,"rot":rotate}
+	return {}
+
+# Seats one item where find_seat() says it goes, and covers those cells.
+static func seat_item(taken: Array, grid: Vector2i, entry: Dictionary) -> bool:
+	var seat := find_seat(taken,grid,str(entry.kind))
+	if seat.is_empty():
+		return false
+	entry["x"]=seat.at.x
+	entry["y"]=seat.at.y
+	entry["rot"]=seat.rot
+	mark_cells(taken,grid,entry,seat.at)
+	return true
+
+# Can this arriving piece of loot still be squeezed in without moving anything?
+# Returns where it would land, so the caller never has to search twice. Each
+# orientation is confirmed against the real grid before the cell is answered
+# with: two sizes can share a first free cell, and only one of them really fits.
+static func fits(container: Dictionary, entry: Dictionary) -> Dictionary:
+	var grid := container_grid(container)
+	var list: Array=container_items(container)
+	var probe: Dictionary=entry.duplicate()
+	for rotate in [false,true]:
+		probe["rot"]=rotate
+		var spot := first_cell(list,probe,grid)
+		if spot.x>=0 and can_place(list,probe,spot,-1,grid):
+			return {"at":spot,"rot":rotate}
+	return {}
+
+# Working copies of a haul: every attempt is laid out on these, so a pass that
+# runs out of room can never leave a stray coordinate on a real item.
+static func layout_copies(items: Array) -> Array:
+	var copies: Array = []
+	for item in items:
+		var copy: Dictionary=item.duplicate()
+		copy["rot"]=bool(item.get("rot",false))
+		copies.append(copy)
+	return copies
+
+# The same copies, in the order the fill works through them: largest shape
+# first, so the piece that needs the most room reserves it before the small ones
+# fill the gaps, and equal sizes keep the order they were recorded in.
+static func layout_order(copies: Array) -> Array:
+	var plan: Array = []
+	for i in copies.size():
+		var size := item_size(copies[i])
+		plan.append({"index":i,"area":size.x*size.y})
+	plan.sort_custom(func(a, b): return a.area>b.area if a.area!=b.area else a.index<b.index)
+	var order: Array = []
+	for step in plan:
+		order.append(copies[int(step.index)])
+	return order
+
+# Writes a worked-out layout back onto the haul it came from, keeping every item
+# exactly where the tidied grid showed it.
+static func commit_layout(items: Array, copies: Array) -> void:
+	for i in copies.size():
+		items[i]["x"]=copies[i].x
+		items[i]["y"]=copies[i].y
+		items[i]["rot"]=copies[i].rot
+
+# How far down the grid the haul reaches. A refill that does not beat this has
+# left the haul spread out exactly as it was, which would only turn a tidy hole
+# into scattered ones — so place_arrival() throws such a refill away.
+static func rows_used(items: Array) -> int:
+	var rows := 0
+	for item in items:
+		rows=maxi(rows,int(item.y)+item_size(item).y)
+	return rows
+
+# The whole haul, each item seated by size. An arriving item is laid out with it
+# — "probe" is copied in at "reserve" if it is given one — so the caller can try a
+# tidy with and without the newcomer without disturbing the container. "measure"
+# receives the row count the fill reached, which is how the caller tells a refill
+# that helped from one that merely reshuffled the same haul.
+static func fill(items: Array, grid: Vector2i, probe: Dictionary = {}, reserve: Vector2i = Vector2i(-1,-1), measure: Dictionary = {}) -> Array:
+	var copies := layout_copies(items)
+	if not probe.is_empty():
+		var copy: Dictionary=probe.duplicate()
+		copy["x"]=reserve.x
+		copy["y"]=reserve.y
+		copies.append(copy)
+	var taken := empty_cells(grid)
+	for entry in layout_order(copies):
+		if not seat_item(taken,grid,entry):
+			return []
+	measure["rows"]=rows_used(copies)
+	return copies
+
+# The counter-offer for a shape the greedy fill cannot seat: reserve every legal
+# spot for the newcomer in turn and fill the haul around it, taking the first
+# arrangement that holds. The newcomer is seated from its cell like any other
+# item, so the room reserved for it is always the footprint it really covers.
+# Row-major order means the spot nearest the top-left corner wins whenever
+# several would work. No row budget is needed here: the fill either seats every
+# item or it fails, and an arrangement that seats them all is by definition one
+# that fits.
+static func fill_reserving(items: Array, grid: Vector2i, probe: Dictionary) -> Array:
+	# The footprint comes from item_size(), not from the kind's table entry: a
+	# turned item, and a backpack whose quality decides its own shape, are both
+	# only measurable through it. Reading the raw table here reserved the wrong
+	# room — a turned 1x2 asked for a 1x2 — and could refuse an arrival the grid
+	# could really hold.
+	var base: Vector2i=item_size(probe)
+	for rotate in [false,true]:
+		var size := Vector2i(base.y,base.x) if rotate else base
+		for y in range(0,grid.y-size.y+1):
+			for x in range(0,grid.x-size.x+1):
+				var seat: Dictionary=probe.duplicate()
+				seat["rot"]=rotate
+				var filled := fill(items,grid,seat,Vector2i(x,y))
+				if not filled.is_empty():
+					return filled
+	return []
+
+# Where the arriving item ended up in a fill that already seated it. Asking the
+# fill itself is what makes a refill usable: searching the finished grid for a
+# free hole only works when the hole still has the shape the item needs, which is
+# exactly what a solidly packed grid never leaves behind.
+static func seated_entry(copies: Array, probe: Dictionary) -> Dictionary:
+	for entry in copies:
+		if entry==probe:
+			return entry
+	return {}
+
+# The one-shot tidy behind the double click. Free cells win outright; when
+# nothing is free the whole container is refilled from scratch, largest item
+# first, with the arriving item considered last, and — only if even that cannot
+# house it — considered first with the haul packed around it. The haul keeps its
+# slots when the call says no: nothing but a yes ever touches the container.
+# Returns "ok":false when this container cannot take the item even after being
+# tidied, which is the caller's signal to leave the item where it is.
+static func place_arrival(container: Dictionary, entry: Dictionary) -> Dictionary:
+	var grid := container_grid(container)
+	var list: Array=container_items(container)
+	var probe: Dictionary=entry.duplicate()
+	# Free cells win outright, and the item keeps every field it was found with.
+	var free := fits(container,probe)
+	if not free.is_empty():
+		probe["x"]=free.at.x
+		probe["y"]=free.at.y
+		probe["rot"]=free.rot
+		return {"ok":true,"items":[],"seat":probe}
+	# Pass one: refill the haul with the newcomer laid out last, so it takes what
+	# the haul leaves over. A refill that leaves the haul spread exactly as wide as
+	# it already is has bought nothing, so it is only adopted when it seats every
+	# item within fewer rows than the haul already reaches — that is what turns a
+	# grid scattered by a tidy back into a packed one. The frontier is the arrival
+	# into an empty container, where "how far down" means nothing.
+	var measure: Dictionary = {}
+	var refilled := fill(list,grid,probe,Vector2i(-1,-1),measure)
+	if not refilled.is_empty():
+		var roomy := list.is_empty() or int(measure.get("rows",0))<=rows_used(list)
+		if roomy:
+			var seat := seated_entry(refilled,probe)
+			if not seat.is_empty():
+				return {"ok":true,"items":refilled.slice(0,refilled.size()-1),"seat":seat}
+	# Pass two: reserve the newcomer's room first and fill the haul around it.
+	var reserved := fill_reserving(list,grid,probe)
+	if reserved.is_empty():
+		return {"ok":false,"items":[],"seat":{}}
+	# The fill lays the newcomer out with the haul as its last copy, so its seat
+	# comes straight out of that layout.
+	return {"ok":true,"items":reserved.slice(0,reserved.size()-1),"seat":reserved[reserved.size()-1]}
+
+# Every item in this container that the arriving one outranks: strictly lower
+# quality, and then the cheapest of those first, so a haul of white junk gives
+# way before anything worth carrying. Equal quality is never listed, which is
+# what keeps one relic from pushing out another.
+static func eviction_order(container: Dictionary, entry: Dictionary) -> Array:
+	var floor_tier := item_tier(entry)
+	var losers: Array = []
+	for item in container_items(container):
+		var tier := item_tier(item)
+		if tier>=floor_tier:
+			continue
+		losers.append({"tier":tier,"value":item_value(item),"kind":str(item.kind)})
+	losers.sort_custom(func(a, b): return a.tier<b.tier if a.tier!=b.tier else a.value<b.value)
+	return losers
+
+static func restore_layout(container: Dictionary, snapshot: Array) -> void:
+	container["items"]=snapshot

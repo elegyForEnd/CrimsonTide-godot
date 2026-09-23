@@ -17,8 +17,10 @@ func run() -> void:
 	check(not s.travel_city(),"Cannot teleport remotely")
 	p.p=s.CITY_GATE
 	check(not border.blocked(p.p),"World gate accessible")
-	s.interact(p,true,1.6)
-	check(s.map_id=="city" and s.ruins is RoyalCity,"Hold E enters independent map")
+	s.update_zone_channels(p,1.6)
+	check(s.map_id=="border","The gate only opens for a full 4 second wait")
+	s.update_zone_channels(p,4.0)
+	check(s.map_id=="city" and s.ruins is RoyalCity,"Standing in the gate opens the independent map")
 	check(not s.ruins.blocked(p.p),"Arrival is walkable")
 	check(s.ruins.clear_line(RoyalCity.GATE,RoyalCity.BOSS),"Gate to throne route traversable")
 	check(s.ruins.blocked(Vector2(640,700)),"Pillars collide")

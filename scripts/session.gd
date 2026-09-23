@@ -133,7 +133,11 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	# A raid starts with nothing but the hero issue weapon: the four field weapons
 	# are loot, so the only way into a Watcher's hands is picking one up and
 	# equipping it. make_player therefore never reads a weapon from the config.
-	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":Catalog.starter_index(h),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	# "slots" is the item bar: three quick sockets that carry one item each, so a
+	# weapon, a spare pack or a medkit is one keypress away instead of a trip into
+	# the backpack. The contents are run-local like everything worn, and the whole
+	# player dictionary travels through the ENet snapshot, so clients see them too.
+	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":Catalog.starter_index(h),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"slots":empty_item_slots(),"ready":id==1,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"crystals":0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	return player
 
@@ -142,6 +146,47 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 # save file: wear it now or carry it home, never both.
 func empty_equipment() -> Dictionary:
 	return {"weapon":{},"gear":[{},{},{}]}
+
+# The item bar is three independent sockets rather than a grid: a slot takes
+# exactly one item, however many cells that item would need in a backpack. A 2x2
+# weapon and a 1x1 blood crystal are equally at home in one, so the bar is about
+# reach rather than storage.
+const ITEM_SLOT_COUNT := 3
+
+func empty_item_slots() -> Array:
+	var slots: Array = []
+	for i in ITEM_SLOT_COUNT:
+		slots.append({})
+	return slots
+
+# Three sockets, rebuilt defensively because the whole player dictionary travels
+# through ENet snapshots as plain data.
+func item_slots(p: Dictionary) -> Array:
+	var slots = p.get("slots",[])
+	if not slots is Array:
+		slots=[]
+	while slots.size()<ITEM_SLOT_COUNT:
+		slots.append({})
+	p["slots"]=slots
+	return slots
+
+func item_slot(p: Dictionary, index: int) -> Dictionary:
+	var slots := item_slots(p)
+	var at := clampi(index,0,ITEM_SLOT_COUNT-1)
+	var entry = slots[at]
+	return entry if entry is Dictionary else {}
+
+func set_item_slot(p: Dictionary, index: int, entry: Dictionary) -> void:
+	var slots := item_slots(p)
+	slots[clampi(index,0,ITEM_SLOT_COUNT-1)]=entry
+	p["slots"]=slots
+
+func item_slot_name(index: int) -> String:
+	return "道具栏 %d" % (clampi(index,0,ITEM_SLOT_COUNT-1)+1)
+
+func item_slot_kind(p: Dictionary, index: int) -> String:
+	var entry := item_slot(p,index)
+	return str(entry.get("kind","")) if not entry.is_empty() else ""
 
 func kit_weapon(p: Dictionary) -> Dictionary:
 	var kit = p.get("equipped",{})
@@ -262,8 +307,15 @@ func pocket_label(p: Dictionary) -> String:
 func carried(p: Dictionary, kind: String) -> int:
 	return Catalog.container_count(p.backpack,kind)+Catalog.container_count(p.pocket,kind)
 
+# Blood crystals are a tally rather than a carried item: they occupy no cell and
+# are picked up by walking over them, so the count lives on the player. "carried"
+# still finds one that was already sitting in a container from an older save, so
+# no crystal is ever lost to the change.
 func crystals_carried(p: Dictionary) -> int:
-	return carried(p,"crystal")
+	return int(p.get("crystals",0))+carried(p,"crystal")
+
+func add_crystals(p: Dictionary, units: int) -> void:
+	p["crystals"]=maxi(0,int(p.get("crystals",0))+units)
 
 func charms_carried(p: Dictionary) -> int:
 	return carried(p,"charm")
@@ -284,7 +336,10 @@ func backpack_label(p: Dictionary) -> String:
 # Loot routing: relics are sunk into the safe pocket first, everything else fills
 # the backpack the player is carrying. Returns false when both containers are full.
 # "meta" carries the fields that make a piece of loot itself (quality, weapon
-# index, gear index, tier, stack count) so nothing is lost on the way in.
+# index, gear index, tier, stack count) so nothing is lost on the way in. This is
+# the routing for grabbing loot in the field; the double click in the search
+# window routes by quality instead, because that is where a player parks loot for
+# the trip home.
 func store_loot(p: Dictionary, kind: String, provision: bool = false, key: String = "", meta: Dictionary = {}) -> bool:
 	var order: Array = ["pocket","backpack"] if Catalog.prefers_pocket(kind) else ["backpack","pocket"]
 	for name in order:
@@ -342,24 +397,42 @@ func ground_drop(at: Vector2, kind: String, key: String = "", provision: bool = 
 		container["key"]="bag:"+(key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY)
 	return container
 
-func drop_item(p: Dictionary, slot: String, index: int, key: String = "") -> bool:
+# A blood crystal on the ground: no item inside, just a tally waiting to be
+# walked over. It keeps the container shape so every existing drop helper — the
+# map marker, the search scan, the tidy — can keep treating it as a small object
+# without ever offering it as loot.
+func crystal_drop(at: Vector2, units: int) -> Dictionary:
+	var container := loot_container(at,Catalog.chest_grid(0))
+	container["crystals"]=maxi(1,units)
+	return container
+
+# Drops an item on the ground at the player's feet. "entry" hands in an item that
+# is not in any container — the tidy uses it to evict loot — and the container
+# lookup is skipped entirely in that case.
+func drop_item(p: Dictionary, slot: String, index: int, key: String = "", entry: Dictionary = {}) -> bool:
 	if slot!="backpack" and slot!="pocket":
 		return false
 	var container: Dictionary=p[slot]
 	var list: Array=container.items
-	if index<0 or index>=list.size():
-		return false
+	var carried: Dictionary = {}
+	if entry.is_empty():
+		if index<0 or index>=list.size():
+			return false
+		carried=list[index]
+	else:
+		carried=entry
 	var bag := loot_container(p.p+Vector2(25,20),Catalog.chest_grid(0))
-	bag.items.append(list[index])
+	bag.items.append(carried)
 	bag["searched"]=container_units(bag)
 	# A backpack keeps its quality so whoever grabs it can wear it.
 	var bag_key := key
-	if bag_key.is_empty() and list[index].kind=="backpack":
-		bag_key=str(list[index].get("quality",Catalog.DEFAULT_BAG_KEY))
+	if bag_key.is_empty() and carried.kind=="backpack":
+		bag_key=str(carried.get("quality",Catalog.DEFAULT_BAG_KEY))
 	if not bag_key.is_empty():
-		bag["key"]="bag:"+bag_key
+		bag["key"]="bag:"+(bag_key if Catalog.has_tier(bag_key) else Catalog.DEFAULT_BAG_KEY)
 	world_drops.append(bag)
-	list.remove_at(index)
+	if entry.is_empty():
+		list.remove_at(index)
 	return true
 
 # Death scatters everything in carried storage. The pocket is untouched: sealing
@@ -380,7 +453,9 @@ func spill_storage(p: Dictionary) -> void:
 		bag["p"]=p.p+Vector2(rng.randf_range(-42,42),rng.randf_range(-34,34))
 		world_drops.append(bag)
 		container.items.clear()
-	# The equipped kit is worn, so it hits the ground as its own pile.
+	# The equipped kit is worn, so it hits the ground as its own pile. The item bar
+	# is worn the same way: whatever rides in a quick socket is on the Watcher, not
+	# banked, so death scatters it too.
 	var worn: Array = []
 	var weapon := kit_weapon(p)
 	if not weapon.is_empty():
@@ -388,6 +463,10 @@ func spill_storage(p: Dictionary) -> void:
 	for entry in kit_gear(p):
 		if entry is Dictionary and not entry.is_empty():
 			worn.append(entry)
+	for entry in item_slots(p):
+		if entry is Dictionary and not entry.is_empty():
+			worn.append(entry)
+	p["slots"]=empty_item_slots()
 	if not worn.is_empty():
 		var kit := loot_container(p.p+Vector2(rng.randf_range(-30,30),rng.randf_range(-24,24)),Catalog.chest_grid(0))
 		for entry in worn:
@@ -520,6 +599,191 @@ func take_loot(p: Dictionary, container_index: int, slot: int) -> bool:
 	emit_effect("loot",p.p)
 	return true
 
+# The double click in the search window: one item, worked into the player's own
+# storage in one go. Two orders are possible and quality picks between them:
+# gold and red loot is worth the safe pocket, so it is tried there first, while
+# everything else fills the backpack the player is carrying and only falls back
+# to the pocket. Within a container the item is offered the cells that are
+# already free, and only when that fails is the container tidied once — so
+# "there was room after the tidy" always ends up seated, never rerouted. A haul
+# that is full of lower quality loot gives one item up for high quality loot and
+# nothing more. Returns false when even that leaves no room, which the caller
+# answers with silence: no message, no error, no reaction at all.
+func auto_store(p: Dictionary, index: int) -> bool:
+	var container := container_at(search_reference(p))
+	if container.is_empty():
+		return false
+	var visible := visible_items(container)
+	if index<0 or index>=visible.size():
+		return false
+	var want: Dictionary=visible[index]
+	var kind := str(want.kind)
+	if not Catalog.ITEMS.has(kind):
+		return false
+	# A stack travels as one pile, exactly like the take button: the whole visible
+	# unit count leaves the container, not just its first item.
+	var units := int(want.get("count",1))
+	var entry := {
+		"kind":kind,
+		"rot":bool(want.get("rot",false)),
+		"count":units,
+		"provision":bool(want.get("provision",false))
+	}
+	for field in loot_meta(want):
+		entry[field]=want[field]
+	if kind=="backpack":
+		var key := str(want.get("quality",Catalog.DEFAULT_BAG_KEY))
+		entry["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
+	# The order is decided by the fresh loot's own quality, so a red rifle and a
+	# red backpack are both steered into the pocket while supplies go to the bag.
+	# A high quality item may only ever push out strictly lower quality loot, so
+	# the pass that evicts is the same pass that respects the order.
+	var evict := Catalog.high_quality(entry)
+	var order := ["pocket","backpack"] if evict else ["backpack","pocket"]
+	for name in order:
+		if store_into(p,name,entry,evict):
+			remove_units(container,kind,units)
+			emit_effect("loot",p.p)
+			return true
+	# The backpack is the last resort for high quality loot that the pocket could
+	# not house, and the pocket for ordinary loot the backpack could not.
+	var other := "backpack" if order[0]=="pocket" else "pocket"
+	if store_into(p,other,entry,evict):
+		remove_units(container,kind,units)
+		emit_effect("loot",p.p)
+		return true
+	return false
+
+# One arrival into one container: free cells, then a single tidy, then — for high
+# quality loot — one eviction of lower quality loot to open the room it needs.
+func store_into(p: Dictionary, name: String, entry: Dictionary, may_evict: bool = false) -> bool:
+	var target: Dictionary=p.get(name,{})
+	if target.is_empty():
+		return false
+	var plan := Catalog.place_arrival(target,entry)
+	if not bool(plan.ok):
+		if may_evict:
+			return demote(p,name,entry)
+		return false
+	var items: Array=Catalog.container_items(target)
+	if not plan.items.is_empty():
+		Catalog.commit_layout(items,plan.items)
+	items.append(plan.seat)
+	target["items"]=items
+	target["next"]=maxi(int(target.get("next",1)),1)+1
+	return true
+
+# Making room by hand. A container that is packed solid cannot be tidied into
+# having room: items have to leave, and how many is a question only the geometry
+# can answer — four single cells do not open a 2x2 hole, because a full 4x4 grid
+# minus four cells is still a shape with no 2x2 room in it. So the lowest quality
+# item steps out, the arrival is retried, and that repeats until it fits or the
+# container runs out of items it is allowed to touch. The candidate list is taken
+# once, up front, so an item that arrived during this tidy can never be evicted
+# by it. Each departure is handed to the backpack, or to the floor when even the
+# backpack is full; if it cannot be parked anywhere the whole attempt is rolled
+# back, so a click that cannot be satisfied looks like it did nothing at all and
+# never quietly destroys loot.
+func demote(p: Dictionary, name: String, entry: Dictionary) -> bool:
+	var container: Dictionary=p.get(name,{})
+	if container.is_empty():
+		return false
+	var haul: Array=Catalog.container_items(container).duplicate()
+	var bag: Dictionary=p.get("backpack",{})
+	var bag_before: Array=Catalog.container_items(bag).duplicate()
+	# The layout is worked out on a hypothetical copy, so the container itself is
+	# only touched once an arrangement is known to hold and every item it displaced
+	# has somewhere to go. Opening a 2x2 hole can take several departures, so the
+	# hypothetical haul keeps what earlier steps already gave up and the arrival is
+	# retried after each one.
+	var left: Array=haul.duplicate()
+	var taken: Array = []
+	for candidate in Catalog.eviction_order(container,entry):
+		var cut: Dictionary=take_from(left,str(candidate.kind))
+		if cut.is_empty():
+			continue
+		taken.append(cut)
+		var trial := Catalog.make_container([],Catalog.container_grid(container))
+		trial["items"]=left.duplicate()
+		var plan := Catalog.place_arrival(trial,entry)
+		if not bool(plan.ok):
+			continue
+		if not demote_park(p,taken):
+			break
+		# The trial already holds the hauled items in their new cells; the arriving
+		# item itself is the seat the plan handed back, so it is appended here.
+		var seated: Array=Catalog.container_items(trial)
+		seated.append(plan.seat)
+		container["items"]=seated
+		return true
+	container["items"]=haul
+	Catalog.restore_layout(bag,bag_before)
+	return false
+
+# Lifts one unit of the named kind out of a haul copy, for a layout trial.
+func take_from(left: Array, kind: String) -> Dictionary:
+	for i in left.size():
+		if str(left[i].kind)!=kind:
+			continue
+		var victim: Dictionary=left[i]
+		var move: Dictionary=victim.duplicate()
+		if int(victim.get("count",1))>1 and Catalog.stacks(kind):
+			victim["count"]=int(victim.get("count",1))-1
+			move["count"]=1
+		else:
+			left.remove_at(i)
+		return move
+	return {}
+
+# Hands every item a tidy displaced to the backpack, or to the floor when the bag
+# is full. The bag is put back when any one of them cannot be parked, so a tidy
+# that is abandoned never cost the player an item.
+func demote_park(p: Dictionary, moves: Array) -> bool:
+	var bag: Dictionary=p.get("backpack",{})
+	var bag_before: Array=Catalog.container_items(bag).duplicate()
+	for move in moves:
+		if not demote_move(p,move):
+			Catalog.restore_layout(bag,bag_before)
+			return false
+	return true
+
+# Lifts one unit of the named kind out of a container and returns it as a
+# standalone item. A stack gives up a single unit rather than the whole pile, so
+# a tidy never throws away more than the room it actually needs.
+func take_one(container: Dictionary, kind: String) -> Dictionary:
+	var list: Array=Catalog.container_items(container)
+	for i in list.size():
+		if str(list[i].kind)!=kind:
+			continue
+		var victim: Dictionary=list[i]
+		var move: Dictionary=victim.duplicate()
+		if int(victim.get("count",1))>1 and Catalog.stacks(kind):
+			victim["count"]=int(victim.get("count",1))-1
+			move["count"]=1
+		else:
+			list.remove_at(i)
+		return move
+	return {}
+
+# Where an evicted item ends up: the backpack first, because losing loot on the
+# floor is the last thing a tidy should ever do.
+func demote_move(p: Dictionary, move: Dictionary) -> bool:
+	var bag: Dictionary=p.get("backpack",{})
+	if not bag.is_empty():
+		var plan := Catalog.place_arrival(bag,move)
+		if bool(plan.ok):
+			var items: Array=Catalog.container_items(bag)
+			if not plan.items.is_empty():
+				Catalog.commit_layout(items,plan.items)
+			items.append(plan.seat)
+			bag["items"]=items
+			bag["next"]=maxi(int(bag.get("next",1)),1)+1
+			return true
+	# Nowhere to put it but the ground.
+	if str(move.kind)=="backpack":
+		return drop_item(p,"backpack",-1,str(move.get("quality",Catalog.DEFAULT_BAG_KEY)),move)
+	return drop_item(p,"backpack",-1,"",move)
+
 func remove_units(container: Dictionary, kind: String, units: int) -> void:
 	var list: Array=Catalog.container_items(container)
 	for i in list.size():
@@ -538,7 +802,7 @@ func remove_units(container: Dictionary, kind: String, units: int) -> void:
 # piece of field equipment. Entries are either a kind string or a dictionary
 # carrying the fields that make the loot itself.
 func chest_loot(bonus_relic: bool = false, backpack_chance: float = 0.3, floor_index: int = 0) -> Array:
-	var kinds: Array = ["scrap","crystal","medicine","ammo","charm"]
+	var kinds: Array = ["scrap","medicine","ammo","charm"]
 	var loot: Array = []
 	for i in rng.randi_range(2,4):
 		loot.append(kinds[rng.randi_range(0,kinds.size()-1)])
@@ -600,8 +864,13 @@ func loot_floor() -> int:
 		return clampi(Catalog.bag_grid(p.backpack).x-3,0,Catalog.BAG_TIERS.size()-1)
 	return 0
 
+# What a defeated enemy leaves. A blood crystal is not an item any more: it is a
+# tally the player collects by walking over it, so it is handed back as its own
+# kind and never reaches a container or a search window.
+const CRYSTAL_DROP := "crystals"
+
 func enemy_loot(e: Dictionary) -> Dictionary:
-	var entry := {"kind":"ammo" if rng.randf()<0.35 else "crystal"}
+	var entry := {"kind":"ammo" if rng.randf()<0.45 else CRYSTAL_DROP}
 	if e.type==3:
 		# The blood-scented hunter always leaves its pack behind, and often the
 		# weapon it was carrying.
@@ -615,6 +884,30 @@ func enemy_loot(e: Dictionary) -> Dictionary:
 	elif rng.randf()<0.18:
 		entry=Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(loot_floor()))
 	return entry
+
+# A crystal the player is standing on is simply absorbed: no key, no container and
+# no cell. The walk-over radius is deliberately small so it never races the F key
+# for a chest, and it only ever affects drops that hold nothing but crystals, so a
+# player who wants to keep them uncollected can still step around them.
+const CRYSTAL_REACH := 46.0
+
+func auto_pickup_crystals(p: Dictionary) -> int:
+	if p.get("status","")!="active":
+		return 0
+	var gathered := 0
+	for i in range(world_drops.size()-1,-1,-1):
+		var bag: Dictionary=world_drops[i]
+		var units := int(bag.get("crystals",0))
+		if units<=0 or not Catalog.container_items(bag).is_empty():
+			continue
+		if p.p.distance_to(bag.p)>=CRYSTAL_REACH:
+			continue
+		add_crystals(p,units)
+		gathered+=units
+		world_drops.remove_at(i)
+	if gathered>0:
+		emit_effect("loot",p.p)
+	return gathered
 
 
 func configure(config: Dictionary) -> void:
@@ -828,12 +1121,6 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p.invuln=maxf(p.invuln,0.4)
 				broadcast_combat({"kind":"dodge","p":p.p,"aim":p.dodge_dir,"id":id})
 				emit_effect("dash",p.p)
-		"burn":
-			if spend(p,"crystal"):
-				p.scent=maxf(0,p.scent-25)
-				p.sanity=minf(100,p.sanity+18)
-				emit_effect("skill",p.p)
-				broadcast_audio("burn",p)
 		"skill":
 			if p.skill<=0:
 				p.skill=18.0
@@ -869,6 +1156,12 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			equip_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
 		"unequip":
 			unequip_item(p,str(payload.get("type","weapon")),int(payload.get("index",0)))
+		"unequip_stow":
+			# The Ctrl+left take-off: the item goes to the backpack, and only when
+			# the backpack has no room is the pocket asked to tidy itself for it.
+			unequip_stow(p,str(payload.get("type","weapon")),int(payload.get("index",0)))
+		"unwear_bag":
+			wear_spare(p)
 		"equip_bag":
 			equip_bag(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
 		"bag_swap":
@@ -876,6 +1169,17 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			if selected>=0 and selected<p.bags.size():
 				if not Catalog.swap_bags(p,selected):
 					message.emit("背包空间不足：先腾空当前背包内的物资。")
+		"slot_put":
+			# A drag from a container into one of the three item sockets.
+			slot_put(p,int(payload.get("slot",0)),str(payload.get("from","backpack")),int(payload.get("index",-1)))
+		"slot_take":
+			# The way back out: the socket's item returns to the backpack, or to
+			# the pocket when the bag has no room for it.
+			slot_take(p,int(payload.get("slot",0)))
+		"slot_apply":
+			# The item bar's one key: spend a supply, or swap a weapon, a piece of
+			# gear or a backpack with what the Watcher is using right now.
+			slot_use(p,int(payload.get("slot",0)))
 		"search":
 			begin_search(p,int(payload.get("index",-1)))
 		"pickup":
@@ -883,6 +1187,9 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				message.emit("背包空间不足，无法拾取。")
 		"loot_take":
 			take_loot(p,str(payload.get("ref","")).to_int(),int(payload.get("index",-1)))
+		"auto_store":
+			# The silent twin of loot_take: a refusal says nothing at all.
+			auto_store(p,int(payload.get("index",-1)))
 		"drop":
 			drop_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
 		"bag_drop":
@@ -1047,10 +1354,11 @@ func apply_medkit(p: Dictionary) -> bool:
 	emit_effect("skill",p.p)
 	return true
 
-# One entry point for using a selected inventory item. The medkit and the blood
-# crystal run the same effects as the F and B hotkeys; a backpack, weapon or gear
-# piece goes to its own equip path. Consuming removes exactly the clicked entry,
-# so a stack of supplies never eats the wrong slot.
+# One entry point for using a selected inventory item. The medkit runs the same
+# effect as the heal path; a backpack, weapon or gear piece goes to its own equip
+# path. A blood crystal cannot be used — it is a tally, not an item — so one that
+# is still sitting in an older save stays exactly where it is. Consuming removes
+# exactly the clicked entry, so a stack of supplies never eats the wrong slot.
 func use_item(p: Dictionary, slot: String, index: int) -> bool:
 	if slot!="backpack" and slot!="pocket":
 		return false
@@ -1062,6 +1370,22 @@ func use_item(p: Dictionary, slot: String, index: int) -> bool:
 		return equip_bag(p,slot,index)
 	if Catalog.is_equipment(kind):
 		return equip_item(p,slot,index)
+	if not consume_kind(kind):
+		message.emit(Catalog.item_name(list[index])+"无法直接使用。")
+		return false
+	if not can_consume(p,kind):
+		return false
+	list.remove_at(index)
+	return apply_consumable(p,kind)
+
+# The two kinds that are spent rather than worn or carried home.
+func consume_kind(kind: String) -> bool:
+	return kind=="medicine" or kind=="ammo"
+
+# Whether spending one of these would actually do anything. A refusal explains
+# itself, because the player pressed a key and deserves to know why nothing
+# happened; the item stays where it is.
+func can_consume(p: Dictionary, kind: String) -> bool:
 	if kind=="medicine":
 		if p.status=="down" and not p.self_revive:
 			message.emit("本局的自救机会已经用过了。")
@@ -1069,22 +1393,206 @@ func use_item(p: Dictionary, slot: String, index: int) -> bool:
 		if p.hp>=p.max_hp:
 			message.emit("生命已满，急救针留着。")
 			return false
-		list.remove_at(index)
-		apply_medkit(p)
-		return true
-	if kind=="crystal":
-		list.remove_at(index)
-		p.scent=maxf(0,p.scent-25)
-		p.sanity=minf(100,p.sanity+18)
-		emit_effect("skill",p.p)
 		return true
 	if kind=="ammo":
-		list.remove_at(index)
+		return true
+	return false
+
+# The effect of one consumed supply, shared by the backpack, the pocket and the
+# item bar so all three spend a medkit exactly the same way.
+func apply_consumable(p: Dictionary, kind: String) -> bool:
+	if kind=="medicine":
+		apply_medkit(p)
+		broadcast_audio("heal",p)
+		return true
+	if kind=="ammo":
 		p.reserve+=48
 		emit_effect("loot",p.p)
 		return true
-	message.emit(Catalog.item_name(list[index])+"无法直接使用。")
 	return false
+
+# --- the item bar -----------------------------------------------------------
+# Three sockets that hold anything at all, however many cells it would need in a
+# backpack, and operate on one key: a medkit is spent, a weapon or a backpack
+# changes places with whatever the Watcher is using right now. A refusal is
+# silent and returns false, which is what lets the same key fall through to the
+# other jobs it has.
+func slot_use(p: Dictionary, index: int) -> bool:
+	var entry := item_slot(p,index)
+	if entry.is_empty():
+		return false
+	if not Catalog.slot_operable(str(entry.kind)):
+		return false
+	var kind := str(entry.kind)
+	if consume_kind(kind):
+		if not can_consume(p,kind):
+			return false
+		set_item_slot(p,index,{})
+		return apply_consumable(p,kind)
+	if kind=="backpack":
+		return slot_wear_bag(p,index)
+	return slot_wear_gear(p,index)
+
+# The pure item movement behind every socket interaction: put the item in slot
+# "index", hand whatever was there to the "from" container, and answer true only
+# when both halves worked out. The socket is only rewritten once the arrival is
+# known to fit, so a refusal leaves the bar exactly as it was.
+func place_in_slot(p: Dictionary, index: int, from: String, from_index: int, arrived: Dictionary) -> bool:
+	if from!="backpack" and from!="pocket":
+		return false
+	if from_index<0:
+		return false
+	var at := clampi(index,0,ITEM_SLOT_COUNT-1)
+	# A socket is not a grid: the coordinates the item was found with would only be
+	# stale data here, and the bar reads the footprint from the kind instead.
+	var seating := arrival_of(arrived)
+	var displaced := item_slot(p,at)
+	if not displaced.is_empty():
+		if not container_receive(p,from,displaced):
+			message.emit("背包与"+Catalog.POCKET_NAME+"都放不下换下来的物品。")
+			return false
+	set_item_slot(p,at,seating)
+	return true
+
+# Wears the weapon in a socket. Whatever was in hand travels into that socket:
+# the looted weapon if one is worn, otherwise the hero's temporary issue weapon,
+# so the swap is always a real trade rather than a free upgrade.
+func slot_wear_gear(p: Dictionary, index: int) -> bool:
+	var at := clampi(index,0,ITEM_SLOT_COUNT-1)
+	var entry := item_slot(p,at)
+	var equipped: Dictionary=p.get("equipped",empty_equipment())
+	if not equipped is Dictionary:
+		equipped=empty_equipment()
+	var kind := str(entry.kind)
+	var outgoing: Dictionary={}
+	var place := 0
+	if kind=="weapon":
+		var previous = equipped.get("weapon",{})
+		outgoing=previous.duplicate() if previous is Dictionary and not previous.is_empty() else {}
+		equipped["weapon"]=arrival_of(entry)
+		p["weapon"]=clampi(int(entry.get("weapon",p.weapon)),0,Catalog.WEAPONS.size()-1)
+		p["reload"]=0.0
+		p["combo"]=0
+		p["pending_strike"]=false
+	else:
+		equipped["gear"]=gear_slots(equipped)
+		place=Catalog.gear_slot(entry)
+		var slots: Array=equipped["gear"]
+		var previous_gear = slots[place]
+		outgoing=previous_gear.duplicate() if previous_gear is Dictionary and not previous_gear.is_empty() else {}
+		slots[place]=arrival_of(entry)
+	# The socket keeps the item's own fields, including the cells it would take up
+	# in a backpack, so the two sides of a swap are always the same kind of object.
+	set_item_slot(p,at,outgoing)
+	p["equipped"]=equipped
+	refresh_max_hp(p)
+	if kind=="weapon":
+		broadcast_audio("equip",p)
+		message.emit("%s 已换上 %s%s。" % [item_slot_name(at),Catalog.item_name(entry),"（临时武器）" if outgoing.is_empty() else "，换下的武器留在道具栏"])
+	else:
+		message.emit("%s 已换上 %s（%s槽），换下的留在道具栏。" % [item_slot_name(at),Catalog.item_name(entry),Catalog.gear_slot_name(entry)])
+	return true
+
+# A spare pack travelling as loot: the same shape store_loot() gives a backpack
+# found in a chest, so a socket, a cabinet entry and a container item are three
+# representations of one pack rather than three kinds of object.
+func bag_as_item(key: String) -> Dictionary:
+	return {"kind":"backpack","quality":key,"x":0,"y":0,"rot":false}
+
+# Wears the backpack in a socket. The one on the back becomes a spare in the
+# cabinet, exactly like the cabinet's own "equip" button, and the socket then
+# holds whatever was worn before — which is the spare pack itself.
+func slot_wear_bag(p: Dictionary, index: int) -> bool:
+	var at := clampi(index,0,ITEM_SLOT_COUNT-1)
+	var entry := item_slot(p,at)
+	var key := Catalog.bag_key_of_item(entry)
+	var worn := Catalog.bag_key(p.get("backpack",{}))
+	var candidate := Catalog.make_bag(key)
+	candidate["gw"]=Catalog.bag_grid(candidate).x
+	candidate["gh"]=Catalog.bag_grid(candidate).y
+	p.bags.append(candidate)
+	if not Catalog.swap_bags(p,p.bags.size()-1):
+		p.bags.remove_at(p.bags.size()-1)
+		message.emit("背包空间不足：先腾空当前背包内的物资。")
+		return false
+	# The pack that was just swapped out waits in the cabinet: the socket takes it
+	# as a loose pack item, which is why the two representations have to match.
+	var outgoing := bag_as_item(worn)
+	for i in range(p.bags.size()-1,-1,-1):
+		if str(p.bags[i].get("key",""))==worn:
+			outgoing=bag_as_item(str(p.bags[i].get("key","")))
+			p.bags.remove_at(i)
+			break
+	set_item_slot(p,at,outgoing)
+	var tier: Dictionary=Catalog.tier(key)
+	message.emit("%s 已换上 %s%s，换下的背包留在道具栏。" % [item_slot_name(at),tier.quality,tier.name])
+	return true
+
+# The same item stripped of the grid coordinates it had where it came from: a
+# socket is not a grid, so the coordinates would only be stale data.
+func arrival_of(entry: Dictionary) -> Dictionary:
+	var copy: Dictionary=entry.duplicate()
+	for field in ["x","y","rot"]:
+		copy.erase(field)
+	return copy
+
+# Takes one item out of a socket and into the backpack, or the pocket when the bag
+# is full. Returns false when both are full, leaving the bar untouched.
+func slot_take(p: Dictionary, index: int) -> bool:
+	var entry := item_slot(p,index)
+	if entry.is_empty():
+		return false
+	for name in ["backpack","pocket"]:
+		if container_receive(p,name,entry):
+			set_item_slot(p,index,{})
+			return true
+	message.emit("背包与"+Catalog.POCKET_NAME+"都放不下"+Catalog.item_name(entry)+"。")
+	return false
+
+# Puts a container item into a socket. One item in, one item out: whatever the
+# socket held goes back to the container the new item came from.
+func slot_put(p: Dictionary, index: int, from: String, from_index: int) -> bool:
+	if from!="backpack" and from!="pocket":
+		return false
+	var list: Array=Catalog.container_items(p[from])
+	if from_index<0 or from_index>=list.size():
+		return false
+	var entry: Dictionary=list[from_index]
+	# A stack leaves one unit behind rather than the whole pile: the bar holds a
+	# single item, so a box of five medkits gives up exactly one.
+	var units := int(entry.get("count",1))
+	var moved: Dictionary=entry.duplicate()
+	if units>1 and Catalog.stacks(str(entry.kind)):
+		moved["count"]=1
+	if not place_in_slot(p,index,from,from_index,moved):
+		return false
+	if units>1 and Catalog.stacks(str(entry.kind)):
+		entry["count"]=units-1
+	else:
+		list.remove_at(from_index)
+	return true
+
+# The one way anything arrives in a container from outside its own grid: a
+# seat worked out on a copy first, so "no room" costs nothing.
+func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
+	if name!="backpack" and name!="pocket":
+		return false
+	var kind := str(entry.get("kind",""))
+	if kind.is_empty() or not Catalog.can_hold(p[name],kind):
+		return false
+	var container: Dictionary=p[name]
+	var trial := Catalog.make_container([],Catalog.container_grid(container))
+	trial["items"]=Catalog.container_items(container).duplicate()
+	var plan := Catalog.place_arrival(trial,entry)
+	if not bool(plan.ok):
+		return false
+	var items: Array=Catalog.container_items(container)
+	if not plan.items.is_empty():
+		Catalog.commit_layout(items,plan.items)
+	items.append(plan.seat)
+	container["items"]=items
+	container["next"]=maxi(int(container.get("next",1)),1)+1
+	return true
 
 # Equipping is the point of the field equipment: the weapon in hand changes at
 # once and gear lands in its own slot. Whatever was worn before goes back into
@@ -1169,6 +1677,84 @@ func unequip_item(p: Dictionary, type: String, index: int = 0) -> bool:
 	var tail := "，换回 %s。" % Catalog.weapon_name(p.weapon) if dropped_weapon else "。"
 	message.emit("已卸下 "+Catalog.item_name(entry)+tail)
 	return true
+
+# The Ctrl+left take-off. The backpack is tried first because that is where loot
+# belongs; when it has no room the pocket is asked to tidy itself once, and when
+# even that fails nothing happens at all — the item stays worn rather than being
+# thrown on the ground. The socket is only emptied after the item is known to be
+# safe in a container, so a refusal can never leave the player half dressed.
+# Returns false for that silent refusal.
+func unequip_stow(p: Dictionary, type: String, index: int = 0) -> bool:
+	var worn := worn_entry(p,type,index)
+	if worn.is_empty():
+		return false
+	if not stow_worn(p,worn):
+		return false
+	return clear_worn_slot(p,type,index)
+
+# The item currently in a kit slot, or an empty dictionary when the slot is bare.
+# The temporary issue weapon is deliberately not a piece of worn loot: it lives in
+# p.weapon rather than in the socket, so an empty socket really is empty.
+func worn_entry(p: Dictionary, type: String, index: int = 0) -> Dictionary:
+	var equipped: Dictionary=p.get("equipped",empty_equipment())
+	if not equipped is Dictionary:
+		return {}
+	if type=="weapon":
+		var worn = equipped.get("weapon",{})
+		return worn.duplicate() if worn is Dictionary and not worn.is_empty() else {}
+	var gear: Array=gear_slots(equipped)
+	var piece = gear[clampi(index,0,Catalog.GEAR.size()-1)]
+	return piece.duplicate() if piece is Dictionary and not piece.is_empty() else {}
+
+# Empties a kit slot, putting the temporary issue weapon back in hand when the
+# looted weapon it replaced comes off.
+func clear_worn_slot(p: Dictionary, type: String, index: int = 0) -> bool:
+	var equipped: Dictionary=p.get("equipped",empty_equipment())
+	if not equipped is Dictionary:
+		return false
+	if type=="weapon":
+		equipped["weapon"]={}
+		p["equipped"]=equipped
+		restore_issue_weapon(p)
+	else:
+		equipped["gear"]=gear_slots(equipped)
+		equipped["gear"][clampi(index,0,Catalog.GEAR.size()-1)]={}
+		p["equipped"]=equipped
+	refresh_max_hp(p)
+	return true
+
+# Places an item taken off the player: the backpack first, then the pocket after a
+# single tidy. The layout is worked out on a copy first, so "no room anywhere"
+# costs the player nothing, and the copy's answer is what gets committed — the
+# item is seated with its own fields, not rebuilt from its kind.
+func stow_worn(p: Dictionary, item: Dictionary) -> bool:
+	for name in ["backpack","pocket"]:
+		var container: Dictionary=p[name]
+		var trial := Catalog.make_container([],Catalog.container_grid(container))
+		trial["items"]=Catalog.container_items(container).duplicate()
+		var plan := Catalog.place_arrival(trial,item)
+		if not bool(plan.ok):
+			continue
+		var items: Array=Catalog.container_items(container)
+		if not plan.items.is_empty():
+			Catalog.commit_layout(items,plan.items)
+		items.append(plan.seat)
+		container["items"]=items
+		container["next"]=maxi(int(container.get("next",1)),1)+1
+		return true
+	return false
+
+# Ctrl+left on the backpack socket takes the worn pack off in order to wear a
+# spare, which is the same swap the cabinet buttons already perform: the old pack
+# becomes a spare and the chosen one goes on the player's back. Silent when there
+# is no other pack to wear, or when the new pack could not hold the carried loot.
+func wear_spare(p: Dictionary) -> bool:
+	var cabinet: Array=p.get("bags",[])
+	var worn := str(p.get("backpack",{}).get("key",""))
+	for i in cabinet.size():
+		if str(cabinet[i].get("key",""))!=worn:
+			return Catalog.swap_bags(p,i)
+	return false
 
 # Three ordered gear slots, rebuilt defensively because the whole player
 # dictionary travels through ENet snapshots.
@@ -1334,6 +1920,7 @@ func simulate(dt: float) -> void:
 			p.aim=cmd.get("aim",Vector2.RIGHT)
 		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed+equipment_speed(p)
 		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
+		auto_pickup_crystals(p)
 		p.scent=move_toward(p.scent,float(crystals_carried(p)*8),dt*0.5)
 		if raid.phase not in ["choice","complete"]:
 			p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
@@ -1366,7 +1953,10 @@ func simulate(dt: float) -> void:
 				if map_id=="city": ruins.sites[0]["boss_defeated"]=true
 			elif rng.randf()<0.42 or e.type==3:
 				var loot := enemy_loot(e)
-				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
+				if str(loot.kind)==CRYSTAL_DROP:
+					world_drops.append(crystal_drop(e.p,rng.randi_range(1,3)))
+				else:
+					world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
 			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1)})
 			enemies.remove_at(i)
@@ -1528,13 +2118,22 @@ func broadcast_combat(data: Dictionary) -> void:
 func remote_combat(data: Dictionary) -> void:
 	combat_event.emit(data)
 
+# Dropping the key, or walking away from the thing it was held on, ends a channel
+# without anything happening. The HUD reads the same two fields, so the ring goes
+# away with it.
+func channel_cancel(p: Dictionary) -> void:
+	p.channel=0
+	p.target=""
+
 func interact(p: Dictionary, held: bool, dt: float) -> void:
 	if not held:
-		p.channel=0
-		p.target=""
+		channel_cancel(p)
 		return
 	var target := ""
 	var seconds := 0.25
+	# E is the world's key: everything it does is held down, because everything it
+	# does takes seconds and is worth interrupting. The gate comes first so a party
+	# standing on it travels together rather than one Watcher lighting a shrine.
 	if can_travel() and p.p.distance_to(portal_position())<85 and party_at_gate():
 		target="portal:0"
 		seconds=1.5
@@ -1556,13 +2155,16 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 				seconds=3.0
 				break
 	if target.is_empty():
-		p.channel=0
-		p.target=""
+		channel_cancel(p)
 		return
+	# The countdown the HUD draws needs to know what the ring is counting to.
+	p["channel_total"]=seconds
+	p["channel_key"]=str(p.get("hits_taken",0))
 	if p.target!=target:
 		p.channel=0
 		p.target=target
-	p.channel+=dt
+	else:
+		p.channel+=dt
 	if p.channel<seconds:
 		return
 	p.channel=0
@@ -1794,6 +2396,11 @@ func hurt(p: Dictionary, damage: float) -> void:
 	p.hp-=damage
 	p.invuln=0.3
 	p.channel=0
+	# Taking a hit is what a channel counts against: the key-held ring restarts
+	# because channel is cleared here, and the standing ring restarts because this
+	# tally no longer matches the one it recorded. Every source of damage goes
+	# through this one function, so nothing can interrupt one and not the other.
+	p["hits_taken"]=int(p.get("hits_taken",0))+1
 	emit_effect("hurt",p.p)
 	if p.hp<=0:
 		down(p)

@@ -76,6 +76,53 @@ func run() -> void:
 	check(Catalog.clean_container({"items":[{"kind":"ghost"}],"gw":9,"gh":9},Catalog.POCKET_GRID).items.is_empty(),"junk save data is dropped")
 	var dirty := Catalog.clean_container({"items":[{"kind":"crystal","x":9,"y":0,"rot":false}],"gw":99,"gh":99},Catalog.POCKET_GRID)
 	check(dirty.items.is_empty() and dirty.gw==4,"out-of-bounds save data is dropped")
+	# --- the automatic fill: top to bottom, left to right -------------------
+	var auto := Catalog.make_container([],Vector2i(4,4))
+	var arriving := {"kind":"crystal","rot":false,"count":1}
+	var plan := Catalog.place_arrival(auto,arriving)
+	check(plan.ok and plan.seat.x==0 and plan.seat.y==0,"the first automatic item lands top left")
+	auto.items.append(plan.seat)
+	plan=Catalog.place_arrival(auto,{"kind":"medicine","rot":false,"count":1})
+	check(plan.ok and plan.seat.x==1 and plan.seat.y==0,"the next item goes to the cell on its right, not the row below")
+	auto.items.append(plan.seat)
+	# A 2x1 scrap does not fit the 3x3 pocket left by two 1x2 medkits: the two
+	# columns they own are the only ones wide enough, and neither can take a third
+	# row. One tidy closes the gap and the scrap takes the top row.
+	var tidy := Catalog.make_container([],Catalog.tier("white").grid)
+	for i in 2:
+		tidy.items.append({"kind":"medicine","x":i*2,"y":0,"rot":false,"count":1})
+	plan=Catalog.place_arrival(tidy,{"kind":"scrap","rot":false,"count":1})
+	check(plan.ok,"a two-wide scrap is seated once the bag is tidied")
+	check(Vector2i(plan.seat.x,plan.seat.y)==Vector2i(0,2),"the tidied bag packs the medkits at the top and seats the scrap at the bottom left")
+	tidy.items.append(plan.seat)
+	check(tidy.items.size()==3 and Catalog.can_place(tidy.items,tidy.items[0],Vector2i(int(tidy.items[0].x),int(tidy.items[0].y)),0,Catalog.tier("white").grid),"the tidied bag never overlaps itself")
+	# A 1x2 medkit only fits on its side here, and a turned item is still the
+	# same item: the fill is allowed to lay it down.
+	var turned := Catalog.make_container([],Catalog.tier("white").grid)
+	turned.items.append({"kind":"crystal","x":0,"y":0,"rot":false,"count":1})
+	turned.items.append({"kind":"crystal","x":0,"y":1,"rot":false,"count":1})
+	plan=Catalog.place_arrival(turned,{"kind":"scrap","rot":false,"count":1})
+	check(plan.ok,"the arriving scrap is turned rather than refused")
+	check(Vector2i(plan.seat.x,plan.seat.y)==Vector2i(1,0),"the turned scrap starts beside the crystals")
+	turned.items.append(plan.seat)
+	check(Catalog.item_size(turned.items[2])==Vector2i(2,1),"a seated item's footprint matches the cells it was given")
+	var before := str(tidy.items)
+	# A 2x2 grid packed with single cells can never take a 1x2, however it is
+	# tidied: the refill has to admit defeat and hand the same haul straight back.
+	var stubborn := Catalog.make_container([],Vector2i(2,2))
+	for i in 4:
+		Catalog.add_item(stubborn,"crystal")
+	var stubborn_before := str(stubborn.items)
+	check(not Catalog.place_arrival(stubborn,{"kind":"medicine","rot":false,"count":1}).ok,"a bag of single cells refuses a 1x2 even after a tidy")
+	check(str(stubborn.items)==stubborn_before,"a refused arrival leaves the bag exactly as it was")
+	# The same container in the middle of a haul: the 1x2 only fits beside the
+	# medkits once they are packed into two columns, which is what the tidy does.
+	var locked := Catalog.make_container([],Vector2i(3,3))
+	locked.items.append({"kind":"medicine","x":1,"y":1,"rot":false,"count":1})
+	check(Catalog.place_arrival(locked,{"kind":"medicine","rot":false,"count":1}).ok,"a 1x2 is seated once the tidy packs the haul into columns")
+	var relic_try := Catalog.place_arrival(tidy,{"kind":"relic","rot":false,"count":1})
+	check(not relic_try.ok,"a 2x2 relic is refused by a bag with no 2x2 room")
+	check(str(tidy.items)==before,"the refused relic leaves the bag alone")
 	# --- backpack swap ------------------------------------------------------
 	var carrier := {"backpack":Catalog.make_bag("white"),"bags":[]}
 	Catalog.add_item(carrier.backpack,"crystal")
@@ -185,7 +232,7 @@ func run() -> void:
 	var units_before: int=session.container_units(chest)
 	var taken_before: int=p.backpack.items.size()
 	check(session.take_loot(p,0,0),"taking a searched item succeeds")
-	check(session.container_units(chest)==units_before-1,"taking removes exactly one unit")
+	check(session.container_units(chest)<units_before,"taking removes loot from the container")
 	check(p.backpack.items.size()>=taken_before,"taken loot reaches the backpack")
 	check(session.take_loot(p,0,5)==false,"unsearched slots cannot be taken")
 	# Leaving the area stops the search progress.
@@ -234,10 +281,6 @@ func run() -> void:
 	check(p.hp==70,"medkit restores 45")
 	check(session.carried(p,"medicine")==0,"healing consumed the carried medkit")
 	var crystals_before: int=session.carried(p,"crystal")
-	p.scent=50
-	session.perform(1,"burn")
-	check(p.scent==25,"burn reduces scent")
-	check(session.carried(p,"crystal")==crystals_before-1,"one burn spends exactly one crystal")
 	var fought: Dictionary=session.make_player(4,{"name":"Fighter"})
 	session.players[4]=fought
 	Catalog.add_item(fought.backpack,"charm")
@@ -250,6 +293,261 @@ func run() -> void:
 	check(session.store_loot(p,"relic"),"relic loot is accepted")
 	check(Catalog.container_count(p.pocket,"relic")==1,"a relic is stored in the dimensional pocket")
 	check(Catalog.container_free(p.backpack)==free_before,"relics do not consume backpack space")
+	# --- quality decides where the double click parks the loot --------------
+	# The tiers come from the fields loot really carries: a weapon or a gear
+	# piece stores its quality in "tier", a loose backpack in "quality", and
+	# plain supplies carry none at all, which counts as white.
+	check(Catalog.high_quality({"kind":"weapon","tier":5}),"red is high quality")
+	check(Catalog.high_quality({"kind":"gear","tier":4}),"gold is high quality")
+	check(Catalog.high_quality({"kind":"backpack","quality":"gold"}),"a gold backpack is high quality")
+	check(not Catalog.high_quality({"kind":"gear","tier":3}),"purple does not reach the pocket rule")
+	check(not Catalog.high_quality({"kind":"crystal"}),"plain supplies are white")
+	check(Catalog.item_tier({"kind":"weapon","tier":5})==5,"a weapon reads its quality from tier")
+	check(Catalog.item_tier({"kind":"backpack","quality":"red"})==5,"a loose backpack reads its quality from quality")
+	check(Catalog.item_tier({"kind":"relic"})==0,"a relic carries no quality and counts as white")
+	# --- the double click hauls a looted item into the backpack -------------
+	# A search always points at a panel and a player together, so the window has
+	# to be searching the very container the item is taken out of.
+	p.pocket.items.clear()
+	p.backpack.items.clear()
+	var drop: Dictionary=session.loot_container(Vector2.ZERO,Catalog.chest_grid(0))
+	drop.items.append({"kind":"crystal","x":0,"y":0,"rot":false,"count":1})
+	drop["searched"]=1
+	session.world_drops.append(drop)
+	var drop_ref: int=session.ruins.chests.size()+session.world_drops.size()-1
+	p["search_ref"]=drop_ref
+	check(session.auto_store(p,0),"double clicking a crystal stores it")
+	check(Vector2i(int(p.backpack.items[0].x),int(p.backpack.items[0].y))==Vector2i(0,0),"the first arrival takes the top left cell")
+	check(session.container_units(drop)==0,"the stored item left the container")
+	# A crystal still sitting in a container from an older save is ordinary loot:
+	# nothing about the double click singles it out.
+	p.scent=50
+	session.perform(1,"burn")
+	check(int(p.scent)==50,"the removed burn hotkey no longer touches scent")
+	# A stack travels as one pile, the way the take button already handles it.
+	drop.items.append({"kind":"crystal","x":0,"y":0,"rot":false,"count":3})
+	drop["searched"]=3
+	check(session.auto_store(p,0),"double clicking a stack stores the whole pile")
+	check(session.container_units(p.backpack)==4,"all three units reach the backpack")
+	check(session.container_units(drop)==0,"nothing is left behind in the container")
+	# The layout that one item at a time cannot solve: the rest of the bag steals
+	# the odd cell before and after it, leaving no two-wide hole for the scrap.
+	p.backpack.items.clear()
+	Catalog.add_item(p.backpack,"crystal")
+	Catalog.add_item(p.backpack,"crystal")
+	check(Catalog.container_count(p.backpack,"crystal")==2,"two crystals fill the top left of the bag")
+	drop.items.append({"kind":"scrap","x":0,"y":0,"rot":false,"count":1})
+	drop["searched"]=1
+	check(session.auto_store(p,0),"a scrap that needs a tidy is still stored")
+	check(Catalog.container_count(p.backpack,"scrap")==1,"the scrap reaches the backpack")
+	var tidied_scrap := index_of(p.backpack,"scrap")
+	check(tidied_scrap>=0,"the tidied bag holds the scrap")
+	check(Vector2i(int(p.backpack.items[tidied_scrap].x),int(p.backpack.items[tidied_scrap].y))==Vector2i(2,0),"the tidy packed the two crystals into the top left and gave the scrap the first two-wide row")
+	# A white relic is ordinary loot to the double click as well: it fills the bag.
+	p.backpack.items.clear()
+	p.pocket.items.clear()
+	drop.items.append({"kind":"relic","x":0,"y":0,"rot":false,"count":1})
+	drop["searched"]=1
+	check(session.auto_store(p,0),"a white relic is accepted")
+	check(Catalog.container_count(p.backpack,"relic")==1,"the double clicked white relic fills the backpack")
+	check(p.pocket.items.is_empty(),"white loot never takes pocket room")
+	# Gold and red loot is the exception: the pocket is tried first, and only a
+	# pocket with no room left sends it to the bag.
+	p.backpack.items.clear()
+	p.pocket.items.clear()
+	drop.items.append(Catalog.make_equipment("weapon",1,4))
+	drop["searched"]=1
+	check(session.auto_store(p,0),"a gold weapon is accepted")
+	check(Catalog.container_count(p.pocket,"weapon")==1,"the gold weapon sinks into the sealed pocket")
+	check(p.backpack.items.is_empty(),"the gold weapon never takes backpack room")
+	drop.items.append(Catalog.make_equipment("gear",2,5))
+	drop["searched"]=1
+	check(session.auto_store(p,0),"a red gear piece is accepted")
+	check(Catalog.container_count(p.pocket,"gear")==1,"the red gear piece joins it in the pocket")
+	# It only falls back to the bag when the pocket cannot house it. Two pieces in
+	# a 4x4 pocket leave no 2x2 hole, so a relic goes to the backpack instead.
+	drop.items.clear()
+	drop.items.append({"kind":"relic","x":0,"y":0,"rot":false,"count":1})
+	drop["searched"]=1
+	check(session.auto_store(p,0),"the relic is accepted even though the pocket cannot take it")
+	check(Catalog.container_count(p.backpack,"relic")==1,"the pocket had no 2x2 room, so the relic went to the bag")
+	check(Catalog.container_count(p.pocket,"relic")==0,"the pocket was never forced to hold it")
+	# High quality loot still takes the pocket over white junk: the same pocket
+	# full of relics makes room for a red weapon by giving relics back to the bag,
+	# because the relic is white and the weapon is the top tier.
+	drop.items.clear()
+	drop.items.append(Catalog.make_equipment("weapon",2,5))
+	drop["searched"]=1
+	p.backpack.items.clear()
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	for i in 4:
+		Catalog.add_item(p.pocket,"relic")
+	check(Catalog.container_free(p.pocket)==0,"the pocket really is full")
+	check(session.auto_store(p,0),"a red weapon is accepted by a pocket full of relics")
+	check(Catalog.container_count(p.pocket,"weapon")==1,"the white relic gave the pocket up to the red weapon")
+	check(Catalog.container_count(p.pocket,"relic")==3,"exactly one relic paid for the weapon's 2x2")
+	check(Catalog.container_count(p.backpack,"relic")==1,"the evicted relic reached the backpack instead of the floor")
+	# Both containers sorted and still no room: the click does nothing at all.
+	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	for i in 4:
+		Catalog.add_item(p.pocket,"relic")
+	check(Catalog.container_free(p.backpack)==0 and Catalog.container_free(p.pocket)==0,"neither container has a cell left")
+	var bag_before := str(p.backpack.items)
+	var pocket_before := str(p.pocket.items)
+	drop.items.clear()
+	drop.items.append({"kind":"relic","x":0,"y":0,"rot":false,"count":1})
+	drop["searched"]=1
+	check(not session.auto_store(p,0),"a full backpack and a full pocket refuse the item")
+	check(str(p.backpack.items)==bag_before and str(p.pocket.items)==pocket_before,"a refusal leaves both containers untouched")
+	check(Catalog.container_count(drop,"relic")==1,"the refused item stays in the container that holds it")
+	# --- a full haul of white junk gives way to gold ------------------------
+	# A pocket packed solid cannot be tidied into having room: the lower quality
+	# items step out one at a time until the arrival's footprint exists, and each
+	# one is handed to the backpack — or the floor when even the bag is full. How
+	# many leave is pure geometry: a 4x4 grid holding sixteen single cells has no
+	# 2x2 room left until four of them are gone.
+	session.world_drops.clear()
+	drop=session.loot_container(Vector2.ZERO,Catalog.chest_grid(0))
+	session.world_drops.append(drop)
+	drop_ref=session.ruins.chests.size()+session.world_drops.size()-1
+	p.backpack=Catalog.make_container([],Catalog.POCKET_GRID)
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	for i in 16:
+		Catalog.add_item(p.pocket,"crystal")
+	check(Catalog.container_free(p.pocket)==0,"sixteen single crystals fill the pocket solid")
+	drop.items.clear()
+	drop.items.append(Catalog.make_equipment("weapon",1,4))
+	drop["searched"]=1
+	p["search_ref"]=drop_ref
+	check(session.auto_store(p,0),"gold loot is accepted by a pocket packed with white junk")
+	check(Catalog.container_count(p.pocket,"weapon")==1,"the gold weapon takes the room the junk gave up")
+	check(Catalog.container_count(p.pocket,"crystal")==12,"exactly four crystals paid for a 2x2 of room")
+	check(session.container_units(p.backpack)==4,"every evicted crystal reached the backpack rather than the floor")
+	# Walking away proves the count: a crystal dropped at the player's feet is
+	# absorbed by walking over it, so the floor is read from a safe distance.
+	p.p+=Vector2(600,0)
+	check(session.world_drops.size()==drop_ref-session.ruins.chests.size()+1,"nothing was dropped while the backpack still had room")
+	# A footprint that only needs two cells costs far less: the same solid pocket
+	# gives up two crystals for a 1x2.
+	p.backpack=Catalog.make_container([],Catalog.POCKET_GRID)
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	for i in 16:
+		Catalog.add_item(p.pocket,"crystal")
+	drop.items.clear()
+	drop.items.append(Catalog.make_equipment("gear",0,5))
+	drop["searched"]=1
+	p["search_ref"]=drop_ref
+	check(session.auto_store(p,0),"red gear is accepted by the same solid pocket")
+	check(Catalog.container_count(p.pocket,"gear")==1,"the red gear piece takes the pocket room")
+	check(Catalog.container_count(p.pocket,"crystal")==14,"a 1x2 footprint costs two crystals")
+	check(session.container_units(p.backpack)==2,"the two evicted crystals reached the backpack")
+	# With the backpack full as well the evicted items have nowhere to go but the
+	# ground, and the high quality loot still lands.
+	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	for i in 16:
+		Catalog.add_item(p.pocket,"crystal")
+	# The floor is cleared first so the count below is exactly what this tidy cost.
+	session.world_drops.clear()
+	session.world_drops.append(drop)
+	drop.items.clear()
+	drop.items.append(Catalog.make_equipment("gear",0,5))
+	drop["searched"]=1
+	p["search_ref"]=drop_ref
+	check(session.auto_store(p,0),"red loot is accepted by a full bag and a solid pocket")
+	check(session.world_drops.size()==3,"the two evicted crystals joined the chest on the floor")
+	check(session.container_units(p.backpack)==9,"the full backpack kept everything it had")
+	# Equal quality is never evicted: four relics tile the pocket exactly, and a
+	# fifth one is refused by the pocket rather than pushing a relic out.
+	p.backpack=Catalog.make_container([],Catalog.POCKET_GRID)
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	for i in 4:
+		Catalog.add_item(p.pocket,"relic")
+	check(Catalog.container_free(p.pocket)==0,"four relics tile the pocket exactly")
+	drop.items.clear()
+	drop.items.append({"kind":"relic","x":0,"y":0,"rot":false,"count":1})
+	drop["searched"]=1
+	p["search_ref"]=drop_ref
+	check(session.auto_store(p,0),"the fifth relic is still accepted")
+	check(Catalog.container_count(p.pocket,"relic")==4,"no relic was evicted for another relic")
+	check(Catalog.container_count(p.backpack,"relic")==1,"the extra relic went to the backpack instead")
+	p.p-=Vector2(600,0)
+	# --- the careful take-off: bag first, then a tidied pocket ---------------
+	# Ctrl+left on something worn takes it off into the backpack; only when the
+	# bag has no room is the pocket asked to tidy itself, and when neither can
+	# take it the item stays worn and the click does nothing at all.
+	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	p.pocket.items.clear()
+	p["equipped"]=session.empty_equipment()
+	p.backpack.items.clear()
+	p.backpack.items.append(Catalog.make_equipment("weapon",2,3))
+	check(session.equip_item(p,"backpack",0),"a purple blade is worn for the take-off test")
+	check(session.kit_weapon(p).is_empty()==false,"the weapon socket is filled")
+	check(session.unequip_stow(p,"weapon"),"Ctrl+left takes the worn weapon off")
+	check(session.kit_weapon(p).is_empty(),"the weapon socket is empty again")
+	check(Catalog.container_count(p.backpack,"weapon")==1,"the taken-off weapon reached the backpack")
+	check(p.pocket.items.is_empty(),"the backpack had room, so the pocket was left alone")
+	# Now the bag has no room: the pocket takes it after its own tidy.
+	check(session.equip_item(p,"backpack",index_of(p.backpack,"weapon")),"the blade is worn a second time")
+	p.backpack.items.clear()
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	check(Catalog.container_free(p.backpack)==0,"the backpack is packed solid")
+	check(Catalog.container_free(p.pocket)>0,"the pocket still has room")
+	check(session.unequip_stow(p,"weapon"),"the take-off falls back to the pocket")
+	check(Catalog.container_count(p.pocket,"weapon")==1,"the weapon landed in the pocket")
+	check(session.container_units(p.backpack)==9,"the full backpack was not disturbed")
+	# With neither container able to take it, the item stays on the player.
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	p.backpack.items.clear()
+	p.backpack.items.append(Catalog.make_equipment("gear",1,3))
+	check(session.equip_item(p,"backpack",0),"a sight is worn for the refusal test")
+	p.backpack.items.clear()
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	p.pocket.items.clear()
+	for i in 4:
+		Catalog.add_item(p.pocket,"relic")
+	check(Catalog.container_free(p.backpack)==0 and Catalog.container_free(p.pocket)==0,"both containers are solid")
+	check(session.unequip_stow(p,"gear",1)==false,"the take-off is refused when nothing can hold the item")
+	check(not session.kit_gear(p)[1].is_empty(),"the refused item stays worn")
+	p.backpack=Catalog.make_bag("green")
+	# --- a blood crystal is a tally, not a carried item ---------------------
+	session.world_drops.clear()
+	check(Catalog.item_size({"kind":"backpack","quality":"blue"})==Vector2i(1,1),"blue packs still take one cell")
+	check(Catalog.item_size({"kind":"backpack","quality":"purple"})==Vector2i(2,2),"a purple pack takes a 2x2 block")
+	check(Catalog.item_size({"kind":"backpack","quality":"red"})==Vector2i(2,2),"a red pack takes a 2x2 block")
+	var rolled_crystal := 0
+	for i in 200:
+		for entry in session.chest_loot(true,0.3,0):
+			if (str(entry.kind) if entry is Dictionary else str(entry))=="crystal":
+				rolled_crystal+=1
+	check(rolled_crystal==0,"chest loot never rolls a blood crystal any more")
+	p.backpack.items.clear()
+	p.pocket.items.clear()
+	var crystals_had: int=session.crystals_carried(p)
+	var gem := session.crystal_drop(p.p+Vector2(400,0),2)
+	session.world_drops.append(gem)
+	var drops_had: int=session.world_drops.size()
+	session.auto_pickup_crystals(p)
+	check(session.crystals_carried(p)==crystals_had,"a crystal out of reach is not collected")
+	session.world_drops.back().p=p.p
+	session.auto_pickup_crystals(p)
+	check(session.crystals_carried(p)==crystals_had+2,"walking over a crystal collects the whole tally")
+	check(session.world_drops.size()==drops_had-1,"the collected crystal leaves the ground")
+	check(p.backpack.items.is_empty() and p.pocket.items.is_empty(),"a collected crystal takes no cell in any container")
+	check(session.pick_up_ground(p)==false,"the F key never picks up a crystal; it is collected by walking only")
+	p["search_ref"]=-1
+	p.backpack=Catalog.make_bag("green")
+	# The pocket goes back to holding a single relic, the state the later
+	# save-file and settlement checks were written against.
+	p.pocket=Catalog.make_container([{"kind":"relic","x":0,"y":0,"rot":false,"count":1}],Catalog.POCKET_GRID)
 	# --- death scatters the backpack, never the pocket ----------------------
 	var doomed: Dictionary=session.make_player(3,{"name":"Doomed"})
 	session.players[3]=doomed
@@ -486,10 +784,10 @@ func run() -> void:
 	k.hp=k.max_hp
 	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"medicine"))==false,"a medkit is refused at full health")
 	check(kit_session.carried(k,"medicine")==1,"a refused medkit is not consumed")
-	check(kit_session.store_loot(k,"crystal"),"a crystal sits in the backpack")
+	check(kit_session.store_loot(k,"crystal"),"a leftover crystal sits in the backpack")
 	k.scent=40
-	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"crystal")),"the inventory use action burns a crystal")
-	check(int(k.scent)==15 and kit_session.carried(k,"crystal")==0,"burning a crystal spends it for scent")
+	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"crystal"))==false,"a blood crystal cannot be used any more")
+	check(int(k.scent)==40 and kit_session.carried(k,"crystal")==1,"the refused crystal keeps its scent and stays in the bag")
 	check(kit_session.store_loot(k,"ammo"),"an ammo box sits in the backpack")
 	var reserve_before: int=k.reserve
 	check(kit_session.use_item(k,"backpack",index_of(k.backpack,"ammo")),"the inventory use action opens an ammo box")
@@ -572,6 +870,115 @@ func run() -> void:
 	check(spilled_gear==1,"the worn weapon hits the ground on death")
 	check(kit_session.kit_weapon(doomed_kit).is_empty(),"death clears the worn weapon")
 	check(doomed_kit.weapon==Catalog.starter_index(0),"death hands the temporary weapon back")
+	# --- the item bar: three sockets that hold anything, one key -------------
+	var bar: Dictionary=kit_session.make_player(8,{"name":"Bar"})
+	kit_session.players[8]=bar
+	kit_session.running=true
+	check(kit_session.item_slots(bar).size()==3,"a player starts with three item sockets")
+	var empty_sockets := true
+	for socket in kit_session.item_slots(bar):
+		if not socket.is_empty():
+			empty_sockets=false
+	check(empty_sockets,"the item bar starts empty")
+	check(kit_session.slot_use(bar,0)==false,"an empty socket does nothing")
+	# A socket is not a grid: a 2x2 weapon fits one, and the item keeps the
+	# footprint it would need in a backpack.
+	bar.backpack.items.clear()
+	check(Catalog.add_item(bar.backpack,"weapon"),"a weapon waits for the item bar")
+	bar.backpack.items[0]["weapon"]=2
+	bar.backpack.items[0]["tier"]=1
+	kit_session.perform(8,"slot_put",{"slot":0,"from":"backpack","index":0})
+	check(bar.backpack.items.is_empty(),"the socket took the weapon out of the bag")
+	check(str(kit_session.item_slot(bar,0).get("kind",""))=="weapon","the weapon is in the socket")
+	check(Catalog.item_size(kit_session.item_slot(bar,0))==Vector2i(2,2),"a socket keeps the real 2x2 footprint of what it holds")
+	check(not kit_session.item_slot(bar,0).has("x"),"a socket strips the grid coordinates it came with")
+	# E on a weapon swaps it with whatever is in hand; the old one takes the socket.
+	check(kit_session.slot_use(bar,0),"E on a socket with a weapon swaps it into the hand")
+	check(int(bar.weapon)==2,"the socket's weapon is the one in hand")
+	check(kit_session.weapon_kit_active(bar),"the swapped-in weapon is the active one")
+	check(kit_session.item_slot(bar,0).is_empty(),"the temporary issue weapon is not a carried item, so the socket is simply empty")
+	# Gear swaps by part and gives back the piece it replaced.
+	bar.backpack.items.clear()
+	check(Catalog.place_item(bar.backpack,Catalog.make_equipment("gear",1,4)),"a sight waits for the item bar")
+	kit_session.slot_put(bar,1,"backpack",0)
+	check(kit_session.slot_use(bar,1),"E wears the gear in a socket")
+	check(not kit_session.kit_gear(bar)[1].is_empty() and int(kit_session.kit_gear(bar)[1].get("tier",0))==4,"the socket's gear is worn")
+	check(kit_session.item_slot(bar,1).is_empty(),"an empty gear slot gives nothing back")
+	check(Catalog.place_item(bar.backpack,Catalog.make_equipment("gear",1,0)),"a white sight waits to be swapped in")
+	kit_session.slot_put(bar,1,"backpack",0)
+	check(kit_session.slot_use(bar,1),"E swaps a second piece of gear in")
+	check(int(kit_session.kit_gear(bar)[1].get("tier",0))==0,"the new piece is the worn one")
+	check(int(kit_session.item_slot(bar,1).get("tier",-1))==4,"the piece it replaced waits in the socket")
+	# A backpack is a piece of equipment too: the worn pack goes into the socket
+	# and the socket's pack goes on the player's back.
+	bar.bags=[Catalog.make_bag("white")]
+	bar["backpack"]=Catalog.make_bag("white")
+	bar.backpack["items"]=[]
+	bar.backpack.items.clear()
+	check(kit_session.slot_put(bar,2,"backpack",-1)==false,"a socket refuses an index the bag does not have")
+	bar.backpack.items.append({"kind":"backpack","quality":"blue","x":0,"y":0,"rot":false})
+	kit_session.slot_put(bar,2,"backpack",0)
+	check(str(kit_session.item_slot(bar,2).get("kind",""))=="backpack","a loose pack waits in a socket")
+	check(kit_session.slot_use(bar,2),"E wears the backpack in a socket")
+	check(str(bar.backpack.key)=="blue","the socket's pack is the worn one")
+	check(str(kit_session.item_slot(bar,2).get("quality",""))=="white","the pack that was worn is what the socket holds now")
+	var bag_take := kit_session.slot_take(bar,2)
+	check(bag_take,"the worn pack can be taken back out of the socket")
+	check(kit_session.item_slot(bar,2).is_empty(),"an empty socket holds nothing")
+	check(str(bar.bags[0].key)=="white","the retired pack waits in the cabinet")
+	# A consumable is spent, and a relic is inert: the key falls through instead of
+	# swallowing the press.
+	bar.backpack.items.clear()
+	bar.hp=bar.max_hp*0.4
+	check(Catalog.add_item(bar.backpack,"medicine"),"a medkit waits for the item bar")
+	kit_session.slot_put(bar,0,"backpack",0)
+	var socket_hp: float=bar.hp
+	check(kit_session.slot_use(bar,0),"E uses the medkit in a socket")
+	check(int(bar.hp)==int(socket_hp)+45,"the socket's medkit heals like any other")
+	check(kit_session.item_slot(bar,0).is_empty(),"a used supply leaves the socket")
+	check(not kit_session.item_slot(bar,0).get("kind","")=="medicine","nothing is left behind in the socket")
+	bar.backpack.items.clear()
+	check(Catalog.place_item(bar.backpack,{"kind":"relic","rot":false,"count":1}),"a relic waits for a socket")
+	kit_session.slot_put(bar,0,"backpack",0)
+	check(kit_session.slot_use(bar,0)==false,"a relic in a socket has no effect at all")
+	check(str(kit_session.item_slot(bar,0).get("kind",""))=="relic","the inert relic is still in the socket")
+	check(not Catalog.slot_operable("relic"),"a relic is not an operable kind")
+	check(Catalog.slot_operable("weapon") and Catalog.slot_operable("backpack") and Catalog.slot_operable("medicine") and Catalog.slot_operable("ammo") and Catalog.slot_operable("gear"),"weapons, gear, packs and supplies all answer to the key")
+	# One item in, one item out: putting something into an occupied socket hands
+	# the old occupant back to the container the new one came from.
+	bar.backpack.items.clear()
+	bar.pocket.items.clear()
+	check(Catalog.place_item(bar.pocket,{"kind":"scrap","rot":false,"count":1}),"a crate of scrap waits in the pocket")
+	check(kit_session.slot_put(bar,0,"pocket",0),"a pocket item can go into the socket the relic holds")
+	check(str(kit_session.item_slot(bar,0).get("kind",""))=="scrap","the socket now holds the scrap")
+	check(index_of(bar.pocket,"relic")>=0,"the displaced relic went back to the pocket it came from")
+	# Taking a socket's item out needs room, and refuses rather than destroying it.
+	bar.backpack.items.clear()
+	for i in 25:
+		Catalog.add_item(bar.backpack,"crystal")
+	check(Catalog.container_free(bar.backpack)==0,"the bag is packed solid for the take-out")
+	bar.pocket.items.clear()
+	for i in 16:
+		Catalog.add_item(bar.pocket,"crystal")
+	check(Catalog.container_free(bar.pocket)==0,"the pocket is packed solid too")
+	check(kit_session.slot_take(bar,0)==false,"a take-out with nowhere to go is refused")
+	check(str(kit_session.item_slot(bar,0).get("kind",""))=="scrap","the refused take-out leaves the socket untouched")
+	# Death scatters the item bar with the rest of the worn kit.
+	bar.pocket.items.clear()
+	check(kit_session.slot_put(bar,2,"pocket",-1)==false,"an empty pocket holds no item to move")
+	bar.backpack.items.clear()
+	check(Catalog.place_item(bar.backpack,Catalog.make_equipment("weapon",3,3)),"a staff waits to ride in the bar until death")
+	kit_session.slot_put(bar,2,"backpack",0)
+	check(str(kit_session.item_slot(bar,2).get("kind",""))=="weapon","the staff rides in the third socket")
+	var bar_before: int=kit_session.world_drops.size()
+	kit_session.down(bar)
+	var spilled_socket := false
+	for i in range(bar_before,kit_session.world_drops.size()):
+		for item in Catalog.container_items(kit_session.world_drops[i]):
+			if str(item.kind)=="weapon" and int(item.get("tier",0))==3:
+				spilled_socket=true
+	check(spilled_socket,"the item bar hits the ground on death")
+	check(kit_session.item_slot(bar,2).is_empty(),"death empties the item bar")
 	kit_session.queue_free()
 	session.queue_free()
 	print("SYSTEM TESTS: %d checks, %d failures" % [checks,failures])

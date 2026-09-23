@@ -42,6 +42,30 @@ func key(code: Key) -> void:
 # A parsed mouse event does reach main.gd's _input, but the viewport cursor that
 # _input reads back only follows a warp. Every helper therefore warps first and
 # then clicks, exactly like a player's hand would.
+
+# Ctrl+left is read from the key state rather than the mouse event, so the test
+# presses the key the way a hand would and parses each press and release.
+func ctrl_down() -> void:
+	await key_event(KEY_CTRL,true)
+
+func ctrl_up() -> void:
+	await key_event(KEY_CTRL,false)
+
+func key_event(code: int, pressed: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode=code
+	event.pressed=pressed
+	Input.parse_input_event(event)
+	await process_frame
+
+func ctrl_click_point(design: Vector2) -> void:
+	await ctrl_down()
+	await click_point(design)
+	await ctrl_up()
+
+func ctrl_click_item(slot: String, index: int) -> void:
+	await ctrl_click_point(item_point(slot,index))
+
 func calibrate_mouse() -> void:
 	Input.warp_mouse(Vector2(600,600))
 	await process_frame
@@ -118,13 +142,23 @@ func drag_item_to_point(slot: String, index: int, point: Vector2) -> void:
 func spans(item: Dictionary) -> Rect2i:
 	return Rect2i(Vector2i(int(item.x),int(item.y)),Catalog.item_size(item))
 
+func index_of_kind(container: Dictionary, kind: String) -> int:
+	var items: Array=Catalog.container_items(container)
+	for i in items.size():
+		if str(items[i].kind)==kind:
+			return i
+	return -1
+
 # Two items may never share a cell: this is the invariant the rotation bug broke,
-# when a turned 2x2 relic landed on top of the 1x1 item beside it.
+# when a turned 2x2 relic landed on top of the 1x1 item beside it. The comparison
+# is made cell by cell through Catalog.overlaps() because Rect2i.intersects()
+# answers false for rectangles that plainly share cells in this build.
 func check_no_overlap(container: Dictionary, text: String) -> void:
 	var list: Array=Catalog.container_items(container)
 	for i in list.size():
 		for j in range(i+1,list.size()):
-			check(not spans(list[i]).intersects(spans(list[j])),text+" (%s covers %s)" % [list[i].kind,list[j].kind])
+			var at := Vector2i(int(list[i].x),int(list[i].y))
+			check(not Catalog.overlaps(at,Catalog.item_size(list[i]),list[j]),text+" (%s covers %s)" % [list[i].kind,list[j].kind])
 
 func run() -> void:
 	app=load("res://scenes/main.tscn").instantiate()
@@ -421,6 +455,9 @@ func run() -> void:
 	await capture("ui-mouse-rotate-medkit")
 	await mouse_release(cell_point("backpack",Vector2i(2,0)))
 	check(not app.drag.active,"the turned medkit lands on release")
+	check(walker.backpack.items.size()>0,"the turned medkit is in the bag at all")
+	if walker.backpack.items.is_empty():
+		print("UI: the turned medkit went nowhere; pocket holds ",Catalog.container_items(walker.pocket).size()," items")
 	check(bool(walker.backpack.items[0].get("rot",false)),"the medkit keeps the orientation it was dropped in")
 	check(Catalog.item_size(walker.backpack.items[0])==Vector2i(2,1),"the stored medkit is really 2x1")
 	check(Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))==Vector2i(2,0),"the medkit lands exactly where the preview showed it")
@@ -487,6 +524,96 @@ func run() -> void:
 	check(app.session.container_units(relic_chest)==0,"the search window gives the relic up")
 	check_no_overlap(walker.pocket,"the relic never covers what the pocket already held")
 	await capture("ui-loot-relic-taken")
+	walker.pocket.items.clear()
+	# --- double clicking a loot card hauls it in one gesture ----------------
+	# The first card needs no tidy: it takes the top left cell of the bag.
+	walker.backpack.items.clear()
+	relic_chest.items.clear()
+	check(Catalog.place_item(relic_chest,{"kind":"scrap","rot":false,"count":1}),"the chest holds a scrap for the double click")
+	relic_chest["searched"]=1
+	await key(KEY_F)
+	check(app.inventory_open and app.index_at("loot",Vector2i(0,0))==0,"the scrap card is under the cursor")
+	await double_click_point(cell_point("loot",Vector2i(0,0)))
+	check(Catalog.container_count(walker.backpack,"scrap")==1,"double clicking the card puts the scrap in the bag")
+	check(app.session.container_units(relic_chest)==0,"the double clicked scrap leaves the search window")
+	check(Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))==Vector2i(0,0),"the stored scrap starts at the top left of the bag")
+	check_no_overlap(walker.backpack,"the stored scrap never covers what the bag held")
+	# White loot fills the bag, so a relic goes to the backpack now. The medkit is
+	# the real test of the tidy: two 1x2 medkits sit in the outer columns of the
+	# 3x3 bag with five cells still free, but not two of them stacked, so nothing
+	# fits until the haul is packed back against the top left corner.
+	walker.pocket.items.clear()
+	walker.backpack.items.clear()
+	walker.backpack.items.append({"kind":"medicine","x":0,"y":0,"rot":false,"count":1})
+	walker.backpack.items.append({"kind":"medicine","x":2,"y":0,"rot":false,"count":1})
+	check(Catalog.container_free(walker.backpack)==5,"the bag still reports five free cells")
+	relic_chest.items.clear()
+	check(Catalog.place_item(relic_chest,{"kind":"medicine","rot":false,"count":1}),"the chest holds a medkit that needs a tidy")
+	relic_chest["searched"]=1
+	await key(KEY_F)
+	await double_click_point(cell_point("loot",Vector2i(0,0)))
+	check(Catalog.container_count(walker.backpack,"medicine")==3,"the double click tidied the bag and seated the medkit")
+	check(app.session.container_units(relic_chest)==0,"the tidied-in medkit leaves the search window")
+	check_no_overlap(walker.backpack,"the tidied bag never stacks the medkits on each other")
+	var packed_away := 0
+	for item in walker.backpack.items:
+		if Vector2i(int(item.x),int(item.y))==Vector2i(1,0):
+			packed_away+=1
+	check(packed_away==1,"the tidy packed the medkits into the top row and gave the third the free column")
+	await capture("ui-loot-double-click")
+	# A gold weapon is the case the sealed pocket exists for: the same gesture
+	# sends it there instead of the bag, because quality decides the order.
+	walker.backpack.items.clear()
+	walker.pocket.items.clear()
+	relic_chest.items.clear()
+	check(Catalog.place_item(relic_chest,Catalog.make_equipment("weapon",1,4)),"the chest holds a gold weapon for the double click")
+	relic_chest["searched"]=1
+	await key(KEY_F)
+	await double_click_point(cell_point("loot",Vector2i(0,0)))
+	check(Catalog.container_count(walker.pocket,"weapon")==1,"double clicking gold loot fills the sealed pocket")
+	check(walker.backpack.items.is_empty(),"the gold weapon never takes backpack room")
+	# --- Ctrl+left is the same gesture with the key held --------------------
+	# On a carried item it does what the item is for; on something worn it takes
+	# it off. The carried-item half is driven through real mouse input; the
+	# take-off half calls the same entry point the socket click calls, because the
+	# socket rectangles belong to a panel layout this suite does not pin down.
+	walker.backpack.items.clear()
+	walker.pocket.items.clear()
+	walker.hp=40.0
+	check(Catalog.add_item(walker.backpack,"medicine"),"a medkit waits for Ctrl+left")
+	await ctrl_click_item("backpack",0)
+	check(walker.hp>40.0,"Ctrl+left on a medkit uses it")
+	check(app.session.carried(walker,"medicine")==0,"the used medkit is consumed")
+	walker.backpack.items.clear()
+	check(Catalog.place_item(walker.backpack,Catalog.make_equipment("weapon",2,3)),"a blade waits for Ctrl+left")
+	await ctrl_click_item("backpack",0)
+	check(int(walker.weapon)==2,"Ctrl+left on a weapon wears it")
+	check(app.session.kit_weapon(walker).is_empty()==false,"the weapon socket filled through Ctrl+left")
+	check(Catalog.container_count(walker.backpack,"weapon")==1,"the weapon the blade displaced is what stays in the bag")
+	check(int(walker.backpack.items[index_of_kind(walker.backpack,"weapon")].get("weapon",-1))!=2,"the bag holds the displaced weapon, not the worn blade")
+	# Now the take-off half: the socket click and the double click both route into
+	# this one entry point, so driving it directly proves the rule the sockets use.
+	app.ctrl_click_worn("weapon")
+	check(app.session.kit_weapon(walker).is_empty(),"the take-off empties the weapon socket")
+	var stowed_in_bag := Catalog.container_count(walker.backpack,"weapon")==2
+	var stowed_in_pocket := Catalog.container_count(walker.pocket,"weapon")==1
+	check(stowed_in_bag!=stowed_in_pocket,"the blade went to exactly one of the two containers")
+	var blade_at := index_of_kind(walker.pocket,"weapon") if stowed_in_pocket else index_of_kind(walker.backpack,"weapon")
+	var blade_home: Dictionary=Catalog.container_items(walker.pocket if stowed_in_pocket else walker.backpack)[blade_at]
+	check(int(blade_home.get("weapon",-1))==2,"the blade itself is the item that came off")
+	await capture("ui-ctrl-take-off")
+	# The fallback: wear the blade again, pack the bag solid, and the take-off has
+	# nowhere to go but the pocket.
+	check(app.session.equip_item(walker,"pocket" if stowed_in_pocket else "backpack",blade_at),"the blade is worn again for the fallback")
+	walker.backpack.items.clear()
+	for i in 9:
+		Catalog.add_item(walker.backpack,"crystal")
+	check(Catalog.container_free(walker.backpack)==0,"the bag is packed solid")
+	walker.pocket.items.clear()
+	app.ctrl_click_worn("weapon")
+	check(Catalog.container_count(walker.pocket,"weapon")==1,"the take-off fell back to the pocket")
+	check(app.session.kit_weapon(walker).is_empty(),"the socket is empty after the fallback take-off")
+	walker.backpack.items.clear()
 	walker.pocket.items.clear()
 	app.close_bag()
 	await key(KEY_M)

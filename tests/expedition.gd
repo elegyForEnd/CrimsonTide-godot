@@ -25,7 +25,8 @@ func run() -> void:
 	check(not s.can_extract(),"Day one extraction locked")
 	p.p=s.ruins.exits[0]
 	s.interact(p,true,5)
-	check(p.status=="active","Cannot bypass day one extraction through E")
+	s.update_zone_channels(p,5)
+	check(p.status=="active","Cannot bypass day one extraction by standing in the exit")
 	var first: Vector2=s.safe_center()
 	for corner in [Vector2.ZERO,Ruins.SIZE,Vector2(6400,0),Vector2(0,4800)]:
 		check(corner.distance_to(first)<s.safe_radius(),"Reset circle covers whole map")

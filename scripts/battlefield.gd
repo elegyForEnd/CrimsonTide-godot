@@ -328,8 +328,8 @@ func actor(p: Dictionary) -> void:
 	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46,3)),Color("322a35"))
 	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46*maxf(0,p.hp/p.max_hp),3)),color)
 	if p.channel>0:
-		var seconds := 4.0 if p.target.begins_with("exit") else (3.0 if p.target.begins_with("shrine") or p.target.begins_with("revive") else (1.5 if p.target.begins_with("portal") else 0.6))
-		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/seconds),40,Color("d9ca91"),4)
+		var seconds := float(p.get("channel_total",4.0))
+		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/maxf(0.05,seconds)),40,Color("d9ca91"),4)
 
 func monster(e: Dictionary) -> void:
 	if e.get("raid_boss",false):

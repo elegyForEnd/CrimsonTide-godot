@@ -73,6 +73,27 @@ var last_click_ms := 0
 # Drop sockets for the worn kit: "weapon", "gear0..2" and the equipped backpack
 # "bag". A drag released over a matching socket equips the held item.
 var equip_zones: Dictionary = {}
+# The item bar: three sockets drawn under the worn kit and again along the bottom
+# of the screen once the backpack is shut. The selection is the socket [F] acts
+# on, and the panel strip is remembered separately so the bottom copy can be drawn
+# while the panel is off screen.
+var selected_item_slot := 0
+var slot_zone_rects: Array = []
+# Where the panel copy of the strip was last drawn, and what it was drawn for.
+# The details column and the search-window copy of it put the sockets on the same
+# pixels, so a click can only be routed to a socket while the layout the player is
+# looking at is the one those rectangles came from.
+var _slot_origin := Vector2(10000,10000)
+var _slot_loot := false
+var bottom_slot_width := 870.0
+var bottom_slot_x := 570.0
+var bottom_slot_y := 808.0
+# A press that found nothing to loot hands the key to the item bar on release, and
+# only a socket with no verb either gives it back to the medkit. This flag is what
+# carries that decision from the press to the release.
+var _fell_through_loot := false
+var _pending_tips: Array = []
+var _tip_running := false
 # Right-column panels: releasing a drag over one of them is a miss, not a throw
 # onto the ground.
 var panel_rects: Array = []
@@ -126,16 +147,16 @@ func _ready() -> void:
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	root.add_child(overlay)
-	toast=label(root,"",Vector2(230,752),19,GOLD,Vector2(980,38))
+	toast=label(root,"",Vector2(230,700),19,GOLD,Vector2(980,34))
 	toast.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	toast.z_index=50
 	session.map_changed.connect(func():
 		close_bag()
-		notify("进入晨曦王城 · 击败失乡骑士，带走王庭珍藏；倒计时仍在继续。" if session.map_id=="city" else "返回月冠边境 · 前往撤离点保全战利品。"))
+		say("进入晨曦王城 · 击败失乡骑士，带走王庭珍藏；倒计时仍在继续。" if session.map_id=="city" else "返回月冠边境 · 前往撤离点保全战利品。"))
 	session.started.connect(on_started)
 	session.finished.connect(on_finished)
 	session.changed.connect(on_lobby)
-	session.message.connect(notify)
+	session.message.connect(say)
 	session.effect.connect(on_effect)
 	session.combat_event.connect(on_combat_audio)
 	get_viewport().size_changed.connect(fit_ui)
@@ -187,7 +208,7 @@ func _ready() -> void:
 		var preview: Dictionary=session.players.get(session.my_id(),{})
 		if not preview.is_empty():
 			var sizes := [9,12,15,16,18]
-			var kinds := ["crystal","scrap","medicine","ammo","charm","relic","backpack"]
+			var kinds := ["scrap","medicine","ammo","charm","relic","backpack"]
 			for i in 18:
 				if Catalog.container_free(preview.backpack)>sizes[i%5]:
 					Catalog.add_item(preview.backpack,kinds[i%kinds.size()])
@@ -209,7 +230,17 @@ func fit_ui() -> void:
 	root.position=(view-Vector2(1440,900)*scale_factor)/2
 
 func setup_inputs() -> void:
-	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"burn":KEY_B,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
+	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
+	# The smart-click modifier is a real action rather than a raw key read so the
+	# gesture is bound, rebindable and visible to the input system like every
+	# other control. Both control keys are bound; the action is only ever polled,
+	# never matched against a pressed event, so it cannot swallow a keystroke.
+	if not InputMap.has_action("smart_click"):
+		InputMap.add_action("smart_click")
+		for code in [KEY_CTRL,KEY_CTRL]:
+			var binding := InputEventKey.new()
+			binding.physical_keycode=code
+			InputMap.action_add_event("smart_click",binding)
 	for action in keys:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -542,6 +573,7 @@ func show_camp() -> void:
 		label(page,gear.name,Vector2(x,310),15,INK if profile.data.gear==i else MUTED,Vector2(113,31)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	label(page,Catalog.GEAR[profile.data.gear].desc,Vector2(584,356),15,GOLD)
 	label(page,"开局只有角色的临时武器；局内捡到的武器装备后才能换用",Vector2(584,380),12,MUTED,Vector2(384,20))
+	label(page,"背包本身就是一件装备：双击或 Ctrl+左键换装，紫色及以上占 2×2",Vector2(584,398),12,MUTED,Vector2(384,20))
 	ornament(page,Vector2(578,406),Vector2(384,12))
 	label(page,"灵契天赋",Vector2(583,431),27,INK,Vector2(250,45))
 	for i in 3:
@@ -557,7 +589,7 @@ func show_camp() -> void:
 			if profile.upgrade(i):
 				ready_local=false
 				session.configure(config())
-			else: notify("银币不足，带回战利品即可升级。")
+			else: say("银币不足，带回战利品即可升级。")
 		)
 		upgrade.disabled=level>=5
 	ornament(page,Vector2(1001,150),Vector2(25,585),"rail",Color("66505a"))
@@ -588,7 +620,7 @@ func show_camp() -> void:
 			extra_meds+=1
 			profile.save_profile()
 			session.configure(config())
-		else: notify("物资已满或银币不足。")
+		else: say("物资已满或银币不足。")
 	)
 	supply.disabled=extra_meds>=2
 	var mode := button(page,"长局 · 每天 15 分钟" if long_run else "标准局 · 每天 8 分钟",Vector2(1024,735),Vector2(349,43),func(): long_run=not long_run; show_camp())
@@ -631,9 +663,9 @@ func on_started() -> void:
 	button(page,"背包  TAB",Vector2(1175,310),Vector2(234,39),toggle_bag)
 	button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
 	button(page,"菜单",Vector2(1298,360),Vector2(111,38),pause_menu)
-	hud.notice=label(page,"",Vector2(375,664),22,GOLD,Vector2(690,50))
+	hud.notice=label(page,"",Vector2(375,624),22,GOLD,Vector2(690,40))
 	hud.notice.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	hud.prompt=label(page,"",Vector2(335,716),18,INK,Vector2(770,48))
+	hud.prompt=label(page,"",Vector2(335,696),18,INK,Vector2(770,48))
 	hud.prompt.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	fade(page,Vector2(15,776),Vector2(555,112),Color(0.03,0.018,0.033,0.94))
 	ornament(page,Vector2(20,775),Vector2(475,110),"frame")
@@ -649,17 +681,20 @@ func on_started() -> void:
 	item_icon(page,"skill",Vector2(728,801),Vector2(40,40))
 	hud.skill=label(page,"",Vector2(792,793),17,Color("d4c0de"),Vector2(283,33))
 	hud.items=label(page,"",Vector2(792,842),13,MUTED,Vector2(315,30))
-	label(page,"WASD 走路 · SHIFT 奔跑 · 鼠标攻击",Vector2(1170,784),11,MUTED,Vector2(241,20))
-	label(page,"SPACE 闪避 · R 装填 · 武器只能捡到后装备",Vector2(1170,806),11,MUTED,Vector2(241,20))
-	label(page,"F 拾取/搜索/急救 · TAB 背包 · M 地图",Vector2(1170,828),11,MUTED,Vector2(241,20))
-	hud.loadout=label(page,"",Vector2(1170,858),11,GOLD,Vector2(241,18))
-	hud.loadout2=label(page,"",Vector2(1170,876),11,MUTED,Vector2(241,18))
+	label(page,"WASD 走路 · SHIFT 奔跑 · 鼠标攻击",Vector2(1170,754),11,MUTED,Vector2(241,20))
+	label(page,"SPACE 闪避 · R 装填 · 武器只能捡到后装备",Vector2(1170,776),11,MUTED,Vector2(241,20))
+	label(page,"F 拾取/搜索 · 道具栏使用或互换",Vector2(1170,798),11,MUTED,Vector2(241,20))
+	label(page,"E 长按 救援/城门/撤离/封印 · TAB 背包 · M 地图",Vector2(1170,820),11,MUTED,Vector2(241,20))
+	hud.loadout=label(page,"",Vector2(1170,846),11,GOLD,Vector2(241,18))
+	hud.loadout2=label(page,"",Vector2(1170,864),11,MUTED,Vector2(241,18))
 	hud.raid_continue=button(page,"留下挑战 [Y]",Vector2(400,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"continue"}))
 	hud.raid_extract=button(page,"安全撤离 [N]",Vector2(618,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"extract"}))
 	hud.raid_wait=button(page,"取消就绪 [U]",Vector2(836,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"wait"}))
 	for key in ["raid_continue","raid_extract","raid_wait"]: hud[key].hide()
 	notify("第一天无法撤离。M 查看黎明印记；血潮收缩完成后迎战 Boss。")
-
+	# The two things a first raid has to know: the backpack is a piece of equipment
+	# like any other, and three sockets at the bottom of the screen are one key away.
+	popup_tip("屏幕下方新增三格道具栏：[F] 使用或与手上的互换，[1][2][3] 切换。捡到背包后双击即可换装。")
 func _process(dt: float) -> void:
 	toast_time-=dt
 	toast.visible=toast_time>0
@@ -704,6 +739,26 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.pressed:
 		var point := mouse_point()
+		# A click on the item bar selects the socket [E] will act on. It is checked
+		# before the grids because the strip is not a grid: a socket holds exactly
+		# one item, however many cells that item would need in a backpack. The hit
+		# test only counts while the strip still sits where the last rebuild drew
+		# it: the search window shifts the details column down the screen, and a
+		# stale rectangle would swallow a click meant for a grid.
+		var bar_slot := slot_at(point) if not slot_bar_stale() else -1
+		if bar_slot>=0:
+			select_item_slot(bar_slot)
+			get_viewport().set_input_as_handled()
+			return
+		# Ctrl+left is checked before anything else: the same click means "do the
+		# obvious thing with this" instead of starting a drag, both on carried loot
+		# and on something already worn.
+		if ctrl_held():
+			var worn := worn_zone_at(point)
+			if not worn.is_empty():
+				ctrl_click_worn(worn)
+				get_viewport().set_input_as_handled()
+				return
 		var hit := grid_at(point)
 		if hit.is_empty():
 			return
@@ -711,14 +766,37 @@ func _input(event: InputEvent) -> void:
 		var index := index_at(slot,Vector2i(hit.cell))
 		if index<0:
 			return
+		if ctrl_held():
+			if slot=="loot":
+				auto_store_loot(index)
+				get_viewport().set_input_as_handled()
+				return
+			if ctrl_click_item(slot,index):
+				get_viewport().set_input_as_handled()
+				return
 		# Two quick taps on the same item wear it: weapons and gear go to their
 		# slot, a loose backpack becomes the equipped pack.
 		var now := Time.get_ticks_msec()
-		if slot in ["backpack","pocket"] and slot==last_click_slot and index==last_click_index and now-last_click_ms<450:
-			last_click_ms=0
+		var quick := slot==last_click_slot and index==last_click_index and now-last_click_ms<450
+		last_click_ms=0
+		# The same gesture on something already worn takes it off, with the tidy
+		# rule the Ctrl+left take-off uses.
+		if quick:
+			var worn_zone := worn_zone_at(point)
+			if not worn_zone.is_empty():
+				ctrl_click_worn(worn_zone)
+				get_viewport().set_input_as_handled()
+				return
+		if quick and slot in ["backpack","pocket"]:
 			if double_click_equip(slot,index):
 				get_viewport().set_input_as_handled()
 				return
+		# The same gesture on a loot card is the one-click haul: the item is
+		# worked into the backpack, or the pocket when the bag cannot take it.
+		if quick and slot=="loot":
+			auto_store_loot(index)
+			get_viewport().set_input_as_handled()
+			return
 		last_click_slot=slot
 		last_click_index=index
 		last_click_ms=now
@@ -793,23 +871,48 @@ func _unhandled_input(event: InputEvent) -> void:
 		toggle_map()
 	if field.map_open:
 		return
+	# --- 1 / 2 / 3 pick the item bar socket ---------------------------------
+	# The map screen owns the same keys while it is open, so the map is asked
+	# first: with it up, 1-4 still switch the filter it has always switched.
+	if event is InputEventKey and event.pressed and not event.echo:
+		var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+		if code in [KEY_1,KEY_2,KEY_3]:
+			select_item_slot(code-KEY_1)
+			get_viewport().set_input_as_handled()
+			return
+	# --- F: the item bar, looting and the fallback heal ---------------------
+	# F does the most immediate thing the moment it goes down: a downed Watcher
+	# reaches for the medkit, anyone else grabs or searches what is in reach. A
+	# press that found nothing to loot calls the item bar instead, and if the
+	# socket has no verb either — an empty socket, or a relic that is treasure and
+	# nothing else — the release falls back to the medkit, which is what keeps a
+	# self-heal one key away without giving it a key of its own.
 	if event.is_action_pressed("loot") and not event.is_echo():
-		# F is one key with two jobs: loot what is in reach, and fall through to the
-		# medkit when there is nothing left to grab or search. Going down always
-		# tries the self-revive first.
 		var me: Dictionary=session.players.get(session.my_id(),{})
 		var downed := not me.is_empty() and str(me.get("status",""))=="down"
-		var looted := false if downed else loot_action()
-		if not looted:
+		_fell_through_loot=false
+		if downed:
 			heal_action()
+		elif not loot_action():
+			_fell_through_loot=true
 		get_viewport().set_input_as_handled()
 		return
-	if event.is_action_pressed("heal") and not event.is_echo():
-		heal_action()
-	if event.is_action_pressed("burn") and not event.is_echo():
-		session.action("burn")
-		if inventory_open:
-			show_inventory()
+	if event.is_action_released("loot") and not event.is_echo():
+		var reached_bar := false
+		if _fell_through_loot:
+			reached_bar=apply_item_slot(selected_item_slot)
+		if _fell_through_loot and not reached_bar:
+			heal_action()
+		_fell_through_loot=false
+		get_viewport().set_input_as_handled()
+		return
+	# --- E: the world's key, held down --------------------------------------
+	# Everything E does takes seconds and is worth interrupting, so it is never
+	# acted on at the moment the key goes down: the session counts the hold and the
+	# ring under the player shows the count. The key is left unhandled here so the
+	# world interaction keeps receiving it.
+	if event.is_action_pressed("interact") or event.is_action_released("interact"):
+		return
 	if inventory_open:
 		if event.is_action_pressed("reload") and not event.is_echo():
 			rotate_selected()
@@ -916,7 +1019,7 @@ func update_hud() -> void:
 	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if family==0 else " · 三连击" if family==1 else ""))
 	hud.scent.text="战利品  %d ◈   /   击杀 %d" % [loot_total(p),p.kills]
 	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  就绪")
-	hud.items.text="[F] 急救针 ×%d    [B] 血晶 ×%d    /    %s" % [session.carried(p,"medicine"),session.carried(p,"crystal"),session.backpack_label(p)]
+	hud.items.text="[F] 拾取/搜索 · 道具栏使用    血晶 ×%d    /    %s" % [session.crystals_carried(p),session.backpack_label(p)]
 	var kit: Array=loadout_lines(p)
 	hud.loadout.text=str(kit[0])
 	hud.loadout2.text=str(kit[1])
@@ -927,6 +1030,9 @@ func update_hud() -> void:
 	hud.team.text=team
 	hud.notice.text=""
 	hud.prompt.text=""
+	# The bar rides with the HUD, so it is drawn before any of the early returns
+	# below: a downed Watcher still sees what is in their sockets.
+	draw_hud_item_bar()
 	if p.status=="down":
 		hud.notice.text="你已倒地 · 等待队友救援"
 		hud.prompt.text="[F] 消耗急救针自救（每局一次）" if p.self_revive and session.carried(p,"medicine")>0 else "倒计时结束后阵亡；队友靠近并长按 E 可救起你。"
@@ -938,9 +1044,9 @@ func update_hud() -> void:
 	if session.map_id=="border" and p.p.distance_to(session.safe_center())>session.safe_radius():
 		hud.notice.text="你正处于血潮中！向地图上的黎明印记移动"
 	elif p.scent>32:
-		hud.notice.text="血香浓烈 · 当地使魔警觉   [B] 燃烧血晶"
+		hud.notice.text="血香浓烈 · 当地使魔警觉"
 	elif p.sanity<25:
-		hud.notice.text="理智濒临崩坏 · 燃晶、治疗或尽快撤离"
+		hud.notice.text="理智濒临崩坏 · 治疗或尽快撤离"
 	for ally in session.players.values():
 		if ally.id!=p.id and ally.status=="down" and p.p.distance_to(ally.p)<75:
 			hud.prompt.text="长按 [E] 3 秒救援 "+ally.name
@@ -970,6 +1076,90 @@ func update_hud() -> void:
 func loot_total(p: Dictionary) -> int:
 	return Catalog.container_value(p.backpack)+Catalog.container_value(p.pocket)
 
+# The item bar, both halves of it: the sockets under the worn kit while the
+# backpack is open, and the same three sockets along the bottom of the screen
+# during play. It is redrawn with the HUD rather than with the panels because the
+# panel layout is only rebuilt when something in it changes, and the player needs
+# to watch the bar fill up while looting with the bag shut.
+func draw_hud_item_bar() -> void:
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty():
+		return
+	# The panel draws its own sockets, and the map covers the page entirely: the
+	# bottom copy would only be a second, conflicting set of bars underneath.
+	if inventory_open or field.map_open:
+		return
+	var first := overlay.get_child_count()
+	draw_item_bar(p,bottom_slot_x,bottom_slot_y,bottom_slot_width,true)
+	# The HUD copy is named so a test, or anything else, can pick it out of the
+	# overlay without guessing at rectangles.
+	for i in range(first,overlay.get_child_count()):
+		overlay.get_child(i).name="HudItemBar%d" % i
+
+# The same three sockets as plain rectangles, for the tests and for anything that
+# needs to aim at a socket without rebuilding the panel layout.
+func slot_zones() -> Array:
+	return slot_zone_rects
+
+# The pointed-at socket, or -1. The panel strip is drawn as buttons that ignore
+# the mouse, so this is the one hit test both the [F] key and a click use.
+func slot_at(point: Vector2) -> int:
+	for i in slot_zone_rects.size():
+		var area: Rect2=slot_zone_rects[i]
+		if area.has_point(point):
+			return i
+	return -1
+
+# The strip a click is aiming at has to be the one the current layout drew, not one
+# left over from before the search window moved the column: stale() is true while
+# the rectangles on file belong to the other layout.
+func slot_bar_stale() -> bool:
+	if slot_zone_rects.is_empty():
+		return true
+	var loot_open_now := _loot_index>=0
+	return _slot_loot!=loot_open_now or not Rect2(slot_zone_rects[0]).position.is_equal_approx(Vector2(_slot_origin.x+22,_slot_origin.y))
+
+# Clicking a socket hands it to [F]; clicking outside the strip keeps the
+# selection, because losing it to a stray click in the bag would be a surprise.
+func select_item_slot(index: int) -> void:
+	selected_item_slot=clampi(index,0,session.ITEM_SLOT_COUNT-1)
+	show_inventory()
+
+# [F] on the item bar. The socket's own rule decides first, because the answer is
+# also the fall-through signal: a medkit is spent, a weapon, a piece of gear or a
+# backpack changes places with what the Watcher is using, and a relic or a stack of
+# scrap does nothing at all — in which case the key is free to do whatever else it
+# does. The rule lives in Catalog so host and client agree without a round trip.
+func apply_item_slot(index: int) -> bool:
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty():
+		return false
+	var at := clampi(index,0,session.ITEM_SLOT_COUNT-1)
+	if not Catalog.slot_operable(session.item_slot_kind(p,at)):
+		return false
+	selected_item_slot=at
+	session.action("slot_apply",{"slot":at})
+	if inventory_open:
+		show_inventory()
+	return true
+
+# "收回": the socket's item goes back into the backpack, or into the pocket when
+# the bag has no room left for it.
+func take_item_slot(index: int) -> void:
+	session.action("slot_take",{"slot":index})
+	selected=-1
+	if inventory_open:
+		show_inventory()
+
+# A drop from a container into a socket. One item in, one item out: the socket
+# hands back whatever it was holding, because the bar holds exactly one thing.
+func put_in_item_slot(index: int, slot: String, item_index: int) -> void:
+	session.action("slot_put",{"slot":index,"from":slot,"index":item_index})
+	selected=-1
+	selected_item_slot=clampi(index,0,session.ITEM_SLOT_COUNT-1)
+	if inventory_open:
+		show_inventory()
+
 func toggle_bag() -> void:
 	if modal:
 		return
@@ -996,6 +1186,8 @@ func close_bag() -> void:
 	stop_drag()
 	grids.clear()
 	equip_zones.clear()
+	slot_zone_rects.clear()
+	_slot_origin=Vector2(10000,10000)
 	panel_rects.clear()
 	detach_drag_nodes()
 	clear(overlay)
@@ -1067,6 +1259,43 @@ func double_click_equip(slot: String, index: int) -> bool:
 	show_inventory()
 	return true
 
+# Ctrl+left on a carried item does what the item is for: a consumable is used, a
+# wearable is worn. A relic, a crate of scrap or a stack of ammo has no verb, so
+# the click falls through to the plain selection the way it always did.
+func ctrl_click_item(slot: String, index: int) -> bool:
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty() or slot not in ["backpack","pocket"]:
+		return false
+	var list: Array=Catalog.container_items(p[slot])
+	if index<0 or index>=list.size():
+		return false
+	var kind := str(list[index].kind)
+	if kind=="backpack" or Catalog.is_equipment(kind):
+		return double_click_equip(slot,index)
+	if kind in ["medicine","ammo"]:
+		use_item(slot,index)
+		return true
+	return false
+
+# Ctrl+left on something already worn takes it off. The backpack is tried first
+# because that is where loot belongs; when it has no room the pocket is asked to
+# tidy itself once, and when even that fails the click does nothing at all rather
+# than throwing the item on the ground.
+func ctrl_click_worn(zone: String) -> void:
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty():
+		return
+	if zone=="bag":
+		session.action("unwear_bag")
+	elif zone=="weapon":
+		session.action("unequip_stow",{"type":"weapon","index":0})
+	elif zone.begins_with("gear"):
+		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
+	else:
+		return
+	selected=-1
+	show_inventory()
+
 # --- mouse dragging --------------------------------------------------------
 # Grabs an item without removing it: the item only moves when the mouse is
 # released over a legal slot, exactly like a loot screen in an extraction game.
@@ -1093,12 +1322,16 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 	var rot: bool=bool(drag.rot)
 	var point: Vector2=mouse_point() if not at.is_finite() else at
 	var held := held_item()
-	# Dropping onto a matching socket wears the item: weapons and gear into their
-	# kit slot, a loose backpack onto the player's back.
-	if not held.is_empty() and source_slot in ["backpack","pocket"]:
+	# A drop onto a socket goes through the socket's own action, whatever kind of
+	# item is in hand: the item bar takes everything.
+	if not held.is_empty() and not str(drag.slot).begins_with("slot:"):
 		var zone := zone_at(point,held)
 		if not zone.is_empty():
 			stop_drag()
+			# The bar is keyed by zone rather than by grid, so it is asked first.
+			if str(zone.zone).begins_with("slot"):
+				put_in_item_slot(int(str(zone.zone).substr(4)),source_slot,source_index)
+				return
 			if str(zone.zone)=="bag":
 				session.action("equip_bag",{"slot":source_slot,"index":source_index})
 			else:
@@ -1114,6 +1347,13 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 		slot=str(hit.slot)
 		spot=Vector2i(hit.cell)
 	var index := source_index
+	if str(drag.slot).begins_with("slot:") and slot.is_empty():
+		# Letting go of a socket's item anywhere but a grid or the ground puts it
+		# back in the bag: a cancelled drag must never leave the bar short.
+		session.action("slot_take",{"slot":slot_source(str(drag.slot))})
+		selected=-1
+		show_inventory()
+		return
 	if source_slot=="loot" and slot.is_empty():
 		index=-1	# dropping loot nowhere means leaving it in the container
 	if index>=0:
@@ -1158,6 +1398,10 @@ func zone_at(point: Vector2, held: Dictionary) -> Dictionary:
 		var zone_rect: Rect2=equip_zones[key]
 		if not zone_rect.has_point(point):
 			continue
+		# Every socket of the item bar takes any item at all: that is what makes a
+		# 2x2 weapon and a single blood crystal equally at home in one.
+		if key.begins_with("slot"):
+			return {"zone":key,"rect":zone_rect}
 		if key=="bag" and kind=="backpack":
 			return {"zone":key,"rect":zone_rect}
 		if key=="weapon" and kind=="weapon":
@@ -1165,6 +1409,16 @@ func zone_at(point: Vector2, held: Dictionary) -> Dictionary:
 		if key.begins_with("gear") and kind=="gear" and Catalog.gear_slot(held)==int(key.substr(4)):
 			return {"zone":key,"rect":zone_rect}
 	return {}
+
+# Which worn socket sits under a point, whatever kind of item is being held. This
+# is the plain hit test the Ctrl+left take-off needs; zone_at() layers the
+# "would this item be accepted here" rules on top of it for dragging.
+func worn_zone_at(point: Vector2) -> String:
+	for key in equip_zones:
+		var zone_rect: Rect2=equip_zones[key]
+		if zone_rect.has_point(point):
+			return key
+	return ""
 
 # While an item is held the screen shows three things: the slot it came from as a
 # dashed outline, the cell the item would land in, and a lifted icon that follows
@@ -1249,6 +1503,13 @@ func sync_drag() -> void:
 		drag_ring.area=zone_rect
 		drag_ring.tone=accent
 		drag_ring.blocked=false
+		return
+	if str(drag.slot).begins_with("slot:"):
+		# An item lifted out of the bar is not in any grid, so there is no landing
+		# cell to preview: away from a socket the drop simply cancels.
+		drag_ring.area=Rect2(point-cell_size/2,cell_size)
+		drag_ring.tone=Color("c96a74")
+		drag_ring.blocked=true
 		return
 	var hit := grid_at(point)
 	var target := drag_target_rect(hit,kind)
@@ -1342,10 +1603,16 @@ func mouse_point() -> Vector2:
 		return root.get_global_transform_with_canvas().affine_inverse()*viewport.get_mouse_position()
 	return Vector2.ZERO
 
-# Every cell the held item covers where it currently sits.
+# Every cell the held item covers where it currently sits. A socket is not a
+# grid, so an item lifted out of the bar leaves its whole box outlined instead.
 func drag_slot_rect() -> Rect2:
 	var slot := str(drag.slot)
 	var index := int(drag.source)
+	if slot.begins_with("slot:"):
+		var at := slot_source(slot)
+		if at<0 or at>=slot_zone_rects.size():
+			return Rect2()
+		return slot_zone_rects[at]
 	if slot=="loot":
 		var entry: Dictionary=grids.get("loot",{})
 		if entry.is_empty():
@@ -1396,6 +1663,12 @@ func draw_diagonal(a: Vector2, b: Vector2, color: Color) -> void:
 	strip.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	overlay.add_child(strip)
 
+# "slot:N" names the Nth socket of the item bar, which is a drag source like any
+# container: an item parked in the bar can be pulled back into the bag, onto the
+# floor or into another socket.
+func slot_source(value: String) -> int:
+	return value.substr(5).to_int() if value.begins_with("slot:") else -1
+
 func held_item() -> Dictionary:
 	if not drag.active:
 		return {}
@@ -1407,6 +1680,8 @@ func held_item() -> Dictionary:
 		if index<0 or index>=visible.size():
 			return {}
 		return visible[index]
+	if slot.begins_with("slot:"):
+		return session.item_slot(session.players.get(session.my_id(),{}),slot_source(slot))
 	var list: Array=session.players[session.my_id()][slot].items
 	if index<0 or index>=list.size():
 		return {}
@@ -1419,6 +1694,11 @@ func held_size(held: Dictionary) -> Vector2:
 	var cell: float=bag_cell if drag.slot=="backpack" else pocket_cell
 	var gap: float=bag_gap if drag.slot=="backpack" else pocket_gap
 	var size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
+	# An item lifted out of the bar is drawn at the scale of the row it came from,
+	# so the art in the hand is the same size as the art left behind.
+	if str(drag.slot).begins_with("slot:"):
+		cell=SLOT_CELL
+		gap=3.0
 	return Vector2(size.x*(cell+gap)-gap,size.y*(cell+gap)-gap)
 
 func can_drop_at(slot: String, cell: Vector2i) -> bool:
@@ -1509,6 +1789,7 @@ func show_inventory() -> void:
 	clear(overlay)
 	grids.clear()
 	equip_zones.clear()
+	slot_zone_rects.clear()
 	panel_rects.clear()
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty():
@@ -1606,7 +1887,8 @@ func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -
 		label(overlay,"单击选中 · 拖拽搬运",Vector2(ix,y+192),15,MUTED,Vector2(inner,30))
 		label(overlay,"双击或拖到装备栏 / 背包槽即可穿上",Vector2(ix,y+218),13,Color("8d8494"),Vector2(inner,30))
 	draw_equipment(p,x,y,wide)
-	label(overlay,"[R] 或右键旋转   ·   拖到框外丢到地面",Vector2(ix,y+494),12,MUTED,Vector2(inner,18))
+	label(overlay,"[R] 或右键旋转   ·   拖到框外丢到地面",Vector2(ix,y+466),12,MUTED,Vector2(inner,18))
+	draw_item_bar(p,x,y,wide,false)
 	draw_cabinet(p,x,y,wide)
 
 # The worn kit: four drop sockets (weapon plus armour / sight / boots). A
@@ -1616,9 +1898,9 @@ func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -
 func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 	var ix := x+22
 	var inner := wide-44.0
-	label(overlay,"装备栏   /   本局强化",Vector2(ix,y+340),17,GOLD,Vector2(inner,26))
-	label(overlay,"拖拽或双击装备",Vector2(ix+158,y+346),11,MUTED,Vector2(inner-158,20))
-	ornament(overlay,Vector2(x+18,y+366),Vector2(wide-36,10))
+	label(overlay,"装备栏   /   本局强化",Vector2(ix,y+310),17,GOLD,Vector2(inner,26))
+	label(overlay,"拖拽或双击装备",Vector2(ix+158,y+316),11,MUTED,Vector2(inner-158,20))
+	ornament(overlay,Vector2(x+18,y+336),Vector2(wide-36,10))
 	var rows: Array = [{"title":"武器","item":session.kit_weapon(p),"type":"weapon","slot":0}]
 	var gear: Array=session.kit_gear(p)
 	for i in Catalog.GEAR.size():
@@ -1631,7 +1913,7 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 	for i in rows.size():
 		var entry: Dictionary=rows[i]
 		var bx := ix+float(i)*(box+gapx)
-		var by := y+376.0
+		var by := y+346.0
 		var item: Dictionary=entry.item
 		var kind := str(entry.type)
 		var index := int(entry.slot)
@@ -1683,6 +1965,111 @@ func equipment_bonus_text(item: Dictionary, kind: String) -> String:
 		0: return "生命+%d" % int(round(Catalog.gear_bonus(item)))
 		1: return "火力+%d%%" % int(round(Catalog.gear_bonus(item)*100.0))
 		_: return "移速+%d" % int(round(Catalog.gear_bonus(item)))
+
+# --- the item bar -----------------------------------------------------------
+# Three sockets under the worn kit, and the same bar again along the bottom of
+# the screen while the backpack is shut. A socket takes exactly one item, so the
+# bar is about reach rather than storage — and because a socket is not a grid, an
+# item keeps the footprint it would claim in a backpack. That is why the cells
+# below are fixed: a 2x2 weapon and a 1x1 crystal are drawn at the scale they
+# really occupy, and a piece too big for the box is clipped by it rather than
+# pretending to be a single cell.
+const SLOT_CELL := 22.0
+const SLOT_BOX := 94.0
+const HUD_SLOT_CELL := 20.0
+const HUD_SLOT_BOX := 84.0
+
+# The item bar's own colours: gold while a key or the cursor is on it, so the
+# active socket is unmistakable at a glance.
+func slot_tone(entry: Dictionary, lit: bool, filled: bool) -> Color:
+	var accent: Color=Catalog.item_color(entry) if filled else Color("565064")
+	return GOLD if lit else accent
+
+# One socket: the frame, the part, and the cell count that tells the player how
+# much room the thing would take in a bag. Returns the box it drew, because both
+# the panel layout and the bottom bar need to know where the socket landed.
+func draw_item_slot_body(p: Dictionary, index: int, at: Vector2, box: float, cell: float, lit: bool) -> Rect2:
+	var entry: Dictionary=session.item_slot(p,index)
+	var filled := not entry.is_empty()
+	var accent: Color=slot_tone(entry,lit,filled)
+	var area := Rect2(at,Vector2(box,box))
+	var socket := rect(overlay,at,Vector2(box,box),Color(0.055,0.045,0.075,0.88) if not filled else Color(accent.darkened(0.86),0.9),Color(accent,1.0 if lit else 0.55))
+	socket.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	if filled:
+		draw_slot_item(entry,at,box,cell)
+		socket.tooltip_text="%s\n%s\n占 %d×%d 格   ·   价值 %d ◈\n[F] 使用 / 与手上的互换   ·   [%d] 切到此栏" % [Catalog.item_name(entry),Catalog.item_desc(entry),Catalog.item_size(entry).x,Catalog.item_size(entry).y,Catalog.item_value(entry),index+1]
+	else:
+		var glyph := label(overlay,"◇",at+Vector2(0,box*0.5-16),int(box*0.3),Color("6a6470"),Vector2(box,box*0.4))
+		glyph.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		socket.tooltip_text="%s · 空\n把武器 / 背包 / 消耗品拖到这里，关闭背包后按 [F] 使用。" % session.item_slot_name(index)
+	return area
+
+# The part inside a socket, drawn at the footprint it really owns. The socket's
+# cells are placed so that any item up to 3x3 sits in the middle of the box.
+func draw_slot_item(entry: Dictionary, at: Vector2, box: float, cell: float) -> void:
+	var dims := Catalog.item_size(entry)
+	var gap := 3.0
+	var drawn := Vector2(minf(box-4.0,dims.x*(cell+gap)-gap),minf(box-4.0,dims.y*(cell+gap)-gap))
+	var inner := at+(Vector2(box,box)-drawn)/2.0
+	item_icon(overlay,Catalog.item_icon(entry),inner,drawn)
+	var count := int(entry.get("count",1))
+	if count>1:
+		var tally := label(overlay,"×%d" % count,inner+Vector2(drawn.x-30,0),12,GOLD,Vector2(30,16))
+		tally.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+
+# The socket strip: three boxes, the selection, and the [F] hint. The panel copy
+# is inset into the details column, exactly like the grids and the equipment row it
+# sits under, and its sockets double as drop targets; the bottom copy is centred on
+# the HUD and only ever looked at — with the bag open the mouse belongs to the
+# panel, so the bottom row is drawn on the panel's terms instead.
+func draw_item_bar(p: Dictionary, x: float, y: float, wide: float, bottom: bool) -> void:
+	var selected_now: int=selected_item_slot
+	var count: int=session.ITEM_SLOT_COUNT
+	var box := HUD_SLOT_BOX if bottom else SLOT_BOX
+	var cell := HUD_SLOT_CELL if bottom else SLOT_CELL
+	var step := box+6.0
+	var inner := wide-44.0
+	var from_left := x+22.0 if not bottom else x
+	if bottom:
+		var total := float(count)*box+float(count-1)*6.0
+		from_left=x+bottom_slot_width*0.5-total*0.5
+	else:
+		_slot_origin=Vector2(x,y)
+		_slot_loot=_loot_index>=0
+	for i in count:
+		var at := Vector2(from_left+float(i)*step,y)
+		var lit := i==selected_now
+		var area := draw_item_slot_body(p,i,at,box,cell,lit)
+		var title := label(overlay,"[%d] %s" % [i+1,session.item_slot_name(i)],Vector2(at.x,at.y+box+2),11,GOLD if lit else MUTED,Vector2(box,16))
+		title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		if bottom:
+			continue
+		# In the panel the sockets are drop targets as well as buttons: a drag
+		# from the bag lands here, and a socket that already holds something gives
+		# it back the moment the arriving item is known to fit.
+		equip_zones["slot%d" % i]=area
+		slot_zone_rects.append(area)
+		var entry: Dictionary=session.item_slot(p,i)
+		var filled := not entry.is_empty()
+		# The body ignores the mouse, exactly like an inventory cell, so a click
+		# selects the socket instead of starting a drag out of it.
+		var body := button(overlay,"",at,Vector2(box,box),func(): select_item_slot(i))
+		body.slot=true
+		body.item_kind=Catalog.item_icon(entry) if filled else ""
+		body.short_caption=Catalog.item_short_name(entry) if filled else ""
+		body.accent=slot_tone(entry,lit,filled)
+		body.selected=lit
+		body.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		if filled:
+			var out := button(overlay,"收回",Vector2(at.x+box-38,at.y+box-17),Vector2(37,16),func(): take_item_slot(i),false,10)
+			out.tooltip_text="把这一格收回背包（关闭背包后也能按 [F] 使用或互换）"
+	var label_at := Vector2(from_left,y-22)
+	if bottom:
+		var hud_head := label(overlay,"道具栏   /   [F] 使用·互换   [1][2][3] 切换",label_at,15,GOLD,Vector2(bottom_slot_width,20))
+		hud_head.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		return
+	label(overlay,"道具栏   /   [F] 使用·互换",label_at,17,GOLD,Vector2(inner,26))
+	label(overlay,"拖入即可放入 · 占格再大也只占一格",label_at+Vector2(158,6),11,MUTED,Vector2(inner-158,20))
 
 func draw_cabinet(p: Dictionary, x: float, y: float, wide: float) -> void:
 	var ix := x+22
@@ -1814,9 +2201,27 @@ func draw_loot_details(p: Dictionary, x: float, y: float) -> void:
 		chip.tooltip_text=Catalog.ITEMS[kind].desc
 		slot_x+=118.0
 
+# Ctrl turns the same click into its "smart" twin: Ctrl+left on a loot card hauls
+# the item in, on a consumable it uses it, on a wearable it wears it, and on
+# something already worn it takes it off. Read from the key state rather than the
+# mouse event, because the modifier belongs to the keyboard while the click
+# belongs to the mouse.
+func ctrl_held() -> bool:
+	return Input.is_action_pressed("smart_click")
+
 func take_loot_card(index: int) -> void:
 	session.action("loot_take",{"ref":_loot_index,"index":index})
 	call_deferred("show_inventory")
+
+# Double clicking a loot card: hand the item to the session, which works it into
+# the backpack, tidies that container once if it is full, falls back to the
+# pocket, and gives up in silence when neither can take it. The window is
+# rebuilt from what really happened, so a refusal leaves the card sitting there.
+func auto_store_loot(index: int) -> void:
+	if _loot_index<0:
+		return
+	session.action("auto_store",{"ref":_loot_index,"index":index})
+	show_inventory()
 
 func spare_index(p: Dictionary, key: String) -> int:
 	for i in p.bags.size():
@@ -1870,8 +2275,6 @@ func use_action(item: Dictionary, p: Dictionary) -> Dictionary:
 			if float(p.hp)<float(p.max_hp):
 				return {"text":"使用 · 恢复 45 生命","enabled":true}
 			return {"text":"生命已满 · 留着","enabled":false}
-		"crystal":
-			return {"text":"使用 · 燃晶驱散血香","enabled":true}
 		"ammo":
 			return {"text":"使用 · 补充 48 发弹药","enabled":true}
 		"weapon":
@@ -1890,7 +2293,7 @@ func quick_use_slots(p: Dictionary) -> Array:
 		var items: Array=Catalog.container_items(p[slot])
 		for i in items.size():
 			var kind := str(items[i].kind)
-			if not kind in ["medicine","crystal","ammo"]:
+			if not kind in ["medicine","ammo"]:
 				continue
 			var seen := false
 			for entry in out:
@@ -2062,6 +2465,27 @@ func notify(text: String) -> void:
 	toast_time=5.0
 	toast.visible=true
 
+# Opening tips queue up instead of fighting over the one toast line: the raid-start
+# line and the item bar's own line would otherwise overwrite each other, and the
+# second one is exactly the one written down in the manual. Gameplay notices go
+# through say() for the same reason — an event line should never erase a line the
+# player has not finished reading.
+func say(text: String) -> void:
+	_pending_tips.append(text)
+	if not _tip_running:
+		_tip_running=true
+		run_tips()
+
+func run_tips() -> void:
+	while not _pending_tips.is_empty():
+		var line: String=str(_pending_tips.pop_front())
+		notify(line)
+		await get_tree().create_timer(5.4).timeout
+	_tip_running=false
+
+func popup_tip(text: String) -> void:
+	say(text)
+
 func modal_box(title: String, size: Vector2 = Vector2(800,580)) -> Vector2:
 	clear(overlay)
 	modal=true
@@ -2159,16 +2583,16 @@ func show_help() -> void:
 	var at := modal_box("守夜手册",Vector2(1060,720))
 	var left := at+Vector2(36,100)
 	label(overlay,"01  /  活着带回去",left,23,GOLD)
-	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击\n开局只有角色的临时武器，不能切换\n捡到武器后装备，才能换用更强的武器\n空格闪避 · Q 技能 · R 装填\nF 拾取 / 搜索 / 没东西可捡时急救 · B 燃烧血晶 / 自救\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,190)).add_theme_constant_override("line_spacing",11)
-	label(overlay,"02  /  搜刮要慢慢来",left+Vector2(0,240),23,GOLD)
-	var risk := label(overlay,"对着物资箱按 [F] 开始搜索，物品会每隔约 1.2 秒浮出一件，搜索框和背包可以同时开着；卡片的大小就是它在背包里占的格子。\n\n用鼠标把搜出的物品拖进角色背包或次元口袋即可拿走；担心被偷袭就随时按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽（或双击）就能换装。\n\n背包内按 [R]（或右键）旋转物品，拖动途中按 [R] 图片与占格会一起翻转；点选物品后也可以用面板按钮使用。地上的掉落物直接按 [F] 秒拾。",left+Vector2(0,291),17,MUTED,Vector2(462,268))
+	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取 / 搜索；没东西可捡时再用一次 = 道具栏，最后才是急救针\nF 同时也是道具栏的互动键：[F] 使用或与手上的互换，[1] [2] [3] 切换当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
+	label(overlay,"02  /  搜刮要慢慢来",left+Vector2(0,318),23,GOLD)
+	var risk := label(overlay,"对着物资箱按 [F] 开始搜索，物品会每隔约 1.2 秒浮出一件，搜索框和背包可以同时开着；卡片的大小就是它在背包里占的格子。\n\n用鼠标把搜出的物品拖进角色背包或次元口袋即可拿走；担心被偷袭就随时按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽（或双击）就能换装；背包本身就是一件装备，紫色及以上品质的包占 2×2 格。\n\n背包内按 [R]（或右键）旋转物品，拖动途中按 [R] 图片与占格会一起翻转；点选物品后也可以用面板按钮使用。地上的掉落物直接按 [F] 秒拾。",left+Vector2(0,361),17,MUTED,Vector2(462,262))
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var right := at+Vector2(554,100)
 	label(overlay,"03  /  一同出征，独立撤离",right,23,GOLD)
-	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 E 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点。第一天封锁；第二天长按 E 4 秒独立撤离，受伤中断。第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),18,MUTED,Vector2(463,237))
+	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 [E] 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点：第二天起长按 [E] 4 秒独立撤离，受伤会中断。城门是往返王城的路，全队到齐后长按 [E] 1.5 秒通过。\n\n第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),17,MUTED,Vector2(463,290))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	label(overlay,"04  /  不要遗忘时间",right+Vector2(0,308),23,GOLD)
-	var danger := label(overlay,"前两天后半程围绕黎明印记缩圈，圈完成后 Boss 降临。首日胜利进入第二天并重置圈；第三天直接挑战三阶段血潮女王，胜利后 N 撤离。\n\n倒地可长按 E 救援，背包与身上装备会掉落，手上的临时武器会立刻收回。地上的武器（2×2）和护甲 / 瞄具 / 轻靴（1×2）捡起来装备即可立刻变强。\n\n全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,356),18,MUTED,Vector2(463,220))
+	label(overlay,"04  /  道具栏与不要遗忘时间",right+Vector2(0,368),23,GOLD)
+	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 切换当前格，按 [F] 使用或互换。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天后半程围绕黎明印记缩圈，圈完成后 Boss 降临。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,416),17,MUTED,Vector2(463,268))
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:
