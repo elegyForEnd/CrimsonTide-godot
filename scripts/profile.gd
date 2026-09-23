@@ -1,6 +1,8 @@
 class_name Profile
 extends RefCounted
 
+signal saved
+
 var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"voice_volume":0.9,"music_volume":0.7,"fullscreen":false,"best":0,"pocket":{"key":"white","items":[],"gw":4,"gh":4,"next":1},"bag_key":"white","bags":[{"key":"white","items":[],"next":1}]}
 var path := "user://profile.json"
 
@@ -8,7 +10,9 @@ func load_profile() -> void:
 	if not FileAccess.file_exists(path):
 		sanitize_storage()
 		return
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	apply_data(JSON.parse_string(FileAccess.get_file_as_string(path)))
+
+func apply_data(parsed) -> void:
 	if parsed is Dictionary and parsed.get("version",0) == 1:
 		for key in data:
 			if parsed.has(key) and typeof(parsed[key]) == typeof(data[key]):
@@ -51,7 +55,8 @@ func save_profile() -> void:
 	if file:
 		file.store_string(JSON.stringify(data,"\t"))
 		file.close()
-		DirAccess.rename_absolute(path+".tmp",path)
+		if DirAccess.rename_absolute(path+".tmp",path)==OK:
+			saved.emit()
 
 func level() -> int:
 	return 1 + int(data.xp / 180)

@@ -40,7 +40,7 @@ func _process(dt: float) -> bool:
 			s.action("raid_choice",{"choice":"continue"})
 			stage=3
 		elif stage==3 and s.raid.day==3:
-			if s.raid.phase!="boss" or s.enemies.back().max_hp!=3600:
+			if s.raid.phase!="boss" or s.enemies.back().max_hp!=4800:
 				push_error("Final encounter did not scale to remaining host")
 				quit(1)
 			stage=4
@@ -51,7 +51,14 @@ func _process(dt: float) -> bool:
 			s.action("raid_choice",{"choice":"extract"})
 			stage=6
 	elif s.running:
+		if s.duration!=300:
+			push_error("Client did not receive the five-minute day")
+			quit(1)
 		if s.raid.day==2 and s.raid.phase=="boss" and not s.raid.hazards.is_empty():
+			for e in s.enemies:
+				if e.get("raid_boss",false) and not is_equal_approx(e.max_hp,2700*1.55):
+					push_error("Client received incorrect cooperative boss health")
+					quit(1)
 			client_saw_boss=true
 		if s.raid.phase=="choice" and stage==0:
 			if not client_saw_boss:

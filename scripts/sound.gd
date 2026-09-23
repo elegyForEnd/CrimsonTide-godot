@@ -33,6 +33,7 @@ var motion_state: Dictionary = {}
 var cinema_active := false
 var scene_kind := "title"
 var sequence := 0
+const BossPresentation = preload("res://scripts/boss_presentation.gd")
 var dialogue: HeroVoice
 var dialogue_duck := 0.0
 var music: TideMusic
@@ -78,6 +79,11 @@ func _ready() -> void:
 		for i in int(VARIANTS[kind]):
 			variants.append(load("res://assets/audio/%s-%d.wav" % [kind,i]))
 		clips[kind]=variants
+	for key in BossPresentation.KEYS:
+		for action in ["charge","quick","sweep","burst","lance","ritual","fall","guard","break"]:
+			if action in ["guard","break"] and key not in ["thorn","knight"]: continue
+			var cue: String=key+"-"+action
+			clips[cue]=[load("res://assets/audio/bosses/"+cue+".wav")]
 	for hero in 3:
 		charges.append(load("res://assets/audio/ultimate-charge-%d.wav" % hero))
 		bursts.append(load("res://assets/audio/ultimate-burst-%d.wav" % hero))
@@ -98,6 +104,7 @@ func _ready() -> void:
 	add_child(music)
 
 func priority(kind: String) -> int:
+	if kind.contains("-") and kind.get_slice("-",0) in BossPresentation.KEYS: return 92
 	if kind=="skill": return 95
 	if kind in ["hurt","down","bell"]: return 90
 	if kind in ["slash","heavy","magic","shot"]: return 70
@@ -172,6 +179,17 @@ func stop_cue(kind: String, emitter: int) -> void:
 	for voice in voices:
 		if voice.get_meta("cue","")==kind and int(voice.get_meta("emitter",0))==emitter:
 			voice.stop()
+
+func boss(data: Dictionary) -> void:
+	var cue := BossPresentation.cue(data)
+	var emitter := int(data.id)
+	if data.action in ["release","fall","break"]:
+		stop_cue(BossPresentation.KEYS[int(data.boss_kind)]+"-charge",emitter)
+	# Radial volleys share one cue per source and tick; play() de-duplicates them.
+	var gain: float={"charge":1.0,"release":6.0,"phase":7.0,"entrance":5.0,"guard":2.0,"break":6.0,"fall":5.0}.get(data.action,0.0)
+	play(cue,0,data.p,gain,emitter)
+	if data.action=="release" and data.get("shape","")=="cone" and float(data.get("total",0))>=1.4:
+		play(BossPresentation.KEYS[int(data.boss_kind)]+"-burst",0,data.p,1.0,emitter)
 
 func attack(weapon: int, combo: int, at: Vector2, emitter: int) -> void:
 	var kind: String=["shot","slash","heavy","magic"][clampi(weapon,0,3)]

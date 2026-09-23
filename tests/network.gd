@@ -63,6 +63,9 @@ func _process(dt: float) -> bool:
 				# A weapon can only be used after it has been found and equipped,
 				# so every Watcher is handed one piece of field loot to put on.
 				for p in session.players.values():
+					# Fit the 2x2 test weapon and relic alongside the free medicine.
+					p.backpack=Catalog.clean_container(p.backpack,Vector2i(4,4))
+					p.backpack.key="green"
 					Catalog.place_item(p.backpack,Catalog.make_equipment("weapon",2,2))
 				session.enemies.clear()
 				session.spawn_timer=999

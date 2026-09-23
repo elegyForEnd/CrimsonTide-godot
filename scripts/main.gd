@@ -41,6 +41,8 @@ const MUTED := Color("969aaa")
 const RED := Color("ad4056")
 const GOLD := Color("c5a67b")
 var profile := Profile.new()
+var online_service: OnlineService
+var online_ui_busy := false
 var session: TideSession
 var sound: TideSound
 var field: Battlefield
@@ -105,7 +107,6 @@ var grids: Dictionary = {}
 var bag_signature := ""
 var nickname: LineEdit
 var address: LineEdit
-var long_run := false
 var extra_meds := 0
 var toast_time := 0.0
 var modal := false
@@ -118,6 +119,10 @@ var damage_tween: Tween
 
 func _ready() -> void:
 	profile.load_profile()
+	online_service=OnlineService.new()
+	add_child(online_service)
+	online_service.watch(profile)
+	online_service.status.connect(notify)
 	setup_inputs()
 	sound=TideSound.new()
 	add_child(sound)
@@ -194,7 +199,7 @@ func _ready() -> void:
 	set_music_volume(float(profile.data.music_volume))
 	if profile.data.fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	show_title()
+	show_account()
 	# A deterministic screenshot/smoke path, separate from normal player saves.
 	if "--preview-camp" in OS.get_cmdline_user_args():
 		session.solo(config())
@@ -222,6 +227,168 @@ func _ready() -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("res://build/preview-"+page_name+".png")
 		get_tree().quit()
+
+func set_online_busy(value: bool) -> void:
+	online_ui_busy=value
+	for child in page.get_children():
+		if child is Button: child.disabled=value
+
+func show_account() -> void:
+	if online_ui_busy or online_service.busy:
+		notify("正在处理同步，请稍候。")
+		return
+	online_service.syncing=false
+	new_page("account")
+	background(0.7)
+	header("守夜人通行证","ACCOUNT   /   注册、登录或离线游客")
+	label(page,"账号",Vector2(430,255),20)
+	var username := line_edit(page,"",Vector2(430,300),Vector2(580,54),"3–24 位英文字母、数字或下划线")
+	username.max_length=24
+	label(page,"密码",Vector2(430,377),20)
+	var password := line_edit(page,"",Vector2(430,420),Vector2(580,54),"8–128 个字符")
+	password.secret=true
+	password.max_length=128
+	button(page,"登录",Vector2(430,520),Vector2(280,56),func(): account_submit(username.text,password.text,false),true)
+	button(page,"注册并登录",Vector2(730,520),Vector2(280,56),func(): account_submit(username.text,password.text,true))
+	button(page,"游客登录 · 离线也能玩",Vector2(430,610),Vector2(580,56),func():
+		online_service.token=""
+		online_service.guest=true
+		online_service.account_id=""
+		online_service.account_name="游客"
+		switch_profile("user://profile.json")
+		show_title())
+	label(page,"游客进度保存在本机；登录账号后可选择云端同步。",Vector2(430,706),17,MUTED,Vector2(670,36))
+	label(page,"服务器："+online_service.api_url,Vector2(430,755),16,MUTED,Vector2(780,36))
+
+func account_submit(username: String, password: String, create_account: bool) -> void:
+	if online_ui_busy: return
+	set_online_busy(true)
+	notify("正在连接账号服务器…")
+	var reply := await online_service.authenticate(username.strip_edges(),password,create_account)
+	set_online_busy(false)
+	if not reply.ok:
+		notify(str(reply.get("error","登录失败。")))
+		return
+	var key := (online_service.api_url+"/"+online_service.account_id).sha256_text()
+	switch_profile("user://account-"+key+".json")
+	show_storage()
+
+func switch_profile(path: String) -> void:
+	profile.data=Profile.new().data.duplicate(true)
+	profile.path=path
+	profile.load_profile()
+	online_service.dirty=false
+	online_service.revision=0
+	set_volume(float(profile.data.volume))
+	set_voice_volume(float(profile.data.voice_volume))
+	set_music_volume(float(profile.data.music_volume))
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if profile.data.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
+
+func show_storage() -> void:
+	if online_ui_busy or online_service.busy:
+		notify("正在同步，请稍候。")
+		return
+	new_page("storage")
+	background(0.75)
+	header("账号与存档","PROFILE   /   "+online_service.account_name)
+	label(page,"本地进度  ·  银币 %d  /  等级 %d  /  远征 %d" % [profile.data.coins,profile.level(),profile.data.runs],Vector2(230,255),25,GOLD,Vector2(1000,50))
+	label(page,"当前："+("自动同步云端" if online_service.syncing else "仅本地保存"),Vector2(230,324),21)
+	label(page,"每个账号独立保存；游客原有存档仍保留。",Vector2(230,379),18,MUTED)
+	button(page,"使用本地 · 进入游戏",Vector2(230,451),Vector2(470,60),func(): online_service.syncing=false; show_title(),true)
+	button(page,"查看云端 / 设置同步",Vector2(735,451),Vector2(470,60),inspect_cloud).disabled=online_service.guest
+	button(page,"导入本机游客进度…",Vector2(230,544),Vector2(470,60),confirm_guest_import).disabled=online_service.guest
+	button(page,"切换账号 / 游客",Vector2(735,544),Vector2(470,60),show_account)
+	button(page,"继续游戏",Vector2(230,645),Vector2(975,60),show_title)
+	label(page,"离线时仍保存本地。同步冲突会暂停上传，等待你选择保留哪份。",Vector2(230,742),18,MUTED,Vector2(1060,40))
+
+func confirm_guest_import() -> void:
+	online_service.syncing=false
+	new_page("storage")
+	background(0.75)
+	header("导入游客进度","会替换当前账号的本地进度；原存档会保留为 .backup 文件")
+	button(page,"确认导入游客存档",Vector2(430,360),Vector2(580,60),func():
+		backup_profile()
+		var guest_profile := Profile.new()
+		guest_profile.load_profile()
+		profile.apply_data(guest_profile.data)
+		profile.save_profile()
+		show_storage())
+	button(page,"取消",Vector2(430,460),Vector2(580,60),show_storage)
+
+func backup_profile() -> void:
+	if FileAccess.file_exists(profile.path):
+		DirAccess.copy_absolute(profile.path,profile.path+".backup")
+
+func inspect_cloud() -> void:
+	if online_ui_busy or online_service.busy: return
+	online_service.syncing=false
+	set_online_busy(true)
+	var reply := await online_service.request("/v1/profile")
+	set_online_busy(false)
+	if not reply.ok:
+		notify(str(reply.get("error","读取云端失败。")))
+		return
+	online_service.revision=int(reply.revision)
+	new_page("storage")
+	background(0.75)
+	header("选择存档来源","选择后开启自动同步；替换本地前会保留 .backup 备份")
+	label(page,"本地  ·  银币 %d  /  远征 %d" % [profile.data.coins,profile.data.runs],Vector2(230,266),25,GOLD)
+	var cloud = reply.get("data")
+	label(page,"云端  ·  银币 %d  /  远征 %d" % [int(cloud.get("coins",0)),int(cloud.get("runs",0))] if cloud is Dictionary else "云端暂无存档",Vector2(230,344),25,INK)
+	button(page,"上传本地 · 替换云端并同步",Vector2(230,455),Vector2(975,60),func():
+		if online_ui_busy: return
+		set_online_busy(true)
+		var result := await online_service.upload()
+		set_online_busy(false)
+		if result.ok:
+			online_service.syncing=true
+			show_title()
+		else: notify(str(result.get("error","上传失败。"))))
+	button(page,"使用云端 · 替换本地并同步",Vector2(230,555),Vector2(975,60),func():
+		backup_profile()
+		profile.apply_data(cloud)
+		profile.save_profile()
+		online_service.dirty=false
+		online_service.syncing=true
+		show_title()).disabled=not cloud is Dictionary
+	button(page,"返回 · 继续使用本地",Vector2(230,655),Vector2(975,60),show_storage)
+
+func show_server_rooms() -> void:
+	new_page("server_rooms")
+	background(0.75)
+	header("服务器房间","ONLINE ROOMS   /   "+online_service.api_url)
+	label(page,"由服务器运行远征；将六位房间号分享给好友即可加入。",Vector2(230,255),23,GOLD,Vector2(1030,48))
+	label(page,"你的代号",Vector2(230,327),18,MUTED)
+	nickname=line_edit(page,profile.data.name,Vector2(230,370),Vector2(975,55),"输入代号")
+	nickname.max_length=16
+	button(page,"创建服务器房间",Vector2(230,480),Vector2(470,60),func(): connect_server_room(""),true)
+	var code := line_edit(page,"",Vector2(735,480),Vector2(470,60),"输入六位房间号")
+	code.max_length=6
+	button(page,"加入服务器房间",Vector2(735,575),Vector2(470,60),func(): connect_server_room(code.text.strip_edges().to_upper(),false),true)
+	label(page,"游客也可联机；账号的本地 / 云端选择与联机方式独立。",Vector2(230,682),18,MUTED,Vector2(1000,40))
+	button(page,"← 返回直连",Vector2(230,780),Vector2(470,55),show_network)
+
+func connect_server_room(code: String, create_room: bool = true) -> void:
+	if online_ui_busy: return
+	# An empty join field must never create a room accidentally.
+	if not create_room and code.length()!=6:
+		notify("请输入六位房间号。")
+		return
+	remember_name()
+	set_online_busy(true)
+	var auth := await online_service.ensure_session()
+	if not auth.ok:
+		set_online_busy(false)
+		notify(str(auth.get("error","连接服务器失败。")))
+		return
+	var route := "/v1/rooms" if create_room else "/v1/rooms/"+code.uri_encode()+"/join"
+	var reply := await online_service.request(route,HTTPClient.METHOD_POST)
+	set_online_busy(false)
+	if not reply.ok:
+		notify(str(reply.get("error","创建 / 加入房间失败。")))
+		return
+	var err := session.join_server(reply,config())
+	notify("正在连接房间 "+str(reply.code)+"…" if err==OK else "连接房间失败。")
 
 func fit_ui() -> void:
 	var view := get_viewport().get_visible_rect().size
@@ -386,7 +553,7 @@ func portrait(parent: Node, hero: int, at: Vector2, height: float, camp: bool = 
 
 func item_icon(parent: Node, kind: String, at: Vector2, dimensions: Vector2) -> TextureRect:
 	var icon := TextureRect.new()
-	icon.texture=load("res://assets/icons/"+kind+".svg")
+	icon.texture=TideUIArt.icon(kind)
 	icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.position=at
@@ -407,7 +574,7 @@ func line_edit(parent: Node, value: String, at: Vector2, size: Vector2, placehol
 
 func background(dim: float = 0.0) -> void:
 	var art := TextureRect.new()
-	art.texture=load("res://assets/keyart.png")
+	art.texture=load("res://assets/keyart.png" if page_name=="title" else "res://assets/ui/sanctuary.png")
 	art.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	art.size=Vector2(1440,900)
@@ -437,10 +604,16 @@ func show_title() -> void:
 	background()
 	fade(page,Vector2.ZERO,Vector2(850,900),Color(0.025,0.018,0.035,0.64))
 	ornament(page,Vector2.ZERO,Vector2(1440,900),"title")
-	ornament(page,Vector2(242,59),Vector2(170,170),"seal",Color("c76f78"))
-	label(page,"血潮守望",Vector2(74,124),91,Color("f7e8df"),Vector2(560,140))
-	label(page,"C  R  I  M  S  O  N     T  I  D  E",Vector2(90,260),20,Color("ddc9c2"),Vector2(540,42))
-	ornament(page,Vector2(89,312),Vector2(480,14))
+	var title_logo := TextureRect.new()
+	title_logo.name="TitleLogo"
+	title_logo.texture=load("res://assets/ui/title-crimson-tide-transparent-v1.png")
+	title_logo.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	title_logo.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_logo.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
+	title_logo.position=Vector2(64,75)
+	title_logo.size=Vector2(580,239)
+	title_logo.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	page.add_child(title_logo)
 	var motto := label(page,"当血月升起\n我们依然守望人类的明天",Vector2(92,340),22,Color("c8b6b5"),Vector2(505,90))
 	motto.add_theme_font_override("font",title_font)
 	motto.add_theme_constant_override("line_spacing",12)
@@ -456,6 +629,7 @@ func show_title() -> void:
 		b.focus_mode=Control.FOCUS_ALL
 		b.mouse_entered.connect(func(): select_title_entry(b))
 		b.focus_entered.connect(func(): select_title_entry(b))
+	button(page,"账号 / 存档",Vector2(990,817),Vector2(195,45),show_storage)
 	button(page,"守夜手册",Vector2(1200,817),Vector2(155,45),show_help)
 	label(page,"晨钟城档案   Lv.%02d    /    远征 %d" % [profile.level(),profile.data.runs],Vector2(95,822),13,Color("a599a0"))
 	label(page,"© CRIMSON TIDE   ·   共赴黎明",Vector2(95,867),11,Color("7d717b"))
@@ -467,7 +641,7 @@ func select_title_entry(target: GothicButton) -> void:
 
 func config() -> Dictionary:
 	var payload := profile.storage_payload()
-	return {"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"meds":1+extra_meds,"ready":ready_local or session.authority(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key}
+	return {"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key}
 
 func show_network() -> void:
 	new_page("network")
@@ -498,7 +672,8 @@ func show_network() -> void:
 		var err := session.join(host_address,config())
 		notify("正在连接房主…" if err==OK else "地址无效或网络不可用。")
 	,true)
-	label(page,"房主负责战斗与掉落结算。进入废墟后锁定房间；下一局可重新加入。",Vector2(85,755),17,MUTED)
+	button(page,"服务器房间 · 无需端口映射",Vector2(430,671),Vector2(580,60),show_server_rooms,true)
+	label(page,"IP 直连由房主结算；服务器房间由服务器运行。最多 4 人。",Vector2(85,755),17,MUTED)
 	button(page,"← 返回",Vector2(80,811),Vector2(180,48),func(): session.disconnect_room(); show_title())
 
 func remember_name() -> void:
@@ -524,7 +699,7 @@ func on_lobby() -> void:
 
 func show_camp() -> void:
 	new_page("camp")
-	background(0.74)
+	background(0.08)
 	fade(page,Vector2(480,0),Vector2(960,900),Color(0.025,0.02,0.037,0.97),true)
 	fade(page,Vector2.ZERO,Vector2(470,900),Color(0.025,0.02,0.037,0.6))
 	ornament(page,Vector2.ZERO,Vector2(1440,900),"title")
@@ -600,14 +775,14 @@ func show_camp() -> void:
 		var y := 259+row*69
 		portrait(page,p.hero,Vector2(1080,y+22),61)
 		label(page,p.name,Vector2(1115,y-3),18,INK,Vector2(148,32))
-		label(page,("房主" if p.id==1 else "队友")+" · "+Catalog.HEROES[p.hero].name,Vector2(1115,y+26),12,MUTED)
+		label(page,("房主" if p.id==session.leader_id else "队友")+" · "+Catalog.HEROES[p.hero].name,Vector2(1115,y+26),12,MUTED)
 		label(page,"就绪" if p.ready else "整备",Vector2(1300,y+7),13,Color("98bcae") if p.ready else GOLD,Vector2(60,30))
 		row+=1
 	for i in range(row,4):
 		label(page,"◇",Vector2(1066,260+i*69),22,Color("68505d"),Vector2(36,40))
 		label(page,"等待守夜人" if session.online else "空席",Vector2(1116,263+i*69),15,Color("746671"))
 	if session.online:
-		button(page,"邀请好友 · 复制地址",Vector2(1050,555),Vector2(310,42),copy_invite)
+		button(page,"房间 "+session.room_code+" · 复制" if session.server_room else "邀请好友 · 复制地址",Vector2(1050,555),Vector2(310,42),copy_invite)
 	else:
 		label(page,"单人远征  /  无需联网",Vector2(1061,561),13,MUTED)
 	ornament(page,Vector2(1047,611),Vector2(314,10))
@@ -623,18 +798,21 @@ func show_camp() -> void:
 		else: say("物资已满或银币不足。")
 	)
 	supply.disabled=extra_meds>=2
-	var mode := button(page,"长局 · 每天 15 分钟" if long_run else "标准局 · 每天 8 分钟",Vector2(1024,735),Vector2(349,43),func(): long_run=not long_run; show_camp())
-	mode.disabled=not session.authority()
+	label(page,"每天 5 分钟 · 第 3 分钟缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
 	ornament(page,Vector2(62,814),Vector2(1314,10))
 	button(page,"← 离开营地",Vector2(60,839),Vector2(183,43),leave_to_title)
 	button(page,"守夜手册",Vector2(251,839),Vector2(165,43),show_help)
 	label(page,"活着带回来的，才属于你。",Vector2(583,849),16,Color("a797a3"))
-	if session.authority():
-		button(page,"全队出发    →",Vector2(1032,831),Vector2(340,61),func(): session.launch(long_run),true).add_theme_font_size_override("font_size",27)
+	if session.is_leader():
+		button(page,"全队出发    →",Vector2(1032,831),Vector2(340,61),func(): session.request_launch(),true).add_theme_font_size_override("font_size",27)
 	else:
 		button(page,"取消准备" if session.players.get(session.my_id(),{}).get("ready",false) else "准备出发",Vector2(1032,831),Vector2(340,61),func(): ready_local=not ready_local; session.configure(config()),true)
 
 func copy_invite() -> void:
+	if session.server_room:
+		DisplayServer.clipboard_set(session.room_code)
+		notify("已复制服务器房间号："+session.room_code)
+		return
 	var ip := "127.0.0.1"
 	for candidate in IP.get_local_addresses():
 		if candidate.begins_with("192.168.") or candidate.begins_with("10.") or candidate.begins_with("172."):
@@ -1004,7 +1182,7 @@ func update_hud() -> void:
 	hud.raid_wait.visible=choosing
 	hud.raid_extract.visible=(choosing or session.raid.get("phase","")=="complete") and p.status=="active"
 	var remaining := maxi(0,int(ceil(session.duration-float(session.raid.get("time",0)))))
-	hud.time.text="第 %d 天 · %02d:%02d / %s" % [session.raid.get("day",1),remaining/60,remaining%60,{"explore":"血潮收缩" if float(session.raid.get("time",0))>=session.duration*0.5 else "血月初升","boss":"黎明决战","choice":"黎明抉择","complete":"终夜已破"}.get(session.raid.get("phase","explore"),"")]
+	hud.time.text="第 %d 天 · %02d:%02d / %s" % [session.raid.get("day",1),remaining/60,remaining%60,{"explore":"血潮收缩" if float(session.raid.get("time",0))>=session.SHRINK_START else "血月初升","boss":"黎明决战","choice":"黎明抉择","complete":"终夜已破"}.get(session.raid.get("phase","explore"),"")]
 	hud.mission.text="王城探索 · 缩圈前自动返回边境" if session.map_id=="city" else ("晨钟封印 %d/3 · %s" % [session.objectives,"可撤离" if session.can_extract() else "撤离封锁 · 击败黎明 Boss"])
 	var block := Ecology.block_at(session.ruins,p.p) if session.map_id=="border" else -1
 	hud.area.text=str(session.ruins.sites[block].name)+" · "+Ecology.site_status(session,block) if block>=0 else ("击败骑士与全部守卫，领取王庭珍藏" if session.map_id=="city" else "野外稀有补给 · 清理据点获得宝箱")
@@ -1015,7 +1193,7 @@ func update_hud() -> void:
 	# The HUD icon follows whatever is in hand, looted or temporary.
 	if int(hud.get("weapon_family",-1))!=family:
 		hud.weapon_family=family
-		hud.weapon_icon.texture=load("res://assets/icons/"+Catalog.WEAPON_ICONS[family]+".svg")
+		hud.weapon_icon.texture=TideUIArt.icon(Catalog.WEAPON_ICONS[family])
 	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if family==0 else " · 三连击" if family==1 else ""))
 	hud.scent.text="战利品  %d ◈   /   击杀 %d" % [loot_total(p),p.kills]
 	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  就绪")
@@ -1461,7 +1639,7 @@ func show_drag_item(held: Dictionary) -> void:
 	var stroke := drag_ghost.get_child(3) as ObjectRing
 	if icon==null or plate==null:
 		return
-	icon.texture=load("res://assets/icons/"+Catalog.item_icon(held)+".svg")
+	icon.texture=TideUIArt.icon(Catalog.item_icon(held))
 	# The lifted art turns with the item, exactly like the slot it came from.
 	icon.rotation=PI*0.5 if bool(drag.rot) else 0.0
 	plate.add_theme_stylebox_override("panel",style(Color(accent.darkened(0.88),0.62),Color(accent,0.95)))
@@ -2386,8 +2564,8 @@ func on_finished() -> void:
 		i+=1
 	label(page,"当前等级  Lv.%02d     ·     城邦银币  %d     ·     历史最佳  %d" % [profile.level(),profile.data.coins,profile.data.best],Vector2(83,741),19,MUTED)
 	button(page,"返回标题",Vector2(80,804),Vector2(205,57),leave_to_title)
-	if session.authority():
-		button(page,"返回营地 · 继续守夜  →",Vector2(978,797),Vector2(382,66),func(): session.return_to_camp(),true)
+	if session.is_leader():
+		button(page,"返回营地 · 继续守夜  →",Vector2(978,797),Vector2(382,66),func(): session.request_camp(),true)
 	else:
 		label(page,"等待房主带领小队返回营地…",Vector2(987,814),18,GOLD)
 
@@ -2397,7 +2575,8 @@ func on_effect(kind: String,pos: Vector2) -> void:
 		return
 	if page_name=="game":
 		sound.listener.global_position=field.camera
-		sound.play("death" if kind=="hit" else kind,-1,pos)
+		var cue: String={"hit":"death","guard":"impact-metal","guard-break":"impact-heavy"}.get(kind,kind)
+		sound.play(cue,-1,pos)
 
 func flash_damage_feedback() -> void:
 	if damage_tween:
@@ -2424,6 +2603,8 @@ func on_combat_audio(data: Dictionary) -> void:
 	var voice_hero := int(speaker.get("hero",0))
 	sound.dialogue.local_id=session.my_id()
 	match str(data.kind):
+		"boss-vfx":
+			sound.boss(data)
 		"ultimate-start":
 			sound.stop_cue("reload",emitter)
 			sound.stop_cue("magic-windup",emitter)
@@ -2563,7 +2744,7 @@ func show_settings() -> void:
 		profile.save_profile()
 	)
 	label(overlay,"日语角色语音 · 奥义配有中文字幕",at+Vector2(37,443),16,MUTED)
-	label(overlay,"成长自动保存；联机使用固定 UDP 24872 端口。",at+Vector2(37,485),15,MUTED)
+	label(overlay,"成长自动保存；标题页「账号 / 存档」可设置云同步。",at+Vector2(37,485),15,MUTED)
 
 func set_music_volume(value: float) -> void:
 	var bus := AudioServer.get_bus_index("Music")
@@ -2589,10 +2770,10 @@ func show_help() -> void:
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var right := at+Vector2(554,100)
 	label(overlay,"03  /  一同出征，独立撤离",right,23,GOLD)
-	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 [E] 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点：第二天起长按 [E] 4 秒独立撤离，受伤会中断。城门是往返王城的路，全队到齐后长按 [E] 1.5 秒通过。\n\n第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),17,MUTED,Vector2(463,290))
+	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 [E] 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点：第二天起长按 [E] 4 秒独立撤离，受伤会中断。城门是往返王城的路，全队到齐后长按 [E] 1.5 秒通过。\n\n第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),17,MUTED,Vector2(463,262))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	label(overlay,"04  /  道具栏与不要遗忘时间",right+Vector2(0,368),23,GOLD)
-	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 切换当前格，按 [F] 使用或互换。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天后半程围绕黎明印记缩圈，圈完成后 Boss 降临。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,416),17,MUTED,Vector2(463,268))
+	label(overlay,"04  /  道具栏与不要遗忘时间",right+Vector2(0,318),23,GOLD)
+	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 切换当前格，按 [F] 使用或互换。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天每天 5 分钟，第 3 分钟围绕黎明印记缩圈，第 5 分钟 Boss 降临。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,366),17,MUTED,Vector2(463,268))
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:

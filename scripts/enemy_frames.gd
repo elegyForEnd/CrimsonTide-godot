@@ -17,13 +17,14 @@ static func pose(e: Dictionary, clock: float) -> int:
 		return 11
 	if float(e.get("stagger",0))>0 or float(e.get("flash",0))>0:
 		return 10
+	if float(e.get("guard_time",0))>0: return 5
 	if float(e.get("attack_time",0))>0:
 		var elapsed: float=float(e.attack_total)-float(e.attack_time)
 		if e.get("raid_boss",false):
 			return 5 if elapsed<e.attack_total-0.65 else 6
 		if int(e.type)==4:
 			var name: String=e.get("move_name","combo")
-			var marks: Array=[0.65,1.10,1.65] if name=="combo" else ([0.85] if name=="thrust" else [1.15])
+			var marks: Array=e.get("attack_marks",preload("res://scripts/boss_tactics.gd").KNIGHT_MOVES.get(name,preload("res://scripts/boss_tactics.gd").KNIGHT_MOVES.combo).marks)
 			for mark in marks:
 				if elapsed<float(mark): return 5
 				if elapsed<float(mark)+0.18: return 6

@@ -27,6 +27,10 @@ func run() -> void:
 	session.solo({"hero":0})
 	session.launch(false,1729)
 	session.enemies.clear()
+	# Use an isolated sparring room: damage locks border habitats against respawn.
+	session.map_id="city"
+	session.ruins=RoyalCity.new()
+	session.ruins.generate(1729)
 	session.ruins.walls.clear()
 	session.spawn_timer=9999
 	var p: Dictionary=session.players[1]

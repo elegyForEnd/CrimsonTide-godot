@@ -31,7 +31,7 @@ func run() -> void:
 	for corner in [Vector2.ZERO,Ruins.SIZE,Vector2(6400,0),Vector2(0,4800)]:
 		check(corner.distance_to(first)<s.safe_radius(),"Reset circle covers whole map")
 	check(not s.ruins.blocked(first,30),"Random arena walkable")
-	s.raid.time=s.duration*0.5
+	s.raid.time=s.SHRINK_START
 	var radius := s.safe_radius()
 	s.raid.time=s.duration-0.1
 	check(s.safe_radius()<radius and boss(s).is_empty(),"Shrinks before boss appears")
@@ -50,11 +50,11 @@ func run() -> void:
 	check(s.raid.day==2 and s.raid.phase=="explore" and s.raid.time==0,"First boss starts day two and resets time")
 	check(s.safe_center().distance_to(first)>700 and s.safe_radius()>4000,"New centre and reset circle")
 	check(s.can_extract(),"Day two extraction enabled")
-	check(int(p.get("boss_reward",0))==100,"First reward awarded once")
+	check(int(p.get("boss_reward",0))==150,"First reward awarded once")
 	# Optional city must not be a way to bypass the closing circle.
 	p.p=s.CITY_GATE
 	check(s.travel_city(),"City available in early exploration")
-	s.raid.time=s.duration*0.5-0.01
+	s.raid.time=s.SHRINK_START-0.01
 	s.simulate(0.02)
 	check(s.map_id=="border" and not s.can_travel(),"City returns party when shrinking starts")
 	p.p=s.safe_center()+Vector2(130,0)
@@ -83,7 +83,7 @@ func run() -> void:
 	s.simulate(0.01)
 	check(s.raid.day==3 and s.raid.phase=="boss","Third day immediately starts final boss")
 	check(ally.status=="extracted" and not s.can_extract(),"Extracted ally stays out and final battle locks exits")
-	check(boss(s).max_hp==3600,"Boss scales with remaining participants")
+	check(boss(s).max_hp==4800,"Boss scales with remaining participants")
 	var queen := boss(s)
 	for fraction in [1.0,0.55,0.25]:
 		queen.hp=queen.max_hp*fraction
@@ -108,7 +108,7 @@ func run() -> void:
 	s.perform(1,"raid_choice",{"choice":"extract"})
 	s.simulate(0.01)
 	check(not s.running and s.results[1].escaped and s.results[2].escaped,"Party settles after independent extraction")
-	check(s.results[1].shared==750 and s.results[2].shared==0,"Boss rewards belong only to participants")
+	check(s.results[1].shared==1100 and s.results[2].shared==0,"Boss rewards belong only to participants")
 	var centres: Dictionary={}
 	var kinds: Dictionary={}
 	for seed in range(1,13):

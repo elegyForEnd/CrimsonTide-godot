@@ -31,8 +31,16 @@ static func region(index: int) -> Rect2:
 
 static func pose(e: Dictionary, clock: float) -> int:
 	if float(e.get("hp",1))<=0: return 11
+	if float(e.get("stagger",0))>0: return 10
+	if float(e.get("guard_time",0))>0: return 5
 	if float(e.get("attack_time",0))>0:
 		var passed: float=e.attack_total-e.attack_time
+		if e.has("attack_marks"):
+			for mark in e.attack_marks:
+				if passed<float(mark)-0.22: return 5
+				if passed<float(mark): return 4
+				if passed<float(mark)+0.20: return 6
+			return 7
 		var windup: float=e.get("windup",1.15)
 		if passed<windup*0.35: return 4
 		if passed<windup: return 5

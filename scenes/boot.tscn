@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/boot.gd" id="1_boot"]
+[ext_resource type="FontFile" path="res://assets/NotoSerifSC.ttf" id="2_font"]
+[ext_resource type="VideoStream" path="res://pv/pv.ogv" id="3_video"]
+
+[node name="Boot" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_boot")
+
+[node name="Black" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Advice" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.16
+anchor_top = 0.26
+anchor_right = 0.84
+anchor_bottom = 0.74
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 36
+
+[node name="Title" type="Label" parent="Advice"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.08, 0.08, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 38
+text = "健康游戏忠告"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="Advice"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92, 0.92, 0.92, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/line_spacing = 14
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "抵制不良游戏，拒绝盗版游戏。\n注意自我保护，谨防受骗上当。\n适度游戏益脑，沉迷游戏伤身。\n合理安排时间，享受健康生活。"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Advice"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.42, 0.42, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+text = "空格 / 回车跳过   ·   Esc 进入游戏"
+horizontal_alignment = 1
+
+[node name="VideoFrame" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+ratio = 1.76470588235294
+stretch_mode = 2
+
+[node name="Video" type="VideoStreamPlayer" parent="VideoFrame"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+stream = ExtResource("3_video")
+expand = true
+
+[connection signal="finished" from="VideoFrame/Video" to="." method="_on_video_finished"]

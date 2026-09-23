@@ -23,10 +23,13 @@ var velocity_visual: Dictionary = {}
 var previous_positions: Dictionary = {}
 var loot_icons: Dictionary = {}
 var combat: CombatVisuals
+var boss_fx: Node2D
 var character_frames: CharacterFrames
 var move_phases: Dictionary = {}
+var blood_tide = preload("res://scripts/blood_tide.gd").new()
 
 func _ready() -> void:
+	blood_tide.setup(self)
 	var face := FontVariation.new()
 	face.base_font=load("res://assets/NotoSansSC.ttf")
 	face.variation_opentype={"wght":450.0}
@@ -51,6 +54,12 @@ func _ready() -> void:
 	combat=CombatVisuals.new()
 	combat.field=self
 	add_child(combat)
+	boss_fx=preload("res://scripts/boss_vfx.gd").new()
+	boss_fx.field=self
+	add_child(boss_fx)
+	session.combat_event.connect(boss_fx.event)
+	session.map_changed.connect(boss_fx.reset)
+	session.started.connect(boss_fx.reset)
 	character_frames=CharacterFrames.new()
 	session.effect.connect(combat.legacy)
 	session.combat_event.connect(combat.event)
@@ -64,6 +73,7 @@ func _ready() -> void:
 
 func _process(dt: float) -> void:
 	if not visible:
+		blood_tide.update(self)
 		return
 	clock+=dt
 	for e in session.enemies:
@@ -103,6 +113,7 @@ func _process(dt: float) -> void:
 				explored[Vector2i(target/160)+Vector2i(x,y)]=true
 	offset=get_viewport_rect().size/2-camera
 	offset+=Vector2(sin(clock*89),cos(clock*107))*combat.trauma*combat.trauma*13
+	blood_tide.update(self)
 	queue_redraw()
 
 func aim() -> Vector2:
@@ -214,14 +225,7 @@ func _draw() -> void:
 		var at: Vector2=number.p+Vector2(12*number.age,-44*number.age)
 		label(at+Vector2(1,2),number.value,23 if number.heavy else 17,Color(0.05,0.02,0.03,alpha))
 		label(at,number.value,23 if number.heavy else 17,Color(1,0.82,0.48,alpha) if number.heavy else Color(1,0.96,0.85,alpha))
-	# Translucent fog outside the shrinking safety circle.
-	var safe := session.safe_radius()
-	for x in range(maxi(0,int((camera.x-900)/100)*100),mini(int(session.ruins.extent.x),int(camera.x+900)),100):
-		for y in range(maxi(0,int((camera.y-600)/100)*100),mini(int(session.ruins.extent.y),int(camera.y+600)),100):
-			var dist := Vector2(x+50,y+50).distance_to(session.safe_center())
-			if dist>safe:
-				draw_rect(Rect2(x,y,100,100),Color(0.34,0.11,0.28,clampf((dist-safe)/220,0,0.44)))
-	draw_arc(session.safe_center(),safe,0,TAU,160,Color(0.79,0.31,0.47,0.65),4)
+	blood_tide.draw(self)
 	draw_set_transform(Vector2.ZERO)
 	var size := get_viewport_rect().size
 	if world.interior:
@@ -345,7 +349,7 @@ func monster(e: Dictionary) -> void:
 	var aura: Color=Ruins.COLORS[biome].darkened(0.28)
 	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind]+(5 if kind>=14 else 2),Color(aura,0.22 if kind>=5 else 0.0))
 	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind],Color(0,0,0,0.24))
-	if float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
+	if kind!=4 and float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
 		var progress: float=clampf((e.attack_total-e.attack_time)/Ecology.WINDUP[kind],0,1)
 		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,0.4+progress*0.5),2.5,true)
@@ -398,7 +402,7 @@ func monster(e: Dictionary) -> void:
 	var tint := Color(1.6,1.5,1.5) if float(e.get("flash",0))>0 else Color.WHITE
 	draw_texture_rect_region(enemy_frames.sheets[kind],EnemyFrames.sprite_rect(kind),enemy_frames.region(frame),tint)
 	draw_set_transform(offset)
-	if frame==6:
+	if frame==6 and kind!=4:
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
 		if kind==1:
 			draw_arc(pos+aim*24,12,0,TAU,24,Color(color,0.8),2,true)
@@ -512,26 +516,29 @@ func _input(event: InputEvent) -> void:
 		if code in [KEY_1,KEY_2,KEY_3,KEY_4]: map_filter=code-KEY_1
 
 func knight_telegraph(e: Dictionary) -> void:
+	guard_telegraph(e)
 	if e.attack_time<=0: return
 	var passed: float=e.attack_total-e.attack_time
 	var name: String=e.get("move_name","combo")
-	var marks: Array=[0.65,1.10,1.65] if name=="combo" else ([0.85] if name=="thrust" else [1.15])
+	var spec: Dictionary=TideSession.BossTactics.KNIGHT_MOVES.get(name,TideSession.BossTactics.KNIGHT_MOVES.combo)
+	var marks: Array=spec.marks
 	var last: float=marks.back()
 	if passed>last+0.2 and not (name=="thrust" and passed<1.2): return
-	var direction: Vector2=e.attack_aim
-	var col := Color(1.0,0.61,0.37,0.24+sin(clock*18)*0.06)
-	if name=="thrust":
-		var side := direction.orthogonal()*48
-		draw_colored_polygon(PackedVector2Array([e.p-side,e.p+side,e.p+direction*340+side,e.p+direction*340-side]),col)
-		draw_line(e.p,e.p+direction*340,Color("ffdea5"),3,true)
-	else:
-		var radius := 225.0 if name=="storm" else 155.0
-		var arc := PI if name=="storm" else 1.35
-		var poly := PackedVector2Array([e.p])
-		for i in 49: poly.append(e.p+Vector2.from_angle(direction.angle()-arc+2*arc*i/48)*radius)
-		draw_colored_polygon(poly,col)
-		draw_arc(e.p,radius,direction.angle()-arc,direction.angle()+arc,48,Color("ffe1b6"),2,true)
-	label(e.p+Vector2(-60,-178),{"combo":"誓约三连斩","thrust":"逐风突刺","storm":"失乡风暴"}[name],16,Color("ffe1b6"))
+	boss_fx.knight(self,e)
+	var next_hit := 0.0
+	for mark in marks:
+		if float(mark)>passed:
+			next_hit=float(mark)-passed
+			break
+	label(e.p+Vector2(-95,-178),str(spec.label)+"  %.1fs" % next_hit,15,Color("ffe1b6"))
+
+func guard_telegraph(e: Dictionary) -> void:
+	if float(e.get("stagger",0))>0 and e.get("move_name","")=="架势崩解 · 趁机进攻":
+		label(e.p+Vector2(-65,85),"破防 · 进攻窗口",16,Color("ffd891"))
+	if float(e.get("guard_time",0))<=0: return
+	var raised: bool=e.guard_time<=TideSession.BossTactics.GUARD_DURATION-TideSession.BossTactics.GUARD_WINDUP
+	var col := Color("83dcf5") if raised else Color("e8ca87")
+	label(e.p+Vector2(-95,85),"正面格挡 · 绕背 / 重击" if raised else "抬剑架势 · 尚未格挡",15,col)
 
 func draw_raid_world() -> void:
 	if session.raid.is_empty(): return
@@ -541,32 +548,15 @@ func draw_raid_world() -> void:
 		diamond(center,22,Color("b66d9b"))
 		label(center+Vector2(-125,-85),"黎明印记 · 缩圈完成后降临",17,Color("ffd2df"))
 	for h in session.raid.hazards:
-		var col := Color("e999bd")
-		var progress: float=1.0-clampf(h.time/h.total,0,1)
-		var fill := Color(col,0.14+progress*0.18 if not h.fired else 0.62)
+		var tempo := str(h.get("tempo",""))
+		var col := Color("ffa779") if tempo=="快" else (Color("d5a1ff") if tempo=="慢" else Color("e999bd"))
 		var at: Vector2=h.p
 		var aim: Vector2=h.aim
 		var radius: float=h.radius
-		if h.shape=="line":
-			var side := aim.orthogonal()*44
-			var poly := PackedVector2Array([at-side-aim*22,at+side-aim*22,at+aim*radius+side,at+aim*radius-side])
-			draw_colored_polygon(poly,fill)
-			poly.append(poly[0])
-			draw_polyline(poly,col,2,true)
-		elif h.shape=="cone":
-			var poly := PackedVector2Array([at])
-			for i in 41: poly.append(at+Vector2.from_angle(aim.angle()-1.05+2.1*i/40)*radius)
-			draw_colored_polygon(poly,fill)
-			draw_arc(at,radius,aim.angle()-1.05,aim.angle()+1.05,40,col,2,true)
-		else:
-			if h.inner>0:
-				for i in 64:
-					var a := Vector2.from_angle(TAU*i/64)
-					var b := Vector2.from_angle(TAU*(i+1)/64)
-					draw_colored_polygon(PackedVector2Array([at+a*h.inner,at+a*radius,at+b*radius,at+b*h.inner]),fill)
-				draw_arc(at,h.inner,0,TAU,64,col,2,true)
-			else: draw_circle(at,radius,fill)
-			draw_arc(at,radius,0,TAU,80,col,2,true)
+		boss_fx.hazard(self,h)
+		if not tempo.is_empty() and not h.fired:
+			var caption_at: Vector2=at+aim*radius*0.85+Vector2(0,18) if h.shape in ["line","cone"] else at+Vector2(-24,radius+18)
+			label(caption_at,"%s %.1fs" % [tempo,maxf(0,h.time)],12,col)
 
 func draw_boss(e: Dictionary) -> void:
 	var kind: int=e.boss_kind
@@ -580,3 +570,4 @@ func draw_boss(e: Dictionary) -> void:
 	var tint := Color(1.3,1.2,1.2) if float(e.get("flash",0))>0 else Color.WHITE
 	draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(BossFrames.pose(e,clock)),tint)
 	draw_set_transform(offset)
+	guard_telegraph(e)

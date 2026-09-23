@@ -22,7 +22,7 @@ var short_caption := ""
 var item_kind := "":
 	set(value):
 		item_kind=value
-		item_texture=null if value.is_empty() else load("res://assets/icons/"+value+".svg")
+		item_texture=null if value.is_empty() else TideUIArt.icon(value)
 		queue_redraw()
 
 func _init() -> void:
@@ -43,7 +43,7 @@ func _ready() -> void:
 
 func _process(dt: float) -> void:
 	if not item_kind.is_empty() and not item_texture:
-		item_texture=load("res://assets/icons/"+item_kind+".svg")
+		item_texture=TideUIArt.icon(item_kind)
 	heat=move_toward(heat,1.0 if (is_hovered() or has_focus() or selected) and not disabled else 0.0,dt*7)
 	queue_redraw()
 

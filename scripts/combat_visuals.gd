@@ -83,6 +83,10 @@ func legacy(kind: String, at: Vector2) -> void:
 	if at.distance_to(field.camera)>1100:
 		return
 	match kind:
+		"guard": spawn(4,at,Vector2(95,75),0.22,0,Color(0.55,0.88,1))
+		"guard-break":
+			spawn(4,at,Vector2(180,140),0.45,0,Color(1,0.76,0.35))
+			trauma=maxf(trauma,0.2)
 		"hit": spawn(4,at,Vector2(100,90),0.35,0,Color(1,0.45,0.55))
 		"hurt":
 			spawn(7,at,Vector2(105,90),0.25)
