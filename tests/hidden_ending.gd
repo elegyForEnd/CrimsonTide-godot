@@ -227,6 +227,23 @@ func run() -> void:
 	check(TideSession.inside_reap(origin+Vector2(200,-TideSession.FIRE_HALF_WIDTH),origin,Vector2.RIGHT,TideSession.FIRE_LENGTH),"the near side is inside")
 	check(not TideSession.inside_reap(origin-Vector2(60,0),origin,Vector2.RIGHT,TideSession.FIRE_LENGTH),"the ground she stands on is outside")
 
+	# The purple outline is drawn from the same shape, transformed by the caster
+	# and the aim, so its whole area has to be ground the fire burns - and a patch
+	# that reached behind her or off to one side would be visible as a lie.
+	var aims: Array[Vector2] = [Vector2.RIGHT,Vector2.UP,Vector2(-0.6,0.8).normalized()]
+	for aim_dir in aims:
+		var frame := Transform2D(aim_dir.angle(),origin)
+		var drawn := CombatVisuals.patch_local_rect(TideSession.FIRE_LENGTH,TideSession.FIRE_HALF_WIDTH)
+		var inset := drawn.grow(-0.5)
+		for corner in [inset.position,Vector2(inset.end.x,inset.position.y),
+				Vector2(inset.position.x,inset.end.y),inset.end]:
+			check(TideSession.inside_reap(frame*corner,origin,aim_dir,TideSession.FIRE_LENGTH),
+				"the drawn patch corner %s is ground the fire burns" % corner)
+		check(not TideSession.inside_reap(frame*(drawn.position+Vector2(0,-16)),origin,aim_dir,TideSession.FIRE_LENGTH),
+			"nothing beside the drawn patch burns")
+		check(not TideSession.inside_reap(frame*(drawn.end+Vector2(16,0)),origin,aim_dir,TideSession.FIRE_LENGTH),
+			"nothing past the drawn patch burns")
+
 	# The windup is the cut-in, so a hero the manifest does not know still casts.
 	var unknown := {"hero":99}
 	check(TideSession.ONLINE_ULTIMATE_DURATION==necro.ultimate_seconds(unknown),"an unknown hero falls back to the short cut-in")

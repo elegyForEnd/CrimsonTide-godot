@@ -23,7 +23,8 @@ Everything the game consumes is written here:
                                      weapon family, same layout as heroes 0..2
   assets/combat/movement-3.png       1448x1086, 4 columns x 3 rows = walk / run
                                      / dodge, weapons stowed
-  assets/portrait-3.png              camp + result screen bust
+  assets/portrait-3.png              camp screen 立绘, keyed from its own
+                                     reference (see below)
   assets/muyu-idle.png               single standing pose
   assets/muyu-down.png               single fallen pose
   assets/muyu/ultimate-cg.png        three row cut-in for the Q cinematic
@@ -41,8 +42,15 @@ grimoire. Drop a replacement in that folder under the same name and every effect
 built from it follows. The only drawn effect is the underworld fire, which the
 reference sheet does not contain; _flame() is the one place to replace.
 
-Run:  python tools/prepare_muyu_art.py
-      python tools/preview_muyu_art.py   (contact sheets in output/muyu-preview)
+The 立绘 is the one piece that is not cut from either sheet. It comes from
+_refs/muyu-portrait/ref.jpg, a single painted full body on a white backdrop, and
+is keyed by connectivity rather than by colour because her hair, the open book
+and the highlights are the same white as the backdrop. Drop a replacement at
+that path and re-run to swap the 立绘.
+
+Run:  python tools/prepare_muyu_art.py            (everything)
+      python tools/prepare_muyu_art.py portrait   (just the 立绘)
+      python tools/preview_muyu_art.py            (contact sheets in output/muyu-preview)
 """
 
 from __future__ import annotations
@@ -61,6 +69,11 @@ OUT = os.path.join(ASSETS, "muyu")
 
 SHEET1 = os.path.join(REFS, "ref1-battle.png")   # 1448 x 1086 key art + demo
 SHEET2 = os.path.join(REFS, "ref2-sprite.png")   # 2048 x 1152 full sprite sheet
+
+# The camp 立绘: one painted full body on a flat white backdrop rather than a
+# pose sheet, so it is keyed by connectivity instead of by backdrop colour.
+PORTRAIT_REF = os.path.join(REFS, "muyu-portrait", "ref.jpg")
+PORTRAIT_HEIGHT = 900   # the height every 立绘 in the project is stored at
 
 # Hand cropped effect art, lifted from the same reference sheet at full
 # resolution: the curse sigil, the rune cross blade, the rune lance and the
@@ -700,6 +713,50 @@ def _flame(width: int, height: int, seed_index: int, rng) -> Image.Image:
     return Image.fromarray(out, "RGBA")
 
 
+def key_white_backdrop(img: Image.Image, threshold: int = 240, chroma: int = 14,
+                       band: int = 1, soft: float = 15.0) -> Image.Image:
+    """Alpha out a flat white backdrop without eating the white in the art.
+
+    Colour alone cannot do this job: the backdrop, her hair, the open book and
+    the highlights are all the same white, so a threshold would punch holes in
+    the figure. What separates them is connectivity. A near white pixel is only
+    backdrop if the border can reach it through other near white pixels, which
+    keeps every enclosed white - pages, hair, the gaps inside the arch - solid,
+    and still clears the white that shows through the magic circle.
+
+    The one pixel ring just inside the cut then takes a soft alpha from how white
+    it still is, and the backdrop is un-premultiplied back out of those pixels,
+    because the reference was painted over white and a hard cut would leave a
+    pale fringe once it sits on a dark camp screen.
+    """
+    rgb = np.asarray(img.convert("RGB")).astype(np.float32)
+    mn = rgb.min(axis=2)
+    mx = rgb.max(axis=2)
+    white = (mn >= threshold) & ((mx - mn) <= chroma)
+    labels, _ = ndimage.label(white, structure=np.ones((3, 3), dtype=int))
+    touching = np.unique(np.concatenate([labels[0, :], labels[-1, :],
+                                         labels[:, 0], labels[:, -1]]))
+    backdrop = np.isin(labels, touching[touching != 0])
+
+    alpha = np.where(backdrop, 0.0, 1.0)
+    ring = ndimage.binary_dilation(backdrop, iterations=band) & ~backdrop
+    alpha = np.where(ring, np.clip((255.0 - mn) / soft, 0.0, 1.0), alpha)
+
+    solid = alpha > 0.0
+    scale = np.where(solid, alpha, 1.0)[..., None]
+    rgb = np.where(solid[..., None], (rgb - (1.0 - scale) * 255.0) / scale, rgb)
+    return Image.fromarray(
+        np.dstack([np.clip(rgb, 0.0, 255.0), alpha * 255.0]).astype(np.uint8), "RGBA")
+
+
+def build_portrait() -> Image.Image:
+    """墓煜's camp 立绘: the keyed reference, trimmed and scaled to 900 px tall."""
+    art = trim(key_white_backdrop(Image.open(PORTRAIT_REF)))
+    scale = PORTRAIT_HEIGHT / art.height
+    return art.resize((max(1, int(round(art.width * scale))), PORTRAIT_HEIGHT),
+                      Image.LANCZOS)
+
+
 def build_gear() -> None:
     """Portrait, standing and fallen poses, the weapon, and the loot icon."""
     trim(cut2("idle_a")).save(os.path.join(ASSETS, "muyu-idle.png"))
@@ -719,15 +776,10 @@ def build_gear() -> None:
     out[:, :, 3] = np.where(keep, out[:, :, 3], 0)
     trim(Image.fromarray(out, "RGBA")).save(os.path.join(ASSETS, "muyu-down.png"))
 
-    # The portrait is a bust, so it is cropped to the head and shoulders of the
-    # standing pose rather than shrunk whole: at 900 px tall a full body would
-    # put the face well under a fifth of the frame.
-    standing = cut2("idle_a")
-    box = standing.getbbox()
-    bust = standing.crop((box[0], box[1], box[2], box[1] + int((box[3] - box[1]) * 0.46)))
-    bust = trim(bust)
-    bust.resize((max(1, int(bust.width * (900.0 / bust.height))), 900), Image.LANCZOS).save(
-        os.path.join(ASSETS, "portrait-3.png"))
+    # The 立绘 is its own painting rather than the standing pose shrunk down, so
+    # the whole figure - arch, curse circle and grimoire included - is what the
+    # camp screen shows.
+    build_portrait().save(os.path.join(ASSETS, "portrait-3.png"))
 
     # --- the props and effects, all from the reference art -----------------
     raw("grimoire").save(os.path.join(OUT, "grimoire.png"))
@@ -750,7 +802,15 @@ def build_gear() -> None:
 
 
 def main() -> int:
-    for path in (SHEET1, SHEET2):
+    wanted = sys.argv[1:] or ["all"]
+    if "portrait" in wanted and "all" not in wanted:
+        if not os.path.exists(PORTRAIT_REF):
+            print("missing reference: %s" % PORTRAIT_REF, file=sys.stderr)
+            return 1
+        build_portrait().save(os.path.join(ASSETS, "portrait-3.png"))
+        print("墓煜 立绘 written to assets/portrait-3.png")
+        return 0
+    for path in (SHEET1, SHEET2, PORTRAIT_REF):
         if not os.path.exists(path):
             print("missing reference: %s" % path, file=sys.stderr)
             return 1

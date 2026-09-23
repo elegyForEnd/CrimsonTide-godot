@@ -26,8 +26,9 @@ const SOUL_FIRE := Color("a855f7")
 # fire cells in assets/muyu/hellfire.png (3 x 2).
 const RAIN_COLUMNS := 4
 const FIRE_COLUMNS := 3
-# How wide the ultimate's rectangle is drawn. Kept in step with
-# TideSession.FIRE_HALF_WIDTH by the hidden ending test.
+# How wide the rain's lane spread is, as a fraction of the ultimate's rectangle.
+# The patch outline itself is derived from TideSession's own FIRE_* constants so
+# the drawn box and the damage test can never drift apart.
 const FIRE_SPAN := 350.0
 var rain_art: Texture2D = null
 var fire_art: Texture2D = null
@@ -331,6 +332,14 @@ func _draw() -> void:
 		stamp(2 if magic or bullet.owner==0 else 5,bullet.p-bullet.v.normalized()*13,Vector2(94,44) if magic else Vector2(36,16),bullet.v.angle(),tint)
 	draw_set_transform(Vector2.ZERO)
 
+# The patch's outline in its own frame: the caster sits at the origin, the
+# rectangle runs from TideSession.FIRE_BACK behind her feet to `forward` ahead
+# and `half` to each side. The damage test (TideSession.inside_reap) reads the
+# same shape, so the purple box can only ever cover ground that really burns.
+static func patch_local_rect(forward: float, half: float, grow: float = 1.0) -> Rect2:
+	var back := TideSession.FIRE_BACK*grow
+	return Rect2(Vector2(-back,-half*grow),Vector2(forward*grow+back,half*2.0*grow))
+
 func draw_spells() -> void:
 	soul_art()
 	for fx in motes:
@@ -349,21 +358,26 @@ func draw_spells() -> void:
 		var grow := minf(1.0,age/0.35)
 		var fade := clampf((duration-age)/1.1,0,1)
 		if fade<=0.0: continue
-		var span := forward*grow
-		var rect := Rect2(Vector2.ZERO,Vector2(span,half*2.0*grow))
-		spell_light.draw_set_transform(patch.at-aim*span*0.5,aim.angle())
+		# The outline is the damage rectangle itself, drawn in the caster's own
+		# frame: it sits on her, reaches FIRE_LENGTH ahead and FIRE_HALF_WIDTH to
+		# each side. Anchoring it on her (rather than centring it on the patch)
+		# is what makes the purple box agree with the ground that burns.
+		var rect := patch_local_rect(forward,half,grow)
+		spell_light.draw_set_transform(patch.at,aim.angle())
 		spell_light.draw_rect(rect,Color(SOUL_DEEP,0.30*fade))
 		spell_light.draw_rect(rect,Color(SOUL_FIRE,0.62*fade),false,3.0,true)
 		if fire_art:
 			# A flame's art has its base at 0.9 of its own height, so each lane is
 			# stamped with that much offset to stand it on the ground rather than
-			# in it. Flames stay upright: they are billboards, not patch decals.
+			# in it. Flames stay upright: they are billboards, not patch decals,
+			# so the patch frame is resolved into world space by hand instead of
+			# leaning on the rotated transform above.
 			var flame_size := half*1.05
 			for lane in 4:
 				var index := int(fposmod(age*5.0+lane*2.0,6.0))
-				var across := (float(lane)/3.0-0.5)*half*1.8
-				var depth := forward*(0.16+0.24*lane)
-				var ground := Vector2(across,depth)
+				var across := (float(lane)/3.0-0.5)*half*1.8*grow
+				var depth := forward*(0.16+0.24*lane)*grow
+				var ground: Vector2=patch.at+Vector2(across,depth).rotated(aim.angle())
 				necro_stamp(fire_art,FIRE_COLUMNS,2,index,
 					ground+Vector2(0,-flame_size*0.9),Vector2(flame_size,flame_size),
 					0.0,Color(SOUL_FIRE,0.80*fade))

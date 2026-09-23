@@ -2194,6 +2194,10 @@ const NECROMANCER := 3
 const SOUL_REAP_DAMAGE := 150.0
 const FIRE_HALF_WIDTH := 175.0
 const FIRE_LENGTH := 480.0
+# The patch is anchored on the caster but starts a little behind her feet, so an
+# enemy standing on top of her still burns. The drawn outline reads this same
+# constant, which is what keeps the purple box and the damage rectangle equal.
+const FIRE_BACK := 20.0
 const FIRE_TICK := 0.5
 const FIRE_TICK_DAMAGE := 66.0
 const FIRE_DURATION := 6.0
@@ -2225,7 +2229,7 @@ func ultimate_damage(p: Dictionary, base: float) -> float:
 static func inside_reap(at: Vector2, origin: Vector2, aim: Vector2, forward: float) -> bool:
 	var v: Vector2=at-origin
 	var along := v.dot(aim)
-	return along>=-20.0 and along<=forward and absf(v.dot(aim.orthogonal()))<=FIRE_HALF_WIDTH
+	return along>=-FIRE_BACK and along<=forward and absf(v.dot(aim.orthogonal()))<=FIRE_HALF_WIDTH
 
 func update_soul_reaps(dt: float) -> void:
 	for i in range(soul_reaps.size()-1,-1,-1):
