@@ -87,10 +87,10 @@
 
 ### 大招：冥火剑雨
 
-按 `Q` → 立绘切入 → 在**前方矩形区域**召唤紫色符文剑雨。
+按 `Q` → 立绘切入 → 在**前方矩形区域**召唤法阵与符文剑雨。
 
 ```
-矩形：身前 480 × 宽 350（半宽 175）
+矩形：身前 480 × 宽 350（半宽 175，身后 20）
 剑雨：单次 150 伤害（吃大招乘区：天赋 / 护符 / 营地装备 / 手持武器品质）
 冥火：剑雨落点留下紫色冥火区域，持续 6 秒，每 0.5 秒结算 66 伤害
 灼烧：被冥火影响过的怪物自身每 0.6 秒扣 6 生命，持续 6 秒
@@ -105,6 +105,18 @@
 让矩形读起来是"招式"而不是"按键瞬间"）。两者都由主机结算、通过普通
 combat 事件广播给客户端。
 
+**地面表现**在 `CombatVisuals.draw_spells()`：法阵图被拉伸到矩形本身
+（`patch_local_rect()`，与 `inside_reap()` 同源），所以法阵和真正烧到的地面
+是同一个大小同一个朝向；**紫色边框已经去掉**，法阵图就是提示本身。冥火不再走
+"四道直线火柱"，改成**六朵火在大招实际范围内散开**，与剑雨同一套分布规则。
+
+**分布规则**（`spread_over_ring()`）：把法阵切成 `count` 个等角扇区，每个扇区
+正好放一个位置，半径按内外两圈交错，再让角度在扇区内小幅随机——纯随机撒点会扎堆，
+六把剑挤在一起看着像一道糊痕而不是剑雨。剑和火各自一套扇区、错开半个扇区，
+所以两组互不重叠。种子取自「法阵位置 + 朝向」，每个客户端摆出来的是同一场，
+不需要多传字段。每把剑的四个角都要落在法阵椭圆内、且不压在自己脚下的施法者身上，
+`tests/muyu_effects.gd` 会检查这几条（含"扇区里正好一个"的均匀性检查）。
+
 **刷新而不是叠加**：`burn_enemy(refresh=true)` 只重置 `burn_time`，
 不动 `burn_next`（灼烧自己的脉冲时刻表）。这是刻意的：如果刷新把时刻表也
 重置，站在冥火里的怪物会因为每 0.5 秒被刷新一次而永远等不到 0.6 秒的那一跳，
@@ -115,27 +127,50 @@ combat 事件广播给客户端。
 
 ### 素材
 
+墓煜的战斗素材统一放在 `assets/combat/`（工程里所有角色的战斗素材都在这里），
+没有独立角色目录。`assets/muyu/` 已删除，未使用的裁切件在
+`D:\dsh\Game\muyu-backup-20260924-042822\`。
+
 | 文件 | 用途 |
 |---|---|
 | `assets/combat/attack-clean-3.png` | 4×3 攻击图集，三行 = 三个武器族 |
 | `assets/combat/movement-3.png` | 4×3 移动图集，三行 = 走 / 跑 / 闪避 |
+| `assets/combat/muyu-idle.png` | 待机单帧 |
+| `assets/combat/muyu-down.png` | 倒地单帧 |
+| `assets/combat/ultimate-cg.png` | `Q` 切入立绘（三行图集，**不由脚本重建**） |
+| `assets/combat/muyu-hex-ring.png` | 起手法阵 |
+| `assets/combat/muyu-circle.png` | 大招法阵（拉伸覆盖整个生效矩形） |
+| `assets/combat/muyu-flames.png` | 冥火，5 帧单行图集 |
+| `assets/combat/muyu-sword.png` | 剑雨单把素材 |
+| `assets/combat/muyu-rune-rain.png` | 旧的剑雨图集，现在没有代码引用（保留备查） |
 | `assets/portrait-3.png` | 营地与结算立绘 |
-| `assets/muyu-idle.png` | 待机单帧 |
-| `assets/muyu-down.png` | 倒地单帧 |
-| `assets/muyu/ultimate-cg.png` | `Q` 切入立绘 |
-| `assets/muyu/rune-rain.png` | 符文剑雨（4×2 八格） |
-| `assets/muyu/hellfire.png` | 冥火区域（3×2 六格） |
-| `assets/muyu/hex-ring.png` | 咒术法阵 |
-| `assets/muyu/soul-scythe.png` | 初始武器 |
-| `assets/muyu/grimoire.png` | 魔导书 |
-| `assets/muyu/amulet.png` | 护身符图标（备用） |
-| `assets/muyu/hidden-boss.png` | 隐藏 Boss 立绘（备用） |
 | `assets/icons/soul_scythe.svg` | 初始武器图标 |
 | `assets/icons/grimoire_staff.svg` | 备用魔杖图标 |
 | `assets/icons/amulet.svg` | 护身符图标 |
 
-全部由 `python tools/prepare_muyu_art.py` 从两张参考图裁切生成，
+`muyu-circle.png`、`muyu-flames.png`、`muyu-sword.png` 来自 `_refs/muyu-effects/`，
+用 `python tools/prepare_muyu_effects.py` 生成，`--preview` 只出预览不覆盖素材。
+
+**这三张参考图都是"透明画布截图"**：编辑器棋盘格被压进了像素里（火焰 119/161、
+法阵 189/254），而且手上拿到的是 JPEG。抠底按「既中性又够亮」判定背景，只删掉
+和边框连通的那部分，所以暗线条和大招的亮部都留着。**但圆环内部那圈淡辉光已经被
+JPEG 压成灰的**——那里棋盘格和辉光在亮度与中性度上完全重合，任何抠底都分不开。
+现在的处理是把淡到看不见的那一档 alpha 直接归零（`alpha[halo]` 的起点从 0.35 起算），
+让残留的棋盘格落在 1% 以下不透明度上；圆环内部本身是不透明的，所以看不出格子。
+如果那几张画布能**导出成真正的 RGBA PNG** 放进 `_refs/muyu-effects/`，跑一次就干净了。
+
+除法阵圆环外，其余素材由 `python tools/prepare_muyu_art.py` 从两张参考图裁切生成，
 可用 `python tools/preview_muyu_art.py` 输出对位预览到 `output/muyu-preview/`。
+`ultimate-cg.png` 是生图稿而不是裁切稿，所以默认**不重建**（重建会得到完全不同的
+版式，切入动画按三行切分会切错）；要重建得显式写 `cutin`。
+
+`assets/portrait-3.png` 是唯一不来自那两张图集的一张：它的画源是
+`_refs/muyu-portrait/ref.jpg`（在工程目录外一层，与两张图集同一处），独立的一整幅构图。
+换立绘时把新图放到这个路径再跑 `python tools/prepare_muyu_art.py portrait`。
+手边只有立绘、没有 `_refs/` 时，`python tools/key_portrait.py 新图.png 输出路径.png`
+走的是同一套抠底、裁边、900px 标准化流程，结果一致。
+参考图自带 alpha 时按成稿直接使用，只有白底合成图才做连通性抠底；抠底按连通性而不是按
+颜色，因为白发、书页和高光与背景是同一个白，按颜色会把它们一起掏空。
 
 语音与音乐由 `python tools/prepare_muyu_audio.py` 生成：墓煜没有重新录音，
 她的台词是既有演出的降调变速派生，授权与署名沿用 `VOICE-CREDITS.txt`。

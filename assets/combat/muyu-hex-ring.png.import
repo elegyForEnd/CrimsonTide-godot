@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmt3ebgg11a3m"
-path="res://.godot/imported/grimoire-raw.png-3b0999d71943714cba401500c299e62c.ctex"
+uid="uid://pwdp886fpwv5"
+path="res://.godot/imported/muyu-hex-ring.png-8bb1fa707a49c30302050bcc76798f73.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/muyu/raw/grimoire-raw.png"
-dest_files=["res://.godot/imported/grimoire-raw.png-3b0999d71943714cba401500c299e62c.ctex"]
+source_file="res://assets/combat/muyu-hex-ring.png"
+dest_files=["res://.godot/imported/muyu-hex-ring.png-8bb1fa707a49c30302050bcc76798f73.ctex"]
 
 [params]
 

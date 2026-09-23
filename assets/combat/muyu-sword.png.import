@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pog704s1qkdp"
-path="res://.godot/imported/muyu-down.png-20fd947035eae422c30ccda11168d36a.ctex"
+uid="uid://0hfg0lgnplj1"
+path="res://.godot/imported/muyu-sword.png-c94b01268421fda1a853e1afa3e484e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/muyu-down.png"
-dest_files=["res://.godot/imported/muyu-down.png-20fd947035eae422c30ccda11168d36a.ctex"]
+source_file="res://assets/combat/muyu-sword.png"
+dest_files=["res://.godot/imported/muyu-sword.png-c94b01268421fda1a853e1afa3e484e3.ctex"]
 
 [params]
 

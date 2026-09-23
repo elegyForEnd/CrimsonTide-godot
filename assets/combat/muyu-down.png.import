@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dg3d41f5qqtmm"
-path="res://.godot/imported/hex-ring-raw.png-c5e690895576c4bff4267ce39462c907.ctex"
+uid="uid://dprmuvi34jo6y"
+path="res://.godot/imported/muyu-down.png-81e88c591820bdf986fd74bca9ac4317.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/muyu/raw/hex-ring-raw.png"
-dest_files=["res://.godot/imported/hex-ring-raw.png-c5e690895576c4bff4267ce39462c907.ctex"]
+source_file="res://assets/combat/muyu-down.png"
+dest_files=["res://.godot/imported/muyu-down.png-81e88c591820bdf986fd74bca9ac4317.ctex"]
 
 [params]
 

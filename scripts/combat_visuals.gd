@@ -20,19 +20,31 @@ var energy = preload("res://scripts/energy_bursts.gd").new()
 const SPELL_COLORS := [Color("ff8454"),Color("a7e9ff"),Color("c6a6ff"),Color("cfdbff"),Color("ffd7a0"),Color("ffb474"),Color("ac85ff"),Color("ed95de")]
 # 墓煜's palette: a violet rune glow over a darker underworld flame.
 const SOUL := Color("c07ae0")
-const SOUL_DEEP := Color("6a2f9c")
 const SOUL_FIRE := Color("a855f7")
-# Rune-sword rain cells in assets/muyu/rune-rain.png (4 x 2) and the lingering
-# fire cells in assets/muyu/hellfire.png (3 x 2).
-const RAIN_COLUMNS := 4
-const FIRE_COLUMNS := 3
-# How wide the rain's lane spread is, as a fraction of the ultimate's rectangle.
-# The patch outline itself is derived from TideSession's own FIRE_* constants so
-# the drawn box and the damage test can never drift apart.
-const FIRE_SPAN := 350.0
-var rain_art: Texture2D = null
+# The ultimate's art, all of it from assets/combat/ with the rest of the hero
+# sheets: the underworld flame strip (5 cells in one row), the curse sigil the
+# cast opens with, the ring that stands in for the old purple outline, and the
+# single rain blade that is laid inside it.
+const FIRE_COLUMNS := 5
+const FIRE_ROWS := 1
+# Six blades and six flames, both spread over the ring rather than scattered: the
+# count and the spacing are the whole look, so they are constants, not literals.
+const RAIN_BLADES := 6
+const RAIN_FLAMES := 6
+const RAIN_TILT := 34.0         # degrees off upright, one way or the other
+# How far a position may wander inside its own sector.  The sectors are 60 degrees
+# apart, so the wander has to stay well under half of that or two neighbours can
+# close the gap the even spread exists to keep.
+const SPREAD_JITTER := 0.16
+# How far out from the middle of the ring a blade or a flame may stand, as a
+# fraction of the ring's own radius.  Inside 1.0, so nothing overhangs the edge
+# that the damage test draws.
+const SPREAD_RADIUS := 0.74
+const FLAME_TILT := 12.0        # flames lean a little, and stay upright enough
 var fire_art: Texture2D = null
 var sigil_art: Texture2D = null
+var ring_art: Texture2D = null
+var blade_art: Texture2D = null
 
 func _ready() -> void:
 	var additive := ShaderMaterial.new()
@@ -59,12 +71,14 @@ func reset() -> void:
 # Loaded on first use: the necromancer's art is optional, so a missing file
 # degrades to the shared atlas instead of stopping the whole effect layer.
 func soul_art() -> void:
-	if rain_art==null and ResourceLoader.exists("res://assets/muyu/rune-rain.png"):
-		rain_art=load("res://assets/muyu/rune-rain.png")
-	if fire_art==null and ResourceLoader.exists("res://assets/muyu/hellfire.png"):
-		fire_art=load("res://assets/muyu/hellfire.png")
-	if sigil_art==null and ResourceLoader.exists("res://assets/muyu/hex-ring.png"):
-		sigil_art=load("res://assets/muyu/hex-ring.png")
+	if fire_art==null and ResourceLoader.exists("res://assets/combat/muyu-flames.png"):
+		fire_art=load("res://assets/combat/muyu-flames.png")
+	if sigil_art==null and ResourceLoader.exists("res://assets/combat/muyu-hex-ring.png"):
+		sigil_art=load("res://assets/combat/muyu-hex-ring.png")
+	if ring_art==null and ResourceLoader.exists("res://assets/combat/muyu-circle.png"):
+		ring_art=load("res://assets/combat/muyu-circle.png")
+	if blade_art==null and ResourceLoader.exists("res://assets/combat/muyu-sword.png"):
+		blade_art=load("res://assets/combat/muyu-sword.png")
 
 func necro_cell(sheet: Texture2D, columns: int, rows: int, index: int) -> Rect2:
 	var unit := Vector2(sheet.get_width()/float(columns),sheet.get_height()/float(rows))
@@ -78,10 +92,9 @@ func necro_stamp(sheet: Texture2D, columns: int, rows: int, index: int, at: Vect
 		necro_cell(sheet,columns,rows,index),tint)
 	spell_light.draw_set_transform(Vector2.ZERO)
 
-# The rain: the curse sigil opens on the ground, then rune swords drop through
-# the rectangle from above. Host settles the damage; this is presentation only.
-# The blades are queued as spell art with a delay and a downward velocity, so
-# the shared mote list does the timing and the rain needs no state of its own.
+# The rain: the curse sigil opens on the ground, then the patch itself brings in
+# the ring and the six blades that stand in it (see draw_spells).  Host settles
+# the damage; this is presentation only.
 func necromancer_burst(at: Vector2, aim_angle: float) -> void:
 	soul_art()
 	var aim := Vector2.from_angle(aim_angle)
@@ -92,16 +105,6 @@ func necromancer_burst(at: Vector2, aim_angle: float) -> void:
 		motes[motes.size()-1]["art"]=sigil_art
 		motes[motes.size()-1]["columns"]=1
 		motes[motes.size()-1]["rows"]=1
-	for i in 9:
-		var across := (float(i%5)/4.0-0.5)*FIRE_SPAN*0.92
-		var along := 40.0+float(i%3)*FIRE_SPAN*0.60
-		spawn(0,at+aim.orthogonal()*across+aim*along,Vector2(150,150),0.62,
-			aim_angle+deg_to_rad(float(i%4-2)*7.0),Color(1,1,1,0.95),0.05*float(i),
-			Vector2(0,-560.0))
-		motes[motes.size()-1]["art"]=rain_art
-		motes[motes.size()-1]["columns"]=4
-		motes[motes.size()-1]["rows"]=2
-		motes[motes.size()-1]["index"]=i%8
 	for i in 5:
 		spawn(6,at+aim*(60+i*70),Vector2(46,72),0.6,
 			aim_angle,Color(SOUL_FIRE),i*0.07,Vector2(0,-120))
@@ -213,9 +216,14 @@ func event(data: Dictionary) -> void:
 				for i in 5:
 					spawn(0,at+aim_dir*(75+i*70),Vector2(190,210),0.45,angle,Color.WHITE,i*0.055)
 		"necromancer-fire":
+			var forward := float(data.get("forward",480.0))
+			var half := float(data.get("half",175.0))
+			var patch_seed := blade_seed(at,aim_dir)
 			rune_patches.append({"at":at,"aim":aim_dir,"age":0.0,
-				"duration":float(data.get("duration",6.0)),"forward":float(data.get("forward",480.0)),
-				"half":float(data.get("half",175.0)),"spawned":0.0})
+				"duration":float(data.get("duration",6.0)),"forward":forward,
+				"half":half,"spawned":0.0,
+				"blades":blade_layout(patch_seed,forward,half),
+				"flames":flame_spots(patch_seed)})
 			trauma=maxf(trauma,0.5)
 		"burn":
 			flames.append({"p":at,"age":0.0,"duration":0.42})
@@ -340,6 +348,103 @@ static func patch_local_rect(forward: float, half: float, grow: float = 1.0) -> 
 	var back := TideSession.FIRE_BACK*grow
 	return Rect2(Vector2(-back,-half*grow),Vector2(forward*grow+back,half*2.0*grow))
 
+# --- the ring and the blades inside it ---------------------------------------
+# The telemetry of the ultimate is a rectangle, but its art is a ring, so the
+# ring is drawn across the rectangle's whole extent rather than inscribed in it:
+# the ellipse touches all four edges and covers the corners' worth of ground the
+# rectangle burns.  Nothing below feeds back into aim or damage - it is all
+# presentation over the same constants.
+
+enum { BLADE_CENTRE, BLADE_EXTENT, BLADE_ANGLE, BLADE_MIRROR }
+
+static func spread_over_ring(rng: RandomNumberGenerator, count: int, rings: int,
+		swirl: float, reach: float) -> Array:
+	"""`count` positions spread evenly over the ring, not scattered in it.
+
+	The ring is cut into equal sectors and each sector gets exactly one position,
+	with the radius staggered ring by ring, so however the dice fall the positions
+	stay apart: pure rejection sampling clumps, and a clump of six blades reads as
+	one thick smear rather than as rain.  `swirl` turns the whole fan, so two
+	sets can share the ring without lining up, and the inner radius keeps every
+	position clear of the middle, where the caster is standing."""
+	var step := TAU/float(count)
+	var placed: Array = []
+	for index in count:
+		var band := index%rings
+		var angle := swirl+step*(float(index)+rng.randf_range(-SPREAD_JITTER,SPREAD_JITTER))
+		var radius := lerpf(0.40,reach,float(band)/float(maxi(1,rings-1)))
+		placed.append(Vector2.from_angle(angle)*radius)
+	return placed
+
+static func blade_layout(seed_value: int, forward: float, half: float) -> Array:
+	"""Six blades, fixed for the life of the patch, spread over the ring.
+
+	Seeded from the patch's own position and aim, so every client lays out the
+	same rain without sending a word about it.  Each blade is turned a little way
+	from upright, half of them mirrored, and every one is small enough that its
+	four corners fall inside the ring - the corners are checked here rather than
+	trusted, because a blade that pokes out of the circle would draw a lie about
+	which ground is on fire."""
+	var rng := RandomNumberGenerator.new()
+	rng.seed=seed_value
+	# Blade size is set by the ring's *short* axis, not its long one: a blade sits
+	# somewhere on the ring, and at a position off to the side the distance to the
+	# edge is the half-width, not the half-length.  Sizing off the long axis makes
+	# blades that only fit near the middle, and the fit-nudge then drags them in
+	# there - which is exactly the clumping this layout exists to avoid.
+	var height := half*0.42
+	var width := height*0.49
+	var placed: Array = []
+	var spots := spread_over_ring(rng,RAIN_BLADES,2,0.0,SPREAD_RADIUS)
+	for index in spots.size():
+		var scale := rng.randf_range(0.85,1.12)
+		var tilt := deg_to_rad(rng.randf_range(-RAIN_TILT,RAIN_TILT))
+		var extent := Vector2(width,height)*scale
+		var centre: Vector2=spots[index]*Vector2(half,forward*0.5)
+		# Nudge inwards until every corner is inside the ring, so the fit is
+		# guaranteed rather than hoped for.
+		for attempt in 24:
+			var fits := true
+			for corner in 4:
+				var offset := Vector2(-1.0 if corner<2 else 1.0,-1.0 if corner%2==0 else 1.0)*extent/2
+				var at := centre+offset.rotated(tilt)
+				if Vector2(at.x/half,at.y/(forward*0.5)).length()>0.96:
+					fits=false
+					break
+			if fits:
+				break
+			centre*=0.9
+		# Half the rain turns around, and which half alternates rather than being
+		# drawn: a run of six identical blades, or six reversed ones, is a coin
+		# flip away if the flag is random, and it does not read as rain at all.
+		var mirrored := index%2==1
+		if rng.randf()<0.25:
+			mirrored=not mirrored
+		placed.append([centre,extent,tilt,mirrored])
+	return placed
+
+static func flame_spots(seed_value: int) -> Array:
+	"""Where the six flames stand: over the ring like the blades, but turned by
+	half a sector so the two sets interleave instead of stacking up."""
+	var rng := RandomNumberGenerator.new()
+	rng.seed=seed_value+7717
+	return spread_over_ring(rng,RAIN_FLAMES,2,PI/float(RAIN_FLAMES),SPREAD_RADIUS*0.9)
+
+static func blade_seed(at: Vector2, aim: Vector2) -> int:
+	return int(absf(at.x)*7.0)+int(absf(at.y)*13.0)+int((aim.angle()+PI)*1000.0)*31
+
+static func stamp_blade(target: Node2D, art: Texture2D, blade: Array, at: Vector2,
+		aim: Vector2, scale: float, tint: Color) -> void:
+	var mirrored := float(-1 if blade[BLADE_MIRROR] else 1)
+	var height: float=float(blade[BLADE_EXTENT].y)*scale
+	var width: float=float(blade[BLADE_EXTENT].x)*scale
+	var frame := Transform2D(aim.angle(),at)
+	var centre: Vector2=frame*Vector2(blade[BLADE_CENTRE])
+	var lean := aim.angle()+float(blade[BLADE_ANGLE])*(1.0 if mirrored>0.0 else -1.0)
+	target.draw_set_transform(centre,lean,Vector2(mirrored,1))
+	target.draw_texture_rect(art,Rect2(-width/2,-height/2,width,height),false,tint)
+	target.draw_set_transform(Vector2.ZERO)
+
 func draw_spells() -> void:
 	soul_art()
 	for fx in motes:
@@ -358,29 +463,42 @@ func draw_spells() -> void:
 		var grow := minf(1.0,age/0.35)
 		var fade := clampf((duration-age)/1.1,0,1)
 		if fade<=0.0: continue
-		# The outline is the damage rectangle itself, drawn in the caster's own
-		# frame: it sits on her, reaches FIRE_LENGTH ahead and FIRE_HALF_WIDTH to
-		# each side. Anchoring it on her (rather than centring it on the patch)
-		# is what makes the purple box agree with the ground that burns.
+		# The ring stands in for the rectangle that used to be outlined here.  It
+		# is stretched across the patch's own extent - the same numbers the damage
+		# test reads - so the circle and the ground that burns are the same shape
+		# and the same size, and growing it in is the cast landing.
 		var rect := patch_local_rect(forward,half,grow)
 		spell_light.draw_set_transform(patch.at,aim.angle())
-		spell_light.draw_rect(rect,Color(SOUL_DEEP,0.30*fade))
-		spell_light.draw_rect(rect,Color(SOUL_FIRE,0.62*fade),false,3.0,true)
+		if ring_art:
+			var centre := rect.get_center()
+			var span := rect.size*(1.0+0.06*(1.0-grow))
+			spell_light.draw_texture_rect(ring_art,Rect2(centre-span/2,span),false,
+				Color(1,1,1,0.92*fade))
+		else:
+			spell_light.draw_rect(rect,Color(SOUL_FIRE,0.62*fade),false,3.0,true)
 		if fire_art:
-			# A flame's art has its base at 0.9 of its own height, so each lane is
-			# stamped with that much offset to stand it on the ground rather than
-			# in it. Flames stay upright: they are billboards, not patch decals,
-			# so the patch frame is resolved into world space by hand instead of
-			# leaning on the rotated transform above.
-			var flame_size := half*1.05
-			for lane in 4:
-				var index := int(fposmod(age*5.0+lane*2.0,6.0))
-				var across := (float(lane)/3.0-0.5)*half*1.8*grow
-				var depth := forward*(0.16+0.24*lane)*grow
-				var ground: Vector2=patch.at+Vector2(across,depth).rotated(aim.angle())
-				necro_stamp(fire_art,FIRE_COLUMNS,2,index,
-					ground+Vector2(0,-flame_size*0.9),Vector2(flame_size,flame_size),
-					0.0,Color(SOUL_FIRE,0.80*fade))
+			# Six flames standing in the same ring as the blades, spread over it
+			# the same way and turned half a sector so the two sets interleave
+			# instead of stacking.  A flame's art is anchored by its base, so each
+			# is stamped with that much offset to stand it on the ground rather
+			# than in it.  They stay upright: they are billboards, not patch
+			# decals, so the patch frame is resolved into world space by hand
+			# instead of leaning on the rotated transform above.
+			var flame_size := half*0.92
+			var patch_frame := Transform2D(aim.angle(),patch.at)
+			for spot in patch.get("flames",[]):
+				var ground: Vector2=patch_frame*Vector2(spot)
+				var index := int(fposmod(age*6.0+ground.x*0.05+ground.y*0.07,
+					float(FIRE_COLUMNS*FIRE_ROWS)))
+				necro_stamp(fire_art,FIRE_COLUMNS,FIRE_ROWS,index,
+					ground+Vector2(0,-flame_size*0.45*grow),Vector2(flame_size,flame_size*grow),
+					0.0,Color(SOUL_FIRE,0.86*fade))
+		if blade_art:
+			# The rain: the blades arrive with the ring and leave with it, so they
+			# read as what the circle is made of rather than as a second effect.
+			for blade in patch.get("blades",[]):
+				stamp_blade(spell_light,blade_art,blade,patch.at,aim,
+					lerpf(0.62,1.0,grow),Color(1,1,1,0.95*fade))
 		spell_light.draw_set_transform(Vector2.ZERO)
 	for flame in flames:
 		var t: float=float(flame.age)/maxf(0.01,float(flame.duration))

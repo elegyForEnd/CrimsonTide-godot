@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bo7241iwi5cfo"
-path="res://.godot/imported/rune-burst.png-29881ccd899059f4c0eb08e0a9baff26.ctex"
+uid="uid://baowqxtn2tlh"
+path="res://.godot/imported/muyu-idle.png-0faaf1e855793fc4e6e60e22dfce2ca6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/muyu/rune-burst.png"
-dest_files=["res://.godot/imported/rune-burst.png-29881ccd899059f4c0eb08e0a9baff26.ctex"]
+source_file="res://assets/combat/muyu-idle.png"
+dest_files=["res://.godot/imported/muyu-idle.png-0faaf1e855793fc4e6e60e22dfce2ca6.ctex"]
 
 [params]
 

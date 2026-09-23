@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u1c2yg006mgd"
-path="res://.godot/imported/rune-bolt.png-fc2ad775205b66ec0801fbe7da731f9c.ctex"
+uid="uid://d1hwe8c27ibt6"
+path="res://.godot/imported/muyu-circle.png-80d49d0e731dd7ab9ebc379628b0675c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/muyu/rune-bolt.png"
-dest_files=["res://.godot/imported/rune-bolt.png-fc2ad775205b66ec0801fbe7da731f9c.ctex"]
+source_file="res://assets/combat/muyu-circle.png"
+dest_files=["res://.godot/imported/muyu-circle.png-80d49d0e731dd7ab9ebc379628b0675c.ctex"]
 
 [params]
 

@@ -17,27 +17,29 @@ detached neighbour fragment into the cut, so every pose is cut in three steps:
   3. a hard mask of everything outside that silhouette, so nothing else can be
      composited into the frame.
 
-Everything the game consumes is written here:
+Everything the game consumes is written here. Every piece lives under
+assets/combat/, which is where this project keeps the art a hero fights with -
+there is no per-hero folder:
 
   assets/combat/attack-clean-3.png   1448x1086, 4 columns x 3 rows, one row per
                                      weapon family, same layout as heroes 0..2
   assets/combat/movement-3.png       1448x1086, 4 columns x 3 rows = walk / run
                                      / dodge, weapons stowed
+  assets/combat/muyu-idle.png        single standing pose
+  assets/combat/muyu-down.png        single fallen pose
+  assets/combat/muyu-hex-ring.png    curse circle for the cast flourish
   assets/portrait-3.png              camp screen 立绘, keyed from its own
                                      reference (see below)
-  assets/muyu-idle.png               single standing pose
-  assets/muyu-down.png               single fallen pose
-  assets/muyu/ultimate-cg.png        three row cut-in for the Q cinematic
-  assets/muyu/rune-rain.png          rune sword rain atlas (8 cells, 4x2)
-  assets/muyu/hellfire.png           underworld fire sheet (6 cells, 3x2)
-  assets/muyu/hex-ring.png           curse circle for the ultimate telegraph
-  assets/muyu/soul-scythe.png        initial weapon: the rune cross blade
-  assets/muyu/grimoire.png           the floating grimoire the hero carries
-  assets/muyu/amulet.png             knight's amulet loot icon (1x1, red)
-  assets/muyu/hidden-boss.png        portrait for the hidden final encounter
 
-The effects come from assets/muyu/raw/, four hand cropped pieces of the same
-reference sheet: the curse sigil, the rune cross, the rune lance and the
+The ultimate's ring, its five-frame flame and its rain blade are separate files
+with their own tool, tools/prepare_muyu_effects.py, because they come from their
+own reference art.  The older rune-rain atlas (_rain()) and the drawn underworld
+fire (_flame()) are no longer built here: nothing in the game loads them since
+the ultimate's ground effect became the painted ring with spread flames and
+blades.  Both functions are kept as the record of how the effect used to be cut.
+
+The effects come from assets/combat/muyu-raw/, four hand cropped pieces of the
+same reference sheet: the curse sigil, the rune cross, the rune lance and the
 grimoire. Drop a replacement in that folder under the same name and every effect
 built from it follows. The only drawn effect is the underworld fire, which the
 reference sheet does not contain; _flame() is the one place to replace.
@@ -45,11 +47,16 @@ reference sheet does not contain; _flame() is the one place to replace.
 The 立绘 is the one piece that is not cut from either sheet. It comes from
 _refs/muyu-portrait/ref.jpg, a single painted full body on a white backdrop, and
 is keyed by connectivity rather than by colour because her hair, the open book
-and the highlights are the same white as the backdrop. Drop a replacement at
-that path and re-run to swap the 立绘.
+and the highlights are the same white as the backdrop. A replacement that
+already carries real transparency is used as is: an alpha channel the artist
+painted beats anything this file could derive, and keying it again would only
+risk eating white art that now sits on transparent instead of on the backdrop.
+Drop a replacement at that path and re-run to swap the 立绘.
 
-Run:  python tools/prepare_muyu_art.py            (everything)
+Run:  python tools/prepare_muyu_art.py            (everything but the cut-in)
       python tools/prepare_muyu_art.py portrait   (just the 立绘)
+      python tools/prepare_muyu_art.py cutin      (also rebuild the cut-in atlas)
+      python tools/key_portrait.py REF OUT.png    (key one supplied 立绘 file)
       python tools/preview_muyu_art.py            (contact sheets in output/muyu-preview)
 """
 
@@ -65,21 +72,24 @@ from scipy import ndimage
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REFS = os.path.abspath(os.path.join(ROOT, "..", "..", "_refs"))
 ASSETS = os.path.join(ROOT, "assets")
-OUT = os.path.join(ASSETS, "muyu")
+COMBAT = os.path.join(ASSETS, "combat")
 
 SHEET1 = os.path.join(REFS, "ref1-battle.png")   # 1448 x 1086 key art + demo
 SHEET2 = os.path.join(REFS, "ref2-sprite.png")   # 2048 x 1152 full sprite sheet
 
 # The camp 立绘: one painted full body on a flat white backdrop rather than a
-# pose sheet, so it is keyed by connectivity instead of by backdrop colour.
+# pose sheet, so it is keyed by connectivity instead of by backdrop colour. A
+# reference that already has an alpha channel is taken as finished art.
 PORTRAIT_REF = os.path.join(REFS, "muyu-portrait", "ref.jpg")
 PORTRAIT_HEIGHT = 900   # the height every 立绘 in the project is stored at
+ALPHA_BAND = 16         # alpha at or below this counts as transparent
+ALPHA_SOLID = 200       # a reference above this much solid art is already keyed
 
 # Hand cropped effect art, lifted from the same reference sheet at full
 # resolution: the curse sigil, the rune cross blade, the rune lance and the
-# floating grimoire. Everything the hero's effects are built from lives here, so
-# replacing one of these files replaces that effect everywhere.
-RAW_DIR = os.path.join(ASSETS, "muyu", "raw")
+# floating grimoire. The sigil is the one the game still builds an effect from;
+# the rest are source material the tool reads when it re-cuts the sheets.
+RAW_DIR = os.path.join(REFS, "muyu-raw")
 RAW_FILES = {
     "hex-ring": "hex-ring-raw.png",
     "rune-cross": "rune-cross-raw.png",
@@ -749,17 +759,50 @@ def key_white_backdrop(img: Image.Image, threshold: int = 240, chroma: int = 14,
         np.dstack([np.clip(rgb, 0.0, 255.0), alpha * 255.0]).astype(np.uint8), "RGBA")
 
 
-def build_portrait() -> Image.Image:
-    """墓煜's camp 立绘: the keyed reference, trimmed and scaled to 900 px tall."""
-    art = trim(key_white_backdrop(Image.open(PORTRAIT_REF)))
+def reference_alpha(img: Image.Image) -> bool:
+    """True when a reference already carries the artist's own transparency.
+
+    "Has an alpha channel" is not enough: an opaque PNG says nothing. What
+    matters is whether a meaningful part of the frame is actually transparent
+    and a meaningful part is actually solid, which is what separates finished
+    cut-out art from a painting that merely happens to be stored as RGBA."""
+    if img.mode not in ("RGBA", "LA", "PA"):
+        return False
+    alpha = np.asarray(img.convert("RGBA"))[:, :, 3]
+    return bool((alpha <= ALPHA_BAND).any() and (alpha > ALPHA_SOLID).any())
+
+
+def load_portrait_ref(path: str) -> Image.Image:
+    """墓煜's 立绘 reference, keyed only if it still sits on its backdrop."""
+    img = Image.open(path)
+    if reference_alpha(img):
+        return img.convert("RGBA")
+    return key_white_backdrop(img)
+
+
+def build_portrait(ref: str = PORTRAIT_REF) -> Image.Image:
+    """墓煜's camp 立绘: the keyed reference, trimmed and scaled to 900 px tall.
+
+    Scale is set by the framed height, not by the figure inside it, because the
+    camp screen sizes every 立绘 by the texture height (`main.gd` portrait()).
+    A reference that is a wider action pose therefore keeps its framing and
+    simply stores a wider texture - the alternative would be to crop the sword,
+    the cloak and the curse circle away from the composition the reference
+    paints."""
+    art = trim(load_portrait_ref(ref))
     scale = PORTRAIT_HEIGHT / art.height
     return art.resize((max(1, int(round(art.width * scale))), PORTRAIT_HEIGHT),
                       Image.LANCZOS)
 
 
 def build_gear() -> None:
-    """Portrait, standing and fallen poses, the weapon, and the loot icon."""
-    trim(cut2("idle_a")).save(os.path.join(ASSETS, "muyu-idle.png"))
+    """The poses and effects the game actually loads, all under assets/combat/.
+
+    The tool used to also cut a grimoire, a rune cross, a rune lance and a boss
+    portrait here. Nothing in the project ever loaded them - the weapon, the loot
+    icon and the cut-in all come from other files - so they are not written any
+    more: an asset that no code names is a file that drifts out of date."""
+    trim(cut2("idle_a")).save(os.path.join(COMBAT, "muyu-idle.png"))
 
     # Down = the second fallen pose: she is on her back with the hair fanned
     # out, which reads as knocked down rather than as a death sprawl, and the
@@ -774,31 +817,15 @@ def build_gear() -> None:
             keep |= labels == index + 1
     out = np.asarray(down).copy()
     out[:, :, 3] = np.where(keep, out[:, :, 3], 0)
-    trim(Image.fromarray(out, "RGBA")).save(os.path.join(ASSETS, "muyu-down.png"))
+    trim(Image.fromarray(out, "RGBA")).save(os.path.join(COMBAT, "muyu-down.png"))
 
     # The 立绘 is its own painting rather than the standing pose shrunk down, so
     # the whole figure - arch, curse circle and grimoire included - is what the
     # camp screen shows.
     build_portrait().save(os.path.join(ASSETS, "portrait-3.png"))
 
-    # --- the props and effects, all from the reference art -----------------
-    raw("grimoire").save(os.path.join(OUT, "grimoire.png"))
-    raw("hex-ring").save(os.path.join(OUT, "hex-ring.png"))
-    raw("rune-cross").save(os.path.join(OUT, "soul-scythe.png"))
-    raw("rune-lance").save(os.path.join(OUT, "rune-burst.png"))
-    raw("rune-cross").rotate(-90.0, resample=Image.BICUBIC, expand=True).save(
-        os.path.join(OUT, "rune-bolt.png"))
-    # A second curse sigil with the blades fanned behind it, for the cut-in.
-    raw("hex-ring").save(os.path.join(OUT, "hex-ring-large.png"))
-
-    boss = trim(cut1("hex"))
-    boss.resize((max(1, int(boss.width * (860.0 / boss.height))), 860), Image.LANCZOS).save(
-        os.path.join(OUT, "hidden-boss.png"))
-
-    # The loot icon is the curse sigil, which is what the amulet's art is.
-    amulet = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    amulet.alpha_composite(raw("hex-ring").resize((58, 58), Image.LANCZOS), (3, 3))
-    amulet.save(os.path.join(OUT, "amulet.png"))
+    # The curse sigil, which the ultimate opens with.
+    raw("hex-ring").save(os.path.join(COMBAT, "muyu-hex-ring.png"))
 
 
 def main() -> int:
@@ -819,15 +846,26 @@ def main() -> int:
         if not os.path.exists(path):
             print("missing effect art: %s" % path, file=sys.stderr)
             return 1
-    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(COMBAT, exist_ok=True)
 
-    build_attack().save(os.path.join(ASSETS, "combat", "attack-clean-3.png"))
-    build_movement().save(os.path.join(ASSETS, "combat", "movement-3.png"))
-    build_ultimate_cg().save(os.path.join(OUT, "ultimate-cg.png"))
-    build_rune_rain().save(os.path.join(OUT, "rune-rain.png"))
-    build_hellfire().save(os.path.join(OUT, "hellfire.png"))
+    build_attack().save(os.path.join(COMBAT, "attack-clean-3.png"))
+    build_movement().save(os.path.join(COMBAT, "movement-3.png"))
     build_gear()
-    print("墓煜 art written to assets/ and %s" % OUT)
+
+    # The cut-in atlas is left alone unless it is asked for by name. It is the
+    # one piece here that was not cut by this file: it is an image-generated
+    # sheet, and rebuilding it from the two reference sheets produces a
+    # different layout altogether, which the cinematic then splits into three
+    # rows that do not exist. Overwriting a shipped cut-in silently is not a
+    # thing a maintenance run should ever do.
+    cutin = os.path.join(COMBAT, "ultimate-cg.png")
+    if "cutin" in wanted:
+        build_ultimate_cg().save(cutin)
+        print("ultimate-cg.png rebuilt from the reference sheets")
+    elif os.path.exists(cutin):
+        print("ultimate-cg.png left as shipped (pass 'cutin' to rebuild it)")
+
+    print("墓煜 art written to assets/portrait-3.png and %s" % COMBAT)
     return 0
 
 

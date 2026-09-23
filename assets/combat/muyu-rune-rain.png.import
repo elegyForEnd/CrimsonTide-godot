@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8jatk3b3tmag"
-path="res://.godot/imported/rune-lance-raw.png-3b2039d47cb5ee75cc92853ff916b593.ctex"
+uid="uid://cua2f4sxrixlp"
+path="res://.godot/imported/muyu-rune-rain.png-dfbb115919064892576e93755ff5884a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/muyu/raw/rune-lance-raw.png"
-dest_files=["res://.godot/imported/rune-lance-raw.png-3b2039d47cb5ee75cc92853ff916b593.ctex"]
+source_file="res://assets/combat/muyu-rune-rain.png"
+dest_files=["res://.godot/imported/muyu-rune-rain.png-dfbb115919064892576e93755ff5884a.ctex"]
 
 [params]
 
