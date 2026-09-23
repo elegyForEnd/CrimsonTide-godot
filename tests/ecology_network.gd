@@ -38,6 +38,9 @@ func _process(dt: float) -> bool:
 	elif s.running:
 		var kinds := {}
 		for e in s.enemies:
+			if not e.has("difficulty") or not e.has("damage_scale") or not e.has("speed_scale"):
+				push_error("Client missed habitat combat scaling")
+				quit(1)
 			kinds[e.type]=true
 			if e.type==16 and e.get("attack_time",0)>0 and e.has("attack_point") and e.has("habitat"):
 				saw_attack=true

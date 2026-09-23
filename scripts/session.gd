@@ -1,5 +1,7 @@
 class_name TideSession
 extends Node
+const BossTactics = preload("res://scripts/boss_tactics.gd")
+const BossPresentation = preload("res://scripts/boss_presentation.gd")
 
 signal changed
 signal map_changed
@@ -8,6 +10,15 @@ signal finished
 signal message(text: String)
 signal effect(kind: String, pos: Vector2)
 signal combat_event(data: Dictionary)
+
+var dedicated := false
+var server_room := false
+var room_code := ""
+var leader_id := 1
+var ticket_file := ""
+var used_tickets: Dictionary = {}
+var account_peers: Dictionary = {}
+var connect_deadline := 0
 
 const PORT := 24872
 const DODGE_DURATION := 0.24
@@ -26,7 +37,9 @@ var world_drops: Array = []
 var results: Dictionary = {}
 var running := false
 var online := false
-var duration := 480.0
+const DAY_DURATION := 300.0
+const SHRINK_START := 180.0
+var duration := DAY_DURATION
 var elapsed := 0.0
 var threat := 0.0
 var objectives := 0
@@ -51,7 +64,7 @@ func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_peer_left)
 	multiplayer.connected_to_server.connect(_connected)
 	multiplayer.connection_failed.connect(func(): disconnect_room(); message.emit("连接失败：请检查地址、防火墙和 UDP 24872 端口。"))
-	multiplayer.server_disconnected.connect(func(): disconnect_room(); message.emit("房主已断开连接。本局未结算的战利品不计入存档。"))
+	multiplayer.server_disconnected.connect(func(): disconnect_room(); message.emit("联机连接已断开。本局未结算的战利品不计入存档。"))
 
 func my_id() -> int:
 	return multiplayer.get_unique_id() if online else 1
@@ -78,18 +91,26 @@ func host(config: Dictionary) -> Error:
 	changed.emit()
 	return OK
 
-func join(address: String, config: Dictionary) -> Error:
+func join(address: String, config: Dictionary, port: int = PORT) -> Error:
 	disconnect_room()
 	local_config=config
 	var peer := ENetMultiplayerPeer.new()
-	var err := peer.create_client(address.strip_edges(),PORT)
+	var err := peer.create_client(address.strip_edges(),port)
 	if err != OK:
 		return err
 	multiplayer.multiplayer_peer=peer
 	online=true
+	connect_deadline=Time.get_ticks_msec()+15000
 	return OK
 
 func disconnect_room() -> void:
+	dedicated=false
+	server_room=false
+	room_code=""
+	leader_id=1
+	used_tickets.clear()
+	account_peers.clear()
+	connect_deadline=0
 	running=false
 	pending_ultimates.clear()
 	if multiplayer.multiplayer_peer:
@@ -101,6 +122,72 @@ func disconnect_room() -> void:
 	results.clear()
 	changed.emit()
 
+func host_dedicated(port: int) -> Error:
+	disconnect_room()
+	var peer := ENetMultiplayerPeer.new()
+	var err := peer.create_server(port,4)
+	if err!=OK: return err
+	multiplayer.multiplayer_peer=peer
+	online=true
+	dedicated=true
+	server_room=true
+	leader_id=0
+	return OK
+
+func join_server(room: Dictionary, config: Dictionary) -> Error:
+	var payload := config.duplicate(true)
+	payload["_ticket"]=room.ticket
+	var err := join(str(room.host),payload,int(room.port))
+	if err==OK:
+		server_room=true
+		room_code=str(room.code)
+	return err
+
+func is_leader() -> bool:
+	return my_id()==leader_id
+
+func request_launch() -> void:
+	if authority(): launch()
+	elif server_room: room_command.rpc_id(1,"launch")
+
+func request_camp() -> void:
+	if authority(): return_to_camp()
+	elif server_room: room_command.rpc_id(1,"camp")
+
+@rpc("any_peer","call_remote","reliable")
+func room_command(command: String) -> void:
+	if not dedicated or multiplayer.get_remote_sender_id()!=leader_id or running: return
+	if command=="launch" and not launch():
+		room_notice.rpc_id(leader_id,"等待所有队友准备完毕。")
+	elif command=="camp": return_to_camp()
+
+@rpc("authority","call_remote","reliable")
+func room_notice(text: String) -> void:
+	message.emit(text)
+
+func validate_ticket(id: int, config: Dictionary) -> bool:
+	var digest := str(config.get("_ticket","")).sha256_text()
+	var tickets = JSON.parse_string(FileAccess.get_file_as_string(ticket_file))
+	if not tickets is Dictionary or not tickets.has(digest) or used_tickets.has(digest):
+		print("Ticket denied: unknown or reused")
+		return false
+	var ticket: Dictionary=tickets[digest]
+	if float(ticket.get("expires",0))<Time.get_unix_time_from_system():
+		print("Ticket denied: expired")
+		return false
+	var user := str(ticket.get("user",""))
+	if account_peers.has(user):
+		print("Ticket denied: already connected")
+		return false
+	# Only the creator can claim an empty room before the first owner connects.
+	if leader_id==0 and not bool(ticket.get("owner",false)):
+		print("Ticket denied: creator not connected")
+		return false
+	used_tickets[digest]=true
+	account_peers[user]=id
+	if leader_id==0: leader_id=id
+	return true
+
 func _connected() -> void:
 	register.rpc_id(1,local_config)
 
@@ -109,10 +196,15 @@ func register(config: Dictionary) -> void:
 	if not authority():
 		return
 	var id := multiplayer.get_remote_sender_id()
+	if players.has(id): return
 	if running or players.size()>=4:
 		rejected.rpc_id(id,"房间已出发或已满，请等待下一局。")
 		return
+	if dedicated and not validate_ticket(id,config):
+		rejected.rpc_id(id,"房间凭证失效，请重新通过服务器加入。")
+		return
 	players[id]=make_player(id,config)
+	players[id].ready=id==leader_id
 	push_lobby()
 
 @rpc("authority","call_remote","reliable")
@@ -133,7 +225,7 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	# A raid starts with nothing but the hero issue weapon: the four field weapons
 	# are loot, so the only way into a Watcher's hands is picking one up and
 	# equipping it. make_player therefore never reads a weapon from the config.
-	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":Catalog.starter_index(h),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==1,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":Catalog.starter_index(h),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"ready":id==leader_id,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	return player
 
@@ -601,19 +693,32 @@ func loot_floor() -> int:
 	return 0
 
 func enemy_loot(e: Dictionary) -> Dictionary:
+	# The defeated monster owns its reward tier, even after leaving its habitat.
+	var difficulty := clampi(int(e.get("difficulty",1)),1,4)
+	var floor_index := difficulty-1
+	if int(e.type)>=14: floor_index=mini(4,difficulty)
 	var entry := {"kind":"ammo" if rng.randf()<0.35 else "crystal"}
 	if e.type==3:
 		# The blood-scented hunter always leaves its pack behind, and often the
 		# weapon it was carrying.
 		if rng.randf()<0.45:
-			entry=Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(loot_floor()+1))
+			entry=Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(maxi(1,floor_index)))
 		else:
 			entry["kind"]="backpack"
-			entry["key"]=Catalog.BAG_TIERS[rng.randi_range(1,Catalog.BAG_TIERS.size()-1)].key
-	elif rng.randf()<0.55:
-		entry["kind"]="relic"
-	elif rng.randf()<0.18:
-		entry=Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(loot_floor()))
+			entry["key"]=backpack_drop(maxi(1,floor_index))
+	else:
+		var roll := rng.randf()
+		var weapon_chance := 0.08+0.04*(difficulty-1)
+		var gear_chance := 0.12+0.03*(difficulty-1)
+		if int(e.type)>=14:
+			weapon_chance=0.40
+			gear_chance=0.35
+		if roll<weapon_chance:
+			entry=Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(floor_index))
+		elif roll<weapon_chance+gear_chance:
+			entry=Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(floor_index))
+		elif roll<weapon_chance+gear_chance+0.35:
+			entry["kind"]="relic"
 	return entry
 
 
@@ -633,16 +738,18 @@ func apply_config(id: int, config: Dictionary) -> void:
 	if running or not players.has(id):
 		return
 	players[id]=make_player(id,config)
-	players[id].ready=config.get("ready",id==1)
+	players[id].ready=true if id==leader_id else bool(config.get("ready",false))
 	push_lobby()
 
 func push_lobby() -> void:
 	changed.emit()
 	if online:
-		lobby.rpc(players)
+		lobby.rpc(players,leader_id)
 
 @rpc("authority","call_remote","reliable")
-func lobby(value: Dictionary) -> void:
+func lobby(value: Dictionary, leader: int = 1) -> void:
+	connect_deadline=0
+	leader_id=leader
 	players=value
 	running=false
 	changed.emit()
@@ -651,25 +758,40 @@ func _peer_left(id: int) -> void:
 	if not authority():
 		return
 	inputs.erase(id)
+	for user in account_peers.keys():
+		if account_peers[user]==id: account_peers.erase(user)
+	if dedicated and id==leader_id:
+		leader_id=0
+		for candidate in players:
+			if candidate!=id and players[candidate].connected:
+				leader_id=candidate
+				players[candidate].ready=true
+				break
 	pending_ultimates.erase(id)
 	if running and players.has(id):
 		players[id].connected=false
 		if players[id].status in ["active","down"]:
 			players[id].status="dead"
 		message.emit("一位守夜人断开连接。")
+		if dedicated: leader_changed.rpc(leader_id)
 	else:
 		players.erase(id)
 		push_lobby()
 
-func launch(long_run: bool = false, fixed_seed: int = 0) -> bool:
-	if not authority() or players.is_empty():
+@rpc("authority","call_remote","reliable")
+func leader_changed(value: int) -> void:
+	leader_id=value
+
+func launch(_long_run: bool = false, fixed_seed: int = 0) -> bool:
+	if running or not authority() or players.is_empty():
 		return false
 	for p in players.values():
 		if not p.ready:
 			message.emit("等待所有队友准备完毕。")
 			return false
 	seed_value=fixed_seed if fixed_seed!=0 else randi_range(1,9999999)
-	duration=900.0 if long_run else 480.0
+	# Retain the legacy argument for callers; every exploration day is five minutes.
+	duration=DAY_DURATION
 	var i := 0
 	for id in players:
 		var old: Dictionary=players[id]
@@ -718,14 +840,17 @@ func begin(value: int, seconds: float, roster: Dictionary) -> void:
 	started.emit()
 
 func _physics_process(delta: float) -> void:
+	if connect_deadline>0 and Time.get_ticks_msec()>connect_deadline:
+		disconnect_room()
+		message.emit("连接房间超时，请检查服务器地址和 UDP 端口。")
 	if not running:
 		return
 	input_timer-=delta
 	if input_timer<=0:
 		input_timer=1.0/30.0
-		if authority():
+		if authority() and not dedicated:
 			inputs[my_id()]=local_input.duplicate()
-		else:
+		elif not authority():
 			input_packet.rpc_id(1,local_input)
 	if not authority():
 		return
@@ -1357,6 +1482,7 @@ func simulate(dt: float) -> void:
 	for i in range(enemies.size()-1,-1,-1):
 		var e: Dictionary=enemies[i]
 		if e.hp<=0:
+			if e.get("raid_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
 			resolve_site_defeat(e)
 			if players.has(e.last):
 				players[e.last].kills+=1
@@ -1364,7 +1490,7 @@ func simulate(dt: float) -> void:
 				defeated_boss=true
 			elif e.type==4:
 				if map_id=="city": ruins.sites[0]["boss_defeated"]=true
-			elif rng.randf()<0.42 or e.type==3:
+			elif rng.randf()<Ecology.drop_chance(e):
 				var loot := enemy_loot(e)
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
@@ -1395,13 +1521,13 @@ func safe_radius() -> float:
 	var center := safe_center()
 	var full := maxf(center.distance_to(Vector2.ZERO),center.distance_to(Ruins.SIZE))
 	full=maxf(full,maxf(center.distance_to(Vector2(Ruins.SIZE.x,0)),center.distance_to(Vector2(0,Ruins.SIZE.y))))+100
-	return lerpf(full,final_radius,clampf((float(raid.time)/duration-0.50)/0.50,0,1))
+	return lerpf(full,final_radius,clampf((float(raid.time)-SHRINK_START)/maxf(1.0,duration-SHRINK_START),0,1))
 
 func can_extract() -> bool:
 	return not raid.is_empty() and (raid.day==2 or raid.phase=="complete")
 
 func can_travel() -> bool:
-	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<duration*0.5)
+	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<SHRINK_START)
 
 func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
 	var before: Vector2=p.p
@@ -1486,10 +1612,16 @@ func release_strike(p: Dictionary) -> void:
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	var block := int(e.get("habitat",-1))
 	if map_id=="border" and block>=0 and damage>0: ruins.sites[block].engaged=true
+	var blocked := BossTactics.blocks(e,direction,weapon)
+	if blocked:
+		damage=BossTactics.absorb(self,e,damage,weapon)
+		knock=0.0
 	e.hp-=damage
 	e.last=owner
 	e["flash"]=0.14
-	if e.get("raid_boss",false):
+	if blocked:
+		pass # Guard pressure replaces ordinary poise; a guard break keeps its stagger.
+	elif e.get("raid_boss",false):
 		knock=0.0
 	elif e.type==4:
 		e["poise"]=float(e.get("poise",0))+damage
@@ -1681,8 +1813,14 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 	else:
 		if kind<0: kind=2
 		if ruins.blocked(pos,25): return
-	var health: float=Ecology.HEALTH[kind]*(1+0.3*(players.size()-1))
+	var difficulty := Ecology.difficulty(ruins.sites[block]) if block>=0 else (4 if map_id=="city" else 1)
+	var participants := 0
+	for p in players.values():
+		if p.status in ["active","down"]: participants+=1
+	var health: float=Ecology.HEALTH[kind]*Ecology.HEALTH_SCALE[difficulty-1]*(1+0.3*maxi(0,participants-1))
+	if kind==4: health=Ecology.HEALTH[kind]*(1+0.55*maxi(0,participants-1))
 	enemies.append({"id":next_enemy,"p":pos,"home":pos,"habitat":block,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU),"facing":1.0,"motion_phase":0.0,"moving":false,"flash":0.0,"poise":0.0,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_target":0,"attack_aim":Vector2.RIGHT})
+	enemies.back().merge({"difficulty":difficulty,"damage_scale":1.2 if kind==4 else Ecology.DAMAGE_SCALE[difficulty-1],"speed_scale":Ecology.SPEED_SCALE[difficulty-1]})
 	next_enemy+=1
 
 # Rewards are driven by actual defender deaths, never by an empty list during
@@ -1707,8 +1845,9 @@ func resolve_site_defeat(e: Dictionary) -> void:
 	place_entry(chest,Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),quality))
 	place_entry(chest,{"kind":"backpack","key":Catalog.BAG_TIERS[quality].key})
 	for i in quality-1: place_entry(chest,"relic")
-	place_entry(chest,"medicine")
-	place_entry(chest,"ammo")
+	for i in 1+quality/2:
+		place_entry(chest,"medicine")
+		place_entry(chest,"ammo")
 	append_chest(chest)
 	emit_effect("bell",chest.p)
 
@@ -1749,9 +1888,9 @@ func update_enemies(dt: float) -> void:
 				var victim: Dictionary=players.get(e.attack_target,{})
 				if e.type==1:
 					broadcast_audio("enemy-cast",e)
-					bullets.append({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":13.0,"owner":0})
+					bullets.append({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":Ecology.damage(e,13.0),"owner":0})
 				elif not victim.is_empty() and victim.status=="active" and e.p.distance_to(victim.p)<58 and ruins.clear_line(e.p,victim.p):
-					hurt(victim,[12,8,20,25][e.type])
+					hurt(victim,Ecology.damage(e,[12,8,20,25][e.type]))
 			continue
 		var target: Dictionary={}
 		var best := 440.0+threat*300
@@ -1769,7 +1908,7 @@ func update_enemies(dt: float) -> void:
 			var direction: Vector2=(target.p-e.p).normalized()
 			if absf(direction.x)>0.05:
 				e["facing"]=signf(direction.x)
-			var speed: float=[110,95,68,140][e.type]*(1+threat*0.3)
+			var speed: float=[110,95,68,140][e.type]*(1+threat*0.3)*float(e.get("speed_scale",1.0))
 			var ranged: bool=e.type==1 and best<330 and ruins.clear_line(e.p,target.p)
 			if e.cd<=0 and (ranged or (best<45 and ruins.clear_line(e.p,target.p))):
 				e["attack_total"]=[0.62,0.84,1.0,0.72][e.type]
@@ -1897,7 +2036,7 @@ func return_to_camp() -> void:
 		if not players[id].connected:
 			players.erase(id)
 		else:
-			players[id].ready=id==1
+			players[id].ready=id==leader_id
 	push_lobby()
 
 func portal_position() -> Vector2:
@@ -1964,13 +2103,25 @@ func update_knight(e: Dictionary, dt: float) -> void:
 	e["stagger"]=maxf(0,float(e.get("stagger",0))-dt)
 	e["moving"]=false
 	e.cd=maxf(0,e.cd-dt)
-	if e.stagger>0: return
+	var phase := 2 if e.hp<=e.max_hp*0.5 else 1
+	if phase!=int(e.get("phase",1)):
+		e["phase"]=phase
+		BossPresentation.send(self,e,"phase")
+	if not e.get("presentation_seen",false):
+		for observer in players.values():
+			if observer.status=="active" and observer.p.distance_to(e.p)<650 and ruins.clear_line(e.p,observer.p):
+				e["presentation_seen"]=true
+				BossPresentation.send(self,e,"entrance")
+				break
+	BossTactics.tick(self,e,dt)
+	if e.stagger>0 or BossTactics.update_guard(e,dt): return
 	if e.attack_time>0:
 		var before: float=e.attack_total-e.attack_time
 		e.attack_time=maxf(0,e.attack_time-dt)
 		var passed: float=e.attack_total-e.attack_time
 		var move_name: String=e.get("move_name","combo")
-		var marks: Array=[0.65,1.10,1.65] if move_name=="combo" else ([0.85] if move_name=="thrust" else [1.15])
+		var spec: Dictionary=BossTactics.KNIGHT_MOVES.get(move_name,BossTactics.KNIGHT_MOVES.combo)
+		var marks: Array=spec.marks
 		# Locked aim is never retargeted after anticipation begins.
 		if move_name=="thrust" and passed>0.85 and before<1.20:
 			var step: float=maxf(0,minf(passed,1.20)-maxf(before,0.85))
@@ -1979,18 +2130,19 @@ func update_knight(e: Dictionary, dt: float) -> void:
 			e.motion_phase+=step*20
 			for p in players.values():
 				if not e.get("hit_ids",[]).has(p.id) and p.p.distance_to(e.p)<75 and ruins.clear_line(e.p,p.p):
-					hurt(p,32)
+					hurt(p,Ecology.damage(e,32))
 					e.hit_ids.append(p.id)
 		for strike in marks.size():
 			if before<marks[strike] and passed>=marks[strike]:
 				e["attack_released"]=true
-				broadcast_audio("enemy-cast",e)
+				var shape := "line" if move_name=="thrust" else "ring" if move_name=="storm" else "cone"
+				BossPresentation.send(self,e,"release",{"move":move_name,"shape":shape,"radius":340.0 if shape=="line" else spec.reach,"inner":0.0,"total":marks[strike],"part":strike})
 				for p in players.values():
 					var delta: Vector2=p.p-e.p
-					var reach := 225.0 if move_name=="storm" else (110.0 if move_name=="thrust" else 155.0)
-					var arc := PI if move_name=="storm" else 1.35
+					var reach: float=spec.reach
+					var arc: float=spec.arc
 					if delta.length()<reach and absf(e.attack_aim.angle_to(delta))<arc and ruins.clear_line(e.p,p.p):
-						hurt(p,36 if move_name=="storm" else (32 if move_name=="thrust" else 18+strike*3))
+						hurt(p,Ecology.damage(e,float(spec.damage[strike])))
 		return
 	var target: Dictionary={}
 	var best := 780.0
@@ -2000,21 +2152,41 @@ func update_knight(e: Dictionary, dt: float) -> void:
 			target=p
 	if target.is_empty(): return
 	var aim: Vector2=(target.p-e.p).normalized()
+	var response := BossTactics.response(self,e)
+	if not response.is_empty():
+		if response.kind=="attack" and BossTactics.start_guard(e,response.aim,self): return
+		if response.kind!="attack":
+			var move := "counter" if response.kind=="counter" else ("thrust" if response.kind=="dodge" or best>190 else "quick")
+			start_knight_attack(e,move,response.aim)
+			return
+	if not e.get("reaction",{}).is_empty(): return
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
 	if e.cd<=0 and best<360 and ruins.clear_line(e.p,target.p):
 		var sequence := int(e.get("sequence",0))
-		var move_name := "storm" if e.hp<=e.max_hp*0.5 and sequence%3==2 else ("thrust" if best>190 or sequence%3==1 else "combo")
+		var move_name: String=["combo","thrust","storm" if e.hp<=e.max_hp*0.5 else "delayed","quick","delayed","guard"][sequence%6]
+		if best>240 and move_name in ["combo","quick","delayed"]: move_name="thrust"
 		e["sequence"]=sequence+1
-		e["move_name"]=move_name
-		e["hit_ids"]=[]
-		e.attack_aim=aim
-		e.attack_total=2.65 if move_name=="combo" else (2.35 if move_name=="thrust" else 2.75)
-		e.attack_time=e.attack_total
-		e.attack_released=false
-		e.cd=e.attack_total+0.65
+		if move_name=="guard":
+			if BossTactics.start_guard(e,aim,self): return
+			move_name="delayed"
+		start_knight_attack(e,move_name,aim)
 	elif best>115:
 		var previous: Vector2=e.p
-		e.p=ruins.move(e.p,aim*115*dt)
-		if e.p.distance_to(previous)<1: e.p=ruins.move(e.p,aim.orthogonal()*115*dt)
+		var speed := 190.0 if e.hp<=e.max_hp*0.5 else 165.0
+		e.p=ruins.move(e.p,aim*speed*dt)
+		if e.p.distance_to(previous)<1: e.p=ruins.move(e.p,aim.orthogonal()*speed*dt)
 		e.moving=e.p.distance_to(previous)>0.01
 		e.motion_phase+=e.p.distance_to(previous)/12
+
+func start_knight_attack(e: Dictionary, move: String, aim: Vector2) -> void:
+	var spec: Dictionary=BossTactics.KNIGHT_MOVES[move]
+	e["move_name"]=move
+	e["hit_ids"]=[]
+	e["attack_marks"]=spec.marks.duplicate()
+	e.attack_aim=aim
+	if absf(aim.x)>0.05: e.facing=signf(aim.x)
+	e.attack_total=spec.total
+	e.attack_time=e.attack_total
+	e.attack_released=false
+	e.cd=e.attack_total+(0.25 if e.hp<=e.max_hp*0.5 else 0.4)
+	BossPresentation.send(self,e,"charge",{"move":move,"total":spec.marks[0]})

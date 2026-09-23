@@ -74,7 +74,7 @@ func run() -> void:
 			if item.kind in ["weapon","gear"]: check(item.tier==quality,"Equipment quality matches area difficulty")
 			if item.kind=="backpack": check(Catalog.tier_index(item.quality)==quality,"Backpack quality matches difficulty")
 		check(kinds.has("weapon") and kinds.has("gear") and kinds.has("backpack") and kinds.has("medicine") and kinds.has("ammo"),"Guaranteed equipment and supplies fit the chest")
-		check(s.container_units(chest)==quality+4,"All difficulty-scaled relics fit")
+		check(s.container_units(chest)==quality+4+2*(quality/2),"All difficulty-scaled relics fit")
 		values[quality]=Catalog.container_value(chest)
 	for quality in range(1,4): check(values[quality]<values[quality+1],"Harder areas have more valuable rewards")
 	# All sites remain cleared across days and a round trip through the city.

@@ -24,7 +24,7 @@ func run() -> void:
 	check(s.ruins.blocked(Vector2(640,700)),"Pillars collide")
 	check(s.enemies.size()==5,"Knight and four guards")
 	var e: Dictionary=s.enemies[0]
-	check(e.type==4 and e.hp==1800,"Unique knight stats")
+	check(e.type==4 and e.hp==2400,"Unique knight stats")
 	s.enemies=[e]
 	e.p=RoyalCity.BOSS
 	p.p=e.p+Vector2(100,0)

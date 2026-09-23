@@ -1,0 +1,23 @@
+BOSS SOUND EFFECTS — CC0-1.0
+Existing recordings, edited and layered.
+
+StarNinjas
+https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes
+
+artisticdude
+https://opengameart.org/content/swishes-sound-pack
+
+Lentikula
+https://lentikula.itch.io/freecc0-basic-spell-impacts-sfx
+
+Lentikula
+https://lentikula.itch.io/druid-spell-impacts
+
+rubberduck
+https://opengameart.org/content/100-cc0-sfx
+
+rubberduck
+https://opengameart.org/content/100-cc0-sfx-2
+
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Exact source hashes and recipes: manifest.json

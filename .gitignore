@@ -2,3 +2,6 @@
 build/
 *.log
 *.tmp
+
+server/data/
+__pycache__/

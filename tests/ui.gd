@@ -129,6 +129,8 @@ func check_no_overlap(container: Dictionary, text: String) -> void:
 func run() -> void:
 	app=load("res://scenes/main.tscn").instantiate()
 	root.add_child(app)
+	check(app.page_name=="account","first launch offers login and guest")
+	press("游客登录 · 离线也能玩")
 	app.profile.path="user://test-ui-profile.json"
 	# _ready() already read the developer's real save, and a pocket full of relics
 	# from the last play session used to break every "pocket holds …" assertion.
