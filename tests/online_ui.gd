@@ -65,6 +65,20 @@ func run() -> void:
 	app.show_server_rooms()
 	await app.connect_server_room("",false)
 	check(not app.session.online,"empty room code does not create a room")
+	await app.connect_server_room("",true)
+	var deadline := Time.get_ticks_msec()+18000
+	while app.session.online and app.page_name!="camp" and Time.get_ticks_msec()<deadline:
+		await process_frame
+	check(app.page_name=="camp","creating a server room automatically enters camp")
+	check(app.session.players.has(app.session.my_id()) and app.session.is_leader(),"creator is registered as room leader")
+	var room_code: String=app.session.room_code
+	check(room_code.length()==6,"server room has a six-character code")
+	var visible_code := false
+	for child in app.page.get_children():
+		if child is Button and child.text=="房间号 "+room_code+" · 复制":
+			visible_code=true
+	check(visible_code,"camp displays the room code with a copy button")
+	app.session.disconnect_room()
 	app.show_account()
 	app.online_service.api_url="http://127.0.0.1:1"
 	await app.account_submit("ui_watcher","password123",false)

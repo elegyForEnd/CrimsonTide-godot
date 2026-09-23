@@ -782,7 +782,7 @@ func show_camp() -> void:
 		label(page,"◇",Vector2(1066,260+i*69),22,Color("68505d"),Vector2(36,40))
 		label(page,"等待守夜人" if session.online else "空席",Vector2(1116,263+i*69),15,Color("746671"))
 	if session.online:
-		button(page,"房间 "+session.room_code+" · 复制" if session.server_room else "邀请好友 · 复制地址",Vector2(1050,555),Vector2(310,42),copy_invite)
+		button(page,"房间号 "+session.room_code+" · 复制" if session.server_room else "邀请好友 · 复制地址",Vector2(1050,555),Vector2(310,42),copy_invite)
 	else:
 		label(page,"单人远征  /  无需联网",Vector2(1061,561),13,MUTED)
 	ornament(page,Vector2(1047,611),Vector2(314,10))
