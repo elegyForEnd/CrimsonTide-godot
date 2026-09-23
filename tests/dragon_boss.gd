@@ -24,17 +24,20 @@ func run() -> void:
 	s.launch(false,1741)
 	s.set_physics_process(false)
 	s.spawn_timer=9999
-	check(dragon(s).is_empty(),"Dragon does not replace day-one guardians")
+	var first_day_count := 0
+	for candidate in s.enemies:
+		if candidate.get("mini_boss",false): first_day_count+=1
+	check(first_day_count==3,"Three map guardians are selected on day one")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,2)
+	s.dragon_boss.spawn(s,2)
 	var e := dragon(s)
-	check(not e.is_empty(),"Day two spawns the frostbone dragon")
+	check(not e.is_empty(),"Frostbone dragon can occupy a strong roster slot")
 	if not e.is_empty():
 		var habitats: Array=[]
 		for other in s.enemies:
 			if other.get("mini_boss",false): habitats.append(int(other.habitat))
-		check(habitats.size()==3 and habitats.size()==habitats.duplicate().size(),"Three optional bosses spawn on day two")
-		check(habitats[0]!=habitats[1] and habitats[0]!=habitats[2] and habitats[1]!=habitats[2],"Dragon gets its own lair")
+		check(habitats.size()==1,"The dragon keeps a distinct lair when spawned directly")
 		var p: Dictionary=s.players[1]
 		p.p=e.p+Vector2(180,0)
 		s.raid.hazards.clear()
@@ -72,7 +75,11 @@ func run() -> void:
 		check(s.raid.get("dragon_slain",false),"Dragon defeat records a separate accomplishment")
 		var reward := false
 		for chest in s.ruins.chests:
-			if str(chest.get("title","")).contains("龙巢遗珍"): reward=true
+			if str(chest.get("title","")).contains("龙巢遗珍"):
+				reward=true
+				check(chest.items.any(func(item): return str(item.kind)=="frostbone_king_remains"),"Dragon drops its red 3x3 king relic")
+				check(chest.items.any(func(item): return str(item.kind)=="frost_teardrop"),"Dragon keeps its original tear relic")
+				check(chest.items.any(func(item): return str(item.kind)=="weapon"),"Dragon reward keeps its weapon")
 		check(reward,"Dragon drops a unique lair chest")
 	var art: Texture2D=load("res://assets/bosses/dragon/frostbone-dragon.png")
 	check(art!=null and art.get_width()>1000,"Dragon cutout art imports")

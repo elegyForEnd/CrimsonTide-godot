@@ -199,8 +199,12 @@ func _draw() -> void:
 						var travel := minf(radius,70+segment*150+t*100)
 						stamp(self,kind,9 if t<.34 else 10,at+aim*travel,Vector2.ONE*170,aim.angle(),fade*.65,1.5)
 				elif shape=="cone":
-					var sweep := lerpf(-.3,.35,minf(1,t*3))
-					stamp(self,kind,11,at+aim*radius*.45,Vector2.ONE*radius*1.55,aim.angle()+sweep+(PI if kind==3 else 0),fade*.9,1.35)
+					# Keep the hand-painted slash facing the attack direction while its
+					# center follows the outward-moving wave; never spin it over time.
+					var travel := 1-pow(1-t,2.4)
+					var cell := 7 if kind==0 else 11
+					stamp(self,kind,cell,at+aim*radius*lerpf(.12,.72,travel),Vector2.ONE*radius*1.05,
+						aim.angle()+(PI if kind==3 else 0),fade*.72,1.2)
 				elif shape in ["ring","gap_ring","arc"]:
 					# Ring burst remains on its annulus. Never flash the safe center.
 					var h := fx.duplicate()
@@ -263,7 +267,10 @@ func animate_event(fx: Dictionary) -> void:
 				energy.particles(at+aim*radius,col,18,aim,35,1.1)
 			"cone":
 				energy.spawn(at,Vector2.ONE*radius*2,col,3,.65,aim.angle(),0,float(fx.get("arc",1.05)),source)
-				energy.particles(at+aim*radius*.6,col,26,aim,55,1.2)
+				var half_angle := float(fx.get("arc",1.05))
+				for fraction in [-0.65,0.0,0.65]:
+					var ray := aim.rotated(half_angle*fraction)
+					energy.particles(at+ray*radius*.68,col,10,ray,28,1.2)
 			"ring":
 				var inner := float(fx.get("inner",0))
 				energy.spawn(at,Vector2.ONE*radius*2,col,2,.9,0,inner/radius,1.05,source)

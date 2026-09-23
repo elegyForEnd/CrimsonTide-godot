@@ -2,9 +2,10 @@ extends RefCounted
 ## Additional non-humanoid encounters. All hit checks remain host authoritative.
 const Presentation = preload("res://scripts/boss_presentation.gd")
 const NAMES := ["裂地钻兽 · 断层", "雷骸巨鸟 · 风暴眼", "吞月渊蛇 · 无光潮"]
-const HEALTH := [1750.0, 2050.0, 8400.0]
+const HEALTH := [2000.0,2800.0,9200.0]
+const BASE_DAMAGE := [31.0,37.0,51.0]
 
-func spawn_mini(s, day: int) -> void:
+func spawn_mini(s, day: int, forced_kind: int = -1) -> void:
 	if s.map_id!="border" or day not in [1,2]: return
 	var occupied: Array=[]
 	for e in s.enemies:
@@ -25,8 +26,8 @@ func spawn_mini(s, day: int) -> void:
 	var participants := 0
 	for p in s.players.values():
 		if p.status in ["active","down"]: participants+=1
-	var kind := day-1
-	var hp: float=HEALTH[kind]*(1.0+0.45*maxi(0,participants-1))
+	var kind := forced_kind if forced_kind in [0,1] else day-1
+	var hp: float=HEALTH[kind]*(1.0+0.75*maxi(0,participants-1))
 	s.enemies.append({"id":s.next_enemy,"p":at,"home":at,"habitat":choice,"type":4,
 		"mini_boss":true,"wild_boss":true,"wild_kind":kind,"boss_kind":2 if kind==0 else 0,
 		"boss_name":NAMES[kind],"hp":hp,"max_hp":hp,"cd":2.0,"last":1,
@@ -44,7 +45,7 @@ func spawn_final(s) -> void:
 	var participants := 0
 	for p in s.players.values():
 		if p.status in ["active","down"]: participants+=1
-	var hp: float=HEALTH[2]*(1.0+0.55*maxi(0,participants-1))
+	var hp: float=HEALTH[2]*(1.0+0.80*maxi(0,participants-1))
 	var at: Vector2=s.raid.center
 	s.enemies.append({"id":s.next_enemy,"p":at,"type":4,"raid_boss":true,
 		"wild_boss":true,"wild_kind":2,"abyss_final":true,"boss_kind":2,
@@ -99,7 +100,7 @@ func update(s, e: Dictionary, dt: float) -> void:
 func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> void:
 	var kind: int=e.wild_kind
 	var phase: int=e.phase
-	var damage: float=[27.0,31.0,42.0][kind]*(1.0+0.12*(phase-1))
+	var damage: float=BASE_DAMAGE[kind]*(1.0+0.12*(phase-1))
 	var first: int=s.raid.hazards.size()
 	e.attack_aim=aim
 	e.move_id=move
@@ -205,12 +206,25 @@ func gap_ring(s, at: Vector2, gap_aim: Vector2, radius: float, inner: float, gap
 func defeated(s, e: Dictionary) -> void:
 	for i in range(s.raid.hazards.size()-1,-1,-1):
 		if int(s.raid.hazards[i].get("source",-1))==int(e.id): s.raid.hazards.remove_at(i)
-	if e.get("abyss_final",false): return
+	if e.get("abyss_final",false):
+		var final_chest: Dictionary=s.loot_container(e.p,Vector2i(7,7),5,true)
+		final_chest.merge({"fixed_loot":true,"reward_tier":5,"title":str(e.boss_name)+" · 海母遗珍","open":true},true)
+		s.place_entry(final_chest,"abyss_shedding")
+		s.place_entry(final_chest,"abyssal_motherheart")
+		for item in ["medicine","ammo","relic","relic"]: s.place_entry(final_chest,item)
+		final_chest.searched=s.container_units(final_chest)
+		s.append_chest(final_chest)
+		return
+	s.expedition.record_map_boss_defeat(s,e)
 	s.raid.wild_seals[int(e.wild_kind)]=true
-	var chest: Dictionary=s.loot_container(e.p,Vector2i(6,6),int(s.raid.day)+2,true)
-	chest.merge({"fixed_loot":true,"reward_tier":int(s.raid.day)+2,
+	var quality := 3 if int(e.wild_kind)==0 else 4
+	var chest: Dictionary=s.loot_container(e.p,Vector2i(7,7),quality,true)
+	chest.merge({"fixed_loot":true,"reward_tier":quality,
 		"title":str(e.boss_name)+" · 异兽遗藏","open":true},true)
+	s.place_entry(chest,["fault_scale","storm_feather"][int(e.wild_kind)])
+	s.place_entry(chest,"fault_pulse_fossil" if int(e.wild_kind)==0 else "thunder_coffin_nail")
+	if int(e.wild_kind)==1: s.place_entry(chest,"storm_roc_sunheart")
+	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),quality))
 	for item in ["medicine","medicine","ammo","relic","relic"]: s.place_entry(chest,item)
-	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),mini(5,int(s.raid.day)+2)))
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)

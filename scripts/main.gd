@@ -1486,7 +1486,7 @@ func double_click_equip(slot: String, index: int) -> bool:
 	var kind := str(list[index].kind)
 	if kind=="backpack":
 		session.action("equip_bag",{"slot":slot,"index":index})
-	elif Catalog.is_equipment(kind):
+	elif Catalog.is_wearable(kind):
 		session.action("equip",{"slot":slot,"index":index})
 	else:
 		return false
@@ -1505,7 +1505,7 @@ func ctrl_click_item(slot: String, index: int) -> bool:
 	if index<0 or index>=list.size():
 		return false
 	var kind := str(list[index].kind)
-	if kind=="backpack" or Catalog.is_equipment(kind):
+	if kind=="backpack" or Catalog.is_wearable(kind):
 		return double_click_equip(slot,index)
 	if kind in ["medicine","ammo"]:
 		use_item(slot,index)
@@ -1526,6 +1526,8 @@ func ctrl_click_worn(zone: String) -> void:
 		session.action("unequip_stow",{"type":"weapon","index":0})
 	elif zone.begins_with("gear"):
 		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
+	elif zone.begins_with("charm"):
+		session.action("unequip_stow",{"type":"charm","index":zone.substr(5).to_int()})
 	else:
 		return
 	selected=-1
@@ -1558,7 +1560,7 @@ func quick_inventory_at(point: Vector2) -> bool:
 			var kind := str(entry.kind)
 			if kind=="backpack":
 				session.action("equip_bag",{"slot":slot,"index":index})
-			elif Catalog.is_equipment(kind):
+			elif Catalog.is_wearable(kind):
 				session.action("equip",{"slot":slot,"index":index})
 			else:
 				var free_slot := -1
@@ -1588,6 +1590,8 @@ func quick_inventory_at(point: Vector2) -> bool:
 		session.action("unequip_stow",{"type":"weapon","index":0})
 	elif zone.begins_with("gear"):
 		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
+	elif zone.begins_with("charm"):
+		session.action("unequip_stow",{"type":"charm","index":zone.substr(5).to_int()})
 	else:
 		return false
 	selected=-1
@@ -1632,6 +1636,8 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 				return
 			if str(zone.zone)=="bag":
 				session.action("equip_bag",{"slot":source_slot,"index":source_index})
+			elif str(zone.zone).begins_with("charm"):
+				session.action("equip",{"slot":source_slot,"index":source_index,"charm_slot":str(zone.zone).substr(5).to_int()})
 			else:
 				session.action("equip",{"slot":source_slot,"index":source_index})
 			selected=-1
@@ -1698,6 +1704,8 @@ func zone_at(point: Vector2, held: Dictionary) -> Dictionary:
 		if key=="weapon" and kind=="weapon":
 			return {"zone":key,"rect":zone_rect}
 		if key.begins_with("gear") and kind=="gear" and Catalog.gear_slot(held)==int(key.substr(4)):
+			return {"zone":key,"rect":zone_rect}
+		if key.begins_with("charm") and kind=="charm":
 			return {"zone":key,"rect":zone_rect}
 	return {}
 
@@ -2199,7 +2207,7 @@ func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -
 		label(overlay,"双击或拖到装备栏 / 背包槽即可穿上",Vector2(ix,y+460),12,Color("8d8494"),Vector2(inner,22))
 	draw_cabinet(p,x,y,wide)
 
-# The worn kit: four drop sockets (weapon plus armour / sight / boots). A
+# The worn kit: six drop sockets (weapon, three gear pieces and two charms). A
 # matching item dragged out of either container lands on its socket, and two
 # quick taps on the item in the bag do the same. Filled sockets carry an
 # unequip tab in the corner.
@@ -2216,8 +2224,12 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 		if i<gear.size() and gear[i] is Dictionary:
 			entry=gear[i]
 		rows.append({"title":["护甲","瞄具","轻靴"][i],"item":entry,"type":"gear","slot":i})
-	var box := 78.0
-	var gapx := (inner-box*4.0)/3.0
+	var charms: Array=session.kit_charms(p)
+	for i in 2:
+		var entry: Dictionary=charms[i] if charms[i] is Dictionary else {}
+		rows.append({"title":"饰品 %d" % (i+1),"item":entry,"type":"charm","slot":i})
+	var box := 54.0
+	var gapx := (inner-box*float(rows.size()))/float(rows.size()-1)
 	for i in rows.size():
 		var entry: Dictionary=rows[i]
 		var bx := ix+float(i)*(box+gapx)
@@ -2225,7 +2237,8 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 		var item: Dictionary=entry.item
 		var kind := str(entry.type)
 		var index := int(entry.slot)
-		equip_zones["weapon" if kind=="weapon" else "gear%d" % index]=Rect2(bx,by,box,box)
+		var zone_key := "weapon" if kind=="weapon" else "%s%d" % [kind,index]
+		equip_zones[zone_key]=Rect2(bx,by,box,box)
 		var filled := not item.is_empty()
 		# An empty weapon socket still means a weapon in hand: the temporary issue
 		# weapon. It is drawn greyed out and without an unequip tab, so it can
@@ -2241,19 +2254,19 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 		else:
 			socket.tooltip_text="%s槽 · 拖拽对应装备到此穿上" % entry.title
 		if filled:
-			item_icon(overlay,Catalog.item_icon(item),Vector2(bx+17,by+5),Vector2(44,44))
+			item_icon(overlay,Catalog.item_icon(item),Vector2(bx+9,by+4),Vector2(36,36))
 			rect(overlay,Vector2(bx+1,by+box-17),Vector2(box-2,16),Color(0.035,0.025,0.04,0.78))
 			var name_label := label(overlay,Catalog.item_short_name(item),Vector2(bx+1,by+box-16),10,INK,Vector2(box-2,14))
 			name_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 			var off := button(overlay,"卸",Vector2(bx+box-19,by+1),Vector2(18,15),func(): unequip_slot(kind,index),false,9)
 			off.tooltip_text="卸下 "+Catalog.item_name(item)
 		elif issue:
-			item_icon(overlay,Catalog.weapon_icon(int(p.weapon)),Vector2(bx+17,by+5),Vector2(44,44)).modulate=Color(1,1,1,0.42)
+			item_icon(overlay,Catalog.weapon_icon(int(p.weapon)),Vector2(bx+9,by+4),Vector2(36,36)).modulate=Color(1,1,1,0.42)
 			rect(overlay,Vector2(bx+1,by+box-17),Vector2(box-2,16),Color(0.035,0.025,0.04,0.6))
 			var issue_label := label(overlay,Catalog.weapon_name(p.weapon),Vector2(bx+1,by+box-16),10,Color("9d94a6"),Vector2(box-2,14))
 			issue_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		else:
-			var glyph := label(overlay,"◇",Vector2(bx,by+22),22,Color("6a6470"),Vector2(box,30))
+			var glyph := label(overlay,"◇",Vector2(bx,by+12),22,Color("6a6470"),Vector2(box,30))
 			glyph.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		var title := label(overlay,str(entry.title),Vector2(bx,by+box+3),12,INK if filled else MUTED,Vector2(box,18))
 		title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -2269,8 +2282,10 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 func equipment_bonus_text(item: Dictionary, kind: String) -> String:
 	if kind=="weapon":
 		return "伤+%d%% 速+%d%%" % [int(round(Catalog.weapon_bonus(item)*100.0)),int(round(Catalog.weapon_rate_bonus(item)*100.0))]
+	if kind=="charm":
+		return "伤+12%"
 	match Catalog.gear_slot(item):
-		0: return "生命+%d" % int(round(Catalog.gear_bonus(item)))
+		0: return "生命+%d 减伤%d%%" % [int(round(Catalog.gear_bonus(item))),int(round(Catalog.gear_defense(item)*100.0))]
 		1: return "火力+%d%%" % int(round(Catalog.gear_bonus(item)*100.0))
 		_: return "移速+%d" % int(round(Catalog.gear_bonus(item)))
 
@@ -2623,6 +2638,8 @@ func use_action(item: Dictionary, p: Dictionary) -> Dictionary:
 			return {"text":"装备到手上 · 伤害 +%d%%  攻速 +%d%%" % [int(round(Catalog.weapon_bonus(item)*100.0)),int(round(Catalog.weapon_rate_bonus(item)*100.0))],"enabled":true}
 		"gear":
 			return {"text":"装备 · "+Catalog.gear_desc(item),"enabled":true}
+		"charm":
+			return {"text":"装备到饰品栏 · 伤害 +12%","enabled":true}
 		"backpack":
 			return {"text":"装备这个背包","enabled":true}
 	return {}

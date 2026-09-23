@@ -19,7 +19,7 @@ const ITEMS = {
 	"scrap":{"name":"古城零件", "size":Vector2i(2,1), "value":32, "color":Color("b0b6c5"), "desc":"晨钟城工坊急需的机械零件。"},
 	"relic":{"name":"月蚀遗物", "size":Vector2i(2,2), "value":125, "color":Color("d2ac66"), "desc":"占据四格的珍贵遗物；双击收纳时和其他白色物资一样先进背包，金色与红色的高品质装备才会优先沉入次元口袋。"},
 	"medicine":{"name":"急救针", "size":Vector2i(1,2), "value":25, "color":Color("78cbb5"), "desc":"按 F 消耗一支，恢复 45 生命；倒地时可用于自救。"},
-	"charm":{"name":"银鸦护符", "size":Vector2i(1,2), "value":70, "color":Color("b79ade"), "desc":"拾取后，本局伤害提高 12%，最多叠加三枚。"},
+	"charm":{"name":"银鸦护符", "size":Vector2i(1,2), "value":70, "color":Color("b79ade"), "desc":"装备到饰品栏后，本局伤害提高 12%；可装备两枚。放在背包、次元口袋或道具栏时不生效。"},
 	"ammo":{"name":"弹药匣", "size":Vector2i(2,1), "value":20, "color":Color("c4ad82"), "desc":"按 F 优先治疗；弹药不足时自动消耗弹药匣补充 48 发。"},
 	"backpack":{"name":"背包", "size":Vector2i(1,1), "value":40, "color":Color("cfc6bb"), "desc":"可背在身上的独立储物空间，本身就是一件装备：双击或 Ctrl+左键即可换装，换下的旧包进背包柜。紫色及以上品质的包占 2×2 格。"},
 	"weapon":{"name":"武器", "size":Vector2i(2,2), "value":85, "color":Color("c9a06a"), "desc":"战场上捡到的武器。只有装备到武器槽后才会握在手里；拿着它攻击时获得品质加成。阵亡会掉落。"},
@@ -28,26 +28,128 @@ const ITEMS = {
 	# no stat line, no slot, no use. It only matters that it is in the backpack
 	# when the third morning bell has been lit.
 	"amulet":{"name":"骑士的护身符", "size":Vector2i(1,1), "value":666, "color":Color("dd6c7c"), "desc":"失乡骑士身上剥下的猩红护符，内侧刻着一行没人认得的祷文。三个晨钟封印全部点亮后，它会开始发烫。", "tier":5, "rarity":"红色"}
+	,"wind_chime":{"name":"逆风铃芯", "size":Vector2i(1,1), "value":28, "color":Color("b9d3b6"), "tier":0, "desc":"风铃原野的风总向月亮吹去。铃芯却固执地指向归途。"}
+	,"rabbit_bell":{"name":"兔灵葬铃", "size":Vector2i(1,2), "value":44, "color":Color("d8c6dc"), "tier":1, "desc":"食尸兔灵颈间的银铃。摇响三次，据说能听见死者在第四次回答。"}
+	,"oath_banner":{"name":"巡礼者断誓旗", "size":Vector2i(2,1), "value":61, "color":Color("c7b5a0"), "tier":2, "desc":"旗面只剩一句血书：若黎明背弃我，我便亲手升起黑夜。"}
+	,"forbidden_page":{"name":"禁书灰页", "size":Vector2i(1,1), "value":36, "color":Color("d3c4ad"), "tier":0, "desc":"白垩旧城的禁书残页。字迹每到午夜就自行变成读者的名字。"}
+	,"reverse_hand":{"name":"逆时钟针", "size":Vector2i(1,2), "value":53, "color":Color("c9bdaf"), "tier":1, "desc":"从晨钟塔拆下的钟针。它记录的不是时间，而是尚未发生的死亡。"}
+	,"absolution_mask":{"name":"无罪者的铁面", "size":Vector2i(2,1), "value":72, "color":Color("bfc4cd"), "tier":2, "desc":"审判庭宣称戴上它便能洗清罪孽。面具内侧刻满了认罪书。"}
+	,"moon_core":{"name":"月髓棱晶", "size":Vector2i(1,1), "value":45, "color":Color("b8b2e5"), "tier":0, "desc":"月晶高地的矿脉结晶。暗处仍映着一轮不存在的第二月亮。"}
+	,"antler_star":{"name":"骨鹿星角", "size":Vector2i(1,2), "value":64, "color":Color("d6d0e9"), "tier":1, "desc":"骨鹿遗下的星形断角。每道裂纹都对应一条被抹去的星轨。"}
+	,"star_lens":{"name":"星陨观测镜", "size":Vector2i(2,1), "value":84, "color":Color("bfcce8"), "tier":2, "desc":"观星高塔的镜片。透过它，只看得见世界坠落后的天空。"}
+	,"blood_rose":{"name":"血棘永生花", "size":Vector2i(1,1), "value":56, "color":Color("df8297"), "tier":0, "desc":"蔷薇庭域的花从不凋谢；它们只是等下一位主人流血。"}
+	,"mirror_shard":{"name":"镜墓碎面", "size":Vector2i(1,2), "value":76, "color":Color("cbb2d3"), "tier":1, "desc":"镜墓残片。映出的影子总比持有者慢半拍微笑。"}
+	,"thorn_crown":{"name":"眠姬荆冠", "size":Vector2i(2,1), "value":98, "color":Color("d6a1ad"), "tier":2, "desc":"昔日花眠庭院的冠冕。荆棘仍在替沉睡的公主守夜。"}
+	,"drowned_clapper":{"name":"溺钟铜舌", "size":Vector2i(1,1), "value":68, "color":Color("94c3bf"), "tier":0, "desc":"沉钟遗迹的钟舌。浸在水中多年，敲击时却会落下灰烬。"}
+	,"undersea_ticket":{"name":"冥潮船票", "size":Vector2i(1,2), "value":89, "color":Color("a8d0cb"), "tier":1, "desc":"月舟码头的单程船票。终点一栏写着乘客最后的梦。"}
+	,"silent_tide":{"name":"无声潮汐瓶", "size":Vector2i(2,1), "value":114, "color":Color("85b9ba"), "tier":2, "desc":"封着一寸不会退去的潮水。靠近耳边，连心跳也会沉默。"}
+	,"sacred_goblet":{"name":"圣血琉璃杯", "size":Vector2i(1,1), "value":81, "color":Color("e3aaaf"), "tier":0, "desc":"圣血大教堂的祭杯。杯底残留的红色比誓言更难洗净。"}
+	,"verdict_seal":{"name":"断罪王印", "size":Vector2i(1,2), "value":106, "color":Color("e5c18b"), "tier":1, "desc":"王庭以此钤下最终判词。印泥是赤月降临时凝成的血。"}
+	,"empty_crown":{"name":"空王座碎冠", "size":Vector2i(2,1), "value":135, "color":Color("e4c4a3"), "tier":2, "desc":"无人继承的王冠碎片。每一枚都在等待自己的失乡骑士。"}
+	,"mirror_thread":{"name":"千镜命丝", "size":Vector2i(2,2), "value":210, "color":Color("d8b6e6"), "tier":4, "desc":"镜墓纺女最后一缕命线。它缝合破镜，也缝合不该存在的倒影。"}
+	,"ember_heart":{"name":"末祷烬芯", "size":Vector2i(2,2), "value":235, "color":Color("e7aa81"), "tier":4, "desc":"余烬司祭熄灭后仍在低语的心火：愿我的终末，成为你们的黎明。"}
+	,"fault_scale":{"name":"地脉逆鳞", "size":Vector2i(2,2), "value":230, "color":Color("c7aaa0"), "tier":4, "desc":"裂地钻兽脊背上的逆鳞，里面封着整条断层的怒吼。"}
+	,"storm_feather":{"name":"风暴心羽", "size":Vector2i(2,2), "value":260, "color":Color("afc9e7"), "tier":4, "desc":"雷骸巨鸟心口的一根羽毛。羽轴有雷光循着死者脉搏流动。"}
+	,"frost_teardrop":{"name":"永冻龙泪", "size":Vector2i(2,2), "value":310, "color":Color("b6dced"), "tier":5, "desc":"霜骨古龙失去天空时落下的泪。握住它，能听见冰封前的最后一声龙吟。"}
+	,"abyss_shedding":{"name":"无光蛇蜕", "size":Vector2i(2,2), "value":370, "color":Color("9da1c7"), "tier":5, "desc":"吞月渊蛇褪下的旧夜。展开后，星光会从它的鳞缝里消失。"}
+	,"royal_diadem":{"name":"失乡者的冕环", "size":Vector2i(2,1), "value":180, "color":Color("e6c394"), "tier":4, "desc":"失乡骑士所守的王冠内环。没有名字的君王，仍拥有最忠诚的守卫。"}
+	,"twilight_edict":{"name":"永夜敕令", "size":Vector2i(1,2), "value":205, "color":Color("d6adb9"), "tier":4, "desc":"晨曦王城最后的诏书：命令太阳在今夜之后不得升起。"}
+	,"dawn_testament":{"name":"破晓遗书", "size":Vector2i(1,1), "value":245, "color":Color("ebd6a9"), "tier":5, "desc":"信纸上只写着一句话：倘若你读到这里，说明我们仍有明天。"}
+	,"fog_chime":{"name":"雾钟引魂签", "size":Vector2i(1,1), "value":34, "color":Color("adcac6"), "tier":0, "desc":"写着亡者乳名的薄铜签。雾潮升起时，钟声会替它寻找主人。"}
+	,"nightwatch_pin":{"name":"断羽巡夜徽", "size":Vector2i(1,2), "value":57, "color":Color("b5c2bb"), "tier":1, "desc":"巡夜人把折断的使魔羽翎别在胸口，提醒自己天亮前不可回头。"}
+	,"weightless_oathstone":{"name":"失重誓石", "size":Vector2i(2,1), "value":79, "color":Color("c5bca9"), "tier":2, "desc":"被宣誓者抛入风铃原野的石头。至今仍停在坠落之前。"}
+	,"hourless_token":{"name":"斩时铜令", "size":Vector2i(1,1), "value":43, "color":Color("c7b594"), "tier":0, "desc":"晨钟旧卫的通行令。令牌上的时刻永远停在钟声响起前一息。"}
+	,"last_mass_leaf":{"name":"终祷残篇", "size":Vector2i(1,2), "value":68, "color":Color("c8b9ae"), "tier":1, "desc":"灰烬司祭的祷文残页。最后一行不是祈求，而是对神明的宣判。"}
+	,"mute_judgement":{"name":"噤声裁判牌", "size":Vector2i(2,1), "value":91, "color":Color("c2c0bd"), "tier":2, "desc":"宣判者以此令全庭禁声。牌面凹痕像一张被缝住的嘴。"}
+	,"seer_eye":{"name":"观星者遗瞳", "size":Vector2i(1,1), "value":52, "color":Color("b8b7d8"), "tier":0, "desc":"高塔学徒留下的星晶义眼，瞳孔里还有一场尚未发生的流星雨。"}
+	,"silver_stag_bell":{"name":"银骨鹿铃", "size":Vector2i(1,2), "value":74, "color":Color("d0cbdc"), "tier":1, "desc":"骨鹿角间的古铃。摇响后，附近所有影子都会转向北方。"}
+	,"meteor_core":{"name":"陨星兽核", "size":Vector2i(2,1), "value":102, "color":Color("bcc6e0"), "tier":2, "desc":"石像巨兽胸腔中的星核，仍在重复坠入月晶高地的最后一瞬。"}
+	,"sleeping_veil":{"name":"花眠公主的黑纱", "size":Vector2i(1,1), "value":63, "color":Color("d1a0b0"), "tier":0, "desc":"罩在空王冠上的黑纱。每一根丝线都记得一个无人赴约的春天。"}
+	,"blood_vow_clasp":{"name":"血誓嫁衣扣", "size":Vector2i(1,2), "value":86, "color":Color("d88799"), "tier":1, "desc":"蔷薇庭域的赤金衣扣，背面刻着一对永不相见的姓名。"}
+	,"thorn_heart":{"name":"荆棘之心", "size":Vector2i(2,1), "value":118, "color":Color("dc8994"), "tier":2, "desc":"跳动的黑蔷薇心核。每一次搏动，都替沉睡者拒绝一次黎明。"}
+	,"moonbone_flute":{"name":"泡月骨笛", "size":Vector2i(1,1), "value":75, "color":Color("a5c9c5"), "tier":0, "desc":"从水底捞出的骨笛。吹奏时，雾汐上会浮起一轮倒悬的月亮。"}
+	,"sunken_lantern":{"name":"沉舟魂灯", "size":Vector2i(1,2), "value":98, "color":Color("91b9b4"), "tier":1, "desc":"引渡沉船亡魂的铜灯。灯火不是火焰，而是一只睁开的青色眼睛。"}
+	,"abyssal_rite_drum":{"name":"海渊祈潮盘", "size":Vector2i(2,1), "value":128, "color":Color("81b4b5"), "tier":2, "desc":"古祭司召唤逆潮的仪盘。盘面浮雕全都朝着深海张口。"}
+	,"redmoon_betrothal":{"name":"赤月婚约", "size":Vector2i(1,1), "value":89, "color":Color("df9c9d"), "tier":0, "desc":"王庭在血月之夜订下的盟约。新郎、新娘和证婚人都没有留下名字。"}
+	,"weeping_cairn":{"name":"王庭哭泣石", "size":Vector2i(1,2), "value":115, "color":Color("d7b4a7"), "tier":1, "desc":"旧王庭墙基中的红色石英。切开后，每一层都凝着一滴眼泪。"}
+	,"nameless_standard":{"name":"无名旗首", "size":Vector2i(2,1), "value":144, "color":Color("d8adb1"), "tier":2, "desc":"没有徽记的军旗顶饰。旗帜已经烧尽，握旗之人的誓言仍未熄灭。"}
+	,"mirror_fate_ledger":{"name":"镜界命谱", "size":Vector2i(2,2), "value":285, "color":Color("d3b5e2"), "tier":4, "desc":"镜墓纺女织成的命运底稿。上面有你的名字，但每一笔都在倒退。"}
+	,"vesper_last_page":{"name":"末日弥撒篇", "size":Vector2i(2,2), "value":305, "color":Color("e0a988"), "tier":4, "desc":"余烬司祭的最后一页弥撒：愿焚尽我的神，换你们活过长夜。"}
+	,"fault_pulse_fossil":{"name":"断层圣髓", "size":Vector2i(2,2), "value":320, "color":Color("c99f8d"), "tier":4, "desc":"裂地钻兽体内凝结的地脉核心。捧在手中，脚下的大地会回应你的心跳。"}
+	,"thunder_coffin_nail":{"name":"雷骸镇魂钉", "size":Vector2i(2,2), "value":335, "color":Color("b5c8dc"), "tier":4, "desc":"曾钉入雷骸巨鸟王冠的镇魂钉。拔出后，沉睡的雷暴开始寻找天空。"}
+	,"frostbone_king_remains":{"name":"霜骨龙皇遗骸", "size":Vector2i(3,3), "value":920, "color":Color("e38e9b"), "tier":5, "desc":"霜骨龙皇最后的王骸，九格寒光封存着失落龙庭。红色传世珍宝，占据整片 3×3 格。"}
+	,"storm_roc_sunheart":{"name":"雷骸天帝之心", "size":Vector2i(3,3), "value":980, "color":Color("e4828d"), "tier":5, "desc":"风暴巨鸟王的赤色心核。握住它，万雷会齐声呼唤你的真名。3×3 格红色传世珍宝。"}
+	,"bloodmoon_nightwomb":{"name":"赤月终焉王胎", "size":Vector2i(3,3), "value":1080, "color":Color("eb7588"), "tier":5, "desc":"终焉赤月尚未诞生的王胎。它在三日血潮尽头等待一位新的弑神者。3×3 格红色传世珍宝。"}
+	,"abyssal_motherheart":{"name":"无光海母之心", "size":Vector2i(3,3), "value":1260, "color":Color("d982a0"), "tier":5, "desc":"吞月渊蛇腹中沉眠的海母之心。带走它的人，也将带走海底最后的黑夜。3×3 格红色传世珍宝。"}
+	,"eternal_night_thronecore":{"name":"永夜王座核心", "size":Vector2i(3,3), "value":1150, "color":Color("e8a0a0"), "tier":5, "desc":"晨曦王城王座深处的赤色核心。它不是王权的象征，而是王权活着的原因。3×3 格红色传世珍宝。"}
 }
+const BIOME_COLLECTIBLES := [
+	["wind_chime","rabbit_bell","oath_banner"],
+	["forbidden_page","reverse_hand","absolution_mask"],
+	["moon_core","antler_star","star_lens"],
+	["blood_rose","mirror_shard","thorn_crown"],
+	["drowned_clapper","undersea_ticket","silent_tide"],
+	["sacred_goblet","verdict_seal","empty_crown"]
+]
+const ROYAL_COLLECTIBLES := ["royal_diadem","twilight_edict","dawn_testament"]
+const BOSS_COLLECTIBLES := ["mirror_thread","ember_heart","fault_scale","storm_feather","frost_teardrop","abyss_shedding"]
+const BIOME_COLLECTIBLES_II := [
+	["fog_chime","nightwatch_pin","weightless_oathstone"],
+	["hourless_token","last_mass_leaf","mute_judgement"],
+	["seer_eye","silver_stag_bell","meteor_core"],
+	["sleeping_veil","blood_vow_clasp","thorn_heart"],
+	["moonbone_flute","sunken_lantern","abyssal_rite_drum"],
+	["redmoon_betrothal","weeping_cairn","nameless_standard"]
+]
+const BOSS_COLLECTIBLES_II := ["mirror_fate_ledger","vesper_last_page","fault_pulse_fossil","thunder_coffin_nail","frostbone_king_remains","storm_roc_sunheart"]
+const ROYAL_COLLECTIBLES_II := ["bloodmoon_nightwomb","abyssal_motherheart","eternal_night_thronecore"]
+const NEW_COLLECTIBLES := [
+	"fog_chime","nightwatch_pin","weightless_oathstone","hourless_token","last_mass_leaf","mute_judgement",
+	"seer_eye","silver_stag_bell","meteor_core","sleeping_veil","blood_vow_clasp","thorn_heart",
+	"moonbone_flute","sunken_lantern","abyssal_rite_drum","redmoon_betrothal","weeping_cairn","nameless_standard",
+	"mirror_fate_ledger","vesper_last_page","fault_pulse_fossil","thunder_coffin_nail","frostbone_king_remains",
+	"storm_roc_sunheart","bloodmoon_nightwomb","abyssal_motherheart","eternal_night_thronecore"
+]
+
+static func biome_collectible(biome: int, variant: int) -> String:
+	return BIOME_COLLECTIBLES[clampi(biome,0,BIOME_COLLECTIBLES.size()-1)][clampi(variant,0,2)]
+
+static func collectible_index(kind: String) -> int:
+	var index := 0
+	for biome in BIOME_COLLECTIBLES:
+		for collectible in biome:
+			if collectible==kind: return index
+			index+=1
+	for collectible in BOSS_COLLECTIBLES+ROYAL_COLLECTIBLES:
+		if collectible==kind: return index
+		index+=1
+	for collectible in NEW_COLLECTIBLES:
+		if collectible==kind: return index
+		index+=1
+	return -1
+
+static func biome_collectible_set(biome: int) -> Array:
+	var index := clampi(biome,0,BIOME_COLLECTIBLES.size()-1)
+	return BIOME_COLLECTIBLES[index]+BIOME_COLLECTIBLES_II[index]
 const TALENTS = ["生命强化", "火力校准", "轻装步伐"]
 # Field weapons are loot and nothing else: a
 # Watcher can only ever hold one of them by finding it and putting it on, so the
 # index below is also the index a looted weapon stores in its "weapon" field.
 const WEAPONS = [
-	{"name":"守夜步枪", "rate":0.23, "windup":0.0, "damage":23.0, "reach":680.0, "knock":9.0},
+	{"name":"守夜步枪", "rate":0.23, "windup":0.0, "damage":31.0, "reach":680.0, "knock":9.0},
 	{"name":"绯红单手剑", "rate":0.38, "windup":0.10, "damage":38.0, "reach":112.0, "knock":20.0},
 	{"name":"破晓双手剑", "rate":0.88, "windup":0.34, "damage":88.0, "reach":158.0, "knock":58.0},
-	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":46.0, "reach":700.0, "knock":16.0},
+	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":55.0, "reach":700.0, "knock":16.0},
 	{"name":"赤陨法杖", "family":3, "spell":"meteor", "desc":"陨石命中后爆炸，波及附近敌人。", "rate":1.38, "windup":0.72, "damage":145.0, "reach":650.0, "knock":48.0, "speed":430.0},
-	{"name":"霜针短杖", "family":3, "spell":"needle", "desc":"短吟唱高速连射冰针，单发伤害低。", "rate":0.20, "windup":0.045, "damage":14.0, "reach":690.0, "knock":5.0, "speed":1050.0},
-	{"name":"鸣雷之杖", "family":3, "spell":"chain", "desc":"雷击命中后向最多三名附近敌人跳跃。", "rate":0.68, "windup":0.27, "damage":53.0, "reach":660.0, "knock":16.0, "speed":700.0},
-	{"name":"月弧法杖", "family":3, "spell":"moon", "desc":"月刃穿过最多四名敌人。", "rate":0.76, "windup":0.30, "damage":39.0, "reach":720.0, "knock":12.0, "speed":700.0},
-	{"name":"曦光棱镜杖", "family":3, "spell":"prism", "desc":"释放瞬间贯穿直线上的所有敌人。", "rate":0.96, "windup":0.45, "damage":79.0, "reach":640.0, "knock":25.0},
-	{"name":"烬羽散华杖", "family":3, "spell":"scatter", "desc":"一次射出五枚扇形火羽，近距可集中命中。", "rate":0.55, "windup":0.16, "damage":21.0, "reach":550.0, "knock":8.0, "speed":670.0},
-	{"name":"虚涡法杖", "family":3, "spell":"vortex", "desc":"制造范围爆发，并将附近敌人卷向中心。", "rate":1.08, "windup":0.46, "damage":68.0, "reach":570.0, "knock":0.0, "speed":390.0},
-	{"name":"蚀月长枪杖", "family":3, "spell":"eclipse", "desc":"漫长蓄力后发射贯穿最多五名敌人的重型魔枪。", "rate":1.58, "windup":0.95, "damage":210.0, "reach":850.0, "knock":65.0, "speed":920.0},
-	{"name":"鸦喙刺剑", "family":1, "pattern":"thrust", "desc":"狭长突刺，贯穿前方一线敌人。", "rate":0.42, "windup":0.13, "damage":51.0, "reach":174.0, "knock":24.0},
-	{"name":"回环弯刀", "family":1, "pattern":"spin", "desc":"旋身环斩，命中身边所有敌人。", "rate":0.64, "windup":0.23, "damage":42.0, "reach":118.0, "knock":20.0},
+	{"name":"霜针短杖", "family":3, "spell":"needle", "desc":"短吟唱高速连射冰针，单发伤害低。", "rate":0.20, "windup":0.045, "damage":21.0, "reach":690.0, "knock":5.0, "speed":1050.0},
+	{"name":"鸣雷之杖", "family":3, "spell":"chain", "desc":"雷击命中后向最多三名附近敌人跳跃。", "rate":0.68, "windup":0.27, "damage":60.0, "reach":660.0, "knock":16.0, "speed":700.0},
+	{"name":"月弧法杖", "family":3, "spell":"moon", "desc":"月刃穿过最多四名敌人。", "rate":0.76, "windup":0.30, "damage":66.0, "reach":720.0, "knock":12.0, "speed":700.0},
+	{"name":"曦光棱镜杖", "family":3, "spell":"prism", "desc":"释放瞬间贯穿直线上的所有敌人。", "rate":0.96, "windup":0.45, "damage":86.0, "reach":640.0, "knock":25.0},
+	{"name":"烬羽散华杖", "family":3, "spell":"scatter", "desc":"一次射出五枚扇形火羽，近距可集中命中；同次攻击的后续火羽对同一目标造成 12% 伤害。", "rate":0.55, "windup":0.16, "damage":50.0, "reach":550.0, "knock":8.0, "speed":670.0},
+	{"name":"虚涡法杖", "family":3, "spell":"vortex", "desc":"制造范围爆发，并将附近敌人卷向中心。", "rate":1.08, "windup":0.46, "damage":93.0, "reach":570.0, "knock":0.0, "speed":390.0},
+	{"name":"蚀月长枪杖", "family":3, "spell":"eclipse", "desc":"漫长蓄力后发射贯穿最多五名敌人的重型魔枪。", "rate":1.58, "windup":0.95, "damage":175.0, "reach":850.0, "knock":65.0, "speed":920.0},
+	{"name":"鸦喙刺剑", "family":1, "pattern":"thrust", "desc":"狭长突刺，贯穿前方一线敌人。", "rate":0.42, "windup":0.13, "damage":42.0, "reach":174.0, "knock":24.0},
+	{"name":"回环弯刀", "family":1, "pattern":"spin", "desc":"旋身环斩，命中身边所有敌人。", "rate":0.64, "windup":0.23, "damage":51.0, "reach":118.0, "knock":20.0},
 	{"name":"断潮巨刃", "family":2, "pattern":"cleave", "desc":"向前横扫宽阔扇面，击退敌群。", "rate":1.02, "windup":0.39, "damage":105.0, "reach":192.0, "knock":72.0},
 	{"name":"裂地重剑", "family":2, "pattern":"quake", "desc":"蓄力砸地，震伤周身敌人。", "rate":1.24, "windup":0.56, "damage":122.0, "reach":140.0, "knock":85.0},
 	{"name":"暮羽长弓", "family":0, "spell":"arrow", "desc":"拉弓射出贯穿两名敌人的箭矢；消耗弹药。", "rate":0.56, "windup":0.18, "damage":58.0, "reach":820.0, "knock":24.0, "speed":1050.0}
@@ -65,12 +167,12 @@ const WEAPONS = [
 const STARTER_BASE := 17
 const STARTER_WEAPONS = [
 	{"name":"黑铁短剑", "rate":0.30, "windup":0.05, "damage":13.0, "reach":84.0, "knock":10.0, "family":1},
-	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":15.0, "reach":520.0, "knock":8.0, "family":3},
-	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":30.0, "reach":150.0, "knock":40.0, "family":2},
+	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":22.0, "reach":520.0, "knock":8.0, "family":3},
+	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":37.0, "reach":150.0, "knock":40.0, "family":2},
 	{"name":"湮魂之镰", "rate":0.62, "windup":0.22, "damage":18.0, "reach":110.0, "knock":16.0, "family":1, "icon":"soul_scythe"}
 ]
 const GEAR = [
-	{"name":"守夜护甲", "desc":"最大生命 +20", "hp":20.0,"damage":0.0,"speed":0.0},
+	{"name":"守夜护甲", "desc":"最大生命 +20，受击伤害 -5%", "hp":20.0,"defense":0.05,"damage":0.0,"speed":0.0},
 	{"name":"血月瞄具", "desc":"武器伤害 +15%", "hp":0.0,"damage":0.15,"speed":0.0},
 	{"name":"渡鸦轻靴", "desc":"移动速度 +20", "hp":0.0,"damage":0.0,"speed":20.0}
 ]
@@ -81,6 +183,7 @@ const QUALITY_KEYS := ["white","green","blue","purple","gold","red"]
 const WEAPON_DAMAGE_BONUS := [0.0,0.10,0.22,0.36,0.52,0.72]
 const WEAPON_RATE_BONUS := [0.0,0.05,0.10,0.15,0.21,0.28]
 const GEAR_HP := [12.0,20.0,30.0,42.0,58.0,78.0]
+const GEAR_DEFENSE := [0.03,0.05,0.07,0.09,0.12,0.15]
 const GEAR_DAMAGE := [0.05,0.08,0.12,0.17,0.23,0.30]
 const GEAR_SPEED := [8.0,13.0,19.0,26.0,35.0,46.0]
 const WEAPON_ICONS := ["rifle","sword","heavy","staff","staff_meteor","staff_needle","staff_chain","staff_moon","staff_prism","staff_scatter","staff_vortex","staff_eclipse","sword_thrust","sword_spin","heavy_cleave","heavy_quake","bow"]
@@ -185,12 +288,15 @@ static func quality_color(value: int) -> Color:
 static func is_equipment(kind: String) -> bool:
 	return kind=="weapon" or kind=="gear"
 
+static func is_wearable(kind: String) -> bool:
+	return is_equipment(kind) or kind=="charm"
+
 # Which kinds the item bar's interact key can actually operate. A lootable relic,
 # a stack of scrap or a blood crystal is treasure and nothing else, so a socket
 # holding one is deliberately inert: the key falls through to whatever else it
 # does rather than swallowing the press for no effect.
 static func slot_operable(kind: String) -> bool:
-	return is_equipment(kind) or kind=="backpack" or kind=="medicine" or kind=="ammo"
+	return is_wearable(kind) or kind=="backpack" or kind=="medicine" or kind=="ammo"
 
 # A piece of loot is always one of the four field weapons: the hero issue weapons
 # have no item form and can neither be found nor dropped.
@@ -212,10 +318,13 @@ static func gear_bonus(item: Dictionary) -> float:
 	var table: Array = [GEAR_HP,GEAR_DAMAGE,GEAR_SPEED][gear_slot(item)]
 	return table[tier_of(int(item.get("tier",0)))]
 
+static func gear_defense(item: Dictionary) -> float:
+	return GEAR_DEFENSE[tier_of(int(item.get("tier",0)))] if gear_slot(item)==0 else 0.0
+
 static func gear_desc(item: Dictionary) -> String:
 	var bonus := gear_bonus(item)
 	match gear_slot(item):
-		0: return "最大生命 +%d" % int(round(bonus))
+		0: return "最大生命 +%d、受击伤害 -%d%%" % [int(round(bonus)),int(round(gear_defense(item)*100.0))]
 		1: return "武器伤害 +%d%%" % int(round(bonus*100.0))
 		_: return "移动速度 +%d" % int(round(bonus))
 
@@ -451,7 +560,7 @@ static func item_tier(item: Dictionary) -> int:
 		return tier_of(int(item.get("tier",0)))
 	if str(item.get("kind",""))=="backpack":
 		return tier_index(str(item.get("quality",DEFAULT_BAG_KEY)))
-	return 0
+	return tier_of(int(ITEMS.get(str(item.get("kind","")),{}).get("tier",0)))
 
 static func high_quality(item: Dictionary) -> bool:
 	return item_tier(item)>=POCKET_TIER
@@ -461,7 +570,7 @@ static func high_quality(item: Dictionary) -> bool:
 # the quality rule below, which only steers the double click in the search
 # window.
 static func prefers_pocket(kind: String) -> bool:
-	return kind=="relic"
+	return kind=="relic" or int(ITEMS.get(kind,{}).get("tier",0))>=4
 
 # Loot containers are searched, and their contents are laid out as a tidy grid
 # instead of being packed wherever they fit.

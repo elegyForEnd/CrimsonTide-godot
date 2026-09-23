@@ -7,7 +7,10 @@ from PIL import Image
 def generate(job):
     out=Path('output/imagegen')/job['out']
     out.parent.mkdir(parents=True,exist_ok=True)
-    response=requests.post(os.environ['OPENAI_BASE_URL'].rstrip('/')+'/images/generations',headers={'Authorization':'Bearer '+os.environ['OPENAI_API_KEY']},json={'model':'gpt-image-2.5-sunburst','prompt':job['prompt'],'size':'1536x1024','quality':'high','n':1,'response_format':'b64_json'},timeout=240)
+    payload={'model':job.get('model','gpt-image-2.5-sunburst'),'prompt':job['prompt'],'size':job.get('size','1536x1024'),'quality':job.get('quality','high'),'n':1,'response_format':'b64_json'}
+    if job.get('background'):
+        payload['background']=job['background']
+    response=requests.post(os.environ['OPENAI_BASE_URL'].rstrip('/')+'/images/generations',headers={'Authorization':'Bearer '+os.environ['OPENAI_API_KEY']},json=payload,timeout=240)
     response.raise_for_status()
     payload=response.json()
     for item in payload.get('data',[]):

@@ -1,6 +1,7 @@
 .godot/
 build/
 dist/
+output/imagegen/
 *.log
 *.tmp
 

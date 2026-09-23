@@ -50,6 +50,9 @@ func run() -> void:
 	check(s.duration==300,"Legacy long-run callers also use five minutes")
 	var tiers := {}
 	for e in s.enemies:
+		# Bosses can survive the preceding phase or occupy a habitat, but do not
+		# use the ordinary resident difficulty multiplier.
+		if not e.has("difficulty") or not e.has("habitat"): continue
 		var q := Ecology.difficulty(s.ruins.sites[e.habitat])
 		tiers[q]=true
 		check(e.difficulty==q and e.max_hp>=Ecology.HEALTH[e.type],"Resident receives its home difficulty")

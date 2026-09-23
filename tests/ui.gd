@@ -401,6 +401,7 @@ func run() -> void:
 	check(app.inventory_open and app._loot_index<0,"TAB reopens the bag together with the equipment column")
 	check(app.equip_zones.has("weapon"),"the weapon socket registers a drop zone")
 	check(app.equip_zones.has("gear0") and app.equip_zones.has("gear1") and app.equip_zones.has("gear2"),"all three gear sockets register a drop zone")
+	check(app.equip_zones.has("charm0") and app.equip_zones.has("charm1"),"both accessory sockets register drop zones")
 	check(app.equip_zones.has("bag"),"the backpack socket registers a drop zone")
 	check(app.panel_rects.size()>0,"the side panels register the area where a drop is cancelled")
 	await capture("ui-equip-sockets")
@@ -446,6 +447,13 @@ func run() -> void:
 	check(int(walker.backpack.items[0].get("weapon",-1))==2,"the sword the staff replaced is stowed back in the bag")
 	check(not app.drag.active,"the drag ends on the socket")
 	await capture("ui-mouse-drag-equip")
+	check(Catalog.add_item(walker.backpack,"charm"),"an accessory waits in the backpack")
+	app.show_inventory()
+	await process_frame
+	await drag_item_to_zone("backpack",walker.backpack.items.size()-1,"charm1")
+	check(app.session.charms_equipped(walker)==1 and not app.session.kit_charms(walker)[1].is_empty(),"dragging a charm into the second accessory socket equips it")
+	await ctrl_click_point(zone_point("charm1"))
+	check(app.session.charms_equipped(walker)==0,"Ctrl-clicking the accessory socket returns its charm to storage")
 	check(Catalog.add_item(walker.backpack,"backpack"),"a purple pack waits to be dragged")
 	walker.backpack.items.back()["quality"]="purple"
 	app.show_inventory()
