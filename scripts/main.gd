@@ -573,10 +573,16 @@ func show_title() -> void:
 	background()
 	fade(page,Vector2.ZERO,Vector2(850,900),Color(0.025,0.018,0.035,0.64))
 	ornament(page,Vector2.ZERO,Vector2(1440,900),"title")
-	ornament(page,Vector2(242,59),Vector2(170,170),"seal",Color("c76f78"))
-	label(page,"血潮守望",Vector2(74,124),91,Color("f7e8df"),Vector2(560,140))
-	label(page,"C  R  I  M  S  O  N     T  I  D  E",Vector2(90,260),20,Color("ddc9c2"),Vector2(540,42))
-	ornament(page,Vector2(89,312),Vector2(480,14))
+	var title_logo := TextureRect.new()
+	title_logo.name="TitleLogo"
+	title_logo.texture=load("res://assets/ui/title-crimson-tide-transparent-v1.png")
+	title_logo.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	title_logo.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_logo.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
+	title_logo.position=Vector2(64,75)
+	title_logo.size=Vector2(580,239)
+	title_logo.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	page.add_child(title_logo)
 	var motto := label(page,"当血月升起\n我们依然守望人类的明天",Vector2(92,340),22,Color("c8b6b5"),Vector2(505,90))
 	motto.add_theme_font_override("font",title_font)
 	motto.add_theme_constant_override("line_spacing",12)
