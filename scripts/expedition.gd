@@ -4,16 +4,21 @@ const Presentation = preload("res://scripts/boss_presentation.gd")
 
 const NAMES := ["赤月葬钟主教", "荆棘誓约猎王", "血潮女王 · 永夜月冠"]
 const COLORS := [Color("ba9aee"), Color("ea879d"), Color("f4cb83")]
-const HEALTH := [1500.0,2700.0,4800.0]
+const HEALTH := [1650.0,3100.0,5500.0]
+const BASE_DAMAGE := [34.0,42.0,51.0]
+const PARTY_HEALTH_BONUS := 0.80
+const MAP_WEAK := ["mirror","earth"]
+const MAP_STRONG := ["ash","bird","dragon"]
 const REWARDS := [150,300,650]
 
 func reset(s) -> void:
-	s.raid={"day":1,"phase":"explore","time":0.0,"center":Ruins.CENTER,"kind":0,"hazards":[],"choices":{},"kills":0,"final_spawned":false,"wild_seals":{},"abyss_spawned":false}
+	s.raid={"day":1,"phase":"explore","time":0.0,"center":Ruins.CENTER,"kind":0,"hazards":[],"choices":{},"kills":0,"final_spawned":false,"wild_seals":{},"map_boss_defeats":{},"abyss_spawned":false}
 	prepare_day(s,1)
 
 func prepare_day(s, day: int) -> void:
-	for i in range(s.enemies.size()-1,-1,-1):
-		if s.enemies[i].get("mini_boss",false): s.enemies.remove_at(i)
+	if day!=2:
+		for i in range(s.enemies.size()-1,-1,-1):
+			if s.enemies[i].get("mini_boss",false): s.enemies.remove_at(i)
 	s.raid.day=day
 	s.raid.time=0.0
 	s.raid.phase="explore"
@@ -36,16 +41,38 @@ func prepare_day(s, day: int) -> void:
 			p.hp=minf(p.max_hp,p.hp+p.max_hp*0.35)
 			p.sanity=minf(100,p.sanity+30)
 			p.reserve+=48
-	if day<3:
-		s.mini_bosses.spawn(s,day)
-		s.wild_bosses.spawn_mini(s,day)
-		if day==2: s.dragon_boss.spawn(s,day)
+	if day==1:
+		spawn_map_guardians(s)
 	if day==3:
 		for p in s.players.values():
 			if p.status=="active":
 				p.p=arena_entry(s,p.id)
 				p.invuln=3.0
 		spawn_boss(s)
+
+func spawn_map_guardians(s) -> void:
+	# One weak encounter and two distinct strong encounters are seeded on day one.
+	# Survivors stay in the world on day two with their original combat values.
+	var weak: String=MAP_WEAK[s.rng.randi_range(0,MAP_WEAK.size()-1)]
+	var strong: Array=MAP_STRONG.duplicate()
+	for i in 2:
+		var pick: int=s.rng.randi_range(0,strong.size()-1)
+		spawn_map_guardian(s,str(strong[pick]))
+		strong.remove_at(pick)
+	spawn_map_guardian(s,weak)
+
+func spawn_map_guardian(s, kind: String) -> void:
+	match kind:
+		"mirror": s.mini_bosses.spawn(s,1,0)
+		"ash": s.mini_bosses.spawn(s,1,1)
+		"earth": s.wild_bosses.spawn_mini(s,1,0)
+		"bird": s.wild_bosses.spawn_mini(s,1,1)
+		"dragon": s.dragon_boss.spawn(s,1)
+
+func record_map_boss_defeat(s, e: Dictionary) -> void:
+	var defeated: Dictionary=s.raid.get("map_boss_defeats",{})
+	defeated[str(e.boss_name)]=true
+	s.raid.map_boss_defeats=defeated
 
 func arena(s) -> Vector2:
 	# Landmark centres lie on the connected road network. Require open dodge space.
@@ -96,7 +123,7 @@ func spawn_boss(s, final_form: bool = false) -> void:
 	var count := 0
 	for p in s.players.values():
 		if p.status in ["active","down"]: count+=1
-	var health: float=(6900.0 if final_form else HEALTH[int(s.raid.day)-1])*(1+0.55*maxi(0,count-1))
+	var health: float=(7600.0 if final_form else HEALTH[int(s.raid.day)-1])*(1+PARTY_HEALTH_BONUS*maxi(0,count-1))
 	var kind: int=s.raid.kind
 	s.enemies.append({"id":s.next_enemy,"p":s.raid.center,"type":[1,3,4][kind],"raid_boss":true,"boss_kind":kind,"boss_name":"无名赤月 · 血潮源核" if final_form else NAMES[kind],"final_form":final_form,"hp":health,"max_hp":health,"cd":2.2,"last":1,"wander":Vector2.ZERO,"facing":1.0,"motion_phase":0.0,"moving":false,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_aim":Vector2.RIGHT,"sequence":0,"phase":1,"flash":0.0})
 	s.next_enemy+=1
@@ -118,6 +145,7 @@ func victory(s) -> void:
 	var chest: Dictionary=s.loot_container(s.raid.center,Vector2i(7,7),day+2,true)
 	chest.merge({"fixed_loot":true,"reward_tier":day+2,"title":("吞月渊蛇 · 深渊遗赠" if s.raid.get("abyss_spawned",false) else "无名赤月 · 终夜遗赠" if s.raid.get("final_spawned",false) else NAMES[int(s.raid.kind)]+" · 黎明遗赠"),"open":true})
 	for item in ["medicine","medicine","ammo","ammo","relic","relic"]: s.place_entry(chest,item)
+	if s.raid.get("abyss_spawned",false): s.place_entry(chest,"abyss_shedding")
 	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),mini(5,day+2)))
 	s.place_entry(chest,Catalog.make_equipment("gear",s.rng.randi_range(0,2),day+2))
 	for i in day-1: s.place_entry(chest,"relic")
@@ -242,7 +270,7 @@ func cast_boss(s, e: Dictionary, _target: Dictionary, move: String, aim: Vector2
 	var phase := int(e.get("phase",1))
 	e.attack_aim=aim
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
-	var damage: float=(23+int(s.raid.day)*6)*(1.0+0.12*(phase-1))
+	var damage: float=BASE_DAMAGE[int(s.raid.day)-1]*(1.0+0.12*(phase-1))
 	var delay: float=[1.05,0.85,0.75][phase-1]
 	var first: int=s.raid.hazards.size()
 	e["move_id"]=move

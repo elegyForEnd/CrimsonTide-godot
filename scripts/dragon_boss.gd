@@ -2,10 +2,11 @@ extends RefCounted
 ## A grounded, four-legged lair guardian. Frost patches continue to pulse after impact.
 const Presentation = preload("res://scripts/boss_presentation.gd")
 const NAME := "霜骨古龙 · 苍殒"
-const HEALTH := 2750.0
+const HEALTH := 3500.0
+const BASE_DAMAGE := 40.0
 
 func spawn(s, day: int) -> void:
-	if day!=2 or s.map_id!="border": return
+	if day not in [1,2] or s.map_id!="border": return
 	var occupied: Array=[]
 	for e in s.enemies:
 		if e.get("mini_boss",false): occupied.append(int(e.get("habitat",-1)))
@@ -25,7 +26,7 @@ func spawn(s, day: int) -> void:
 	var participants := 0
 	for p in s.players.values():
 		if p.status in ["active","down"]: participants+=1
-	var hp: float=HEALTH*(1.0+0.45*maxi(0,participants-1))
+	var hp: float=HEALTH*(1.0+0.75*maxi(0,participants-1))
 	s.enemies.append({"id":s.next_enemy,"p":at,"home":at,"habitat":choice,"type":4,
 		"mini_boss":true,"dragon_boss":true,"boss_kind":3,"boss_name":NAME,
 		"hp":hp,"max_hp":hp,"cd":2.1,"last":1,"wander":Vector2.ZERO,
@@ -64,7 +65,7 @@ func update(s, e: Dictionary, dt: float) -> void:
 
 func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> void:
 	var phase: int=e.phase
-	var damage: float=34.0*(1.0+0.12*(phase-1))
+	var damage: float=BASE_DAMAGE*(1.0+0.12*(phase-1))
 	var first: int=s.raid.hazards.size()
 	e.attack_aim=aim
 	e.move_id=move
@@ -122,12 +123,14 @@ func frost_pool(s, at: Vector2, delay: float, damage: float) -> void:
 	h.next_pulse=0.75
 
 func defeated(s, e: Dictionary) -> void:
+	s.expedition.record_map_boss_defeat(s,e)
 	for i in range(s.raid.hazards.size()-1,-1,-1):
 		if int(s.raid.hazards[i].get("source",-1))==int(e.id): s.raid.hazards.remove_at(i)
 	s.raid.dragon_slain=true
 	var chest: Dictionary=s.loot_container(e.p,Vector2i(6,6),4,true)
 	chest.merge({"fixed_loot":true,"reward_tier":4,"title":NAME+" · 龙巢遗珍","open":true},true)
 	for item in ["medicine","medicine","ammo","relic","relic","relic"]: s.place_entry(chest,item)
+	s.place_entry(chest,"frost_teardrop")
 	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),4))
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)

@@ -16,10 +16,12 @@ func run() -> void:
 		s.launch(false,seed_value)
 		s.set_physics_process(false)
 		for e in s.enemies:
+			if not e.has("difficulty"): continue
 			check(Ecology.allowed(s.ruins,e.p,e.type),"Initial resident belongs to its habitat")
 		for attempt in 140: s.spawn_enemy()
 		var counts := {}
 		for e in s.enemies:
+			if not e.has("difficulty"): continue
 			check(Ecology.allowed(s.ruins,e.p,e.type),"Refill stays in species habitat")
 			check(not s.ruins.blocked(e.p,25),"No habitat resident in walls or water")
 			check(e.p.distance_to(s.players[1].p)>=260,"No spawning on player")

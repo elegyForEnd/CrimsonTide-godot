@@ -69,7 +69,7 @@ func run() -> void:
 	e=reset_actor(s,13)
 	p.p=e.p+Vector2.RIGHT.rotated(0.8)*180
 	advance(s,1.5)
-	check(is_equal_approx(p.hp,p.max_hp-Ecology.damage(e,32)),"Inside cone receives habitat-scaled sweep damage")
+	check(is_equal_approx(p.hp,p.max_hp-s.incoming_damage(p,Ecology.damage(e,Ecology.ATTACK_DAMAGE[13]))),"Inside cone receives habitat-scaled sweep damage after armour")
 	# Flight displacement does not depend on the render/physics step size.
 	e=reset_actor(s,11)
 	advance(s,1.4)
@@ -105,9 +105,9 @@ func run() -> void:
 		s.damage_enemy(e,1,1,Vector2.ZERO,16)
 		check(e.attack_time>0 and e.attack_time<=pending,"Light hit does not stagger massive monster")
 		advance(s,2.5)
-		if kind==14: check(is_equal_approx(p.hp,p.max_hp-Ecology.damage(e,34)) and s.bullets.size()==12,"Colossus slam creates crystal ring")
+		if kind==14: check(is_equal_approx(p.hp,p.max_hp-s.incoming_damage(p,Ecology.damage(e,Ecology.ATTACK_DAMAGE[14]))) and s.bullets.size()==12,"Colossus slam creates crystal ring")
 		elif kind==15: check(s.bullets.size()==16,"Bell carcass creates sixteen-wave pulse")
-		else: check(is_equal_approx(p.hp,p.max_hp-Ecology.damage(e,40)),"Coffin warden lands locked heavy smash")
+		else: check(is_equal_approx(p.hp,p.max_hp-s.incoming_damage(p,Ecology.damage(e,Ecology.ATTACK_DAMAGE[16]))),"Coffin warden lands locked heavy smash")
 		e=reset_actor(s,kind)
 		if kind==14:
 			p.p=e.p+Vector2(120,0)

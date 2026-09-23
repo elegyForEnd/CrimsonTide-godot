@@ -93,7 +93,7 @@ func run() -> void:
 		fire(s,p)
 		var expected := 0 if index==8 else 5 if index==9 else 1
 		check(s.bullets.size()==expected,"Staff %d releases the intended projectile count" % index)
-	check(Catalog.weapon(4).windup>0.7 and Catalog.weapon(11).damage>200,"Heavy spells have long windup and high damage")
+	check(Catalog.weapon(4).windup>0.7 and Catalog.weapon(11).windup>0.9 and Catalog.weapon(11).damage>Catalog.weapon(4).damage,"Heavy spells have long windup and high damage")
 	check(Catalog.weapon(5).windup<0.06 and Catalog.weapon(5).rate<=0.20,"Frost needles fire rapidly")
 	# Area impact reaches a second enemy near the projectile's first target.
 	ready(p,4)
@@ -131,6 +131,16 @@ func run() -> void:
 	nearby=target(s,p.p+Vector2(250,90))
 	fire(s,p)
 	check(direct.hp<1000 and nearby.hp==1000 and s.bullets.is_empty(),"Prism beam is an aimed instant line")
+	# A point-blank scatter burst may land all five feathers, but one target only
+	# takes one full hit and four 12% follow-up hits from that attack.
+	ready(p,9)
+	s.enemies.clear()
+	s.bullets.clear()
+	direct=target(s,p.p+Vector2(75,0))
+	fire(s,p)
+	travel(s,0.25)
+	var scatter_loss: float=1000.0-direct.hp
+	check(scatter_loss>=Catalog.weapon(9).damage and scatter_loss<=Catalog.weapon(9).damage*1.48+0.01,"Scatter follow-up feathers cannot multiply point-blank damage fivefold")
 	# Vortex pulls its victims towards impact after damaging them.
 	ready(p,10)
 	s.enemies.clear()

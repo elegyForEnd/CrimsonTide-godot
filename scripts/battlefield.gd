@@ -50,7 +50,7 @@ func _ready() -> void:
 	boss_hud.field=self
 	boss_layer.add_child(boss_hud)
 	for kind in Catalog.ITEMS:
-		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
+		loot_icons[kind]=TideUIArt.icon(kind) if Catalog.collectible_index(kind)>=0 else load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
 	# Field equipment resolves to its own weapon / slot icon, so preload those too.
 	for icon in Catalog.WEAPON_ICONS+Catalog.GEAR_ICONS:
 		loot_icons[icon]=TideUIArt.icon(icon)
@@ -166,7 +166,8 @@ func _draw() -> void:
 		var revealed: int=int(chest.get("searched",0))
 		draw_rect(Rect2(pos-Vector2(21,12),Vector2(46,31)),Color(0,0,0,0.35))
 		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("333039") if empty else (Color("554466") if deep else Color("665544")))
-		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("6a5a7a") if deep else Color("c2a277"),false,1.5)
+		var rim: Color=Catalog.quality_color(int(chest.cache_tier)) if chest.has("cache_tier") else (Color("6a5a7a") if deep else Color("c2a277"))
+		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),rim,false,1.5)
 		draw_line(pos+Vector2(-20,-5),pos+Vector2(20,-5),Color("29242b"),3)
 		draw_rect(Rect2(pos-Vector2(3,7),Vector2(6,12)),Color("5a555a") if empty else Color("e1ba76"))
 		if not empty and revealed>0:
@@ -473,7 +474,8 @@ func draw_map(rect: Rect2, big: bool) -> void:
 		for chest in session.ruins.chests:
 			if not explored.has(Vector2i(chest.p/160)): continue
 			var at: Vector2=rect.position+chest.p*scale
-			draw_rect(Rect2(at-Vector2(2,2),Vector2(4,4)),Color("847e76") if chest.open and chest.items.is_empty() else Color("f3d794"))
+			var marker: Color=Catalog.quality_color(int(chest.cache_tier)) if chest.has("cache_tier") else Color("f3d794")
+			draw_rect(Rect2(at-Vector2(2,2),Vector2(4,4)),Color("847e76") if chest.open and chest.items.is_empty() else marker)
 	if not big or map_filter in [0,2]:
 		for shrine in session.ruins.shrines:
 			var icon_at: Vector2=rect.position+shrine.p*scale

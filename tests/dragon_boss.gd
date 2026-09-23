@@ -24,17 +24,20 @@ func run() -> void:
 	s.launch(false,1741)
 	s.set_physics_process(false)
 	s.spawn_timer=9999
-	check(dragon(s).is_empty(),"Dragon does not replace day-one guardians")
+	var first_day_count := 0
+	for candidate in s.enemies:
+		if candidate.get("mini_boss",false): first_day_count+=1
+	check(first_day_count==3,"Three map guardians are selected on day one")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,2)
+	s.dragon_boss.spawn(s,2)
 	var e := dragon(s)
-	check(not e.is_empty(),"Day two spawns the frostbone dragon")
+	check(not e.is_empty(),"Frostbone dragon can occupy a strong roster slot")
 	if not e.is_empty():
 		var habitats: Array=[]
 		for other in s.enemies:
 			if other.get("mini_boss",false): habitats.append(int(other.habitat))
-		check(habitats.size()==3 and habitats.size()==habitats.duplicate().size(),"Three optional bosses spawn on day two")
-		check(habitats[0]!=habitats[1] and habitats[0]!=habitats[2] and habitats[1]!=habitats[2],"Dragon gets its own lair")
+		check(habitats.size()==1,"The dragon keeps a distinct lair when spawned directly")
 		var p: Dictionary=s.players[1]
 		p.p=e.p+Vector2(180,0)
 		s.raid.hazards.clear()

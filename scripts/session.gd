@@ -240,7 +240,7 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 # gear slots. It is run-local loot, so it is deliberately never written to the
 # save file: wear it now or carry it home, never both.
 func empty_equipment() -> Dictionary:
-	return {"weapon":{},"gear":[{},{},{}]}
+	return {"weapon":{},"gear":[{},{},{}],"charm":[{},{}]}
 
 # The item bar is three independent sockets rather than a grid: a slot takes
 # exactly one item, however many cells that item would need in a backpack. A 2x2
@@ -297,6 +297,25 @@ func kit_gear(p: Dictionary) -> Array:
 	var gear = kit.get("gear",[])
 	return gear if gear is Array else []
 
+func charm_slots(equipped: Dictionary) -> Array:
+	var slots = equipped.get("charm",[])
+	if not slots is Array:
+		slots=[]
+	while slots.size()<2:
+		slots.append({})
+	return slots
+
+func kit_charms(p: Dictionary) -> Array:
+	var equipped = p.get("equipped",{})
+	return charm_slots(equipped) if equipped is Dictionary else [{},{}]
+
+func charms_equipped(p: Dictionary) -> int:
+	var count := 0
+	for entry in kit_charms(p):
+		if entry is Dictionary and str(entry.get("kind",""))=="charm" and not entry.is_empty():
+			count+=1
+	return count
+
 # A looted weapon only pays out while it is the weapon in hand.
 func weapon_kit_active(p: Dictionary) -> bool:
 	var item := kit_weapon(p)
@@ -325,6 +344,16 @@ func gear_bonus_of(p: Dictionary, slot: int) -> float:
 
 func equipment_hp(p: Dictionary) -> float:
 	return gear_bonus_of(p,0)
+
+func stat_defense(p: Dictionary) -> float:
+	var reduction: float=Catalog.GEAR[p.gear].get("defense",0.0)
+	for entry in kit_gear(p):
+		if entry is Dictionary and not entry.is_empty() and Catalog.gear_slot(entry)==0:
+			reduction+=Catalog.gear_defense(entry)
+	return clampf(reduction,0.0,0.30)
+
+func incoming_damage(p: Dictionary, damage: float) -> float:
+	return maxf(0.0,damage)*(1.0-stat_defense(p))
 
 func equipment_damage(p: Dictionary) -> float:
 	var total := gear_bonus_of(p,1)
@@ -561,6 +590,9 @@ func spill_storage(p: Dictionary) -> void:
 	for entry in kit_gear(p):
 		if entry is Dictionary and not entry.is_empty():
 			worn.append(entry)
+	for entry in kit_charms(p):
+		if entry is Dictionary and not entry.is_empty():
+			worn.append(entry)
 	for entry in item_slots(p):
 		if entry is Dictionary and not entry.is_empty():
 			worn.append(entry)
@@ -626,7 +658,8 @@ func begin_search(p: Dictionary, index: int) -> void:
 	if container.is_empty():
 		return
 	if container.items.is_empty() and not container.get("open",false) and not container_is_bag(container) and not container.get("fixed_loot",false):
-		for entry in chest_loot(bool(container.get("bonus",false)),0.3,loot_floor()):
+		var biome := ruins.biome_at(container.p) if map_id=="border" else -1
+		for entry in chest_loot(bool(container.get("bonus",false)),-1.0,int(container.get("cache_tier",0)),biome):
 			place_entry(container,entry)
 	container["open"]=true
 	if search_reference(p)!=index:
@@ -967,25 +1000,50 @@ func remove_units(container: Dictionary, index: int, units: int) -> void:
 	container["searched"]=searched_units(container)-units
 	Catalog.tidy(container)
 
+# White, green, blue, purple, gold and red weights per 1,000 quality rolls.
+# Every cache can surprise with a high tier; danger raises its likelihood.
+const CACHE_QUALITY_WEIGHTS := [
+	[620,260,80,30,8,2],
+	[245,480,210,50,12,3],
+	[65,260,450,180,38,7],
+	[15,75,260,450,175,25],
+	[5,20,80,260,545,90],
+]
+const CACHE_BACKPACK_CHANCE := [0.18,0.23,0.28,0.32,0.36]
+const CACHE_GEAR_CHANCE := [0.20,0.22,0.24,0.26,0.28]
+const CACHE_WEAPON_CHANCE := [0.12,0.15,0.18,0.21,0.24]
+
 # Chests hold supplies and valuables, and now and then a better backpack or a
-# piece of field equipment. Entries are either a kind string or a dictionary
-# carrying the fields that make the loot itself.
-func chest_loot(bonus_relic: bool = false, backpack_chance: float = 0.3, floor_index: int = 0) -> Array:
+# piece of field equipment. The optional backpack override is kept for callers
+# that explicitly construct a loot table; map caches use the grade table.
+func chest_loot(bonus_relic: bool = false, backpack_chance: float = -1.0, cache_tier: int = 0, biome: int = -1) -> Array:
+	var grade := clampi(cache_tier,0,CACHE_QUALITY_WEIGHTS.size()-1)
 	var kinds: Array = ["scrap","medicine","ammo","charm"]
 	var loot: Array = []
 	for i in rng.randi_range(2,4):
 		loot.append(kinds[rng.randi_range(0,kinds.size()-1)])
 	if bonus_relic or rng.randf()<0.2:
 		loot.append("relic")
-	if rng.randf()<backpack_chance:
-		loot.append({"kind":"backpack","key":backpack_drop(floor_index)})
-	# Field equipment: weapons are rarer than gear, and both scale with how deep
-	# the raid has gone.
-	if rng.randf()<0.24:
-		loot.append(Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(floor_index)))
-	if rng.randf()<0.16:
-		loot.append(Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),roll_quality(floor_index)))
+	if biome>=0 and biome<Catalog.BIOME_COLLECTIBLES.size():
+		loot.append(Catalog.biome_collectible(biome,rng.randi_range(0,2)))
+	# Insert rolled equipment first so a full 4x4 cache never silently discards
+	# a rare weapon after filling its cells with ordinary supplies.
+	var bag_chance: float = float(CACHE_BACKPACK_CHANCE[grade]) if backpack_chance<0 else backpack_chance
+	if rng.randf()<bag_chance:
+		loot.push_front({"kind":"backpack","key":Catalog.BAG_TIERS[roll_chest_quality(grade)].key})
+	if rng.randf()<CACHE_GEAR_CHANCE[grade]:
+		loot.push_front(Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_chest_quality(grade)))
+	if rng.randf()<CACHE_WEAPON_CHANCE[grade]:
+		loot.push_front(Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),roll_chest_quality(grade)))
 	return loot
+
+func roll_chest_quality(cache_tier: int) -> int:
+	var weights: Array=CACHE_QUALITY_WEIGHTS[clampi(cache_tier,0,CACHE_QUALITY_WEIGHTS.size()-1)]
+	var roll := rng.randi_range(0,999)
+	for tier in weights.size():
+		roll-=int(weights[tier])
+		if roll<0: return tier
+	return weights.size()-1
 
 # The single place that turns a loot-table entry into an item in a container.
 func place_entry(container: Dictionary, entry) -> bool:
@@ -1026,13 +1084,6 @@ func roll_quality(floor_index: int) -> int:
 func backpack_drop(floor_index: int) -> String:
 	return Catalog.BAG_TIERS[roll_quality(floor_index)].key
 
-# Quality floor for the loot tables: chests follow whoever opens them, and the
-# ruins generate their contents before anyone is standing there.
-func loot_floor() -> int:
-	for p in players.values():
-		return clampi(Catalog.bag_grid(p.backpack).x-3,0,Catalog.BAG_TIERS.size()-1)
-	return 0
-
 # What a defeated enemy leaves. A blood crystal is not an item any more: it is a
 # tally the player collects by walking over it, so it is handed back as its own
 # kind and never reaches a container or a search window.
@@ -1065,8 +1116,12 @@ func enemy_loot(e: Dictionary) -> Dictionary:
 			entry=Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),roll_quality(floor_index))
 		elif roll<weapon_chance+gear_chance:
 			entry=Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(floor_index))
-		elif roll<weapon_chance+gear_chance+0.35:
+		elif roll<weapon_chance+gear_chance+0.30:
 			entry["kind"]="relic"
+		elif roll<weapon_chance+gear_chance+0.47 and map_id=="border":
+			var habitat := int(e.get("habitat",-1))
+			var biome := int(ruins.sites[habitat].biome) if habitat>=0 and habitat<ruins.sites.size() else ruins.biome_at(e.get("p",Ruins.SPAWN))
+			entry["kind"]=Catalog.biome_collectible(biome,rng.randi_range(0,2))
 	return entry
 
 # A crystal the player is standing on is simply absorbed: no key, no container and
@@ -1357,7 +1412,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		"use":
 			use_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
 		"equip":
-			equip_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)))
+			equip_item(p,str(payload.get("slot","backpack")),int(payload.get("index",-1)),int(payload.get("charm_slot",-1)))
 		"unequip":
 			unequip_item(p,str(payload.get("type","weapon")),int(payload.get("index",0)))
 		"unequip_stow":
@@ -1571,7 +1626,7 @@ func use_item(p: Dictionary, slot: String, index: int) -> bool:
 	var kind := str(list[index].kind)
 	if kind=="backpack":
 		return equip_bag(p,slot,index)
-	if Catalog.is_equipment(kind):
+	if Catalog.is_wearable(kind):
 		return equip_item(p,slot,index)
 	if not consume_kind(kind):
 		message.emit(Catalog.item_name(list[index])+"无法直接使用。")
@@ -1677,6 +1732,13 @@ func slot_wear_gear(p: Dictionary, index: int) -> bool:
 		p["reload"]=0.0
 		p["combo"]=0
 		p["pending_strike"]=false
+	elif kind=="charm":
+		equipped["charm"]=charm_slots(equipped)
+		var charms: Array=equipped["charm"]
+		place=0 if (charms[0] as Dictionary).is_empty() else 1
+		var previous_charm = charms[place]
+		outgoing=previous_charm.duplicate() if previous_charm is Dictionary and not previous_charm.is_empty() else {}
+		charms[place]=arrival_of(entry)
 	else:
 		equipped["gear"]=gear_slots(equipped)
 		place=Catalog.gear_slot(entry)
@@ -1692,6 +1754,8 @@ func slot_wear_gear(p: Dictionary, index: int) -> bool:
 	if kind=="weapon":
 		broadcast_audio("equip",p)
 		message.emit("%s 已换上 %s%s。" % [item_slot_name(at),Catalog.item_name(entry),"（临时武器）" if outgoing.is_empty() else "，换下的武器留在道具栏"])
+	elif kind=="charm":
+		message.emit("%s 已装备 %s（饰品栏 %d）。" % [item_slot_name(at),Catalog.item_name(entry),place+1])
 	else:
 		message.emit("%s 已换上 %s（%s槽），换下的留在道具栏。" % [item_slot_name(at),Catalog.item_name(entry),Catalog.gear_slot_name(entry)])
 	return true
@@ -1802,14 +1866,14 @@ func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
 # once and gear lands in its own slot. Whatever was worn before goes back into
 # storage (or onto the ground when everything is full), so a swap never destroys
 # an item.
-func equip_item(p: Dictionary, slot: String, index: int) -> bool:
+func equip_item(p: Dictionary, slot: String, index: int, charm_slot: int = -1) -> bool:
 	if slot!="backpack" and slot!="pocket":
 		return false
 	var list: Array=Catalog.container_items(p[slot])
 	if index<0 or index>=list.size():
 		return false
 	var kind := str(list[index].kind)
-	if not Catalog.is_equipment(kind):
+	if not Catalog.is_wearable(kind):
 		message.emit(Catalog.item_name(list[index])+"不能装备。")
 		return false
 	var entry: Dictionary=list[index].duplicate()
@@ -1828,6 +1892,14 @@ func equip_item(p: Dictionary, slot: String, index: int) -> bool:
 		p["reload"]=0.0
 		p["combo"]=0
 		p["pending_strike"]=false
+	elif kind=="charm":
+		equipped["charm"]=charm_slots(equipped)
+		var charms: Array=equipped["charm"]
+		var charm_index := charm_slot if charm_slot>=0 and charm_slot<2 else (0 if (charms[0] as Dictionary).is_empty() else 1)
+		var previous = charms[charm_index]
+		if previous is Dictionary:
+			old=previous
+		charms[charm_index]=entry
 	else:
 		equipped["gear"]=gear_slots(equipped)
 		var slots: Array=equipped["gear"]
@@ -1837,7 +1909,10 @@ func equip_item(p: Dictionary, slot: String, index: int) -> bool:
 			old=previous
 		slots[gear_index]=entry
 	p["equipped"]=equipped
-	list.remove_at(index)
+	if kind=="charm" and int(list[index].get("count",1))>1:
+		list[index]["count"]=int(list[index].get("count",1))-1
+	else:
+		list.remove_at(index)
 	if not old.is_empty():
 		stow_equipment(p,old)
 	refresh_max_hp(p)
@@ -1846,6 +1921,8 @@ func equip_item(p: Dictionary, slot: String, index: int) -> bool:
 		# the cue that replaced the old free weapon switch.
 		broadcast_audio("equip",p)
 		message.emit("已装备 %s：伤害 +%d%%、攻速 +%d%%。临时武器收起了。" % [Catalog.item_name(entry),int(round(Catalog.weapon_bonus(entry)*100.0)),int(round(Catalog.weapon_rate_bonus(entry)*100.0))])
+	elif kind=="charm":
+		message.emit("已装备 %s：本局伤害 +12%%。" % Catalog.item_name(entry))
 	else:
 		message.emit("已装备 %s（%s槽）：%s。" % [Catalog.item_name(entry),Catalog.gear_slot_name(entry),Catalog.gear_desc(entry)])
 	return true
@@ -1866,6 +1943,13 @@ func unequip_item(p: Dictionary, type: String, index: int = 0) -> bool:
 		# hand; a Watcher never ends up empty handed.
 		restore_issue_weapon(p)
 		dropped_weapon=true
+	elif type=="charm":
+		equipped["charm"]=charm_slots(equipped)
+		var charms: Array=equipped["charm"]
+		if index<0 or index>=charms.size() or not charms[index] is Dictionary or charms[index].is_empty():
+			return false
+		entry=charms[index]
+		charms[index]={}
 	else:
 		equipped["gear"]=gear_slots(equipped)
 		var slots: Array=equipped["gear"]
@@ -1906,6 +1990,12 @@ func worn_entry(p: Dictionary, type: String, index: int = 0) -> Dictionary:
 	if type=="weapon":
 		var worn = equipped.get("weapon",{})
 		return worn.duplicate() if worn is Dictionary and not worn.is_empty() else {}
+	if type=="charm":
+		var charms := charm_slots(equipped)
+		if index<0 or index>=charms.size():
+			return {}
+		var worn = charms[index]
+		return worn.duplicate() if worn is Dictionary and not worn.is_empty() else {}
 	var gear: Array=gear_slots(equipped)
 	var piece = gear[clampi(index,0,Catalog.GEAR.size()-1)]
 	return piece.duplicate() if piece is Dictionary and not piece.is_empty() else {}
@@ -1920,6 +2010,12 @@ func clear_worn_slot(p: Dictionary, type: String, index: int = 0) -> bool:
 		equipped["weapon"]={}
 		p["equipped"]=equipped
 		restore_issue_weapon(p)
+	elif type=="charm":
+		equipped["charm"]=charm_slots(equipped)
+		if index<0 or index>=equipped["charm"].size():
+			return false
+		equipped["charm"][index]={}
+		p["equipped"]=equipped
 	else:
 		equipped["gear"]=gear_slots(equipped)
 		equipped["gear"][clampi(index,0,Catalog.GEAR.size()-1)]={}
@@ -2040,15 +2136,18 @@ func release_ultimate(id: int) -> void:
 	if p.hero==1:
 		for ally in players.values():
 			if ally.status=="active" and ally.p.distance_to(p.p)<300:
-				ally.hp=minf(ally.max_hp,ally.hp+45)
+				var healing := clampf(45.0+0.15*(ally.max_hp-100.0),45.0,70.0)
+				ally.hp=minf(ally.max_hp,ally.hp+healing)
 				ally.sanity=minf(100,ally.sanity+15)
 	else:
 		p.invuln=maxf(p.invuln,1.0)
+		var quality_bonus := Catalog.weapon_bonus(kit_weapon(p)) if weapon_kit_active(p) else 0.0
+		var ultimate_damage := 115.0*(1.0+0.5*quality_bonus)
 		for e in enemies:
 			var offset: Vector2=e.p-p.p
 			var reach := 210 if p.hero==2 else 460
 			if offset.length()<reach and ruins.clear_line(p.p,e.p) and (p.hero==2 or offset.normalized().dot(aim)>0.35):
-				damage_enemy(e,115.0,p.id,offset.normalized(),40.0,4)
+				damage_enemy(e,ultimate_damage,p.id,offset.normalized(),40.0,4)
 
 func reload_player(p: Dictionary) -> void:
 	var clip: int=16
@@ -2166,7 +2265,7 @@ func simulate(dt: float) -> void:
 		knight_reward(RoyalCity.BOSS)
 	if defeated_boss:
 		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
-		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("wild_seals",{}).size()==2: wild_bosses.spawn_final(self)
+		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("map_boss_defeats",{}).size()>=2: wild_bosses.spawn_final(self)
 		else: expedition.victory(self)
 	var alive := false
 	for p in players.values():
@@ -2261,7 +2360,7 @@ func release_strike(p: Dictionary) -> void:
 	var family := Catalog.weapon_family(p.weapon)
 	var w: Dictionary=Catalog.weapon(p.weapon)
 	var direction: Vector2=p.strike_aim
-	var damage: float=w.damage*(1+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
+	var damage: float=w.damage*(1+p.talents[1]*0.08+charms_equipped(p)*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
 	if family==1 and p.combo==2:
 		damage*=1.4
 	var spell := str(w.get("spell","star"))
@@ -2295,9 +2394,12 @@ func release_strike(p: Dictionary) -> void:
 			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell})
 		else:
 			var count := 5 if spell=="scatter" else 1
+			var pellet_hits: Dictionary = {}
 			for shot in count:
 				var shot_dir: Vector2=direction.rotated((float(shot)-2.0)*0.15) if count==5 else direction
-				bullets.append({"p":p.p+shot_dir*23,"v":shot_dir*float(w.get("speed",850.0 if family==0 else 620.0)),"life":float(w.reach)/float(w.get("speed",850.0 if family==0 else 620.0)),"damage":damage,"owner":p.id,"weapon":family,"spell":spell,"knock":float(w.knock),"remaining":5 if spell=="eclipse" else 4 if spell=="moon" else 2 if spell=="arrow" else 1,"hit_ids":[]})
+				var projectile := {"p":p.p+shot_dir*23,"v":shot_dir*float(w.get("speed",850.0 if family==0 else 620.0)),"life":float(w.reach)/float(w.get("speed",850.0 if family==0 else 620.0)),"damage":damage,"owner":p.id,"weapon":family,"spell":spell,"knock":float(w.knock),"remaining":5 if spell=="eclipse" else 4 if spell=="moon" else 2 if spell=="arrow" else 1,"hit_ids":[]}
+				if spell=="scatter": projectile["pellet_hits"]=pellet_hits
+				bullets.append(projectile)
 
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	var block := int(e.get("habitat",-1))
@@ -2519,7 +2621,8 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 	var participants := 0
 	for p in players.values():
 		if p.status in ["active","down"]: participants+=1
-	var health: float=Ecology.HEALTH[kind]*Ecology.HEALTH_SCALE[difficulty-1]*(1+0.3*maxi(0,participants-1))
+	var party_scale := 0.55 if kind>=14 else 0.30
+	var health: float=Ecology.HEALTH[kind]*Ecology.HEALTH_SCALE[difficulty-1]*(1+party_scale*maxi(0,participants-1))
 	if kind==4: health=Ecology.HEALTH[kind]*(1+0.55*maxi(0,participants-1))
 	enemies.append({"id":next_enemy,"p":pos,"home":pos,"habitat":block,"type":kind,"hp":health,"max_hp":health,"cd":0.0,"last":1,"wander":Vector2.from_angle(rng.randf()*TAU),"facing":1.0,"motion_phase":0.0,"moving":false,"flash":0.0,"poise":0.0,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_target":0,"attack_aim":Vector2.RIGHT})
 	enemies.back().merge({"difficulty":difficulty,"damage_scale":1.2 if kind==4 else Ecology.DAMAGE_SCALE[difficulty-1],"speed_scale":Ecology.SPEED_SCALE[difficulty-1]})
@@ -2547,6 +2650,7 @@ func resolve_site_defeat(e: Dictionary) -> void:
 	place_entry(chest,Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),quality))
 	place_entry(chest,{"kind":"backpack","key":Catalog.BAG_TIERS[quality].key})
 	for i in quality-1: place_entry(chest,"relic")
+	place_entry(chest,Catalog.biome_collectible(int(site.biome),block%3))
 	for i in 1+quality/2:
 		place_entry(chest,"medicine")
 		place_entry(chest,"ammo")
@@ -2596,9 +2700,9 @@ func update_enemies(dt: float) -> void:
 				var victim: Dictionary=players.get(e.attack_target,{})
 				if e.type==1:
 					broadcast_audio("enemy-cast",e)
-					bullets.append({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":Ecology.damage(e,13.0),"owner":0})
+					bullets.append({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]),"owner":0})
 				elif not victim.is_empty() and victim.status=="active" and e.p.distance_to(victim.p)<58 and ruins.clear_line(e.p,victim.p):
-					hurt(victim,Ecology.damage(e,[12,8,20,25][e.type]))
+					hurt(victim,Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]))
 			continue
 		var target: Dictionary={}
 		var best := 440.0+threat*300
@@ -2616,7 +2720,7 @@ func update_enemies(dt: float) -> void:
 			var direction: Vector2=(target.p-e.p).normalized()
 			if absf(direction.x)>0.05:
 				e["facing"]=signf(direction.x)
-			var speed: float=[110,95,68,140][e.type]*(1+threat*0.3)*float(e.get("speed_scale",1.0))
+			var speed: float=[120,105,82,150][e.type]*(1+threat*0.3)*float(e.get("speed_scale",1.0))
 			var ranged: bool=e.type==1 and best<330 and ruins.clear_line(e.p,target.p)
 			if e.cd<=0 and (ranged or (best<45 and ruins.clear_line(e.p,target.p))):
 				e["attack_total"]=[0.62,0.84,1.0,0.72][e.type]
@@ -2638,7 +2742,7 @@ func update_enemies(dt: float) -> void:
 func hurt(p: Dictionary, damage: float) -> void:
 	if p.invuln>0 or p.status!="active":
 		return
-	p.hp-=damage
+	p.hp-=incoming_damage(p,damage)
 	p.invuln=0.3
 	p.channel=0
 	# Taking a hit is what a channel counts against: the key-held ring restarts
@@ -2683,7 +2787,13 @@ func update_bullets(dt: float) -> void:
 						if spell in ["meteor","vortex"]:
 							spell_burst(b,e.p)
 						else:
-							damage_enemy(e,b.damage,b.owner,b.v.normalized(),float(b.get("knock",16.0)),int(b.get("weapon",0)))
+							var dealt: float=b.damage
+							if spell=="scatter":
+								var pellet_hits: Dictionary=b.pellet_hits
+								var previous := int(pellet_hits.get(e.id,0))
+								if previous>0: dealt*=0.12
+								pellet_hits[e.id]=previous+1
+							damage_enemy(e,dealt,b.owner,b.v.normalized(),float(b.get("knock",16.0)),int(b.get("weapon",0)))
 							if spell=="chain":
 								spell_chain(b,e)
 						b.hit_ids.append(e.id)
@@ -2850,7 +2960,8 @@ func knight_reward(at: Vector2) -> void:
 	var chest := loot_container(at,Vector2i(6,6),3,true)
 	chest["fixed_loot"]=true
 	chest["title"]="失乡骑士的王庭珍藏"
-	for i in 6: place_entry(chest,{"kind":"relic"})
+	for i in 3: place_entry(chest,{"kind":"relic"})
+	for kind in Catalog.ROYAL_COLLECTIBLES: place_entry(chest,kind)
 	place_entry(chest,Catalog.make_equipment("weapon",2,5))
 	for i in 3: place_entry(chest,Catalog.make_equipment("gear",i,4))
 	place_entry(chest,{"kind":"backpack","key":"gold"})

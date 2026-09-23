@@ -6,12 +6,13 @@ const POOLS := [[0,5],[1,6],[7,11,14],[2,3,8],[9,12,15],[10,13,16]]
 # Stable habitat palette per species. Keeping this with the spawn pools avoids a
 # colour jump if a monster briefly crosses a polygon boundary while pursuing.
 const BIOMES := [0,1,3,3,1,0,1,2,3,4,5,2,4,5,2,4,5]
-const HEALTH := [58.0,42.0,125.0,310.0,2400.0,55.0,82.0,150.0,115.0,95.0,210.0,185.0,120.0,260.0,680.0,590.0,760.0]
+const HEALTH := [60.0,52.0,138.0,320.0,2400.0,64.0,96.0,165.0,135.0,120.0,240.0,205.0,145.0,280.0,760.0,660.0,850.0]
+const ATTACK_DAMAGE := [13.0,14.0,21.0,27.0,0.0,11.0,13.0,25.0,21.0,15.0,30.0,28.0,16.0,34.0,36.0,21.0,42.0]
 const WINDUP := [0.26,0.42,0.56,0.32,0.85,0.65,0.85,0.8,1.0,1.1,0.9,0.9,1.0,1.05,1.35,1.25,1.45]
 const RADIUS := [19.0,19.0,25.0,27.0,31.0,19.0,21.0,24.0,22.0,22.0,27.0,29.0,24.0,31.0,42.0,44.0,43.0]
 # Indexed by habitat difficulty - 1. Species retain their own combat identity.
-const HEALTH_SCALE := [1.0,1.30,1.65,2.05]
-const DAMAGE_SCALE := [1.0,1.15,1.32,1.50]
+const HEALTH_SCALE := [1.0,1.32,1.72,2.20]
+const DAMAGE_SCALE := [1.0,1.18,1.37,1.58]
 const SPEED_SCALE := [1.0,1.04,1.08,1.12]
 const DROP_CHANCE := [0.42,0.54,0.66,0.78]
 const RESIDENTS := ["食尸兔 · 丧钟蛾","哀钟灵 · 禁卷枭","骨鹿 · 石像鬼 · 月碑巨像","刑偶 · 灾狐 · 血棘妖","冥水母 · 溺钟灵 · 沉钟巨骸","腐羽狮鹫 · 刽子手 · 血棺守卫"]
@@ -82,7 +83,7 @@ static func update(s, e: Dictionary, dt: float) -> void:
 			if elapsed>=WINDUP[kind]+0.48 and not e.attack_released:
 				e.attack_released=true
 				for p in s.players.values():
-					if p.status=="active" and p.p.distance_to(e.p)<60 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,26))
+					if p.status=="active" and p.p.distance_to(e.p)<60 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,ATTACK_DAMAGE[kind]))
 				s.emit_effect("seal",e.p)
 		elif kind==7 and elapsed>=WINDUP[kind] and elapsed-dt<WINDUP[kind]+0.42:
 			var advance: float=maxf(0,minf(elapsed,WINDUP[kind]+0.42)-maxf(elapsed-dt,WINDUP[kind]))
@@ -92,43 +93,43 @@ static func update(s, e: Dictionary, dt: float) -> void:
 				advance-=step
 			for p in s.players.values():
 				if not e.attack_released and p.status=="active" and Geometry2D.get_closest_point_to_segment(p.p,before,e.p).distance_to(p.p)<40 and s.ruins.clear_line(e.p,p.p):
-					s.hurt(p,damage(e,24))
+					s.hurt(p,damage(e,ATTACK_DAMAGE[kind]))
 					e.attack_released=true
 		elif kind==6:
 			# Three timed bolts keep the original aim; no tracking after windup.
 			for shot in 3:
 				if elapsed>=WINDUP[kind]+shot*0.18 and int(e.get("shots",0))==shot:
-					bolt(s,e,e.attack_aim.rotated((shot-1)*0.13),300,12)
+					bolt(s,e,e.attack_aim.rotated((shot-1)*0.13),300,ATTACK_DAMAGE[kind])
 					e.shots=shot+1
 					e.attack_released=true
 		elif not e.attack_released and elapsed>=WINDUP[kind]:
 			e.attack_released=true
 			if kind==5:
-				for angle in [-0.28,0.0,0.28]: bolt(s,e,e.attack_aim.rotated(angle),230,10)
+				for angle in [-0.28,0.0,0.28]: bolt(s,e,e.attack_aim.rotated(angle),230,ATTACK_DAMAGE[kind])
 			elif kind==9:
-				for n in 8: bolt(s,e,Vector2.from_angle(n*TAU/8+e.attack_aim.angle()),170,14)
+				for n in 8: bolt(s,e,Vector2.from_angle(n*TAU/8+e.attack_aim.angle()),170,ATTACK_DAMAGE[kind])
 			elif kind==12:
 				for angle in [-0.5,-0.25,0.0,0.25,0.5]:
-					s.bullets.append({"p":e.p,"v":e.attack_aim.rotated(angle)*260,"life":1.55,"damage":damage(e,15.0),"owner":0,"return_after":0.75,"age":0.0,"reversed":false,"enemy_type":12})
+					s.bullets.append({"p":e.p,"v":e.attack_aim.rotated(angle)*260,"life":1.55,"damage":damage(e,ATTACK_DAMAGE[kind]),"owner":0,"return_after":0.75,"age":0.0,"reversed":false,"enemy_type":12})
 			elif kind==13:
 				for p in s.players.values():
 					var delta: Vector2=p.p-e.p
-					if p.status=="active" and delta.length()<190 and absf(e.attack_aim.angle_to(delta))<1.05 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,32))
+					if p.status=="active" and delta.length()<190 and absf(e.attack_aim.angle_to(delta))<1.05 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,ATTACK_DAMAGE[kind]))
 			elif kind==14:
 				for p in s.players.values():
-					if p.status=="active" and p.p.distance_to(e.p)<135 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,34))
-				for n in 12: bolt(s,e,Vector2.from_angle(n*TAU/12),185,18)
+					if p.status=="active" and p.p.distance_to(e.p)<135 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,ATTACK_DAMAGE[kind]))
+				for n in 12: bolt(s,e,Vector2.from_angle(n*TAU/12),185,19)
 				s.emit_effect("seal",e.p)
 			elif kind==15:
-				for n in 16: bolt(s,e,Vector2.from_angle(n*TAU/16+e.attack_aim.angle()),155,20)
+				for n in 16: bolt(s,e,Vector2.from_angle(n*TAU/16+e.attack_aim.angle()),155,ATTACK_DAMAGE[kind])
 			elif kind==16:
 				for p in s.players.values():
-					if p.status=="active" and p.p.distance_to(e.attack_point)<145 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,40))
+					if p.status=="active" and p.p.distance_to(e.attack_point)<145 and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,ATTACK_DAMAGE[kind]))
 				s.emit_effect("seal",e.attack_point)
 			elif kind in [8,10]:
 				var radius := 76.0 if kind==8 else 100.0
 				for p in s.players.values():
-					if p.status=="active" and p.p.distance_to(e.attack_point)<radius and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,19 if kind==8 else 28))
+					if p.status=="active" and p.p.distance_to(e.attack_point)<radius and s.ruins.clear_line(e.p,p.p): s.hurt(p,damage(e,ATTACK_DAMAGE[kind]))
 				s.emit_effect("seal",e.attack_point)
 	else:
 		var target: Dictionary={}
@@ -157,7 +158,7 @@ static func update(s, e: Dictionary, dt: float) -> void:
 				e["shots"]=0
 				e.cd=e.attack_total+1.25
 			elif distance>reach-40:
-				var speed := (48.0 if kind>=14 else (110.0 if kind==7 else 76.0))*float(e.get("speed_scale",1.0))
+				var speed := (62.0 if kind>=14 else (120.0 if kind==7 else 84.0))*float(e.get("speed_scale",1.0))
 				e.p=s.ruins.move(e.p,direction*speed*dt,RADIUS[kind])
 			elif distance<130 and kind in [5,6,9,12]:
 				e.p=s.ruins.move(e.p,-direction*55*dt)

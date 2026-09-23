@@ -29,8 +29,10 @@ func run() -> void:
 	s.launch(false,1729)
 	s.set_physics_process(false)
 	s.spawn_timer=9999
+	s.enemies.clear()
+	s.wild_bosses.spawn_mini(s,1,0)
 	var worm := wild_mini(s,0)
-	check(not worm.is_empty(),"Day one adds Earthsplitter alongside existing mini boss")
+	check(not worm.is_empty(),"Earthsplitter can occupy the weak roster slot")
 	if not worm.is_empty():
 		var player: Dictionary=s.players[1]
 		player.p=worm.p+Vector2(190,0)
@@ -58,8 +60,9 @@ func run() -> void:
 		check(s.raid.wild_seals.has(0),"Defeating Earthsplitter records first secret seal")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,2)
+	s.wild_bosses.spawn_mini(s,2,1)
 	var roc := wild_mini(s,1)
-	check(not roc.is_empty(),"Day two adds Storm Roc alongside existing mini boss")
+	check(not roc.is_empty(),"Storm Roc can occupy a strong roster slot")
 	if not roc.is_empty():
 		var player: Dictionary=s.players[1]
 		player.p=roc.p+Vector2(190,0)
@@ -71,7 +74,7 @@ func run() -> void:
 		s.raid.hazards.clear()
 		roc.hp=0
 		s.simulate(0.01)
-		check(s.raid.wild_seals.size()==2,"Both secret seals survive day change")
+		check(s.raid.wild_seals.size()==2 and s.raid.map_boss_defeats.size()==2,"Two optional victories survive day change")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,3)
 	var queen := raid_boss(s)
@@ -85,7 +88,7 @@ func run() -> void:
 		moon.hp=0
 		s.simulate(0.01)
 	var abyss := raid_boss(s)
-	check(not abyss.is_empty() and abyss.get("abyss_final",false),"Two seals unlock the added secret final boss")
+	check(not abyss.is_empty() and abyss.get("abyss_final",false),"Two optional victories unlock the added secret final boss")
 	if not abyss.is_empty():
 		var player: Dictionary=s.players[1]
 		player.p=abyss.p+Vector2(190,0)

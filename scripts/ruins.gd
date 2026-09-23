@@ -8,6 +8,9 @@ const EXIT_NAMES := ["西境驿站","东岸渡口","北境钟门","晨钟归途"
 const BIOME_NAMES := ["风铃原野","白垩旧城","月晶高地","蔷薇庭域","雾汐湿地","圣血王庭"]
 const COLORS := [Color("809d83"),Color("b1a28c"),Color("9990b5"),Color("ae7f8c"),Color("689c9b"),Color("c9b99c")]
 const WILDERNESS_CHESTS := 6
+# One cache in each biome. Its loot grade is fixed when the map is generated,
+# so changing backpacks or the order in which players search cannot improve it.
+const CACHE_TIERS := [0,1,2,2,3,4]
 var extent := SIZE
 var interior := false
 var walls: Array[Rect2] = []
@@ -162,7 +165,7 @@ func generate(value: int) -> void:
 			for chest in chests:
 				if chest.p.distance_to(at)<700: close=true; break
 			if close: continue
-			chests.append({"p":at,"key":"container","items":[],"open":false,"searched":0,"bonus":false,"class":1,"title":"野外遗落物资箱"})
+			chests.append({"p":at,"key":"container","items":[],"open":false,"searched":0,"bonus":false,"class":1,"cache_tier":CACHE_TIERS[biome],"title":"野外遗落物资箱 · %d档" % (CACHE_TIERS[biome]+1)})
 			break
 
 static func river_x(y: float) -> float:

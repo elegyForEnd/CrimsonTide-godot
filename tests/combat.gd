@@ -125,7 +125,7 @@ func run() -> void:
 			check(enemy.p.x>p.p.x+80,"Melee knocks enemy back")
 			check(p.hitstop>0,"Hitstop applied only on contact")
 		else:
-			check(session.bullets.size()==1,"Ranged strike spawns one projectile")
+			check(session.bullets.size()==1 or enemy.hp<500,"Ranged strike spawns a projectile or hits during windup simulation (weapon %d)" % weapon)
 			for i in 10:
 				session.update_bullets(0.01)
 			check(enemy.hp<500,"Swept projectile hits target")

@@ -3,15 +3,19 @@ extends RefCounted
 const Presentation = preload("res://scripts/boss_presentation.gd")
 const NAMES := ["镜墓纺女 · 碎影", "余烬司祭 · 晚祷"]
 const THEMES := [3, 1]
-const HEALTH := [1050.0, 1450.0]
+const HEALTH := [1300.0,2200.0]
+const BASE_DAMAGE := [25.0,35.0]
 
-func spawn(s, day: int) -> void:
-	if s.map_id!="border" or day>2: return
+func spawn(s, day: int, forced_index: int = -1) -> void:
+	if s.map_id!="border" or day not in [1,2]: return
+	var occupied: Array=[]
+	for e in s.enemies:
+		if e.get("mini_boss",false): occupied.append(int(e.get("habitat",-1)))
 	var choice := -1
 	var best := -1.0
 	for i in s.ruins.sites.size():
 		var site: Dictionary=s.ruins.sites[i]
-		if site.get("cleared",false): continue
+		if site.get("cleared",false) or occupied.has(i): continue
 		var at: Vector2=site.p
 		if s.ruins.blocked(at,42): continue
 		var distance := at.distance_to(Ruins.SPAWN)
@@ -21,11 +25,11 @@ func spawn(s, day: int) -> void:
 			choice=i
 	if choice<0: return
 	var at: Vector2=s.ruins.sites[choice].p
-	var index := day-1
+	var index := forced_index if forced_index in [0,1] else day-1
 	var participants := 0
 	for p in s.players.values():
 		if p.status in ["active","down"]: participants+=1
-	var hp: float=HEALTH[index]*(1.0+0.45*maxi(0,participants-1))
+	var hp: float=HEALTH[index]*(1.0+0.75*maxi(0,participants-1))
 	s.enemies.append({"id":s.next_enemy,"p":at,"home":at,"habitat":choice,"type":4,
 		"mini_boss":true,"boss_kind":THEMES[index],"mini_kind":index,"boss_name":NAMES[index],
 		"hp":hp,"max_hp":hp,"cd":2.0,"last":1,"wander":Vector2.ZERO,"facing":1.0,
@@ -63,7 +67,7 @@ func update(s, e: Dictionary, dt: float) -> void:
 
 func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> void:
 	var first: int=s.raid.hazards.size()
-	var damage: float=(22.0 if e.mini_kind==0 else 29.0)*(1.12 if e.phase==2 else 1.0)
+	var damage: float=BASE_DAMAGE[e.mini_kind]*(1.12 if e.phase==2 else 1.0)
 	e.attack_aim=aim
 	e.move_id=move
 	match move:
@@ -120,14 +124,17 @@ func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> v
 	Presentation.send(s,e,"charge",{"total":marks[0]})
 
 func defeated(s, e: Dictionary) -> void:
+	s.expedition.record_map_boss_defeat(s,e)
 	for i in range(s.raid.hazards.size()-1,-1,-1):
 		if int(s.raid.hazards[i].get("source",-1))==int(e.id):
 			s.raid.hazards.remove_at(i)
-	var chest: Dictionary=s.loot_container(e.p,Vector2i(5,5),int(s.raid.day)+2,true)
-	chest.merge({"fixed_loot":true,"reward_tier":int(s.raid.day)+2,
+	var quality := 3 if int(e.mini_kind)==0 else 4
+	var chest: Dictionary=s.loot_container(e.p,Vector2i(5,5),quality,true)
+	chest.merge({"fixed_loot":true,"reward_tier":quality,
 		"title":str(e.boss_name)+" · 守卫秘藏","open":true},true)
 	for item in ["medicine","ammo","relic","relic"]:
 		s.place_entry(chest,item)
-	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),mini(5,int(s.raid.day)+2)))
+	s.place_entry(chest,["mirror_thread","ember_heart"][int(e.mini_kind)])
+	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),quality))
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)

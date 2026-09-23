@@ -57,11 +57,12 @@ void fragment() {
 		mask *= smoothstep(inner,inner+.025,r)*(1.0-smoothstep(.96,1.0,r));
 		core *= step(inner,r)*(1.0-smoothstep(.96,1.0,r));
 	} else if (form == 3) {
-		float head = mix(-opening,opening,min(t*3.0,1.0));
-		float arc = smoothstep(head-1.9,head-.15,a)*(1.0-smoothstep(head-.02,head+.07,a));
-		arc *= step(-opening,a)*step(a,opening);
-		mask = exp(-abs(r-.78+(n-.5)*.045)/(.025+(1.0-t)*.12))*arc*(.55+veins);
-		core = exp(-abs(r-.82)/.013)*arc;
+		// A fixed fan that expands away from the caster, with a torn leading edge.
+		float fan = smoothstep(-opening-.06,-opening+.04,a)*(1.0-smoothstep(opening-.04,opening+.06,a));
+		float front = mix(.12,.92,1.0-pow(1.0-t,2.4));
+		float width = .045+(1.0-t)*.11;
+		mask = exp(-abs(r-front+(n-.5)*.055)/width)*fan*(.55+veins);
+		core = exp(-abs(r-front)/.018)*fan*.7;
 	} else {
 		float spiral = sin(a*5.0+r*17.0+age*11.0+n*3.0);
 		mask = pow(max(0.0,spiral),5.0)*smoothstep(.08,.25,r)*(1.0-smoothstep(.45,.95,r))*(.35+wisps);

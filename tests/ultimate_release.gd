@@ -57,7 +57,8 @@ func run() -> void:
 		app.ultimate.set_process(true)
 		check(not paused and not app.ultimate.active,"CG ends before gameplay resumes")
 		check(releases==before+1 and not session.pending_ultimates.has(1),"Exactly one release at CG end")
-		check(p.hp==p.max_hp-15 if hero==1 else enemy.hp==385,"Healing or damage settles at release")
+		var expected_heal := clampf(45.0+0.15*(p.max_hp-100.0),45.0,70.0)
+		check(is_equal_approx(p.hp,p.max_hp-60.0+expected_heal) if hero==1 else enemy.hp==385,"Healing or damage settles at release")
 		check(not app.field.combat.motes.is_empty(),"Release creates visible world VFX")
 		var found := false
 		for voice in app.sound.voices:

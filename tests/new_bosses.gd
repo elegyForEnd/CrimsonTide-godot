@@ -29,8 +29,10 @@ func run() -> void:
 	s.launch(false,1729)
 	s.set_physics_process(false)
 	s.spawn_timer=9999
+	s.enemies.clear()
+	s.mini_bosses.spawn(s,1,0)
 	var mini := mini_boss(s)
-	check(not mini.is_empty() and int(mini.mini_kind)==0,"Day one spawns Mirror-Tomb Weaver")
+	check(not mini.is_empty() and int(mini.mini_kind)==0,"Mirror-Tomb Weaver can occupy the weak roster slot")
 	if not mini.is_empty():
 		var player: Dictionary=s.players[1]
 		player.p=mini.p+Vector2(150,0)
@@ -46,8 +48,9 @@ func run() -> void:
 		check(reward,"Defeated mini boss grants a reward chest")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,2)
+	s.mini_bosses.spawn(s,2,1)
 	mini=mini_boss(s)
-	check(not mini.is_empty() and int(mini.mini_kind)==1,"Day two spawns Ashen Vesper")
+	check(not mini.is_empty() and int(mini.mini_kind)==1,"Ashen Vesper can occupy a strong roster slot")
 	if not mini.is_empty():
 		var player: Dictionary=s.players[1]
 		s.mini_bosses.cast(s,mini,player,"ash_cross",Vector2.RIGHT)

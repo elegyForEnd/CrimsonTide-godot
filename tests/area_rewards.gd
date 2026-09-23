@@ -9,6 +9,12 @@ func check(ok: bool, description: String) -> void:
 		failures+=1
 		push_error(description)
 
+func site_reward_count(s: TideSession) -> int:
+	var count := 0
+	for chest in s.ruins.chests:
+		if chest.has("site_reward"): count+=1
+	return count
+
 func _initialize() -> void:
 	call_deferred("run")
 
@@ -62,7 +68,7 @@ func run() -> void:
 	# habitats must produce a reachable cache with complete guaranteed contents.
 	for e in s.enemies: e.hp=0
 	s.simulate(0.01)
-	check(s.ruins.chests.size()==initial+18,"One reward per habitat on simultaneous clear")
+	check(site_reward_count(s)==18,"One reward per habitat on simultaneous clear")
 	var values := {}
 	for chest in s.ruins.chests:
 		if not chest.has("site_reward"): continue
@@ -74,7 +80,9 @@ func run() -> void:
 			if item.kind in ["weapon","gear"]: check(item.tier==quality,"Equipment quality matches area difficulty")
 			if item.kind=="backpack": check(Catalog.tier_index(item.quality)==quality,"Backpack quality matches difficulty")
 		check(kinds.has("weapon") and kinds.has("gear") and kinds.has("backpack") and kinds.has("medicine") and kinds.has("ammo"),"Guaranteed equipment and supplies fit the chest")
-		check(s.container_units(chest)==quality+4+2*(quality/2),"All difficulty-scaled relics fit")
+		var reward_site: Dictionary=s.ruins.sites[int(chest.site_reward)]
+		check(kinds.has(Catalog.biome_collectible(int(reward_site.biome),int(chest.site_reward)%3)),"Site reward contains its local collectible")
+		check(s.container_units(chest)==quality+5+2*(quality/2),"All difficulty-scaled relics and local collectible fit")
 		values[quality]=Catalog.container_value(chest)
 	for quality in range(1,4): check(values[quality]<values[quality+1],"Harder areas have more valuable rewards")
 	# All sites remain cleared across days and a round trip through the city.
@@ -90,7 +98,7 @@ func run() -> void:
 	check(s.ruins.chests.size()==1,"City clear grants one royal reward")
 	p.p=RoyalCity.GATE
 	check(s.travel_city(),"Return to border")
-	check(s.ruins.chests.size()==initial+18 and s.ruins.sites[0].cleared,"Day and map travel preserve rewards and clear state")
+	check(site_reward_count(s)==18 and s.ruins.sites[0].cleared,"Day and map travel preserve rewards and clear state")
 	for i in 30: s.spawn_enemy()
 	check(s.enemies.is_empty(),"No refill when all sites are cleared")
 	var client := TideSession.new()
@@ -99,7 +107,7 @@ func run() -> void:
 	client.set_physics_process(false)
 	var packet := var_to_bytes([s.players,s.enemies,s.bullets,s.world_drops,s.ruins.chests,s.ruins.shrines,s.elapsed,s.objectives,s.threat,s.results,s.map_id,s.raid,s.ruins.sites])
 	client.snapshot(packet.compress(FileAccess.COMPRESSION_GZIP))
-	check(client.ruins.sites[0].cleared and client.ruins.chests.size()==initial+18,"Snapshot replicates clear state and reward")
+	check(client.ruins.sites[0].cleared and site_reward_count(client)==18,"Snapshot replicates clear state and reward")
 	# Emptying either kind of cache must not roll fresh loot on the next search.
 	for index in [0,initial]:
 		var chest: Dictionary=s.ruins.chests[index]
@@ -107,6 +115,7 @@ func run() -> void:
 		chest.items.clear()
 		s.begin_search(p,index)
 		check(chest.items.is_empty(),"Empty caches cannot be farmed by reopening")
+	s.running=false
 	s.launch(false,1729)
 	check(s.ruins.chests.size()==6 and not s.ruins.sites[0].cleared,"New run resets all clear progress")
 	s.enemies.clear()

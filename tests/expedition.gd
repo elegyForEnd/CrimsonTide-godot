@@ -25,7 +25,6 @@ func run() -> void:
 	check(not s.can_extract(),"Day one extraction locked")
 	p.p=s.ruins.exits[0]
 	s.interact(p,true,5)
-	s.update_zone_channels(p,5)
 	check(p.status=="active","Cannot bypass day one extraction by standing in the exit")
 	var first: Vector2=s.safe_center()
 	for corner in [Vector2.ZERO,Ruins.SIZE,Vector2(6400,0),Vector2(0,4800)]:
@@ -83,7 +82,7 @@ func run() -> void:
 	s.simulate(0.01)
 	check(s.raid.day==3 and s.raid.phase=="boss","Third day immediately starts final boss")
 	check(ally.status=="extracted" and not s.can_extract(),"Extracted ally stays out and final battle locks exits")
-	check(boss(s).max_hp==4800,"Boss scales with remaining participants")
+	check(boss(s).max_hp==5500,"Boss scales with remaining participants")
 	var queen := boss(s)
 	for fraction in [1.0,0.55,0.25]:
 		queen.hp=queen.max_hp*fraction
@@ -103,6 +102,8 @@ func run() -> void:
 	p.invuln=1
 	s.expedition.update_hazards(s,0.11)
 	check(p.hp==hp,"Dodge invulnerability counters boss damage")
+	kill_boss(s)
+	check(boss(s).get("final_form",false) and boss(s).max_hp==7600,"Queen defeat begins the final form")
 	kill_boss(s)
 	check(s.raid.phase=="complete" and s.can_extract(),"Final victory unlocks safe extraction")
 	s.perform(1,"raid_choice",{"choice":"extract"})
