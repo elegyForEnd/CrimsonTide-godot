@@ -18,9 +18,13 @@ func start_room() -> void:
 	if folder.is_empty():
 		quit(1)
 		return
+	# RPC node paths must match the game scene: /root/CrimsonTide/Session.
+	var game := Node.new()
+	game.name="CrimsonTide"
+	root.add_child(game)
 	session=TideSession.new()
 	session.name="Session"
-	root.add_child(session)
+	game.add_child(session)
 	session.ticket_file=folder.path_join("tickets.json")
 	if session.host_dedicated(port)!=OK:
 		quit(1)

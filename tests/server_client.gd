@@ -16,9 +16,12 @@ func run() -> void:
 	var args := OS.get_cmdline_user_args()
 	var room = JSON.parse_string(FileAccess.get_file_as_string(args[0]))
 	role=args[1]
+	var game := Node.new()
+	game.name="CrimsonTide"
+	root.add_child(game)
 	session=TideSession.new()
 	session.name="Session"
-	root.add_child(session)
+	game.add_child(session)
 	session.started.connect(func(): started_at=age)
 	session.combat_event.connect(func(event: Dictionary):
 		if event.kind=="skill": got_skill=true)
