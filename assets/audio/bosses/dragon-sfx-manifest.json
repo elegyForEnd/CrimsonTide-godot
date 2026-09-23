@@ -1,0 +1,83 @@
+{
+  "origin": "Edits of the credited CC0 recordings in manifest.json",
+  "rate": 48000,
+  "cues": {
+    "charge": {
+      "sources": [
+        "bell-charge.wav",
+        "queen-charge.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    },
+    "quick": {
+      "sources": [
+        "bell-quick.wav",
+        "queen-quick.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    },
+    "sweep": {
+      "sources": [
+        "bell-sweep.wav",
+        "queen-sweep.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    },
+    "burst": {
+      "sources": [
+        "bell-burst.wav",
+        "queen-burst.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    },
+    "lance": {
+      "sources": [
+        "bell-lance.wav",
+        "queen-lance.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    },
+    "ritual": {
+      "sources": [
+        "bell-ritual.wav",
+        "queen-ritual.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    },
+    "fall": {
+      "sources": [
+        "bell-fall.wav",
+        "queen-fall.wav"
+      ],
+      "speed": [
+        1.31,
+        0.89
+      ],
+      "peak": 0.79
+    }
+  }
+}

@@ -8,10 +8,12 @@ const HEALTH := [1500.0,2700.0,4800.0]
 const REWARDS := [150,300,650]
 
 func reset(s) -> void:
-	s.raid={"day":1,"phase":"explore","time":0.0,"center":Ruins.CENTER,"kind":0,"hazards":[],"choices":{},"kills":0}
+	s.raid={"day":1,"phase":"explore","time":0.0,"center":Ruins.CENTER,"kind":0,"hazards":[],"choices":{},"kills":0,"final_spawned":false,"wild_seals":{},"abyss_spawned":false}
 	prepare_day(s,1)
 
 func prepare_day(s, day: int) -> void:
+	for i in range(s.enemies.size()-1,-1,-1):
+		if s.enemies[i].get("mini_boss",false): s.enemies.remove_at(i)
 	s.raid.day=day
 	s.raid.time=0.0
 	s.raid.phase="explore"
@@ -19,6 +21,7 @@ func prepare_day(s, day: int) -> void:
 	s.raid.center=arena(s)
 	s.raid.hazards=[]
 	s.raid.choices={}
+	s.raid.final_spawned=false
 	s.bullets.clear()
 	s.pending_ultimates.clear()
 	for p in s.players.values():
@@ -33,6 +36,10 @@ func prepare_day(s, day: int) -> void:
 			p.hp=minf(p.max_hp,p.hp+p.max_hp*0.35)
 			p.sanity=minf(100,p.sanity+30)
 			p.reserve+=48
+	if day<3:
+		s.mini_bosses.spawn(s,day)
+		s.wild_bosses.spawn_mini(s,day)
+		if day==2: s.dragon_boss.spawn(s,day)
 	if day==3:
 		for p in s.players.values():
 			if p.status=="active":
@@ -77,8 +84,11 @@ func tick(s, dt: float) -> void:
 			spawn_boss(s)
 	update_hazards(s,dt)
 
-func spawn_boss(s) -> void:
-	if s.raid.phase=="boss": return
+func spawn_boss(s, final_form: bool = false) -> void:
+	if s.raid.phase=="boss" and not final_form: return
+	if final_form:
+		s.raid.final_spawned=true
+		s.raid.hazards.clear()
 	s.raid.phase="boss"
 	s.raid.time=s.duration
 	s.bullets.clear()
@@ -86,9 +96,9 @@ func spawn_boss(s) -> void:
 	var count := 0
 	for p in s.players.values():
 		if p.status in ["active","down"]: count+=1
-	var health: float=HEALTH[int(s.raid.day)-1]*(1+0.55*maxi(0,count-1))
+	var health: float=(6900.0 if final_form else HEALTH[int(s.raid.day)-1])*(1+0.55*maxi(0,count-1))
 	var kind: int=s.raid.kind
-	s.enemies.append({"id":s.next_enemy,"p":s.raid.center,"type":[1,3,4][kind],"raid_boss":true,"boss_kind":kind,"boss_name":NAMES[kind],"hp":health,"max_hp":health,"cd":2.2,"last":1,"wander":Vector2.ZERO,"facing":1.0,"motion_phase":0.0,"moving":false,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_aim":Vector2.RIGHT,"sequence":0,"phase":1,"flash":0.0})
+	s.enemies.append({"id":s.next_enemy,"p":s.raid.center,"type":[1,3,4][kind],"raid_boss":true,"boss_kind":kind,"boss_name":"无名赤月 · 血潮源核" if final_form else NAMES[kind],"final_form":final_form,"hp":health,"max_hp":health,"cd":2.2,"last":1,"wander":Vector2.ZERO,"facing":1.0,"motion_phase":0.0,"moving":false,"attack_time":0.0,"attack_total":0.0,"attack_released":false,"attack_aim":Vector2.RIGHT,"sequence":0,"phase":1,"flash":0.0})
 	s.next_enemy+=1
 	Presentation.send(s,s.enemies.back(),"entrance")
 
@@ -106,9 +116,9 @@ func victory(s) -> void:
 				p.hp=p.max_hp*0.35
 			p.invuln=5.0
 	var chest: Dictionary=s.loot_container(s.raid.center,Vector2i(7,7),day+2,true)
-	chest.merge({"fixed_loot":true,"reward_tier":day+2,"title":NAMES[int(s.raid.kind)]+" · 黎明遗赠","open":true})
+	chest.merge({"fixed_loot":true,"reward_tier":day+2,"title":("吞月渊蛇 · 深渊遗赠" if s.raid.get("abyss_spawned",false) else "无名赤月 · 终夜遗赠" if s.raid.get("final_spawned",false) else NAMES[int(s.raid.kind)]+" · 黎明遗赠"),"open":true})
 	for item in ["medicine","medicine","ammo","ammo","relic","relic"]: s.place_entry(chest,item)
-	s.place_entry(chest,Catalog.make_equipment("weapon",s.rng.randi_range(0,3),mini(5,day+2)))
+	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),mini(5,day+2)))
 	s.place_entry(chest,Catalog.make_equipment("gear",s.rng.randi_range(0,2),day+2))
 	for i in day-1: s.place_entry(chest,"relic")
 	s.place_entry(chest,{"kind":"backpack","key":["blue","gold","red"][day-1]})
@@ -159,13 +169,20 @@ func update_hazards(s, dt: float) -> void:
 			else: s.emit_effect("hit",h.p)
 			for p in s.players.values():
 				if hazard_contains(h,p.p) and s.ruins.clear_line(h.p,p.p): s.hurt(p,h.damage)
+		if h.fired and h.has("pulse_interval") and h.time<=-float(h.next_pulse) and h.time>=-float(h.linger):
+			h.next_pulse=float(h.next_pulse)+float(h.pulse_interval)
+			for p in s.players.values():
+				if hazard_contains(h,p.p) and s.ruins.clear_line(h.p,p.p): s.hurt(p,h.damage)
 		if h.time < -float(h.linger): s.raid.hazards.remove_at(i)
 
 func hazard_contains(h: Dictionary, at: Vector2) -> bool:
 	var v: Vector2=at-h.p
 	if h.shape=="line":
 		return v.dot(h.aim)>=-22 and v.dot(h.aim)<=h.radius and absf(v.dot(h.aim.orthogonal()))<=44
-	if h.shape=="cone": return v.length()<=h.radius and absf(h.aim.angle_to(v))<=1.05
+	if h.shape=="lane": return v.dot(h.aim)>=0 and v.dot(h.aim)<=h.radius and absf(v.dot(h.aim.orthogonal()))<=h.inner
+	if h.shape=="gap_ring": return v.length()<=h.radius and v.length()>=h.inner and absf(h.aim.angle_to(v))>float(h.get("gap",0.5))
+	if h.shape=="arc": return v.length()<=h.radius and v.length()>=h.inner and absf(h.aim.angle_to(v))<=float(h.get("arc",1.05))
+	if h.shape=="cone": return v.length()<=h.radius and absf(h.aim.angle_to(v))<=float(h.get("arc",1.05))
 	return v.length()<=h.radius and v.length()>=h.inner
 
 func update_boss(s, e: Dictionary, dt: float) -> void:
@@ -201,7 +218,7 @@ func update_boss(s, e: Dictionary, dt: float) -> void:
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
 	# Reposition between casts; all telegraphs keep their original origin and aim.
 	if e.attack_time<=0 and (int(e.sequence)>0 or best>230):
-		var preferred: float=[190.0,130.0,165.0][int(e.boss_kind)]
+		var preferred: float=150.0 if e.get("final_form",false) else [190.0,130.0,165.0][int(e.boss_kind)]
 		var side := 1.0 if (int(e.sequence)+int(e.id))%2==0 else -1.0
 		var direction := aim.orthogonal()*side
 		if best>preferred+30: direction=(aim+direction*0.25).normalized()
@@ -211,7 +228,7 @@ func update_boss(s, e: Dictionary, dt: float) -> void:
 		best=target.p.distance_to(e.p)
 	if e.cd>0 or e.attack_time>0 or not s.ruins.clear_line(e.p,target.p): return
 	var seq: int=e.sequence
-	var moves: Array=["bell","marks","quick_bell","slow_bell","cross"] if e.boss_kind==0 else (["spear","cleave","feint","guard","fan","reap"] if e.boss_kind==1 else ["crown","lances","coronation","execution","eclipse"])
+	var moves: Array=["blood_moon","orbit","sunder","nightfall","last_light"] if e.get("final_form",false) else (["bell","marks","quick_bell","slow_bell","cross"] if e.boss_kind==0 else (["spear","cleave","feint","guard","fan","reap"] if e.boss_kind==1 else ["crown","lances","coronation","execution","eclipse"]))
 	var move: String=moves[seq%moves.size()]
 	if e.boss_kind==0 and move in ["bell","quick_bell"] and best>340: move="marks"
 	if e.boss_kind==1 and move in ["cleave","feint","reap"] and best>260: move="spear"
@@ -284,6 +301,29 @@ func cast_boss(s, e: Dictionary, _target: Dictionary, move: String, aim: Vector2
 			e.move_name="回身收割 · 前快后慢"
 			hazard(s,"cone",e.p,aim,220,0.60,damage*0.8)
 			hazard(s,"cone",e.p,-aim,260,1.60,damage*1.1)
+		"blood_moon":
+			e.move_name="血月初升 · 先入内环再后撤"
+			hazard(s,"ring",e.p,aim,440,1.05,damage,140)
+			hazard(s,"circle",e.p,aim,150,1.80,damage*1.10)
+		"orbit":
+			e.move_name="碎冠星轨 · 穿过矛隙"
+			for i in 8+phase*2:
+				hazard(s,"line",e.p,aim.rotated(TAU*i/(8+phase*2)),580,0.85,damage*0.85)
+		"sunder":
+			e.move_name="月刃断章 · 快慢交错"
+			hazard(s,"cone",e.p,aim,270,0.62,damage*0.75)
+			hazard(s,"cone",e.p,-aim,310,1.65,damage*1.20)
+		"nightfall":
+			e.move_name="终夜坠落 · 连续走位"
+			for p in s.players.values():
+				if p.status=="active":
+					for i in phase:
+						hazard(s,"circle",p.p+Vector2.from_angle(TAU*i/3.0)*i*115,aim,110,0.70+i*0.55,damage)
+		"last_light":
+			e.move_name="血潮源核 · 破晓前的最后一击"
+			hazard(s,"ring",e.p,aim,500,1.45,damage*1.05,180)
+			hazard(s,"line",e.p,aim,580,2.05,damage*1.20)
+			hazard(s,"circle",point,aim,115,2.65,damage)
 		"crown":
 			e["move_name"]="月冠审判 · 先入内环再远离"
 			hazard(s,"ring",e.p,aim,450,delay,damage,130)
@@ -317,6 +357,7 @@ func cast_boss(s, e: Dictionary, _target: Dictionary, move: String, aim: Vector2
 		h["move"]=move
 		h["part"]=i-first
 		h["phase"]=phase
+		h["final_form"]=e.get("final_form",false)
 		h["perimeter"]=int(e.boss_kind)==2 and phase==3 and i==s.raid.hazards.size()-1
 		h["tempo"]="快" if h.total<=0.70 else ("慢" if h.total>=1.4 else "")
 		if not marks.has(h.total): marks.append(h.total)

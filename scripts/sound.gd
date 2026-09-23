@@ -6,13 +6,15 @@ const VARIANTS := {"shot":3,"hit":5,"loot":3,"skill":3,"dash":4,"bell":2,
 	"hurt":3,"down":2,"slash":6,"heavy":4,"magic":4,"impact-heavy":4,
 	"impact-metal":4,"impact-magic":4,"magic-windup":4,"step":8,"run":8,"land":4,
 	"ui":3,"ui-open":2,"ui-close":2,"equip":4,"reload":2,"reload-end":2,
-	"heal":2,"burn":2,"death":3,"enemy-cast":2,"chest":2}
+	"heal":2,"burn":2,"death":3,"enemy-cast":2,"chest":2,
+	"search-open":1,"search-reveal":6}
 const LEVELS := {"shot":-12.0,"hit":-10.0,"loot":-14.0,"skill":-5.0,"dash":-11.0,
 	"bell":-10.0,"hurt":-8.0,"down":-7.0,"slash":-8.0,"heavy":-7.0,"magic":-10.0,
 	"impact-heavy":-7.0,"impact-metal":-13.0,"impact-magic":-11.0,"magic-windup":-17.0,
 	"step":-17.0,"run":-14.0,"land":-13.0,"ui":-14.0,"ui-open":-17.0,"ui-close":-17.0,
 	"equip":-12.0,"reload":-13.0,"reload-end":-12.0,"heal":-11.0,"burn":-12.0,
-	"death":-16.0,"enemy-cast":-14.0,"chest":-13.0}
+	"death":-16.0,"enemy-cast":-14.0,"chest":-13.0,
+	"search-open":-16.0,"search-reveal":-13.0}
 const UI_CUES := ["ui","ui-open","ui-close"]
 var voices: Array[AudioStreamPlayer2D] = []
 var ui_voices: Array[AudioStreamPlayer] = []
@@ -84,6 +86,10 @@ func _ready() -> void:
 			if action in ["guard","break"] and key not in ["thorn","knight"]: continue
 			var cue: String=key+"-"+action
 			clips[cue]=[load("res://assets/audio/bosses/"+cue+".wav")]
+	for key in ["mirror","ember","moon","earth","storm","abyss","dragon"]:
+		for action in ["charge","quick","sweep","burst","lance","ritual","fall"]:
+			var cue: String=key+"-"+action
+			clips[cue]=[load("res://assets/audio/bosses/"+cue+".wav")]
 	for hero in 3:
 		charges.append(load("res://assets/audio/ultimate-charge-%d.wav" % hero))
 		bursts.append(load("res://assets/audio/ultimate-burst-%d.wav" % hero))
@@ -104,7 +110,7 @@ func _ready() -> void:
 	add_child(music)
 
 func priority(kind: String) -> int:
-	if kind.contains("-") and kind.get_slice("-",0) in BossPresentation.KEYS: return 92
+	if kind.contains("-") and kind.get_slice("-",0) in BossPresentation.KEYS+["mirror","ember","moon","earth","storm","abyss","dragon"]: return 92
 	if kind=="skill": return 95
 	if kind in ["hurt","down","bell"]: return 90
 	if kind in ["slash","heavy","magic","shot"]: return 70
@@ -183,16 +189,17 @@ func stop_cue(kind: String, emitter: int) -> void:
 func boss(data: Dictionary) -> void:
 	var cue := BossPresentation.cue(data)
 	var emitter := int(data.id)
+	var prefix: String=cue.get_slice("-",0)
 	if data.action in ["release","fall","break"]:
-		stop_cue(BossPresentation.KEYS[int(data.boss_kind)]+"-charge",emitter)
+		stop_cue(prefix+"-charge",emitter)
 	# Radial volleys share one cue per source and tick; play() de-duplicates them.
 	var gain: float={"charge":1.0,"release":6.0,"phase":7.0,"entrance":5.0,"guard":2.0,"break":6.0,"fall":5.0}.get(data.action,0.0)
 	play(cue,0,data.p,gain,emitter)
 	if data.action=="release" and data.get("shape","")=="cone" and float(data.get("total",0))>=1.4:
-		play(BossPresentation.KEYS[int(data.boss_kind)]+"-burst",0,data.p,1.0,emitter)
+		play(prefix+"-burst",0,data.p,1.0,emitter)
 
-func attack(weapon: int, combo: int, at: Vector2, emitter: int) -> void:
-	var kind: String=["shot","slash","heavy","magic"][clampi(weapon,0,3)]
+func attack(weapon: int, combo: int, at: Vector2, emitter: int, spell: String = "star") -> void:
+	var kind: String="slash" if spell=="arrow" else ["shot","slash","heavy","magic"][clampi(weapon,0,3)]
 	var variant := clampi(combo,0,2)*2+randi_range(0,1) if weapon==1 else -1
 	play(kind,variant,at,1.5 if weapon==1 and combo==2 else 0.0,emitter)
 

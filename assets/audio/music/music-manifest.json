@@ -56,6 +56,195 @@
         "target_lufs": -20,
         "true_peak_ceiling_db": -2
       }
+    },
+    "mirror": {
+      "title": "镜墓纺女 · Shards of the Mirror Tomb",
+      "file": "mirror.ogg",
+      "task_id": "31f6a775-b130-408a-b8a4-b29efcb15fe5",
+      "clip_id": "e9c82256-4db4-45a5-9d3d-7e532bd654fe",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Shards of the Mirror Tomb",
+        "tags": "Instrumental gothic anime RPG miniboss, glass harmonica, staccato strings, celesta shards, low cello, cathedral organ, 132 bpm, D minor, haunting reflections, intense combat, no vocals",
+        "prompt": "[Instrumental] Crystalline glass motif, quick strings fracture into mirrored answers, organ and taiko drive the fight, loopable return to motif",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "mirror-0.mp3",
+      "source_sha256": "ac19151fe4a3e902483acb4058bb2d7f01af6062e82192e52cb73309ba2920cf",
+      "sha256": "764987127d6311dce362a3ee71a500f0c464d47f10669bdaab526d10a4024b50",
+      "duration_seconds": 92.4209977324263,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "ember": {
+      "title": "余烬司祭 · Ashen Vespers",
+      "file": "ember.ogg",
+      "task_id": "2eb376ff-c2e7-452b-a034-f0fa484d1c69",
+      "clip_id": "58f32647-2780-48ff-a3aa-67984c8f7f85",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Ashen Vespers",
+        "tags": "Instrumental gothic anime RPG miniboss, ritual drums, bowed cello, brass stabs, pipe organ, 126 bpm, F minor, blazing urgency, no vocals",
+        "prompt": "[Instrumental] Smoldering cello ostinato, explosive drums and brass, brief hush then rising strings and organ, loopable return to ostinato",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "ember-0.mp3",
+      "source_sha256": "4bb55e107a94373ade697a3b5b79f8c18dc13f348884961b46b21dd316673112",
+      "sha256": "5fe03f13235570ba328417a461064917216c0b29203bba092cac8b014eb03ba9",
+      "duration_seconds": 77.22897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "final": {
+      "title": "无名赤月 · The Nameless Blood Moon",
+      "file": "final.ogg",
+      "task_id": "e804cb95-dabd-4d2c-8e05-0a9968afad93",
+      "clip_id": "3d90b2b0-fe84-481f-9e66-f405356b08c3",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - The Nameless Blood Moon",
+        "tags": "Instrumental final boss soundtrack, gothic anime action RPG, grand orchestra, pipe organ, urgent strings, massive taiko, bells, tragic triumphant melody, D minor, 150 bpm, no vocals",
+        "prompt": "[Instrumental] Ominous organ and distant bell motif, urgent string ostinato, cataclysmic final boss melody, suspended eclipse then defiant reprise, loopable close",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "final-0.mp3",
+      "source_sha256": "d319a87fb6b0c16e83b8b24ea0c53f786850bd366bcf282fb612819838f5337a",
+      "sha256": "ed4a8e4a03085559c8447710523ec55bd553a161e98b1e1935b1116dd31e5c6f",
+      "duration_seconds": 82.41299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "earth": {
+      "title": "裂地钻兽 · Faultline Maw",
+      "file": "earth.ogg",
+      "task_id": "d0469730-37db-4729-a780-15307f4cdb55",
+      "clip_id": "9ab83eb9-b774-44fb-8b69-88930945cb36",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Faultline Maw",
+        "tags": "Instrumental dark fantasy giant burrowing centipede miniboss, seismic low drums, contrabass, metallic scraping, irregular 7/8 pulse, earthy dread, intense action, no vocals",
+        "prompt": "[Instrumental] Deep subterranean rumble, jagged strings trace the moving tunnel, sudden percussion eruptions, a heavy chitin rhythm, loopable motif",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "earth-0.mp3",
+      "source_sha256": "d9e9dabd5df3fe83d0a472521e38f9ec7c9ba6e33c9531edb4d2264c527315f5",
+      "sha256": "4217278c123ed136b6593e71f8b8115743bb67ef275a15156bd846f558b3f7a1",
+      "duration_seconds": 103.17299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "storm": {
+      "title": "雷骸巨鸟 · Carrion Tempest",
+      "file": "storm.ogg",
+      "task_id": "0ae650db-51c4-4205-976f-bc00945584b1",
+      "clip_id": "d66aebf2-34a8-468d-ace7-6d276180a13e",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Carrion Tempest",
+        "tags": "Instrumental dark fantasy thunder roc miniboss, fierce airborne orchestral action, rapid snare rolls, shrill strings, brass swoops, electric crackle, 148 bpm, no vocals",
+        "prompt": "[Instrumental] Wide soaring motif interrupted by plunge attacks, asymmetrical thunder drums and sharp brass, open air before a storm-front climax, loopable return",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "storm-0.mp3",
+      "source_sha256": "0f6dbd254373180526430bc13d86023938fbdbd99b59815154f28c5ae07a37dc",
+      "sha256": "eced5bb25740c3a39f68af6ad49b2b5991409a20c08957572a2a06f3a5fa765f",
+      "duration_seconds": 87.30897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "abyss": {
+      "title": "吞月渊蛇 · Moon-Eater Leviathan",
+      "file": "abyss.ogg",
+      "task_id": "6b15b8d4-94fe-4a03-afa2-f53d3d7ce970",
+      "clip_id": "717241a5-aeb8-437b-8235-bc12755cce54",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Moon-Eater Leviathan",
+        "tags": "Instrumental cosmic dark fantasy secret final boss, abyssal leviathan, oceanic low brass, pipe organ, massive timpani, eerie choir-like synth without voices, 136 bpm, apocalyptic, no vocals",
+        "prompt": "[Instrumental] Ancient deep-sea pulse rises into a moon-eating cataclysm, swirling strings, abyssal organ and tidal percussion, three escalating waves, seamless return",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "abyss-0.mp3",
+      "source_sha256": "d016f088bb7f5f2fd1158a15ee50bd76e9d0c372bd9e98ccceb0dd6cf53230a7",
+      "sha256": "66206d70a5f3175a8cb8587005dbc1e2916a11924f38966a705092ff475f70a4",
+      "duration_seconds": 135.2129931972789,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
+    },
+    "dragon": {
+      "title": "霜骨古龙 · Frostbone Ancient Dragon",
+      "file": "dragon.ogg",
+      "task_id": "2d6a3d31-3167-476c-b000-1e7b19e20827",
+      "clip_id": "f2832aef-d306-4305-b02e-603d4aff7077",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Frostbone Ancient Dragon",
+        "tags": "Instrumental gothic dark fantasy dragon boss, ancient frost dragon, low brass, glacial glass bells, soaring strings, taiko drums, cold pipe organ, 138 bpm, A minor, intense cinematic combat, no vocals",
+        "prompt": "[Instrumental] A vast ancient dragon wakes beneath the moon; icy bells and deep brass announce it, rapid strings follow sweeping breath, crashing drums mark wingbeats, solemn organ rises in the second phase, loopable return",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, pop, EDM"
+      },
+      "source_file": "dragon-0.mp3",
+      "source_sha256": "1797232fcf7ee3fc2c1fc9fdb9921207ba9a45a4b139bc416395d7409553706a",
+      "sha256": "fcde32248f1672cc731acac659b159017f0a662a4977e51e651a9f9f0554d3ed",
+      "duration_seconds": 119.97299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2
+      }
     }
   }
 }

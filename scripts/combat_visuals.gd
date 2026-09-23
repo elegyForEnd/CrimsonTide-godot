@@ -3,19 +3,35 @@ extends Node2D
 ## Textured additive effects; no dependency on renderer-specific 2D bloom.
 var field: Node2D
 var atlas: Texture2D = preload("res://assets/combat/vfx-atlas.png")
+var spell_atlas: Texture2D = preload("res://assets/combat/spell-vfx.png")
+var extraction_vortex: Texture2D = preload("res://assets/world/landmarks/extraction-vortex.png")
+const SPELL_CELLS := {"meteor":0,"needle":1,"chain":2,"moon":3,"prism":4,"scatter":5,"vortex":6,"eclipse":7}
 var motes: Array = []
+var extract_flashes: Array = []
 var trauma := 0.0
 var numbers: Array = []
 var elapsed := 0.0
+var spell_light: Node2D
+var energy = preload("res://scripts/energy_bursts.gd").new()
+const SPELL_COLORS := [Color("ff8454"),Color("a7e9ff"),Color("c6a6ff"),Color("cfdbff"),Color("ffe2a5"),Color("ffb474"),Color("ac85ff"),Color("ed95de")]
 
 func _ready() -> void:
 	var additive := ShaderMaterial.new()
 	additive.shader=preload("res://resources/combat_glow.gdshader")
 	material=additive
 	z_index=1
+	add_child(energy)
+	spell_light=Node2D.new()
+	var spell_material := CanvasItemMaterial.new()
+	spell_material.blend_mode=CanvasItemMaterial.BLEND_MODE_ADD
+	spell_light.material=spell_material
+	add_child(spell_light)
+	spell_light.draw.connect(draw_spells)
 
 func reset() -> void:
 	motes.clear()
+	extract_flashes.clear()
+	energy.reset()
 	numbers.clear()
 	trauma=0.0
 
@@ -24,6 +40,12 @@ func spawn(cell: int, at: Vector2, size: Vector2, duration: float, angle: float 
 		motes.pop_front()
 	motes.append({"cell":cell,"p":at,"size":size,"duration":duration,"age":-delay,"angle":angle,"tint":tint,"velocity":velocity})
 
+func spell_fx(spell: String, at: Vector2, size: Vector2, duration: float, angle: float = 0.0, tint: Color = Color.WHITE) -> void:
+	if not SPELL_CELLS.has(spell):
+		return
+	spawn(int(SPELL_CELLS[spell]),at,size,duration,angle,tint)
+	motes[motes.size()-1]["spell_art"]=true
+
 func event(data: Dictionary) -> void:
 	var at: Vector2=data.p
 	if at.distance_to(field.camera)>1100:
@@ -31,28 +53,60 @@ func event(data: Dictionary) -> void:
 	var aim_dir: Vector2=data.get("aim",Vector2.RIGHT)
 	var angle := aim_dir.angle()
 	var weapon := int(data.get("weapon",0))
+	var spell := str(data.get("spell","star"))
+	spell_energy(data,spell,at,aim_dir)
 	match data.kind:
+		"spell_beam":
+			spell_fx("prism",at+aim_dir*float(data.reach)*0.44,Vector2(float(data.reach)*0.9,130),0.38,angle)
+		"spell_arc":
+			var target: Vector2=data.target
+			var delta := target-at
+			spell_fx("chain",(at+target)*0.5,Vector2(delta.length()*1.3,100),0.26,delta.angle())
+		"spell_burst":
+			spell_fx(spell,at,Vector2.ONE*(290 if spell=="meteor" else 260),0.65)
+			trauma=maxf(trauma,0.38 if spell=="meteor" else 0.20)
 		"dodge":
 			spawn(7,at,Vector2(85,45),0.25,angle,Color(0.5,0.55,1,0.35))
 		"windup":
 			if weapon==3:
-				spawn(6,at+aim_dir*27-Vector2(0,27),Vector2(62,62),0.26)
+				if SPELL_CELLS.has(spell):
+					spell_fx(spell,at+aim_dir*25-Vector2(0,28),Vector2(72,72),maxf(0.16,float(data.get("windup",0.25)))*0.9,angle,Color(1,1,1,0.62))
+				else:
+					spawn(6,at+aim_dir*27-Vector2(0,27),Vector2(62,62),0.26)
 			elif weapon==2:
 				spawn(5,at-Vector2(0,72),Vector2(44,70),0.30,0,Color(1,0.7,0.35))
 		"strike":
+			var pattern := str(data.get("pattern",""))
 			match weapon:
-				0: spawn(5,at+aim_dir*34,Vector2(52,42),0.12,angle)
+				0:
+					if spell=="arrow":
+						spawn(5,at+aim_dir*42,Vector2(50,20),0.16,angle,Color("c9d8b8"))
+					else:
+						spawn(5,at+aim_dir*34,Vector2(52,42),0.12,angle)
 				1:
-					var reverse := -1.0 if int(data.get("combo",0))==1 else 1.0
-					spawn(0,at+aim_dir*38,Vector2(182,142*reverse),0.25,angle)
-					spawn(0,at+aim_dir*42,Vector2(205,156*reverse),0.20,angle+0.18,Color(0.65,0.5,0.7),0.035)
+					if pattern=="thrust":
+						spawn(5,at+aim_dir*float(data.reach)*0.5,Vector2(float(data.reach)*1.6,36),0.24,angle,Color("e0c7f0"))
+					elif pattern=="spin":
+						for quarter in 4:
+							spawn(0,at+Vector2.from_angle(quarter*TAU/4)*56,Vector2(150,116),0.29,quarter*TAU/4,Color("d9b9d2"),quarter*0.03)
+					else:
+						var reverse := -1.0 if int(data.get("combo",0))==1 else 1.0
+						spawn(0,at+aim_dir*38,Vector2(182,142*reverse),0.25,angle)
+						spawn(0,at+aim_dir*42,Vector2(205,156*reverse),0.20,angle+0.18,Color(0.65,0.5,0.7),0.035)
 				2:
-					spawn(1,at+aim_dir*83-Vector2(0,30),Vector2(190,235),0.48)
-					spawn(7,at+aim_dir*75,Vector2(240,110),0.45,angle,Color(1,0.65,0.4),0.04)
+					if pattern=="quake":
+						spawn(1,at,Vector2(300,300),0.55,0,Color("e4b276"))
+						spawn(7,at,Vector2(300,300),0.45,0,Color(1,0.65,0.4),0.04)
+					else:
+						spawn(1,at+aim_dir*83-Vector2(0,30),Vector2(230,260) if pattern=="cleave" else Vector2(190,235),0.48)
+						spawn(7,at+aim_dir*75,Vector2(290,130) if pattern=="cleave" else Vector2(240,110),0.45,angle,Color(1,0.65,0.4),0.04)
 					trauma=maxf(trauma,0.36)
 				3:
-					spawn(3,at,Vector2(110,66),0.45,0,Color(0.6,0.8,1))
-					spawn(6,at+aim_dir*40-Vector2(0,12),Vector2(80,80),0.23)
+					if SPELL_CELLS.has(spell):
+						spell_fx(spell,at+aim_dir*35-Vector2(0,15),Vector2(110,90),0.24,angle)
+					else:
+						spawn(3,at,Vector2(110,66),0.45,0,Color(0.6,0.8,1))
+						spawn(6,at+aim_dir*40-Vector2(0,12),Vector2(80,80),0.23)
 		"impact":
 			var heavy: bool=data.get("heavy",false)
 			spawn(5,at-Vector2(0,20),Vector2.ONE*(130 if heavy else 82),0.25,angle)
@@ -93,6 +147,12 @@ func legacy(kind: String, at: Vector2) -> void:
 			trauma=maxf(trauma,0.35)
 		"dash": spawn(4,at,Vector2(120,90),0.4,0,Color(0.6,0.65,1))
 		"bell": spawn(8,at-Vector2(0,100),Vector2(210,330),1.0)
+		"extract":
+			extract_flashes.append({"p":at,"age":0.0})
+			spawn(8,at-Vector2(0,75),Vector2(235,360),0.9,0,Color(0.53,1.0,0.85))
+			spawn(3,at-Vector2(0,10),Vector2(170,170),0.65,0,Color(0.55,1.0,0.9,0.8))
+			energy.spawn(at-Vector2(0,75),Vector2(180,270),Color("8bf5d7"),0,0.72)
+			energy.particles(at-Vector2(0,20),Color("a4ffe5"),26,Vector2.UP,130,0.75)
 		"skill": spawn(3,at,Vector2(100,65),0.55,0,Color(0.6,1,0.8,0.5))
 		"loot": spawn(5,at,Vector2(55,70),0.4)
 
@@ -100,17 +160,23 @@ func _process(dt: float) -> void:
 	if not field.visible:
 		return
 	elapsed+=dt
+	energy.advance(dt)
 	trauma=move_toward(trauma,0,dt*2.6)
 	position=field.offset
 	for i in range(motes.size()-1,-1,-1):
 		motes[i].age+=dt
 		if motes[i].age>motes[i].duration:
 			motes.remove_at(i)
+	for i in range(extract_flashes.size()-1,-1,-1):
+		extract_flashes[i].age+=dt
+		if extract_flashes[i].age>0.9:
+			extract_flashes.remove_at(i)
 	for i in range(numbers.size()-1,-1,-1):
 		numbers[i].age+=dt
 		if numbers[i].age>0.7:
 			numbers.remove_at(i)
 	queue_redraw()
+	spell_light.queue_redraw()
 
 func stamp(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> void:
 	var unit := atlas.get_size()/3.0
@@ -124,6 +190,22 @@ func stamp(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> 
 	draw_texture_rect_region(atlas,Rect2(-extent/2,extent),source,tint)
 
 func _draw() -> void:
+	for player in field.session.players.values():
+		if player.status!="active" or not str(player.get("target","")).begins_with("exit:") or float(player.get("channel",0))<=0:
+			continue
+		var progress: float=clampf(float(player.channel)/4.0,0,1)
+		var at: Vector2=player.p
+		var vortex_rect := Rect2(at-Vector2(73,191+sin(elapsed*2)*6),Vector2(146,205+progress*58))
+		draw_texture_rect(extraction_vortex,vortex_rect,false,Color(1,1,1,0.12+progress*0.52))
+		stamp(3,at+Vector2(0,5),Vector2.ONE*(105+progress*72),elapsed*0.42,Color(0.45,1.0,0.82,0.16+progress*0.20))
+		stamp(8,at-Vector2(0,70),Vector2(95+progress*85,180+progress*130),0,Color(0.50,1.0,0.82,0.12+progress*0.27))
+		for i in 6:
+			var drift := fposmod(elapsed*(0.55+float(i%3)*0.13)+float(i)*0.17,1.0)
+			var side := sin(float(i)*2.399+elapsed*1.8)*46.0*(1.0-drift*0.35)
+			stamp(6,at+Vector2(side,-14-drift*125),Vector2(14,23)*(0.7+progress*0.5),0,Color(0.56,1.0,0.86,(0.12+progress*0.30)*(1.0-drift)))
+	for flash in extract_flashes:
+		var t: float=flash.age/0.9
+		draw_texture_rect(extraction_vortex,Rect2(flash.p-Vector2(83+28*t,215+45*t),Vector2(166+56*t,245+62*t)),false,Color(1,1,1,0.95*(1.0-t)))
 	for fx in motes:
 		if fx.age<0:
 			continue
@@ -131,8 +213,16 @@ func _draw() -> void:
 		var fade := minf(1,t*18)*pow(1-t,1.3)
 		var tint: Color=fx.tint
 		tint.a*=fade
-		stamp(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(0.72,1.18,t),fx.angle,tint)
+		if not fx.get("spell_art",false):
+			stamp(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(0.72,1.18,t),fx.angle,tint)
 	for bullet in field.session.bullets:
+		var spell := str(bullet.get("spell","star"))
+		if SPELL_CELLS.has(spell): continue
+		if spell=="arrow":
+			var arrow_dir: Vector2=bullet.v.normalized()
+			draw_line(bullet.p-arrow_dir*23,bullet.p+arrow_dir*13,Color("e3d5b6"),3,true)
+			draw_line(bullet.p+arrow_dir*13,bullet.p+arrow_dir*20,Color("d7e5ed"),2,true)
+			continue
 		var magic: bool=bullet.get("weapon",0)==3
 		var tint := Color(1,0.45,0.65) if bullet.owner==0 else Color.WHITE
 		if int(bullet.get("enemy_type",-1))==12:
@@ -140,3 +230,50 @@ func _draw() -> void:
 			draw_arc(bullet.p,11,0,TAU,20,Color(tint,0.85),2,true)
 		stamp(2 if magic or bullet.owner==0 else 5,bullet.p-bullet.v.normalized()*13,Vector2(94,44) if magic else Vector2(36,16),bullet.v.angle(),tint)
 	draw_set_transform(Vector2.ZERO)
+
+func draw_spells() -> void:
+	for fx in motes:
+		if not fx.get("spell_art",false) or fx.age<0: continue
+		var t: float=fx.age/fx.duration
+		var tint := Color(fx.tint,float(fx.tint.a)*minf(1,t*18)*pow(1-t,1.3))
+		stamp_spell(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(.72,1.18,t),fx.angle,tint)
+	for bullet in field.session.bullets:
+		var spell := str(bullet.get("spell","star"))
+		if not SPELL_CELLS.has(spell): continue
+		if bullet.p.distance_to(field.camera)>1100: continue
+		var cell := int(SPELL_CELLS[spell])
+		var diameter := 90.0 if spell in ["meteor","vortex","eclipse"] else 65.0
+		for i in range(3,0,-1):
+			stamp_spell(cell,bullet.p-bullet.v.normalized()*i*14,Vector2.ONE*diameter*(1-i*.16),bullet.v.angle(),Color(SPELL_COLORS[cell],.18*(1-i*.22)))
+		stamp_spell(cell,bullet.p,Vector2.ONE*diameter,bullet.v.angle(),Color.WHITE)
+
+func stamp_spell(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> void:
+	var unit := Vector2(spell_atlas.get_width()/4.0,spell_atlas.get_height()/2.0)
+	var source := Rect2(Vector2(cell%4,cell/4)*unit+Vector2.ONE*3,unit-Vector2.ONE*6)
+	spell_light.draw_set_transform(at,angle)
+	var extent := source.size*minf(size.x/source.size.x,size.y/source.size.y)
+	spell_light.draw_texture_rect_region(spell_atlas,Rect2(-extent/2,extent),source,tint)
+	spell_light.draw_set_transform(Vector2.ZERO)
+
+func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) -> void:
+	if not SPELL_CELLS.has(spell): return
+	var col: Color=SPELL_COLORS[int(SPELL_CELLS[spell])]
+	var source := int(data.get("id",-1))
+	match str(data.kind):
+		"spell_beam", "spell_arc":
+			var end: Vector2=data.target if data.kind=="spell_arc" else at+aim*float(data.reach)
+			var delta := end-at
+			energy.spawn((at+end)*.5,Vector2(delta.length(),90),col,1,.32,delta.angle(),0,1.05,source)
+			energy.particles(end,col,16,aim,70,.65)
+		"spell_burst":
+			if spell=="meteor":
+				energy.spawn(at-Vector2(0,65),Vector2(240,320),col,0,.7,0,0,1.05,source)
+			else:
+				energy.spawn(at,Vector2.ONE*240,col,4,.55,0,0,1.05,source)
+			energy.spawn(at,Vector2.ONE*270,col,2,.6,0,0,1.05,source)
+			energy.particles(at,col,30,Vector2.UP,175,1)
+		"windup":
+			energy.spawn(at+aim*25-Vector2(0,28),Vector2.ONE*95,Color(col,.55),4,maxf(.1,float(data.get("windup",.25))),0,0,1.05,source)
+		"strike":
+			if int(data.get("weapon",0))==3:
+				energy.particles(at+aim*35-Vector2(0,15),col,8 if spell=="needle" else 14,aim,35,.55)

@@ -397,7 +397,7 @@ func fit_ui() -> void:
 	root.position=(view-Vector2(1440,900)*scale_factor)/2
 
 func setup_inputs() -> void:
-	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
+	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"search_drop":KEY_H,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
 	# The smart-click modifier is a real action rather than a raw key read so the
 	# gesture is bound, rebindable and visible to the input system like every
 	# other control. Both control keys are bound; the action is only ever polled,
@@ -892,6 +892,8 @@ func _process(dt: float) -> void:
 			if container.is_empty() and _loot_index>=0:
 				_loot_index=-1
 			var signature := str(p.get("backpack",{}))+str(p.get("pocket",{}))+str(p.get("equipped",{}))+str(container)
+			if _loot_index>=0:
+				signature+=str(int(float(p.get("search",0.0))*10.0))
 			if signature!=bag_signature:
 				show_inventory()
 	# The grabbed item follows the cursor on every frame, not only on a rebuild.
@@ -1049,6 +1051,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		toggle_map()
 	if field.map_open:
 		return
+	if event.is_action_pressed("search_drop") and not event.is_echo():
+		search_drops_action()
+		get_viewport().set_input_as_handled()
+		return
 	# --- 1 / 2 / 3 pick the item bar socket ---------------------------------
 	# The map screen owns the same keys while it is open, so the map is asked
 	# first: with it up, 1-4 still switch the filter it has always switched.
@@ -1071,6 +1077,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_fell_through_loot=false
 		if downed:
 			heal_action()
+		elif inventory_open:
+			quick_inventory_at(mouse_point())
 		elif not loot_action():
 			_fell_through_loot=true
 		get_viewport().set_input_as_handled()
@@ -1109,13 +1117,35 @@ func loot_action() -> bool:
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty() or p.status not in ["active","down"]:
 		return false
-	if session.pick_up_ground(p):
-		if inventory_open:
-			show_inventory()
-		return true
+	for drop in session.world_drops:
+		if session.container_units(drop)==1 and p.p.distance_to(drop.p)<70:
+			if session.authority():
+				if session.pick_up_ground(p):
+					if inventory_open:
+						show_inventory()
+				else:
+					notify("背包与次元口袋空间不足，无法拾取。")
+			else:
+				session.action("pickup")
+			return true
 	var index: int=session.search_target(p)
 	if index<0:
+		if session.search_dropped_target(p)>=0:
+			notify("按 [H] 搜索附近的多件掉落包。")
+			return true
 		return false
+	return open_search(index,p)
+
+func search_drops_action() -> bool:
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty() or p.status not in ["active","down"]:
+		return false
+	var index := session.search_dropped_target(p)
+	if index<0:
+		return false
+	return open_search(index,p)
+
+func open_search(index: int,p: Dictionary) -> bool:
 	var container: Dictionary=session.container_at(index)
 	if container.is_empty():
 		return false
@@ -1124,6 +1154,8 @@ func loot_action() -> bool:
 	if index==_loot_index and session.container_searched(container):
 		return false
 	session.action("search",{"index":index})
+	if index!=_loot_index or not inventory_open:
+		sound.play("search-open",0,p.p)
 	_loot_index=index
 	inventory_open=true
 	selected=-1
@@ -1177,6 +1209,14 @@ func update_hud() -> void:
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty() or hud.is_empty():
 		return
+	var encounter_cue := ""
+	for enemy in session.enemies:
+		if enemy.get("raid_boss",false):
+			encounter_cue="abyss" if enemy.get("abyss_final",false) else "final" if enemy.get("final_form",false) else "mirror" if int(enemy.boss_kind)==0 else "ember" if int(enemy.boss_kind)==1 else ""
+			break
+		if enemy.get("mini_boss",false) and enemy.p.distance_to(p.p)<850:
+			encounter_cue="dragon" if enemy.get("dragon_boss",false) else ("earth" if int(enemy.wild_kind)==0 else "storm") if enemy.get("wild_boss",false) else "mirror" if int(enemy.mini_kind)==0 else "ember"
+	sound.music.set_encounter(encounter_cue)
 	var choosing: bool=session.raid.get("phase","")=="choice" and p.status=="active"
 	hud.raid_continue.visible=choosing
 	hud.raid_wait.visible=choosing
@@ -1190,14 +1230,15 @@ func update_hud() -> void:
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.sanity.text="理智  %d%%    ·    血香  %d" % [p.sanity,p.scent]
 	var family := Catalog.weapon_family(p.weapon)
+	var icon_index := family if Catalog.is_starter(int(p.weapon)) else int(p.weapon)
 	# The HUD icon follows whatever is in hand, looted or temporary.
-	if int(hud.get("weapon_family",-1))!=family:
-		hud.weapon_family=family
-		hud.weapon_icon.texture=TideUIArt.icon(Catalog.WEAPON_ICONS[family])
+	if int(hud.get("weapon_family",-1))!=icon_index:
+		hud.weapon_family=icon_index
+		hud.weapon_icon.texture=TideUIArt.icon(Catalog.WEAPON_ICONS[icon_index])
 	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if family==0 else " · 三连击" if family==1 else ""))
 	hud.scent.text="战利品  %d ◈   /   击杀 %d" % [loot_total(p),p.kills]
 	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  就绪")
-	hud.items.text="[F] 拾取/搜索 · 道具栏使用    血晶 ×%d    /    %s" % [session.crystals_carried(p),session.backpack_label(p)]
+	hud.items.text="[F] 拾取/宝箱 · 道具栏使用  [H] 搜索掉落包    血晶 ×%d    /    %s" % [session.crystals_carried(p),session.backpack_label(p)]
 	var kit: Array=loadout_lines(p)
 	hud.loadout.text=str(kit[0])
 	hud.loadout2.text=str(kit[1])
@@ -1242,11 +1283,19 @@ func update_hud() -> void:
 			return
 	for i in session.container_count():
 		var container: Dictionary=session.container_at(i)
-		if container.is_empty() or container.p.distance_to(p.p)>=70:
+		if container.is_empty() or (container.items.is_empty() and i>=session.ruins.chests.size()) or container.p.distance_to(p.p)>=70:
 			continue
 		var title: String=session.container_title(container)
-		if session.container_searched(container):
+		if i>=session.ruins.chests.size() and session.container_units(container)==1:
+			hud.prompt.text="[F] 拾取 "+Catalog.item_name(container.items[0])+"   /   [TAB] 整理背包"
+			return
+		if i>=session.ruins.chests.size():
+			hud.prompt.text="[H] 搜索 "+title+"   ·   已搜出 %d / %d" % [session.visible_units(container),session.container_units(container)]
+			return
+		if session.container_searched(container) and container.get("open",false):
 			hud.prompt.text="[F] 打开 "+title+"   /   [TAB] 整理背包"
+		elif not container.get("open",false):
+			hud.prompt.text="[F] 搜索 "+title+"   /   [TAB] 整理背包"
 		else:
 			hud.prompt.text="[F] 搜索 "+title+"   ·   已搜出 %d / %d" % [session.visible_units(container),session.container_units(container)]
 		return
@@ -1474,6 +1523,69 @@ func ctrl_click_worn(zone: String) -> void:
 	selected=-1
 	show_inventory()
 
+# F acts on the item under the cursor while an inventory panel is open. The
+# search panel transfers between the chest and carried storage; TAB mode puts
+# wearables on the character and other items in the first free quick socket.
+func quick_inventory_at(point: Vector2) -> bool:
+	if drag.active:
+		return true
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty():
+		return false
+	var hit := grid_at(point)
+	if not hit.is_empty():
+		var slot := str(hit.slot)
+		var index := index_at(slot,Vector2i(hit.cell))
+		if index<0:
+			return false
+		if slot=="loot":
+			if _loot_index<0:
+				return false
+			session.action("auto_store",{"index":index})
+		elif _loot_index>=0:
+			var entry: Dictionary=p[slot].items[index]
+			session.action("bag_drop",{"from":slot,"to":"loot:%d" % _loot_index,"index":index,"rot":bool(entry.get("rot",false))})
+		else:
+			var entry: Dictionary=p[slot].items[index]
+			var kind := str(entry.kind)
+			if kind=="backpack":
+				session.action("equip_bag",{"slot":slot,"index":index})
+			elif Catalog.is_equipment(kind):
+				session.action("equip",{"slot":slot,"index":index})
+			else:
+				var free_slot := -1
+				for i in session.ITEM_SLOT_COUNT:
+					if session.item_slot(p,i).is_empty():
+						free_slot=i
+						break
+				if free_slot<0:
+					notify("道具栏已满，请先收回一件道具。")
+					return true
+				selected_item_slot=free_slot
+				session.action("slot_put",{"slot":free_slot,"from":slot,"index":index})
+		selected=-1
+		show_inventory()
+		return true
+	if _loot_index>=0:
+		return false
+	var bar_slot := slot_at(point) if not slot_bar_stale() else -1
+	if bar_slot>=0:
+		if not session.item_slot(p,bar_slot).is_empty():
+			session.action("slot_take",{"slot":bar_slot})
+			selected_item_slot=bar_slot
+			show_inventory()
+		return true
+	var zone := worn_zone_at(point)
+	if zone=="weapon":
+		session.action("unequip_stow",{"type":"weapon","index":0})
+	elif zone.begins_with("gear"):
+		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
+	else:
+		return false
+	selected=-1
+	show_inventory()
+	return true
+
 # --- mouse dragging --------------------------------------------------------
 # Grabs an item without removing it: the item only moves when the mouse is
 # released over a legal slot, exactly like a loot screen in an extraction game.
@@ -1524,28 +1636,21 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 	if not hit.is_empty():
 		slot=str(hit.slot)
 		spot=Vector2i(hit.cell)
-	var index := source_index
-	if str(drag.slot).begins_with("slot:") and slot.is_empty():
-		# Letting go of a socket's item anywhere but a grid or the ground puts it
-		# back in the bag: a cancelled drag must never leave the bar short.
-		session.action("slot_take",{"slot":slot_source(str(drag.slot))})
-		selected=-1
-		show_inventory()
-		return
-	if source_slot=="loot" and slot.is_empty():
-		index=-1	# dropping loot nowhere means leaving it in the container
-	if index>=0:
-		if slot.is_empty():
-			# Letting go over a side panel is a miss, not a throw: only the open
-			# battlefield beyond the panels drops the item on the ground.
-			for panel in panel_rects:
-				var panel_rect: Rect2=panel
-				if panel_rect.has_point(point):
-					show_inventory()
-					return
-			session.action("bag_drop",{"from":source_slot,"to":"world","index":index})
+	var valid := not slot.is_empty()
+	if valid:
+		var target := drag_target_rect(hit,str(held.get("kind","")))
+		valid=int(Vector2i(target.get("cell",Vector2i(-1,-1))).x)>=0
+	if not valid:
+		if source_slot=="loot":
+			session.action("loot_drop",{"index":source_index})
+		elif source_slot.begins_with("slot:"):
+			session.action("slot_drop",{"slot":slot_source(source_slot)})
 		else:
-			session.action("bag_drop",{"from":source_slot,"to":slot,"index":index,"x":spot.x,"y":spot.y,"rot":rot})
+			session.action("bag_drop",{"from":source_slot,"to":"world","index":source_index})
+	elif source_slot.begins_with("slot:"):
+		session.action("slot_take",{"slot":slot_source(source_slot)})
+	else:
+		session.action("bag_drop",{"from":source_slot,"to":slot,"index":source_index,"x":spot.x,"y":spot.y,"rot":rot})
 	selected=-1
 	show_inventory()
 
@@ -1665,6 +1770,7 @@ func sync_drag() -> void:
 		return
 	var kind := str(held.kind)
 	var accent := item_tint(held)
+	drag_caption.text=Catalog.item_name(held)+(" ×%d" % int(held.get("count",1)) if int(held.get("count",1))>1 else "")
 	var cell_size := held_size(held)
 	var point := mouse_point()
 	if point.distance_to(press_point)>8.0:
@@ -1683,11 +1789,11 @@ func sync_drag() -> void:
 		drag_ring.blocked=false
 		return
 	if str(drag.slot).begins_with("slot:"):
-		# An item lifted out of the bar is not in any grid, so there is no landing
-		# cell to preview: away from a socket the drop simply cancels.
+		# Away from a socket, the held item will be dropped on the ground.
 		drag_ring.area=Rect2(point-cell_size/2,cell_size)
 		drag_ring.tone=Color("c96a74")
-		drag_ring.blocked=true
+		drag_ring.blocked=false
+		drag_caption.text="松开丢弃到地面"
 		return
 	var hit := grid_at(point)
 	var target := drag_target_rect(hit,kind)
@@ -1705,7 +1811,8 @@ func sync_drag() -> void:
 		if cell.x<0:
 			drag_ring.area=Rect2(Vector2(entry.origin)+Vector2(int(target.cursor.x)*step,int(target.cursor.y)*step),Vector2(entry.cell,entry.cell))
 			drag_ring.tone=Color("c96a74")
-			drag_ring.blocked=true
+			drag_ring.blocked=false
+			drag_caption.text="松开丢弃到地面"
 		else:
 			drag_ring.area=Rect2(Vector2(entry.origin)+Vector2(cell.x*step,cell.y*step),Vector2(dims.x*step-float(entry.gap),dims.y*step-float(entry.gap)))
 			drag_ring.tone=accent if exact else Color("c9a06a")
@@ -1713,7 +1820,8 @@ func sync_drag() -> void:
 	else:
 		drag_ring.area=Rect2(point-cell_size/2,cell_size)
 		drag_ring.tone=Color("c96a74")
-		drag_ring.blocked=true
+		drag_ring.blocked=false
+		drag_caption.text="松开丢弃到地面"
 
 func move_drag_ghost(point: Vector2, cell_size: Vector2) -> void:
 	var lift := Vector2.ONE*minf(cell_size.x,cell_size.y)*0.10
@@ -1868,7 +1976,9 @@ func held_item() -> Dictionary:
 func held_size(held: Dictionary) -> Vector2:
 	if drag.slot=="loot":
 		var loot_size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
-		return Vector2(loot_size.x*(LOOT_CELL+LOOT_GAP)-LOOT_GAP,loot_size.y*(LOOT_CELL+LOOT_GAP)-LOOT_GAP)
+		var entry: Dictionary=grids.get("loot",{"cell":LOOT_CELL,"gap":LOOT_GAP})
+		var step: float=float(entry.cell)+float(entry.gap)
+		return Vector2(loot_size.x*step-float(entry.gap),loot_size.y*step-float(entry.gap))
 	var cell: float=bag_cell if drag.slot=="backpack" else pocket_cell
 	var gap: float=bag_gap if drag.slot=="backpack" else pocket_gap
 	var size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
@@ -1940,7 +2050,8 @@ func draw_grid(slot: String, at: Vector2, cell: float, gap: float, grid: Vector2
 		item_button.short_caption=Catalog.item_short_name(item)+(" ×%d" % count if count>1 else "")
 		item_button.accent=accent
 		item_button.selected=selected==i and selected_slot==slot
-		item_button.tooltip_text=Catalog.item_name(item)+"\n"+Catalog.item_desc(item)+"\n价值："+str(Catalog.item_value(item))
+		var f_hint := "[F] 放入宝箱" if _loot_index>=0 else "[F] 快捷装备 / 放入道具栏"
+		item_button.tooltip_text=Catalog.item_name(item)+"\n"+Catalog.item_desc(item)+"\n价值："+str(Catalog.item_value(item))+"\n"+f_hint
 		# The body ignores the mouse so the overlay can hit-test the whole grid and
 		# drag items around; caption text is drawn, not clicked.
 		item_button.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -1988,31 +2099,40 @@ func show_inventory() -> void:
 	var blocker := rect(overlay,Vector2.ZERO,Vector2(1440,900),Color(0.015,0.02,0.04,0.65))
 	blocker.mouse_filter=Control.MOUSE_FILTER_STOP
 	var tint: Color=Catalog.bag_color(p.backpack)
-	# The right column belongs to the search window whenever one is open, because
-	# searching never stops a run and the player still needs both grids.
 	var right_x := 980.0
+	var bag_at := Vector2(70,150)
+	var pocket_at := Vector2(70,600)
+	var close_at := Vector2(802,160)
 	if _loot_index>=0:
+		# Search mode: carried storage on the left, container and its details right.
 		bag_cell=34.0
 		bag_gap=5.0
 		pocket_cell=32.0
 		pocket_gap=5.0
 	else:
-		bag_cell=46.0
-		bag_gap=6.0
-		pocket_cell=44.0
-		pocket_gap=6.0
-	draw_grid("backpack",Vector2(70,150),bag_cell,bag_gap,bag_grid,"角色背包 · "+Catalog.bag_name(p.backpack),
+		# TAB mode: carried storage left, equipment and quick slots right. Scale
+		# large packs so the fixed pocket still fits below them on screen.
+		bag_cell=40.0 if bag_grid.x>=8 else 42.0 if bag_grid.x>=6 else 46.0
+		bag_gap=4.0 if bag_grid.x>=8 else 5.0 if bag_grid.x>=6 else 6.0
+		pocket_cell=32.0 if bag_grid.x>=8 else 37.0 if bag_grid.x>=7 else 44.0
+		pocket_gap=4.0 if bag_grid.x>=8 else 5.0 if bag_grid.x>=7 else 6.0
+		var bag_width: float=bag_grid.x*(bag_cell+bag_gap)-bag_gap+34.0
+		var bag_height: float=bag_grid.y*(bag_cell+bag_gap)-bag_gap+96.0
+		var pocket_width: float=pocket_grid.x*(pocket_cell+pocket_gap)-pocket_gap+34.0
+		bag_at=Vector2(70.0+(444.0-bag_width)*0.5,150.0)
+		pocket_at=Vector2(70.0+(444.0-pocket_width)*0.5,maxf(560.0,bag_at.y+bag_height+20.0))
+	draw_grid("backpack",bag_at,bag_cell,bag_gap,bag_grid,"角色背包 · "+Catalog.bag_name(p.backpack),
 		"%s品质  %d×%d  /  阵亡时连同物资掉落  /  价值 %d ◈" % [Catalog.bag_quality(p.backpack),bag_grid.x,bag_grid.y,Catalog.container_value(p.backpack)],tint)
-	draw_grid("pocket",Vector2(70,600),pocket_cell,pocket_gap,pocket_grid,Catalog.POCKET_NAME,
+	draw_grid("pocket",pocket_at,pocket_cell,pocket_gap,pocket_grid,Catalog.POCKET_NAME,
 		"固定 %d×%d  /  永不掉落  /  价值 %d ◈" % [pocket_grid.x,pocket_grid.y,Catalog.container_value(p.pocket)],Color("b9a7d6"))
-	button(overlay,"关闭 TAB",Vector2(802,160),Vector2(150,44),close_bag)
+	button(overlay,"关闭 TAB",close_at,Vector2(150,44),close_bag)
 	if _loot_index<0:
-		draw_details(p,right_x,150.0,390.0,660.0)
+		draw_details(p,right_x,150.0,390.0,700.0)
 	else:
 		# The search window sits clear of the HUD buttons and the details panel
 		# slides underneath it, so a run in progress stays readable.
 		draw_search_window(container,right_x,190.0)
-		draw_loot_details(p,right_x,190.0)
+		draw_loot_details(p,container,right_x,190.0)
 	# The held item must stay above every panel, so the live drag nodes are
 	# re-attached to the end of the overlay after the panels are rebuilt.
 	if drag.active:
@@ -2027,8 +2147,8 @@ func show_inventory() -> void:
 		sync_drag()
 
 # --- item details ----------------------------------------------------------
-# The right column is also the equipment screen: the selected item's actions on
-# top, the worn weapon and gear in the middle, the backpack cabinet at the bottom.
+# In TAB mode, the right column reads from top to bottom: worn equipment,
+# quick slots, selected item actions and the backpack cabinet.
 func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -> void:
 	rect(overlay,Vector2(x,y),Vector2(wide,tall),BG,Color("6e4d5d"))
 	ornament(overlay,Vector2(x,y),Vector2(wide,tall),"frame")
@@ -2037,36 +2157,38 @@ func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -
 	ornament(overlay,Vector2(x+18,y+50),Vector2(wide-36,10))
 	var ix := x+22
 	var inner := wide-44.0
+	draw_equipment(p,x,y,wide)
+	draw_item_bar(p,x,y+270.0,wide,false)
+	ornament(overlay,Vector2(x+18,y+389),Vector2(wide-36,10))
+	label(overlay,"选中物品",Vector2(ix,y+400),16,GOLD,Vector2(inner,22))
 	if selected>=0 and selected_slot in ["backpack","pocket"] and selected<p[selected_slot].items.size():
 		var item: Dictionary=p[selected_slot].items[selected]
 		var accent: Color=Catalog.item_color(item)
-		item_icon(overlay,Catalog.item_icon(item),Vector2(ix,y+68),Vector2(58,58))
-		label(overlay,Catalog.item_name(item),Vector2(ix+70,y+72),21,accent,Vector2(inner-74,32))
-		label(overlay,("角色背包" if selected_slot=="backpack" else Catalog.POCKET_NAME)+" · 第 %d 件" % (selected+1),Vector2(ix+71,y+106),13,MUTED)
-		var text := label(overlay,Catalog.item_desc(item),Vector2(ix,y+138),13,MUTED,Vector2(inner,48))
+		item_icon(overlay,Catalog.item_icon(item),Vector2(ix,y+425),Vector2(43,43))
+		label(overlay,Catalog.item_name(item),Vector2(ix+54,y+426),17,accent,Vector2(inner-58,27))
+		label(overlay,("背包" if selected_slot=="backpack" else Catalog.POCKET_NAME)+" · 第 %d 件  ·  %d ◈" % [selected+1,Catalog.item_value(item)],Vector2(ix+54,y+452),12,GOLD,Vector2(inner-58,18))
+		var text := label(overlay,Catalog.item_desc(item),Vector2(ix,y+474),12,MUTED,Vector2(inner,32))
 		text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		label(overlay,"朝向："+("已旋转" if item.get("rot",false) else "默认")+"      价值 %d ◈" % Catalog.item_value(item),Vector2(ix,y+190),14,GOLD)
+		text.tooltip_text=Catalog.item_desc(item)
 		var action: Dictionary=use_action(item,p)
-		if action.is_empty():
-			label(overlay,"这件战利品只能带回去结算。",Vector2(ix,y+240),13,Color("8d8494"),Vector2(inner,30))
-		else:
-			var primary := button(overlay,str(action.text),Vector2(ix,y+234),Vector2(inner,42),use_selected,true)
+		if not action.is_empty():
+			var action_text := "生命已满" if not bool(action.enabled) else "使用" if str(item.kind) in ["medicine","ammo"] else "装备"
+			var primary := button(overlay,action_text,Vector2(ix,y+510),Vector2(105,33),use_selected,true)
 			primary.disabled=not bool(action.enabled)
+			primary.tooltip_text=str(action.text)
+		else:
+			label(overlay,"仅可结算",Vector2(ix,y+518),12,MUTED,Vector2(105,20))
 		var other: String="pocket" if selected_slot=="backpack" else "backpack"
 		var label_text := "存入 "+Catalog.POCKET_NAME if other=="pocket" else "放回角色背包"
-		button(overlay,label_text,Vector2(ix,y+286),Vector2(inner-158,40),func(): move_to_other(selected_slot,selected))
-		button(overlay,"丢到地面",Vector2(ix+inner-150,y+286),Vector2(150,40),func():
+		button(overlay,label_text,Vector2(ix+114,y+510),Vector2(136,33),func(): move_to_other(selected_slot,selected))
+		button(overlay,"丢到地面",Vector2(ix+259,y+510),Vector2(87,33),func():
 			session.action("drop",{"index":selected,"slot":selected_slot})
 			selected=-1
 			show_inventory()
 		)
 	else:
-		ornament(overlay,Vector2(x+wide/2-56,y+62),Vector2(112,112),"seal")
-		label(overlay,"单击选中 · 拖拽搬运",Vector2(ix,y+192),15,MUTED,Vector2(inner,30))
-		label(overlay,"双击或拖到装备栏 / 背包槽即可穿上",Vector2(ix,y+218),13,Color("8d8494"),Vector2(inner,30))
-	draw_equipment(p,x,y,wide)
-	label(overlay,"[R] 或右键旋转   ·   拖到框外丢到地面",Vector2(ix,y+466),12,MUTED,Vector2(inner,18))
-	draw_item_bar(p,x,y,wide,false)
+		label(overlay,"悬停物品按 [F] 快捷装备或放入道具栏",Vector2(ix,y+434),13,MUTED,Vector2(inner,24))
+		label(overlay,"双击或拖到装备栏 / 背包槽即可穿上",Vector2(ix,y+460),12,Color("8d8494"),Vector2(inner,22))
 	draw_cabinet(p,x,y,wide)
 
 # The worn kit: four drop sockets (weapon plus armour / sight / boots). A
@@ -2076,9 +2198,9 @@ func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -
 func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 	var ix := x+22
 	var inner := wide-44.0
-	label(overlay,"装备栏   /   本局强化",Vector2(ix,y+310),17,GOLD,Vector2(inner,26))
-	label(overlay,"拖拽或双击装备",Vector2(ix+158,y+316),11,MUTED,Vector2(inner-158,20))
-	ornament(overlay,Vector2(x+18,y+336),Vector2(wide-36,10))
+	label(overlay,"装备栏   /   本局强化",Vector2(ix,y+65),17,GOLD,Vector2(inner,26))
+	label(overlay,"悬停 [F] 装备 / 收回",Vector2(ix+158,y+71),11,MUTED,Vector2(inner-158,20))
+	ornament(overlay,Vector2(x+18,y+91),Vector2(wide-36,10))
 	var rows: Array = [{"title":"武器","item":session.kit_weapon(p),"type":"weapon","slot":0}]
 	var gear: Array=session.kit_gear(p)
 	for i in Catalog.GEAR.size():
@@ -2091,7 +2213,7 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 	for i in rows.size():
 		var entry: Dictionary=rows[i]
 		var bx := ix+float(i)*(box+gapx)
-		var by := y+346.0
+		var by := y+102.0
 		var item: Dictionary=entry.item
 		var kind := str(entry.type)
 		var index := int(entry.slot)
@@ -2118,7 +2240,7 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 			var off := button(overlay,"卸",Vector2(bx+box-19,by+1),Vector2(18,15),func(): unequip_slot(kind,index),false,9)
 			off.tooltip_text="卸下 "+Catalog.item_name(item)
 		elif issue:
-			item_icon(overlay,Catalog.WEAPON_ICONS[Catalog.weapon_family(p.weapon)],Vector2(bx+17,by+5),Vector2(44,44)).modulate=Color(1,1,1,0.42)
+			item_icon(overlay,Catalog.WEAPON_ICONS[Catalog.weapon_family(p.weapon) if Catalog.is_starter(int(p.weapon)) else int(p.weapon)],Vector2(bx+17,by+5),Vector2(44,44)).modulate=Color(1,1,1,0.42)
 			rect(overlay,Vector2(bx+1,by+box-17),Vector2(box-2,16),Color(0.035,0.025,0.04,0.6))
 			var issue_label := label(overlay,Catalog.weapon_name(p.weapon),Vector2(bx+1,by+box-16),10,Color("9d94a6"),Vector2(box-2,14))
 			issue_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -2207,12 +2329,14 @@ func draw_item_bar(p: Dictionary, x: float, y: float, wide: float, bottom: bool)
 	var cell := HUD_SLOT_CELL if bottom else SLOT_CELL
 	var step := box+6.0
 	var inner := wide-44.0
-	var from_left := x+22.0 if not bottom else x
+	var from_left := x
 	if bottom:
 		var total := float(count)*box+float(count-1)*6.0
 		from_left=x+bottom_slot_width*0.5-total*0.5
 	else:
-		_slot_origin=Vector2(x,y)
+		var total := float(count)*box+float(count-1)*6.0
+		from_left=x+22.0+(inner-total)*0.5
+		_slot_origin=Vector2(from_left-22.0,y)
 		_slot_loot=_loot_index>=0
 	for i in count:
 		var at := Vector2(from_left+float(i)*step,y)
@@ -2246,17 +2370,17 @@ func draw_item_bar(p: Dictionary, x: float, y: float, wide: float, bottom: bool)
 		var hud_head := label(overlay,"道具栏   /   [F] 使用·互换   [1][2][3] 切换",label_at,15,GOLD,Vector2(bottom_slot_width,20))
 		hud_head.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		return
-	label(overlay,"道具栏   /   [F] 使用·互换",label_at,17,GOLD,Vector2(inner,26))
-	label(overlay,"拖入即可放入 · 占格再大也只占一格",label_at+Vector2(158,6),11,MUTED,Vector2(inner-158,20))
+	label(overlay,"道具栏   /   快捷位",Vector2(x+22,y-22),17,GOLD,Vector2(170,26))
+	label(overlay,"悬停 [F] 收回 · [1-3] 切换",Vector2(x+200,y-16),11,MUTED,Vector2(inner-178,20))
 
 func draw_cabinet(p: Dictionary, x: float, y: float, wide: float) -> void:
 	var ix := x+22
 	var inner := wide-44.0
-	label(overlay,"背包柜   /   点击装备",Vector2(ix,y+512),17,GOLD,Vector2(inner,26))
-	ornament(overlay,Vector2(x+18,y+538),Vector2(wide-36,10))
+	label(overlay,"背包柜   /   点击装备",Vector2(ix,y+550),17,GOLD,Vector2(inner,26))
+	ornament(overlay,Vector2(x+18,y+576),Vector2(wide-36,10))
 	# The equipped backpack gets its own socket: dropping a pack item here (or
 	# double-clicking it in the bag) swaps what the player carries.
-	var by := y+546.0
+	var by := y+585.0
 	equip_zones["bag"]=Rect2(ix,by,inner,46)
 	var tint: Color=Catalog.bag_color(p.backpack)
 	var socket := rect(overlay,Vector2(ix,by),Vector2(46,46),Color(tint.darkened(0.84),0.9),tint)
@@ -2269,7 +2393,7 @@ func draw_cabinet(p: Dictionary, x: float, y: float, wide: float) -> void:
 	for i in Catalog.BAG_TIERS.size():
 		var tier: Dictionary=Catalog.BAG_TIERS[i]
 		var tx := ix+float(i%2)*half
-		var ty := y+598+float(int(i/2))*20
+		var ty := y+638+float(int(i/2))*20
 		if tier.key==str(p.backpack.key):
 			label(overlay,"◈ %s %d×%d  已装备" % [tier.quality,tier.grid.x,tier.grid.y],Vector2(tx,ty),12,tier.color,Vector2(half-4,20))
 		else:
@@ -2283,22 +2407,26 @@ func draw_cabinet(p: Dictionary, x: float, y: float, wide: float) -> void:
 # Loot surfaces one card at a time; unrevealed slots stay as sealed placeholders.
 func draw_search_window(container: Dictionary, x: float, y: float) -> void:
 	var grid: Vector2i=session.container_grid(container)
+	var cell_size := 36.0 if grid.x>5 or grid.y>5 else LOOT_CELL
+	var gap := 4.0 if grid.x>5 or grid.y>5 else LOOT_GAP
+	var step := cell_size+gap
 	var units: int=session.container_units(container)
 	var revealed: int=session.visible_units(container)
-	var wide := grid.x*(LOOT_CELL+LOOT_GAP)-LOOT_GAP+34
-	var tall := grid.y*(LOOT_CELL+LOOT_GAP)-LOOT_GAP+128
+	var wide := grid.x*step-gap+34
+	var tall := grid.y*step-gap+128
 	rect(overlay,Vector2(x,y),Vector2(wide,tall),BG,Color("4b6076"))
 	ornament(overlay,Vector2(x,y),Vector2(wide,tall),"frame",Color("7fa0bd"))
 	label(overlay,session.container_title(container),Vector2(x+18,y+12),22,Color("cfe0f0"))
-	var state := "搜索完毕 %d 件" % units if revealed>=units else "搜索中…  %d / %d" % [revealed,units]
+	var next: Dictionary=session.next_search_item(container)
+	var duration: float=session.search_seconds(next) if not next.is_empty() else 0.0
+	var state := "搜索完毕 %d 件" % units if revealed>=units else "搜索中…  %d / %d  ·  下件 %.1f 秒" % [revealed,units,duration]
 	label(overlay,state,Vector2(x+19,y+46),13,Color("8fb0cc"),Vector2(wide-44,22))
-	label(overlay,"[F] 继续   ·   [TAB] 关闭",Vector2(x+wide-172,y+46),12,MUTED,Vector2(160,22))
 	var origin := Vector2(x+17,y+76)
-	grids["loot"]={"origin":origin,"cell":LOOT_CELL,"gap":LOOT_GAP,"grid":grid}
+	grids["loot"]={"origin":origin,"cell":cell_size,"gap":gap,"grid":grid}
 	panel_rects.append(Rect2(x,y,wide,tall))
 	for cy in grid.y:
 		for cx in grid.x:
-			var cell := button(overlay,"",origin+Vector2(cx*(LOOT_CELL+LOOT_GAP),cy*(LOOT_CELL+LOOT_GAP)),Vector2(LOOT_CELL,LOOT_CELL),func(): pass) as GothicButton
+			var cell := button(overlay,"",origin+Vector2(cx*step,cy*step),Vector2(cell_size,cell_size),func(): pass) as GothicButton
 			cell.slot=true
 			cell.accent=Color("6d8aa8")
 			cell.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -2307,7 +2435,7 @@ func draw_search_window(container: Dictionary, x: float, y: float) -> void:
 	# cells here exactly like it does in the backpack, so what you see is what
 	# you will have to make room for.
 	var covered := {}
-	for item in shown:
+	for item in Catalog.container_items(container):
 		var dims := Catalog.item_size(item)
 		for cy in range(int(item.y),int(item.y)+dims.y):
 			for cx in range(int(item.x),int(item.x)+dims.x):
@@ -2316,16 +2444,37 @@ func draw_search_window(container: Dictionary, x: float, y: float) -> void:
 		for cx in grid.x:
 			if covered.has(Vector2i(cx,cy)):
 				continue
-			var hidden := button(overlay,"",origin+Vector2(cx*(LOOT_CELL+LOOT_GAP),cy*(LOOT_CELL+LOOT_GAP)),Vector2(LOOT_CELL,LOOT_CELL),func(): pass) as GothicButton
+			var hidden := button(overlay,"",origin+Vector2(cx*step,cy*step),Vector2(cell_size,cell_size),func(): pass) as GothicButton
 			hidden.slot=true
 			hidden.disabled=true
 			hidden.accent=Color("5d7690")
 			hidden.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	# The actual occupied cells appear as sealed grey cards before their contents
+	# are revealed. Their shape is visible, but the name, icon and quality are not.
+	var budget := session.visible_units(container)
+	for item in Catalog.container_items(container):
+		var units_in_item := int(item.get("count",1)) if Catalog.stacks(str(item.kind)) else 1
+		if budget>=units_in_item:
+			budget-=units_in_item
+			continue
+		if budget>0:
+			budget=0
+			continue
+		var dims := Catalog.item_size(item)
+		var cell_pos := origin+Vector2(int(item.x)*step,int(item.y)*step)
+		var card_size := Vector2(dims.x*step-gap,dims.y*step-gap)
+		var sealed := button(overlay,"?",cell_pos,card_size,func(): pass,false,22) as GothicButton
+		sealed.slot=true
+		sealed.sealed_slot=true
+		sealed.accent=Color("646b75")
+		sealed.modulate=Color(0.62,0.65,0.69,0.82)
+		sealed.tooltip_text="尚未搜索 · 搜索完成后才能查看和拾取"
+		sealed.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	for i in shown.size():
 		var item: Dictionary=shown[i]
 		var dims := Catalog.item_size(item)
-		var cell_pos := origin+Vector2(int(item.x)*(LOOT_CELL+LOOT_GAP),int(item.y)*(LOOT_CELL+LOOT_GAP))
-		var card_size := Vector2(dims.x*(LOOT_CELL+LOOT_GAP)-LOOT_GAP,dims.y*(LOOT_CELL+LOOT_GAP)-LOOT_GAP)
+		var cell_pos := origin+Vector2(int(item.x)*step,int(item.y)*step)
+		var card_size := Vector2(dims.x*step-gap,dims.y*step-gap)
 		var count := int(item.get("count",1))
 		var caption: String=Catalog.item_name(item)+(" ×%d" % count if count>1 else "")
 		if item.kind=="backpack":
@@ -2337,16 +2486,23 @@ func draw_search_window(container: Dictionary, x: float, y: float) -> void:
 		card.rotated=bool(item.get("rot",false))
 		card.short_caption=Catalog.item_short_name(item)+(" ×%d" % count if count>1 else "")
 		card.accent=Catalog.item_color(item)
-		card.tooltip_text="%s\n%s\n占 %d×%d 格 · 左键拖入背包 / 单击查看详情" % [Catalog.item_name(item),Catalog.item_desc(item),dims.x,dims.y]
+		card.tooltip_text="%s\n%s\n占 %d×%d 格 · 悬停按 [F] 快捷拾取 / 双击自动收纳 / 拖入背包" % [Catalog.item_name(item),Catalog.item_desc(item),dims.x,dims.y]
 		card.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	# progress bar
 	var bar_w := wide-44.0
 	rect(overlay,Vector2(x+22,y+tall-32),Vector2(bar_w,6),Color("26303c"))
-	var ratio := 1.0 if units<=0 else clampf(float(revealed)/float(units),0,1)
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	var progress := 0.0
+	if duration>0.0 and session.search_reference(p)==_loot_index:
+		progress=clampf(float(p.get("search",0.0))/duration,0.0,0.99)
+	var ratio := 1.0 if units<=0 else clampf((float(revealed)+progress)/float(units),0,1)
 	rect(overlay,Vector2(x+22,y+tall-32),Vector2(maxf(0,bar_w*ratio),6),Color("7fa0bd"))
 
-func draw_loot_details(p: Dictionary, x: float, y: float) -> void:
-	var top := y+404.0
+func draw_loot_details(p: Dictionary, container: Dictionary, x: float, y: float) -> void:
+	var grid: Vector2i=session.container_grid(container)
+	var step := 40.0 if grid.x>5 or grid.y>5 else LOOT_CELL+LOOT_GAP
+	var gap := 4.0 if grid.x>5 or grid.y>5 else LOOT_GAP
+	var top := maxf(y+404.0,y+grid.y*step-gap+128.0+12.0)
 	rect(overlay,Vector2(x,top),Vector2(390,254),BG,Color("4b6076"))
 	ornament(overlay,Vector2(x,top),Vector2(390,254),"frame",Color("7fa0bd"))
 	panel_rects.append(Rect2(x,top,390.0,254.0))
@@ -2357,13 +2513,13 @@ func draw_loot_details(p: Dictionary, x: float, y: float) -> void:
 		if selected<shown.size():
 			held=shown[selected]
 	if held.is_empty():
-		label(overlay,"把鼠标移到搜索框里的物品上，按住左键拖进背包。",Vector2(x+20,top+46),13,MUTED,Vector2(350,40)).autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		label(overlay,"悬停物品按 [F] 快捷拾取，高价值优先放入口袋；也可拖入背包。",Vector2(x+20,top+46),13,MUTED,Vector2(350,40)).autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	else:
 		item_icon(overlay,Catalog.item_icon(held),Vector2(x+20,top+44),Vector2(46,46))
 		label(overlay,Catalog.item_name(held),Vector2(x+78,top+48),19,Catalog.item_color(held),Vector2(286,30))
 		var text := label(overlay,Catalog.item_desc(held),Vector2(x+20,top+98),13,MUTED,Vector2(350,46))
 		text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		label(overlay,"价值 %d ◈   ·   拖到左侧网格即可拿走" % Catalog.item_value(held),Vector2(x+20,top+146),13,GOLD)
+		label(overlay,"价值 %d ◈   ·   悬停 [F] 快捷拾取 / 拖入背包" % Catalog.item_value(held),Vector2(x+20,top+146),13,GOLD)
 	# Supplies stay usable while the search window is open, so a medkit never
 	# needs the window closed first.
 	label(overlay,"快捷使用",Vector2(x+20,top+178),13,Color("9fb6c8"),Vector2(80,22))
@@ -2575,7 +2731,10 @@ func on_effect(kind: String,pos: Vector2) -> void:
 		return
 	if page_name=="game":
 		sound.listener.global_position=field.camera
-		var cue: String={"hit":"death","guard":"impact-metal","guard-break":"impact-heavy"}.get(kind,kind)
+		if kind.begins_with("search-reveal-"):
+			sound.play("search-reveal",clampi(kind.substr(14).to_int(),0,5),pos)
+			return
+		var cue: String={"hit":"death","guard":"impact-metal","guard-break":"impact-heavy","extract":"bell"}.get(kind,kind)
 		sound.play(cue,-1,pos)
 
 func flash_damage_feedback() -> void:
@@ -2609,7 +2768,7 @@ func on_combat_audio(data: Dictionary) -> void:
 			sound.stop_cue("reload",emitter)
 			sound.stop_cue("magic-windup",emitter)
 		"strike":
-			sound.attack(int(data.weapon),int(data.get("combo",0)),data.p,emitter)
+			sound.attack(int(data.weapon),int(data.get("combo",0)),data.p,emitter,str(data.get("spell","star")))
 			sound.dialogue.play_line(voice_hero,"attack",emitter,data.p,field.camera)
 		"windup":
 			if int(data.weapon)==3:
@@ -2764,9 +2923,9 @@ func show_help() -> void:
 	var at := modal_box("守夜手册",Vector2(1060,720))
 	var left := at+Vector2(36,100)
 	label(overlay,"01  /  活着带回去",left,23,GOLD)
-	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取 / 搜索；没东西可捡时再用一次 = 道具栏，最后才是急救针\nF 同时也是道具栏的互动键：[F] 使用或与手上的互换，[1] [2] [3] 切换当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
+	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取单件 / 搜索宝箱；H = 搜索附近的多件掉落包\nF 同时也是道具栏的互动键：[F] 使用或与手上的互换，[1] [2] [3] 切换当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
 	label(overlay,"02  /  搜刮要慢慢来",left+Vector2(0,318),23,GOLD)
-	var risk := label(overlay,"对着物资箱按 [F] 开始搜索，物品会每隔约 1.2 秒浮出一件，搜索框和背包可以同时开着；卡片的大小就是它在背包里占的格子。\n\n用鼠标把搜出的物品拖进角色背包或次元口袋即可拿走；担心被偷袭就随时按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽（或双击）就能换装；背包本身就是一件装备，紫色及以上品质的包占 2×2 格。\n\n背包内按 [R]（或右键）旋转物品，拖动途中按 [R] 图片与占格会一起翻转；点选物品后也可以用面板按钮使用。地上的掉落物直接按 [F] 秒拾。",left+Vector2(0,361),17,MUTED,Vector2(462,262))
+	var risk := label(overlay,"对着物资箱按 [F] 搜索，附近多件掉落包按 [H] 搜索。物品按品质逐件浮出，未搜索的卡片呈灰色。\n\n用鼠标把搜出的物品拖进背包或次元口袋即可拿走；按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽即可换装。\n\n背包内按 [R]（或右键）旋转物品；拖出有效网格和装备槽后松开，就会丢到地上。地面单件物品按 [F] 拾取。",left+Vector2(0,361),17,MUTED,Vector2(462,262))
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var right := at+Vector2(554,100)
 	label(overlay,"03  /  一同出征，独立撤离",right,23,GOLD)

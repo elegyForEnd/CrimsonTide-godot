@@ -4,13 +4,15 @@ extends Node
 ## Offline Suno score. Linear crossfades also handle rapidly reversed scene changes.
 var players: Dictionary = {}
 var active_cue := ""
+var scene_kind := "title"
+var encounter_cue := ""
 var duck_db := 0.0
 var cinematic := false
 var speaking := false
 
 func _ready() -> void:
 	process_mode=Node.PROCESS_MODE_ALWAYS
-	for cue in ["camp","ruins"]:
+	for cue in ["camp","ruins","mirror","ember","final","earth","storm","abyss","dragon"]:
 		var player := AudioStreamPlayer.new()
 		player.bus="Music"
 		var stream: AudioStreamOggVorbis=load("res://assets/audio/music/%s.ogg" % cue)
@@ -22,7 +24,17 @@ func _ready() -> void:
 	set_scene("title")
 
 func set_scene(scene: String) -> void:
-	var cue := "ruins" if scene=="game" else "camp"
+	scene_kind=scene
+	if scene!="game": encounter_cue=""
+	select_cue()
+
+func set_encounter(cue: String) -> void:
+	if cue==encounter_cue: return
+	encounter_cue=cue if cue in ["mirror","ember","final","earth","storm","abyss","dragon"] else ""
+	select_cue()
+
+func select_cue() -> void:
+	var cue := (encounter_cue if not encounter_cue.is_empty() else "ruins") if scene_kind=="game" else "camp"
 	if cue==active_cue:
 		return
 	active_cue=cue
@@ -36,7 +48,7 @@ func _process(dt: float) -> void:
 		var player: AudioStreamPlayer=players[cue]
 		var mix: float=move_toward(float(player.get_meta("mix",0.0)),1.0 if cue==active_cue else 0.0,dt/1.8)
 		player.set_meta("mix",mix)
-		player.volume_linear=mix*db_to_linear((-8.0 if cue=="camp" else -12.0)+duck_db)
+		player.volume_linear=mix*db_to_linear((-8.0 if cue=="camp" else -12.0 if cue=="ruins" else -11.0)+duck_db)
 		if mix==0.0 and cue!=active_cue and player.playing:
 			player.stop()
 

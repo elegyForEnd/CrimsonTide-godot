@@ -1,0 +1,9 @@
+{
+  "generator": "built-in image_gen",
+  "assets": {
+    "extraction-sigil.png": "Magic rune linework sprite for existing terrain: intricate teal-white evacuation spell circle, two concentric elliptical rune bands, crescent compass glyphs and star sigils. Wide three-quarter ground perspective. All space between lines and in the center truly transparent. No fill, floor, stone, platform, haze, architecture, text or watermark.",
+    "extraction-vortex.png": "Transparent VFX sprite above a flat teal evacuation circle: vertical teal-white spectral light columns, twisting ribbons, rising gothic rune fragments, glittering particles and translucent aurora. Wide lower base tapering upward, transparent center so the player remains readable. No stone, portal, arch, ground circle, character, environment, text or watermark.",
+    "boss-sigil.png": "Magic rune linework sprite for existing terrain: blood-red and rose-gold boss summoning circle, three flattened elliptical rune bands, thorn and crescent motifs, heraldic glyphs and line sparks. Wide three-quarter ground perspective. All space between lines and inside rings truly transparent. No fill, floor, stone, platform, haze, upright object, text or watermark.",
+    "shrine-sigil.png": "Magic rune linework sprite for existing terrain: amber-gold Dawn Bell seal, concentric flattened elliptical rune bands, delicate central bell glyph, crescent and rose filigree, candlelike sparks. Wide three-quarter ground perspective. All space between lines and inside circle truly transparent. No fill, floor, stone, platform, haze, architecture, text or watermark."
+  }
+}

@@ -1,0 +1,52 @@
+name: crimson-tide
+services:
+  server:
+    image: crimson-tide-server:1.0.1
+    platform: linux/amd64
+    build:
+      context: .
+      target: runtime
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 45s
+    environment:
+      PUBLIC_HOST: ${SERVER_DOMAIN:-example.com}
+      ROOM_PORT_START: "24900"
+      MAX_ROOMS: "16"
+    ports:
+      - "127.0.0.1:8080:8080/tcp"
+      - "24900-24915:24900-24915/udp"
+    volumes:
+      - game-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  caddy:
+    image: caddy:2.10-alpine
+    profiles: [https]
+    restart: unless-stopped
+    environment:
+      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    volumes:
+      - ./server/Caddyfile.docker:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      server:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  game-data:
+  caddy-data:
+  caddy-config:

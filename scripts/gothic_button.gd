@@ -7,6 +7,7 @@ var menu := false
 var selected := false
 var heat := 0.0
 var slot := false
+var sealed_slot := false
 var serif: Font
 var item_texture: Texture2D
 # A slot must never be resized by its own caption: a button grows to fit its text
@@ -66,6 +67,11 @@ func _draw() -> void:
 		ink=Color("77717a")
 	if slot:
 		draw_style_box(_slot_style(),Rect2(Vector2.ZERO,size))
+		if sealed_slot:
+			draw_rect(Rect2(Vector2(2,2),size-Vector2(4,4)),Color("555b66",0.72),true)
+			var face := get_theme_font("font")
+			draw_string(face,Vector2(w/2.0-5.0,h/2.0+7.0),"?",HORIZONTAL_ALIGNMENT_LEFT,w,22,Color("b9bec7"))
+			return
 		if not item_kind.is_empty():
 			# The icon owns the cell; the name rides a translucent strip along the
 			# bottom so it never covers the art or the neighbouring slot.

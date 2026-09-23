@@ -56,8 +56,11 @@ var request_cooldowns: Dictionary = {}
 var pending_ultimates: Dictionary = {}
 var raid: Dictionary = {}
 var expedition = preload("res://scripts/expedition.gd").new()
+var mini_bosses = preload("res://scripts/mini_bosses.gd").new()
+var wild_bosses = preload("res://scripts/wild_bosses.gd").new()
+var dragon_boss = preload("res://scripts/dragon_boss.gd").new()
 
-const SEARCH_SECONDS := 1.2
+const SEARCH_SECONDS_BY_TIER := [0.55,0.8,1.1,1.45,1.9,2.4]
 const SEARCH_RANGE := 86.0
 
 func _ready() -> void:
@@ -434,20 +437,14 @@ func backpack_label(p: Dictionary) -> String:
 # the trip home.
 func store_loot(p: Dictionary, kind: String, provision: bool = false, key: String = "", meta: Dictionary = {}) -> bool:
 	var order: Array = ["pocket","backpack"] if Catalog.prefers_pocket(kind) else ["backpack","pocket"]
+	var entry: Dictionary={"kind":kind,"rot":false,"count":1,"provision":provision}
+	if kind=="backpack":
+		entry["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
+	for field in meta:
+		entry[field]=meta[field]
 	for name in order:
-		var container: Dictionary=p[name]
-		if not Catalog.can_hold(container,kind):
-			continue
-		if not Catalog.add_item(container,kind):
-			continue
-		var placed: Dictionary=container.items.back()
-		placed["provision"]=provision
-		if kind=="backpack":
-			# A loose backpack is stored as a 1x1 pack item carrying its quality.
-			placed["quality"]=key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY
-		for field in meta:
-			placed[field]=meta[field]
-		return true
+		if container_receive(p,name,entry):
+			return true
 	return false
 
 # The descriptive fields of a loot entry, used to keep weapons, gear and stacks
@@ -484,6 +481,8 @@ func ground_drop(at: Vector2, kind: String, key: String = "", provision: bool = 
 	for field in meta:
 		item[field]=meta[field]
 	container["searched"]=1
+	container["loose"]=true
+	container["dropped"]=true
 	# A dropped backpack names itself so it can be worn again.
 	if kind=="backpack":
 		container["key"]="bag:"+(key if Catalog.has_tier(key) else Catalog.DEFAULT_BAG_KEY)
@@ -513,9 +512,14 @@ func drop_item(p: Dictionary, slot: String, index: int, key: String = "", entry:
 		carried=list[index]
 	else:
 		carried=entry
+	carried=carried.duplicate()
+	carried["x"]=0
+	carried["y"]=0
 	var bag := loot_container(p.p+Vector2(25,20),Catalog.chest_grid(0))
 	bag.items.append(carried)
-	bag["searched"]=container_units(bag)
+	bag["loose"]=container_units(bag)==1
+	bag["searched"]=1 if bag.loose else 0
+	bag["dropped"]=true
 	# A backpack keeps its quality so whoever grabs it can wear it.
 	var bag_key := key
 	if bag_key.is_empty() and carried.kind=="backpack":
@@ -537,11 +541,13 @@ func spill_storage(p: Dictionary) -> void:
 	for container in carried_containers:
 		if Catalog.container_items(container).is_empty():
 			continue
-		var bag := loot_container(Vector2.ZERO,Catalog.chest_grid(0))
+		var bag := loot_container(Vector2.ZERO,Catalog.container_grid(container))
 		for item in Catalog.container_items(container):
 			bag.items.append(item.duplicate())
 		bag["key"]="bag:"+Catalog.bag_key(container)
-		bag["searched"]=container_units(bag)
+		bag["loose"]=container_units(bag)==1
+		bag["searched"]=1 if bag.loose else 0
+		bag["dropped"]=true
 		bag["p"]=p.p+Vector2(rng.randf_range(-42,42),rng.randf_range(-34,34))
 		world_drops.append(bag)
 		container.items.clear()
@@ -560,14 +566,18 @@ func spill_storage(p: Dictionary) -> void:
 			worn.append(entry)
 	p["slots"]=empty_item_slots()
 	if not worn.is_empty():
-		var kit := loot_container(p.p+Vector2(rng.randf_range(-30,30),rng.randf_range(-24,24)),Catalog.chest_grid(0))
+		var kit := loot_container(p.p+Vector2(rng.randf_range(-30,30),rng.randf_range(-24,24)),Vector2i(8,8))
 		for entry in worn:
 			var copy: Dictionary=entry.duplicate()
 			copy["x"]=0
 			copy["y"]=0
 			copy["rot"]=false
 			kit.items.append(copy)
-		kit["searched"]=container_units(kit)
+		Catalog.tidy(kit)
+		kit["loose"]=container_units(kit)==1
+		kit["searched"]=1 if kit.loose else 0
+		kit["dropped"]=true
+		kit["title"]="遗落装备"
 		world_drops.append(kit)
 	p["equipped"]=empty_equipment()
 	# The worn field weapon is on the ground now, so the temporary issue weapon is
@@ -602,6 +612,8 @@ func container_title(container: Dictionary) -> String:
 	var key := str(container.get("key","container"))
 	if key.begins_with("bag:"):
 		return Catalog.bag_quality({"key":key.substr(4)})+"背包"
+	if container.get("dropped",false):
+		return "掉落包" if container_units(container)>1 else "地面物品"
 	return "深处教堂物资箱" if int(container.get("class",1))>=2 else "物资箱"
 
 func container_is_bag(container: Dictionary) -> bool:
@@ -617,7 +629,8 @@ func begin_search(p: Dictionary, index: int) -> void:
 		for entry in chest_loot(bool(container.get("bonus",false)),0.3,loot_floor()):
 			place_entry(container,entry)
 	container["open"]=true
-	p["search"]=0.0
+	if search_reference(p)!=index:
+		p["search"]=0.0
 	p["search_ref"]=index
 
 func search_reference(p: Dictionary) -> int:
@@ -635,29 +648,67 @@ func advance_search(p: Dictionary, dt: float) -> void:
 	if p.p.distance_to(container.p)>SEARCH_RANGE:
 		return
 	p["search"]=float(p.get("search",0.0))+dt
-	while float(p["search"])>=SEARCH_SECONDS and not container_searched(container):
-		p["search"]=float(p["search"])-SEARCH_SECONDS
+	while not container_searched(container):
+		var next: Dictionary=next_search_item(container)
+		if next.is_empty():
+			break
+		var duration := search_seconds(next)
+		if float(p["search"])<duration:
+			break
+		p["search"]=float(p["search"])-duration
 		container["searched"]=searched_units(container)+1
+		emit_effect("search-reveal-%d" % Catalog.item_tier(next),container.p)
+
+func next_search_item(container: Dictionary) -> Dictionary:
+	var remaining := searched_units(container)
+	for item in Catalog.container_items(container):
+		var units := int(item.get("count",1)) if Catalog.stacks(str(item.kind)) else 1
+		if remaining<units:
+			return item
+		remaining-=units
+	return {}
+
+func search_seconds(item: Dictionary) -> float:
+	return float(SEARCH_SECONDS_BY_TIER[Catalog.item_tier(item)])
 
 func search_target(p: Dictionary) -> int:
-	for i in world_drops.size():
-		if p.p.distance_to(world_drops[i].p)<70:
-			return ruins.chests.size()+i
+	var nearest := -1
+	var best := 80.0*80.0
 	for i in ruins.chests.size():
-		if p.p.distance_to(ruins.chests[i].p)<80:
-			return i
-	return -1
+		var distance: float=p.p.distance_squared_to(ruins.chests[i].p)
+		if distance<best:
+			best=distance
+			nearest=i
+	return nearest
+
+func search_dropped_target(p: Dictionary) -> int:
+	var nearest := -1
+	var best := 70.0*70.0
+	for i in world_drops.size():
+		var drop: Dictionary=world_drops[i]
+		if container_units(drop)<=1:
+			continue
+		var distance: float=p.p.distance_squared_to(drop.p)
+		if distance<best:
+			best=distance
+			nearest=ruins.chests.size()+i
+	return nearest
 
 # F on loose ground loot: instant pickup, no search window needed.
 func pick_up_ground(p: Dictionary) -> bool:
+	var nearby: Array[int]=[]
 	for i in world_drops.size():
 		var bag: Dictionary=world_drops[i]
-		if bag.items.is_empty() or bag.p.distance_to(p.p)>=70:
+		if container_units(bag)!=1 or bag.p.distance_to(p.p)>=70:
 			continue
+		nearby.append(i)
+	nearby.sort_custom(func(a: int,b: int) -> bool: return world_drops[a].p.distance_squared_to(p.p)<world_drops[b].p.distance_squared_to(p.p))
+	for i in nearby:
+		var bag: Dictionary=world_drops[i]
 		var item: Dictionary=bag.items[0]
 		var key := str(item.get("quality",Catalog.bag_key({"key":str(bag.get("key","")).substr(4)})))
 		if not store_loot(p,str(item.kind),bool(item.get("provision",false)),key,loot_meta(item)):
-			return false
+			continue
 		bag.items.remove_at(0)
 		bag["searched"]=container_units(bag)
 		if bag.items.is_empty():
@@ -687,8 +738,28 @@ func take_loot(p: Dictionary, container_index: int, slot: int) -> bool:
 		moved+=1
 	if moved<=0:
 		return false
-	remove_units(container,kind,moved)
+	remove_units(container,slot,moved)
 	emit_effect("loot",p.p)
+	return true
+
+func drop_searched_loot(p: Dictionary, index: int) -> bool:
+	var container := container_at(search_reference(p))
+	if container.is_empty():
+		return false
+	var visible := visible_items(container)
+	if index<0 or index>=visible.size():
+		return false
+	var entry: Dictionary=visible[index]
+	if not drop_item(p,"backpack",-1,"",entry):
+		return false
+	remove_units(container,index,int(entry.get("count",1)))
+	return true
+
+func drop_item_slot(p: Dictionary, index: int) -> bool:
+	var entry := item_slot(p,index)
+	if entry.is_empty() or not drop_item(p,"backpack",-1,"",entry):
+		return false
+	set_item_slot(p,index,{})
 	return true
 
 # The double click in the search window: one item, worked into the player's own
@@ -734,14 +805,14 @@ func auto_store(p: Dictionary, index: int) -> bool:
 	var order := ["pocket","backpack"] if evict else ["backpack","pocket"]
 	for name in order:
 		if store_into(p,name,entry,evict):
-			remove_units(container,kind,units)
+			remove_units(container,index,units)
 			emit_effect("loot",p.p)
 			return true
 	# The backpack is the last resort for high quality loot that the pocket could
 	# not house, and the pocket for ordinary loot the backpack could not.
 	var other := "backpack" if order[0]=="pocket" else "pocket"
 	if store_into(p,other,entry,evict):
-		remove_units(container,kind,units)
+		remove_units(container,index,units)
 		emit_effect("loot",p.p)
 		return true
 	return false
@@ -763,6 +834,7 @@ func store_into(p: Dictionary, name: String, entry: Dictionary, may_evict: bool 
 	items.append(plan.seat)
 	target["items"]=items
 	target["next"]=maxi(int(target.get("next",1)),1)+1
+	Catalog.compact_arrivals(target)
 	return true
 
 # Making room by hand. A container that is packed solid cannot be tidied into
@@ -780,18 +852,18 @@ func demote(p: Dictionary, name: String, entry: Dictionary) -> bool:
 	var container: Dictionary=p.get(name,{})
 	if container.is_empty():
 		return false
-	var haul: Array=Catalog.container_items(container).duplicate()
+	var haul: Array=Catalog.container_items(container).duplicate(true)
 	var bag: Dictionary=p.get("backpack",{})
-	var bag_before: Array=Catalog.container_items(bag).duplicate()
+	var bag_before: Array=Catalog.container_items(bag).duplicate(true)
 	# The layout is worked out on a hypothetical copy, so the container itself is
 	# only touched once an arrangement is known to hold and every item it displaced
 	# has somewhere to go. Opening a 2x2 hole can take several departures, so the
 	# hypothetical haul keeps what earlier steps already gave up and the arrival is
 	# retried after each one.
-	var left: Array=haul.duplicate()
+	var left: Array=haul.duplicate(true)
 	var taken: Array = []
 	for candidate in Catalog.eviction_order(container,entry):
-		var cut: Dictionary=take_from(left,str(candidate.kind))
+		var cut: Dictionary=take_from(left,candidate)
 		if cut.is_empty():
 			continue
 		taken.append(cut)
@@ -802,22 +874,27 @@ func demote(p: Dictionary, name: String, entry: Dictionary) -> bool:
 			continue
 		if not demote_park(p,taken):
 			break
-		# The trial already holds the hauled items in their new cells; the arriving
-		# item itself is the seat the plan handed back, so it is appended here.
+		# Apply the trial's packed layout before inserting the arrival; otherwise
+		# the new seat can overlap an item still at its old coordinates.
 		var seated: Array=Catalog.container_items(trial)
+		if not plan.items.is_empty():
+			Catalog.commit_layout(seated,plan.items)
 		seated.append(plan.seat)
 		container["items"]=seated
+		Catalog.compact_arrivals(container)
 		return true
 	container["items"]=haul
 	Catalog.restore_layout(bag,bag_before)
 	return false
 
-# Lifts one unit of the named kind out of a haul copy, for a layout trial.
-func take_from(left: Array, kind: String) -> Dictionary:
+# Lifts the lowest-quality matching unit chosen by eviction_order, rather than
+# another weapon or pack of the same kind that happens to appear first.
+func take_from(left: Array, candidate: Dictionary) -> Dictionary:
 	for i in left.size():
-		if str(left[i].kind)!=kind:
-			continue
 		var victim: Dictionary=left[i]
+		var kind := str(victim.kind)
+		if kind!=str(candidate.kind) or Catalog.item_tier(victim)!=int(candidate.tier) or Catalog.item_value(victim)!=int(candidate.value):
+			continue
 		var move: Dictionary=victim.duplicate()
 		if int(victim.get("count",1))>1 and Catalog.stacks(kind):
 			victim["count"]=int(victim.get("count",1))-1
@@ -832,7 +909,7 @@ func take_from(left: Array, kind: String) -> Dictionary:
 # that is abandoned never cost the player an item.
 func demote_park(p: Dictionary, moves: Array) -> bool:
 	var bag: Dictionary=p.get("backpack",{})
-	var bag_before: Array=Catalog.container_items(bag).duplicate()
+	var bag_before: Array=Catalog.container_items(bag).duplicate(true)
 	for move in moves:
 		if not demote_move(p,move):
 			Catalog.restore_layout(bag,bag_before)
@@ -870,23 +947,23 @@ func demote_move(p: Dictionary, move: Dictionary) -> bool:
 			items.append(plan.seat)
 			bag["items"]=items
 			bag["next"]=maxi(int(bag.get("next",1)),1)+1
+			Catalog.compact_arrivals(bag)
 			return true
 	# Nowhere to put it but the ground.
 	if str(move.kind)=="backpack":
 		return drop_item(p,"backpack",-1,str(move.get("quality",Catalog.DEFAULT_BAG_KEY)),move)
 	return drop_item(p,"backpack",-1,"",move)
 
-func remove_units(container: Dictionary, kind: String, units: int) -> void:
+func remove_units(container: Dictionary, index: int, units: int) -> void:
 	var list: Array=Catalog.container_items(container)
-	for i in list.size():
-		if str(list[i].kind)!=kind:
-			continue
-		var have := int(list[i].get("count",1)) if Catalog.stacks(kind) else 1
-		if have>units:
-			list[i]["count"]=have-units
-		else:
-			list.remove_at(i)
-		break
+	if index<0 or index>=list.size():
+		return
+	var kind := str(list[index].kind)
+	var have := int(list[index].get("count",1)) if Catalog.stacks(kind) else 1
+	if have>units:
+		list[index]["count"]=have-units
+	else:
+		list.remove_at(index)
 	container["searched"]=searched_units(container)-units
 	Catalog.tidy(container)
 
@@ -907,7 +984,7 @@ func chest_loot(bonus_relic: bool = false, backpack_chance: float = 0.3, floor_i
 	if rng.randf()<0.24:
 		loot.append(Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(floor_index)))
 	if rng.randf()<0.16:
-		loot.append(Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(floor_index)))
+		loot.append(Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),roll_quality(floor_index)))
 	return loot
 
 # The single place that turns a loot-table entry into an item in a container.
@@ -973,7 +1050,7 @@ func enemy_loot(e: Dictionary) -> Dictionary:
 		# The blood-scented hunter always leaves its pack behind, and often the
 		# weapon it was carrying.
 		if rng.randf()<0.45:
-			entry=Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(maxi(1,floor_index)))
+			entry=Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),roll_quality(maxi(1,floor_index)))
 		else:
 			entry["kind"]="backpack"
 			entry["key"]=backpack_drop(maxi(1,floor_index))
@@ -985,7 +1062,7 @@ func enemy_loot(e: Dictionary) -> Dictionary:
 			weapon_chance=0.40
 			gear_chance=0.35
 		if roll<weapon_chance:
-			entry=Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),roll_quality(floor_index))
+			entry=Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),roll_quality(floor_index))
 		elif roll<weapon_chance+gear_chance:
 			entry=Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),roll_quality(floor_index))
 		elif roll<weapon_chance+gear_chance+0.35:
@@ -1303,6 +1380,8 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			# The way back out: the socket's item returns to the backpack, or to
 			# the pocket when the bag has no room for it.
 			slot_take(p,int(payload.get("slot",0)))
+		"slot_drop":
+			drop_item_slot(p,int(payload.get("slot",0)))
 		"slot_apply":
 			# The item bar's one key: spend a supply, or swap a weapon, a piece of
 			# gear or a backpack with what the Watcher is using right now.
@@ -1310,10 +1389,11 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		"search":
 			begin_search(p,int(payload.get("index",-1)))
 		"pickup":
-			if not pick_up_ground(p):
-				message.emit("背包空间不足，无法拾取。")
+			pick_up_ground(p)
 		"loot_take":
 			take_loot(p,str(payload.get("ref","")).to_int(),int(payload.get("index",-1)))
+		"loot_drop":
+			drop_searched_loot(p,int(payload.get("index",-1)))
 		"auto_store":
 			# The silent twin of loot_take: a refusal says nothing at all.
 			auto_store(p,int(payload.get("index",-1)))
@@ -1349,7 +1429,6 @@ func bag_key_of(p: Dictionary, slot: String, index: int) -> String:
 
 # One entry point for every drag: container to container, container to ground.
 func move_between(p: Dictionary, from: String, to: String, index: int, spot: Vector2i, rot: bool) -> bool:
-	var to_index := to.substr(5).to_int() if to.begins_with("loot:") else -1
 	if to=="world":
 		return drop_item(p,from,index,bag_key_of(p,from,index))
 	if to.begins_with("loot:"):
@@ -1361,14 +1440,19 @@ func move_between(p: Dictionary, from: String, to: String, index: int, spot: Vec
 		if index<0 or index>=list.size():
 			return false
 		var kind := str(list[index].kind)
-		if int(list[index].get("count",1))>1 and Catalog.stacks(kind):
-			# Whole stacks travel together, one unit at a time, so a container that
-			# only has room for part of the pile takes exactly that part.
+		if Catalog.stacks(kind):
+			# Keep the chest's stack cap and allow a partial handoff when only a
+			# partly filled stack can accept this pile.
 			var units := int(list[index].get("count",1))
 			var moved := 0
 			for i in units:
+				var before_size: int=target.items.size()
 				if not Catalog.place_loot(target,kind):
 					break
+				if target.items.size()>before_size:
+					# A fresh returned stack belongs at the revealed front of a
+					# partly searched chest, ahead of its still hidden contents.
+					target.items.push_front(target.items.pop_back())
 				moved+=1
 			if moved<=0:
 				return false
@@ -1376,29 +1460,20 @@ func move_between(p: Dictionary, from: String, to: String, index: int, spot: Vec
 				list.remove_at(index)
 			else:
 				list[index]["count"]=units-moved
+			target["searched"]=searched_units(target)+moved
 			return true
 		var probe: Dictionary=list[index].duplicate()
 		probe["rot"]=rot
-		if not Catalog.can_place(target.items,probe,spot,-1,container_grid(target)):
-			# Fall back to the first free cell so a drag anywhere still lands.
-			probe["rot"]=false
-			var placed := false
-			for y in container_grid(target).y:
-				for x in container_grid(target).x:
-					if Catalog.can_place(target.items,probe,Vector2i(x,y),-1,container_grid(target)):
-						spot=Vector2i(x,y)
-						placed=true
-						break
-				if placed:
-					break
-			if not placed:
-				return false
-		probe["x"]=spot.x
-		probe["y"]=spot.y
-		if visible_units(target)<=0:
-			target["searched"]=searched_units(target)+1
+		var plan := Catalog.place_arrival(target,probe)
+		if not bool(plan.ok):
+			return false
+		if not plan.items.is_empty():
+			Catalog.commit_layout(target.items,plan.items)
+		# A returned item stays visible even while the rest of the chest is still
+		# sealed, without revealing any of those hidden items for free.
+		target.items.insert(0,plan.seat)
+		target["searched"]=searched_units(target)+(int(probe.get("count",1)) if Catalog.stacks(str(probe.kind)) else 1)
 		list.remove_at(index)
-		target.items.append(probe)
 		return true
 	if to!="backpack" and to!="pocket":
 		return false
@@ -1425,6 +1500,7 @@ func move_between(p: Dictionary, from: String, to: String, index: int, spot: Vec
 	else:
 		from_list.remove_at(index)
 		dest.items.append(entry)
+		Catalog.compact_arrivals(dest)
 	return true
 
 # Where an item actually lands when dropped at a cell. The cursor is only a
@@ -1719,6 +1795,7 @@ func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
 	items.append(plan.seat)
 	container["items"]=items
 	container["next"]=maxi(int(container.get("next",1)),1)+1
+	Catalog.compact_arrivals(container)
 	return true
 
 # Equipping is the point of the field equipment: the weapon in hand changes at
@@ -1868,6 +1945,7 @@ func stow_worn(p: Dictionary, item: Dictionary) -> bool:
 		items.append(plan.seat)
 		container["items"]=items
 		container["next"]=maxi(int(container.get("next",1)),1)+1
+		Catalog.compact_arrivals(container)
 		return true
 	return false
 
@@ -1898,16 +1976,8 @@ func gear_slots(equipped: Dictionary) -> Array:
 func stow_equipment(p: Dictionary, item: Dictionary, prefer: String = "backpack") -> bool:
 	var order: Array = ["backpack","pocket"] if prefer!="pocket" else ["pocket","backpack"]
 	for slot in order:
-		var container: Dictionary=p[slot]
-		if not Catalog.can_hold(container,str(item.kind)):
-			continue
-		if not Catalog.add_item(container,str(item.kind)):
-			continue
-		var placed: Dictionary=container.items.back()
-		for field in Catalog.SAVED_ITEM_KEYS:
-			if item.has(field):
-				placed[field]=item[field]
-		return true
+		if container_receive(p,slot,item):
+			return true
 	var bag := loot_container(p.p+Vector2(28,18),Catalog.chest_grid(0))
 	var copy: Dictionary=item.duplicate()
 	copy["x"]=0
@@ -2071,13 +2141,16 @@ func simulate(dt: float) -> void:
 	for i in range(enemies.size()-1,-1,-1):
 		var e: Dictionary=enemies[i]
 		if e.hp<=0:
-			if e.get("raid_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
+			if e.get("raid_boss",false) or e.get("mini_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
 			resolve_site_defeat(e)
+			if e.get("dragon_boss",false): dragon_boss.defeated(self,e)
+			elif e.get("wild_boss",false): wild_bosses.defeated(self,e)
+			elif e.get("mini_boss",false): mini_bosses.defeated(self,e)
 			if players.has(e.last):
 				players[e.last].kills+=1
 			if e.get("raid_boss",false):
 				defeated_boss=true
-			elif e.type==4:
+			elif e.type==4 and not e.get("mini_boss",false):
 				if map_id=="city": ruins.sites[0]["boss_defeated"]=true
 			elif rng.randf()<Ecology.drop_chance(e):
 				var loot := enemy_loot(e)
@@ -2086,13 +2159,15 @@ func simulate(dt: float) -> void:
 				else:
 					world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 			emit_effect("hit",e.p)
-			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1)})
+			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"id":e.id})
 			enemies.remove_at(i)
 	if map_id=="city" and ruins.sites[0].get("boss_defeated",false) and not ruins.sites[0].get("cleared",false) and enemies.is_empty():
 		ruins.sites[0]["cleared"]=true
 		knight_reward(RoyalCity.BOSS)
 	if defeated_boss:
-		expedition.victory(self)
+		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
+		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("wild_seals",{}).size()==2: wild_bosses.spawn_final(self)
+		else: expedition.victory(self)
 	var alive := false
 	for p in players.values():
 		if p.status in ["active","down"]:
@@ -2177,7 +2252,7 @@ func attack(p: Dictionary) -> void:
 	p.pending_strike=true
 	# Every consumer of a combat event wants the four-way art/effect family, not
 	# the index of the exact weapon; a hero issue weapon borrows its family's.
-	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":family,"id":p.id,"combo":p.combo})
+	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":family,"spell":str(weapon.get("spell","star")),"windup":float(weapon.windup),"id":p.id,"combo":p.combo})
 	if weapon.windup==0:
 		p.pending_strike=false
 		release_strike(p)
@@ -2189,17 +2264,40 @@ func release_strike(p: Dictionary) -> void:
 	var damage: float=w.damage*(1+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
 	if family==1 and p.combo==2:
 		damage*=1.4
-	broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"id":p.id,"combo":p.combo})
+	var spell := str(w.get("spell","star"))
+	var pattern := str(w.get("pattern",""))
+	broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"spell":spell,"pattern":pattern,"reach":float(w.reach),"id":p.id,"combo":p.combo})
 	if family in [1,2]:
 		for e in enemies:
 			var v: Vector2=e.p-p.p
-			if e.hp>0 and v.length()<w.reach and v.normalized().dot(direction)>-0.1 and ruins.clear_line(p.p,e.p):
-				damage_enemy(e,damage,p.id,direction,w.knock,family)
+			if e.hp<=0 or v.length()>=w.reach or not ruins.clear_line(p.p,e.p):
+				continue
+			var facing: float=v.normalized().dot(direction)
+			var hits := facing>-0.1
+			match pattern:
+				"thrust": hits=v.dot(direction)>0 and absf(v.cross(direction))<26
+				"spin", "quake": hits=true
+				"cleave": hits=facing>-0.35
+			if hits:
+				damage_enemy(e,damage,p.id,v.normalized() if pattern in ["spin","quake"] else direction,w.knock,family)
 	else:
 		if family==0:
 			p.ammo-=1
-			emit_effect("shot",p.p)
-		bullets.append({"p":p.p+direction*23,"v":direction*(850 if family==0 else 620),"life":1.1,"damage":damage,"owner":p.id,"weapon":family})
+			if spell!="arrow":
+				emit_effect("shot",p.p)
+		if spell=="prism":
+			# The beam is settled by the host at release, using the same line of
+			# sight rule as melee, then its full path is drawn on every client.
+			for e in enemies:
+				var delta: Vector2=e.p-p.p
+				if e.hp>0 and delta.dot(direction)>0 and delta.dot(direction)<w.reach and absf(delta.cross(direction))<30 and ruins.clear_line(p.p,e.p):
+					damage_enemy(e,damage,p.id,direction,w.knock,3)
+			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell})
+		else:
+			var count := 5 if spell=="scatter" else 1
+			for shot in count:
+				var shot_dir: Vector2=direction.rotated((float(shot)-2.0)*0.15) if count==5 else direction
+				bullets.append({"p":p.p+shot_dir*23,"v":shot_dir*float(w.get("speed",850.0 if family==0 else 620.0)),"life":float(w.reach)/float(w.get("speed",850.0 if family==0 else 620.0)),"damage":damage,"owner":p.id,"weapon":family,"spell":spell,"knock":float(w.knock),"remaining":5 if spell=="eclipse" else 4 if spell=="moon" else 2 if spell=="arrow" else 1,"hit_ids":[]})
 
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
 	var block := int(e.get("habitat",-1))
@@ -2309,7 +2407,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			travel_city()
 		"exit":
 			p.status="extracted"
-			emit_effect("bell",p.p)
+			emit_effect("extract",p.p)
 		"revive":
 			players[index].status="active"
 			players[index].hp=players[index].max_hp*0.4
@@ -2445,7 +2543,7 @@ func resolve_site_defeat(e: Dictionary) -> void:
 	chest.merge({"fixed_loot":true,"site_reward":block,"reward_tier":quality,"title":str(site.name)+" · "+Ecology.reward_label(site)})
 	# Guaranteed equipment matches the site's danger, independent of the first
 	# player's backpack. Place the valuable items before optional supplies.
-	place_entry(chest,Catalog.make_equipment("weapon",rng.randi_range(0,Catalog.WEAPONS.size()-1),quality))
+	place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(rng),quality))
 	place_entry(chest,Catalog.make_equipment("gear",rng.randi_range(0,Catalog.GEAR.size()-1),quality))
 	place_entry(chest,{"kind":"backpack","key":Catalog.BAG_TIERS[quality].key})
 	for i in quality-1: place_entry(chest,"relic")
@@ -2467,7 +2565,13 @@ func update_enemies(dt: float) -> void:
 		if e.hp<=0:
 			continue
 		if e.get("raid_boss",false):
-			expedition.update_boss(self,e,dt)
+			if e.get("wild_boss",false): wild_bosses.update(self,e,dt)
+			else: expedition.update_boss(self,e,dt)
+			continue
+		if e.get("mini_boss",false):
+			if e.get("dragon_boss",false): dragon_boss.update(self,e,dt)
+			elif e.get("wild_boss",false): wild_bosses.update(self,e,dt)
+			else: mini_bosses.update(self,e,dt)
 			continue
 		if e.type>=5:
 			Ecology.update(self,e,dt)
@@ -2552,6 +2656,7 @@ func update_bullets(dt: float) -> void:
 	for i in range(bullets.size()-1,-1,-1):
 		var b: Dictionary=bullets[i]
 		var old: Vector2=b.p
+		var spell := str(b.get("spell","star"))
 		if b.has("return_after"):
 			b.age+=dt
 			if not b.reversed and b.age>=b.return_after:
@@ -2559,7 +2664,8 @@ func update_bullets(dt: float) -> void:
 				b.reversed=true
 		b.p+=b.v*dt
 		b.life-=dt
-		if not ruins.clear_line(old,b.p):
+		var wall_hit := not ruins.clear_line(old,b.p)
+		if wall_hit:
 			b.life=0
 		if b.life>0:
 			if b.owner==0:
@@ -2570,12 +2676,57 @@ func update_bullets(dt: float) -> void:
 						break
 			else:
 				for e in enemies:
-					if Geometry2D.get_closest_point_to_segment(e.p,old,b.p).distance_to(e.p)<Ecology.RADIUS[e.type]:
-						damage_enemy(e,b.damage,b.owner,b.v.normalized(),16.0,int(b.get("weapon",0)))
-						b.life=0
-						break
+					if e.hp<=0 or (e.id in b.get("hit_ids",[])):
+						continue
+					var radius := float(Ecology.RADIUS[e.type])+(18.0 if spell in ["moon","eclipse"] else 0.0)
+					if Geometry2D.get_closest_point_to_segment(e.p,old,b.p).distance_to(e.p)<radius:
+						if spell in ["meteor","vortex"]:
+							spell_burst(b,e.p)
+						else:
+							damage_enemy(e,b.damage,b.owner,b.v.normalized(),float(b.get("knock",16.0)),int(b.get("weapon",0)))
+							if spell=="chain":
+								spell_chain(b,e)
+						b.hit_ids.append(e.id)
+						b.remaining=int(b.get("remaining",1))-1
+						if b.remaining<=0 or spell in ["meteor","vortex"]:
+							b.life=0
+							break
 		if b.life<=0:
+			if spell in ["meteor","vortex"] and b.get("hit_ids",[]).is_empty():
+				spell_burst(b,old if wall_hit else b.p)
 			bullets.remove_at(i)
+
+func spell_burst(b: Dictionary, at: Vector2) -> void:
+	var spell := str(b.get("spell",""))
+	var radius := 115.0 if spell=="meteor" else 135.0
+	var direction: Vector2=b.v.normalized()
+	for e in enemies:
+		if e.hp<=0 or e.p.distance_to(at)>radius or not ruins.clear_line(at,e.p):
+			continue
+		var pull: Vector2=(at-e.p).normalized()
+		damage_enemy(e,float(b.damage)*(1.0-e.p.distance_to(at)/radius*0.35),int(b.owner),direction,float(b.get("knock",0.0)) if spell=="meteor" else 0.0,3)
+		if spell=="vortex" and e.hp>0:
+			e.p=ruins.move(e.p,pull*42.0)
+	broadcast_combat({"kind":"spell_burst","p":at,"spell":spell})
+
+func spell_chain(b: Dictionary, first: Dictionary) -> void:
+	var visited: Array=[first.id]
+	var from: Dictionary=first
+	for hop in 3:
+		var nearest: Dictionary={}
+		var best := 175.0
+		for e in enemies:
+			var distance: float=e.p.distance_to(from.p)
+			if e.hp>0 and not (e.id in visited) and distance<best and ruins.clear_line(from.p,e.p):
+				nearest=e
+				best=distance
+		if nearest.is_empty():
+			break
+		broadcast_combat({"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain"})
+		var direction: Vector2=(nearest.p-from.p).normalized()
+		damage_enemy(nearest,float(b.damage)*pow(0.68,hop+1),int(b.owner),direction,8.0,3)
+		visited.append(nearest.id)
+		from=nearest
 
 func emit_effect(kind: String, pos: Vector2) -> void:
 	effect.emit(kind,pos)

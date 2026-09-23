@@ -7,12 +7,19 @@ func check(ok: bool, text: String) -> void:
 func _initialize() -> void:
 	var art := BossFrames.new()
 	for kind in 3:
-		check(art.sheets[kind].get_size()==Vector2(2048,1536),"Dedicated atlas dimensions")
+		check(art.sheets[kind].get_size()==Vector2(3840,2160),"Dedicated 4K atlas dimensions")
 		check(art.portraits[kind]!=null and art.headers[kind]!=null,"Portrait and generated header loaded")
 		var im := art.sheets[kind].get_image()
 		for frame in 12:
 			var region := im.get_region(Rect2i(BossFrames.region(frame)))
 			check(region.get_used_rect().size.x>40,"Every animation frame contains artwork")
+	for kind in BossFrames.SPECIAL_KEYS.size():
+		var sheet := art.special_sheet(kind)
+		check(sheet.get_size()==Vector2(3840,2160),"Special boss has 4K atlas")
+		var im := sheet.get_image()
+		for frame in 12:
+			var region := im.get_region(Rect2i(BossFrames.region(frame)))
+			check(region.get_used_rect().size.x>40,"Special boss animation frame contains artwork")
 	var e := {"hp":100,"id":1,"windup":1.15,"attack_total":2.1,"attack_time":2.1}
 	for sample in [[2.1,4],[1.5,5],[0.9,6],[0.4,7]]:
 		e.attack_time=sample[0]

@@ -18,17 +18,30 @@ const ITEMS = {
 	"gear":{"name":"装备", "size":Vector2i(1,2), "value":55, "color":Color("8fb6d8"), "desc":"护甲 / 瞄具 / 轻靴。装备到对应槽位后本局提升生命、火力或移速。阵亡会掉落。"}
 }
 const TALENTS = ["生命强化", "火力校准", "轻装步伐"]
-# The four weapons that exist in the world. They are loot and nothing else: a
+# Field weapons are loot and nothing else: a
 # Watcher can only ever hold one of them by finding it and putting it on, so the
 # index below is also the index a looted weapon stores in its "weapon" field.
 const WEAPONS = [
 	{"name":"守夜步枪", "rate":0.23, "windup":0.0, "damage":23.0, "reach":680.0, "knock":9.0},
 	{"name":"绯红单手剑", "rate":0.38, "windup":0.10, "damage":38.0, "reach":112.0, "knock":20.0},
 	{"name":"破晓双手剑", "rate":0.88, "windup":0.34, "damage":88.0, "reach":158.0, "knock":58.0},
-	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":46.0, "reach":700.0, "knock":16.0}
+	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":46.0, "reach":700.0, "knock":16.0},
+	{"name":"赤陨法杖", "family":3, "spell":"meteor", "desc":"陨石命中后爆炸，波及附近敌人。", "rate":1.38, "windup":0.72, "damage":145.0, "reach":650.0, "knock":48.0, "speed":430.0},
+	{"name":"霜针短杖", "family":3, "spell":"needle", "desc":"短吟唱高速连射冰针，单发伤害低。", "rate":0.20, "windup":0.045, "damage":14.0, "reach":690.0, "knock":5.0, "speed":1050.0},
+	{"name":"鸣雷之杖", "family":3, "spell":"chain", "desc":"雷击命中后向最多三名附近敌人跳跃。", "rate":0.68, "windup":0.27, "damage":53.0, "reach":660.0, "knock":16.0, "speed":700.0},
+	{"name":"月弧法杖", "family":3, "spell":"moon", "desc":"月刃穿过最多四名敌人。", "rate":0.76, "windup":0.30, "damage":39.0, "reach":720.0, "knock":12.0, "speed":700.0},
+	{"name":"曦光棱镜杖", "family":3, "spell":"prism", "desc":"释放瞬间贯穿直线上的所有敌人。", "rate":0.96, "windup":0.45, "damage":79.0, "reach":640.0, "knock":25.0},
+	{"name":"烬羽散华杖", "family":3, "spell":"scatter", "desc":"一次射出五枚扇形火羽，近距可集中命中。", "rate":0.55, "windup":0.16, "damage":21.0, "reach":550.0, "knock":8.0, "speed":670.0},
+	{"name":"虚涡法杖", "family":3, "spell":"vortex", "desc":"制造范围爆发，并将附近敌人卷向中心。", "rate":1.08, "windup":0.46, "damage":68.0, "reach":570.0, "knock":0.0, "speed":390.0},
+	{"name":"蚀月长枪杖", "family":3, "spell":"eclipse", "desc":"漫长蓄力后发射贯穿最多五名敌人的重型魔枪。", "rate":1.58, "windup":0.95, "damage":210.0, "reach":850.0, "knock":65.0, "speed":920.0},
+	{"name":"鸦喙刺剑", "family":1, "pattern":"thrust", "desc":"狭长突刺，贯穿前方一线敌人。", "rate":0.42, "windup":0.13, "damage":51.0, "reach":174.0, "knock":24.0},
+	{"name":"回环弯刀", "family":1, "pattern":"spin", "desc":"旋身环斩，命中身边所有敌人。", "rate":0.64, "windup":0.23, "damage":42.0, "reach":118.0, "knock":20.0},
+	{"name":"断潮巨刃", "family":2, "pattern":"cleave", "desc":"向前横扫宽阔扇面，击退敌群。", "rate":1.02, "windup":0.39, "damage":105.0, "reach":192.0, "knock":72.0},
+	{"name":"裂地重剑", "family":2, "pattern":"quake", "desc":"蓄力砸地，震伤周身敌人。", "rate":1.24, "windup":0.56, "damage":122.0, "reach":140.0, "knock":85.0},
+	{"name":"暮羽长弓", "family":0, "spell":"arrow", "desc":"拉弓射出贯穿两名敌人的箭矢；消耗弹药。", "rate":0.56, "windup":0.18, "damage":58.0, "reach":820.0, "knock":24.0, "speed":1050.0}
 ]
 # The temporary weapon every hero sets out with, one per hero, appended after the
-# four field weapons so the whole game keeps addressing a weapon by a single int.
+# field weapons so the whole game keeps addressing a weapon by a single int.
 # They exist so a Watcher can fight on the way to their first pickup and nothing
 # more: each one is strictly weaker than the field weapon it imitates, it can
 # never be found, never drops and never takes a quality bonus. "family" names the
@@ -37,7 +50,7 @@ const WEAPONS = [
 # STARTER_BASE is the first issue index. GDScript will not fold WEAPONS.size()
 # into a constant, so this literal has to track the table above; tests/systems.gd
 # asserts the two stay equal.
-const STARTER_BASE := 4
+const STARTER_BASE := 17
 const STARTER_WEAPONS = [
 	{"name":"黑铁短剑", "rate":0.30, "windup":0.05, "damage":13.0, "reach":84.0, "knock":10.0, "family":1},
 	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":15.0, "reach":520.0, "knock":8.0, "family":3},
@@ -57,7 +70,7 @@ const WEAPON_RATE_BONUS := [0.0,0.05,0.10,0.15,0.21,0.28]
 const GEAR_HP := [12.0,20.0,30.0,42.0,58.0,78.0]
 const GEAR_DAMAGE := [0.05,0.08,0.12,0.17,0.23,0.30]
 const GEAR_SPEED := [8.0,13.0,19.0,26.0,35.0,46.0]
-const WEAPON_ICONS := ["rifle","sword","heavy","staff"]
+const WEAPON_ICONS := ["rifle","sword","heavy","staff","staff_meteor","staff_needle","staff_chain","staff_moon","staff_prism","staff_scatter","staff_vortex","staff_eclipse","sword_thrust","sword_spin","heavy_cleave","heavy_quake","bow"]
 const GEAR_ICONS := ["armor","sight","boots"]
 # Keys that must survive a JSON save round trip. Items other than the six loot
 # kinds stay inert; without this list a reload would drop stack counts, backpack
@@ -111,7 +124,7 @@ static func bag_color(bag: Dictionary) -> Color:
 	return tier(bag_key(bag)).color
 
 # --- the weapon in hand ------------------------------------------------------
-# One int addresses every weapon a player can hold: 0..3 are the field weapons a
+# One int addresses every weapon a player can hold: 0..STARTER_BASE-1 are field weapons a
 # raid can hand out, STARTER_BASE.. are the three temporary issue weapons. Every
 # combat, animation and audio consumer reads stats through weapon() and reads the
 # four-way art/effect family through weapon_family(), so a hero issue weapon
@@ -132,8 +145,17 @@ static func weapon_name(index: int) -> String:
 
 static func weapon_family(index: int) -> int:
 	if is_starter(index):
-		return clampi(int(weapon(index).family),0,WEAPONS.size()-1)
-	return clampi(index,0,WEAPONS.size()-1)
+		return clampi(int(weapon(index).family),0,3)
+	return int(weapon(index).get("family",clampi(index,0,3)))
+
+static func roll_weapon(rng: RandomNumberGenerator) -> int:
+	var category := rng.randf()
+	var choices: Array[int] = []
+	for index in WEAPONS.size():
+		var family := weapon_family(index)
+		if (category<0.30 and family==1) or (category>=0.30 and category<0.60 and family==2) or (category>=0.60 and category<0.78 and family==0) or (category>=0.78 and family==3):
+			choices.append(index)
+	return choices[rng.randi_range(0,choices.size()-1)]
 
 # --- weapons and gear found in the field ------------------------------------
 # Quality index 0..5 follows BAG_TIERS. A looted weapon remembers which of the
@@ -208,7 +230,9 @@ static func item_short_name(item: Dictionary) -> String:
 static func item_desc(item: Dictionary) -> String:
 	var kind := str(item.get("kind",""))
 	if kind=="weapon":
-		return "装备后换用这把武器；持有时伤害 +%d%%、攻速 +%d%%。" % [int(round(weapon_bonus(item)*100.0)),int(round(weapon_rate_bonus(item)*100.0))]
+		var info: Dictionary=weapon(int(item.get("weapon",0)))
+		var rhythm := "前摇 %.2f 秒 · 周期 %.2f 秒 · 基础伤害 %d。" % [float(info.windup),float(info.rate),int(info.damage)]
+		return str(info.get("desc",""))+rhythm+"持有时伤害 +%d%%、攻速 +%d%%。" % [int(round(weapon_bonus(item)*100.0)),int(round(weapon_rate_bonus(item)*100.0))]
 	if kind=="gear":
 		return "装备到%s槽：本局%s。" % [gear_slot_name(item),gear_desc(item)]
 	return str(ITEMS.get(kind,{"desc":""}).desc)
@@ -678,6 +702,30 @@ static func commit_layout(items: Array, copies: Array) -> void:
 		items[i]["x"]=copies[i].x
 		items[i]["y"]=copies[i].y
 		items[i]["rot"]=copies[i].rot
+
+# Pack a player's container after an arrival. Keep item order and every item's
+# fields, and decline a layout that uses more rows than the current one. Manual
+# drags within a container remain where the player put them.
+static func compact_arrivals(container: Dictionary) -> void:
+	var items: Array=container_items(container)
+	if items.size()<2:
+		return
+	var grid := container_grid(container)
+	var packed := fill(items,grid)
+	if packed.size()==items.size() and (rows_used(packed)<rows_used(items) or occupied_score(packed,grid)<occupied_score(items,grid)):
+		commit_layout(items,packed)
+
+# Compare layouts by the cells their footprints occupy, so a fully packed first
+# row stays where the player can find it even if the greedy fill picks a new
+# order for equal-sized groups.
+static func occupied_score(items: Array, grid: Vector2i) -> int:
+	var score := 0
+	for item in items:
+		var size := item_size(item)
+		for cy in size.y:
+			for cx in size.x:
+				score+=int(item.y+cy)*grid.x+int(item.x+cx)
+	return score
 
 # How far down the grid the haul reaches. A refill that does not beat this has
 # left the haul spread out exactly as it was, which would only turn a tidy hole

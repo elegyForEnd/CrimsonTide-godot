@@ -14,6 +14,9 @@ var explored: Dictionary = {}
 var sentinels: Texture2D
 var smooth_positions: Dictionary = {}
 var ground: Texture2D
+var extraction_sigil: Texture2D = preload("res://assets/world/landmarks/extraction-sigil.png")
+var boss_sigil: Texture2D = preload("res://assets/world/landmarks/boss-sigil.png")
+var shrine_sigil: Texture2D = preload("res://assets/world/landmarks/shrine-sigil.png")
 var enemy_frames: EnemyFrames
 var boss_frames: BossFrames
 var boss_seen: Dictionary={}
@@ -50,7 +53,7 @@ func _ready() -> void:
 		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
 	# Field equipment resolves to its own weapon / slot icon, so preload those too.
 	for icon in Catalog.WEAPON_ICONS+Catalog.GEAR_ICONS:
-		loot_icons[icon]=load("res://assets/icons/"+icon+".svg")
+		loot_icons[icon]=TideUIArt.icon(icon)
 	combat=CombatVisuals.new()
 	combat.field=self
 	add_child(combat)
@@ -136,19 +139,20 @@ func _draw() -> void:
 			label(site.p+Vector2(-80,-site.rect.size.y/2-45),site.name,19,Color("fff1db"))
 	for i in world.exits.size():
 		var pos: Vector2=world.exits[i]
-		var pulse := 0.5+sin(clock*2)*0.12
-		draw_circle(pos,83,Color(0.32,0.74,0.66,0.07))
-		draw_arc(pos,70+sin(clock*2)*4,0,TAU,60,Color(0.4,0.8,0.73,pulse),2)
-		draw_arc(pos,50,0,TAU,48,Color("467b77"),1)
-		cross(pos,20,Color("80cabc"))
-		label(pos+Vector2(-52,103),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else ""),15,Color("89b8b0"))
+		var channel := extraction_progress(i)
+		var gate_rect := Rect2(pos-Vector2(105,52),Vector2(210,105))
+		if channel>0:
+			draw_texture_rect(extraction_sigil,gate_rect.grow(3+channel*7),false,Color(0.30,1.0,0.78,0.15+channel*0.24))
+		draw_texture_rect(extraction_sigil,gate_rect,false,Color.WHITE if session.can_extract() else Color(0.48,0.52,0.55,0.74))
+		label(pos+Vector2(-58,80),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else " · [E] 撤离"),15,Color("a5ead6") if session.can_extract() else Color("98a3aa"))
 	for shrine in world.shrines:
 		var pos: Vector2=shrine.p
-		var color := Color("7accb4") if shrine.done else Color("ddb675")
-		draw_circle(pos,40,Color(color,0.07))
-		draw_colored_polygon(PackedVector2Array([pos+Vector2(0,-30),pos+Vector2(19,0),pos+Vector2(0,20),pos+Vector2(-19,0)]),Color("353446"))
-		cross(pos-Vector2(0,12),15,color)
-		label(pos+Vector2(-40,45),"已点亮" if shrine.done else "晨钟封印",14,color)
+		var color := Color("9ee7ce") if shrine.done else Color("e8bf81")
+		var shrine_rect := Rect2(pos-Vector2(63,31),Vector2(126,63))
+		if shrine.done:
+			draw_texture_rect(shrine_sigil,shrine_rect.grow(3+sin(clock*2)*2),false,Color(0.48,1.0,0.78,0.16))
+		draw_texture_rect(shrine_sigil,shrine_rect,false,Color.WHITE if shrine.done else Color(0.91,0.86,0.83))
+		label(pos+Vector2(-40,50),"已点亮" if shrine.done else "晨钟封印",14,color)
 	for chest in world.chests:
 		var pos: Vector2=chest.p
 		var empty: bool=chest.open and chest.items.is_empty()
@@ -177,13 +181,18 @@ func _draw() -> void:
 	for bag in session.world_drops:
 		var at: Vector2=bag.p
 		var is_bag := str(bag.get("key","")).begins_with("bag:")
+		var bundled: bool=session.container_units(bag)>1
 		if is_bag:
 			var bag_colour: Color=Catalog.tier(str(bag.key).substr(4)).color
 			draw_rect(Rect2(at-Vector2(13,15),Vector2(26,30)),Color(bag_colour.darkened(0.68),0.95))
 			draw_rect(Rect2(at-Vector2(13,15),Vector2(26,30)),Color(bag_colour,0.9),false,1.5)
 			draw_arc(at-Vector2(0,15),10,PI,TAU,14,Color(bag_colour.lightened(0.2)),2.5)
 			draw_line(at-Vector2(13,0),at+Vector2(13,0),Color(bag_colour.darkened(0.3)),1)
-			label(at+Vector2(-30,-40),Catalog.bag_quality({"key":str(bag.key).substr(4)})+"背包",12,bag_colour.lightened(0.25))
+			label(at+Vector2(-30,-40),Catalog.bag_quality({"key":str(bag.key).substr(4)})+"背包"+(" · [H] 搜索" if bundled else " · [F] 拾取"),12,bag_colour.lightened(0.25))
+		elif bundled:
+			draw_rect(Rect2(at-Vector2(15,13),Vector2(30,26)),Color("625b69"))
+			draw_rect(Rect2(at-Vector2(15,13),Vector2(30,26)),Color("b7a6b8"),false,1.5)
+			label(at+Vector2(-40,-36),"掉落包 · [H] 搜索",12,Color("d3c4d5"))
 		else:
 			for item in Catalog.container_items(bag):
 				var colour: Color=Catalog.item_color(item)
@@ -193,9 +202,12 @@ func _draw() -> void:
 	for fallen in defeated_enemies:
 		if int(fallen.get("boss_kind",-1))>=0:
 			var kind: int=fallen.boss_kind
-			draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
-			draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,1-fallen.age/1.6))
-			draw_set_transform(offset)
+			if fallen.get("mini_boss",false) or fallen.get("final_form",false) or fallen.get("abyss_final",false):
+				draw_special_boss(fallen,1-fallen.age/1.6)
+			else:
+				draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
+				draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,1-fallen.age/1.6))
+				draw_set_transform(offset)
 			continue
 		draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
 		draw_texture_rect_region(enemy_frames.sheets[int(fallen.type)],EnemyFrames.sprite_rect(int(fallen.type)),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
@@ -249,7 +261,7 @@ func _draw() -> void:
 		draw_map(map_rect(),true)
 		label(size/2+Vector2(-470,-352),("晨曦王城" if world.interior else "月冠边境")+"  /  M 关闭   ·   左键标记目的地   ·   右键清除",19,Color("dad3c9"))
 		label(size/2+Vector2(-470,389),"当前显示："+["全部地标","已探索物资","封印与撤离","怪物栖息区"][map_filter],13,Color("e2c795"))
-		label(size/2+Vector2(-470,369),"1 全部  ·  2 物资  ·  3 封印与撤离   4 栖息区   |   金菱形：封印   绿十字：撤离   红圈：血潮边界",17,Color("969caa"))
+		label(size/2+Vector2(-470,369),"1 全部  ·  2 物资  ·  3 封印与撤离   4 栖息区   |   晨钟：封印   青门：撤离   赤晶：Boss 点",17,Color("969caa"))
 	else:
 		label(Vector2(32,325),"晨曦王城 · 烛火长夜" if world.interior else Ruins.BIOME_NAMES[world.biome_at(me)]+" · 血月之夜",22,Color("f1dfbf"))
 		if not world.interior:
@@ -333,9 +345,12 @@ func actor(p: Dictionary) -> void:
 	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46*maxf(0,p.hp/p.max_hp),3)),color)
 	if p.channel>0:
 		var seconds := float(p.get("channel_total",4.0))
-		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/maxf(0.05,seconds)),40,Color("d9ca91"),4)
+		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/maxf(0.05,seconds)),40,Color("9af8dc") if str(p.get("target","")).begins_with("exit:") else Color("d9ca91"),4)
 
 func monster(e: Dictionary) -> void:
+	if e.get("mini_boss",false):
+		draw_special_boss(e)
+		return
 	if e.get("raid_boss",false):
 		draw_boss(e)
 		return
@@ -461,11 +476,15 @@ func draw_map(rect: Rect2, big: bool) -> void:
 			draw_rect(Rect2(at-Vector2(2,2),Vector2(4,4)),Color("847e76") if chest.open and chest.items.is_empty() else Color("f3d794"))
 	if not big or map_filter in [0,2]:
 		for shrine in session.ruins.shrines:
-			diamond(rect.position+shrine.p*scale,6 if big else 3,Color("7bc0af") if shrine.done else Color("ffe0a0"))
+			var icon_at: Vector2=rect.position+shrine.p*scale
+			var icon_size := 30.0 if big else 13.0
+			draw_texture_rect(shrine_sigil,Rect2(icon_at-Vector2(icon_size/2,icon_size/4),Vector2(icon_size,icon_size/2)),false,Color.WHITE if shrine.done else Color("e7c591"))
 		for i in session.ruins.exits.size():
 			var pos: Vector2=session.ruins.exits[i]
-			cross(rect.position+pos*scale,8 if big else 4,Color("9bf8d6"))
-			if big: label(rect.position+pos*scale+Vector2(-28,23),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else ""),11,Color("aeefce"))
+			var icon_at: Vector2=rect.position+pos*scale
+			var icon_size := 32.0 if big else 15.0
+			draw_texture_rect(extraction_sigil,Rect2(icon_at-Vector2(icon_size/2,icon_size/4),Vector2(icon_size,icon_size/2)),false,Color.WHITE if session.can_extract() else Color(0.58,0.62,0.65))
+			if big: label(icon_at+Vector2(-28,23),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else ""),11,Color("aeefce"))
 	if waypoint.x>=0:
 		var at: Vector2=rect.position+waypoint*scale
 		diamond(at,8 if big else 4,Color("fff1a6"))
@@ -478,8 +497,15 @@ func draw_map(rect: Rect2, big: bool) -> void:
 				label(rect.position+p.p*scale+Vector2(8,4),p.name,12,Color("efdfd0"))
 	if not session.ruins.interior and not session.raid.is_empty():
 		var mark := rect.position+session.safe_center()*scale
-		diamond(mark,10 if big else 5,Color("ff98b4"))
+		var icon_size := 38.0 if big else 18.0
+		draw_texture_rect(boss_sigil,Rect2(mark-Vector2(icon_size/2,icon_size/4),Vector2(icon_size,icon_size/2)),false)
 		if big: label(mark+Vector2(12,-14),"黎明印记 · "+session.expedition.NAMES[int(session.raid.kind)],14,Color("ffb8ca"))
+		for e in session.enemies:
+			if not e.get("mini_boss",false) or e.hp<=0: continue
+			var mini_at: Vector2=rect.position+e.p*scale
+			var mini_color: Color=Color("9ce9ff") if e.get("dragon_boss",false) else [Color("d9aa68"),Color("87dfff")][clampi(int(e.get("wild_kind",0)),0,1)] if e.get("wild_boss",false) else Color("a8dbff") if int(e.mini_kind)==0 else Color("ff8d66")
+			diamond(mini_at,8 if big else 5,mini_color)
+			if big: label(mini_at+Vector2(12,5),str(e.boss_name)+(" · 龙巢遗珍" if e.get("dragon_boss",false) else " · 异兽遗藏" if e.get("wild_boss",false) else " · 守卫秘藏"),12,mini_color)
 	# Fog radius is clipped mathematically to the map rectangle.
 	var center := rect.position+session.safe_center()*scale
 	var prev := Vector2.ZERO
@@ -540,13 +566,22 @@ func guard_telegraph(e: Dictionary) -> void:
 	var col := Color("83dcf5") if raised else Color("e8ca87")
 	label(e.p+Vector2(-95,85),"正面格挡 · 绕背 / 重击" if raised else "抬剑架势 · 尚未格挡",15,col)
 
+func extraction_progress(index: int) -> float:
+	for player in session.players.values():
+		if player.status=="active" and str(player.get("target", ""))=="exit:%d" % index:
+			return maxf(0.01,clampf(float(player.get("channel",0.0))/4.0,0.0,1.0))
+	return 0.0
+
 func draw_raid_world() -> void:
 	if session.raid.is_empty(): return
 	var center := session.safe_center()
+	var sigil_rect := Rect2(center-Vector2(115,57),Vector2(230,115))
 	if session.raid.phase=="explore":
-		draw_arc(center,65,0,TAU,64,Color("ed8faf"),3,true)
-		diamond(center,22,Color("b66d9b"))
-		label(center+Vector2(-125,-85),"黎明印记 · 缩圈完成后降临",17,Color("ffd2df"))
+		draw_texture_rect(boss_sigil,sigil_rect.grow(4+sin(clock*2.3)*3),false,Color(1,0.22,0.42,0.15))
+		draw_texture_rect(boss_sigil,sigil_rect,false)
+		label(center+Vector2(-125,80),"黎明印记 · 缩圈完成后降临",17,Color("ffd2df"))
+	elif session.raid.phase in ["boss","choice"]:
+		draw_texture_rect(boss_sigil,sigil_rect,false,Color(1,1,1,0.74))
 	for h in session.raid.hazards:
 		var tempo := str(h.get("tempo",""))
 		var col := Color("ffa779") if tempo=="快" else (Color("d5a1ff") if tempo=="慢" else Color("e999bd"))
@@ -559,6 +594,9 @@ func draw_raid_world() -> void:
 			label(caption_at,"%s %.1fs" % [tempo,maxf(0,h.time)],12,col)
 
 func draw_boss(e: Dictionary) -> void:
+	if e.get("final_form",false) or e.get("abyss_final",false):
+		draw_special_boss(e)
+		return
 	var kind: int=e.boss_kind
 	var pos: Vector2=e.p
 	var color: Color=BossFrames.COLORS[kind]
@@ -571,3 +609,27 @@ func draw_boss(e: Dictionary) -> void:
 	draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(BossFrames.pose(e,clock)),tint)
 	draw_set_transform(offset)
 	guard_telegraph(e)
+
+func draw_special_boss(e: Dictionary, alpha: float = 1.0) -> void:
+	var index: int=6 if e.get("dragon_boss",false) else 3+clampi(int(e.get("wild_kind",0)),0,2) if e.get("wild_boss",false) else 2 if e.get("final_form",false) else clampi(int(e.get("mini_kind",0)),0,1)
+	var tex: Texture2D=boss_frames.special_sheet(index)
+	var pos: Vector2=e.p
+	var sprite: Rect2=boss_frames.special_sprite_rect(index)
+	var height: float=BossFrames.SPECIAL_HEIGHTS[index]
+	var width: float=sprite.size.x
+	var color: Color=[Color("a8dbff"),Color("ff8d66"),Color("ff4a70"),Color("d9aa68"),Color("87dfff"),Color("b86bff"),Color("9ce9ff")][index]
+	draw_set_transform(offset+pos,0,Vector2(1,0.34))
+	draw_circle(Vector2.ZERO,49 if index==2 else 39,Color(0.04,0.015,0.04,0.48*alpha))
+	draw_arc(Vector2.ZERO,58 if index==2 else 46,0,TAU,56,Color(color,0.58*alpha),3,true)
+	draw_set_transform(offset+pos,0,Vector2(float(e.get("facing",1)),1))
+	var hover := sin(clock*(2.2 if index==2 else 3.1)+int(e.id))*(5 if index==0 else 2)
+	var appearance: float=0.26 if index==3 and e.has("travel_target") else 0.68 if index==4 and e.has("travel_target") else 1.0
+	var tint := Color(1.45,1.3,1.3,alpha*appearance) if float(e.get("flash",0))>0 else Color(1,1,1,alpha*appearance)
+	var frame := 11 if alpha<1.0 else BossFrames.pose(e,clock)
+	draw_texture_rect_region(tex,Rect2(sprite.position+Vector2(0,hover),sprite.size),BossFrames.region(frame),tint)
+	draw_set_transform(offset)
+	if alpha>=1.0:
+		label(pos+Vector2(-width/2,-height-12),str(e.get("boss_name","")),13,color)
+		var bar := 110.0 if index==2 else 85.0
+		draw_rect(Rect2(pos+Vector2(-bar/2,-height-7),Vector2(bar,4)),Color("201924"))
+		draw_rect(Rect2(pos+Vector2(-bar/2,-height-7),Vector2(bar*clampf(float(e.hp)/maxf(1,float(e.max_hp)),0,1),4)),color)

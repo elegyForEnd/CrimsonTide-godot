@@ -228,6 +228,13 @@ func run() -> void:
 	await capture("ui-game")
 	await key(KEY_TAB)
 	check(app.inventory_open,"Tab opens inventory through input system")
+	check(float(app.grids["backpack"].origin.x)<float(app.equip_zones["weapon"].position.x),"TAB places the backpack left of equipment")
+	check(float(app.grids["backpack"].origin.x)<float(app.slot_zone_rects[0].position.x),"TAB places the backpack left of the item bar")
+	check(float(app.equip_zones["weapon"].end.y)<float(app.slot_zone_rects[0].position.y),"TAB places equipment above the item bar")
+	var bar_left: float=app.slot_zone_rects[0].position.x
+	var bar_right: float=app.slot_zone_rects[app.slot_zone_rects.size()-1].end.x
+	check(absf((bar_left+bar_right)*0.5-1175.0)<1.0,"TAB centers item slots in the equipment panel")
+	check(float(app.grids["pocket"].origin.x)<float(app.equip_zones["weapon"].position.x),"TAB keeps the pocket on the storage side")
 	await capture("ui-inventory")
 	app.pick_item("pocket",1)
 	check(app.selected_slot=="pocket" and app.selected==1,"selecting a pocket item works")
@@ -242,6 +249,8 @@ func run() -> void:
 		await create_timer(0.12).timeout
 		check(str(app.session.players[1].backpack.key)==key,"equip %s backpack" % key)
 		check(Catalog.bag_grid(app.session.players[1].backpack)==Catalog.tier(key).grid,"%s backpack resizes the grid" % key)
+		var pocket_entry: Dictionary=app.grids["pocket"]
+		check(float(pocket_entry.origin.y)+4.0*(float(pocket_entry.cell)+float(pocket_entry.gap))-float(pocket_entry.gap)+18.0<=900.0,"%s backpack leaves the pocket on screen" % key)
 	check(Catalog.container_count(app.session.players[1].backpack,"crystal")>0,"swapping backpacks keeps loot")
 	await capture("ui-inventory-equipped")
 	# R turns the item selected inside the backpack.
@@ -311,12 +320,13 @@ func run() -> void:
 	await key(KEY_F)
 	check(app.inventory_open,"F opens the inventory together with the search window")
 	check(app._loot_index==0,"the search window points at the chest")
+	check(float(app.grids["backpack"].origin.x)<float(app.grids["loot"].origin.x),"search keeps the backpack left and the chest right")
 	check(app.session.container_units(chest)>0 and app.session.visible_units(chest)==0,"nothing is revealed when the search starts")
 	await capture("ui-loot-search")
 	check(app.session.container_units(chest)>0,"the container is stocked once the search starts")
 	check(app.session.visible_units(chest)==0,"a fresh container starts with nothing revealed")
-	# The search advances on its own: one unit roughly every 1.2 seconds.
-	await create_timer(1.5).timeout
+	# The search advances on its own at the first item's quality-specific pace.
+	await create_timer(app.session.search_seconds(app.session.next_search_item(chest))+0.2).timeout
 	check(app.session.visible_units(chest)>=1,"loot surfaces by itself while the search window is open")
 	check(app.session.visible_units(chest)<app.session.container_units(chest),"a container is not searched instantly")
 	await capture("ui-loot-revealed")
@@ -361,6 +371,23 @@ func run() -> void:
 	var ground_index: int=app.session.world_drops.size()-1
 	await key(KEY_F)
 	check(app.session.world_drops.size()==ground_index,"F picks up loose ground loot instantly")
+	var bundle: Dictionary=app.session.loot_container(walker.p,Vector2i(8,8))
+	bundle["dropped"]=true
+	check(Catalog.place_item(bundle,{"kind":"scrap","rot":false,"count":1}),"a nearby bundle holds scrap")
+	check(Catalog.place_item(bundle,{"kind":"ammo","rot":false,"count":1}),"a nearby bundle holds ammo")
+	app.session.world_drops.append(bundle)
+	var nearby_chests: Array=app.session.ruins.chests.duplicate()
+	app.session.ruins.chests.clear()
+	check(app.loot_action() and not app.inventory_open,"F hints at H without opening a multi-item ground bundle")
+	await key(KEY_H)
+	check(app.inventory_open and app._loot_index==ground_index,"H opens the nearby multi-item bundle")
+	check(app.session.visible_units(bundle)==0,"the bundle starts sealed")
+	check(float(app.grids["loot"].cell)==36.0,"a large dropped backpack fits its search grid on screen")
+	await capture("ui-ground-bundle")
+	app.close_bag()
+	app.session.stop_search(walker)
+	app.session.world_drops.pop_back()
+	app.session.ruins.chests=nearby_chests
 	# --- real mouse input: click, double click to wear, drag onto a socket -----
 	# The grid bodies ignore the mouse, so main.gd hit-tests the cursor against the
 	# registered grids. Everything below drives actual mouse events and therefore
@@ -426,7 +453,7 @@ func run() -> void:
 	await drag_item_to_zone("backpack",walker.backpack.items.size()-1,"bag")
 	check(str(walker.backpack.key)=="purple","dragging a pack onto the backpack socket swaps it")
 	await capture("ui-mouse-drag-bag")
-	# Letting go over the details panel is a miss, not a throw into the ruins.
+	# Releasing outside a valid destination drops the item into the world.
 	walker.backpack.items.clear()
 	check(Catalog.add_item(walker.backpack,"crystal"),"a blood crystal waits for a cancelled drag")
 	app.show_inventory()
@@ -434,8 +461,15 @@ func run() -> void:
 	var drops_before: int=app.session.world_drops.size()
 	var details_rect: Rect2=app.panel_rects[0]
 	await drag_item_to_point("backpack",0,details_rect.position+Vector2(24,120))
-	check(app.session.world_drops.size()==drops_before,"releasing over a side panel never throws the item on the ground")
-	check(Catalog.container_count(walker.backpack,"crystal")==1,"a cancelled drag leaves the item where it was")
+	check(app.session.world_drops.size()==drops_before+1,"releasing over a side panel drops the item")
+	check(Catalog.container_count(walker.backpack,"crystal")==0,"the discarded item leaves the backpack")
+	app.session.world_drops.pop_back()
+	check(Catalog.add_item(walker.backpack,"crystal"),"another crystal waits for an outside drop")
+	app.show_inventory()
+	app.start_drag("backpack",0,false)
+	app.release_drag(Vector2(700,100))
+	check(app.session.world_drops.size()==drops_before+1 and Catalog.container_count(walker.backpack,"crystal")==0,"releasing outside all panels drops the item")
+	app.session.world_drops.pop_back()
 	# R in mid-air turns the lifted art and the landing preview together.
 	walker.backpack.items.clear()
 	check(Catalog.add_item(walker.backpack,"medicine"),"a 1x2 medkit waits to be turned mid-drag")
@@ -574,6 +608,25 @@ func run() -> void:
 	await double_click_point(cell_point("loot",Vector2i(0,0)))
 	check(Catalog.container_count(walker.pocket,"weapon")==1,"double clicking gold loot fills the sealed pocket")
 	check(walker.backpack.items.is_empty(),"the gold weapon never takes backpack room")
+	# F follows the hovered card, including when another card has the same kind.
+	walker.backpack.items.clear()
+	walker.pocket.items.clear()
+	relic_chest.items.clear()
+	check(Catalog.place_item(relic_chest,Catalog.make_equipment("weapon",0,0)),"a white weapon waits in the chest")
+	check(Catalog.place_item(relic_chest,Catalog.make_equipment("weapon",2,4)),"a gold weapon waits beside it")
+	relic_chest["searched"]=2
+	app.show_inventory()
+	var gold_card: Dictionary=app.session.visible_items(relic_chest)[1]
+	await mouse_move(cell_point("loot",Vector2i(int(gold_card.x),int(gold_card.y))))
+	await key(KEY_F)
+	check(Catalog.container_count(walker.pocket,"weapon")==1 and int(walker.pocket.items[0].tier)==4,"F sends hovered high value loot to the pocket")
+	check(app.session.container_units(relic_chest)==1 and int(relic_chest.items[0].tier)==0,"F leaves the other weapon in the chest")
+	check(Catalog.add_item(walker.backpack,"scrap"),"scrap waits in the backpack for F deposit")
+	app.show_inventory()
+	await mouse_move(item_point("backpack",0))
+	await key(KEY_F)
+	check(walker.backpack.items.is_empty(),"F sends a carried item back into the open chest")
+	check(Catalog.container_count(relic_chest,"scrap")==1 and app.session.visible_items(relic_chest)[0].kind=="scrap","the deposited item stays visible during search")
 	# --- Ctrl+left is the same gesture with the key held --------------------
 	# On a carried item it does what the item is for; on something worn it takes
 	# it off. The carried-item half is driven through real mouse input; the
@@ -617,6 +670,27 @@ func run() -> void:
 	check(app.session.kit_weapon(walker).is_empty(),"the socket is empty after the fallback take-off")
 	walker.backpack.items.clear()
 	walker.pocket.items.clear()
+	app.close_bag()
+	await key(KEY_TAB)
+	check(app.inventory_open and app._loot_index<0,"TAB opens the equipment and item bar layout for F shortcuts")
+	walker["slots"]=app.session.empty_item_slots()
+	check(Catalog.add_item(walker.backpack,"medicine"),"a medkit waits for F quick equip")
+	app.show_inventory()
+	await mouse_move(item_point("backpack",0))
+	await key(KEY_F)
+	check(app.session.item_slot_kind(walker,0)=="medicine" and walker.backpack.items.is_empty(),"F puts a carried item in the first free quick socket")
+	await mouse_move((app.slot_zone_rects[0] as Rect2).get_center())
+	await key(KEY_F)
+	check(app.session.item_slot(walker,0).is_empty() and Catalog.container_count(walker.backpack,"medicine")==1,"F on the item bar returns its item to the backpack")
+	walker.backpack.items.clear()
+	check(Catalog.place_item(walker.backpack,Catalog.make_equipment("weapon",2,3)),"a blade waits for F quick equip")
+	app.show_inventory()
+	await mouse_move(item_point("backpack",0))
+	await key(KEY_F)
+	check(int(app.session.kit_weapon(walker).get("weapon",-1))==2,"F on a carried weapon equips it")
+	await mouse_move(zone_point("weapon"))
+	await key(KEY_F)
+	check(app.session.kit_weapon(walker).is_empty() and Catalog.container_count(walker.backpack,"weapon")==1,"F on worn equipment returns it to the backpack")
 	app.close_bag()
 	await key(KEY_M)
 	check(app.field.map_open,"M opens map")

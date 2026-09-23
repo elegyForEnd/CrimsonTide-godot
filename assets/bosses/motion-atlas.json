@@ -1,0 +1,42 @@
+{
+  "bell-hierophant": {
+    "path": "res://assets/bosses/bell-hierophant-atlas.png",
+    "packed_height": 650.0
+  },
+  "thorn-huntsman": {
+    "path": "res://assets/bosses/thorn-huntsman-atlas.png",
+    "packed_height": 547.06
+  },
+  "blood-queen": {
+    "path": "res://assets/bosses/blood-queen-atlas.png",
+    "packed_height": 629.92
+  },
+  "mirror-weaver": {
+    "path": "res://assets/bosses/new/mirror-weaver-atlas.png",
+    "packed_height": 650.0
+  },
+  "ashen-vesper": {
+    "path": "res://assets/bosses/new/ashen-vesper-atlas.png",
+    "packed_height": 534.74
+  },
+  "nameless-moon": {
+    "path": "res://assets/bosses/new/nameless-moon-atlas.png",
+    "packed_height": 576.03
+  },
+  "earthsplitter": {
+    "path": "res://assets/bosses/wild/earthsplitter-atlas.png",
+    "packed_height": 650.0
+  },
+  "storm-roc-v2": {
+    "path": "res://assets/bosses/wild/storm-roc-v2-atlas.png",
+    "packed_height": 616.52
+  },
+  "moon-leviathan": {
+    "path": "res://assets/bosses/wild/moon-leviathan-atlas.png",
+    "packed_height": 595.49
+  },
+  "frostbone-dragon": {
+    "path": "res://assets/bosses/dragon/frostbone-dragon-atlas.png",
+    "packed_height": 599.73
+  }
+}

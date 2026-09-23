@@ -1,0 +1,243 @@
+{
+  "origin": "Edits of the credited CC0 recordings in manifest.json",
+  "rate": 48000,
+  "cues": {
+    "mirror": {
+      "charge": {
+        "sources": [
+          "knight-charge.wav",
+          "bell-charge.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      },
+      "quick": {
+        "sources": [
+          "knight-quick.wav",
+          "bell-quick.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      },
+      "sweep": {
+        "sources": [
+          "knight-sweep.wav",
+          "bell-sweep.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      },
+      "burst": {
+        "sources": [
+          "knight-burst.wav",
+          "bell-burst.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      },
+      "lance": {
+        "sources": [
+          "knight-lance.wav",
+          "bell-lance.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      },
+      "ritual": {
+        "sources": [
+          "knight-ritual.wav",
+          "bell-ritual.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      },
+      "fall": {
+        "sources": [
+          "knight-fall.wav",
+          "bell-fall.wav"
+        ],
+        "speed": [
+          1.16,
+          0.91
+        ],
+        "peak": 0.82
+      }
+    },
+    "ember": {
+      "charge": {
+        "sources": [
+          "thorn-charge.wav",
+          "queen-charge.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      },
+      "quick": {
+        "sources": [
+          "thorn-quick.wav",
+          "queen-quick.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      },
+      "sweep": {
+        "sources": [
+          "thorn-sweep.wav",
+          "queen-sweep.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      },
+      "burst": {
+        "sources": [
+          "thorn-burst.wav",
+          "queen-burst.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      },
+      "lance": {
+        "sources": [
+          "thorn-lance.wav",
+          "queen-lance.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      },
+      "ritual": {
+        "sources": [
+          "thorn-ritual.wav",
+          "queen-ritual.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      },
+      "fall": {
+        "sources": [
+          "thorn-fall.wav",
+          "queen-fall.wav"
+        ],
+        "speed": [
+          0.93,
+          1.08
+        ],
+        "peak": 0.82
+      }
+    },
+    "moon": {
+      "charge": {
+        "sources": [
+          "queen-charge.wav",
+          "bell-charge.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      },
+      "quick": {
+        "sources": [
+          "queen-quick.wav",
+          "bell-quick.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      },
+      "sweep": {
+        "sources": [
+          "queen-sweep.wav",
+          "bell-sweep.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      },
+      "burst": {
+        "sources": [
+          "queen-burst.wav",
+          "bell-burst.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      },
+      "lance": {
+        "sources": [
+          "queen-lance.wav",
+          "bell-lance.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      },
+      "ritual": {
+        "sources": [
+          "queen-ritual.wav",
+          "bell-ritual.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      },
+      "fall": {
+        "sources": [
+          "queen-fall.wav",
+          "bell-fall.wav"
+        ],
+        "speed": [
+          0.88,
+          0.83
+        ],
+        "peak": 0.82
+      }
+    }
+  }
+}

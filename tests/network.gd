@@ -16,6 +16,8 @@ var got_combat := false
 var saw_weapon := false
 var saw_running := false
 var got_audio := false
+var pickup_requested := false
+var pickup_confirmed := false
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -73,6 +75,12 @@ func _process(dt: float) -> bool:
 					p.p=session.ruins.exits[0]
 					Catalog.add_item(p.backpack,"relic")
 					Catalog.add_item(p.pocket,"scrap")
+					if expected==2 and p.id!=1:
+						for index in p.backpack.items.size():
+							if p.backpack.items[index].kind=="relic":
+								p.backpack.items.remove_at(index)
+								break
+						session.world_drops.append(session.ground_drop(p.p,"relic"))
 				session.objectives=2
 		elif not host_mode and session.players.has(session.my_id()) and not session.players[session.my_id()].ready:
 			session.configure({"name":"Client","hero":1,"ready":true})
@@ -85,8 +93,17 @@ func _process(dt: float) -> bool:
 				saw_running=true
 		if session.players[session.my_id()].weapon==2:
 			saw_weapon=true
-		if not host_mode and session.elapsed>1 and session.objectives==2 and Catalog.container_value(session.players[session.my_id()].backpack)==125:
-			saw_snapshot=true
+		if expected==2 and not host_mode and since_start>0.7 and not pickup_requested and not session.world_drops.is_empty():
+			pickup_requested=true
+			session.action("pickup")
+		if expected==2 and since_start>1.0 and session.world_drops.is_empty():
+			for recipient in session.players.values():
+				if recipient.id!=1 and Catalog.container_count(recipient.backpack,"relic")+Catalog.container_count(recipient.pocket,"relic")==1:
+					pickup_confirmed=true
+		if not host_mode and session.elapsed>1 and session.objectives==2:
+			var me: Dictionary=session.players[session.my_id()]
+			if Catalog.container_value(me.backpack)==125 or expected==2 and Catalog.container_count(me.backpack,"relic")+Catalog.container_count(me.pocket,"relic")==1:
+				saw_snapshot=true
 		if not host_mode and session.elapsed>1 and Catalog.container_count(session.players[session.my_id()].pocket,"scrap")==1:
 			saw_pocket=true
 		if age-started_at>0.8 and not local_sent:
@@ -122,9 +139,11 @@ func done() -> void:
 		pass_test=pass_test and saw_independent
 	else:
 		pass_test=pass_test and saw_snapshot and saw_pocket
+	if expected==2:
+		pass_test=pass_test and pickup_confirmed and (host_mode or pickup_requested)
 	print("NETWORK %s %d PLAYERS: %s" % ["HOST" if host_mode else "CLIENT",expected,"PASS" if pass_test else "FAIL"])
 	if not pass_test:
-		print("NETWORK DETAILS: ",{"results":session.results,"seed":session.seed_value,"effect":got_effect,"combat":got_combat,"audio":got_audio,"weapon":saw_weapon,"running":saw_running,"snapshot":saw_snapshot,"independent":saw_independent})
+		print("NETWORK DETAILS: ",{"results":session.results,"seed":session.seed_value,"effect":got_effect,"combat":got_combat,"audio":got_audio,"weapon":saw_weapon,"running":saw_running,"snapshot":saw_snapshot,"independent":saw_independent,"pickup":pickup_confirmed})
 	await create_timer(0.6).timeout
 	session.disconnect_room()
 	quit(0 if pass_test else 1)

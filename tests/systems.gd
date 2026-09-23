@@ -224,10 +224,19 @@ func run() -> void:
 	check(session.container_units(chest)>0,"a search fills the container with loot")
 	check(session.visible_units(chest)==0,"a fresh container reveals nothing yet")
 	check(session.visible_items(chest).is_empty(),"nothing is visible before searching")
-	session.advance_search(p,1.3)
-	check(session.visible_units(chest)==1,"one unit surfaces after 1.2 seconds")
-	session.advance_search(p,1.3)
-	check(session.visible_units(chest)==2,"a second unit surfaces after another second")
+	for tier in range(1,6):
+		check(session.search_seconds(Catalog.make_equipment("weapon",0,tier))>session.search_seconds(Catalog.make_equipment("weapon",0,tier-1)),"higher quality takes longer to identify")
+	var first_seconds: float=session.search_seconds(session.next_search_item(chest))
+	session.advance_search(p,first_seconds-0.02)
+	check(session.visible_units(chest)==0,"loot stays sealed until its quality timer completes")
+	session.begin_search(p,0)
+	check(float(p.search)>=first_seconds-0.03,"pressing F again keeps the current search progress")
+	session.advance_search(p,0.03)
+	check(session.visible_units(chest)==1,"the first item surfaces at its quality timer")
+	p.search=0.0
+	var second_seconds: float=session.search_seconds(session.next_search_item(chest))
+	session.advance_search(p,second_seconds+0.01)
+	check(session.visible_units(chest)==2,"the next item uses its own quality timer")
 	check(not session.visible_items(chest).is_empty(),"searched units are visible")
 	var units_before: int=session.container_units(chest)
 	var taken_before: int=p.backpack.items.size()
@@ -568,7 +577,13 @@ func run() -> void:
 			spilled_kinds.append(str(item.kind))
 	spilled_kinds.sort()
 	check(spilled_kinds==["crystal","scrap"],"every carried item hits the ground: "+str(spilled_kinds))
-	check(session.container_searched(session.world_drops[drop_count]),"a spilled bag can be read immediately")
+	check(session.container_searched(session.world_drops[drop_count]),"a spilled single item is ready for F pickup")
+	var spilled_bundle := session.loot_container(doomed.p,Vector2i(4,4))
+	check(Catalog.place_item(spilled_bundle,{"kind":"scrap","rot":false,"count":1}),"bundle holds scrap")
+	check(Catalog.place_item(spilled_bundle,{"kind":"ammo","rot":false,"count":1}),"bundle holds ammo")
+	session.world_drops.append(spilled_bundle)
+	check(session.search_dropped_target(doomed)==session.ruins.chests.size()+session.world_drops.size()-1,"H targets the nearby multi-item bag")
+	session.world_drops.pop_back()
 	check(Catalog.bag_grid(doomed.backpack)==Vector2i(3,3),"the next run restarts from a white backpack")
 	# --- ground loot is grabbed with a single F -----------------------------
 	var walker: Dictionary=session.players[1]
@@ -577,11 +592,18 @@ func run() -> void:
 	session.world_drops.append(session.ground_drop(walker.p,"backpack","gold"))
 	var ground_index: int=session.world_drops.size()-1
 	check(str(session.world_drops[ground_index].key)=="bag:gold","a dropped backpack remembers its quality")
-	check(session.search_target(walker)==session.ruins.chests.size()+ground_index,"ground loot is the search target")
+	check(session.search_target(walker)==-1,"single ground loot uses instant pickup rather than a search window")
 	check(session.pick_up_ground(walker),"pressing F grabs ground loot instantly")
 	check(session.world_drops.size()==ground_index,"an emptied ground bag disappears")
 	check(Catalog.container_count(walker.backpack,"backpack")==1,"the grabbed backpack sits in the backpack")
 	check(session.pick_up_ground(walker)==false,"pressing F again finds nothing to grab")
+	var far_drop := session.ground_drop(walker.p+Vector2(45,0),"scrap")
+	var near_drop := session.ground_drop(walker.p+Vector2(10,0),"ammo")
+	session.world_drops.append(far_drop)
+	session.world_drops.append(near_drop)
+	check(session.pick_up_ground(walker) and Catalog.container_count(walker.backpack,"ammo")==1,"F picks the nearest loose item first")
+	check(session.world_drops.has(far_drop) and not session.world_drops.has(near_drop),"the farther drop waits for another press")
+	session.world_drops.erase(far_drop)
 	# --- the pocket always travels home ------------------------------------
 	Catalog.insert(p.backpack.items,"scrap",Catalog.bag_grid(p.backpack))
 	p.status="extracted"
@@ -638,7 +660,7 @@ func run() -> void:
 	# One int addresses every weapon in the game, so the issue weapons live in the
 	# same table as the four field weapons and every consumer can stay unchanged.
 	check(Catalog.STARTER_WEAPONS.size()==Catalog.HEROES.size(),"one issue weapon per hero")
-	check(Catalog.STARTER_BASE==Catalog.WEAPONS.size(),"issue weapons sit after the four field weapons")
+	check(Catalog.STARTER_BASE==Catalog.WEAPONS.size(),"issue weapons sit after all field weapons")
 	for hero in Catalog.HEROES.size():
 		var issue_index: int=Catalog.starter_index(hero)
 		check(Catalog.is_starter(issue_index),"hero %d issues a temporary weapon" % hero)
@@ -646,7 +668,7 @@ func run() -> void:
 		check(Catalog.weapon_family(issue_index)==int(Catalog.STARTER_WEAPONS[hero].family),"the issue weapon borrows a field family")
 		check(Catalog.weapon_family(issue_index)<Catalog.WEAPONS.size(),"that family is a real field weapon")
 	for index in Catalog.WEAPONS.size():
-		check(Catalog.weapon_family(index)==index,"field weapon %d reports its own family" % index)
+		check(Catalog.weapon_family(index)==(index if index<4 else int(Catalog.WEAPONS[index].get("family",3))),"field weapon %d reports its attack animation family" % index)
 		check(not Catalog.is_starter(index),"field weapon %d is not an issue weapon" % index)
 		check(Catalog.weapon(index).name==Catalog.WEAPONS[index].name,"weapon() reads the field half of the table")
 	check(Catalog.weapon_name(Catalog.starter_index(0))=="黑铁短剑","绯月 issues the black iron shortsword")
@@ -658,6 +680,15 @@ func run() -> void:
 		var rolled := Catalog.make_equipment("weapon",junk,3)
 		check(not Catalog.is_starter(int(rolled.weapon)),"loot never hands out a temporary weapon")
 		check(int(rolled.weapon)<Catalog.WEAPONS.size(),"a looted weapon stays inside the field table")
+	var loot_rng := RandomNumberGenerator.new()
+	loot_rng.seed=7219
+	var family_counts := [0,0,0,0]
+	for sample in 10000:
+		var weapon_index := Catalog.roll_weapon(loot_rng)
+		check(weapon_index>=0 and weapon_index<Catalog.STARTER_BASE,"weighted loot only picks field weapons")
+		family_counts[Catalog.weapon_family(weapon_index)]+=1
+	check(family_counts[3]>1900 and family_counts[3]<2500,"staffs occupy about 22 percent of weapon drops")
+	check(family_counts[1]>2700 and family_counts[2]>2700,"each sword family occupies about 30 percent of weapon drops")
 	# Every issue weapon is deliberately weaker than the field weapon it imitates.
 	for hero in Catalog.HEROES.size():
 		var issue: Dictionary=Catalog.STARTER_WEAPONS[hero]
@@ -963,6 +994,19 @@ func run() -> void:
 	check(Catalog.container_free(bar.pocket)==0,"the pocket is packed solid too")
 	check(kit_session.slot_take(bar,0)==false,"a take-out with nowhere to go is refused")
 	check(str(kit_session.item_slot(bar,0).get("kind",""))=="scrap","the refused take-out leaves the socket untouched")
+	var discarded_before: int=kit_session.world_drops.size()
+	check(kit_session.drop_item_slot(bar,0),"a socket item can be discarded directly")
+	check(kit_session.item_slot(bar,0).is_empty() and kit_session.world_drops.size()==discarded_before+1,"socket discard moves exactly one item to the ground")
+	var searched_bundle := kit_session.loot_container(bar.p,Vector2i(4,4))
+	check(Catalog.place_item(searched_bundle,{"kind":"scrap","rot":false,"count":1}),"search bundle holds scrap")
+	check(Catalog.place_item(searched_bundle,{"kind":"ammo","rot":false,"count":1}),"search bundle holds ammo")
+	searched_bundle["open"]=true
+	searched_bundle["searched"]=1
+	kit_session.world_drops.append(searched_bundle)
+	bar["search_ref"]=kit_session.ruins.chests.size()+kit_session.world_drops.size()-1
+	var searched_before: int=kit_session.world_drops.size()
+	check(kit_session.drop_searched_loot(bar,0),"a searched item can be discarded directly")
+	check(kit_session.world_drops.size()==searched_before+1 and kit_session.container_units(searched_bundle)==1,"searched discard creates a ground drop without duplicating loot")
 	# Death scatters the item bar with the rest of the worn kit.
 	bar.pocket.items.clear()
 	check(kit_session.slot_put(bar,2,"pocket",-1)==false,"an empty pocket holds no item to move")

@@ -8,6 +8,9 @@ static var icons: Dictionary = {}
 static func icon(kind: String) -> Texture2D:
 	if icons.has(kind):
 		return icons[kind]
+	if kind.begins_with("staff_"):
+		icons[kind]=load("res://assets/icons/"+kind+".png")
+		return icons[kind]
 	var index := KINDS.find(kind)
 	if index < 0:
 		return load("res://assets/icons/" + kind + ".svg")

@@ -1,0 +1,10 @@
+{
+  "tool": "built-in imagegen",
+  "purpose": "Distinct non-humanoid boss cutouts; inspired by the varied silhouettes and readable encounter rhythms of ELDEN RING NIGHTREIGN, without copying its characters",
+  "assets": {
+    "earthsplitter.png": "Enormous non-humanoid burrowing cathedral centipede, armored segmented S-curve, digging claws, chisel head and circular maw, obsidian rock cracked by molten amber, three-quarter top-down painterly dark fantasy game sprite, genuine transparent background, no humanoid traits or text.",
+    "storm-roc-v2.png": "Isolated non-humanoid giant thunder roc with two broad wings, hooked beak, talons, black jagged feathers and cyan lightning veins, three-quarter overhead view, wings raised in a V, full body, genuine transparent alpha, no scenery, shadow or humanoid traits.",
+    "moon-leviathan.png": "Colossal non-humanoid abyssal leviathan, armored horned sea-serpent head, deep-sea maw, scaled body coiled around a broken blood-red moon, three-quarter top-down game art, genuine transparent background, no humanoid traits or text."
+  },
+  "unused_storm_roc_variants": "Two earlier imagegen attempts retained a broad opaque background; storm-roc-v2.png is the selected cutout."
+}
