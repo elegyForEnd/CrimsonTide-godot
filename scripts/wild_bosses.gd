@@ -206,15 +206,25 @@ func gap_ring(s, at: Vector2, gap_aim: Vector2, radius: float, inner: float, gap
 func defeated(s, e: Dictionary) -> void:
 	for i in range(s.raid.hazards.size()-1,-1,-1):
 		if int(s.raid.hazards[i].get("source",-1))==int(e.id): s.raid.hazards.remove_at(i)
-	if e.get("abyss_final",false): return
+	if e.get("abyss_final",false):
+		var final_chest: Dictionary=s.loot_container(e.p,Vector2i(7,7),5,true)
+		final_chest.merge({"fixed_loot":true,"reward_tier":5,"title":str(e.boss_name)+" · 海母遗珍","open":true},true)
+		s.place_entry(final_chest,"abyss_shedding")
+		s.place_entry(final_chest,"abyssal_motherheart")
+		for item in ["medicine","ammo","relic","relic"]: s.place_entry(final_chest,item)
+		final_chest.searched=s.container_units(final_chest)
+		s.append_chest(final_chest)
+		return
 	s.expedition.record_map_boss_defeat(s,e)
 	s.raid.wild_seals[int(e.wild_kind)]=true
 	var quality := 3 if int(e.wild_kind)==0 else 4
-	var chest: Dictionary=s.loot_container(e.p,Vector2i(6,6),quality,true)
+	var chest: Dictionary=s.loot_container(e.p,Vector2i(7,7),quality,true)
 	chest.merge({"fixed_loot":true,"reward_tier":quality,
 		"title":str(e.boss_name)+" · 异兽遗藏","open":true},true)
-	for item in ["medicine","medicine","ammo","relic","relic"]: s.place_entry(chest,item)
 	s.place_entry(chest,["fault_scale","storm_feather"][int(e.wild_kind)])
+	s.place_entry(chest,"fault_pulse_fossil" if int(e.wild_kind)==0 else "thunder_coffin_nail")
+	if int(e.wild_kind)==1: s.place_entry(chest,"storm_roc_sunheart")
 	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),quality))
+	for item in ["medicine","medicine","ammo","relic","relic"]: s.place_entry(chest,item)
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)

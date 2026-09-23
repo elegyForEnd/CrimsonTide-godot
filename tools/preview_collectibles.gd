@@ -5,7 +5,8 @@ func _initialize() -> void:
 	for biome in Catalog.BIOME_COLLECTIBLES: kinds.append_array(biome)
 	kinds.append_array(Catalog.BOSS_COLLECTIBLES)
 	kinds.append_array(Catalog.ROYAL_COLLECTIBLES)
-	var sheet := Image.create_empty(576,480,false,Image.FORMAT_RGBA8)
+	kinds.append_array(Catalog.NEW_COLLECTIBLES)
+	var sheet := Image.create_empty(576,864,false,Image.FORMAT_RGBA8)
 	sheet.fill(Color("22202b"))
 	for i in kinds.size():
 		var source: Texture2D=TideUIArt.icon(str(kinds[i]))

@@ -58,6 +58,8 @@ func run() -> void:
 		worm.hp=0
 		s.simulate(0.01)
 		check(s.raid.wild_seals.has(0),"Defeating Earthsplitter records first secret seal")
+		check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="fault_pulse_fossil")),"Earthsplitter leaves its unique collectible")
+		check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="fault_scale")),"Earthsplitter keeps its original fault scale")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,2)
 	s.wild_bosses.spawn_mini(s,2,1)
@@ -74,6 +76,9 @@ func run() -> void:
 		s.raid.hazards.clear()
 		roc.hp=0
 		s.simulate(0.01)
+		check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="storm_roc_sunheart")),"Storm Roc leaves its red 3x3 collectible")
+		check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="storm_feather")),"Storm Roc keeps its original feather")
+		check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="thunder_coffin_nail")),"Storm Roc leaves its new coffin nail")
 		check(s.raid.wild_seals.size()==2 and s.raid.map_boss_defeats.size()==2,"Two optional victories survive day change")
 	s.enemies.clear()
 	s.expedition.prepare_day(s,3)
@@ -100,6 +105,11 @@ func run() -> void:
 		abyss.hp=0
 		s.simulate(0.01)
 	check(s.raid.phase=="complete","Secret final boss clears expedition")
+	check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="abyssal_motherheart")),"Leviathan leaves its red 3x3 collectible")
+	check(s.ruins.chests.any(func(chest): return chest.items.any(func(item): return str(item.kind)=="abyss_shedding")),"Leviathan keeps its original serpent shed")
+	for chest in s.ruins.chests:
+		if str(chest.get("title","")).contains("海母遗珍"):
+			check(chest.items.any(func(item): return str(item.kind)=="abyssal_motherheart") and chest.items.any(func(item): return str(item.kind)=="abyss_shedding"),"Leviathan's own chest holds both relics")
 	for cue in ["earth","storm","abyss"]:
 		var stream: AudioStreamOggVorbis=load("res://assets/audio/music/%s.ogg" % cue)
 		check(stream!=null and stream.get_length()>60,"New boss music imports: "+cue)

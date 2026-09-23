@@ -43,6 +43,33 @@ const ITEMS = {
 	,"royal_diadem":{"name":"失乡者的冕环", "size":Vector2i(2,1), "value":180, "color":Color("e6c394"), "tier":4, "desc":"失乡骑士所守的王冠内环。没有名字的君王，仍拥有最忠诚的守卫。"}
 	,"twilight_edict":{"name":"永夜敕令", "size":Vector2i(1,2), "value":205, "color":Color("d6adb9"), "tier":4, "desc":"晨曦王城最后的诏书：命令太阳在今夜之后不得升起。"}
 	,"dawn_testament":{"name":"破晓遗书", "size":Vector2i(1,1), "value":245, "color":Color("ebd6a9"), "tier":5, "desc":"信纸上只写着一句话：倘若你读到这里，说明我们仍有明天。"}
+	,"fog_chime":{"name":"雾钟引魂签", "size":Vector2i(1,1), "value":34, "color":Color("adcac6"), "tier":0, "desc":"写着亡者乳名的薄铜签。雾潮升起时，钟声会替它寻找主人。"}
+	,"nightwatch_pin":{"name":"断羽巡夜徽", "size":Vector2i(1,2), "value":57, "color":Color("b5c2bb"), "tier":1, "desc":"巡夜人把折断的使魔羽翎别在胸口，提醒自己天亮前不可回头。"}
+	,"weightless_oathstone":{"name":"失重誓石", "size":Vector2i(2,1), "value":79, "color":Color("c5bca9"), "tier":2, "desc":"被宣誓者抛入风铃原野的石头。至今仍停在坠落之前。"}
+	,"hourless_token":{"name":"斩时铜令", "size":Vector2i(1,1), "value":43, "color":Color("c7b594"), "tier":0, "desc":"晨钟旧卫的通行令。令牌上的时刻永远停在钟声响起前一息。"}
+	,"last_mass_leaf":{"name":"终祷残篇", "size":Vector2i(1,2), "value":68, "color":Color("c8b9ae"), "tier":1, "desc":"灰烬司祭的祷文残页。最后一行不是祈求，而是对神明的宣判。"}
+	,"mute_judgement":{"name":"噤声裁判牌", "size":Vector2i(2,1), "value":91, "color":Color("c2c0bd"), "tier":2, "desc":"宣判者以此令全庭禁声。牌面凹痕像一张被缝住的嘴。"}
+	,"seer_eye":{"name":"观星者遗瞳", "size":Vector2i(1,1), "value":52, "color":Color("b8b7d8"), "tier":0, "desc":"高塔学徒留下的星晶义眼，瞳孔里还有一场尚未发生的流星雨。"}
+	,"silver_stag_bell":{"name":"银骨鹿铃", "size":Vector2i(1,2), "value":74, "color":Color("d0cbdc"), "tier":1, "desc":"骨鹿角间的古铃。摇响后，附近所有影子都会转向北方。"}
+	,"meteor_core":{"name":"陨星兽核", "size":Vector2i(2,1), "value":102, "color":Color("bcc6e0"), "tier":2, "desc":"石像巨兽胸腔中的星核，仍在重复坠入月晶高地的最后一瞬。"}
+	,"sleeping_veil":{"name":"花眠公主的黑纱", "size":Vector2i(1,1), "value":63, "color":Color("d1a0b0"), "tier":0, "desc":"罩在空王冠上的黑纱。每一根丝线都记得一个无人赴约的春天。"}
+	,"blood_vow_clasp":{"name":"血誓嫁衣扣", "size":Vector2i(1,2), "value":86, "color":Color("d88799"), "tier":1, "desc":"蔷薇庭域的赤金衣扣，背面刻着一对永不相见的姓名。"}
+	,"thorn_heart":{"name":"荆棘之心", "size":Vector2i(2,1), "value":118, "color":Color("dc8994"), "tier":2, "desc":"跳动的黑蔷薇心核。每一次搏动，都替沉睡者拒绝一次黎明。"}
+	,"moonbone_flute":{"name":"泡月骨笛", "size":Vector2i(1,1), "value":75, "color":Color("a5c9c5"), "tier":0, "desc":"从水底捞出的骨笛。吹奏时，雾汐上会浮起一轮倒悬的月亮。"}
+	,"sunken_lantern":{"name":"沉舟魂灯", "size":Vector2i(1,2), "value":98, "color":Color("91b9b4"), "tier":1, "desc":"引渡沉船亡魂的铜灯。灯火不是火焰，而是一只睁开的青色眼睛。"}
+	,"abyssal_rite_drum":{"name":"海渊祈潮盘", "size":Vector2i(2,1), "value":128, "color":Color("81b4b5"), "tier":2, "desc":"古祭司召唤逆潮的仪盘。盘面浮雕全都朝着深海张口。"}
+	,"redmoon_betrothal":{"name":"赤月婚约", "size":Vector2i(1,1), "value":89, "color":Color("df9c9d"), "tier":0, "desc":"王庭在血月之夜订下的盟约。新郎、新娘和证婚人都没有留下名字。"}
+	,"weeping_cairn":{"name":"王庭哭泣石", "size":Vector2i(1,2), "value":115, "color":Color("d7b4a7"), "tier":1, "desc":"旧王庭墙基中的红色石英。切开后，每一层都凝着一滴眼泪。"}
+	,"nameless_standard":{"name":"无名旗首", "size":Vector2i(2,1), "value":144, "color":Color("d8adb1"), "tier":2, "desc":"没有徽记的军旗顶饰。旗帜已经烧尽，握旗之人的誓言仍未熄灭。"}
+	,"mirror_fate_ledger":{"name":"镜界命谱", "size":Vector2i(2,2), "value":285, "color":Color("d3b5e2"), "tier":4, "desc":"镜墓纺女织成的命运底稿。上面有你的名字，但每一笔都在倒退。"}
+	,"vesper_last_page":{"name":"末日弥撒篇", "size":Vector2i(2,2), "value":305, "color":Color("e0a988"), "tier":4, "desc":"余烬司祭的最后一页弥撒：愿焚尽我的神，换你们活过长夜。"}
+	,"fault_pulse_fossil":{"name":"断层圣髓", "size":Vector2i(2,2), "value":320, "color":Color("c99f8d"), "tier":4, "desc":"裂地钻兽体内凝结的地脉核心。捧在手中，脚下的大地会回应你的心跳。"}
+	,"thunder_coffin_nail":{"name":"雷骸镇魂钉", "size":Vector2i(2,2), "value":335, "color":Color("b5c8dc"), "tier":4, "desc":"曾钉入雷骸巨鸟王冠的镇魂钉。拔出后，沉睡的雷暴开始寻找天空。"}
+	,"frostbone_king_remains":{"name":"霜骨龙皇遗骸", "size":Vector2i(3,3), "value":920, "color":Color("e38e9b"), "tier":5, "desc":"霜骨龙皇最后的王骸，九格寒光封存着失落龙庭。红色传世珍宝，占据整片 3×3 格。"}
+	,"storm_roc_sunheart":{"name":"雷骸天帝之心", "size":Vector2i(3,3), "value":980, "color":Color("e4828d"), "tier":5, "desc":"风暴巨鸟王的赤色心核。握住它，万雷会齐声呼唤你的真名。3×3 格红色传世珍宝。"}
+	,"bloodmoon_nightwomb":{"name":"赤月终焉王胎", "size":Vector2i(3,3), "value":1080, "color":Color("eb7588"), "tier":5, "desc":"终焉赤月尚未诞生的王胎。它在三日血潮尽头等待一位新的弑神者。3×3 格红色传世珍宝。"}
+	,"abyssal_motherheart":{"name":"无光海母之心", "size":Vector2i(3,3), "value":1260, "color":Color("d982a0"), "tier":5, "desc":"吞月渊蛇腹中沉眠的海母之心。带走它的人，也将带走海底最后的黑夜。3×3 格红色传世珍宝。"}
+	,"eternal_night_thronecore":{"name":"永夜王座核心", "size":Vector2i(3,3), "value":1150, "color":Color("e8a0a0"), "tier":5, "desc":"晨曦王城王座深处的赤色核心。它不是王权的象征，而是王权活着的原因。3×3 格红色传世珍宝。"}
 }
 const BIOME_COLLECTIBLES := [
 	["wind_chime","rabbit_bell","oath_banner"],
@@ -54,6 +81,23 @@ const BIOME_COLLECTIBLES := [
 ]
 const ROYAL_COLLECTIBLES := ["royal_diadem","twilight_edict","dawn_testament"]
 const BOSS_COLLECTIBLES := ["mirror_thread","ember_heart","fault_scale","storm_feather","frost_teardrop","abyss_shedding"]
+const BIOME_COLLECTIBLES_II := [
+	["fog_chime","nightwatch_pin","weightless_oathstone"],
+	["hourless_token","last_mass_leaf","mute_judgement"],
+	["seer_eye","silver_stag_bell","meteor_core"],
+	["sleeping_veil","blood_vow_clasp","thorn_heart"],
+	["moonbone_flute","sunken_lantern","abyssal_rite_drum"],
+	["redmoon_betrothal","weeping_cairn","nameless_standard"]
+]
+const BOSS_COLLECTIBLES_II := ["mirror_fate_ledger","vesper_last_page","fault_pulse_fossil","thunder_coffin_nail","frostbone_king_remains","storm_roc_sunheart"]
+const ROYAL_COLLECTIBLES_II := ["bloodmoon_nightwomb","abyssal_motherheart","eternal_night_thronecore"]
+const NEW_COLLECTIBLES := [
+	"fog_chime","nightwatch_pin","weightless_oathstone","hourless_token","last_mass_leaf","mute_judgement",
+	"seer_eye","silver_stag_bell","meteor_core","sleeping_veil","blood_vow_clasp","thorn_heart",
+	"moonbone_flute","sunken_lantern","abyssal_rite_drum","redmoon_betrothal","weeping_cairn","nameless_standard",
+	"mirror_fate_ledger","vesper_last_page","fault_pulse_fossil","thunder_coffin_nail","frostbone_king_remains",
+	"storm_roc_sunheart","bloodmoon_nightwomb","abyssal_motherheart","eternal_night_thronecore"
+]
 
 static func biome_collectible(biome: int, variant: int) -> String:
 	return BIOME_COLLECTIBLES[clampi(biome,0,BIOME_COLLECTIBLES.size()-1)][clampi(variant,0,2)]
@@ -67,7 +111,14 @@ static func collectible_index(kind: String) -> int:
 	for collectible in BOSS_COLLECTIBLES+ROYAL_COLLECTIBLES:
 		if collectible==kind: return index
 		index+=1
+	for collectible in NEW_COLLECTIBLES:
+		if collectible==kind: return index
+		index+=1
 	return -1
+
+static func biome_collectible_set(biome: int) -> Array:
+	var index := clampi(biome,0,BIOME_COLLECTIBLES.size()-1)
+	return BIOME_COLLECTIBLES[index]+BIOME_COLLECTIBLES_II[index]
 const TALENTS = ["生命强化", "火力校准", "轻装步伐"]
 # Field weapons are loot and nothing else: a
 # Watcher can only ever hold one of them by finding it and putting it on, so the

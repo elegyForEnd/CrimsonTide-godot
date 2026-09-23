@@ -18,7 +18,8 @@ func run() -> void:
 		for kind in biome: kinds.append(kind)
 	kinds.append_array(Catalog.BOSS_COLLECTIBLES)
 	kinds.append_array(Catalog.ROYAL_COLLECTIBLES)
-	check(kinds.size()==27 and kinds.size()==kinds.duplicate().reduce(func(a,b): return a if b in a else a+[b],[]).size(),"Twenty-seven unique collectibles")
+	kinds.append_array(Catalog.NEW_COLLECTIBLES)
+	check(kinds.size()==54 and kinds.size()==kinds.duplicate().reduce(func(a,b): return a if b in a else a+[b],[]).size(),"Fifty-four unique collectibles")
 	for index in kinds.size():
 		var kind: String=kinds[index]
 		check(Catalog.ITEMS.has(kind),"Catalog entry: "+kind)
@@ -34,6 +35,9 @@ func run() -> void:
 		var saved: Dictionary=JSON.parse_string(JSON.stringify(pocket))
 		Catalog.clean_container(saved,Vector2i(4,4))
 		check(saved.items.size()==1 and saved.items[0].kind==kind,"Save round trip: "+kind)
+	for kind in Catalog.BOSS_COLLECTIBLES_II.slice(4,6)+Catalog.ROYAL_COLLECTIBLES_II:
+		var entry: Dictionary=Catalog.ITEMS[kind]
+		check(entry.size==Vector2i(3,3) and int(entry.tier)==5,"Red 3x3 collection: "+kind)
 	var s := TideSession.new()
 	root.add_child(s)
 	s.solo({"hero":0})
@@ -45,12 +49,16 @@ func run() -> void:
 		s.begin_search(p,s.ruins.chests.find(chest))
 		var found := false
 		for item in chest.items:
-			if str(item.kind) in Catalog.BIOME_COLLECTIBLES[biome]: found=true
+			if str(item.kind) in Catalog.biome_collectible_set(biome): found=true
 		check(found,"Wilderness cache contains local collectible: "+str(biome))
 	s.knight_reward(Vector2(100,100))
 	var royal: Dictionary=s.ruins.chests.back()
 	for kind in Catalog.ROYAL_COLLECTIBLES:
 		check(royal.items.any(func(item): return str(item.kind)==kind),"Royal reward fits "+kind)
+	check(royal.items.any(func(item): return str(item.kind)=="eternal_night_thronecore"),"Royal reward fits red throne core")
+	check(royal.items.filter(func(item): return str(item.kind)=="relic").size()==3,"Royal reward keeps three relics")
+	check(royal.items.filter(func(item): return str(item.kind)=="gear").size()==3,"Royal reward keeps all gear")
+	check(royal.items.any(func(item): return str(item.kind)=="weapon") and royal.items.any(func(item): return str(item.kind)=="backpack"),"Royal reward keeps weapon and backpack")
 	s.queue_free()
 	await process_frame
 	print("COLLECTIBLE CHECKS: ",checks," failures: ",failures)

@@ -1,5 +1,6 @@
-"""Validate the three generated 3x3 sheets and install exact-cell PNG atlases."""
+"""Validate the generated 3x3 sheets and install exact-cell PNG atlases."""
 
+import argparse
 from pathlib import Path
 
 from PIL import Image
@@ -11,7 +12,11 @@ DESTINATION = ROOT / "assets" / "icons"
 
 
 def main() -> None:
-    for number in range(1, 4):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sheet", type=int, choices=range(1, 7), nargs="*")
+    args = parser.parse_args()
+    numbers = args.sheet if args.sheet else range(1, 7)
+    for number in numbers:
         source = SOURCE / f"sheet-{number:02d}.png"
         with Image.open(source) as file:
             image = file.convert("RGBA")

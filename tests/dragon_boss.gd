@@ -75,7 +75,11 @@ func run() -> void:
 		check(s.raid.get("dragon_slain",false),"Dragon defeat records a separate accomplishment")
 		var reward := false
 		for chest in s.ruins.chests:
-			if str(chest.get("title","")).contains("龙巢遗珍"): reward=true
+			if str(chest.get("title","")).contains("龙巢遗珍"):
+				reward=true
+				check(chest.items.any(func(item): return str(item.kind)=="frostbone_king_remains"),"Dragon drops its red 3x3 king relic")
+				check(chest.items.any(func(item): return str(item.kind)=="frost_teardrop"),"Dragon keeps its original tear relic")
+				check(chest.items.any(func(item): return str(item.kind)=="weapon"),"Dragon reward keeps its weapon")
 		check(reward,"Dragon drops a unique lair chest")
 	var art: Texture2D=load("res://assets/bosses/dragon/frostbone-dragon.png")
 	check(art!=null and art.get_width()>1000,"Dragon cutout art imports")

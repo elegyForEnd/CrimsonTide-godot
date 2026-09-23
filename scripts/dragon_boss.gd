@@ -127,10 +127,11 @@ func defeated(s, e: Dictionary) -> void:
 	for i in range(s.raid.hazards.size()-1,-1,-1):
 		if int(s.raid.hazards[i].get("source",-1))==int(e.id): s.raid.hazards.remove_at(i)
 	s.raid.dragon_slain=true
-	var chest: Dictionary=s.loot_container(e.p,Vector2i(6,6),4,true)
+	var chest: Dictionary=s.loot_container(e.p,Vector2i(7,7),4,true)
 	chest.merge({"fixed_loot":true,"reward_tier":4,"title":NAME+" · 龙巢遗珍","open":true},true)
-	for item in ["medicine","medicine","ammo","relic","relic","relic"]: s.place_entry(chest,item)
 	s.place_entry(chest,"frost_teardrop")
+	s.place_entry(chest,"frostbone_king_remains")
 	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),4))
+	for item in ["medicine","medicine","ammo","relic","relic","relic"]: s.place_entry(chest,item)
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)

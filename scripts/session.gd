@@ -1025,7 +1025,8 @@ func chest_loot(bonus_relic: bool = false, backpack_chance: float = -1.0, cache_
 	if bonus_relic or rng.randf()<0.2:
 		loot.append("relic")
 	if biome>=0 and biome<Catalog.BIOME_COLLECTIBLES.size():
-		loot.append(Catalog.biome_collectible(biome,rng.randi_range(0,2)))
+		var local_collectibles: Array=Catalog.biome_collectible_set(biome)
+		loot.append(local_collectibles[rng.randi_range(0,local_collectibles.size()-1)])
 	# Insert rolled equipment first so a full 4x4 cache never silently discards
 	# a rare weapon after filling its cells with ordinary supplies.
 	var bag_chance: float = float(CACHE_BACKPACK_CHANCE[grade]) if backpack_chance<0 else backpack_chance
@@ -1121,7 +1122,8 @@ func enemy_loot(e: Dictionary) -> Dictionary:
 		elif roll<weapon_chance+gear_chance+0.47 and map_id=="border":
 			var habitat := int(e.get("habitat",-1))
 			var biome := int(ruins.sites[habitat].biome) if habitat>=0 and habitat<ruins.sites.size() else ruins.biome_at(e.get("p",Ruins.SPAWN))
-			entry["kind"]=Catalog.biome_collectible(biome,rng.randi_range(0,2))
+			var local_collectibles: Array=Catalog.biome_collectible_set(biome)
+			entry["kind"]=local_collectibles[rng.randi_range(0,local_collectibles.size()-1)]
 	return entry
 
 # A crystal the player is standing on is simply absorbed: no key, no container and
@@ -2957,14 +2959,15 @@ func travel_city(forced: bool = false) -> bool:
 	return true
 
 func knight_reward(at: Vector2) -> void:
-	var chest := loot_container(at,Vector2i(6,6),3,true)
+	var chest := loot_container(at,Vector2i(7,7),3,true)
 	chest["fixed_loot"]=true
 	chest["title"]="失乡骑士的王庭珍藏"
-	for i in 3: place_entry(chest,{"kind":"relic"})
 	for kind in Catalog.ROYAL_COLLECTIBLES: place_entry(chest,kind)
+	place_entry(chest,"eternal_night_thronecore")
 	place_entry(chest,Catalog.make_equipment("weapon",2,5))
 	for i in 3: place_entry(chest,Catalog.make_equipment("gear",i,4))
 	place_entry(chest,{"kind":"backpack","key":"gold"})
+	for i in 3: place_entry(chest,{"kind":"relic"})
 	chest["open"]=true
 	append_chest(chest)
 	emit_effect("bell",at)

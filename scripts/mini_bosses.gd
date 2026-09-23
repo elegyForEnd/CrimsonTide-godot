@@ -129,12 +129,13 @@ func defeated(s, e: Dictionary) -> void:
 		if int(s.raid.hazards[i].get("source",-1))==int(e.id):
 			s.raid.hazards.remove_at(i)
 	var quality := 3 if int(e.mini_kind)==0 else 4
-	var chest: Dictionary=s.loot_container(e.p,Vector2i(5,5),quality,true)
+	var chest: Dictionary=s.loot_container(e.p,Vector2i(6,6),quality,true)
 	chest.merge({"fixed_loot":true,"reward_tier":quality,
 		"title":str(e.boss_name)+" · 守卫秘藏","open":true},true)
+	s.place_entry(chest,["mirror_thread","ember_heart"][int(e.mini_kind)])
+	s.place_entry(chest,["mirror_fate_ledger","vesper_last_page"][int(e.mini_kind)])
+	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),quality))
 	for item in ["medicine","ammo","relic","relic"]:
 		s.place_entry(chest,item)
-	s.place_entry(chest,["mirror_thread","ember_heart"][int(e.mini_kind)])
-	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),quality))
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)

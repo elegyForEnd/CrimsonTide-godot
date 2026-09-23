@@ -142,14 +142,17 @@ func victory(s) -> void:
 				p.status="active"
 				p.hp=p.max_hp*0.35
 			p.invuln=5.0
-	var chest: Dictionary=s.loot_container(s.raid.center,Vector2i(7,7),day+2,true)
+	var chest: Dictionary=s.loot_container(s.raid.center,Vector2i(8,8),day+2,true)
 	chest.merge({"fixed_loot":true,"reward_tier":day+2,"title":("吞月渊蛇 · 深渊遗赠" if s.raid.get("abyss_spawned",false) else "无名赤月 · 终夜遗赠" if s.raid.get("final_spawned",false) else NAMES[int(s.raid.kind)]+" · 黎明遗赠"),"open":true})
-	for item in ["medicine","medicine","ammo","ammo","relic","relic"]: s.place_entry(chest,item)
-	if s.raid.get("abyss_spawned",false): s.place_entry(chest,"abyss_shedding")
+	if s.raid.get("abyss_spawned",false):
+		s.place_entry(chest,"abyss_shedding")
+		s.place_entry(chest,"abyssal_motherheart")
+	elif s.raid.get("final_spawned",false): s.place_entry(chest,"bloodmoon_nightwomb")
 	s.place_entry(chest,Catalog.make_equipment("weapon",Catalog.roll_weapon(s.rng),mini(5,day+2)))
 	s.place_entry(chest,Catalog.make_equipment("gear",s.rng.randi_range(0,2),day+2))
-	for i in day-1: s.place_entry(chest,"relic")
 	s.place_entry(chest,{"kind":"backpack","key":["blue","gold","red"][day-1]})
+	for item in ["medicine","medicine","ammo","ammo","relic","relic"]: s.place_entry(chest,item)
+	for i in day-1: s.place_entry(chest,"relic")
 	chest.searched=s.container_units(chest)
 	s.append_chest(chest)
 	if day==1:
