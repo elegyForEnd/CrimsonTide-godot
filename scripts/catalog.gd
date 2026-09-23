@@ -1,10 +1,18 @@
 class_name Catalog
 extends RefCounted
 
+# The three heroes the game shipped with. Everything past this index is a
+# hidden recruit who only appears once a profile has earned them.
+const BASE_ROSTER := 3
+
 const HEROES = [
 	{"name":"绯月", "title":"赤刃守夜姬", "desc":"黑铁短剑：攻击距离短、攻速快、伤害低。红莲月华贯穿近处敌群。", "color":Color("da6474"), "hair":Color("e8dce0"), "hp":110.0, "speed":220.0, "damage":23.0, "rate":0.23, "clip":16, "skill":"红莲月华"},
 	{"name":"雪璃", "title":"晨钟祈愿者", "desc":"祭祀短杖：远程法术攻击，伤害低，释放前需要短暂吟唱。拂晓之祈治疗附近的所有队友。", "color":Color("70c4bc"), "hair":Color("c9e0ef"), "hp":95.0, "speed":230.0, "damage":32.0, "rate":0.42, "clip":10, "skill":"拂晓之祈"},
-	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"破碎大剑：攻速慢、伤害略高、范围大。夜鸦断罪清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦断罪"}
+	{"name":"鸦羽", "title":"黑羽处刑人", "desc":"破碎大剑：攻速慢、伤害略高、范围大。夜鸦断罪清除周围敌人并短暂护身。", "color":Color("b397de"), "hair":Color("56516e"), "hp":130.0, "speed":250.0, "damage":42.0, "rate":0.36, "clip":0, "skill":"夜鸦断罪"},
+	# The hidden recruit. Her row only appears once the hidden ending has been
+	# reached, so every table indexed by hero index has to carry a fourth entry
+	# whether or not the profile has unlocked her.
+	{"name":"墓煜", "title":"冥火死灵法师", "desc":"湮魂之镰：伤害高、范围中等、攻速偏慢。冥火剑雨轰击前方矩形区域，随后留下持续灼烧的紫色冥火。", "color":Color("c07ae0"), "hair":Color("e6e2ee"), "hp":100.0, "speed":225.0, "damage":38.0, "rate":0.48, "clip":0, "skill":"冥火剑雨"}
 ]
 const ITEMS = {
 	"crystal":{"name":"血晶", "size":Vector2i(1,1), "value":18, "color":Color("e45c74"), "desc":"拾取后直接计入血晶数量，不占背包格子；靠近即可自动吸附。"},
@@ -15,7 +23,11 @@ const ITEMS = {
 	"ammo":{"name":"弹药匣", "size":Vector2i(2,1), "value":20, "color":Color("c4ad82"), "desc":"按 F 优先治疗；弹药不足时自动消耗弹药匣补充 48 发。"},
 	"backpack":{"name":"背包", "size":Vector2i(1,1), "value":40, "color":Color("cfc6bb"), "desc":"可背在身上的独立储物空间，本身就是一件装备：双击或 Ctrl+左键即可换装，换下的旧包进背包柜。紫色及以上品质的包占 2×2 格。"},
 	"weapon":{"name":"武器", "size":Vector2i(2,2), "value":85, "color":Color("c9a06a"), "desc":"战场上捡到的武器。只有装备到武器槽后才会握在手里；拿着它攻击时获得品质加成。阵亡会掉落。"},
-	"gear":{"name":"装备", "size":Vector2i(1,2), "value":55, "color":Color("8fb6d8"), "desc":"护甲 / 瞄具 / 轻靴。装备到对应槽位后本局提升生命、火力或移速。阵亡会掉落。"}
+	"gear":{"name":"装备", "size":Vector2i(1,2), "value":55, "color":Color("8fb6d8"), "desc":"护甲 / 瞄具 / 轻靴。装备到对应槽位后本局提升生命、火力或移速。阵亡会掉落。"},
+	# The hidden-ending key. It is a red 1x1 trinket worth 666 and nothing else:
+	# no stat line, no slot, no use. It only matters that it is in the backpack
+	# when the third morning bell has been lit.
+	"amulet":{"name":"骑士的护身符", "size":Vector2i(1,1), "value":666, "color":Color("dd6c7c"), "desc":"失乡骑士身上剥下的猩红护符，内侧刻着一行没人认得的祷文。三个晨钟封印全部点亮后，它会开始发烫。", "tier":5, "rarity":"红色"}
 }
 const TALENTS = ["生命强化", "火力校准", "轻装步伐"]
 # Field weapons are loot and nothing else: a
@@ -54,7 +66,8 @@ const STARTER_BASE := 17
 const STARTER_WEAPONS = [
 	{"name":"黑铁短剑", "rate":0.30, "windup":0.05, "damage":13.0, "reach":84.0, "knock":10.0, "family":1},
 	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":15.0, "reach":520.0, "knock":8.0, "family":3},
-	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":30.0, "reach":150.0, "knock":40.0, "family":2}
+	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":30.0, "reach":150.0, "knock":40.0, "family":2},
+	{"name":"湮魂之镰", "rate":0.62, "windup":0.22, "damage":18.0, "reach":110.0, "knock":16.0, "family":1, "icon":"soul_scythe"}
 ]
 const GEAR = [
 	{"name":"守夜护甲", "desc":"最大生命 +20", "hp":20.0,"damage":0.0,"speed":0.0},
@@ -252,15 +265,27 @@ static func item_color(item: Dictionary) -> Color:
 		return quality_color(int(item.get("tier",0)))
 	if kind=="backpack":
 		return tier(bag_key(item)).color
+	# A trinket may declare a quality of its own: the knight's amulet is red
+	# because it carries a tier, not because it is equipment.
+	if item.has("tier"):
+		return quality_color(int(item.get("tier",0)))
 	return ITEMS[kind].color
 
 static func item_icon(item: Dictionary) -> String:
 	var kind := str(item.get("kind",""))
 	if kind=="weapon":
-		return WEAPON_ICONS[clampi(int(item.get("weapon",0)),0,WEAPON_ICONS.size()-1)]
+		return weapon_icon(int(item.get("weapon",0)))
 	if kind=="gear":
 		return GEAR_ICONS[gear_slot(item)]
 	return kind
+
+# A field weapon always uses its family's icon; an issue weapon may ship its own
+# art, which is what lets a recruit carry a visibly different starter.
+static func weapon_icon(index: int) -> String:
+	if is_starter(index):
+		var starter: Dictionary=STARTER_WEAPONS[clampi(index-STARTER_BASE,0,STARTER_WEAPONS.size()-1)]
+		return str(starter.get("icon",WEAPON_ICONS[clampi(weapon_family(index),0,WEAPON_ICONS.size()-1)]))
+	return WEAPON_ICONS[clampi(index,0,WEAPON_ICONS.size()-1)]
 
 # Icons for a bare kind, used by the code that preloads one texture per item
 # kind; a concrete weapon or gear item resolves through item_icon() instead.

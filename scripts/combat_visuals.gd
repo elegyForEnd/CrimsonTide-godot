@@ -8,12 +8,30 @@ var extraction_vortex: Texture2D = preload("res://assets/world/landmarks/extract
 const SPELL_CELLS := {"meteor":0,"needle":1,"chain":2,"moon":3,"prism":4,"scatter":5,"vortex":6,"eclipse":7}
 var motes: Array = []
 var extract_flashes: Array = []
+# 墓煜's ultimate leaves two kinds of residue on the field: the rune-sword rain
+# itself, and the patch of underworld fire it burns into the ground afterwards.
+var rune_patches: Array = []
+var flames: Array = []
 var trauma := 0.0
 var numbers: Array = []
 var elapsed := 0.0
 var spell_light: Node2D
 var energy = preload("res://scripts/energy_bursts.gd").new()
-const SPELL_COLORS := [Color("ff8454"),Color("a7e9ff"),Color("c6a6ff"),Color("cfdbff"),Color("ffe2a5"),Color("ffb474"),Color("ac85ff"),Color("ed95de")]
+const SPELL_COLORS := [Color("ff8454"),Color("a7e9ff"),Color("c6a6ff"),Color("cfdbff"),Color("ffd7a0"),Color("ffb474"),Color("ac85ff"),Color("ed95de")]
+# 墓煜's palette: a violet rune glow over a darker underworld flame.
+const SOUL := Color("c07ae0")
+const SOUL_DEEP := Color("6a2f9c")
+const SOUL_FIRE := Color("a855f7")
+# Rune-sword rain cells in assets/muyu/rune-rain.png (4 x 2) and the lingering
+# fire cells in assets/muyu/hellfire.png (3 x 2).
+const RAIN_COLUMNS := 4
+const FIRE_COLUMNS := 3
+# How wide the ultimate's rectangle is drawn. Kept in step with
+# TideSession.FIRE_HALF_WIDTH by the hidden ending test.
+const FIRE_SPAN := 350.0
+var rain_art: Texture2D = null
+var fire_art: Texture2D = null
+var sigil_art: Texture2D = null
 
 func _ready() -> void:
 	var additive := ShaderMaterial.new()
@@ -31,9 +49,63 @@ func _ready() -> void:
 func reset() -> void:
 	motes.clear()
 	extract_flashes.clear()
+	rune_patches.clear()
+	flames.clear()
 	energy.reset()
 	numbers.clear()
 	trauma=0.0
+
+# Loaded on first use: the necromancer's art is optional, so a missing file
+# degrades to the shared atlas instead of stopping the whole effect layer.
+func soul_art() -> void:
+	if rain_art==null and ResourceLoader.exists("res://assets/muyu/rune-rain.png"):
+		rain_art=load("res://assets/muyu/rune-rain.png")
+	if fire_art==null and ResourceLoader.exists("res://assets/muyu/hellfire.png"):
+		fire_art=load("res://assets/muyu/hellfire.png")
+	if sigil_art==null and ResourceLoader.exists("res://assets/muyu/hex-ring.png"):
+		sigil_art=load("res://assets/muyu/hex-ring.png")
+
+func necro_cell(sheet: Texture2D, columns: int, rows: int, index: int) -> Rect2:
+	var unit := Vector2(sheet.get_width()/float(columns),sheet.get_height()/float(rows))
+	var cell := Vector2i(index%columns,index/columns)
+	return Rect2(Vector2(cell)*unit+Vector2.ONE*3,unit-Vector2.ONE*6)
+
+func necro_stamp(sheet: Texture2D, columns: int, rows: int, index: int, at: Vector2,
+		extent: Vector2, angle: float, tint: Color) -> void:
+	spell_light.draw_set_transform(at,angle)
+	spell_light.draw_texture_rect_region(sheet,Rect2(-extent.abs()/2,extent.abs()),
+		necro_cell(sheet,columns,rows,index),tint)
+	spell_light.draw_set_transform(Vector2.ZERO)
+
+# The rain: the curse sigil opens on the ground, then rune swords drop through
+# the rectangle from above. Host settles the damage; this is presentation only.
+# The blades are queued as spell art with a delay and a downward velocity, so
+# the shared mote list does the timing and the rain needs no state of its own.
+func necromancer_burst(at: Vector2, aim_angle: float) -> void:
+	soul_art()
+	var aim := Vector2.from_angle(aim_angle)
+	spawn(7,at,Vector2(420,240),0.9,aim_angle,Color(SOUL,0.9))
+	spawn(3,at,Vector2(300,300),1.0,0,Color(SOUL,0.55))
+	if sigil_art:
+		spawn(0,at,Vector2(430,430),1.1,0,Color(1,1,1,0.95),0.0,Vector2.ZERO)
+		motes[motes.size()-1]["art"]=sigil_art
+		motes[motes.size()-1]["columns"]=1
+		motes[motes.size()-1]["rows"]=1
+	for i in 9:
+		var across := (float(i%5)/4.0-0.5)*FIRE_SPAN*0.92
+		var along := 40.0+float(i%3)*FIRE_SPAN*0.60
+		spawn(0,at+aim.orthogonal()*across+aim*along,Vector2(150,150),0.62,
+			aim_angle+deg_to_rad(float(i%4-2)*7.0),Color(1,1,1,0.95),0.05*float(i),
+			Vector2(0,-560.0))
+		motes[motes.size()-1]["art"]=rain_art
+		motes[motes.size()-1]["columns"]=4
+		motes[motes.size()-1]["rows"]=2
+		motes[motes.size()-1]["index"]=i%8
+	for i in 5:
+		spawn(6,at+aim*(60+i*70),Vector2(46,72),0.6,
+			aim_angle,Color(SOUL_FIRE),i*0.07,Vector2(0,-120))
+	if sigil_art:
+		necro_stamp(sigil_art,1,1,0,at,Vector2(360,360),0.0,Color(SOUL,0.5))
 
 func spawn(cell: int, at: Vector2, size: Vector2, duration: float, angle: float = 0.0, tint: Color = Color.WHITE, delay: float = 0.0, velocity: Vector2 = Vector2.ZERO) -> void:
 	if motes.size()>=240:
@@ -75,6 +147,11 @@ func event(data: Dictionary) -> void:
 					spawn(6,at+aim_dir*27-Vector2(0,27),Vector2(62,62),0.26)
 			elif weapon==2:
 				spawn(5,at-Vector2(0,72),Vector2(44,70),0.30,0,Color(1,0.7,0.35))
+		"necromancer-cast":
+			# The grimoire opens and a violet ward sigil hangs under her feet for
+			# the whole cast, so the staff branch reads as a spell rather than a bow.
+			spawn(8,at-Vector2(0,14),Vector2(132,132),maxf(0.32,float(data.get("windup",0.3)))*1.1,0,Color(SOUL,0.62))
+			spawn(6,at+aim_dir*24-Vector2(0,30),Vector2(72,72),0.34,angle,Color(SOUL,0.8))
 		"strike":
 			var pattern := str(data.get("pattern",""))
 			match weapon:
@@ -128,10 +205,19 @@ func event(data: Dictionary) -> void:
 				spawn(4,at,Vector2(470,420),0.8)
 				for i in 3:
 					spawn(0,at,Vector2(425,310),0.4,angle+i*TAU/3,Color(0.6,0.55,1),i*0.09)
+			elif hero==TideSession.NECROMANCER:
+				necromancer_burst(at,angle if angle!=0.0 else aim_dir.angle())
 			else:
 				spawn(7,at,Vector2(270,150),0.7)
 				for i in 5:
 					spawn(0,at+aim_dir*(75+i*70),Vector2(190,210),0.45,angle,Color.WHITE,i*0.055)
+		"necromancer-fire":
+			rune_patches.append({"at":at,"aim":aim_dir,"age":0.0,
+				"duration":float(data.get("duration",6.0)),"forward":float(data.get("forward",480.0)),
+				"half":float(data.get("half",175.0)),"spawned":0.0})
+			trauma=maxf(trauma,0.5)
+		"burn":
+			flames.append({"p":at,"age":0.0,"duration":0.42})
 
 func legacy(kind: String, at: Vector2) -> void:
 	if at.distance_to(field.camera)>1100:
@@ -171,6 +257,14 @@ func _process(dt: float) -> void:
 		extract_flashes[i].age+=dt
 		if extract_flashes[i].age>0.9:
 			extract_flashes.remove_at(i)
+	for i in range(rune_patches.size()-1,-1,-1):
+		rune_patches[i].age+=dt
+		if rune_patches[i].age>rune_patches[i].duration:
+			rune_patches.remove_at(i)
+	for i in range(flames.size()-1,-1,-1):
+		flames[i].age+=dt
+		if flames[i].age>flames[i].duration:
+			flames.remove_at(i)
 	for i in range(numbers.size()-1,-1,-1):
 		numbers[i].age+=dt
 		if numbers[i].age>0.7:
@@ -213,7 +307,13 @@ func _draw() -> void:
 		var fade := minf(1,t*18)*pow(1-t,1.3)
 		var tint: Color=fx.tint
 		tint.a*=fade
-		if not fx.get("spell_art",false):
+		if fx.has("art"):
+			# A reference piece with its own sheet rather than a cell of the
+			# shared vfx atlas.
+			necro_stamp(fx.art,int(fx.get("columns",1)),int(fx.get("rows",1)),
+				int(fx.get("index",0)),fx.p+fx.velocity*fx.age,
+				fx.size*lerpf(0.72,1.18,t),fx.angle,tint)
+		elif not fx.get("spell_art",false):
 			stamp(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(0.72,1.18,t),fx.angle,tint)
 	for bullet in field.session.bullets:
 		var spell := str(bullet.get("spell","star"))
@@ -232,11 +332,50 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO)
 
 func draw_spells() -> void:
+	soul_art()
 	for fx in motes:
 		if not fx.get("spell_art",false) or fx.age<0: continue
 		var t: float=fx.age/fx.duration
 		var tint := Color(fx.tint,float(fx.tint.a)*minf(1,t*18)*pow(1-t,1.3))
 		stamp_spell(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(.72,1.18,t),fx.angle,tint)
+	# 墓煜's lingering fire is drawn before her projectiles so a spell never hides
+	# under the patch it was cast from.
+	for patch in rune_patches:
+		var age: float=float(patch.age)
+		var duration: float=maxf(0.01,float(patch.duration))
+		var forward: float=float(patch.forward)
+		var half: float=float(patch.half)
+		var aim: Vector2=patch.aim
+		var grow := minf(1.0,age/0.35)
+		var fade := clampf((duration-age)/1.1,0,1)
+		if fade<=0.0: continue
+		var span := forward*grow
+		var rect := Rect2(Vector2.ZERO,Vector2(span,half*2.0*grow))
+		spell_light.draw_set_transform(patch.at-aim*span*0.5,aim.angle())
+		spell_light.draw_rect(rect,Color(SOUL_DEEP,0.30*fade))
+		spell_light.draw_rect(rect,Color(SOUL_FIRE,0.62*fade),false,3.0,true)
+		if fire_art:
+			# A flame's art has its base at 0.9 of its own height, so each lane is
+			# stamped with that much offset to stand it on the ground rather than
+			# in it. Flames stay upright: they are billboards, not patch decals.
+			var flame_size := half*1.05
+			for lane in 4:
+				var index := int(fposmod(age*5.0+lane*2.0,6.0))
+				var across := (float(lane)/3.0-0.5)*half*1.8
+				var depth := forward*(0.16+0.24*lane)
+				var ground := Vector2(across,depth)
+				necro_stamp(fire_art,FIRE_COLUMNS,2,index,
+					ground+Vector2(0,-flame_size*0.9),Vector2(flame_size,flame_size),
+					0.0,Color(SOUL_FIRE,0.80*fade))
+		spell_light.draw_set_transform(Vector2.ZERO)
+	for flame in flames:
+		var t: float=float(flame.age)/maxf(0.01,float(flame.duration))
+		var fade := pow(1.0-t,1.4)
+		if fire_art:
+			necro_stamp(fire_art,FIRE_COLUMNS,2,int(fposmod(float(flame.age)*22.0,6.0)),
+				flame.p,Vector2(94,120)*(1.0+t*0.4),0,Color(SOUL_FIRE,fade*0.9))
+		necro_stamp(spell_atlas,4,2,6,flame.p-Vector2(0,26),Vector2.ONE*66*(1+t*0.5),0,
+			Color(SPELL_COLORS[6],fade*0.5))
 	for bullet in field.session.bullets:
 		var spell := str(bullet.get("spell","star"))
 		if not SPELL_CELLS.has(spell): continue

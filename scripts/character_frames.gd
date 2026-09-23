@@ -5,7 +5,9 @@ var attacks: Array = []
 var movement: Array = []
 
 func _init() -> void:
-	for hero in 3:
+	# One atlas pair per hero in the catalog, so recruiting a fourth hero is a
+	# catalog entry plus two PNGs rather than a code change here.
+	for hero in Catalog.HEROES.size():
 		attacks.append(read_sheet("res://assets/combat/attack-clean-%d.png" % hero,CharacterMetrics.ATTACK[hero]))
 		movement.append(read_sheet("res://assets/combat/movement-%d.png" % hero,CharacterMetrics.MOVEMENT[hero]))
 

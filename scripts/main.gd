@@ -116,6 +116,9 @@ var title_font: Font
 var ultimate: UltimateCinematic
 var damage_overlay: ColorRect
 var damage_tween: Tween
+# Set for one frame when the hidden ending recruits somebody, so the report can
+# announce the unlock that this run just earned.
+var recruited := ""
 
 func _ready() -> void:
 	profile.load_profile()
@@ -718,9 +721,13 @@ func show_camp() -> void:
 	label(page,hero.name,Vector2(72,605),52,INK,Vector2(180,80))
 	label(page,hero.title,Vector2(226,642),19,hero.color)
 	label(page,hero.desc,Vector2(74,691),15,Color("c1b5bb"),Vector2(453,50)).autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	for i in 3:
+	# The roster only grows once the hidden ending has been reached: a locked
+	# recruit is simply not drawn, so the base three keep their original layout.
+	var roster := profile.roster_size()
+	for i in roster:
 		var h: Dictionary=Catalog.HEROES[i]
-		var b := button(page,h.name,Vector2(66+i*160,750),Vector2(147,50),func():
+		var b := button(page,h.name if i<Catalog.BASE_ROSTER else "%s ✦" % h.name,
+			Vector2(66+(i%3)*160,750+int(i/3)*58),Vector2(147,50),func():
 			if profile.data.hero!=i:
 				profile.data.hero=i
 				ready_local=false
@@ -1212,7 +1219,7 @@ func update_hud() -> void:
 	var encounter_cue := ""
 	for enemy in session.enemies:
 		if enemy.get("raid_boss",false):
-			encounter_cue="abyss" if enemy.get("abyss_final",false) else "final" if enemy.get("final_form",false) else "mirror" if int(enemy.boss_kind)==0 else "ember" if int(enemy.boss_kind)==1 else ""
+			encounter_cue="abyss" if enemy.get("abyss_final",false) else "hidden" if enemy.get("hidden_final",false) else "final" if enemy.get("final_form",false) else "mirror" if int(enemy.boss_kind)==0 else "ember" if int(enemy.boss_kind)==1 else ""
 			break
 		if enemy.get("mini_boss",false) and enemy.p.distance_to(p.p)<850:
 			encounter_cue="dragon" if enemy.get("dragon_boss",false) else ("earth" if int(enemy.wild_kind)==0 else "storm") if enemy.get("wild_boss",false) else "mirror" if int(enemy.mini_kind)==0 else "ember"
@@ -1230,11 +1237,12 @@ func update_hud() -> void:
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.sanity.text="理智  %d%%    ·    血香  %d" % [p.sanity,p.scent]
 	var family := Catalog.weapon_family(p.weapon)
-	var icon_index := family if Catalog.is_starter(int(p.weapon)) else int(p.weapon)
-	# The HUD icon follows whatever is in hand, looted or temporary.
-	if int(hud.get("weapon_family",-1))!=icon_index:
-		hud.weapon_family=icon_index
-		hud.weapon_icon.texture=TideUIArt.icon(Catalog.WEAPON_ICONS[icon_index])
+	# The HUD icon follows whatever is in hand, looted or temporary. The cache
+	# key is the weapon index rather than its family, because an issue weapon may
+	# ship its own icon inside a family it only borrows.
+	if int(hud.get("weapon_icon_index",-1))!=int(p.weapon):
+		hud.weapon_icon_index=int(p.weapon)
+		hud.weapon_icon.texture=TideUIArt.icon(Catalog.weapon_icon(int(p.weapon)))
 	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if family==0 else " · 三连击" if family==1 else ""))
 	hud.scent.text="战利品  %d ◈   /   击杀 %d" % [loot_total(p),p.kills]
 	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  就绪")
@@ -2240,7 +2248,7 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 			var off := button(overlay,"卸",Vector2(bx+box-19,by+1),Vector2(18,15),func(): unequip_slot(kind,index),false,9)
 			off.tooltip_text="卸下 "+Catalog.item_name(item)
 		elif issue:
-			item_icon(overlay,Catalog.WEAPON_ICONS[Catalog.weapon_family(p.weapon) if Catalog.is_starter(int(p.weapon)) else int(p.weapon)],Vector2(bx+17,by+5),Vector2(44,44)).modulate=Color(1,1,1,0.42)
+			item_icon(overlay,Catalog.weapon_icon(int(p.weapon)),Vector2(bx+17,by+5),Vector2(44,44)).modulate=Color(1,1,1,0.42)
 			rect(overlay,Vector2(bx+1,by+box-17),Vector2(box-2,16),Color(0.035,0.025,0.04,0.6))
 			var issue_label := label(overlay,Catalog.weapon_name(p.weapon),Vector2(bx+1,by+box-16),10,Color("9d94a6"),Vector2(box-2,14))
 			issue_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -2676,6 +2684,7 @@ func move_item(x: int,y: int) -> void:
 
 func on_finished() -> void:
 	ultimate.stop()
+	recruited=""
 	var reward: Dictionary=session.results.get(session.my_id(),{})
 	if not session.report_paid and not reward.is_empty():
 		profile.data.coins+=reward.coins
@@ -2691,12 +2700,29 @@ func on_finished() -> void:
 			profile.data.bags=reward.bags
 			profile.data.bag_key=str(reward.bags[0].get("key",Catalog.DEFAULT_BAG_KEY))
 		profile.sanitize_storage()
+		# Reaching the hidden ending is what recruits 墓煜, and the flag is
+		# written straight into the save file so she stays pickable afterwards.
+		if reward.get("hidden",false):
+			for i in range(Catalog.BASE_ROSTER,Catalog.HEROES.size()):
+				if profile.has_recruit(i):
+					continue
+				for key in Profile.RECRUIT_HEROES:
+					if int(Profile.RECRUIT_HEROES[key])!=i:
+						continue
+					profile.unlock(str(key))
+					recruited=str(Catalog.HEROES[i].name)
 		profile.save_profile()
 		session.report_paid=true
 	new_page("results")
 	background(0.85)
-	header("黎明的回响" if reward.get("escaped",false) else "长夜未尽","EXPEDITION REPORT   /   个人战利品与全队目标已结算")
+	var hidden_end: bool=bool(reward.get("hidden",false))
+	header("隐藏结局 · 冥火之下" if hidden_end else ("黎明的回响" if reward.get("escaped",false) else "长夜未尽"),
+		"HIDDEN ENDING   /   冥火尸王已伏诛，新的守夜人已经回应召唤" if hidden_end else "EXPEDITION REPORT   /   个人战利品与全队目标已结算")
 	label(page,"%d / 3  晨钟封印" % session.objectives,Vector2(83,235),25,GOLD)
+	if hidden_end:
+		label(page,"骑士的护身符 · 三处晨钟 · 隐藏 Boss 已击败",Vector2(300,241),17,Color("c07ae0"))
+	if not recruited.is_empty():
+		label(page,"新角色解锁：%s · 可在营地选择并游玩" % recruited,Vector2(560,241),17,Color("e8c9f5"))
 	label(page,"遗迹 #%d   ·   探索 %02d:%02d" % [session.seed_value,int(session.elapsed)/60,int(session.elapsed)%60],Vector2(860,235),17,MUTED)
 	var i := 0
 	for id in session.results:

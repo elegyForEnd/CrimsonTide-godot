@@ -13,6 +13,7 @@ func _draw() -> void:
 	var size := get_viewport_rect().size
 	var session: TideSession=field.session
 	var boss_frames: BossFrames=field.boss_frames
+	var Presentation = preload("res://scripts/boss_presentation.gd")
 	var boss_health: Dictionary=field.boss_health
 	var boss_seen: Dictionary=field.boss_seen
 	var clock: float=field.clock
@@ -32,7 +33,8 @@ func _draw() -> void:
 			continue
 		if not e.get("raid_boss",false): continue
 		var kind: int=e.boss_kind
-		var color: Color=Color("b86bff") if e.get("abyss_final",false) else Color("ff4a70") if e.get("final_form",false) else BossFrames.COLORS[kind]
+		var hidden: bool=e.get("hidden_final",false)
+		var color: Color=Presentation.HIDDEN_COLOR if hidden else Color("b86bff") if e.get("abyss_final",false) else Color("ff4a70") if e.get("final_form",false) else BossFrames.COLORS[kind]
 		var width := minf(700,size.x-490)
 		var art_size := Vector2(width,width/3.0)
 		var at := Vector2(size.x/2-width/2,44)
@@ -53,7 +55,7 @@ func _draw() -> void:
 		var phase: int=clampi(int(e.get("phase",1))-1,0,BossFrames.PHASES[kind].size()-1)
 		var title_at := at+Vector2(0.27,0.35)*art_size
 		label(title_at,str(e.boss_name),20,Color("fff2de"))
-		var phase_name: String=["潜潮","吞月","无光"][phase] if e.get("abyss_final",false) else ["血月","潮源","破晓"][phase] if e.get("final_form",false) else BossFrames.PHASES[kind][phase]
+		var phase_name: String=["冥火","尸潮","墓灭"][clampi(phase,0,2)] if hidden else ["潜潮","吞月","无光"][phase] if e.get("abyss_final",false) else ["血月","潮源","破晓"][phase] if e.get("final_form",false) else BossFrames.PHASES[kind][phase]
 		label(at+Vector2(0.72,0.35)*art_size,"%s · %s" % [["I","II","III"][phase],phase_name],15,color)
 		label(at+Vector2(0.27,0.655)*art_size,str(e.get("move_name","黎明降临 · 观察地面预警")),15,Color("fff0e1"))
 		var value := "%d / %d" % [maxi(0,int(ceil(e.hp))),int(e.max_hp)]

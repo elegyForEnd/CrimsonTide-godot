@@ -1,1069 +1,1202 @@
 {
-  "provider": "Spaland",
-  "engine": "prerecorded-human-voice",
-  "language": "ja",
-  "license": "Spaland custom free-use terms",
-  "terms": [
-    "https://soalunashosya.jimdofree.com/利用規約/"
-  ],
-  "terms_checked": "2026-09-22",
-  "note": "Human recordings by すぱるな瀟洒; not CC0. Game embedding allowed; standalone redistribution and AI training prohibited.",
-  "heroes": [
-    {
-      "name": "绯月",
-      "voice_id": "shozyo2",
-      "credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
-      "character_type": "少女元気め",
-      "lines": {
-        "attack": [
-          {
-            "file": "hero-0-shozyo2-torya.wav",
-            "ja": "とりゃ！",
-            "zh": "喝！",
-            "length": 0.669167,
-            "sha256": "47e48c05b5b5057efec9ea7d40750ddb130558cdeb304c53f0620f4d59f93391",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-torya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "8d899310f6ea37584cfab7387910c8f9dbc3260714d0a978227877d138959b32",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.0135,
-              "trim_end_seconds": 0.6826666666666666,
-              "gain": 0.6359115603338973,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-0-shozyo2-eiya.wav",
-            "ja": "えいや！",
-            "zh": "嘿呀！",
-            "length": 0.801333,
-            "sha256": "4d8c7f5939288b4bdab4faf4bdfa482b240b8fb2371f1c77ea85b550fac5d12d",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-eiya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "147cbc9d86591c29751c1b9a31ee4969f1408337cee9d37d9cd4b6f7fff9e962",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.009333333333333334,
-              "trim_end_seconds": 0.8106666666666666,
-              "gain": 0.6684435974740169,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-0-shozyo2-ta.wav",
-            "ja": "たあ！",
-            "zh": "哈！",
-            "length": 0.732,
-            "sha256": "6c0e3773d363c5f262d5213e27df1bd0623dc05fa70c6924eec23eb31a3d3fe0",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.036,
-              "trim_end_seconds": 0.768,
-              "gain": 0.6581946810051319,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "heavy": [
-          {
-            "file": "hero-0-shozyo2-ta.wav",
-            "ja": "たあ！",
-            "zh": "哈！",
-            "length": 0.732,
-            "sha256": "6c0e3773d363c5f262d5213e27df1bd0623dc05fa70c6924eec23eb31a3d3fe0",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.036,
-              "trim_end_seconds": 0.768,
-              "gain": 0.6581946810051319,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-0-shozyo2-atare.wav",
-            "ja": "あたれ！",
-            "zh": "击中吧！",
-            "length": 1.266521,
-            "sha256": "18d8f3c30f6cf300d3769a2e482018ee7c69c8032774e02fd242fc0dd0867b37",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.011208333333333334,
-              "trim_end_seconds": 1.2777291666666666,
-              "gain": 0.7395506011156988,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "magic": [
-          {
-            "file": "hero-0-shozyo2-atare.wav",
-            "ja": "あたれ！",
-            "zh": "击中吧！",
-            "length": 1.266521,
-            "sha256": "18d8f3c30f6cf300d3769a2e482018ee7c69c8032774e02fd242fc0dd0867b37",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.011208333333333334,
-              "trim_end_seconds": 1.2777291666666666,
-              "gain": 0.7395506011156988,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "dash": [
-          {
-            "file": "hero-0-shozyo2-ta.wav",
-            "ja": "たあ！",
-            "zh": "哈！",
-            "length": 0.732,
-            "sha256": "6c0e3773d363c5f262d5213e27df1bd0623dc05fa70c6924eec23eb31a3d3fe0",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.036,
-              "trim_end_seconds": 0.768,
-              "gain": 0.6581946810051319,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-0-shozyo2-eiya.wav",
-            "ja": "えいや！",
-            "zh": "嘿呀！",
-            "length": 0.801333,
-            "sha256": "4d8c7f5939288b4bdab4faf4bdfa482b240b8fb2371f1c77ea85b550fac5d12d",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-eiya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "147cbc9d86591c29751c1b9a31ee4969f1408337cee9d37d9cd4b6f7fff9e962",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.009333333333333334,
-              "trim_end_seconds": 0.8106666666666666,
-              "gain": 0.6684435974740169,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "hurt": [
-          {
-            "file": "hero-0-shozyo2-u.wav",
-            "ja": "うっ！",
-            "zh": "唔！",
-            "length": 0.525979,
-            "sha256": "66d43c5e75d2f73f5aff7e2affde7a4817e289803e9b03836aa2987d281a8218",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-u.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "993c276a6ec41bbe47cd244a856bcdfe34710e3f9bfdb92f3c0e6511ca4aa0af",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.018020833333333333,
-              "trim_end_seconds": 0.544,
-              "gain": 1.9285161220562486,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-0-shozyo2-ita.wav",
-            "ja": "いったぁ！",
-            "zh": "好痛！",
-            "length": 0.938688,
-            "sha256": "bfd9c4805a87a17a52d6632b4ade908dc5390fa3563d67ffecc8e32cd6cad1fd",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ita.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "005b8edbbbc7d784927d36ddef7bd96f2a8cfdd0b612d9a4f4cd6f0801ea0aa4",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.016020833333333335,
-              "trim_end_seconds": 0.9547083333333334,
-              "gain": 0.8760126376472848,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "heal": [
-          {
-            "file": "hero-0-shozyo2-ok.wav",
-            "ja": "おっけー！",
-            "zh": "好了！",
-            "length": 0.556042,
-            "sha256": "f7720b80f4c6051452ece3f0bf4763171853846c0e8385ed083061a5c3b4fed8",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ok.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "717d1df6379bf047fd50ea66a8d8feeb93ad85b8bc323dcaced35c0b61b932e6",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.5560416666666667,
-              "gain": 1.0573520831235288,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "down": [
-          {
-            "file": "hero-0-shozyo2-yarareta.wav",
-            "ja": "やられたぁ……",
-            "zh": "被打倒了……",
-            "length": 1.424063,
-            "sha256": "19bba94f08e70b69070e054ecbf813118e7a73c6345f5d5a5baa66afa921fd33",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-yarareta.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "5ff61e2004a506fbd3070d980826b2ca4142fa60d69fdeb875a1495132629117",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.4240625,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-charge": [
-          {
-            "file": "hero-0-shozyo2-makaseteku.wav",
-            "ja": "任せてください！",
-            "zh": "交给我吧！",
-            "length": 1.085167,
-            "sha256": "78287c64d56aa42244b09d65ffdc8f32ab952adfd8f3815aaa9d5fbc086e2030",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-makaseteku.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "652a4ee643cd6e9d9d095a4b8c696f00df38ba0fdca4c890eafd07b25c07438f",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.024166666666666666,
-              "trim_end_seconds": 1.1093333333333333,
-              "gain": 0.9323325966278505,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-burst": [
-          {
-            "file": "hero-0-shozyo2-atare.wav",
-            "ja": "あたれ！",
-            "zh": "击中吧！",
-            "length": 1.266521,
-            "sha256": "18d8f3c30f6cf300d3769a2e482018ee7c69c8032774e02fd242fc0dd0867b37",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.011208333333333334,
-              "trim_end_seconds": 1.2777291666666666,
-              "gain": 0.7395506011156988,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-short": [
-          {
-            "file": "hero-0-shozyo2-ikuyo.wav",
-            "ja": "いくよ！",
-            "zh": "上了！",
-            "length": 1.075375,
-            "sha256": "374e63fc76019def24a67dfdaee7a4d3850eb692f5f1a21350a1fbcc80e950df",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ikuyo.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "9958888b7312aa718ea2e9b8bb0760ac46ba4bc0d746eb7ef5f72b40c6cc2ee9",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.0859375,
-              "trim_end_seconds": 1.1613125,
-              "gain": 0.6506746434720705,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "select": [
-          {
-            "file": "hero-0-shozyo2-makaseteku.wav",
-            "ja": "任せてください！",
-            "zh": "交给我吧！",
-            "length": 1.085167,
-            "sha256": "78287c64d56aa42244b09d65ffdc8f32ab952adfd8f3815aaa9d5fbc086e2030",
-            "source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-makaseteku.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "652a4ee643cd6e9d9d095a4b8c696f00df38ba0fdca4c890eafd07b25c07438f",
-            "voice_id": "shozyo2",
-            "mastering": {
-              "trim_start_seconds": 0.024166666666666666,
-              "trim_end_seconds": 1.1093333333333333,
-              "gain": 0.9323325966278505,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ]
-      },
-      "charge_time": 1.205,
-      "burst_time": 1.487
-    },
-    {
-      "name": "雪璃",
-      "voice_id": "shozyo1",
-      "credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
-      "character_type": "少女おとなしめ",
-      "lines": {
-        "attack": [
-          {
-            "file": "hero-1-shozyo1-ei.wav",
-            "ja": "えい！",
-            "zh": "嘿！",
-            "length": 0.317375,
-            "sha256": "0c079cf59071b48c3de26f76a5e0f7cdd0aeffc7b7d0e6af0e2a74ed2646d3fc",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ei.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "89a81a746d8a70fd60b4a035578c748bbc969bf58764f8e1a333845729d4e6a1",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.317375,
-              "gain": 0.6274060425573141,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-1-shozyo1-to.wav",
-            "ja": "とお！",
-            "zh": "喝！",
-            "length": 0.429333,
-            "sha256": "9740eeeb6b2d261f3d1cc91b2aaf80bfcc5ebdacda5762096d76689dfafeb55e",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-to.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "132851bff080f6e47140c5d37af46f462dfeea809d2131f418d118d13b291981",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.42933333333333334,
-              "gain": 1.0960337093855166,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-1-shozyo1-ya.wav",
-            "ja": "やあ！",
-            "zh": "呀！",
-            "length": 0.539583,
-            "sha256": "dc968694a9893cea312b9aa4d4c99cb1e78b1642b7144e5678f175ef81c4411d",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.00175,
-              "trim_end_seconds": 0.5413333333333333,
-              "gain": 0.7524855576925207,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "heavy": [
-          {
-            "file": "hero-1-shozyo1-to.wav",
-            "ja": "とお！",
-            "zh": "喝！",
-            "length": 0.429333,
-            "sha256": "9740eeeb6b2d261f3d1cc91b2aaf80bfcc5ebdacda5762096d76689dfafeb55e",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-to.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "132851bff080f6e47140c5d37af46f462dfeea809d2131f418d118d13b291981",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.42933333333333334,
-              "gain": 1.0960337093855166,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-1-shozyo1-ya.wav",
-            "ja": "やあ！",
-            "zh": "呀！",
-            "length": 0.539583,
-            "sha256": "dc968694a9893cea312b9aa4d4c99cb1e78b1642b7144e5678f175ef81c4411d",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.00175,
-              "trim_end_seconds": 0.5413333333333333,
-              "gain": 0.7524855576925207,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "magic": [
-          {
-            "file": "hero-1-shozyo1-atattekudasai.wav",
-            "ja": "あたってください！",
-            "zh": "请命中吧！",
-            "length": 1.253333,
-            "sha256": "abaed48a29feb3bf674c46b777b35fc13cd80eed7eb358ac4c663867ca82808d",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-atattekudasai.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "93d587686fd6d5120aab0a91edfca6e9a2df0ba0e32d6a5049128b4ac44f3c09",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.2533333333333334,
-              "gain": 0.8035944053133659,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "dash": [
-          {
-            "file": "hero-1-shozyo1-ei.wav",
-            "ja": "えい！",
-            "zh": "嘿！",
-            "length": 0.317375,
-            "sha256": "0c079cf59071b48c3de26f76a5e0f7cdd0aeffc7b7d0e6af0e2a74ed2646d3fc",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ei.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "89a81a746d8a70fd60b4a035578c748bbc969bf58764f8e1a333845729d4e6a1",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.317375,
-              "gain": 0.6274060425573141,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-1-shozyo1-ya.wav",
-            "ja": "やあ！",
-            "zh": "呀！",
-            "length": 0.539583,
-            "sha256": "dc968694a9893cea312b9aa4d4c99cb1e78b1642b7144e5678f175ef81c4411d",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.00175,
-              "trim_end_seconds": 0.5413333333333333,
-              "gain": 0.7524855576925207,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "hurt": [
-          {
-            "file": "hero-1-shozyo1-kya.wav",
-            "ja": "きゃっ！",
-            "zh": "呀！",
-            "length": 0.4,
-            "sha256": "ddcbe65a3c72c2adb587dbdd4acf873d851ed07fc79460ef7552d856974efadb",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-kya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "4c3aa1db4c695bd0c35d3f2bd363d8adf12da84447a30e5b818b1a2d04e00e3a",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.4,
-              "gain": 1.7464183166580778,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-1-shozyo1-himei2.wav",
-            "ja": "（悲鳴）",
-            "zh": "（痛呼）",
-            "length": 0.639458,
-            "sha256": "d93b7d2f27050f827a26d999bbd42a55e3907b139e99915a554e73eec2ed2c21",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-himei2.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "1ff263c35a8304e512ab041e599fbd7dfab173783da3b8c7eaa7c2df507bac55",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.005875,
-              "trim_end_seconds": 0.6453333333333333,
-              "gain": 0.7567102498734316,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "heal": [
-          {
-            "file": "hero-1-shozyo1-arigatou.wav",
-            "ja": "ありがとう。",
-            "zh": "谢谢。",
-            "length": 0.774833,
-            "sha256": "d149b78e8dbd24c2e0e7b415520575d04c7c6acd3149f39ef8a19c1ed717f105",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-arigatou.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "588f7bb57e0f41894e0adbacc0b02274501dcd783cd360648ba6067dc6a09ae7",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.005208333333333333,
-              "trim_end_seconds": 0.7800416666666666,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "down": [
-          {
-            "file": "hero-1-shozyo1-gomennasai.wav",
-            "ja": "ごめんなさい……",
-            "zh": "对不起……",
-            "length": 0.969167,
-            "sha256": "28ae6353d4faa8a0073fb9c7ec7116f73a447e72fb006138cd72251125938c8f",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-gomennasai.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "b33f2daa39109a604aabb5b5cf87ec4a3123c07a355074d54ef6370a9ee36e8f",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0035,
-              "trim_end_seconds": 0.9726666666666667,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-charge": [
-          {
-            "file": "hero-1-shozyo1-makasetekudasai.wav",
-            "ja": "まかせてください。",
-            "zh": "请交给我吧。",
-            "length": 1.029375,
-            "sha256": "c1e2dc8f216b6fa84cbf5d70cbe365406db9a30006fd2f4f07783d6ee680fe32",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-makasetekudasai.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "c2fc5c663a99140766d7e1d835a243523e57661ad2b5ee28480d9847db3434e5",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.029375,
-              "gain": 1.6532016555357265,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-burst": [
-          {
-            "file": "hero-1-shozyo1-ganbari2.wav",
-            "ja": "がんばります！",
-            "zh": "我会努力的！",
-            "length": 1.445458,
-            "sha256": "af35f0a45f14052725cb432b1f87f19d2206553519384b10954fbc8878543aad",
-            "source_url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/shozyo1-ganbari2.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "7cdbca5f233701ff6212464d95cbabf01bb5bf0a69d4d4e8c4e2cbca29c0f34b",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.4454583333333333,
-              "gain": 0.8820221441232928,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-short": [
-          {
-            "file": "hero-1-shozyo1-makasetekudasai.wav",
-            "ja": "まかせてください。",
-            "zh": "请交给我吧。",
-            "length": 1.029375,
-            "sha256": "c1e2dc8f216b6fa84cbf5d70cbe365406db9a30006fd2f4f07783d6ee680fe32",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-makasetekudasai.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "c2fc5c663a99140766d7e1d835a243523e57661ad2b5ee28480d9847db3434e5",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.029375,
-              "gain": 1.6532016555357265,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "select": [
-          {
-            "file": "hero-1-shozyo1-ganbari2.wav",
-            "ja": "がんばります！",
-            "zh": "我会努力的！",
-            "length": 1.445458,
-            "sha256": "af35f0a45f14052725cb432b1f87f19d2206553519384b10954fbc8878543aad",
-            "source_url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/shozyo1-ganbari2.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "7cdbca5f233701ff6212464d95cbabf01bb5bf0a69d4d4e8c4e2cbca29c0f34b",
-            "voice_id": "shozyo1",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.4454583333333333,
-              "gain": 0.8820221441232928,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ]
-      },
-      "charge_time": 1.149,
-      "burst_time": 1.665
-    },
-    {
-      "name": "鸦羽",
-      "voice_id": "syozyo3",
-      "credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
-      "character_type": "少女クール",
-      "lines": {
-        "attack": [
-          {
-            "file": "hero-2-syozyo3-ta.wav",
-            "ja": "たぁ！",
-            "zh": "哈！",
-            "length": 0.466104,
-            "sha256": "29571c3db200293330af30b5013956451d56a1aa15c24cd913b6b101b35ea635",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ta.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "d810bc1d5fc2c69953a6491b998af37ee793f095ffff108ee95e72822d73d6fd",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.46610416666666665,
-              "gain": 1.368585946087943,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-2-syozyo3-ya.wav",
-            "ja": "やぁ！",
-            "zh": "呀！",
-            "length": 0.4,
-            "sha256": "79e5708d0387158f8ffbc8cd9844716235e9c96b560ddee6db28a5af6d7aa374",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "24eed1cbb68d53219d40c2fdeddbac5458fac3f049aa5926b9279193b763b5b5",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.4,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-2-syozyo3-torya.wav",
-            "ja": "とりゃ！",
-            "zh": "喝！",
-            "length": 0.471021,
-            "sha256": "207d60a315920d9e142b0afb805c37e8f52e020f9ec385b73cef1d93c32ec1d6",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-torya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "bd92a3c46df3ce26212236295015bf8b33427dbb6450aed633e2fbdcad93a292",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.004291666666666667,
-              "trim_end_seconds": 0.4753125,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "heavy": [
-          {
-            "file": "hero-2-syozyo3-torya.wav",
-            "ja": "とりゃ！",
-            "zh": "喝！",
-            "length": 0.471021,
-            "sha256": "207d60a315920d9e142b0afb805c37e8f52e020f9ec385b73cef1d93c32ec1d6",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-torya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "bd92a3c46df3ce26212236295015bf8b33427dbb6450aed633e2fbdcad93a292",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.004291666666666667,
-              "trim_end_seconds": 0.4753125,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-2-syozyo3-atatte.wav",
-            "ja": "あたって！",
-            "zh": "击中吧！",
-            "length": 0.66,
-            "sha256": "4f4000f19689287310086392a1a5e943bcac19fcf43db0331dc38a68986e4a4b",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.66,
-              "gain": 1.2158259959420323,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "magic": [
-          {
-            "file": "hero-2-syozyo3-atatte.wav",
-            "ja": "あたって！",
-            "zh": "击中吧！",
-            "length": 0.66,
-            "sha256": "4f4000f19689287310086392a1a5e943bcac19fcf43db0331dc38a68986e4a4b",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.66,
-              "gain": 1.2158259959420323,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "dash": [
-          {
-            "file": "hero-2-syozyo3-ta.wav",
-            "ja": "たぁ！",
-            "zh": "哈！",
-            "length": 0.466104,
-            "sha256": "29571c3db200293330af30b5013956451d56a1aa15c24cd913b6b101b35ea635",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ta.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "d810bc1d5fc2c69953a6491b998af37ee793f095ffff108ee95e72822d73d6fd",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.46610416666666665,
-              "gain": 1.368585946087943,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-2-syozyo3-ya.wav",
-            "ja": "やぁ！",
-            "zh": "呀！",
-            "length": 0.4,
-            "sha256": "79e5708d0387158f8ffbc8cd9844716235e9c96b560ddee6db28a5af6d7aa374",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ya.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "24eed1cbb68d53219d40c2fdeddbac5458fac3f049aa5926b9279193b763b5b5",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.4,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "hurt": [
-          {
-            "file": "hero-2-syozyo3-u.wav",
-            "ja": "うっ！",
-            "zh": "唔！",
-            "length": 0.501333,
-            "sha256": "2d5ed8d103d410598f29ec2e0d2f83f0ac22b255f845a887cb2f80f89fee422c",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-u.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "6a526a703f9216d4d1ae75edb6a6df4c09e32c25ec2f92faeb0f5baecac641e3",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.5013333333333333,
-              "gain": 2.4313983963139467,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          },
-          {
-            "file": "hero-2-syozyo3-ku.wav",
-            "ja": "くっ！",
-            "zh": "呃！",
-            "length": 0.446771,
-            "sha256": "21224578f0602dbc5dcba00cadeb04d7d4b2fe55491f797cd2e1054f08812dc2",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ku.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "b0c65d00634d86f39b489299ec08f6d243a606ffc857eb4ccb6cbbd1728092e9",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.44677083333333334,
-              "gain": 1.407013611322681,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "heal": [
-          {
-            "file": "hero-2-syozyo3-mondainai.wav",
-            "ja": "問題ない。",
-            "zh": "没问题。",
-            "length": 0.790937,
-            "sha256": "8a3fdb72cb7b4ed04ccab78de3d3137e592194446b8d8881068545990101a778",
-            "source_url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/syozyo3-mondainai.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "bbd3cb3f77dcc7e4be0aff934670cd4e82b02759097517426277d358099cbade",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.7909375,
-              "gain": 0.4589840287223589,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "down": [
-          {
-            "file": "hero-2-syozyo3-itai.wav",
-            "ja": "痛い……",
-            "zh": "好痛……",
-            "length": 0.506125,
-            "sha256": "c1c5f3a219f54aac9b80816164a7b04ff16af51ff7123d8df20ebce00cbbd891",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-itai.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
-            "source_sha256": "ff4920f3111c2b1b9c65bf2408e314cfe2b7f8b4331d35463880e26ced1776ed",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.506125,
-              "gain": 2.175109210180929,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-charge": [
-          {
-            "file": "hero-2-syozyo3-ikimasyo.wav",
-            "ja": "いきましょう。",
-            "zh": "出发吧。",
-            "length": 1.025375,
-            "sha256": "2b1a8ca09c9e49ec1e2ef6f941f53cb437b6f8d9b5ef19f43e73a8d8ac408ae0",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikimasyo.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "60be1388d2ff9bc435a79f928674922ea159e346ac661acc2daac31e9da74055",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.025375,
-              "gain": 2.489221868844275,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-burst": [
-          {
-            "file": "hero-2-syozyo3-atatte.wav",
-            "ja": "あたって！",
-            "zh": "击中吧！",
-            "length": 0.66,
-            "sha256": "4f4000f19689287310086392a1a5e943bcac19fcf43db0331dc38a68986e4a4b",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
-            "source_sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.66,
-              "gain": 1.2158259959420323,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "ultimate-short": [
-          {
-            "file": "hero-2-syozyo3-ikuyo.wav",
-            "ja": "いくよ。",
-            "zh": "上了。",
-            "length": 0.863938,
-            "sha256": "35fea10ae4eac06fd9d41176be3b4f73577e9551e86ed9b216e1c3554acd01e4",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikuyo.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "8b8409cb4d9411f3cdb0347c2b5f03b73415331aeab1c60e79e74f1e74c48b82",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 0.8639375,
-              "gain": 4.0,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ],
-        "select": [
-          {
-            "file": "hero-2-syozyo3-ikimasyo.wav",
-            "ja": "いきましょう。",
-            "zh": "出发吧。",
-            "length": 1.025375,
-            "sha256": "2b1a8ca09c9e49ec1e2ef6f941f53cb437b6f8d9b5ef19f43e73a8d8ac408ae0",
-            "source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikimasyo.mp3",
-            "source_page": "https://soalunashosya.jimdofree.com/少女/",
-            "source_sha256": "60be1388d2ff9bc435a79f928674922ea159e346ac661acc2daac31e9da74055",
-            "voice_id": "syozyo3",
-            "mastering": {
-              "trim_start_seconds": 0.0,
-              "trim_end_seconds": 1.025375,
-              "gain": 2.489221868844275,
-              "pitch_shift": 0,
-              "speed": 1.0,
-              "target_rms": 0.16,
-              "true_peak_limit": 0.8
-            }
-          }
-        ]
-      },
-      "charge_time": 1.145,
-      "burst_time": 0.88
-    }
-  ]
+	"provider": "Spaland",
+	"engine": "prerecorded-human-voice",
+	"language": "ja",
+	"license": "Spaland custom free-use terms",
+	"terms": [
+		"https://soalunashosya.jimdofree.com/利用規約/"
+	],
+	"terms_checked": "2026-09-22",
+	"note": "Human recordings by すぱるな瀟洒; not CC0. Game embedding allowed; standalone redistribution and AI training prohibited.",
+	"heroes": [
+		{
+			"name": "绯月",
+			"voice_id": "shozyo2",
+			"credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
+			"character_type": "少女元気め",
+			"lines": {
+				"attack": [
+					{
+						"file": "hero-0-shozyo2-torya.wav",
+						"ja": "とりゃ！",
+						"zh": "喝！",
+						"length": 0.669167,
+						"sha256": "47e48c05b5b5057efec9ea7d40750ddb130558cdeb304c53f0620f4d59f93391",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-torya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "8d899310f6ea37584cfab7387910c8f9dbc3260714d0a978227877d138959b32",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.0135,
+							"trim_end_seconds": 0.6826666666666666,
+							"gain": 0.6359115603338973,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-0-shozyo2-eiya.wav",
+						"ja": "えいや！",
+						"zh": "嘿呀！",
+						"length": 0.801333,
+						"sha256": "4d8c7f5939288b4bdab4faf4bdfa482b240b8fb2371f1c77ea85b550fac5d12d",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-eiya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "147cbc9d86591c29751c1b9a31ee4969f1408337cee9d37d9cd4b6f7fff9e962",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.009333333333333334,
+							"trim_end_seconds": 0.8106666666666666,
+							"gain": 0.6684435974740169,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-0-shozyo2-ta.wav",
+						"ja": "たあ！",
+						"zh": "哈！",
+						"length": 0.732,
+						"sha256": "6c0e3773d363c5f262d5213e27df1bd0623dc05fa70c6924eec23eb31a3d3fe0",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.036,
+							"trim_end_seconds": 0.768,
+							"gain": 0.6581946810051319,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"heavy": [
+					{
+						"file": "hero-0-shozyo2-ta.wav",
+						"ja": "たあ！",
+						"zh": "哈！",
+						"length": 0.732,
+						"sha256": "6c0e3773d363c5f262d5213e27df1bd0623dc05fa70c6924eec23eb31a3d3fe0",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.036,
+							"trim_end_seconds": 0.768,
+							"gain": 0.6581946810051319,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-0-shozyo2-atare.wav",
+						"ja": "あたれ！",
+						"zh": "击中吧！",
+						"length": 1.266521,
+						"sha256": "18d8f3c30f6cf300d3769a2e482018ee7c69c8032774e02fd242fc0dd0867b37",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.011208333333333334,
+							"trim_end_seconds": 1.2777291666666666,
+							"gain": 0.7395506011156988,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"magic": [
+					{
+						"file": "hero-0-shozyo2-atare.wav",
+						"ja": "あたれ！",
+						"zh": "击中吧！",
+						"length": 1.266521,
+						"sha256": "18d8f3c30f6cf300d3769a2e482018ee7c69c8032774e02fd242fc0dd0867b37",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.011208333333333334,
+							"trim_end_seconds": 1.2777291666666666,
+							"gain": 0.7395506011156988,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"dash": [
+					{
+						"file": "hero-0-shozyo2-ta.wav",
+						"ja": "たあ！",
+						"zh": "哈！",
+						"length": 0.732,
+						"sha256": "6c0e3773d363c5f262d5213e27df1bd0623dc05fa70c6924eec23eb31a3d3fe0",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ta.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "b4dc29d4740bd4913359d751ea5433d39cd5d602caa6596e981cab075d4f684c",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.036,
+							"trim_end_seconds": 0.768,
+							"gain": 0.6581946810051319,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-0-shozyo2-eiya.wav",
+						"ja": "えいや！",
+						"zh": "嘿呀！",
+						"length": 0.801333,
+						"sha256": "4d8c7f5939288b4bdab4faf4bdfa482b240b8fb2371f1c77ea85b550fac5d12d",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-eiya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "147cbc9d86591c29751c1b9a31ee4969f1408337cee9d37d9cd4b6f7fff9e962",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.009333333333333334,
+							"trim_end_seconds": 0.8106666666666666,
+							"gain": 0.6684435974740169,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"hurt": [
+					{
+						"file": "hero-0-shozyo2-u.wav",
+						"ja": "うっ！",
+						"zh": "唔！",
+						"length": 0.525979,
+						"sha256": "66d43c5e75d2f73f5aff7e2affde7a4817e289803e9b03836aa2987d281a8218",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-u.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "993c276a6ec41bbe47cd244a856bcdfe34710e3f9bfdb92f3c0e6511ca4aa0af",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.018020833333333333,
+							"trim_end_seconds": 0.544,
+							"gain": 1.9285161220562486,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-0-shozyo2-ita.wav",
+						"ja": "いったぁ！",
+						"zh": "好痛！",
+						"length": 0.938688,
+						"sha256": "bfd9c4805a87a17a52d6632b4ade908dc5390fa3563d67ffecc8e32cd6cad1fd",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ita.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "005b8edbbbc7d784927d36ddef7bd96f2a8cfdd0b612d9a4f4cd6f0801ea0aa4",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.016020833333333335,
+							"trim_end_seconds": 0.9547083333333334,
+							"gain": 0.8760126376472848,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"heal": [
+					{
+						"file": "hero-0-shozyo2-ok.wav",
+						"ja": "おっけー！",
+						"zh": "好了！",
+						"length": 0.556042,
+						"sha256": "f7720b80f4c6051452ece3f0bf4763171853846c0e8385ed083061a5c3b4fed8",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ok.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "717d1df6379bf047fd50ea66a8d8feeb93ad85b8bc323dcaced35c0b61b932e6",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.5560416666666667,
+							"gain": 1.0573520831235288,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"down": [
+					{
+						"file": "hero-0-shozyo2-yarareta.wav",
+						"ja": "やられたぁ……",
+						"zh": "被打倒了……",
+						"length": 1.424063,
+						"sha256": "19bba94f08e70b69070e054ecbf813118e7a73c6345f5d5a5baa66afa921fd33",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-yarareta.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "5ff61e2004a506fbd3070d980826b2ca4142fa60d69fdeb875a1495132629117",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.4240625,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-charge": [
+					{
+						"file": "hero-0-shozyo2-makaseteku.wav",
+						"ja": "任せてください！",
+						"zh": "交给我吧！",
+						"length": 1.085167,
+						"sha256": "78287c64d56aa42244b09d65ffdc8f32ab952adfd8f3815aaa9d5fbc086e2030",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-makaseteku.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "652a4ee643cd6e9d9d095a4b8c696f00df38ba0fdca4c890eafd07b25c07438f",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.024166666666666666,
+							"trim_end_seconds": 1.1093333333333333,
+							"gain": 0.9323325966278505,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-burst": [
+					{
+						"file": "hero-0-shozyo2-atare.wav",
+						"ja": "あたれ！",
+						"zh": "击中吧！",
+						"length": 1.266521,
+						"sha256": "18d8f3c30f6cf300d3769a2e482018ee7c69c8032774e02fd242fc0dd0867b37",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-atare.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "4cad3bdcae4776e9e6fc3b589da2b495e1bb83d29037439bad5b8222ada2861e",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.011208333333333334,
+							"trim_end_seconds": 1.2777291666666666,
+							"gain": 0.7395506011156988,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-short": [
+					{
+						"file": "hero-0-shozyo2-ikuyo.wav",
+						"ja": "いくよ！",
+						"zh": "上了！",
+						"length": 1.075375,
+						"sha256": "374e63fc76019def24a67dfdaee7a4d3850eb692f5f1a21350a1fbcc80e950df",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-ikuyo.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "9958888b7312aa718ea2e9b8bb0760ac46ba4bc0d746eb7ef5f72b40c6cc2ee9",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.0859375,
+							"trim_end_seconds": 1.1613125,
+							"gain": 0.6506746434720705,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"select": [
+					{
+						"file": "hero-0-shozyo2-makaseteku.wav",
+						"ja": "任せてください！",
+						"zh": "交给我吧！",
+						"length": 1.085167,
+						"sha256": "78287c64d56aa42244b09d65ffdc8f32ab952adfd8f3815aaa9d5fbc086e2030",
+						"source_url": "https://blog-imgs-101.fc2.com/s/p/a/spaluna/shozyo2-makaseteku.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "652a4ee643cd6e9d9d095a4b8c696f00df38ba0fdca4c890eafd07b25c07438f",
+						"voice_id": "shozyo2",
+						"mastering": {
+							"trim_start_seconds": 0.024166666666666666,
+							"trim_end_seconds": 1.1093333333333333,
+							"gain": 0.9323325966278505,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				]
+			},
+			"charge_time": 1.205,
+			"burst_time": 1.487
+		},
+		{
+			"name": "雪璃",
+			"voice_id": "shozyo1",
+			"credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
+			"character_type": "少女おとなしめ",
+			"lines": {
+				"attack": [
+					{
+						"file": "hero-1-shozyo1-ei.wav",
+						"ja": "えい！",
+						"zh": "嘿！",
+						"length": 0.317375,
+						"sha256": "0c079cf59071b48c3de26f76a5e0f7cdd0aeffc7b7d0e6af0e2a74ed2646d3fc",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ei.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "89a81a746d8a70fd60b4a035578c748bbc969bf58764f8e1a333845729d4e6a1",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.317375,
+							"gain": 0.6274060425573141,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-1-shozyo1-to.wav",
+						"ja": "とお！",
+						"zh": "喝！",
+						"length": 0.429333,
+						"sha256": "9740eeeb6b2d261f3d1cc91b2aaf80bfcc5ebdacda5762096d76689dfafeb55e",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-to.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "132851bff080f6e47140c5d37af46f462dfeea809d2131f418d118d13b291981",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.42933333333333334,
+							"gain": 1.0960337093855166,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-1-shozyo1-ya.wav",
+						"ja": "やあ！",
+						"zh": "呀！",
+						"length": 0.539583,
+						"sha256": "dc968694a9893cea312b9aa4d4c99cb1e78b1642b7144e5678f175ef81c4411d",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.00175,
+							"trim_end_seconds": 0.5413333333333333,
+							"gain": 0.7524855576925207,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"heavy": [
+					{
+						"file": "hero-1-shozyo1-to.wav",
+						"ja": "とお！",
+						"zh": "喝！",
+						"length": 0.429333,
+						"sha256": "9740eeeb6b2d261f3d1cc91b2aaf80bfcc5ebdacda5762096d76689dfafeb55e",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-to.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "132851bff080f6e47140c5d37af46f462dfeea809d2131f418d118d13b291981",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.42933333333333334,
+							"gain": 1.0960337093855166,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-1-shozyo1-ya.wav",
+						"ja": "やあ！",
+						"zh": "呀！",
+						"length": 0.539583,
+						"sha256": "dc968694a9893cea312b9aa4d4c99cb1e78b1642b7144e5678f175ef81c4411d",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.00175,
+							"trim_end_seconds": 0.5413333333333333,
+							"gain": 0.7524855576925207,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"magic": [
+					{
+						"file": "hero-1-shozyo1-atattekudasai.wav",
+						"ja": "あたってください！",
+						"zh": "请命中吧！",
+						"length": 1.253333,
+						"sha256": "abaed48a29feb3bf674c46b777b35fc13cd80eed7eb358ac4c663867ca82808d",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-atattekudasai.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "93d587686fd6d5120aab0a91edfca6e9a2df0ba0e32d6a5049128b4ac44f3c09",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.2533333333333334,
+							"gain": 0.8035944053133659,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"dash": [
+					{
+						"file": "hero-1-shozyo1-ei.wav",
+						"ja": "えい！",
+						"zh": "嘿！",
+						"length": 0.317375,
+						"sha256": "0c079cf59071b48c3de26f76a5e0f7cdd0aeffc7b7d0e6af0e2a74ed2646d3fc",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ei.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "89a81a746d8a70fd60b4a035578c748bbc969bf58764f8e1a333845729d4e6a1",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.317375,
+							"gain": 0.6274060425573141,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-1-shozyo1-ya.wav",
+						"ja": "やあ！",
+						"zh": "呀！",
+						"length": 0.539583,
+						"sha256": "dc968694a9893cea312b9aa4d4c99cb1e78b1642b7144e5678f175ef81c4411d",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-ya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "56666e8a5ade752f33492feae26556fcd5a60e673b52bd388487a14d301757d6",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.00175,
+							"trim_end_seconds": 0.5413333333333333,
+							"gain": 0.7524855576925207,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"hurt": [
+					{
+						"file": "hero-1-shozyo1-kya.wav",
+						"ja": "きゃっ！",
+						"zh": "呀！",
+						"length": 0.4,
+						"sha256": "ddcbe65a3c72c2adb587dbdd4acf873d851ed07fc79460ef7552d856974efadb",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-kya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "4c3aa1db4c695bd0c35d3f2bd363d8adf12da84447a30e5b818b1a2d04e00e3a",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.4,
+							"gain": 1.7464183166580778,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-1-shozyo1-himei2.wav",
+						"ja": "（悲鳴）",
+						"zh": "（痛呼）",
+						"length": 0.639458,
+						"sha256": "d93b7d2f27050f827a26d999bbd42a55e3907b139e99915a554e73eec2ed2c21",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-himei2.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "1ff263c35a8304e512ab041e599fbd7dfab173783da3b8c7eaa7c2df507bac55",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.005875,
+							"trim_end_seconds": 0.6453333333333333,
+							"gain": 0.7567102498734316,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"heal": [
+					{
+						"file": "hero-1-shozyo1-arigatou.wav",
+						"ja": "ありがとう。",
+						"zh": "谢谢。",
+						"length": 0.774833,
+						"sha256": "d149b78e8dbd24c2e0e7b415520575d04c7c6acd3149f39ef8a19c1ed717f105",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-arigatou.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "588f7bb57e0f41894e0adbacc0b02274501dcd783cd360648ba6067dc6a09ae7",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.005208333333333333,
+							"trim_end_seconds": 0.7800416666666666,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"down": [
+					{
+						"file": "hero-1-shozyo1-gomennasai.wav",
+						"ja": "ごめんなさい……",
+						"zh": "对不起……",
+						"length": 0.969167,
+						"sha256": "28ae6353d4faa8a0073fb9c7ec7116f73a447e72fb006138cd72251125938c8f",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-gomennasai.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "b33f2daa39109a604aabb5b5cf87ec4a3123c07a355074d54ef6370a9ee36e8f",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0035,
+							"trim_end_seconds": 0.9726666666666667,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-charge": [
+					{
+						"file": "hero-1-shozyo1-makasetekudasai.wav",
+						"ja": "まかせてください。",
+						"zh": "请交给我吧。",
+						"length": 1.029375,
+						"sha256": "c1e2dc8f216b6fa84cbf5d70cbe365406db9a30006fd2f4f07783d6ee680fe32",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-makasetekudasai.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "c2fc5c663a99140766d7e1d835a243523e57661ad2b5ee28480d9847db3434e5",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.029375,
+							"gain": 1.6532016555357265,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-burst": [
+					{
+						"file": "hero-1-shozyo1-ganbari2.wav",
+						"ja": "がんばります！",
+						"zh": "我会努力的！",
+						"length": 1.445458,
+						"sha256": "af35f0a45f14052725cb432b1f87f19d2206553519384b10954fbc8878543aad",
+						"source_url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/shozyo1-ganbari2.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "7cdbca5f233701ff6212464d95cbabf01bb5bf0a69d4d4e8c4e2cbca29c0f34b",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.4454583333333333,
+							"gain": 0.8820221441232928,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-short": [
+					{
+						"file": "hero-1-shozyo1-makasetekudasai.wav",
+						"ja": "まかせてください。",
+						"zh": "请交给我吧。",
+						"length": 1.029375,
+						"sha256": "c1e2dc8f216b6fa84cbf5d70cbe365406db9a30006fd2f4f07783d6ee680fe32",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/shozyo1-makasetekudasai.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "c2fc5c663a99140766d7e1d835a243523e57661ad2b5ee28480d9847db3434e5",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.029375,
+							"gain": 1.6532016555357265,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"select": [
+					{
+						"file": "hero-1-shozyo1-ganbari2.wav",
+						"ja": "がんばります！",
+						"zh": "我会努力的！",
+						"length": 1.445458,
+						"sha256": "af35f0a45f14052725cb432b1f87f19d2206553519384b10954fbc8878543aad",
+						"source_url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/shozyo1-ganbari2.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "7cdbca5f233701ff6212464d95cbabf01bb5bf0a69d4d4e8c4e2cbca29c0f34b",
+						"voice_id": "shozyo1",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.4454583333333333,
+							"gain": 0.8820221441232928,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				]
+			},
+			"charge_time": 1.149,
+			"burst_time": 1.665
+		},
+		{
+			"name": "鸦羽",
+			"voice_id": "syozyo3",
+			"credit": "フリーボイス素材屋すぱらんど。/すぱるな瀟洒",
+			"character_type": "少女クール",
+			"lines": {
+				"attack": [
+					{
+						"file": "hero-2-syozyo3-ta.wav",
+						"ja": "たぁ！",
+						"zh": "哈！",
+						"length": 0.466104,
+						"sha256": "29571c3db200293330af30b5013956451d56a1aa15c24cd913b6b101b35ea635",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ta.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "d810bc1d5fc2c69953a6491b998af37ee793f095ffff108ee95e72822d73d6fd",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.46610416666666665,
+							"gain": 1.368585946087943,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-2-syozyo3-ya.wav",
+						"ja": "やぁ！",
+						"zh": "呀！",
+						"length": 0.4,
+						"sha256": "79e5708d0387158f8ffbc8cd9844716235e9c96b560ddee6db28a5af6d7aa374",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "24eed1cbb68d53219d40c2fdeddbac5458fac3f049aa5926b9279193b763b5b5",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.4,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-2-syozyo3-torya.wav",
+						"ja": "とりゃ！",
+						"zh": "喝！",
+						"length": 0.471021,
+						"sha256": "207d60a315920d9e142b0afb805c37e8f52e020f9ec385b73cef1d93c32ec1d6",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-torya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "bd92a3c46df3ce26212236295015bf8b33427dbb6450aed633e2fbdcad93a292",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.004291666666666667,
+							"trim_end_seconds": 0.4753125,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"heavy": [
+					{
+						"file": "hero-2-syozyo3-torya.wav",
+						"ja": "とりゃ！",
+						"zh": "喝！",
+						"length": 0.471021,
+						"sha256": "207d60a315920d9e142b0afb805c37e8f52e020f9ec385b73cef1d93c32ec1d6",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-torya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "bd92a3c46df3ce26212236295015bf8b33427dbb6450aed633e2fbdcad93a292",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.004291666666666667,
+							"trim_end_seconds": 0.4753125,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-2-syozyo3-atatte.wav",
+						"ja": "あたって！",
+						"zh": "击中吧！",
+						"length": 0.66,
+						"sha256": "4f4000f19689287310086392a1a5e943bcac19fcf43db0331dc38a68986e4a4b",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.66,
+							"gain": 1.2158259959420323,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"magic": [
+					{
+						"file": "hero-2-syozyo3-atatte.wav",
+						"ja": "あたって！",
+						"zh": "击中吧！",
+						"length": 0.66,
+						"sha256": "4f4000f19689287310086392a1a5e943bcac19fcf43db0331dc38a68986e4a4b",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.66,
+							"gain": 1.2158259959420323,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"dash": [
+					{
+						"file": "hero-2-syozyo3-ta.wav",
+						"ja": "たぁ！",
+						"zh": "哈！",
+						"length": 0.466104,
+						"sha256": "29571c3db200293330af30b5013956451d56a1aa15c24cd913b6b101b35ea635",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ta.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "d810bc1d5fc2c69953a6491b998af37ee793f095ffff108ee95e72822d73d6fd",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.46610416666666665,
+							"gain": 1.368585946087943,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-2-syozyo3-ya.wav",
+						"ja": "やぁ！",
+						"zh": "呀！",
+						"length": 0.4,
+						"sha256": "79e5708d0387158f8ffbc8cd9844716235e9c96b560ddee6db28a5af6d7aa374",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ya.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "24eed1cbb68d53219d40c2fdeddbac5458fac3f049aa5926b9279193b763b5b5",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.4,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"hurt": [
+					{
+						"file": "hero-2-syozyo3-u.wav",
+						"ja": "うっ！",
+						"zh": "唔！",
+						"length": 0.501333,
+						"sha256": "2d5ed8d103d410598f29ec2e0d2f83f0ac22b255f845a887cb2f80f89fee422c",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-u.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "6a526a703f9216d4d1ae75edb6a6df4c09e32c25ec2f92faeb0f5baecac641e3",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.5013333333333333,
+							"gain": 2.4313983963139467,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					},
+					{
+						"file": "hero-2-syozyo3-ku.wav",
+						"ja": "くっ！",
+						"zh": "呃！",
+						"length": 0.446771,
+						"sha256": "21224578f0602dbc5dcba00cadeb04d7d4b2fe55491f797cd2e1054f08812dc2",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ku.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "b0c65d00634d86f39b489299ec08f6d243a606ffc857eb4ccb6cbbd1728092e9",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.44677083333333334,
+							"gain": 1.407013611322681,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"heal": [
+					{
+						"file": "hero-2-syozyo3-mondainai.wav",
+						"ja": "問題ない。",
+						"zh": "没问题。",
+						"length": 0.790937,
+						"sha256": "8a3fdb72cb7b4ed04ccab78de3d3137e592194446b8d8881068545990101a778",
+						"source_url": "https://blog-imgs-118.fc2.com/s/p/a/spaluna/syozyo3-mondainai.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "bbd3cb3f77dcc7e4be0aff934670cd4e82b02759097517426277d358099cbade",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.7909375,
+							"gain": 0.4589840287223589,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"down": [
+					{
+						"file": "hero-2-syozyo3-itai.wav",
+						"ja": "痛い……",
+						"zh": "好痛……",
+						"length": 0.506125,
+						"sha256": "c1c5f3a219f54aac9b80816164a7b04ff16af51ff7123d8df20ebce00cbbd891",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-itai.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系2/",
+						"source_sha256": "ff4920f3111c2b1b9c65bf2408e314cfe2b7f8b4331d35463880e26ced1776ed",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.506125,
+							"gain": 2.175109210180929,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-charge": [
+					{
+						"file": "hero-2-syozyo3-ikimasyo.wav",
+						"ja": "いきましょう。",
+						"zh": "出发吧。",
+						"length": 1.025375,
+						"sha256": "2b1a8ca09c9e49ec1e2ef6f941f53cb437b6f8d9b5ef19f43e73a8d8ac408ae0",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikimasyo.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "60be1388d2ff9bc435a79f928674922ea159e346ac661acc2daac31e9da74055",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.025375,
+							"gain": 2.489221868844275,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-burst": [
+					{
+						"file": "hero-2-syozyo3-atatte.wav",
+						"ja": "あたって！",
+						"zh": "击中吧！",
+						"length": 0.66,
+						"sha256": "4f4000f19689287310086392a1a5e943bcac19fcf43db0331dc38a68986e4a4b",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-atatte.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/戦闘系/",
+						"source_sha256": "deb70cf2c1a584b75313330408ae7a1d287d723fd4c1154dadf23f0da8f69312",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.66,
+							"gain": 1.2158259959420323,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"ultimate-short": [
+					{
+						"file": "hero-2-syozyo3-ikuyo.wav",
+						"ja": "いくよ。",
+						"zh": "上了。",
+						"length": 0.863938,
+						"sha256": "35fea10ae4eac06fd9d41176be3b4f73577e9551e86ed9b216e1c3554acd01e4",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikuyo.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "8b8409cb4d9411f3cdb0347c2b5f03b73415331aeab1c60e79e74f1e74c48b82",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 0.8639375,
+							"gain": 4.0,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				],
+				"select": [
+					{
+						"file": "hero-2-syozyo3-ikimasyo.wav",
+						"ja": "いきましょう。",
+						"zh": "出发吧。",
+						"length": 1.025375,
+						"sha256": "2b1a8ca09c9e49ec1e2ef6f941f53cb437b6f8d9b5ef19f43e73a8d8ac408ae0",
+						"source_url": "https://blog-imgs-116.fc2.com/s/p/a/spaluna/syozyo3-ikimasyo.mp3",
+						"source_page": "https://soalunashosya.jimdofree.com/少女/",
+						"source_sha256": "60be1388d2ff9bc435a79f928674922ea159e346ac661acc2daac31e9da74055",
+						"voice_id": "syozyo3",
+						"mastering": {
+							"trim_start_seconds": 0.0,
+							"trim_end_seconds": 1.025375,
+							"gain": 2.489221868844275,
+							"pitch_shift": 0,
+							"speed": 1.0,
+							"target_rms": 0.16,
+							"true_peak_limit": 0.8
+						}
+					}
+				]
+			},
+			"charge_time": 1.145,
+			"burst_time": 0.88
+		},
+		{
+			"name": "墓煜",
+			"voice_id": "muyu",
+			"credit": "",
+			"character_type": "hidden-recruit",
+			"voice_ready": false,
+			"note": "尚未录音。这里只有占位空音频与文件名，游戏在此期间不会为该角色播放任何语音。补录音后把同名文件放进 assets/audio/voices/，并把 voice_ready 改为 true。",
+			"lines": {
+				"attack": [
+					{
+						"file": "hero-3-muyu-attack-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"heavy": [
+					{
+						"file": "hero-3-muyu-heavy-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"magic": [
+					{
+						"file": "hero-3-muyu-magic-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"dash": [
+					{
+						"file": "hero-3-muyu-dash-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"hurt": [
+					{
+						"file": "hero-3-muyu-hurt-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"heal": [
+					{
+						"file": "hero-3-muyu-heal-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"down": [
+					{
+						"file": "hero-3-muyu-down-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"ultimate-charge": [
+					{
+						"file": "hero-3-muyu-ultimate-charge-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"ultimate-burst": [
+					{
+						"file": "hero-3-muyu-ultimate-burst-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"ultimate-short": [
+					{
+						"file": "hero-3-muyu-ultimate-short-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				],
+				"select": [
+					{
+						"file": "hero-3-muyu-select-0.wav",
+						"ja": "",
+						"zh": "",
+						"length": 0.35,
+						"voice_id": "muyu",
+						"placeholder": true,
+						"note": "占位空音频：把同名的正式录音放进来即可，无需改代码。"
+					}
+				]
+			},
+			"charge_time": 0.0,
+			"burst_time": 0.0
+		}
+	]
 }

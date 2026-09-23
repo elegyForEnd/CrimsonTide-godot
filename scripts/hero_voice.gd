@@ -5,6 +5,9 @@ extends Node
 const PRIORITIES := {"attack":1,"dash":1,"heavy":2,"magic":2,"heal":3,"hurt":3,"down":4,"ultimate-short":5}
 var metadata: Dictionary
 var banks: Array[Dictionary] = []
+# Per hero: does this manifest entry have real recordings behind it? A hero with
+# placeholder files is deliberately mute rather than quietly silent.
+var ready_flags: Array[bool] = []
 var speakers: Array[AudioStreamPlayer2D] = []
 var narrator: AudioStreamPlayer
 var previous: Dictionary = {}
@@ -21,9 +24,17 @@ func _ready() -> void:
 		for kind in hero.lines:
 			var clips: Array[AudioStream] = []
 			for line in hero.lines[kind]:
-				clips.append(load("res://assets/audio/voices/"+str(line.file)))
-			bank[kind]=clips
+				# A manifest may list a line whose recording was never shipped;
+				# the empty slot is skipped rather than crashing the whole bank.
+				var path := "res://assets/audio/voices/"+str(line.file)
+				var clip: AudioStream=load(path) if ResourceLoader.exists(path) else null
+				if clip and not line.get("placeholder",false):
+					clips.append(clip)
+			if not clips.is_empty():
+				bank[kind]=clips
 		banks.append(bank)
+		# Absent means "recorded": the three shipped heroes predate the flag.
+		ready_flags.append(bool(hero.get("voice_ready",true)))
 	for i in 4:
 		var speaker := AudioStreamPlayer2D.new()
 		speaker.process_mode=Node.PROCESS_MODE_PAUSABLE
@@ -38,9 +49,39 @@ func _ready() -> void:
 	narrator.volume_db=-2.0
 	add_child(narrator)
 
+# A hero index is only ever as good as the manifests that back it: a recruit
+# with no recordings at all keeps every caller silent instead of faulting.
+#
+# A placeholder recording is worse than none: playing one would still duck the
+# music, still count as "speaking" and still hold the centred narrator, so a hero
+# whose manifest marks voice_ready false is treated as having no voice at all.
+# The ultimate cut-in then shows its subtitle and plays nothing.
+func is_voiced(hero: int) -> bool:
+	if ready_flags.is_empty():
+		return true
+	return ready_flags[clampi(hero,0,ready_flags.size()-1)]
+
+func bank_for(hero: int) -> Dictionary:
+	if banks.is_empty():
+		return {}
+	var at := clampi(hero,0,banks.size()-1)
+	return banks[at] if banks[at] is Dictionary else {}
+
+func line_for(hero: int, kind: String) -> AudioStream:
+	if not is_voiced(hero):
+		return null
+	var bank := bank_for(hero)
+	var clips = bank.get(kind,null)
+	if clips is Array and not clips.is_empty():
+		return clips[0]
+	return null
+
+func has_line(hero: int, kind: String) -> bool:
+	return line_for(hero,kind)!=null
+
 func play_line(hero: int, kind: String, emitter: int, at: Vector2, listener_at: Vector2) -> bool:
-	hero=clampi(hero,0,2)
-	if not banks[hero].has(kind) or at.distance_to(listener_at)>720 or get_tree().paused:
+	hero=clampi(hero,0,maxi(0,banks.size()-1))
+	if not has_line(hero,kind) or at.distance_to(listener_at)>720 or get_tree().paused:
 		return false
 	if emitter==local_id and narrator.playing:
 		return false
@@ -63,7 +104,7 @@ func play_line(hero: int, kind: String, emitter: int, at: Vector2, listener_at: 
 				break
 	if not voice:
 		return false
-	var choices: Array=banks[hero][kind]
+	var choices: Array=bank_for(hero)[kind]
 	var key := "%d:%s" % [emitter,kind]
 	var index := randi_range(0,choices.size()-1)
 	if choices.size()>1 and index==int(previous.get(key,-1)):
@@ -84,36 +125,45 @@ func play_line(hero: int, kind: String, emitter: int, at: Vector2, listener_at: 
 	return true
 
 func play_selection(hero: int) -> bool:
-	hero=clampi(hero,0,banks.size()-1)
+	hero=clampi(hero,0,maxi(0,banks.size()-1))
 	var bus := AudioServer.get_bus_index("Dialogue")
 	if AudioServer.is_bus_mute(bus) or AudioServer.get_bus_volume_db(bus)< -55.0:
 		return false
 	if narrator.playing and narrator.get_meta("cue","")=="select" and narrator_hero==hero:
 		return false
+	var line := line_for(hero,"select")
+	if line==null:
+		return false
 	# A single centered voice follows the latest clicked portrait, without overlap.
 	narrator.stop()
 	narrator_hero=hero
 	narrator.set_meta("cue","select")
-	narrator.stream=banks[hero]["select"][0]
+	narrator.stream=line
 	narrator.play()
 	return true
 
 func begin_ultimate(hero: int, online: bool) -> void:
 	narrator.stop()
 	narrator.set_meta("cue","ultimate")
-	narrator_hero=clampi(hero,0,2)
+	narrator_hero=clampi(hero,0,maxi(0,banks.size()-1))
 	narrator_online=online
 	for speaker in speakers:
 		if not online or int(speaker.get_meta("emitter",-1))==local_id:
 			speaker.stop()
-	narrator.stream=banks[narrator_hero]["ultimate-short" if online else "ultimate-charge"][0]
+	var line := line_for(narrator_hero,"ultimate-short" if online else "ultimate-charge")
+	if line==null:
+		return
+	narrator.stream=line
 	narrator.play()
 
 func burst_ultimate() -> void:
 	if narrator_online:
 		return
+	var line := line_for(narrator_hero,"ultimate-burst")
+	if line==null:
+		return
 	narrator.stop()
-	narrator.stream=banks[narrator_hero]["ultimate-burst"][0]
+	narrator.stream=line
 	narrator.play()
 
 func end_ultimate(interrupted: bool) -> void:

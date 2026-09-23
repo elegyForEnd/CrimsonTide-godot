@@ -54,6 +54,11 @@ var rng := RandomNumberGenerator.new()
 var report_paid := false
 var request_cooldowns: Dictionary = {}
 var pending_ultimates: Dictionary = {}
+# 墓煜's ultimate lives in two queues: the rune rain waiting to land, and the
+# underworld fire it leaves behind. Both are host authoritative and replicated
+# to clients as ordinary combat events.
+var soul_reaps: Array = []
+var fire_zones: Array = []
 var raid: Dictionary = {}
 var expedition = preload("res://scripts/expedition.gd").new()
 var mini_bosses = preload("res://scripts/mini_bosses.gd").new()
@@ -216,7 +221,7 @@ func rejected(reason: String) -> void:
 	message.emit(reason)
 
 func make_player(id: int, config: Dictionary) -> Dictionary:
-	var h := clampi(int(config.get("hero",0)),0,2)
+	var h := clampi(int(config.get("hero",0)),0,Catalog.HEROES.size()-1)
 	var talents: Array = config.get("talents",[0,0,0])
 	if talents.size()!=3:
 		talents=[0,0,0]
@@ -1037,12 +1042,19 @@ func loot_floor() -> int:
 # tally the player collects by walking over it, so it is handed back as its own
 # kind and never reaches a container or a search window.
 const CRYSTAL_DROP := "crystals"
+# The banished knight always carries the hidden ending's key. It is a trinket,
+# not equipment: it rolls no quality, it has no slot, and it is worth exactly
+# what the description says.
+const AMULET_DROP := "amulet"
 
 func enemy_loot(e: Dictionary) -> Dictionary:
 	# The defeated monster owns its reward tier, even after leaving its habitat.
 	var difficulty := clampi(int(e.get("difficulty",1)),1,4)
 	var floor_index := difficulty-1
 	if int(e.type)>=14: floor_index=mini(4,difficulty)
+	if int(e.type)==4 and not e.get("amulet_dropped",false):
+		e["amulet_dropped"]=true
+		return {"kind":AMULET_DROP}
 	# Blood crystals are a walk-over tally now, not an item: a drop of them is
 	# handed back as its own kind and never reaches a container or a search window.
 	var entry := {"kind":"ammo" if rng.randf()<0.35 else CRYSTAL_DROP}
@@ -1201,6 +1213,8 @@ func begin(value: int, seconds: float, roster: Dictionary) -> void:
 	inputs.clear()
 	request_cooldowns.clear()
 	pending_ultimates.clear()
+	soul_reaps.clear()
+	fire_zones.clear()
 	objectives=0
 	elapsed=0.0
 	threat=0.0
@@ -1334,8 +1348,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p.channel=0.0
 				var seconds := ONLINE_ULTIMATE_DURATION
 				if not online:
-					var timing: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/voices/voice-manifest.json")).heroes[p.hero]
-					seconds=float(timing.charge_time)+float(timing.burst_time)
+					seconds=ultimate_seconds(p)
 				p.cast_time=seconds
 				pending_ultimates[id]={"remaining":seconds,"aim":p.aim}
 				broadcast_combat({"kind":"ultimate-start","p":p.p,"aim":p.aim,"hero":p.hero,"weapon":Catalog.weapon_family(p.weapon),"id":p.id})
@@ -2022,6 +2035,21 @@ func cancel_ultimate(id: int) -> void:
 	if players.has(id):
 		players[id].cast_time=0.0
 
+# How long the offline cut-in holds for this hero. The manifest carries the
+# recorded line lengths; a hero whose lines are not recorded yet — a placeholder
+# bank, or none at all — falls back to the same short cut-in the online path
+# uses, so the windup is never zero and the ultimate still works.
+func ultimate_seconds(p: Dictionary) -> float:
+	var manifest: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/voices/voice-manifest.json"))
+	var heroes: Array=manifest.get("heroes",[]) if manifest is Dictionary else []
+	if p.hero<0 or p.hero>=heroes.size():
+		return ONLINE_ULTIMATE_DURATION
+	var timing: Dictionary=heroes[p.hero] if heroes[p.hero] is Dictionary else {}
+	if not bool(timing.get("voice_ready",true)):
+		return ONLINE_ULTIMATE_DURATION
+	var seconds := float(timing.get("charge_time",0.0))+float(timing.get("burst_time",0.0))
+	return seconds if seconds>0.05 else ONLINE_ULTIMATE_DURATION
+
 func release_ultimate(id: int) -> void:
 	# Only the host settles damage; clients cannot shorten the online windup.
 	if not authority() or not pending_ultimates.has(id):
@@ -2035,6 +2063,11 @@ func release_ultimate(id: int) -> void:
 		return
 	p.cast_time=0.75
 	var aim: Vector2=cast.aim
+	# The necromancer's rectangle is placed at release, not where the key was
+	# pressed, so her windup ends in a swing the player can still steer.
+	if p.hero==NECROMANCER:
+		cast_soul_reap(p,aim)
+		return
 	broadcast_combat({"kind":"skill","p":p.p,"aim":aim,"hero":p.hero,"weapon":Catalog.weapon_family(p.weapon),"id":p.id})
 	emit_effect("skill",p.p)
 	if p.hero==1:
@@ -2049,6 +2082,121 @@ func release_ultimate(id: int) -> void:
 			var reach := 210 if p.hero==2 else 460
 			if offset.length()<reach and ruins.clear_line(p.p,e.p) and (p.hero==2 or offset.normalized().dot(aim)>0.35):
 				damage_enemy(e,115.0,p.id,offset.normalized(),40.0,4)
+
+# --- 墓煜 / 冥火剑雨 -----------------------------------------------------------
+# The necromancer's ultimate is one rectangle in front of her: a rune sword rain
+# that lands a single heavy hit, then leaves a patch of purple underworld fire.
+# The patch pulses on a fixed cadence regardless of frame rate, and every enemy
+# it touches keeps a burning debuff that outlives the patch. Re-entering the fire
+# refreshes that debuff rather than stacking a second one.
+const NECROMANCER := 3
+const SOUL_REAP_DAMAGE := 150.0
+const FIRE_HALF_WIDTH := 175.0
+const FIRE_LENGTH := 480.0
+const FIRE_TICK := 0.5
+const FIRE_TICK_DAMAGE := 66.0
+const FIRE_DURATION := 6.0
+const BURN_TICK := 0.6
+const BURN_TICK_DAMAGE := 6.0
+const BURN_DURATION := 6.0
+# The rain falls a beat after the cut-in, so the rectangle reads as the attack
+# rather than as the moment the key was pressed.
+const SOUL_REAP_DELAY := 0.32
+const SOUL_REAP_FX := 1.9
+
+func cast_soul_reap(p: Dictionary, aim: Vector2) -> void:
+	var direction := aim.normalized()
+	if direction.length_squared()<0.1:
+		direction=Vector2.RIGHT
+	broadcast_combat({"kind":"skill","p":p.p,"aim":direction,"hero":p.hero,"weapon":Catalog.weapon_family(p.weapon),"id":p.id})
+	emit_effect("skill",p.p)
+	p.invuln=maxf(p.invuln,1.0)
+	soul_reaps.append({"owner":p.id,"at":p.p,"aim":direction,"time":SOUL_REAP_DELAY,
+		"total":SOUL_REAP_DELAY+SOUL_REAP_FX,"damage":ultimate_damage(p,SOUL_REAP_DAMAGE)})
+
+# Every ultimate in the game pays the same multipliers: talents, charms, camp
+# gear and whatever the Watcher is actually holding.
+func ultimate_damage(p: Dictionary, base: float) -> float:
+	return base*(1.0+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
+
+# The rectangle the rain covers, as a plain geometric test so aiming, damage and
+# the drawn patch all agree on exactly which ground is on fire.
+static func inside_reap(at: Vector2, origin: Vector2, aim: Vector2, forward: float) -> bool:
+	var v: Vector2=at-origin
+	var along := v.dot(aim)
+	return along>=-20.0 and along<=forward and absf(v.dot(aim.orthogonal()))<=FIRE_HALF_WIDTH
+
+func update_soul_reaps(dt: float) -> void:
+	for i in range(soul_reaps.size()-1,-1,-1):
+		var reap: Dictionary=soul_reaps[i]
+		reap.time-=dt
+		if reap.time<=0.0 and not reap.get("landed",false):
+			reap["landed"]=true
+			for e in enemies:
+				if e.hp<=0 or not inside_reap(e.p,reap.at,reap.aim,FIRE_LENGTH):
+					continue
+				damage_enemy(e,float(reap.damage),int(reap.owner),reap.aim,46.0,4)
+			fire_zones.append({"owner":int(reap.owner),"at":reap.at,"aim":reap.aim,
+				"time":FIRE_DURATION,"next":0.0,"pulses":0})
+			broadcast_combat({"kind":"necromancer-fire","p":reap.at,"aim":reap.aim,
+				"forward":FIRE_LENGTH,"half":FIRE_HALF_WIDTH,"duration":FIRE_DURATION,"total":reap.total})
+		if reap.time<=-SOUL_REAP_FX:
+			soul_reaps.remove_at(i)
+
+func update_fire_zones(dt: float) -> void:
+	for i in range(fire_zones.size()-1,-1,-1):
+		var zone: Dictionary=fire_zones[i]
+		zone.time-=dt
+		zone.next-=dt
+		# The first pulse lands the moment the patch appears, so six seconds of
+		# fire really is twelve ticks rather than eleven.
+		if zone.next<=0.0 and float(zone.time)>=0.0:
+			# The cadence belongs to the patch, not to the frame: a long frame
+			# settles every pulse it swallowed instead of losing them.
+			zone.next+=FIRE_TICK
+			zone["pulses"]=int(zone.get("pulses",0))+1
+			for e in enemies:
+				if e.hp<=0 or not inside_reap(e.p,zone.at,zone.aim,FIRE_LENGTH):
+					continue
+				burn_enemy(e,int(zone.owner),FIRE_TICK_DAMAGE,true)
+		if zone.time<0.0:
+			fire_zones.remove_at(i)
+
+# One tick of underworld fire. Arriving from the patch refreshes the debuff's
+# whole duration; the debuff's own pulses only take what is left of it. The
+# pulse schedule is deliberately left alone by a refresh, so standing in the
+# fire never starves the burn of the ticks it was already owed.
+func burn_enemy(e: Dictionary, owner: int, damage: float, refresh: bool = false) -> void:
+	if refresh:
+		e["burn_time"]=BURN_DURATION
+		if not e.has("burn_next"):
+			e["burn_next"]=BURN_TICK
+	e.hp-=damage
+	e.last=owner
+	e["burn_hit"]=0.4
+	# Only the burn's own pulses are counted; a pulse of the patch that lit it
+	# also damages, but it is the patch's tick rather than the debuff's.
+	if not refresh:
+		e["burn_pulses"]=int(e.get("burn_pulses",0))+1
+	broadcast_combat({"kind":"burn","p":e.p,"damage":damage,"owner":owner,"enemy_type":e.type})
+
+func update_burns(dt: float) -> void:
+	for e in enemies:
+		if not e.has("burn_time"):
+			continue
+		e["burn_time"]=maxf(0.0,float(e.burn_time)-dt)
+		e["burn_hit"]=maxf(0.0,float(e.get("burn_hit",0.0))-dt)
+		var next := float(e.get("burn_next",BURN_TICK))-dt
+		while next<=0.0 and float(e.burn_time)>0.0:
+			next+=BURN_TICK
+			if e.hp>0:
+				burn_enemy(e,int(e.get("last",0)),BURN_TICK_DAMAGE)
+		e["burn_next"]=next
+		if float(e.burn_time)<=0.0 and float(e.get("burn_hit",0.0))<=0.0:
+			e.erase("burn_time")
+			e.erase("burn_next")
+			e.erase("burn_hit")
+			e.erase("burn_pulses")
 
 func reload_player(p: Dictionary) -> void:
 	var clip: int=16
@@ -2136,31 +2284,42 @@ func simulate(dt: float) -> void:
 		if p.hp<=0:
 			down(p)
 	update_enemies(dt)
+	update_soul_reaps(dt)
+	update_fire_zones(dt)
+	update_burns(dt)
 	update_bullets(dt)
 	var defeated_boss := false
-	for i in range(enemies.size()-1,-1,-1):
-		var e: Dictionary=enemies[i]
-		if e.hp<=0:
-			if e.get("raid_boss",false) or e.get("mini_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
-			resolve_site_defeat(e)
-			if e.get("dragon_boss",false): dragon_boss.defeated(self,e)
-			elif e.get("wild_boss",false): wild_bosses.defeated(self,e)
-			elif e.get("mini_boss",false): mini_bosses.defeated(self,e)
-			if players.has(e.last):
-				players[e.last].kills+=1
-			if e.get("raid_boss",false):
-				defeated_boss=true
-			elif e.type==4 and not e.get("mini_boss",false):
-				if map_id=="city": ruins.sites[0]["boss_defeated"]=true
-			elif rng.randf()<Ecology.drop_chance(e):
-				var loot := enemy_loot(e)
-				if str(loot.kind)==CRYSTAL_DROP:
-					world_drops.append(crystal_drop(e.p,rng.randi_range(1,3)))
-				else:
-					world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
-			emit_effect("hit",e.p)
-			broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"id":e.id})
-			enemies.remove_at(i)
+	# A death is settled after the sweep rather than during it: a boss's own
+	# reward path may raise the next encounter, and that rewrites the enemy list
+	# out from under the loop. Walking the live dictionaries and removing them by
+	# identity afterwards keeps every drop and every reward event intact.
+	var fallen: Array = []
+	for e in enemies:
+		if e.hp>0:
+			continue
+		fallen.append(e)
+		if e.get("raid_boss",false) or e.get("mini_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
+		resolve_site_defeat(e)
+		if e.get("dragon_boss",false): dragon_boss.defeated(self,e)
+		elif e.get("hidden_final",false): expedition.hidden_victory(self)
+		elif e.get("wild_boss",false): wild_bosses.defeated(self,e)
+		elif e.get("mini_boss",false): mini_bosses.defeated(self,e)
+		if players.has(e.last):
+			players[e.last].kills+=1
+		if e.get("raid_boss",false):
+			defeated_boss=true
+		elif e.type==4 and not e.get("mini_boss",false):
+			if map_id=="city": ruins.sites[0]["boss_defeated"]=true
+		elif rng.randf()<Ecology.drop_chance(e):
+			var loot := enemy_loot(e)
+			if str(loot.kind)==CRYSTAL_DROP:
+				world_drops.append(crystal_drop(e.p,rng.randi_range(1,3)))
+			else:
+				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
+		emit_effect("hit",e.p)
+		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"id":e.id})
+	for e in fallen:
+		enemies.erase(e)
 	if map_id=="city" and ruins.sites[0].get("boss_defeated",false) and not ruins.sites[0].get("cleared",false) and enemies.is_empty():
 		ruins.sites[0]["cleared"]=true
 		knight_reward(RoyalCity.BOSS)
@@ -2168,6 +2327,13 @@ func simulate(dt: float) -> void:
 		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
 		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("wild_seals",{}).size()==2: wild_bosses.spawn_final(self)
 		else: expedition.victory(self)
+	# The hidden encounter unlocks on the frame the four conditions below first
+	# hold together, whatever order they were satisfied in: every sunrise bell
+	# lit, the knight's amulet still carried, the queen already down, and the
+	# secret abyss finale not already running in her place.
+	if not raid.is_empty() and not raid.get("ended",false) and not raid.get("hidden_slain",false) \
+			and not raid.get("abyss_spawned",false) and raid.get("final_spawned",false) \
+			and hidden_ending_ready(): expedition.spawn_hidden(self)
 	var alive := false
 	for p in players.values():
 		if p.status in ["active","down"]:
@@ -2192,6 +2358,37 @@ func safe_radius() -> float:
 
 func can_extract() -> bool:
 	return not raid.is_empty() and (raid.day==2 or raid.phase=="complete")
+
+# --- the hidden ending -------------------------------------------------------
+# Lighting all three sunrise bells costs a whole raid: the shrines only exist on
+# the border map, and day three strands the party in the queen's arena. Carrying
+# the banished knight's amulet that far is the second half of the bargain, so
+# the check is deliberately about the backpack the player actually walks in
+# with — dropping the trinket to make room for loot really does forfeit it.
+const BELL_SEALS := 3
+
+# The lit bells are recorded on the raid rather than read back off ruins.shrines:
+# crossing into the royal city rebuilds the border map, and a rebuilt map has
+# three cold bells again. What the party has sealed this run is run state.
+func bells_lit() -> int:
+	return raid.get("sealed_bells",{}).size()
+
+func seal_bell(index: int) -> void:
+	var sealed: Dictionary=raid.get("sealed_bells",{})
+	sealed[index]=true
+	raid["sealed_bells"]=sealed
+
+func carries_amulet(p: Dictionary) -> bool:
+	return Catalog.container_count(p.get("backpack",{}),AMULET_DROP)>0
+
+func amulet_carrier() -> Dictionary:
+	for p in players.values():
+		if p.status in ["active","down"] and carries_amulet(p):
+			return p
+	return {}
+
+func hidden_ending_ready() -> bool:
+	return bells_lit()>=BELL_SEALS and not amulet_carrier().is_empty()
 
 func can_travel() -> bool:
 	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<SHRINK_START)
@@ -2252,7 +2449,11 @@ func attack(p: Dictionary) -> void:
 	p.pending_strike=true
 	# Every consumer of a combat event wants the four-way art/effect family, not
 	# the index of the exact weapon; a hero issue weapon borrows its family's.
+	# The necromancer also fires a caster cue, because her issue weapon imitates
+	# the one-handed family and would otherwise read as a plain sword swing.
 	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":family,"spell":str(weapon.get("spell","star")),"windup":float(weapon.windup),"id":p.id,"combo":p.combo})
+	if p.hero==NECROMANCER and Catalog.is_starter(int(p.weapon)):
+		broadcast_combat({"kind":"necromancer-cast","p":p.p,"aim":p.strike_aim,"windup":float(weapon.windup),"hero":p.hero,"id":p.id})
 	if weapon.windup==0:
 		p.pending_strike=false
 		release_strike(p)
@@ -2416,6 +2617,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			broadcast_audio("heal",p)
 		"shrine":
 			ruins.shrines[index].done=true
+			seal_bell(index)
 			objectives+=1
 			p.sanity=minf(100,p.sanity+20)
 			emit_effect("bell",p.p)
@@ -2686,6 +2888,8 @@ func update_bullets(dt: float) -> void:
 							damage_enemy(e,b.damage,b.owner,b.v.normalized(),float(b.get("knock",16.0)),int(b.get("weapon",0)))
 							if spell=="chain":
 								spell_chain(b,e)
+						if not b.has("hit_ids"):
+							b["hit_ids"]=[]
 						b.hit_ids.append(e.id)
 						b.remaining=int(b.get("remaining",1))-1
 						if b.remaining<=0 or spell in ["meteor","vortex"]:
@@ -2748,7 +2952,10 @@ func settle() -> void:
 		# in down(), so only the sealed pocket survives it.
 		var loot := (Catalog.container_value(p.backpack)+Catalog.container_value(p.pocket)) if extracted else 0
 		var shared := objectives*55+(100 if objectives==3 else 0)+int(p.get("boss_reward",0))
-		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":loot+shared,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted),"worn":worn_names(p)}
+		var hidden := bool(p.get("hidden_ending",false))
+		if hidden:
+			shared+=expedition.HIDDEN_REWARD
+		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":loot+shared,"hidden":hidden,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0)+(240 if hidden else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted),"worn":worn_names(p)}
 	running=false
 	finished.emit()
 	if online:

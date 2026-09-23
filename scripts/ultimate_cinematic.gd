@@ -17,6 +17,11 @@ const INVOCATIONS := [
 		"charge":{"ja":"終焉を告げる、黒き翼よ！","zh":"宣告终焉的漆黑羽翼！"},
 		"burst":{"ja":"禁式解放、夜鴉断罪！","zh":"禁式解放——夜鸦断罪！"},
 		"short":{"ja":"夜鴉断罪！","zh":"夜鸦断罪！"}
+	},
+	{
+		"charge":{"ja":"冥府の炎よ、我が名を刻め！","zh":"冥府之炎，刻下我的名字！"},
+		"burst":{"ja":"死霊奥義、冥火剣雨！","zh":"死灵奥义——冥火剑雨！"},
+		"short":{"ja":"冥火剣雨！","zh":"冥火剑雨！"}
 	}
 ]
 signal burst
@@ -43,8 +48,9 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	clip_contents=true
 	var sheet: Texture2D=load("res://assets/combat/ultimate-cg.png")
-	var row := sheet.get_height()/3.0
-	for i in 3:
+	# One cut-in row per hero in the catalog; the sheet grows a row per recruit.
+	var row := sheet.get_height()/float(maxi(1,Catalog.HEROES.size()))
+	for i in Catalog.HEROES.size():
 		var frame := AtlasTexture.new()
 		frame.atlas=sheet
 		frame.region=Rect2(0,i*row+2,sheet.get_width(),row-4)
@@ -65,9 +71,16 @@ func _ready() -> void:
 func play(character: int, online: bool) -> void:
 	if active:
 		return
-	hero=clampi(character,0,2)
-	duration=TideSession.ONLINE_ULTIMATE_DURATION if online else float(voice_info[hero].charge_time)+float(voice_info[hero].burst_time)
-	impact_time=.612 if online else float(voice_info[hero].charge_time)
+	hero=clampi(character,0,Catalog.HEROES.size()-1)
+	# A hero whose lines are a silent placeholder has no recorded length to hold
+	# the cut-in for, so its own charge and burst times read as zero and the same
+	# short cut-in the online path uses is played instead. The subtitles still
+	# show; nothing is spoken.
+	var charge := _voice_time("charge_time")
+	var burst := _voice_time("burst_time")
+	var spoken := charge+burst>0.05
+	duration=TideSession.ONLINE_ULTIMATE_DURATION if (online or not spoken) else charge+burst
+	impact_time=.612 if (online or not spoken) else charge
 	age=0.0
 	fired=false
 	active=true
@@ -79,6 +92,16 @@ func play(character: int, online: bool) -> void:
 	queue_redraw()
 	light.queue_redraw()
 	captions.queue_redraw()
+
+# The recorded length of one of this hero's lines, or 0 when the manifest has
+# nothing to measure — either no entry at all or a placeholder bank.
+func _voice_time(key: String) -> float:
+	if hero<0 or hero>=voice_info.size():
+		return 0.0
+	var entry=voice_info[hero]
+	if not entry is Dictionary or not bool(entry.get("voice_ready",true)):
+		return 0.0
+	return float(entry.get(key,0.0))
 
 func stop(interrupted: bool = true) -> void:
 	var was_active := active

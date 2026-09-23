@@ -81,20 +81,25 @@ func _ready() -> void:
 		for i in int(VARIANTS[kind]):
 			variants.append(load("res://assets/audio/%s-%d.wav" % [kind,i]))
 		clips[kind]=variants
-	for key in BossPresentation.KEYS:
+	# Every boss theme borrows the queen's take for an action it does not ship,
+	# so a new encounter only needs the recordings it really uses and a missing
+	# file can never leave a null stream in the cue table. Guard and break only
+	# exist for the two encounters that can actually parry.
+	const GUARDED := ["thorn","knight"]
+	for key in BossPresentation.KEYS+["mirror","ember","moon","earth","storm","abyss","dragon"]:
 		for action in ["charge","quick","sweep","burst","lance","ritual","fall","guard","break"]:
-			if action in ["guard","break"] and key not in ["thorn","knight"]: continue
+			if action in ["guard","break"] and key not in GUARDED: continue
 			var cue: String=key+"-"+action
-			clips[cue]=[load("res://assets/audio/bosses/"+cue+".wav")]
-	for key in ["mirror","ember","moon","earth","storm","abyss","dragon"]:
-		for action in ["charge","quick","sweep","burst","lance","ritual","fall"]:
-			var cue: String=key+"-"+action
-			clips[cue]=[load("res://assets/audio/bosses/"+cue+".wav")]
-	for hero in 3:
-		charges.append(load("res://assets/audio/ultimate-charge-%d.wav" % hero))
-		bursts.append(load("res://assets/audio/ultimate-burst-%d.wav" % hero))
-		short_charges.append(load("res://assets/audio/ultimate-charge-short-%d.wav" % hero))
-		short_bursts.append(load("res://assets/audio/ultimate-burst-short-%d.wav" % hero))
+			var direct := "res://assets/audio/bosses/"+cue+".wav"
+			clips[cue]=[load(direct) if ResourceLoader.exists(direct) else load("res://assets/audio/bosses/queen-"+action+".wav")]
+	# One ultimate jingle per hero in the catalog. A hero whose lines are not
+	# recorded yet has no jingle of their own either; the first hero's take stands
+	# in, so the cut-in still has music under it.
+	for hero in Catalog.HEROES.size():
+		charges.append(_load_or_first("res://assets/audio/ultimate-charge-%d.wav",hero,charges))
+		bursts.append(_load_or_first("res://assets/audio/ultimate-burst-%d.wav",hero,bursts))
+		short_charges.append(_load_or_first("res://assets/audio/ultimate-charge-short-%d.wav",hero,short_charges))
+		short_bursts.append(_load_or_first("res://assets/audio/ultimate-burst-short-%d.wav",hero,short_bursts))
 	cinema_charge=make_voice(true)
 	cinema_burst=make_voice(true)
 	cinema_charge.bus="Cinematic"
@@ -108,6 +113,14 @@ func _ready() -> void:
 	ambience.play()
 	music=TideMusic.new()
 	add_child(music)
+
+# The ultimate jingle for one hero, or the first hero's take when this recruit
+# has no recording of their own. Keeps the per-hero arrays indexable.
+func _load_or_first(pattern: String, hero: int, so_far: Array[AudioStream]) -> AudioStream:
+	var path := pattern % hero
+	if ResourceLoader.exists(path):
+		return load(path)
+	return so_far[0] if not so_far.is_empty() else null
 
 func priority(kind: String) -> int:
 	if kind.contains("-") and kind.get_slice("-",0) in BossPresentation.KEYS+["mirror","ember","moon","earth","storm","abyss","dragon"]: return 92
@@ -253,7 +266,7 @@ func begin_cinematic(hero: int, online: bool) -> void:
 	if not online:
 		for voice in voices:
 			voice.stop()
-	cinema_charge.stream=(short_charges if online else charges)[clampi(hero,0,2)]
+	cinema_charge.stream=(short_charges if online else charges)[clampi(hero,0,charges.size()-1)]
 	cinema_charge.pitch_scale=1.0
 	cinema_charge.volume_db=-8.0
 	cinema_charge.play()
@@ -262,7 +275,7 @@ func begin_cinematic(hero: int, online: bool) -> void:
 func burst_cinematic(hero: int) -> void:
 	dialogue.burst_ultimate()
 	cinema_charge.stop()
-	cinema_burst.stream=(short_bursts if cinema_online else bursts)[clampi(hero,0,2)]
+	cinema_burst.stream=(short_bursts if cinema_online else bursts)[clampi(hero,0,bursts.size()-1)]
 	cinema_burst.pitch_scale=1.0
 	cinema_burst.volume_db=-7.0
 	cinema_burst.play()

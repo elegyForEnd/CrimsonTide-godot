@@ -94,7 +94,17 @@ func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 	var rotation := direction.angle() if shape in ["line","cone","lane","gap_ring","arc"] else 0.0
 	var origin: Vector2=field.offset if target==field else Vector2.ZERO
 	target.draw_set_transform(origin+h.p,rotation)
-	var theme_color: Color=Color("9ce9ff") if h.get("dragon_boss",false) else [Color("d9aa68"),Color("87dfff"),Color("b86bff")][clampi(int(h.get("wild_kind",0)),0,2)] if h.get("wild_boss",false) else Color("ff426c") if h.get("final_form",false) else (Color("a8dbff") if int(h.get("mini_kind",-1))==0 else Color("ff8d66") if int(h.get("mini_kind",-1))==1 else COLORS[kind])
+	var theme_color: Color=Presentation.theme_color(kind,h.get("hidden_final",false))
+	if h.get("dragon_boss",false):
+		theme_color=Color("9ce9ff")
+	elif h.get("wild_boss",false):
+		theme_color=[Color("d9aa68"),Color("87dfff"),Color("b86bff")][clampi(int(h.get("wild_kind",0)),0,2)]
+	elif h.get("final_form",false):
+		theme_color=Color("ff426c")
+	elif int(h.get("mini_kind",-1))==0:
+		theme_color=Color("a8dbff")
+	elif int(h.get("mini_kind",-1))==1:
+		theme_color=Color("ff8d66")
 	var color := Color(theme_color,alpha)
 	var radius := float(h.radius)
 	var inner := float(h.get("inner",0))
@@ -226,7 +236,17 @@ func _draw() -> void:
 func animate_event(fx: Dictionary) -> void:
 	var at: Vector2=fx.p
 	var kind := int(fx.boss_kind)
-	var col: Color=Color("9ce9ff") if fx.get("dragon_boss",false) else [Color("d9aa68"),Color("87dfff"),Color("b86bff")][clampi(int(fx.get("wild_kind",0)),0,2)] if fx.get("wild_boss",false) else Color("ff426c") if fx.get("final_form",false) else (Color("a8dbff") if int(fx.get("mini_kind",-1))==0 else Color("ff8d66") if int(fx.get("mini_kind",-1))==1 else COLORS[kind])
+	var col: Color=Presentation.theme_color(kind,fx.get("hidden_final",false))
+	if fx.get("dragon_boss",false):
+		col=Color("9ce9ff")
+	elif fx.get("wild_boss",false):
+		col=[Color("d9aa68"),Color("87dfff"),Color("b86bff")][clampi(int(fx.get("wild_kind",0)),0,2)]
+	elif fx.get("final_form",false):
+		col=Color("ff426c")
+	elif int(fx.get("mini_kind",-1))==0:
+		col=Color("a8dbff")
+	elif int(fx.get("mini_kind",-1))==1:
+		col=Color("ff8d66")
 	var source := int(fx.id)
 	var aim: Vector2=fx.get("aim",Vector2.RIGHT)
 	var action := str(fx.action)

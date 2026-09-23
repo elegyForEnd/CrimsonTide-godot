@@ -3,8 +3,17 @@ extends RefCounted
 
 signal saved
 
-var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"voice_volume":0.9,"music_volume":0.7,"fullscreen":false,"best":0,"pocket":{"key":"white","items":[],"gw":4,"gh":4,"next":1},"bag_key":"white","bags":[{"key":"white","items":[],"next":1}]}
+var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":0,"talents":[0,0,0],"volume":0.65,"voice_volume":0.9,"music_volume":0.7,"fullscreen":false,"best":0,"pocket":{"key":"white","items":[],"gw":4,"gh":4,"next":1},"bag_key":"white","bags":[{"key":"white","items":[],"next":1}],"unlocks":{}}
 var path := "user://profile.json"
+# Recruits earned by reaching a hidden ending. A hero whose key is not listed
+# here never appears in the camp roster, so the extra rows in Catalog.HEROES
+# stay invisible until the profile has actually met them.
+const RECRUIT_KEYS := ["muyu"]
+const AMULET_ENDING := "amulet_ending"
+# Which catalog index each recruit key unlocks. Spelled out rather than derived,
+# because the save file keeps only the keys and a later reorder of the roster
+# must not silently hand a player a different hero.
+const RECRUIT_HEROES := {"muyu":3}
 
 func load_profile() -> void:
 	if not FileAccess.file_exists(path):
@@ -21,13 +30,44 @@ func apply_data(parsed) -> void:
 		for key in ["coins","xp","runs","extracts","hero","gear","best"]:
 			if parsed.get(key) is float or parsed.get(key) is int:
 				data[key] = maxi(0,int(parsed[key]))
-		data.hero = clampi(data.hero,0,2)
+		data.hero = clampi(data.hero,0,roster_size()-1)
 		data.gear = clampi(data.gear,0,2)
 		if data.talents.size() != 3:
 			data.talents = [0,0,0]
 		for i in 3:
 			data.talents[i] = clampi(int(data.talents[i]),0,5)
 	sanitize_storage()
+
+# --- hidden recruits ---------------------------------------------------------
+# Which heroes this profile may pick. The base three are always available; a
+# recruit only joins once the ending that unlocks them has been reached and
+# written back to the save file.
+func unlocks() -> Dictionary:
+	var saved = data.get("unlocks",{})
+	return saved if saved is Dictionary else {}
+
+func unlock(key: String) -> bool:
+	var earned := unlocks()
+	if bool(earned.get(key,false)):
+		return false
+	earned[key]=true
+	data["unlocks"]=earned
+	return true
+
+func has_recruit(index: int) -> bool:
+	if index<Catalog.BASE_ROSTER:
+		return true
+	for key in RECRUIT_HEROES:
+		if int(RECRUIT_HEROES[key])==index:
+			return bool(unlocks().get(key,false))
+	return false
+
+func roster_size() -> int:
+	var size := Catalog.BASE_ROSTER
+	for key in RECRUIT_HEROES:
+		if bool(unlocks().get(key,false)) and int(RECRUIT_HEROES[key])<Catalog.HEROES.size():
+			size=maxi(size,int(RECRUIT_HEROES[key])+1)
+	return mini(Catalog.HEROES.size(),size)
 
 # The dimensional pocket always keeps its 4x4 grid; the backpack only changes
 # quality, and both are repaired here so a hand-edited save cannot break a run.

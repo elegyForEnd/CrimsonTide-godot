@@ -51,9 +51,13 @@ func _ready() -> void:
 	boss_layer.add_child(boss_hud)
 	for kind in Catalog.ITEMS:
 		loot_icons[kind]=load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
-	# Field equipment resolves to its own weapon / slot icon, so preload those too.
+	# Field equipment resolves to its own weapon / slot icon, so preload those too,
+	# plus any standalone icon a recruit's issue weapon ships with.
 	for icon in Catalog.WEAPON_ICONS+Catalog.GEAR_ICONS:
 		loot_icons[icon]=TideUIArt.icon(icon)
+	for starter in Catalog.STARTER_WEAPONS:
+		if starter.has("icon"):
+			loot_icons[str(starter.icon)]=TideUIArt.icon(str(starter.icon))
 	combat=CombatVisuals.new()
 	combat.field=self
 	add_child(combat)
