@@ -19,6 +19,17 @@ var boss_sigil: Texture2D = preload("res://assets/world/landmarks/boss-sigil.png
 var shrine_sigil: Texture2D = preload("res://assets/world/landmarks/shrine-sigil.png")
 var enemy_frames: EnemyFrames
 var boss_frames: BossFrames
+# Portrait art for the special encounters, indexed exactly like
+# BossFrames.SPECIAL_KEYS so the boss HUD, the cut-in and the boss sprite all
+# agree on which creature an index means.
+const SPECIAL_BOSS_ART := [preload("res://assets/bosses/new/mirror-weaver.png"),
+	preload("res://assets/bosses/new/ashen-vesper.png"),
+	preload("res://assets/bosses/new/nameless-moon.png"),
+	preload("res://assets/bosses/wild/earthsplitter.png"),
+	preload("res://assets/bosses/wild/storm-roc-v2.png"),
+	preload("res://assets/bosses/wild/moon-leviathan.png"),
+	preload("res://assets/bosses/dragon/frostbone-dragon.png")]
+var special_boss_art: Array=SPECIAL_BOSS_ART
 var boss_seen: Dictionary={}
 var boss_health: Dictionary={}
 var defeated_enemies: Array = []

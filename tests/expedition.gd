@@ -22,6 +22,7 @@ func run() -> void:
 	s.spawn_timer=9999
 	var p: Dictionary=s.players[1]
 	check(s.raid.day==1 and s.raid.phase=="explore","First day starts in exploration")
+	check(s.raid.kind in s.expedition.DAWN_KINDS,"Day one fields one of the two dawn bosses")
 	check(not s.can_extract(),"Day one extraction locked")
 	p.p=s.ruins.exits[0]
 	s.interact(p,true,5)
@@ -40,6 +41,8 @@ func run() -> void:
 	check(s.raid.phase=="boss" and not boss(s).is_empty(),"Dawn spawns boss instead of killing player")
 	check(is_equal_approx(s.safe_radius(),540) and boss(s).p.distance_to(first)<1,"Boss spawns exactly at completed circle centre")
 	var health: float=boss(s).max_hp
+	var first_kind: int=int(s.raid.kind)
+	check(int(boss(s).boss_kind)==first_kind,"The day one boss is the one the marker announced")
 	s.simulate(0.1)
 	var count := 0
 	for e in s.enemies:
@@ -47,6 +50,7 @@ func run() -> void:
 	check(count==1,"Boss spawns once")
 	kill_boss(s)
 	check(s.raid.day==2 and s.raid.phase=="explore" and s.raid.time==0,"First boss starts day two and resets time")
+	check(s.raid.kind!=first_kind and s.raid.kind in s.expedition.DAWN_KINDS,"Day two refuses to repeat the first dawn boss")
 	check(s.safe_center().distance_to(first)>700 and s.safe_radius()>4000,"New centre and reset circle")
 	check(s.can_extract(),"Day two extraction enabled")
 	check(int(p.get("boss_reward",0))==150,"First reward awarded once")
@@ -122,6 +126,18 @@ func run() -> void:
 		centres[s.safe_center()]=true
 		kinds[s.raid.kind]=true
 		check(not s.ruins.blocked(s.safe_center(),30),"Seed %d arena clear" % seed)
+		# Drive the run to day two and confirm the roster never repeats a dawn boss.
+		var day_one: int=int(s.raid.kind)
+		s.raid.time=s.duration
+		s.simulate(0.01)
+		var first_spawn: int=int(boss(s).boss_kind)
+		p.p=s.safe_center()+Vector2(130,0)
+		p.invuln=100
+		kill_boss(s)
+		check(int(s.raid.kind)!=day_one,"Seed %d day two fields the other dawn boss" % seed)
+		s.raid.time=s.duration
+		s.simulate(0.01)
+		check(int(boss(s).boss_kind)!=first_spawn and int(boss(s).boss_kind)==int(s.raid.kind),"Seed %d day two spawns the boss its marker announced" % seed)
 	check(centres.size()>1 and kinds.size()==2,"Seeds vary both location and boss identity")
 	print("EXPEDITION %d checks, %d failures" % [checks,failures])
 	s.queue_free()

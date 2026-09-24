@@ -16,13 +16,7 @@ var atlas: Texture2D=preload("res://assets/combat/vfx-atlas.png")
 var face: Font=preload("res://assets/NotoSerifSC.ttf")
 const COLORS := [Color("c8a8ff"),Color("ff7799"),Color("ffcf88"),Color("b9e1ff")]
 const TITLES := ["葬钟圣座", "荆棘王誓", "永夜月冠", "失乡之誓"]
-const SPECIAL_ART := [preload("res://assets/bosses/new/mirror-weaver.png"),
-	preload("res://assets/bosses/new/ashen-vesper.png"),
-	preload("res://assets/bosses/new/nameless-moon.png"),
-	preload("res://assets/bosses/wild/earthsplitter.png"),
-	preload("res://assets/bosses/wild/storm-roc-v2.png"),
-	preload("res://assets/bosses/wild/moon-leviathan.png"),
-	preload("res://assets/bosses/dragon/frostbone-dragon.png")]
+const SPECIAL_ART := Battlefield.SPECIAL_BOSS_ART
 
 func _ready() -> void:
 	light=Node2D.new()

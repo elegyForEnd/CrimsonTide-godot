@@ -22,9 +22,14 @@ const HIDDEN_REWARD := 1200
 # by. It sits after the three shipped raid bosses.
 const HIDDEN_KIND := 4
 
+# The daily dawn boss. Days one and two draw from the first two entries, so the
+# roster is exactly the size of the two exploring days; the queen (kind 2) is the
+# fixed final boss. No dawn boss may repeat across the run.
+const DAWN_KINDS := [0,1]
+
 func reset(s) -> void:
 	s.raid={"day":1,"phase":"explore","time":0.0,"center":Ruins.CENTER,"kind":0,"hazards":[],"choices":{},"kills":0,"final_spawned":false,"wild_seals":{},"map_boss_defeats":{},"abyss_spawned":false,
-		"hidden_spawned":false,"hidden_slain":false,"ended":false,"sealed_bells":{}}
+		"hidden_spawned":false,"hidden_slain":false,"ended":false,"sealed_bells":{},"boss_kinds":{}}
 	prepare_day(s,1)
 
 func prepare_day(s, day: int) -> void:
@@ -34,7 +39,7 @@ func prepare_day(s, day: int) -> void:
 	s.raid.day=day
 	s.raid.time=0.0
 	s.raid.phase="explore"
-	s.raid.kind=s.rng.randi_range(0,1) if day<3 else 2
+	s.raid.kind=roll_dawn_kind(s,day)
 	s.raid.center=arena(s)
 	s.raid.hazards=[]
 	s.raid.choices={}
@@ -61,6 +66,25 @@ func prepare_day(s, day: int) -> void:
 				p.p=arena_entry(s,p.id)
 				p.invuln=3.0
 		spawn_boss(s)
+
+func roll_dawn_kind(s, day: int) -> int:
+	# A dawn boss already fought on an earlier day is struck from the pool, so
+	# day two can only field the dawn boss day one did not use. Day three is the
+	# queen and never competes for a slot.
+	if day>=3: return 2
+	var used: Dictionary={}
+	var history: Dictionary=s.raid.get("boss_kinds",{})
+	for taken_day in history:
+		if int(taken_day)<day: used[int(history[taken_day])]=true
+	var pool: Array=[]
+	for kind in DAWN_KINDS:
+		if not used.has(kind): pool.append(kind)
+	# A run cannot exhaust the roster; fall back to the full pool if it ever did.
+	if pool.is_empty(): pool=DAWN_KINDS.duplicate()
+	var pick: int=pool[s.rng.randi_range(0,pool.size()-1)]
+	history[day]=pick
+	s.raid.boss_kinds=history
+	return pick
 
 func spawn_map_guardians(s) -> void:
 	# One weak encounter and two distinct strong encounters are seeded on day one.
