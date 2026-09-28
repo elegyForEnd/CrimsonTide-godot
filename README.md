@@ -1,5 +1,7 @@
 # 血潮守望 · Crimson Tide
 
+源码已接入 **3D 地图 + 2D 人物** 的 2.5D 显示层，启动方式、架构和当前边界见 [2.5D 重构说明](MAP-2-5D.md)。下文 `dist` 为尚未重新导出的旧版。
+
 武器逐品质 DPS、技能与怪物的后续调数目标见 [数值规划](WEAPON-SKILL-ENEMY-BALANCE.md)。
 
 新增异兽 Boss 的玩法、美术与音乐见 [BOSS-WILD-EXPANSION.md](BOSS-WILD-EXPANSION.md)。

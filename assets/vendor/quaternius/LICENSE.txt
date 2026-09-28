@@ -1,0 +1,6 @@
+Ultimate Stylized Nature by Quaternius
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Author and license declaration: https://quaternius.com/packs/ultimatestylizednature.html
+Models retrieved from the public Godot mirror recorded in sources.json.
+Textures downsampled; game materials supplied separately.

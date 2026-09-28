@@ -1,5 +1,8 @@
 class_name Battlefield
 extends Node2D
+const WorldPresentation = preload("res://scripts/world_3d.gd")
+var world_3d: Node3D
+var world_pose := Transform2D.IDENTITY
 var session: TideSession
 var camera := Ruins.SPAWN
 var offset := Vector2.ZERO
@@ -43,6 +46,10 @@ var move_phases: Dictionary = {}
 var blood_tide = preload("res://scripts/blood_tide.gd").new()
 
 func _ready() -> void:
+	world_3d=WorldPresentation.new()
+	add_child(world_3d)
+	visibility_changed.connect(func(): world_3d.visible=visible)
+	world_3d.visible=visible
 	blood_tide.setup(self)
 	var face := FontVariation.new()
 	face.base_font=load("res://assets/NotoSansSC.ttf")
@@ -129,8 +136,12 @@ func _process(dt: float) -> void:
 		for x in range(-2,3):
 			for y in range(-2,3):
 				explored[Vector2i(target/160)+Vector2i(x,y)]=true
-	offset=get_viewport_rect().size/2-camera
-	offset+=Vector2(sin(clock*89),cos(clock*107))*combat.trauma*combat.trauma*13
+	world_3d.sync(session.ruins,camera,get_viewport_rect().size)
+	world_3d.sync_chests(session.ruins.chests)
+	var shake := Vector2(sin(clock*89),cos(clock*107))*combat.trauma*combat.trauma*13
+	world_3d.view_camera.h_offset=shake.x*WorldPresentation.UNIT
+	world_3d.view_camera.v_offset=shake.y*WorldPresentation.UNIT
+	offset=world_3d.project(Vector2.ZERO)
 	blood_tide.update(self)
 	queue_redraw()
 
@@ -138,14 +149,14 @@ func aim() -> Vector2:
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty():
 		return Vector2.RIGHT
-	return (get_global_mouse_position()-offset-p.p).normalized()
+	return (world_3d.unproject(get_global_mouse_position())-p.p).normalized()
 
 func _draw() -> void:
 	if not session or session.ruins.sites.is_empty():
 		return
-	draw_set_transform(offset)
+	world_3d.begin_sprites()
+	set_world_transform()
 	var world := session.ruins
-	world_art.terrain(self,world,camera,clock)
 	var gate := session.portal_position()
 	draw_arc(gate,45,0,TAU,48,Color("a5ebed"),4,true)
 	label(gate+Vector2(-95,-58),("返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]") if session.can_travel() else "血潮封锁 · 城门关闭",18,Color("ecdfba"))
@@ -177,14 +188,7 @@ func _draw() -> void:
 			draw_line(pos,pos-Vector2(0,85),Color(reward_color,0.5),5,true)
 			var caption := session.container_title(chest)+" · [F] 搜索"
 			label(pos+Vector2(-font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,16).x/2,-94),caption,16,reward_color)
-		var deep: bool=int(chest.get("class",1))>=2
 		var revealed: int=int(chest.get("searched",0))
-		draw_rect(Rect2(pos-Vector2(21,12),Vector2(46,31)),Color(0,0,0,0.35))
-		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),Color("333039") if empty else (Color("554466") if deep else Color("665544")))
-		var rim: Color=Catalog.quality_color(int(chest.cache_tier)) if chest.has("cache_tier") else (Color("6a5a7a") if deep else Color("c2a277"))
-		draw_rect(Rect2(pos-Vector2(21,18),Vector2(42,29)),rim,false,1.5)
-		draw_line(pos+Vector2(-20,-5),pos+Vector2(20,-5),Color("29242b"),3)
-		draw_rect(Rect2(pos-Vector2(3,7),Vector2(6,12)),Color("5a555a") if empty else Color("e1ba76"))
 		if not empty and revealed>0:
 			draw_circle(pos+Vector2(0,-23),2+sin(clock*3),Color("e2c186"))
 		# A chest being searched shows a small progress arc above the lid.
@@ -221,19 +225,17 @@ func _draw() -> void:
 			if fallen.get("mini_boss",false) or fallen.get("final_form",false) or fallen.get("abyss_final",false):
 				draw_special_boss(fallen,1-fallen.age/1.6)
 			else:
-				draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
-				draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,1-fallen.age/1.6))
-				draw_set_transform(offset)
+				set_world_transform(fallen.p,0,Vector2(fallen.facing,1))
+				draw_billboard_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,1-fallen.age/1.6))
+				set_world_transform()
 			continue
-		draw_set_transform(offset+fallen.p,0,Vector2(fallen.facing,1))
-		draw_texture_rect_region(enemy_frames.sheets[int(fallen.type)],EnemyFrames.sprite_rect(int(fallen.type)),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
-		draw_set_transform(offset)
+		set_world_transform(fallen.p,0,Vector2(fallen.facing,1))
+		draw_billboard_region(enemy_frames.sheets[int(fallen.type)],EnemyFrames.sprite_rect(int(fallen.type)),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
+		set_world_transform()
 	if not world.interior:
 		draw_raid_world()
-	# Sort architecture, trees, actors and enemies together by their ground anchor.
+	# Stable billboard submission order; the 3D depth buffer handles scenery occlusion.
 	var drawables: Array=[]
-	for item in world.decor:
-		if item.p.distance_to(camera)<1150: drawables.append({"p":item.p,"kind":0,"data":item})
 	for e in session.enemies:
 		if e.p.distance_to(camera)<1100: drawables.append({"p":e.p,"kind":1,"data":e})
 	for p in session.players.values():
@@ -242,7 +244,6 @@ func _draw() -> void:
 	var me: Vector2=session.players.get(session.my_id(),{"p":camera}).p
 	for item in drawables:
 		match item.kind:
-			0: world_art.prop(self,item.data,camera,me,clock)
 			1: monster(item.data)
 			2: actor(item.data)
 	if waypoint.x>=0:
@@ -253,6 +254,7 @@ func _draw() -> void:
 		var at: Vector2=number.p+Vector2(12*number.age,-44*number.age)
 		label(at+Vector2(1,2),number.value,23 if number.heavy else 17,Color(0.05,0.02,0.03,alpha))
 		label(at,number.value,23 if number.heavy else 17,Color(1,0.82,0.48,alpha) if number.heavy else Color(1,0.96,0.85,alpha))
+	world_3d.end_sprites()
 	blood_tide.draw(self)
 	draw_set_transform(Vector2.ZERO)
 	var size := get_viewport_rect().size
@@ -307,10 +309,10 @@ func actor(p: Dictionary) -> void:
 		cross(pos,13,Color("e77a84"))
 		label(pos+Vector2(-40,-36),"倒地  %ds" % p.bleed,13,Color("ed9d9e"))
 		return
-	draw_set_transform(offset+pos)
-	draw_circle(Vector2(0,12),20,Color(0,0,0,0.35))
+	set_world_transform(pos)
+	draw_circle(Vector2.ZERO,20,Color(0,0,0,0.35))
 	if p.id==session.my_id():
-		draw_arc(Vector2(0,8),22,0,TAU,36,Color(color,0.65),1.5)
+		draw_arc(Vector2.ZERO,22,0,TAU,36,Color(color,0.65),1.5)
 	var moving := minf(1.0,float(velocity_visual.get(p.id,0.0))/100)
 	var sway := sin(clock*(4+moving*9)+p.id)*(1.3+moving*2.0)
 	var travelling: bool=p.motion in ["walk","run","dodge"] and p.swing_time<=0 and p.cast_time<=0
@@ -334,31 +336,32 @@ func actor(p: Dictionary) -> void:
 		var pose := character_frames.motion_frame(p.hero,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
 		if p.motion=="dodge":
 			for ghost in [3,2,1]:
-				draw_set_transform(offset+pos-direction*ghost*17,0,Vector2(facing,1))
-				draw_texture_rect(pose.texture,pose.rect,false,Color(color,0.21/ghost))
-		draw_set_transform(offset+pos,0,Vector2(facing,1))
-		draw_texture_rect(pose.texture,pose.rect,false)
+				set_world_transform(pos-direction*ghost*17,0,Vector2(facing,1))
+				draw_billboard(pose.texture,pose.rect,false,Color(color,0.21/ghost))
+		set_world_transform(pos,0,Vector2(facing,1))
+		draw_billboard(pose.texture,pose.rect,false)
 	elif Catalog.weapon_family(p.weapon)>0:
 		var pose := character_frames.attack_frame(p.hero,Catalog.weapon_family(p.weapon),frame)
 		var sprite_rect: Rect2=pose.rect
 		sprite_rect.position.y+=sway*0.35
 		if frame==2 and p.swing_time>0:
 			for ghost in [2,1]:
-				draw_set_transform(offset+pos+lunge-direction*ghost*12,lean,Vector2(facing,1))
-				draw_texture_rect(pose.texture,sprite_rect,false,Color(color,0.12/ghost))
-		draw_set_transform(offset+pos+lunge,lean,Vector2(facing,1))
-		draw_texture_rect(pose.texture,sprite_rect,false)
+				set_world_transform(pos+lunge-direction*ghost*12,lean,Vector2(facing,1))
+				draw_billboard(pose.texture,sprite_rect,false,Color(color,0.12/ghost))
+		set_world_transform(pos+lunge,lean,Vector2(facing,1))
+		draw_billboard(pose.texture,sprite_rect,false)
 	else:
 		var sheet_size := sentinels.get_size()
-		draw_set_transform(offset+pos-direction*(5 if p.swing_time>0 else 0),lean,Vector2(facing,1))
-		draw_texture_rect_region(sentinels,Rect2(-31,-70+sway,62,91),Rect2(p.hero*sheet_size.x/3,0,sheet_size.x/3,sheet_size.y))
-	draw_set_transform(offset+pos)
+		set_world_transform(pos-direction*(5 if p.swing_time>0 else 0),lean,Vector2(facing,1))
+		draw_billboard_region(sentinels,Rect2(-31,-86+sway,62,91),Rect2(p.hero*sheet_size.x/3,0,sheet_size.x/3,sheet_size.y))
+	set_world_transform(pos)
 	if p.invuln>0:
 		draw_arc(Vector2.ZERO,32,0,TAU,40,Color(color,0.55),2)
-	draw_set_transform(offset)
-	label(pos+Vector2(-27,-88),p.name,12,color.lightened(0.25))
-	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46,3)),Color("322a35"))
-	draw_rect(Rect2(pos+Vector2(-23,-80),Vector2(46*maxf(0,p.hp/p.max_hp),3)),color)
+	set_actor_overlay(pos)
+	label(pos+Vector2(-27,-104),p.name,12,color.lightened(0.25))
+	draw_rect(Rect2(pos+Vector2(-23,-96),Vector2(46,3)),Color("322a35"))
+	draw_rect(Rect2(pos+Vector2(-23,-96),Vector2(46*maxf(0,p.hp/p.max_hp),3)),color)
+	set_world_transform()
 	if p.channel>0:
 		var seconds := float(p.get("channel_total",4.0))
 		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/maxf(0.05,seconds)),40,Color("9af8dc") if str(p.get("target","")).begins_with("exit:") else Color("d9ca91"),4)
@@ -429,10 +432,10 @@ func monster(e: Dictionary) -> void:
 		var progress: float=clampf((e.attack_total-e.attack_time-Ecology.WINDUP[kind])/0.48,0,1)
 		hover=-sin(progress*PI)*44
 	# All frames share a fixed canvas and foot anchor; mirroring never shifts feet.
-	draw_set_transform(offset+pos+Vector2(0,hover),0,Vector2(facing,1))
+	set_world_transform(pos+Vector2(0,hover),0,Vector2(facing,1))
 	var tint := Color(1.6,1.5,1.5) if float(e.get("flash",0))>0 else Color.WHITE
-	draw_texture_rect_region(enemy_frames.sheets[kind],EnemyFrames.sprite_rect(kind),enemy_frames.region(frame),tint)
-	draw_set_transform(offset)
+	draw_billboard_region(enemy_frames.sheets[kind],EnemyFrames.sprite_rect(kind),enemy_frames.region(frame),tint)
+	set_world_transform()
 	if frame==6 and kind!=4:
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
 		if kind==1:
@@ -441,11 +444,15 @@ func monster(e: Dictionary) -> void:
 			draw_arc(pos,38 if kind!=2 else 46,aim.angle()-0.8,aim.angle()+0.8,20,Color(color,0.85),3 if kind!=2 else 5,true)
 	if kind in [3,4] or kind>=14:
 		draw_arc(pos+Vector2(0,9),Ecology.RADIUS[kind]+8,0,TAU,40,Color(color,0.25),2,true)
+	set_actor_overlay(pos)
+	if kind in [3,4] or kind>=14:
 		label(pos+Vector2(-28,-height-6),str(e.get("boss_name",EnemyFrames.NAMES[kind])),12,color)
 	if e.hp<e.max_hp:
 		var width := 80.0 if kind>=14 else 36.0
 		draw_rect(Rect2(pos+Vector2(-width/2,-height-1),Vector2(width,4 if kind>=14 else 3)),Color("292431"))
 		draw_rect(Rect2(pos+Vector2(-width/2,-height-1),Vector2(width*maxf(0,e.hp/e.max_hp),4 if kind>=14 else 3)),color)
+
+	set_world_transform()
 
 func draw_map(rect: Rect2, big: bool) -> void:
 	var outer := rect.grow(7)
@@ -618,13 +625,13 @@ func draw_boss(e: Dictionary) -> void:
 	var pos: Vector2=e.p
 	var color: Color=BossFrames.COLORS[kind]
 	var hover := sin(clock*2.6)*3.0 if kind!=1 else 0.0
-	draw_set_transform(offset+pos,0,Vector2(1,0.34))
+	set_world_transform(pos,0,Vector2(1,0.34))
 	draw_circle(Vector2.ZERO,45,Color(0.04,0.025,0.06,0.40))
 	draw_arc(Vector2.ZERO,51,0,TAU,56,Color(color,0.38),3,true)
-	draw_set_transform(offset+pos+Vector2(0,hover),0,Vector2(float(e.get("facing",1)),1))
+	set_world_transform(pos+Vector2(0,hover),0,Vector2(float(e.get("facing",1)),1))
 	var tint := Color(1.3,1.2,1.2) if float(e.get("flash",0))>0 else Color.WHITE
-	draw_texture_rect_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(BossFrames.pose(e,clock)),tint)
-	draw_set_transform(offset)
+	draw_billboard_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(BossFrames.pose(e,clock)),tint)
+	set_world_transform()
 	guard_telegraph(e)
 
 func draw_special_boss(e: Dictionary, alpha: float = 1.0) -> void:
@@ -635,18 +642,43 @@ func draw_special_boss(e: Dictionary, alpha: float = 1.0) -> void:
 	var height: float=BossFrames.SPECIAL_HEIGHTS[index]
 	var width: float=sprite.size.x
 	var color: Color=[Color("a8dbff"),Color("ff8d66"),Color("ff4a70"),Color("d9aa68"),Color("87dfff"),Color("b86bff"),Color("9ce9ff")][index]
-	draw_set_transform(offset+pos,0,Vector2(1,0.34))
+	set_world_transform(pos,0,Vector2(1,0.34))
 	draw_circle(Vector2.ZERO,49 if index==2 else 39,Color(0.04,0.015,0.04,0.48*alpha))
 	draw_arc(Vector2.ZERO,58 if index==2 else 46,0,TAU,56,Color(color,0.58*alpha),3,true)
-	draw_set_transform(offset+pos,0,Vector2(float(e.get("facing",1)),1))
+	set_world_transform(pos,0,Vector2(float(e.get("facing",1)),1))
 	var hover := sin(clock*(2.2 if index==2 else 3.1)+int(e.id))*(5 if index==0 else 2)
 	var appearance: float=0.26 if index==3 and e.has("travel_target") else 0.68 if index==4 and e.has("travel_target") else 1.0
 	var tint := Color(1.45,1.3,1.3,alpha*appearance) if float(e.get("flash",0))>0 else Color(1,1,1,alpha*appearance)
 	var frame := 11 if alpha<1.0 else BossFrames.pose(e,clock)
-	draw_texture_rect_region(tex,Rect2(sprite.position+Vector2(0,hover),sprite.size),BossFrames.region(frame),tint)
-	draw_set_transform(offset)
+	draw_billboard_region(tex,Rect2(sprite.position+Vector2(0,hover),sprite.size),BossFrames.region(frame),tint)
+	set_world_transform()
 	if alpha>=1.0:
+		set_actor_overlay(pos)
 		label(pos+Vector2(-width/2,-height-12),str(e.get("boss_name","")),13,color)
 		var bar := 110.0 if index==2 else 85.0
 		draw_rect(Rect2(pos+Vector2(-bar/2,-height-7),Vector2(bar,4)),Color("201924"))
 		draw_rect(Rect2(pos+Vector2(-bar/2,-height-7),Vector2(bar*clampf(float(e.hp)/maxf(1,float(e.max_hp)),0,1),4)),color)
+
+	set_world_transform()
+
+## Shared projection contract for ground effects and mouse picking.
+func ground_transform() -> Transform2D:
+	return world_3d.ground_transform()
+
+func set_world_transform(at: Vector2 = Vector2.ZERO, angle: float = 0.0, scale_value: Vector2 = Vector2.ONE) -> void:
+	world_pose=Transform2D(angle,scale_value,0,at)
+	draw_set_transform_matrix(ground_transform()*world_pose)
+
+func draw_billboard(texture: Texture2D, rect: Rect2, _tile: bool = false, tint: Color = Color.WHITE) -> void:
+	# The 2D atlas pivot intentionally sat 16 pixels below the simulation point.
+	# In 3D that would place the boots below the floor. Use the actual foot pivot.
+	rect.position-=CharacterMetrics.FOOT_OFFSET
+	world_3d.submit_sprite(texture,rect,Rect2(),tint,world_pose)
+
+func draw_billboard_region(texture: Texture2D, rect: Rect2, region: Rect2, tint: Color = Color.WHITE) -> void:
+	world_3d.submit_sprite(texture,rect,region,tint,world_pose)
+
+
+func set_actor_overlay(at: Vector2) -> void:
+	# Nameplates stay upright above billboard heads instead of flattening onto terrain.
+	draw_set_transform(world_3d.project(at)-at)

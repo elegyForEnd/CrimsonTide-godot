@@ -257,7 +257,10 @@ func _process(dt: float) -> void:
 	elapsed+=dt
 	energy.advance(dt)
 	trauma=move_toward(trauma,0,dt*2.6)
-	position=field.offset
+	if field.has_method("ground_transform"):
+		transform=field.ground_transform()
+	else:
+		position=field.offset
 	for i in range(motes.size()-1,-1,-1):
 		motes[i].age+=dt
 		if motes[i].age>motes[i].duration:

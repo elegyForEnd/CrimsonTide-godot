@@ -25,14 +25,19 @@ func update(field: Node2D) -> void:
 	var radius: float=field.session.safe_radius()
 	var center: Vector2=field.session.safe_center()
 	active=field.is_visible_in_tree() and field.session.map_id=="border" and not field.map_open
-	active=active and field.camera.distance_to(center)+size.length()*0.5+180.0>radius
+	active=active and field.camera.distance_to(center)+size.length()*0.7+180.0>radius
 	viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS if active else SubViewport.UPDATE_DISABLED
 	if not active: return
 	var resolution := Vector2i((size * 0.5).ceil())
 	if viewport.size!=resolution:
 		viewport.size=resolution
 		surface.size=Vector2(resolution)
-	material.set_shader_parameter("world_origin",-field.offset)
+	var inverse := Transform2D.IDENTITY
+	inverse.origin=-field.offset
+	if field.has_method("ground_transform"): inverse=field.ground_transform().affine_inverse()
+	material.set_shader_parameter("world_origin",inverse.origin)
+	material.set_shader_parameter("world_axis_x",inverse.x)
+	material.set_shader_parameter("world_axis_y",inverse.y)
 	material.set_shader_parameter("view_size",size)
 	material.set_shader_parameter("safe_center",center)
 	material.set_shader_parameter("safe_radius",radius)

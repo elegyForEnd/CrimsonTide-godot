@@ -1,0 +1,434 @@
+{
+  "dungeon": {
+    "repository": "https://github.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0",
+    "commit": "b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07",
+    "author": "Kay Lousberg",
+    "license": "CC0-1.0",
+    "files": [
+      {
+        "path": "dungeon/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/LICENSE.txt",
+        "sha256": "c5f17abf619731f57f6bbff450f6484214605c13aa96bb75bbcfc70930941ff7",
+        "local_sha256": "c5f17abf619731f57f6bbff450f6484214605c13aa96bb75bbcfc70930941ff7"
+      },
+      {
+        "path": "dungeon/UPSTREAM.md",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/README.md",
+        "sha256": "4f4e8120b6b757e56b43f56a61ab64671ccefc4bb45b50405d5486f6f6a9832e",
+        "local_sha256": "4f4e8120b6b757e56b43f56a61ab64671ccefc4bb45b50405d5486f6f6a9832e"
+      },
+      {
+        "path": "dungeon/models/wall.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/wall.gltf.glb",
+        "sha256": "f2f343a7bdf2d45947e3f354494e16095a923485e05637e3804e3b81ce11d921",
+        "local_sha256": "f2f343a7bdf2d45947e3f354494e16095a923485e05637e3804e3b81ce11d921"
+      },
+      {
+        "path": "dungeon/models/wall_broken.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/wall_broken.gltf.glb",
+        "sha256": "ee7598ef2b88aaeb7b61e46d5f1da1a059de3860b080b38b7a507ca2f461302c",
+        "local_sha256": "ee7598ef2b88aaeb7b61e46d5f1da1a059de3860b080b38b7a507ca2f461302c"
+      },
+      {
+        "path": "dungeon/models/wall_cracked.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/wall_cracked.gltf.glb",
+        "sha256": "344fb9a709a51b7f04131fded75a5ad38e829d74fcf1784d848f3df0703f804c",
+        "local_sha256": "344fb9a709a51b7f04131fded75a5ad38e829d74fcf1784d848f3df0703f804c"
+      },
+      {
+        "path": "dungeon/models/wall_arched.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/wall_arched.gltf.glb",
+        "sha256": "916a7d81b8d6ebddb069440a0f9ecb14c9c2a1e5cd7769acf2218d630bd56cb8",
+        "local_sha256": "916a7d81b8d6ebddb069440a0f9ecb14c9c2a1e5cd7769acf2218d630bd56cb8"
+      },
+      {
+        "path": "dungeon/models/pillar_decorated.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/pillar_decorated.gltf.glb",
+        "sha256": "eecf7d454a1b6767a113e2490cb1536134abea0b57329a50cf2250d3ed8e2f65",
+        "local_sha256": "eecf7d454a1b6767a113e2490cb1536134abea0b57329a50cf2250d3ed8e2f65"
+      },
+      {
+        "path": "dungeon/models/column.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/column.gltf.glb",
+        "sha256": "761adf0fcc1a86ab1c42740b7a8ad340d73982f94257e7892b2c7998f98c304e",
+        "local_sha256": "761adf0fcc1a86ab1c42740b7a8ad340d73982f94257e7892b2c7998f98c304e"
+      },
+      {
+        "path": "dungeon/models/barrier.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/barrier.gltf.glb",
+        "sha256": "2c6a1b89de1c87778c7ae9afc17fa9eabc4aa4148f3b8748f062b5c8ec7f6c00",
+        "local_sha256": "2c6a1b89de1c87778c7ae9afc17fa9eabc4aa4148f3b8748f062b5c8ec7f6c00"
+      },
+      {
+        "path": "dungeon/models/floor_wood_large.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/floor_wood_large.gltf.glb",
+        "sha256": "d22eb1c1fb6ab434e8c9599ecb2cd00c2e34a713783603ba7a3e2cbb1611709d",
+        "local_sha256": "d22eb1c1fb6ab434e8c9599ecb2cd00c2e34a713783603ba7a3e2cbb1611709d"
+      },
+      {
+        "path": "dungeon/models/banner_red.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/banner_red.gltf.glb",
+        "sha256": "c69c6eaffc834d6dcc7d19f8fd87145af4323265755588bf5bde85d71e0e3ff3",
+        "local_sha256": "c69c6eaffc834d6dcc7d19f8fd87145af4323265755588bf5bde85d71e0e3ff3"
+      },
+      {
+        "path": "dungeon/models/banner_shield_red.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/banner_shield_red.gltf.glb",
+        "sha256": "d332133c940fa9dc6bea1668f2f8f2c07b5dce5db23b865ade5d035c8dc8e949",
+        "local_sha256": "d332133c940fa9dc6bea1668f2f8f2c07b5dce5db23b865ade5d035c8dc8e949"
+      },
+      {
+        "path": "dungeon/models/chest.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/chest.glb",
+        "sha256": "f72fd2201cd42ad399928a0b7bcc34d5b0e6d0624aeaf824fef81852109955f8",
+        "local_sha256": "f72fd2201cd42ad399928a0b7bcc34d5b0e6d0624aeaf824fef81852109955f8"
+      },
+      {
+        "path": "dungeon/models/chest_gold.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/chest_gold.glb",
+        "sha256": "04708d5f88ed59d361c8a6cec1efe8b7028dbc641dfae0a1467f272e14a94b6e",
+        "local_sha256": "04708d5f88ed59d361c8a6cec1efe8b7028dbc641dfae0a1467f272e14a94b6e"
+      },
+      {
+        "path": "dungeon/models/table_long_decorated_A.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/table_long_decorated_A.gltf.glb",
+        "sha256": "47564d874e79f04212c05487d88ac8cbe9bb50b1865a8eeb1178bcb711aa444d",
+        "local_sha256": "47564d874e79f04212c05487d88ac8cbe9bb50b1865a8eeb1178bcb711aa444d"
+      },
+      {
+        "path": "dungeon/models/shelf_small_candles.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/shelf_small_candles.gltf.glb",
+        "sha256": "d6f6a809c1e4635b143fd3c6e790331aa049d625abd390429c1e5887f77cbb96",
+        "local_sha256": "d6f6a809c1e4635b143fd3c6e790331aa049d625abd390429c1e5887f77cbb96"
+      },
+      {
+        "path": "dungeon/models/rubble_large.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/rubble_large.gltf.glb",
+        "sha256": "0292da1b5788a5a52b616d5d27d3270c676a5fbf9e921b6dd3dc30364d355b54",
+        "local_sha256": "0292da1b5788a5a52b616d5d27d3270c676a5fbf9e921b6dd3dc30364d355b54"
+      },
+      {
+        "path": "dungeon/models/torch_lit.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/torch_lit.gltf.glb",
+        "sha256": "45fcfeb3b129722019d42aef0acae8f6c5f8f6dbdf5d3346ceea1f084b69b396",
+        "local_sha256": "45fcfeb3b129722019d42aef0acae8f6c5f8f6dbdf5d3346ceea1f084b69b396"
+      },
+      {
+        "path": "dungeon/models/floor_tile_large.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/floor_tile_large.gltf.glb",
+        "sha256": "5b6bbbc683f6729d094732056f157a928435de97ec3cf94c341c7465907fe17b",
+        "local_sha256": "5b6bbbc683f6729d094732056f157a928435de97ec3cf94c341c7465907fe17b"
+      },
+      {
+        "path": "dungeon/models/chair.gltf.glb",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Dungeon-Remastered-1.0/b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07/addons/kaykit_dungeon_remastered/Assets/gltf/chair.gltf.glb",
+        "sha256": "5f133281686d398304c0a458c4d407dd483eeea8aba67220b585ceb89366efa2",
+        "local_sha256": "5f133281686d398304c0a458c4d407dd483eeea8aba67220b585ceb89366efa2"
+      }
+    ]
+  },
+  "halloween": {
+    "repository": "https://github.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0",
+    "commit": "6dc69bf6b2fa766a985754f35ec6a0324090e6c6",
+    "author": "Kay Lousberg",
+    "license": "CC0-1.0",
+    "files": [
+      {
+        "path": "halloween/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/LICENSE.txt",
+        "sha256": "a514c41d8d5f2a07c94c55acd29ba94f50b86837f972e37edb4cbdeb7ba0e0e0",
+        "local_sha256": "a514c41d8d5f2a07c94c55acd29ba94f50b86837f972e37edb4cbdeb7ba0e0e0"
+      },
+      {
+        "path": "halloween/UPSTREAM.md",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/README.md",
+        "sha256": "e1cfcc44d9420229197558d1b4cd8db262a9ed60f92e77bed2906f926bb7fece",
+        "local_sha256": "e1cfcc44d9420229197558d1b4cd8db262a9ed60f92e77bed2906f926bb7fece"
+      },
+      {
+        "path": "halloween/models/arch.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/arch.gltf",
+        "sha256": "166ac2da5f72d843e79ecc250a30b4a8075175afe5036c6f590e755c38d43f01",
+        "local_sha256": "8ae735d3daff8c6a62e326141f0a5d5d9134b2d9b6db3f6d24e51f1e6d9792c0"
+      },
+      {
+        "path": "halloween/models/arch.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/arch.bin",
+        "sha256": "fa7f31b0332c8bade6c1855f3790944a6eab7831da045d0f337d7152f2876df0",
+        "local_sha256": "fa7f31b0332c8bade6c1855f3790944a6eab7831da045d0f337d7152f2876df0"
+      },
+      {
+        "path": "halloween/models/halloweenbits_texture.png",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/halloweenbits_texture.png",
+        "sha256": "1e671e9b176b290a35ce8f5f22c773b3f5e9c7a9cf0e1991de51e44dd3a23e7c",
+        "local_sha256": "1e671e9b176b290a35ce8f5f22c773b3f5e9c7a9cf0e1991de51e44dd3a23e7c"
+      },
+      {
+        "path": "halloween/models/shrine_candles.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/shrine_candles.gltf",
+        "sha256": "21bc3c39fc773b4ee0e09813d8dd242dd9ba35dac2c53c53755e9888c073d1e0",
+        "local_sha256": "1c28fe0ccf86be7df99337b0a95ae1504d779e672ce1b7228a9073ce3bf2b6e3"
+      },
+      {
+        "path": "halloween/models/shrine_candles.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/shrine_candles.bin",
+        "sha256": "42b49ad164197c954967b05fd2fc48525541ddc8e32548819d2f73565a6b27ad",
+        "local_sha256": "42b49ad164197c954967b05fd2fc48525541ddc8e32548819d2f73565a6b27ad"
+      },
+      {
+        "path": "halloween/models/lantern_standing.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/lantern_standing.gltf",
+        "sha256": "7fbaed7c4f33181d22c015e11aa9b3d8d04f77f1658b6a80ed2dc23746fb7fc5",
+        "local_sha256": "0c07737de8fe05cff24206cdce0e39ba95026cb8db75d14062afeaa9b0623845"
+      },
+      {
+        "path": "halloween/models/lantern_standing.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/lantern_standing.bin",
+        "sha256": "aaaf6525e6a7d70c50f631fff91b8931e1571418e097ef0ecc99c8da9cc24387",
+        "local_sha256": "aaaf6525e6a7d70c50f631fff91b8931e1571418e097ef0ecc99c8da9cc24387"
+      },
+      {
+        "path": "halloween/models/tree_dead_large.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/tree_dead_large.gltf",
+        "sha256": "a91ca9c22fc5a0be4d44edb6fe9d8b47393e0f47dd0048b60c054adab1a0b2a1",
+        "local_sha256": "f1413039d2548984f6c8c2e7a0dd95caec0c90b6c247925eb5ca87f0b7285d0f"
+      },
+      {
+        "path": "halloween/models/tree_dead_large.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/tree_dead_large.bin",
+        "sha256": "c786d41c63076af2e8c20809b8c28f1a8d43af9fd94e606f0db1ade2b4c96e55",
+        "local_sha256": "c786d41c63076af2e8c20809b8c28f1a8d43af9fd94e606f0db1ade2b4c96e55"
+      },
+      {
+        "path": "halloween/models/tree_dead_medium.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/tree_dead_medium.gltf",
+        "sha256": "529b143e32affc379fffba541506198fa3a152b592a98fa8db059ebe4e3b2128",
+        "local_sha256": "2411e16754d921e41c44ca48c4d2a36620e4318fbe24830b9f80da06b464ce60"
+      },
+      {
+        "path": "halloween/models/tree_dead_medium.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/tree_dead_medium.bin",
+        "sha256": "342430fb243f6645cb05ca038ff023b4a0a3dc4a78ffa26766dc2f0a5e383009",
+        "local_sha256": "342430fb243f6645cb05ca038ff023b4a0a3dc4a78ffa26766dc2f0a5e383009"
+      },
+      {
+        "path": "halloween/models/gravestone.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/gravestone.gltf",
+        "sha256": "9c82f5161bdd4f06391f174ef92b82b21f18a6e5a00d386b254ed3cd124f1c21",
+        "local_sha256": "62a2c2154226551c24ec313d27dc921dd63deadcddd6a13e11fac5abc85eed6c"
+      },
+      {
+        "path": "halloween/models/gravestone.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/gravestone.bin",
+        "sha256": "364c48d60407096299870b727b45e2db3f71a8a36c8ce3933262da72b8a26844",
+        "local_sha256": "364c48d60407096299870b727b45e2db3f71a8a36c8ce3933262da72b8a26844"
+      },
+      {
+        "path": "halloween/models/crypt.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/crypt.gltf",
+        "sha256": "0d8b98430f4b6261da71b6801561f83f351445d0bccf2ad155ad4ff126a196ac",
+        "local_sha256": "1d442bf4d7668e4a76503529a9b82ce3db4248ef647aabbc9b6cb8944712d509"
+      },
+      {
+        "path": "halloween/models/crypt.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/crypt.bin",
+        "sha256": "e3c89c907d94e2ce9fff4c83a0600f10399d4cc45e81d6c9a13f9913da28d61a",
+        "local_sha256": "e3c89c907d94e2ce9fff4c83a0600f10399d4cc45e81d6c9a13f9913da28d61a"
+      },
+      {
+        "path": "halloween/models/bench_decorated.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/bench_decorated.gltf",
+        "sha256": "3cee73daff0d50f9a9746ae1df2601970170da579e820e2e1738129444cd19e6",
+        "local_sha256": "34ad8cabf3c100796044a50f7e9448ecdbcdde6f96af82beb612d4885f68347f"
+      },
+      {
+        "path": "halloween/models/bench_decorated.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Halloween-Bits-1.0/6dc69bf6b2fa766a985754f35ec6a0324090e6c6/addons/kaykit_halloween_bits/Assets/gltf/bench_decorated.bin",
+        "sha256": "93b58297f0c3cb993b59ab9e1d310493bcbfb4c80c553aebb280e234278a14cd",
+        "local_sha256": "93b58297f0c3cb993b59ab9e1d310493bcbfb4c80c553aebb280e234278a14cd"
+      }
+    ]
+  },
+  "medieval": {
+    "repository": "https://github.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0",
+    "commit": "84fa4e91af6a88989be7c99e0891cede11f2ca38",
+    "author": "Kay Lousberg",
+    "license": "CC0-1.0",
+    "files": [
+      {
+        "path": "medieval/LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/LICENSE.txt",
+        "sha256": "881e50d3629fba90629bedc65e9e6f47cfab3609598c296dcb7f70ea83174360",
+        "local_sha256": "881e50d3629fba90629bedc65e9e6f47cfab3609598c296dcb7f70ea83174360"
+      },
+      {
+        "path": "medieval/UPSTREAM.md",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/README.md",
+        "sha256": "434da5658e36b440856601518c68e87c6aed14d27cbd27285a3b6bab1cd15797",
+        "local_sha256": "434da5658e36b440856601518c68e87c6aed14d27cbd27285a3b6bab1cd15797"
+      },
+      {
+        "path": "medieval/models/building_castle_red.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_castle_red.gltf",
+        "sha256": "a9006907e13955578e803f0230a8b641d20bc499aeb6e4ead546e6e6894f4e9c",
+        "local_sha256": "d79fc945cf9e12fcb39f9b012a6399d7a4211894ce8a3d3b41d40ecb9514889b"
+      },
+      {
+        "path": "medieval/models/building_castle_red.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_castle_red.bin",
+        "sha256": "41423a51068adeadbb1630503d55c4088498200f12ff8286e949c316ab5cdada",
+        "local_sha256": "41423a51068adeadbb1630503d55c4088498200f12ff8286e949c316ab5cdada"
+      },
+      {
+        "path": "medieval/models/hexagons_medieval.png",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/hexagons_medieval.png",
+        "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e",
+        "local_sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+      },
+      {
+        "path": "medieval/models/building_church_red.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_church_red.gltf",
+        "sha256": "e4dc40472c3c0039c0dde205630ebb3a4e51da2ddf55109a3c2f9a8ba91ad2c3",
+        "local_sha256": "f152f0985417ccd1650a31cc757ca91c826ce08b5da4d598b1d661b9dd09396b"
+      },
+      {
+        "path": "medieval/models/building_church_red.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_church_red.bin",
+        "sha256": "27849f3449092502cb18ca014825199a92073e87f00b877382c2f970a4733ada",
+        "local_sha256": "27849f3449092502cb18ca014825199a92073e87f00b877382c2f970a4733ada"
+      },
+      {
+        "path": "medieval/models/building_tower_A_red.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tower_A_red.gltf",
+        "sha256": "9275233fb07f3906111f82da7ef43b5c81195922662396a2c4106095ea94bf27",
+        "local_sha256": "108a74567930fe96170eab4c128df143011d611183d42505ac9949a516be7cb5"
+      },
+      {
+        "path": "medieval/models/building_tower_A_red.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tower_A_red.bin",
+        "sha256": "fb30b7d713c3c28a6c7113bafec5a0d6c0555803d35c20978bfb4fc84534bd12",
+        "local_sha256": "fb30b7d713c3c28a6c7113bafec5a0d6c0555803d35c20978bfb4fc84534bd12"
+      },
+      {
+        "path": "medieval/models/building_market_red.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_market_red.gltf",
+        "sha256": "d58ea12f4f1bdd052a9d3bf815be5aca2cf253627e6614ef26ee22fc4d5733b6",
+        "local_sha256": "06d87e991346f755b690b209bc369a8d13d6d395091f5884a4f91acf4358c5ad"
+      },
+      {
+        "path": "medieval/models/building_market_red.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_market_red.bin",
+        "sha256": "bd83dace5d97f01c74fbb21eac6844537f264359f3a40b1e25b168e6915b1a2a",
+        "local_sha256": "bd83dace5d97f01c74fbb21eac6844537f264359f3a40b1e25b168e6915b1a2a"
+      },
+      {
+        "path": "medieval/models/building_tavern_red.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tavern_red.gltf",
+        "sha256": "0c34d801a6c0583ec270ba76cff323188ad6b43b763bb67dc593327b63e06f7c",
+        "local_sha256": "6fdcdb8227d0907c5580b27a4c8553f9e6d97a4ead54c10207a9380bbde2838a"
+      },
+      {
+        "path": "medieval/models/building_tavern_red.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tavern_red.bin",
+        "sha256": "a197beeeb25efe3471a6263adcc824143689e7aa2ed5c3ec6fa12a063e6d6550",
+        "local_sha256": "a197beeeb25efe3471a6263adcc824143689e7aa2ed5c3ec6fa12a063e6d6550"
+      },
+      {
+        "path": "medieval/models/building_mine_red.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_mine_red.gltf",
+        "sha256": "8246b8e65424240a27421bb7dd5913e9d727991f24a5a0f595fddd3b045c732a",
+        "local_sha256": "331de1ab89a5920e9423f643f5e4246506f7f679ffd38be862771024384ee1fa"
+      },
+      {
+        "path": "medieval/models/building_mine_red.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_mine_red.bin",
+        "sha256": "1085c8f2c854f6309ae636da492102345091508ca2160793e67f9e63df9e6b53",
+        "local_sha256": "1085c8f2c854f6309ae636da492102345091508ca2160793e67f9e63df9e6b53"
+      },
+      {
+        "path": "medieval/models/tree_single_A.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_A.gltf",
+        "sha256": "ac913af6eaed6f15d26a2b75a877aa8dd10de90f26298f3f953abad86a4b4606",
+        "local_sha256": "a890d9a3691ea9c0545b812f82d4545f05d8384ff08afe515de4e09fedb67954"
+      },
+      {
+        "path": "medieval/models/tree_single_A.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_A.bin",
+        "sha256": "437deac68f35338bb309b01e4d346dd4be37557d7a2f033d04765f63e1b88825",
+        "local_sha256": "437deac68f35338bb309b01e4d346dd4be37557d7a2f033d04765f63e1b88825"
+      },
+      {
+        "path": "medieval/models/hexagons_medieval.png",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hexagons_medieval.png",
+        "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e",
+        "local_sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+      },
+      {
+        "path": "medieval/models/tree_single_B.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_B.gltf",
+        "sha256": "1c038591301947c485937e9fdbab182c813ef32df48c02fad3daeb2f1f0421e0",
+        "local_sha256": "990049e25f19035316079bca61b6a8087bc30c798a96bc97e411db2408710b7d"
+      },
+      {
+        "path": "medieval/models/tree_single_B.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_B.bin",
+        "sha256": "c6a7423ce62f61216f7d8c77e1bd1d8665cbbee59718e59e0e42485f9acfca36",
+        "local_sha256": "c6a7423ce62f61216f7d8c77e1bd1d8665cbbee59718e59e0e42485f9acfca36"
+      },
+      {
+        "path": "medieval/models/rock_single_A.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_A.gltf",
+        "sha256": "ddf307987fb18aa8e7594bb399de3943e497b50bc01aae0e7292a38418944915",
+        "local_sha256": "6129521b4e8461aba6f01636343481cac2ca0fb8ead44d9209c539a6cd65bfc4"
+      },
+      {
+        "path": "medieval/models/rock_single_A.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_A.bin",
+        "sha256": "0f038d45b8df2c9efa034e5d3c3635a475a2683e2e741aa9a0cd197c5689e2ce",
+        "local_sha256": "0f038d45b8df2c9efa034e5d3c3635a475a2683e2e741aa9a0cd197c5689e2ce"
+      },
+      {
+        "path": "medieval/models/rock_single_B.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_B.gltf",
+        "sha256": "2014965b7131e6f9a804be7a90ba3800b6035e8af2ff6f0bf67c5e72cac1bf15",
+        "local_sha256": "5bad962828789c15a97f1fd1f67752aaec0348f947642961763bdeaddabc3534"
+      },
+      {
+        "path": "medieval/models/rock_single_B.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_B.bin",
+        "sha256": "fcc0d8a45e7f6ad0eb674de934b0fa54be8f3dd61fa389446dd6b7be2cd2e2c1",
+        "local_sha256": "fcc0d8a45e7f6ad0eb674de934b0fa54be8f3dd61fa389446dd6b7be2cd2e2c1"
+      },
+      {
+        "path": "medieval/models/waterplant_A.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterplant_A.gltf",
+        "sha256": "a4b1c359cc60eb24e702d60777f65795cc490e79ac3ce2699458909a470a7abd",
+        "local_sha256": "4f62eec6e750949e8685d0ab2c0175172d01166e7679179bba26d98781201f4b"
+      },
+      {
+        "path": "medieval/models/waterplant_A.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterplant_A.bin",
+        "sha256": "03022fac7dbab3ddff3f3ea87d682f4085494f69f43b2229eab651e00cbffec1",
+        "local_sha256": "03022fac7dbab3ddff3f3ea87d682f4085494f69f43b2229eab651e00cbffec1"
+      },
+      {
+        "path": "medieval/models/tent.gltf",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/tent.gltf",
+        "sha256": "d8920394ddec09d8afa0cfaa2dad1c75b55fd21819fbd7c31392b3b8dce5dca0",
+        "local_sha256": "93554ee0fc91ae282838107f63da94f69051df92f7b15566825b9b8773bc0b40"
+      },
+      {
+        "path": "medieval/models/tent.bin",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/tent.bin",
+        "sha256": "fce10cd8e153d14b53a4f0fd902124c214ea29fac370707bb3a604ce2a718fc2",
+        "local_sha256": "fce10cd8e153d14b53a4f0fd902124c214ea29fac370707bb3a604ce2a718fc2"
+      },
+      {
+        "path": "medieval/models/hexagons_medieval.png",
+        "url": "https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Medieval-Hexagon-Pack-1.0/84fa4e91af6a88989be7c99e0891cede11f2ca38/addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/hexagons_medieval.png",
+        "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e",
+        "local_sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+      }
+    ]
+  }
+}

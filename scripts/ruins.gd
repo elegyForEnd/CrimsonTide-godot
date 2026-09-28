@@ -11,6 +11,7 @@ const WILDERNESS_CHESTS := 6
 # One cache in each biome. Its loot grade is fixed when the map is generated,
 # so changing backpacks or the order in which players search cannot improve it.
 const CACHE_TIERS := [0,1,2,2,3,4]
+const AssetLayout = preload("res://scripts/scene_asset_layout.gd")
 var extent := SIZE
 var interior := false
 var walls: Array[Rect2] = []
@@ -29,6 +30,7 @@ var wall_cells: Dictionary = {}
 var indexed_wall_count := 0
 var coast := PackedVector2Array()
 var features: Array=[]
+var building_footprints: Array[Rect2]=[]
 
 func generate(value: int) -> void:
 	map_seed=value
@@ -43,6 +45,7 @@ func generate(value: int) -> void:
 	bridges.clear()
 	wall_cells.clear()
 	features.clear()
+	building_footprints.clear()
 	coast=PackedVector2Array([Vector2(350,500),Vector2(760,180),Vector2(1410,290),Vector2(1910,120),Vector2(2480,270),Vector2(2920,130),Vector2(3500,160),Vector2(4110,310),Vector2(4510,130),Vector2(5100,240),Vector2(5690,140),Vector2(6110,490),Vector2(5980,1010),Vector2(6250,1530),Vector2(6170,2000),Vector2(6300,2480),Vector2(6110,3050),Vector2(6280,3630),Vector2(6070,4300),Vector2(5620,4620),Vector2(5190,4500),Vector2(4740,4680),Vector2(4200,4490),Vector2(3710,4710),Vector2(3100,4520),Vector2(2670,4700),Vector2(2210,4510),Vector2(1710,4690),Vector2(1170,4500),Vector2(680,4620),Vector2(240,4150),Vector2(390,3640),Vector2(180,3090),Vector2(260,2650),Vector2(160,2100),Vector2(320,1630),Vector2(180,1110)])
 	exits=[Vector2(420,2400),Vector2(6010,2400),Vector2(3650,380),Vector2(3330,2400)]
 	# Six irregular contiguous regions, sharing the same boundaries in world and atlas.
@@ -85,6 +88,8 @@ func generate(value: int) -> void:
 		if i in [3,10,15]:
 			shrines.append({"p":pos+Vector2(0,145),"done":false,"progress":0.0})
 		decor.append({"p":pos+Vector2(0,-110),"type":spec[4],"size":510.0 if i==5 else (290.0 if i==15 else 210.0),"landmark":true})
+		var building: Dictionary=AssetLayout.building(decor[-1])
+		if not building.is_empty(): building_footprints.append(building.rect)
 	# Three east-west crossings and a loop on both banks create route choices.
 	for y in [950,2400,3850]:
 		roads.append(PackedVector2Array([Vector2(420,y),Vector2(1900,y+100 if y!=2400 else y),Vector2(river_x(y)-240,y),Vector2(river_x(y)+240,y),Vector2(4560,y-90 if y!=2400 else y),Vector2(6010,y)]))
@@ -185,6 +190,8 @@ func near_road(pos: Vector2, distance: float) -> bool:
 func blocked(pos: Vector2, radius: float = 15.0) -> bool:
 	if pos.x<40+radius or pos.y<40+radius or pos.x>SIZE.x-40-radius or pos.y>SIZE.y-40-radius: return true
 	if not coast.is_empty() and not Geometry2D.is_point_in_polygon(pos,coast): return true
+	for footprint in building_footprints:
+		if footprint.grow(radius).has_point(pos): return true
 	for feature in features:
 		if pos.distance_to(feature.p)>feature.radius*1.2+radius: continue
 		if Geometry2D.is_point_in_polygon(pos,feature.polygon): return true

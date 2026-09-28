@@ -3,6 +3,8 @@ shader_type canvas_item;
 render_mode unshaded, blend_disabled;
 
 uniform vec2 world_origin;
+uniform vec2 world_axis_x = vec2(1.0, 0.0);
+uniform vec2 world_axis_y = vec2(0.0, 1.0);
 uniform vec2 view_size = vec2(1440.0, 900.0);
 uniform vec2 safe_center;
 uniform float safe_radius = 540.0;
@@ -28,7 +30,7 @@ float cloud(vec2 p) {
 }
 
 void fragment() {
-	vec2 world = world_origin + UV * view_size;
+	vec2 world = world_origin + world_axis_x * UV.x * view_size.x + world_axis_y * UV.y * view_size.y;
 	float distance_out = length(world - safe_center) - safe_radius;
 	// World-space advection keeps the mist attached to the terrain while the camera moves.
 	vec2 wind = vec2(elapsed * 0.025, -elapsed * 0.043);

@@ -56,7 +56,10 @@ func _process(dt: float) -> void:
 	if not field.visible: return
 	elapsed+=dt
 	energy.advance(dt)
-	position=field.offset
+	if field.has_method("ground_transform"):
+		transform=field.ground_transform()
+	else:
+		position=field.offset
 	for i in range(effects.size()-1,-1,-1):
 		effects[i].age+=dt
 		if effects[i].action=="charge":
@@ -75,12 +78,11 @@ func region(kind: int, cell: int) -> Rect2:
 	return Rect2(Vector2(cell%4,cell/4)*unit+Vector2.ONE,unit-Vector2.ONE*2)
 
 func stamp(target: CanvasItem, kind: int, cell: int, at: Vector2, size: Vector2, angle: float, opacity: float, brightness: float = 1.0) -> void:
-	var origin: Vector2=field.offset if target==field else Vector2.ZERO
-	target.draw_set_transform(origin+at,angle)
+	set_target_transform(target,at,angle)
 	var source := region(kind,cell)
 	var fitted := source.size*minf(size.x/source.size.x,size.y/source.size.y)
 	target.draw_texture_rect_region(sheets[kind],Rect2(-fitted/2,fitted),source,Color(brightness,brightness,brightness,opacity))
-	target.draw_set_transform(origin)
+	set_target_transform(target)
 
 func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 	kind=int(h.get("boss_kind",0)) if kind<0 else kind
@@ -92,8 +94,7 @@ func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 	if fired: alpha=.5+sin(elapsed*9.0)*.12 if h.has("pulse_interval") else .85*clampf(1+float(h.time)/.30,0,1)
 	var direction: Vector2=h.aim
 	var rotation := direction.angle() if shape in ["line","cone","lane","gap_ring","arc"] else 0.0
-	var origin: Vector2=field.offset if target==field else Vector2.ZERO
-	target.draw_set_transform(origin+h.p,rotation)
+	set_target_transform(target,h.p,rotation)
 	var theme_color: Color=Presentation.theme_color(kind,h.get("hidden_final",false))
 	if h.get("dragon_boss",false):
 		theme_color=Color("9ce9ff")
@@ -138,7 +139,7 @@ func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 		if shape in ["cone","arc"]:
 			for a in [-arc,arc]: target.draw_line(Vector2.from_angle(a)*inner,Vector2.from_angle(a)*radius,color,2,true)
 		if not fired: target.draw_arc(Vector2.ZERO,radius-5,-arc,lerpf(-arc,arc,maxf(.001,progress)),65,Color(color,alpha*.6),3,true)
-	target.draw_set_transform(origin)
+	set_target_transform(target)
 	# A shrinking charged apparition signals timing, never a shrinking hitbox.
 	if not fired and shape=="circle":
 		var size := Vector2.ONE*minf(float(h.radius)*1.3,125)*(1.1-progress*.28)
@@ -299,3 +300,10 @@ func animate_event(fx: Dictionary) -> void:
 		energy.particles(at-Vector2(0,65),col,64,Vector2.UP,140,1.8)
 	elif action=="break":
 		energy.particles(at-Vector2(0,30),col,40,aim,150,1.0)
+
+
+func set_target_transform(target: CanvasItem, at: Vector2 = Vector2.ZERO, angle: float = 0.0) -> void:
+	if target==field and field.has_method("set_world_transform"):
+		field.set_world_transform(at,angle)
+	else:
+		target.draw_set_transform((field.offset if target==field else Vector2.ZERO)+at,angle)

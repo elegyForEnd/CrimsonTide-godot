@@ -1,0 +1,41 @@
+{
+  "author": "Quaternius",
+  "license": "CC0-1.0",
+  "author_page": "https://quaternius.com/packs/ultimatestylizednature.html",
+  "mirror": "https://github.com/walterpalladino/godot-quaternius-ultimate-stylized-nature",
+  "commit": "d36a06461359a8e60039e17b95d50bedc96c1edc",
+  "files": [
+    {
+      "path": "MIRROR-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/walterpalladino/godot-quaternius-ultimate-stylized-nature/d36a06461359a8e60039e17b95d50bedc96c1edc/LICENSE",
+      "upstream_sha256": "884e82d8dd5b92abd65bb52b0bd576a159a0f40cf1c6d570986f18d88e1cfa3d",
+      "local_sha256": "884e82d8dd5b92abd65bb52b0bd576a159a0f40cf1c6d570986f18d88e1cfa3d"
+    },
+    {
+      "path": "NormalTree_1.fbx",
+      "url": "https://raw.githubusercontent.com/walterpalladino/godot-quaternius-ultimate-stylized-nature/d36a06461359a8e60039e17b95d50bedc96c1edc/ultimate-stylized-nature/sources/FBX/NormalTree_1.fbx",
+      "upstream_sha256": "00db2ad4822d7585b638728aacd28b493182a9408c3b57fa87a72839a3449117",
+      "local_sha256": "00db2ad4822d7585b638728aacd28b493182a9408c3b57fa87a72839a3449117"
+    },
+    {
+      "path": "NormalTree_3.fbx",
+      "url": "https://raw.githubusercontent.com/walterpalladino/godot-quaternius-ultimate-stylized-nature/d36a06461359a8e60039e17b95d50bedc96c1edc/ultimate-stylized-nature/sources/FBX/NormalTree_3.fbx",
+      "upstream_sha256": "93239f98585b24ac805d575033d0b4b69f4a2dc8de31a27e68c362c34984d1d5",
+      "local_sha256": "93239f98585b24ac805d575033d0b4b69f4a2dc8de31a27e68c362c34984d1d5"
+    },
+    {
+      "path": "NormalTree_Bark.png",
+      "url": "https://raw.githubusercontent.com/walterpalladino/godot-quaternius-ultimate-stylized-nature/d36a06461359a8e60039e17b95d50bedc96c1edc/ultimate-stylized-nature/sources/Textures/NormalTree_Bark.png",
+      "upstream_sha256": "17d8836b4eb3462c486bc0ca596d8d4dcde918c0ce0dd37eec9111b2e175be69",
+      "modification": "Downsampled to at most 1024 pixels; alpha retained.",
+      "local_sha256": "ee3dc581dba452258b977244417ab30f6b2c39dc198c72dd8caa2e441fdb4435"
+    },
+    {
+      "path": "NormalTree_Leaves.png",
+      "url": "https://raw.githubusercontent.com/walterpalladino/godot-quaternius-ultimate-stylized-nature/d36a06461359a8e60039e17b95d50bedc96c1edc/ultimate-stylized-nature/sources/Textures/NormalTree_Leaves.png",
+      "upstream_sha256": "9f662296a285ca56b1ed56e952a198b93b466ae39ab7b6ee1c1ac1bd1c46242f",
+      "modification": "Downsampled to at most 1024 pixels; alpha retained.",
+      "local_sha256": "908148b9452a2fad0f18c94d86f3537ffd7b97ccfe4c672c89313957e3388c1d"
+    }
+  ]
+}
