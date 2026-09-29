@@ -1,4 +1,4 @@
-extends Node
+﻿extends Node
 
 # A frame that can be moved and recoloured every frame: used for the ghost plate,
 # the landing-cell preview and the "cannot drop here" hatch.
@@ -116,6 +116,9 @@ var title_font: Font
 var ultimate: UltimateCinematic
 var damage_overlay: ColorRect
 var damage_tween: Tween
+# The pre-raid camp is a separate 3D map with its own camera and storm. It is
+# created once and switched on and off, so walking into it never rebuilds it.
+var camp: Control
 # Set for one frame when the hidden ending recruits somebody, so the report can
 # announce the unlock that this run just earned.
 var recruited := ""
@@ -206,6 +209,10 @@ func _ready() -> void:
 	# A deterministic screenshot/smoke path, separate from normal player saves.
 	if "--preview-camp" in OS.get_cmdline_user_args():
 		session.solo(config())
+	# The start-of-game camp map: a standalone 3D stronghold walked before a raid.
+	if "--preview-ground" in OS.get_cmdline_user_args():
+		session.solo(config())
+		go_camp()
 	if "--preview-game" in OS.get_cmdline_user_args():
 		session.solo(config())
 		session.launch(false,1729)
@@ -592,6 +599,9 @@ func new_page(name_value: String) -> void:
 		session.cancel_ultimate(session.my_id())
 	if ultimate and ultimate.active:
 		ultimate.stop()
+	# The camp map is switched off, never freed: it keeps its storm and meshes.
+	if camp and not camp.is_queued_for_deletion():
+		camp.set_active(false)
 	clear(page)
 	clear(overlay)
 	modal=false
@@ -601,6 +611,80 @@ func new_page(name_value: String) -> void:
 	toast_time=0
 	field.visible=name_value=="game"
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+
+
+## Builds the camp once, then only ever toggles it.
+func ensure_camp() -> Control:
+	if camp and not camp.is_queued_for_deletion():
+		return camp
+	camp=preload("res://scripts/camp_screen.gd").new()
+	camp.name="GroundCamp"
+	# The camp builds its map in _ready, so it has to be in the tree before it is
+	# handed the session and the profile it reads the roster from.
+	add_child(camp)
+	camp.set_context(session,profile)
+	camp.station_requested.connect(on_camp_station)
+	camp.launch_requested.connect(on_camp_launch)
+	camp.codex_requested.connect(show_help)
+	camp.exit_requested.connect(func():
+		if page_name=="ground":
+			leave_to_title())
+	camp.set_active(false)
+	return camp
+
+
+## Enters the standalone pre-raid camp map. A solo expedition is prepared first so
+## the camp has a real loadout to edit, exactly as the old整备 panel required.
+func go_camp() -> void:
+	if not session.running and session.players.is_empty():
+		session.solo(config())
+	ensure_camp()
+	if camp.has_method("refresh_roster"):
+		camp.refresh_roster()
+	if camp.has_method("update_static"):
+		camp.update_static()
+	new_page("ground")
+	camp.set_active(true)
+	sound.set_scene("camp")
+	# The camp owns the bottom of the screen here, so the hint goes through its
+	# own line instead of the shared toast band.
+	if camp.has_method("say"):
+		camp.say("雷霆要塞 · 按 E 使用设施，走到出征闸门按 Space 出发。")
+
+
+## The camp raises these and this scene performs them, so the camp can never fork
+## the expedition flow, the online protocol or the profile save.
+func on_camp_station(id: String) -> void:
+	match id:
+		"table":
+			show_camp()
+		"forge":
+			say("锻炉：武器强化将在本轮之后开放，先整备队伍。")
+		"quarter":
+			if extra_meds<2 and profile.data.coins>=25:
+				extra_meds+=1
+				profile.data.coins-=25
+				profile.save_profile()
+				if session.running:
+					session.configure(config())
+				say("军需官：补给一支急救针（-25 ◈），本局共 %d 支。" % (1+extra_meds))
+			else:
+				say("物资已满或银币不足。")
+		"codex":
+			show_help()
+		"launch":
+			on_camp_launch()
+
+
+func on_camp_launch() -> void:
+	if session.players.is_empty():
+		session.solo(config())
+		say("全队出发：血潮开始计时。")
+	elif not session.running:
+		session.configure(config())
+		session.request_launch()
+	else:
+		say("远征已在进行中。")
 
 func show_title() -> void:
 	new_page("title")
@@ -622,7 +706,7 @@ func show_title() -> void:
 	motto.add_theme_constant_override("line_spacing",12)
 	ornament(page,Vector2(74,498),Vector2(40,287),"rail",Color("9b5c65"))
 	var entries := ["开始游戏","创建 / 加入房间","设置","制作组","退出游戏"]
-	var actions: Array[Callable]=[func(): session.solo(config()),show_network,show_settings,show_credits,func(): get_tree().quit()]
+	var actions: Array[Callable]=[go_camp,show_network,show_settings,show_credits,func(): get_tree().quit()]
 	for i in entries.size():
 		var b := button(page,entries[i],Vector2(74,493+i*57),Vector2(445,57),actions[i]) as GothicButton
 		b.menu=true
@@ -695,6 +779,11 @@ func on_lobby() -> void:
 			show_title()
 		return
 	if not session.running:
+		# The walking camp map has its own start button; do not yank the player out
+		# of it when a lobby refresh arrives.
+		if page_name=="ground":
+			if camp: camp.refresh_roster()
+			return
 		if page_name=="results":
 			extra_meds=0
 			ready_local=false
@@ -831,7 +920,13 @@ func copy_invite() -> void:
 func on_started() -> void:
 	extra_meds=0
 	ready_local=false
+	# The camp map hides itself as soon as the raid screen takes over, and the
+	# raid's own presentation camera becomes current again.
+	if camp:
+		camp.set_active(false)
 	new_page("game")
+	if field and field.world_3d and field.world_3d.view_camera:
+		field.world_3d.view_camera.make_current()
 	field.camera=Ruins.SPAWN
 	field.explored.clear()
 	field.map_open=false

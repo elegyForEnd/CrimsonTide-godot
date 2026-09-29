@@ -182,7 +182,14 @@ func run() -> void:
 	await create_timer(0.2).timeout
 	await capture("ui-title-selected")
 	press("开始游戏")
-	check(app.page_name=="camp","title to camp")
+	# The pre-raid camp is now a standalone walkable 3D map; the整备 panel is one
+	# of its stations. Both routes into the raid are asserted here.
+	check(app.page_name=="ground","title to the pre-raid camp map")
+	check(app.camp != null and app.camp.site.built,"the camp map builds its own scenery")
+	await capture("ui-ground")
+	app.camp.warp_to("table")
+	app.camp.interact()
+	check(app.page_name=="camp","the war table opens the loadout panel")
 	await capture("ui-camp")
 	for hero in [1,2]:
 		app.profile.data.hero=hero
