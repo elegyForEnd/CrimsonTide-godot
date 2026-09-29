@@ -639,6 +639,8 @@ func go_camp() -> void:
 	if not session.running and session.players.is_empty():
 		session.solo(config())
 	ensure_camp()
+	camp.set_context(session,profile)
+	camp.extra_meds=extra_meds
 	if camp.has_method("refresh_roster"):
 		camp.refresh_roster()
 	if camp.has_method("update_static"):
@@ -659,17 +661,9 @@ func on_camp_station(id: String) -> void:
 		"table":
 			show_camp()
 		"forge":
-			say("锻炉：武器强化将在本轮之后开放，先整备队伍。")
+			show_camp_forge()
 		"quarter":
-			if extra_meds<2 and profile.data.coins>=25:
-				extra_meds+=1
-				profile.data.coins-=25
-				profile.save_profile()
-				if session.running:
-					session.configure(config())
-				say("军需官：补给一支急救针（-25 ◈），本局共 %d 支。" % (1+extra_meds))
-			else:
-				say("物资已满或银币不足。")
+			buy_camp_supply()
 		"codex":
 			show_help()
 		"launch":
@@ -679,12 +673,58 @@ func on_camp_station(id: String) -> void:
 func on_camp_launch() -> void:
 	if session.players.is_empty():
 		session.solo(config())
-		say("全队出发：血潮开始计时。")
-	elif not session.running:
+	if not session.running:
+		if not session.is_leader():
+			ready_local=not bool(session.players.get(session.my_id(),{}).get("ready",false))
+			session.configure(config())
+			return
 		session.configure(config())
 		session.request_launch()
 	else:
 		say("远征已在进行中。")
+
+
+func buy_camp_supply() -> void:
+	var message := "急救针已满，本局最多携带 3 支。"
+	if extra_meds<2:
+		if profile.data.coins<25:
+			message="银币不足，补给需要 25 银币。"
+		else:
+			extra_meds+=1
+			profile.data.coins-=25
+			ready_local=false
+			profile.save_profile()
+			session.configure(config())
+			message="已补给急救针（-25 银币），本局共 %d 支。" % (1+extra_meds)
+	if camp and page_name=="ground":
+		camp.extra_meds=extra_meds
+		camp.update_static()
+		camp.say(message)
+	else:
+		say(message)
+
+
+func show_camp_forge() -> void:
+	var at := modal_box("锻炉 · 灵契天赋",Vector2(760,550))
+	label(overlay,"永久提升所有角色的能力    ·    银币 %d" % profile.data.coins,
+		at+Vector2(38,96),18,GOLD,Vector2(680,34))
+	label(overlay,"临时武器无法强化；在这里以银币磨炼守夜人的灵契。",
+		at+Vector2(38,139),16,MUTED,Vector2(680,32))
+	for i in 3:
+		var rank: int=profile.data.talents[i]
+		var cost := 80+rank*65
+		var y := 202+i*94
+		label(overlay,"%s  %d / 5" % [Catalog.TALENTS[i],rank],at+Vector2(40,y),23,INK)
+		label(overlay,["每级生命 +12","每级伤害 +8%","每级移速 +9"][i],at+Vector2(40,y+37),16,MUTED)
+		var upgrade := button(overlay,"已满阶" if rank>=5 else "升级 · %d 银币" % cost,
+			at+Vector2(478,y),Vector2(240,54),func():
+			if profile.upgrade(i):
+				ready_local=false
+				session.configure(config())
+				camp.update_static()
+				show_camp_forge()
+		)
+		upgrade.disabled=rank>=5 or profile.data.coins<cost
 
 func show_title() -> void:
 	new_page("title")
@@ -775,7 +815,7 @@ func header(title: String, subtitle: String) -> void:
 
 func on_lobby() -> void:
 	if session.players.is_empty():
-		if page_name in ["camp","game","results"]:
+		if page_name in ["ground","camp","game","results"]:
 			show_title()
 		return
 	if not session.running:
@@ -886,17 +926,12 @@ func show_camp() -> void:
 	label(page,"急救针  ×%d" % (1+extra_meds),Vector2(1113,645),17,INK,Vector2(180,37))
 	label(page,"每局免费补给一支",Vector2(1113,679),12,MUTED)
 	var supply := button(page,"+ 25 ◈",Vector2(1256,646),Vector2(112,48),func():
-		if extra_meds<2 and profile.data.coins>=25:
-			profile.data.coins-=25
-			extra_meds+=1
-			profile.save_profile()
-			session.configure(config())
-		else: say("物资已满或银币不足。")
+		buy_camp_supply()
 	)
 	supply.disabled=extra_meds>=2
 	label(page,"每天 5 分钟 · 第 3 分钟缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
 	ornament(page,Vector2(62,814),Vector2(1314,10))
-	button(page,"← 离开营地",Vector2(60,839),Vector2(183,43),leave_to_title)
+	button(page,"← 返回营地",Vector2(60,839),Vector2(183,43),go_camp)
 	button(page,"守夜手册",Vector2(251,839),Vector2(165,43),show_help)
 	label(page,"活着带回来的，才属于你。",Vector2(583,849),16,Color("a797a3"))
 	if session.is_leader():
@@ -976,6 +1011,8 @@ func on_started() -> void:
 	# like any other, and three sockets at the bottom of the screen are one key away.
 	popup_tip("屏幕下方新增三格道具栏：[F] 使用或与手上的互换，[1][2][3] 切换。捡到背包后双击即可换装。")
 func _process(dt: float) -> void:
+	if camp:
+		camp.input_blocked=modal
 	toast_time-=dt
 	toast.visible=toast_time>0
 	if page_name!="game" or not session.running:
@@ -2967,6 +3004,8 @@ func popup_tip(text: String) -> void:
 func modal_box(title: String, size: Vector2 = Vector2(800,580)) -> Vector2:
 	clear(overlay)
 	modal=true
+	if camp:
+		camp.input_blocked=true
 	var at := (Vector2(1440,900)-size)/2
 	var shade := rect(overlay,Vector2.ZERO,Vector2(1440,900),Color(0.015,0.02,0.04,0.85))
 	shade.mouse_filter=Control.MOUSE_FILTER_STOP
@@ -2979,6 +3018,8 @@ func modal_box(title: String, size: Vector2 = Vector2(800,580)) -> Vector2:
 func close_modal() -> void:
 	clear(overlay)
 	modal=false
+	if camp:
+		camp.input_blocked=false
 	if inventory_open:
 		show_inventory()
 

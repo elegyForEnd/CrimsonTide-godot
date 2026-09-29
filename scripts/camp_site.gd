@@ -48,6 +48,10 @@ var stations: Array = []
 # Every raised surface records its footprint and top, so an actor can be planted
 # on the stone it is actually standing on instead of the y=0 plane.
 var plates: Array = []
+var obstacles: Array = []
+var occluders: Array = []
+const OCCLUDER_SHADER = preload("res://resources/camp_occluder.gdshader")
+const ACTOR_RADIUS := 24.0
 var sprites: Array[Sprite3D] = []
 var shadows: Array[MeshInstance3D] = []
 var soft_blob_texture: GradientTexture2D
@@ -136,9 +140,106 @@ func ground_transform() -> Transform2D:
 func ground_height(at: Vector2) -> float:
 	var top := 0.0
 	for entry in plates:
-		if (entry.rect as Rect2).has_point(at):
+		if Geometry2D.is_point_in_polygon(at, entry.polygon):
 			top = maxf(top, float(entry.top))
 	return top
+
+
+## Oriented footprints share the visible props' fitted size and rotation.
+func is_walkable(at: Vector2) -> bool:
+	for obstacle in obstacles:
+		var local: Vector2 = (at - obstacle.at).rotated(-float(obstacle.angle))
+		var half: Vector2 = obstacle.half
+		var nearest := local.clamp(-half, half)
+		if local.distance_squared_to(nearest) < ACTOR_RADIUS * ACTOR_RADIUS:
+			return false
+	return true
+
+
+func safe_position(at: Vector2) -> Vector2:
+	if is_walkable(at):
+		return at
+	for radius in range(32, 1025, 16):
+		for i in 32:
+			var candidate := at + Vector2.from_angle(PI * 0.5 + i * TAU / 32) * radius
+			if is_walkable(candidate):
+				return candidate
+	return SPAWN
+
+
+func move_actor(at: Vector2, displacement: Vector2) -> Vector2:
+	# Substeps prevent a sprint or a long frame from tunnelling through a wall.
+	var steps := maxi(1, ceili(displacement.length() / 10.0))
+	var step := displacement / steps
+	for i in steps:
+		var candidate := at + step
+		if is_walkable(candidate):
+			at = candidate
+		else:
+			if is_walkable(at + Vector2(step.x, 0)):
+				at.x += step.x
+			if is_walkable(at + Vector2(0, step.y)):
+				at.y += step.y
+	return at
+
+
+## Keep original materials intact: catalog instances share their materials.
+func register_occluder(node: Node3D) -> void:
+	var parts: Array = []
+	for mesh in assets.meshes(node):
+		var originals: Array = []
+		for surface in mesh.mesh.get_surface_count():
+			originals.append(mesh.get_active_material(surface))
+		parts.append({"mesh": mesh, "box": mesh.get_aabb(), "materials": originals,
+			"faded": [], "override": mesh.material_override})
+	if not parts.is_empty():
+		occluders.append({"node": node, "parts": parts, "opacity": 1.0})
+
+
+func occludes_actor(entry: Dictionary) -> bool:
+	var feet := point(hero_at, ground_height(hero_at) + 6)
+	var projection := maxf(0.1, camp_camera.global_basis.y.dot(Vector3.UP))
+	# Sample feet, torso and head, including the two sides of the silhouette.
+	for offset in [Vector2(0, 12), Vector2(0, 38), Vector2(0, 66), Vector2(-20, 38), Vector2(20, 38)]:
+		var target := feet + Vector3(offset.x * UNIT, offset.y * UNIT / projection, 0)
+		var origin := target + camp_camera.global_basis.z * 100.0
+		for part in entry.parts:
+			var inverse: Transform3D = part.mesh.global_transform.affine_inverse()
+			if part.box.intersects_segment(inverse * origin, inverse * target) != null:
+				return true
+	return false
+
+
+func update_occlusion(dt: float) -> void:
+	for entry in occluders:
+		var target := 0.25 if occludes_actor(entry) else 1.0
+		var opacity := move_toward(float(entry.opacity), target, dt * 4.0)
+		if is_equal_approx(opacity, float(entry.opacity)):
+			continue
+		entry.opacity = opacity
+		for part in entry.parts:
+			var mesh: MeshInstance3D = part.mesh
+			if opacity >= 1.0:
+				mesh.material_override = part.override
+				for surface in part.materials.size():
+					mesh.set_surface_override_material(surface, part.materials[surface])
+				continue
+			if part.faded.is_empty():
+				for original in part.materials:
+					var faded: Material = original.duplicate()
+					if faded is ShaderMaterial:
+						faded.shader = OCCLUDER_SHADER
+					elif faded is StandardMaterial3D:
+						faded.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+					part.faded.append(faded)
+			mesh.material_override = null
+			for surface in part.faded.size():
+				var faded: Material = part.faded[surface]
+				if faded is ShaderMaterial:
+					faded.set_shader_parameter("occlusion_opacity", opacity)
+				elif faded is StandardMaterial3D:
+					faded.albedo_color.a = opacity
+				mesh.set_surface_override_material(surface, faded)
 
 
 func camera_focus() -> Vector2:
@@ -204,12 +305,21 @@ func mesh_node(mesh: Mesh, at: Vector3, mat: Material, parent: Node3D = null) ->
 	node.position = at
 	node.material_override = mat
 	(parent if parent else scenery).add_child(node)
+	if (mesh is BoxMesh or mesh is CylinderMesh) and mesh.get_aabb().size.y > 0.12:
+		register_occluder(node)
 	return node
 
 
 func prop(key: String, at: Vector2, size: Vector3, tint: Color = Color.WHITE,
 		foliage: Color = Color.WHITE, angle: float = 0.0, base: float = 0.0, parent: Node3D = null) -> Node3D:
-	return assets.place(parent if parent else scenery, key, point(at, base), size * UNIT, tint, foliage, angle)
+	var node := assets.place(parent if parent else scenery, key, point(at, maxf(base, ground_height(at))), size * UNIT, tint, foliage, angle)
+	# Floors and overhead arches remain traversable; columns block their supports.
+	if not ("floor" in key or "arch" in key or "waterplant" in key or "tree" in key or "torch" in key or "banner" in key):
+		var fitted: Vector3 = node.get_meta("fitted_size") / UNIT
+		obstacles.append({"at": at, "half": Vector2(fitted.x, fitted.z) * 0.5, "angle": -angle})
+	if "floor" not in key and "waterplant" not in key:
+		register_occluder(node)
+	return node
 
 
 # ------------------------------------------------------------------ primitives
@@ -254,8 +364,7 @@ func band(centre: Vector2, radius: float, height: float, thickness: float, color
 		var dir := Vector2.from_angle(i * TAU / segments)
 		outer.append(centre + dir * radius)
 		inner.append(centre + dir * maxf(4.0, radius - thickness))
-	# Flat top, flat inner cut, and a vertical rim so the band reads as carved rock.
-	pad(outer, height, color, base)
+	# Build only the annulus; a filled disc would paint over the walkable floor.
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in segments:
@@ -271,15 +380,13 @@ func band(centre: Vector2, radius: float, height: float, thickness: float, color
 
 ## Chamfered rectangular plate: the stronghold never reads as a plain box.
 func plate(centre: Vector2, half: Vector2, color: Color, thickness: float = 26.0) -> void:
-	plates.append({"rect": Rect2(centre - half, half * 2.0), "top": 24.0 + thickness})
-	var points := PackedVector2Array()
-	var steps := 5
-	for corner in [Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)]:
-		var pivot := centre + Vector2(half.x * corner.x, half.y * corner.y)
-		var a := pivot - Vector2(half.x * 0.30 * corner.x, 0)
-		var b := pivot - Vector2(0, half.y * 0.30 * corner.y)
-		for i in range(steps + 1):
-			points.append(a.lerp(b, float(i) / steps))
+	var cut := minf(half.x, half.y) * 0.30
+	var points := PackedVector2Array([
+		centre + Vector2(-half.x + cut, -half.y), centre + Vector2(half.x - cut, -half.y),
+		centre + Vector2(half.x, -half.y + cut), centre + Vector2(half.x, half.y - cut),
+		centre + Vector2(half.x - cut, half.y), centre + Vector2(-half.x + cut, half.y),
+		centre + Vector2(-half.x, half.y - cut), centre + Vector2(-half.x, -half.y + cut)])
+	plates.append({"polygon": points, "top": 24.0 + thickness})
 	pad(points, thickness, color, 24.0, true)
 
 
@@ -302,6 +409,7 @@ func build() -> void:
 	_build_stations()
 	_build_rain()
 	_build_hero_ring()
+	hero_at = safe_position(hero_at)
 	# Only the smith is kept: he is a working silhouette at the forge, while idle
 	# figures standing around the war table only crowded the player's own station.
 	npc_plan = [
@@ -471,39 +579,42 @@ func _build_stronghold() -> void:
 		prop("dungeon/wall_cracked" if index % 2 else "dungeon/wall_broken",
 			at, Vector3(length, 96, 46), Color("a8aec0"), Color.WHITE, angle + PI * 0.5)
 		index += 1
+		if index >= 12:
+			break
 
 
 ## The war table is the camp's landmark: a stone drum, a carved slab and a lit
 ## map surface the three camp figures stand around.
 func _build_war_table() -> void:
 	var at := CENTRE
+	obstacles.append({"at": at, "half": Vector2(215, 215), "angle": 0.0})
 	for i in 3:
 		var drum := CylinderMesh.new()
 		drum.bottom_radius = 1.55 - i * 0.06
 		drum.top_radius = 1.55 - i * 0.06
 		drum.height = 0.24
 		drum.radial_segments = 24
-		mesh_node(drum, point(at, 36 + i * 24), material(Color("5a6272"), null, 0.85))
+		mesh_node(drum, point(at, ground_height(at) + 36 + i * 24), material(Color("5a6272"), null, 0.85))
 	var slab := CylinderMesh.new()
 	slab.bottom_radius = 2.15
 	slab.top_radius = 2.05
 	slab.height = 0.22
 	slab.radial_segments = 32
-	mesh_node(slab, point(at, 124), material(Color("757d8b"), load(GROUND), 0.8))
+	mesh_node(slab, point(at, ground_height(at) + 124), material(Color("757d8b"), load(GROUND), 0.8))
 	# Lit map surface: a disc that reads as the campaign chart.
 	var chart := CylinderMesh.new()
 	chart.bottom_radius = 1.86
 	chart.top_radius = 1.86
 	chart.height = 0.05
 	chart.radial_segments = 32
-	var chart_node := mesh_node(chart, point(at, 150), glow_material(Color("7fd0ff"), 0.5))
+	var chart_node := mesh_node(chart, point(at, ground_height(at) + 150), glow_material(Color("7fd0ff"), 0.5))
 	chart_node.name = "WarChart"
 	var rim := CylinderMesh.new()
 	rim.bottom_radius = 1.94
 	rim.top_radius = 1.94
 	rim.height = 0.03
 	rim.radial_segments = 32
-	mesh_node(rim, point(at, 118), glow_material(Color("e8c98a"), 1.6))
+	mesh_node(rim, point(at, ground_height(at) + 118), glow_material(Color("e8c98a"), 1.6))
 	for i in 4:
 		var corner := Vector2.from_angle(i * TAU / 4 + PI * 0.25)
 		prop("dungeon/column", at + corner * 330, Vector3(86, 190, 86), Color("b6bdd0"))
@@ -520,7 +631,7 @@ func _build_war_table() -> void:
 	lamp.light_color = Color("9fd4ff")
 	lamp.light_energy = 1.7
 	lamp.omni_range = 6.5
-	lamp.position = point(at, 210)
+	lamp.position = point(at, ground_height(at) + 210)
 	scenery.add_child(lamp)
 	braziers.append({"light": lamp, "energy": 1.7, "seed": 1.7})
 
@@ -537,7 +648,7 @@ func _build_gate() -> void:
 	for i in 8:
 		prop("dungeon/floor_wood_large", Vector2(at.x - 350 + i * 100, at.y),
 			Vector3(104, 16, 250), Color("9fa6b4"))
-	band(at + Vector2(0, 230), 215, 1.2, 16.0, Color("7ee0ff"), 40, 48.0)
+	band(at + Vector2(0, 230), 215, 1.2, 16.0, Color("7ee0ff"), 40, ground_height(at + Vector2(0, 230)) + 1.0)
 	var sigil: Texture2D = load("res://assets/world/landmarks/extraction-sigil.png")
 	var quad := QuadMesh.new()
 	quad.size = Vector2(4.6, 4.6)
@@ -587,21 +698,22 @@ func _build_forge() -> void:
 		Color.WHITE, -0.5)
 	# Anvil on a stump: the one hard, unmistakable silhouette in the corner.
 	var anvil_at := at + Vector2(150, 80)
+	obstacles.append({"at": anvil_at, "half": Vector2(100, 36), "angle": 0.0})
 	var stump := CylinderMesh.new()
 	stump.bottom_radius = 0.36
 	stump.top_radius = 0.31
 	stump.height = 0.64
-	mesh_node(stump, point(anvil_at, 32), material(Color("574f45"), null, 0.85))
+	mesh_node(stump, point(anvil_at, ground_height(anvil_at) + 32), material(Color("574f45"), null, 0.85))
 	var anvil_mesh := BoxMesh.new()
 	anvil_mesh.size = Vector3(1.15, 0.36, 0.52)
-	var anvil := mesh_node(anvil_mesh, point(anvil_at, 82), material(Color("3d434e"), null, 0.45))
+	var anvil := mesh_node(anvil_mesh, point(anvil_at, ground_height(anvil_at) + 82), material(Color("3d434e"), null, 0.45))
 	anvil.name = "Anvil"
 	anvil.set_meta("anvil", anvil_at)
 	var horn := CylinderMesh.new()
 	horn.bottom_radius = 0.19
 	horn.top_radius = 0.03
 	horn.height = 0.5
-	var horn_node := mesh_node(horn, point(anvil_at, 82) + Vector3(0.78, 0, 0), material(Color("3d434e"), null, 0.45))
+	var horn_node := mesh_node(horn, point(anvil_at, ground_height(anvil_at) + 82) + Vector3(0.78, 0, 0), material(Color("3d434e"), null, 0.45))
 	horn_node.rotation.z = PI * 0.5
 	_brazier(at + Vector2(215, -185), 1.3)
 
@@ -678,7 +790,8 @@ func _build_scatter() -> void:
 func _brazier(at: Vector2, scale: float) -> void:
 	var group := Node3D.new()
 	group.name = "Brazier"
-	group.position = point(at)
+	group.position = point(at, ground_height(at))
+	obstacles.append({"at": at, "half": Vector2.ONE * 44 * scale, "angle": 0.0})
 	scenery.add_child(group)
 	var bowl := CylinderMesh.new()
 	bowl.bottom_radius = 0.30 * scale
@@ -849,16 +962,16 @@ func _build_rain() -> void:
 func _build_stations() -> void:
 	stations = [
 		{"id": STATION_TABLE, "name": "作战会议桌", "en": "WAR TABLE", "no": "01",
-			"at": Vector2(2800, 2800), "offset": Vector2(0, 0), "radius": 250.0,
+			"at": Vector2(2800, 2800), "offset": Vector2(430, 0), "radius": 250.0,
 			"hint": "编队 · 换装 · 天赋", "tint": Color("ffd9a6"), "icon": "command", "action": "table"},
 		{"id": STATION_FORGE, "name": "锻炉", "en": "THE FORGE", "no": "02",
 			"at": Vector2(3560, 3150), "offset": Vector2(150, 80), "radius": 215.0,
-			"hint": "武器强化", "tint": Color("9fd0ff"), "icon": "forge", "action": "forge"},
+			"hint": "灵契天赋 · 永久成长", "tint": Color("9fd0ff"), "icon": "forge", "action": "forge"},
 		{"id": STATION_QUARTER, "name": "军需官", "en": "QUARTERMASTER", "no": "03",
 			"at": Vector2(2180, 3560), "offset": Vector2(0, 0), "radius": 215.0,
 			"hint": "补给 · 急救针", "tint": Color("bfeecb"), "icon": "supply", "action": "quarter"},
 		{"id": STATION_CODEX, "name": "晨钟书匣", "en": "THE CODEX", "no": "04",
-			"at": Vector2(2820, 3340), "offset": Vector2(0, 0), "radius": 205.0,
+			"at": Vector2(2820, 3340), "offset": Vector2(0, 260), "radius": 205.0,
 			"hint": "守夜手册", "tint": Color("dcc7ff"), "icon": "codex", "action": "codex"},
 		{"id": STATION_GATE, "name": "出征闸门", "en": "THE DEPARTURE", "no": "05",
 			"at": Vector2(2800, 4420), "offset": Vector2(0, 230), "radius": 265.0,
@@ -880,7 +993,7 @@ func _build_stations() -> void:
 		var node := mesh_node(quad, point(station.at + station.offset, 255), mat)
 		node.name = "Station_" + str(station.id)
 		station["node"] = node
-		band(station.at + station.offset, float(station.radius) * 0.62, 1.6, 10.0, station.tint, 34, 46.0)
+		band(station.at + station.offset, float(station.radius) * 0.62, 1.6, 10.0, station.tint, 34, ground_height(station.at + station.offset) + 1.0)
 
 
 ## Station badges are procedural gradients, so the camp ships without new PNGs
@@ -1035,7 +1148,8 @@ func submit_sprite(texture: Texture2D, rect: Rect2, region: Rect2, tint: Color, 
 	var factor := rect.size / source_size
 	var vertical_projection := maxf(0.1, camp_camera.global_basis.y.dot(Vector3.UP))
 	sprite.scale = Vector3(factor.x, factor.y / vertical_projection, 1)
-	sprite.offset = Vector2(rect.get_center().x / factor.x, -rect.get_center().y / factor.y)
+	var centre := rect.get_center() - CharacterMetrics.FOOT_OFFSET
+	sprite.offset = Vector2(centre.x / factor.x, -centre.y / factor.y)
 	sprite.flip_h = pose.determinant() < 0
 	if sprite.flip_h:
 		sprite.offset.x = -sprite.offset.x
@@ -1045,7 +1159,7 @@ func submit_sprite(texture: Texture2D, rect: Rect2, region: Rect2, tint: Color, 
 	var shadow := shadows[used - 1]
 	shadow.visible = true
 	shadow.position = point(pose.origin, base + 3)
-	shadow.scale = Vector3(rect.size.x * 0.95, rect.size.x * 0.62, 1.0)
+	shadow.scale = Vector3(0.62, 0.40, 1.0)
 
 
 func begin_sprites() -> void:
@@ -1064,28 +1178,25 @@ func end_sprites() -> void:
 ## player's own station is not crowded by idle figures.
 func refresh_sprites() -> void:
 	begin_sprites()
-	var hero_frame: Dictionary = frames.motion_frame(hero, "walk" if hero_walking else "idle", hero_phase, 0.0)
+	var hero_frame: Dictionary = frames.motion_frame(hero, "run" if hero_walking else "idle", hero_phase, 0.0)
 	submit_sprite(hero_frame.texture, hero_frame.rect, Rect2(), Color("f6f9ff"),
-		Transform2D(hero_facing, hero_at))
+		Transform2D(Vector2(hero_facing, 0), Vector2.DOWN, hero_at))
 	for item in npc_plan:
 		var npc_hero := int(item.hero)
 		# The smith uses the attack row as a hammer swing, held on the impact frames
 		# so he always reads as hitting something hard.
 		var swing: Dictionary = frames.attack_frame(npc_hero, 1, 1 if fmod(routine, 1.1) < 0.55 else 3)
 		submit_sprite(swing.texture, swing.rect, Rect2(), Color("c6d0e8"),
-			Transform2D(float(item.facing), item.at))
+			Transform2D(Vector2(float(item.facing), 0), Vector2.DOWN, safe_position(item.at)))
 	# Extra squad members stand in a loose line behind the table.
 	var slot := 0
 	for member in squad:
 		if slot >= 3:
 			break
 		var hero_id := int(member.get("hero", 0))
-		if hero_id == hero:
-			slot += 1
-			continue
 		var frame: Dictionary = frames.motion_frame(hero_id, "idle", routine * 5.0 + slot, 0.0)
-		var at := Vector2(3060, 2690 + slot * 150)
-		submit_sprite(frame.texture, frame.rect, Rect2(), Color("d6ddf0"), Transform2D(-1.0, at))
+		var at := safe_position(Vector2(3180, 2600 + slot * 150))
+		submit_sprite(frame.texture, frame.rect, Rect2(), Color("d6ddf0"), Transform2D(Vector2.LEFT, Vector2.DOWN, at))
 		slot += 1
 	end_sprites()
 	_update_hero_ring()
@@ -1353,6 +1464,7 @@ func _process(dt: float) -> void:
 	_update_storm(step)
 	_update_hero(step)
 	refresh_sprites()
+	update_occlusion(step)
 	if wind_player and not wind_player.playing:
 		wind_player.play()
 	if rumble_player and not rumble_player.playing:

@@ -47,6 +47,11 @@ var loadout: Label
 var launch_button: Button
 var warp_charge := 0.0
 var warp_target := ""
+var toast_tween: Tween
+var squad_count: Label
+var supply_status: Label
+var extra_meds := 0
+var input_blocked := false
 
 
 func _ready() -> void:
@@ -136,6 +141,12 @@ func set_active(value: bool) -> void:
 	visible = value
 	site.visible = value
 	site.set_process(value)
+	warp_charge = 0.0
+	warp_target = ""
+	site.hero_walking = false
+	for player in site.audio_root.get_children():
+		if player is AudioStreamPlayer:
+			player.stream_paused = not value
 	# Only one 3D camera may be current: entering the camp claims it, leaving it
 	# releases it so the raid's own presentation camera takes over again.
 	if value and site.camp_camera:
@@ -255,7 +266,7 @@ func _build_hud() -> void:
 	# Right column: the squad.
 	_panel(Vector2(1120, 176), Vector2(290, 236), Color(0.02, 0.035, 0.065, 0.9))
 	_struck("远征小队", Vector2(1140, 186), 22)
-	_struck("WATCHERS  /  %02d" % maxi(1, session.players.size() if session else 1), Vector2(1142, 214), 11, ARC)
+	squad_count = _struck("", Vector2(1142, 214), 11, ARC)
 	_rule(Vector2(1140, 234), Vector2(250, 1))
 	roster = VBoxContainer.new()
 	roster.position = Vector2(1140, 244)
@@ -263,14 +274,24 @@ func _build_hud() -> void:
 	roster.add_theme_constant_override("separation", 4)
 	roster.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(roster)
+	_panel(Vector2(30, 176), Vector2(260, 352), Color(0.02, 0.035, 0.065, 0.9))
+	_struck("营地设施", Vector2(50, 188), 22)
+	_struck("点击前往 · 抵达后按 E 使用", Vector2(50, 224), 13, MUTED)
+	for i in site.stations.size():
+		var station: Dictionary = site.stations[i]
+		_action("%02d  %s" % [i + 1, station.name], Vector2(48, 262 + i * 49),
+			Vector2(224, 41), func(): warp_to(str(station.id)); say("已抵达 " + str(station.name)))
+	supply_status = _struck("急救针 ×1 / 3", Vector2(1140, 430), 16, GOLD, Vector2(260, 30))
+	_action("打开整备  [F]", Vector2(1120, 474), Vector2(290, 44),
+		func(): station_requested.emit("table"))
 
 	# Bottom bar: hero identity, controls and the departure pair.
 	_panel(Vector2(30, 800), Vector2(1380, 76), Color(0.015, 0.028, 0.05, 0.95))
 	_rule(Vector2(30, 800), Vector2(1380, 2), ARC)
 	_struck("整备 · 出征", Vector2(50, 810), 26)
-	loadout = _struck("", Vector2(50, 846), 15, MUTED, Vector2(560, 24))
-	_struck("WASD 走动 · SHIFT 疾行 · 鼠标右键蓄力直取站点 · E 交互 · F 整备面板 · TAB 手册", Vector2(420, 846),
-		13, MUTED, Vector2(660, 24), HORIZONTAL_ALIGNMENT_CENTER)
+	loadout = _struck("", Vector2(246, 818), 15, MUTED, Vector2(620, 24))
+	_struck("WASD 走动 · SHIFT 疾行 · 右键指向设施蓄力 · E 交互 · F 整备 · TAB 手册", Vector2(246, 846),
+		13, MUTED, Vector2(824, 24), HORIZONTAL_ALIGNMENT_LEFT)
 	_action("← 离开营地", Vector2(1090, 814), Vector2(150, 46), func(): exit_requested.emit())
 	_action("晨钟手册", Vector2(1250, 814), Vector2(150, 46), func(): codex_requested.emit())
 	launch_button = _action("全队出发    →", Vector2(880, 736), Vector2(530, 58),
@@ -300,19 +321,28 @@ func _build_markers() -> void:
 
 
 func refresh_roster() -> void:
+	site.squad.clear()
 	for child in roster.get_children():
 		child.queue_free()
 	var rows: Array = []
 	if session and not session.players.is_empty():
 		for player in session.players.values():
+			if int(player.id) != session.my_id():
+				site.squad.append(player)
 			rows.append({"name": str(player.name), "hero": int(player.hero),
 				"tag": "房主" if player.id == session.leader_id else "队友",
 				"state": "就绪" if player.get("ready", false) else "整备"})
 	else:
 		rows.append({"name": "守夜人", "hero": selected, "tag": "单人", "state": "整备"})
+	squad_count.text = "WATCHERS  /  %02d" % rows.size()
+	if session and not session.is_leader():
+		launch_button.text = "取消准备" if session.players.get(session.my_id(), {}).get("ready", false) else "准备出发    →"
+	else:
+		launch_button.text = "全队出发    →"
 	for row in rows:
 		var line := Label.new()
 		line.text = "%s  ·  %s  ·  %s" % [row.tag, row.name, row.state]
+		line.clip_text = true
 		line.add_theme_font_override("font", face_font)
 		line.add_theme_font_size_override("font_size", 15)
 		line.add_theme_color_override("font_color", INK if row.state == "就绪" else MUTED)
@@ -330,17 +360,25 @@ func refresh_roster() -> void:
 
 func update_static() -> void:
 	if profile:
+		selected = int(profile.data.hero)
+		site.hero = selected
 		var hero: Dictionary = Catalog.HEROES[clampi(selected, 0, Catalog.HEROES.size() - 1)]
 		loadout.text = "%s  ·  %s    Lv.%02d    ◈ %d" % [hero.name, hero.title,
 			profile.level(), profile.data.coins]
 		strikes.text = "本次守夜落雷 %d 次    营地岗哨 %d 处" % [int(site.storm_state().strikes), site.stations.size()]
 		charges.text = "已选角色 %s    %s" % [hero.name, String(hero.desc).left(26)]
+	supply_status.text = "急救针 ×%d / 3  ·  补给 25 银币" % (1 + extra_meds)
 
 
 # ---------------------------------------------------------------------- input
 
 func _process(dt: float) -> void:
 	if not visible:
+		return
+	if input_blocked:
+		warp_charge = 0.0
+		warp_target = ""
+		site.hero_walking = false
 		return
 	clock += dt
 	var speed := 420.0
@@ -362,18 +400,20 @@ func _process(dt: float) -> void:
 	# Hold the right mouse button to charge a jump straight to a station.
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		warp_charge = minf(1.0, warp_charge + dt * 1.4)
-		var target: Dictionary = nearest_station(site.camera_focus(), 2400.0)
+		var target: Dictionary = pointed_station(get_global_mouse_position())
+		if target.is_empty() or str(target.id) != warp_target:
+			warp_charge = 0.0
+		warp_target = "" if target.is_empty() else str(target.id)
 		if not target.is_empty():
 			warp_target = str(target.id)
 			prompt.text = "蓄力直取  %s   %d%%" % [target.name, int(warp_charge * 100)]
 	elif warp_charge > 0.0:
-		var jump := warp_target
+		var jump := warp_target if warp_charge >= 1.0 else ""
 		warp_charge = 0.0
 		warp_target = ""
 		var station: Dictionary = site.station_by_id(jump)
 		if not station.is_empty():
-			site.hero_at = station.at + station.offset + Vector2(0, 150)
-			site.set_camera_focus(site.hero_at, true)
+			warp_to(jump)
 			say("已抵达 " + str(station.name))
 
 	_update_markers()
@@ -386,7 +426,8 @@ func _process(dt: float) -> void:
 func drive_hero(stick: Vector2, dt: float) -> void:
 	var at: Vector2 = site.hero_position()
 	if stick.length() > 0.01:
-		at += stick * 420.0 * dt
+		var destination: Vector2 = (at + stick * 420.0 * dt).clamp(BOUNDS.position, BOUNDS.end)
+		at = site.move_actor(at, destination - at)
 		at.x = clampf(at.x, BOUNDS.position.x, BOUNDS.end.x)
 		at.y = clampf(at.y, BOUNDS.position.y, BOUNDS.end.y)
 		site.hero_walking = true
@@ -409,21 +450,32 @@ func nearest_station(at: Vector2, within: float) -> Dictionary:
 	return best
 
 
+func pointed_station(at: Vector2) -> Dictionary:
+	var best := {}
+	var distance := 90.0
+	for station in site.stations:
+		var d: float = at.distance_to(site.project(station.at + station.offset))
+		if d < distance:
+			distance = d
+			best = station
+	return best
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if not visible:
+	if not visible or input_blocked:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
+		var code: int = event.physical_keycode if event.physical_keycode else event.keycode
 		# Space is the hard commitment: it only exists at the departure gate.
-		if event.keycode == KEY_SPACE:
+		if code == KEY_SPACE:
 			var gate: Dictionary = site.station_at(site.hero_position())
 			if not gate.is_empty() and str(gate.id) == "gate":
-				say("全队出发。")
 				launch_requested.emit()
 			else:
 				say("先走到出征闸门，再按 Space 出发。")
 			get_viewport().set_input_as_handled()
 			return
-		match event.keycode:
+		match code:
 			KEY_E, KEY_ENTER:
 				interact()
 			KEY_F:
@@ -432,6 +484,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				codex_requested.emit()
 			KEY_ESCAPE:
 				exit_requested.emit()
+			_:
+				return
 		get_viewport().set_input_as_handled()
 
 
@@ -447,11 +501,13 @@ func interact() -> Dictionary:
 
 
 func say(text: String) -> void:
+	if toast_tween and toast_tween.is_valid():
+		toast_tween.kill()
 	toast.text = text
 	toast.modulate.a = 1.0
-	var tween := create_tween()
-	tween.tween_interval(1.6)
-	tween.tween_property(toast, "modulate:a", 0.0, 0.7)
+	toast_tween = create_tween()
+	toast_tween.tween_interval(1.6)
+	toast_tween.tween_property(toast, "modulate:a", 0.0, 0.7)
 
 
 ## Public so a preview or a test can pose the camp without moving a mouse.
@@ -459,7 +515,7 @@ func warp_to(id: String) -> void:
 	var station: Dictionary = site.station_by_id(id)
 	if station.is_empty():
 		return
-	site.hero_at = station.at + station.offset + Vector2(0, 160)
+	site.hero_at = site.safe_position(station.at + station.offset + Vector2(0, 120))
 	site.set_camera_focus(site.hero_at, true)
 
 
@@ -474,7 +530,7 @@ func _update_markers() -> void:
 	hero_marker.queue_redraw()
 	if near.is_empty():
 		if warp_charge <= 0.0:
-			prompt.text = "走近发光站点：作战会议桌 · 锻炉 · 军需官 · 晨钟书匣 · 出征闸门"
+			prompt.text = "从左侧选择设施，或走近站点按 E"
 	else:
 		if warp_charge <= 0.0:
 			prompt.text = "[E]  %s   ·   %s" % [near.name, near.hint]

@@ -122,7 +122,7 @@ func run() -> void:
 	check(site.hero_ring != null and site.hero_ring.visible, "the player carries their own sigil")
 	check(visible_shadows == visible_sprites, "every actor carries a contact shadow")
 	check(site.frames.movement.size() == Catalog.HEROES.size(), "camp figures use the real hero atlases")
-	var frame: Dictionary = site.frames.motion_frame(0, "walk", 0.0, 0.0)
+	var frame: Dictionary = site.frames.motion_frame(0, "run", 0.0, 0.0)
 	check(frame.has("texture") and frame.has("rect"), "hero animation frames resolve")
 
 	# --- the camera is locked to the controlled character -------------------
