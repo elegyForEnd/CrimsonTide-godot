@@ -1,5 +1,8 @@
 .godot/
 build/
+# assets/rogue/build/ 是肉鸽 build 的本地产物，缺失会让 main.gd 的 preload 编译失败；
+# 所以对该目录开例外，保证全新 clone 也能拿到"能编译"的最小集合（内容说明见该目录 PLACEHOLDER-README.txt）。
+!/assets/rogue/build/
 dist/
 output/imagegen/
 *.log
