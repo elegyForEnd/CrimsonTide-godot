@@ -16,6 +16,9 @@ var flames: Array = []
 var trauma := 0.0
 var numbers: Array = []
 var particles=preload("res://scripts/combat_particles.gd").new()
+# The same danger palette the ground telegraph uses, so the charge motes and the
+# release burst read as one event instead of two separate effects.
+const Telegraph = preload("res://scripts/attack_telegraph.gd")
 var enemy_particle_states: Dictionary={}
 var last_particle_trail := 0.0
 var elapsed := 0.0
@@ -284,11 +287,103 @@ func _process(dt: float) -> void:
 	queue_redraw()
 	spell_light.queue_redraw()
 
-func stamp(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> void:
+# --- enemy projectiles, sized so the hit circle is the size you see -----------
+# The simulation sweeps an 18px circle for every ordinary enemy bolt (session.gd
+# hit_radius), so the bolt's solid core is drawn at exactly that diameter, 36px,
+# and everything else is deliberately softer.  The bolt used to be a 34x34 draw
+# of common_2 - a 1024x1024 PNG whose ink is only 412x800 of its own canvas, so
+# fitted_size() left roughly 13.7x26.6 visible pixels: less than half the width
+# of the circle that actually hurts, which is why the shots read as specks.
+# (The old branch never faded in: it called stamp(), which draws at full
+# coverage.  The only Motion.coverage() call site is the player's own bullet.)
+# These constants are the fix, in one place, in measured terms.
+const ENEMY_BOLT_SCALE := 1.8           # fitted_size multiplier on the old 65x34 box
+const ENEMY_BOLT_HIT_RADIUS := 18.0     # must equal session.gd's hit_radius default
+const ENEMY_BOLT_TRAIL := 3             # short ghost tail along -v
+const ENEMY_BOLT_TRAIL_STEP := 0.17     # each ghost this fraction of the extent behind
+const ENEMY_BOLT_TRAIL_HEAD := 8.5      # newest ghost's disc radius, tapering backwards
+const ENEMY_BOLT_HALO := 1.25           # outer halo radius over the fitted half-extent
+const ENEMY_BOLT_HALO_ALPHA := 0.10     # outer halo opacity (a soft shell, nothing more)
+const ENEMY_BOLT_HALO_INNER := 1.05     # inner halo radius over the fitted half-extent
+const ENEMY_BOLT_HALO_INNER_ALPHA := 0.16
+const ENEMY_BOLT_BODY_ALPHA := 0.55     # the sprite over the core disc, not instead of it
+# A hot core inside a saturated danger shell: the same danger family the ground
+# telegraphs use (attack_telegraph.TINT), so a bolt and its windup agree.
+const ENEMY_BOLT_TINT := Color("ff3350")
+const ENEMY_BOLT_CORE := Color("ffb3c0")
+# The deep-abyss variants ("fog" +25%, "surge" +10%) only change presentation, so
+# they arrive as a float in the bolt dictionary and are read here and nowhere
+# else.  Bounds match RogueCombat.BULLET_VISUAL_BOUNDS: a bolt can grow, never
+# shrink, and a neutral bolt (no key at all) draws exactly as it did before.
+const ENEMY_BOLT_VISUAL_MIN := 1.0
+const ENEMY_BOLT_VISUAL_MAX := 3.0
+
+## The bolt's presentation-only size factor: 1.0 when the key is absent, which is
+## what keeps field mode and neutral roguelike runs pixel-identical.
+static func bolt_visual(source: Dictionary) -> float:
+	return clampf(float(source.get("bullet_visual",1.0)),ENEMY_BOLT_VISUAL_MIN,ENEMY_BOLT_VISUAL_MAX)
+
+## Square draw extent for a bolt: fitted_size() always returns a square, so the
+## visible ink is a fraction of this number, never all of it.  `visual` scales the
+## decorative shell only - the solid core is pinned to the hit radius below.
+static func bolt_extent(visual: float = 1.0) -> float:
+	return Library.fitted_size("common_2",
+		Vector2(65,34)*ENEMY_BOLT_SCALE*clampf(visual,ENEMY_BOLT_VISUAL_MIN,ENEMY_BOLT_VISUAL_MAX)).x
+
+## Every layer's on-screen diameter, for the readability self-check and for the
+## screenshots' captions.  `core` is deliberately independent of `visual`.
+static func bolt_layers(visual: float = 1.0) -> Dictionary:
+	var extent := bolt_extent(visual)
+	return {"visual":visual,"sprite_box":extent,"sprite_ink_minor":extent*412.0/1024.0,
+		"halo_inner":extent*ENEMY_BOLT_HALO_INNER,"halo_outer":extent*ENEMY_BOLT_HALO,
+		"core":ENEMY_BOLT_HIT_RADIUS*2.0,"trail_head":ENEMY_BOLT_TRAIL_HEAD*2.0*visual}
+
+func stamp(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color, alpha: float = -1.0) -> void:
 	var extent := Library.fitted_size("common_%d" % cell,size)
 	var mirror := Vector2(-1.0 if size.x<0 else 1.0,-1.0 if size.y<0 else 1.0)
 	draw_set_transform(at,angle,mirror)
-	Motion.draw(self,Library.texture("common_%d" % cell),Rect2(-extent/2,extent),clampf(tint.a*1.5,0,1),"center",tint)
+	# alpha<0 keeps the historic tint-driven coverage; enemy bolts pass the value
+	# they already computed so one draw call is not covered twice.
+	Motion.draw(self,Library.texture("common_%d" % cell),Rect2(-extent/2,extent),
+		clampf(tint.a*1.5,0,1) if alpha<0.0 else alpha,"center",tint)
+
+## An ordinary enemy bolt, painted back to front:
+##   1. a soft outer halo, well outside the hit circle and nearly transparent,
+##   2. a solid danger disc at exactly ENEMY_BOLT_HIT_RADIUS - the one layer that
+##      says "this is where the 18px sweep is", so the bolt can never look bigger
+##      than it hurts,
+##   3. the star-burst sprite over that disc for shape and a hot centre,
+##   4. three tapering discs trailing along -v.
+## `bullet_visual` grows the halo, the sprite and the tail - everything the eye
+## reads as "this one is bigger" - while the solid core stays welded to the real
+## hit radius the simulation sweeps.
+## Nothing here is read back by the simulation; the sweep is untouched.
+func draw_enemy_bolt(bullet: Dictionary) -> void:
+	var visual := bolt_visual(bullet)
+	var extent := bolt_extent(visual)
+	var at: Vector2=bullet.p
+	var angle: float=bullet.v.angle()
+	# Tail first, so the bolt body sits on top of its own afterimages.
+	var back: Vector2=bullet.v.normalized() if bullet.v.length_squared()>0.0001 else Vector2.RIGHT
+	for index in range(ENEMY_BOLT_TRAIL,0,-1):
+		var fade := 0.09*float(ENEMY_BOLT_TRAIL-index+1)
+		draw_set_transform(Vector2.ZERO)
+		draw_circle(at-back*(extent*ENEMY_BOLT_TRAIL_STEP*float(index)),
+			ENEMY_BOLT_TRAIL_HEAD*(0.55+0.15*float(ENEMY_BOLT_TRAIL-index))*visual,Color(ENEMY_BOLT_TINT,fade))
+	# The halo is drawn upright: a direction-scaled circle would turn into a
+	# diamond whenever a bolt flies diagonally.
+	draw_set_transform(Vector2.ZERO)
+	draw_circle(at,extent*0.5*ENEMY_BOLT_HALO,Color(ENEMY_BOLT_TINT,ENEMY_BOLT_HALO_ALPHA))
+	if ENEMY_BOLT_HALO_INNER_ALPHA>0.0:
+		draw_circle(at,extent*0.5*ENEMY_BOLT_HALO_INNER,Color(ENEMY_BOLT_TINT,ENEMY_BOLT_HALO_INNER_ALPHA))
+	# The 1:1 layer: solid, saturated, and the exact size of the damage circle.
+	# No variant is allowed to touch this one, because the sweep never changes.
+	draw_circle(at,ENEMY_BOLT_HIT_RADIUS,ENEMY_BOLT_TINT)
+	# The sprite rides on top of the disc, so its own ink is what shows inside the
+	# disc and its spikes carry the bolt's shape outside it.
+	draw_set_transform(at,angle,Vector2.ONE)
+	Motion.draw(self,Library.texture("common_2"),Rect2(Vector2.ONE*-0.5*extent,Vector2.ONE*extent),
+		ENEMY_BOLT_BODY_ALPHA,"center",ENEMY_BOLT_CORE)
 
 func _draw() -> void:
 	for player in field.session.players.values():
@@ -361,7 +456,9 @@ func _draw() -> void:
 			draw_set_transform(bullet.p-Vector2(0,float(bullet.get("height",0))),bullet.v.angle(),Vector2(Library.facing_scale(key),1))
 			Motion.draw(self,Library.texture(key),Rect2(-extent*.5,extent),Motion.coverage(float(bullet.get("visual_age",.1)),.3,.03),"forward",Color.WHITE,Library.facing_scale(key)<0)
 		else:
-			stamp(2,bullet.p,Vector2(65,34),bullet.v.angle(),Color(1,.5,.6))
+			# Every ordinary enemy bolt goes through one sizing contract, so the
+			# three draw paths cannot drift into three different thicknesses.
+			draw_enemy_bolt(bullet)
 
 	draw_set_transform(Vector2.ZERO)
 
@@ -589,18 +686,24 @@ func observe_particles(dt: float) -> void:
 			if not enemy_particle_states.has(key): enemy_particle_states[key]={"charged":false,"released":false}
 			var state: Dictionary=enemy_particle_states[key]
 			var style: String=["stone","soul","ember","spark","spark","feather","soul","ice","ember","water","spark","ice","water","spark","ice","water","ember"][clampi(int(e.type),0,16)]
-			var color: Color=EnemyFrames.COLORS[int(e.type)]
+			var color: Color=Telegraph.tint(int(e.type))
 			var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
 			var at: Vector2=e.p-Vector2(0,28)
 			if float(e.get("attack_time",0))<=0:
 				particles.stop(key); state.charged=false; state.released=false; continue
 			if not e.get("attack_released",false) and not state.charged:
 				state.charged=true
-				particles.start(key,at,aim,color,style,"gather",Ecology.WINDUP[int(e.type)],24,25)
+				particles.start(key,at,aim,color,style,"gather",Ecology.WINDUP[int(e.type)],32,44)
 			particles.move(key,at)
 			if e.get("attack_released",false) and not state.released:
 				state.released=true; particles.stop(key)
-				particles.burst(at+aim*24,aim,color,style,18 if int(e.type)>=7 else 11,.9,1.1)
+				# A charged release throws three layers: the coloured body, a
+				# white-hot core and a short screen kick scaled by proximity.
+				particles.burst(at+aim*24,aim,color,style,30 if int(e.type)>=7 else 20,1.35,1.3)
+				particles.burst(at+aim*18,aim,Color(1,0.97,0.92),"spark",12 if int(e.type)>=7 else 8,1.1,1.5)
+				var proximity := clampf(1.0-e.p.distance_to(field.camera)/620.0,0,1)
+				var kick := 0.30 if int(e.type)>=14 else (0.22 if int(e.type)>=7 else 0.14)
+				field.combat.trauma=maxf(field.combat.trauma,kick*proximity)
 	for key in enemy_particle_states.keys():
 		if not seen.has(key): particles.stop(key); enemy_particle_states.erase(key)
 	if elapsed-last_particle_trail>=.035:

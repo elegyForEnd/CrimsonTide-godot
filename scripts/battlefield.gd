@@ -44,6 +44,9 @@ var previous_positions: Dictionary = {}
 var loot_icons: Dictionary = {}
 var combat: CombatVisuals
 var boss_fx: Node2D
+# The danger pass owns every ordinary enemy windup: saturated colour, charging
+# fill, white-hot edge, countdown ring and release flash.
+var telegraph = preload("res://scripts/attack_telegraph.gd").new()
 var character_frames: CharacterFrames
 var move_phases: Dictionary = {}
 var blood_tide = preload("res://scripts/blood_tide.gd").new()
@@ -420,64 +423,45 @@ func monster(e: Dictionary) -> void:
 	var aura: Color=Ruins.COLORS[biome].darkened(0.28)
 	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind]+(5 if kind>=14 else 2),Color(aura,0.22 if kind>=5 else 0.0))
 	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind],Color(0,0,0,0.24))
-	var warning_progress := clampf((float(e.get("attack_total",0))-float(e.get("attack_time",0)))/maxf(.01,float(Ecology.WINDUP[kind])),0,1)
-	var warning_alpha := smoothstep(0.0,.20,warning_progress)
-	if kind!=4 and float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
-		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
-		var progress: float=clampf((e.attack_total-e.attack_time)/Ecology.WINDUP[kind],0,1)
-		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,(0.22+progress*0.5)*warning_alpha),2.5,true)
-	if kind>=5 and float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
-		var aim: Vector2=e.attack_aim
-		if kind in [8,10,11]:
-			var point: Vector2=e.get("attack_point",pos)
-			var radius := 60.0 if kind==11 else (76.0 if kind==8 else 100.0)
-			draw_circle(point,radius,Color(color,0.16*warning_alpha))
-			draw_arc(point,radius,0,TAU,48,Color(color,0.85*warning_alpha),2,true)
-			if kind==11: draw_line(pos,point,Color(color,0.55*warning_alpha),2,true)
-		elif kind==7:
-			draw_line(pos,pos+aim*235,Color(color,0.17*warning_alpha),65,true)
-			draw_line(pos,pos+aim*235,Color(color,0.9*warning_alpha),2,true)
-		elif kind==9:
-			draw_arc(pos,85,0,TAU,40,Color(color,0.65*warning_alpha),2,true)
-		elif kind==12:
-			for angle in [-0.5,0.0,0.5]:
-				draw_line(pos,pos+aim.rotated(angle)*195,Color(color,0.4*warning_alpha),2,true)
-		elif kind==13:
-			var sector := PackedVector2Array([pos])
-			for i in 25: sector.append(pos+aim.rotated(lerpf(-1.05,1.05,i/24.0))*190)
-			draw_colored_polygon(sector,Color(color,0.15*warning_alpha))
-			draw_arc(pos,190,aim.angle()-1.05,aim.angle()+1.05,32,Color(color,0.8*warning_alpha),2,true)
-		elif kind==14:
-			draw_circle(pos,135,Color(color,0.13*warning_alpha))
-			draw_arc(pos,135,0,TAU,48,Color(color,0.85*warning_alpha),3,true)
-			for n in 12: draw_line(pos+Vector2.from_angle(n*TAU/12)*55,pos+Vector2.from_angle(n*TAU/12)*135,Color(color,0.42*warning_alpha),2,true)
-		elif kind==15:
-			draw_arc(pos,145,0,TAU,48,Color(color,0.75*warning_alpha),3,true)
-			draw_arc(pos,85,0,TAU,40,Color(color,0.4*warning_alpha),2,true)
-		elif kind==16:
-			var point: Vector2=e.get("attack_point",pos)
-			draw_circle(point,145,Color(color,0.15*warning_alpha))
-			draw_arc(point,145,0,TAU,48,Color(color,0.85*warning_alpha),3,true)
-			draw_line(pos,point,Color(color,0.6*warning_alpha),3,true)
+	# Danger pass: the whole windup, the countdown and the release flash are
+	# painted against the same footprint the damage rule will actually use.
+	if kind==4 and not e.get("raid_boss",false):
+		knight_telegraph(e)
+	elif float(e.get("attack_time",0))>0:
+		telegraph.paint(self,ground_transform(),font,e,kind,clock)
 	if kind==13 and e.get("attack_released",false) and float(e.get("attack_time",0))>0.35:
 		var aim: Vector2=e.attack_aim
 		var sweep: float=clampf((e.attack_total-e.attack_time-Ecology.WINDUP[kind])/0.25,0,1)
 		var end: Vector2=pos+aim.rotated(lerpf(-1.05,1.05,sweep))*190
-		draw_dashed_line(pos,end,Color("bd9874"),3,8,true)
-		draw_circle(end,9,Color("d6b88c"))
-	if kind==4 and not e.get("raid_boss",false): knight_telegraph(e)
+		draw_dashed_line(pos,end,Color("ffd27a"),5,8,true)
+		draw_circle(end,10,Color("fff2c8"))
 	# All frames share a fixed canvas and foot anchor; mirroring never shifts feet.
 	var body_pose: Dictionary=session.enemy_bodies.pose(e,session.elapsed,false)
 	set_world_transform(pos+Vector2(0,float(body_pose.hover)),0,Vector2(float(body_pose.facing),1))
-	var tint := Color(1.6,1.5,1.5) if float(e.get("flash",0))>0 else Color.WHITE
+	# A charging enemy heats up in its own danger colour, so the sprite reads as
+	# "about to swing" even when the ground paint sits behind scenery.
+	var heat := 0.0
+	if float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
+		var charge := clampf((float(e.get("attack_total",0))-float(e.get("attack_time",0)))/maxf(.01,float(Ecology.WINDUP[kind])),0,1)
+		heat=(0.30+0.70*charge)*(0.72+0.28*sin(clock*(8.0+18.0*charge)+float(e.id)))
+	var tint := Color.WHITE
+	if float(e.get("flash",0))>0:
+		tint=Color(2.7,1.9,1.9)
+	elif heat>0.001:
+		var hot := telegraph.tint(kind)
+		tint=Color.WHITE.lerp(Color(hot.r*2.0,hot.g*2.0,hot.b*2.0),heat*0.62)
 	draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
 	set_world_transform()
 	if frame==6 and kind!=4:
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
+		var hot := telegraph.tint(kind)
 		if kind==1:
-			draw_arc(pos+aim*24,12,0,TAU,24,Color(color,0.8),2,true)
+			draw_arc(pos+aim*24,15,0,TAU,24,Color(hot,0.92),4,true)
+			draw_arc(pos+aim*24,15,0,TAU,24,Color(1,1,1,0.75),1.8,true)
 		else:
-			draw_arc(pos,38 if kind!=2 else 46,aim.angle()-0.8,aim.angle()+0.8,20,Color(color,0.85),3 if kind!=2 else 5,true)
+			var shock := 46.0 if kind==2 else 38.0
+			draw_arc(pos,shock,aim.angle()-0.85,aim.angle()+0.85,22,Color(hot,0.95),5 if kind==2 else 4,true)
+			draw_arc(pos,shock,aim.angle()-0.85,aim.angle()+0.85,22,Color(1,1,1,0.8),2,true)
 	if kind in [3,4] or kind>=14:
 		draw_arc(pos+Vector2(0,9),Ecology.RADIUS[kind]+8,0,TAU,40,Color(color,0.25),2,true)
 	set_actor_overlay(pos)

@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ds660olo2ow5k"
-path="res://.godot/imported/wall_rose_window_01_window_emission_512x512.png-2d4731f83a914b2e770ccfb7bd454feb.ctex"
+path.s3tc="res://.godot/imported/wall_rose_window_01_window_emission_512x512.png-2d4731f83a914b2e770ccfb7bd454feb.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "d1af6aad1a9fc62b6b81d18c0609f7c3"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/vendor/sigils-cathedral/models/wall_rose_window_01_window_emission_512x512.png"
-dest_files=["res://.godot/imported/wall_rose_window_01_window_emission_512x512.png-2d4731f83a914b2e770ccfb7bd454feb.ctex"]
+dest_files=["res://.godot/imported/wall_rose_window_01_window_emission_512x512.png-2d4731f83a914b2e770ccfb7bd454feb.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

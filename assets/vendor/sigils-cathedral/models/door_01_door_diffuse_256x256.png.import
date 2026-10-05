@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c30x0bqur7ybm"
-path="res://.godot/imported/door_01_door_diffuse_256x256.png-b7d15982490cebdd0d07c80a8dd1b97f.ctex"
+path.s3tc="res://.godot/imported/door_01_door_diffuse_256x256.png-b7d15982490cebdd0d07c80a8dd1b97f.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "47ec1846ff0598fb63a1170f74230e3b"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/vendor/sigils-cathedral/models/door_01_door_diffuse_256x256.png"
-dest_files=["res://.godot/imported/door_01_door_diffuse_256x256.png-b7d15982490cebdd0d07c80a8dd1b97f.ctex"]
+dest_files=["res://.godot/imported/door_01_door_diffuse_256x256.png-b7d15982490cebdd0d07c80a8dd1b97f.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

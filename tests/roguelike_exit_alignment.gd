@@ -36,16 +36,28 @@ func run():
  while not p.rogue_selection.is_empty():
   s.perform(1,'rogue_selection_take',{'id':p.rogue_selection.id,'version':p.rogue_selection.version,'index':0})
  s.roguelike.tick(s,.016)
- s.raid.area=2
+ # R5: the room rows come from the node graph, so the sanctuary row and the branching
+ # guardian gate are located through the graph instead of the retired slot template.
+ var graph=preload('res://scripts/rogue_graph.gd')
+ var depth_total:int=s.roguelike.depth_count(s)
+ var sanctuary_depth:=2
+ for d in range(2,depth_total+1):
+  var node_id:String=s.roguelike.node_at_depth(s.rogue_graph,d)
+  if node_id!='' and str(graph.node(s.rogue_graph,node_id).kind)=='talent': sanctuary_depth=d; break
+ s.raid.area=sanctuary_depth
  s.roguelike.enter(s)
  while not p.rogue_selection.is_empty():
   s.perform(1,'rogue_selection_take',{'id':p.rogue_selection.id,'version':p.rogue_selection.version,'index':0})
  check(s.raid.phase=='rogue_exit','Sanctuary rewards open the exits')
+ s.raid.area=depth_total-1
+ s.roguelike.enter(s)
+ s.enemies.clear()
+ s.raid.phase='rogue_exit'
  check(s.raid.exits.size()==2,'Two destinations in branching encounter')
  p.p=s.ruins.exit_position(1)
  var expected:String=s.raid.exits[1].room
  s.interact(p,true,.016)
- check(s.raid.area==3 and s.raid.room==expected,'E follows the diagonal route')
+ check(s.raid.area==depth_total and s.raid.room==expected,'E follows the diagonal route')
  s.queue_free()
  await process_frame
  print('EXIT ALIGNMENT ',checks,' checks / ',failures,' failures')

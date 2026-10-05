@@ -125,7 +125,8 @@ func _process(dt: float) -> void:
 		if elapsed>=float(bullet.get("vfx_trail",0)):
 			bullet["vfx_trail"]=elapsed+.04
 			if trails.size()>=220: trails.pop_front()
-			trails.append({"p":bullet.p,"floor":bullet.rogue_tone,"age":0.0,"aim":bullet.v.angle()})
+			trails.append({"p":bullet.p,"floor":bullet.rogue_tone,"age":0.0,"aim":bullet.v.angle(),
+				"visual":Semantics.visual_of(bullet)})
 	queue_redraw()
 
 func _draw() -> void:
@@ -141,20 +142,27 @@ func _draw() -> void:
 	for m in field.session.roguelike.combat.missiles:
 		if m.delay>0: continue
 		var at: Vector2=m.p-Vector2(0,m.visual_height)
-		Semantics.projectile(self,at,(m.end-m.start).normalized(),int(m.floor),str(m.get("fx_move",m.kind)),elapsed)
+		Semantics.projectile(self,at,(m.end-m.start).normalized(),int(m.floor),str(m.get("fx_move",m.kind)),elapsed,
+			Semantics.visual_of(m))
 		if m.kind in ["throw","mist"]:
 			draw_arc(m.end,48,0,TAU,24,Color(TONES[int(m.floor)],smoothstep(0,.16,float(m.get("age",.2)))*.45),2,true)
 			draw_circle(m.p,6,Color(0,0,0,.3))
 	for trail in trails:
 		var fade: float=1.0-trail.age/.24
 		draw_set_transform(trail.p,trail.aim)
-		draw_line(Vector2.ZERO,Vector2(-12,0),Color(TONES[int(trail.floor)],fade*.25),1.5,true)
+		# A readable tail rather than a tick: the mirrored shots have no bitmap
+		# trail of their own, so this is the only thing showing where they came from.
+		# Its length follows the shot's own visual factor, so a "fog" bolt is
+		# consistently larger from nose to tail instead of only at the tip.
+		draw_line(Vector2.ZERO,Vector2(-26,0)*float(trail.get("visual",1.0)),
+			Color(TONES[int(trail.floor)],fade*.40),3.0*float(trail.get("visual",1.0)),true)
 	for bullet in field.session.bullets:
 		if not bullet.has("rogue_tone") or absf(bullet.p.x-field.camera.x)>1000: continue
 		if bullet.get("rogue_guardian",false): continue
 		var floor_index: int=bullet.rogue_tone
 		draw_set_transform(bullet.p,bullet.v.angle())
-		Semantics.projectile(self,bullet.p,bullet.v.normalized(),floor_index,str(bullet.get("fx_move","")),elapsed)
+		Semantics.projectile(self,bullet.p,bullet.v.normalized(),floor_index,str(bullet.get("fx_move","")),elapsed,
+			Semantics.visual_of(bullet))
 	draw_set_transform(Vector2.ZERO)
 
 func burst(fx: Dictionary) -> void:

@@ -7,7 +7,7 @@
 ## 玩法
 
 - 五层：幽光菌林、魔焰铸炉、星晶幻境、风暴空港、黑曜魔宫。
-- 每层七区，守层者位于第七区；清场后沿右侧两条路线选择下一区，每次随机给出两个不同的目的地：围猎、精英、商店、宝藏或圣坛。守层者前可选择普通首领或生命 +25%、额外奖励 50 魔晶的挑战首领。层间也可选择先战斗或先补给。
+- 每层 7~10 个节点（由 `seed_value` + 层号确定性生成的节点图，可复现），守层者是**本层唯一且最深**的节点；清场后沿右侧两条路线选择下一节点，每次给出两个不同的目的地：围猎、精英、商店、宝藏、圣坛，以及扩展新增的诅咒回廊、幽暗异事、游方锻炉、赌徒营帐、镜中挑战。守层者前可选择普通首领或生命 +25%、额外奖励 50 魔晶的挑战首领。层间也可选择先战斗或先补给。
 - 战斗地图宽 3600 游戏单位，摄像机跟随角色横向与纵向卷动；每区三段遭遇，向右探索触发后续敌群。商店、宝藏和圣坛使用 3000 游戏单位宽的独立紧凑房间。
 - 每区按对应背景图的可见地面校准碰撞轮廓，使用种子生成实体障碍排列；障碍完整底部占地必须落在地面内，沿两侧摆放并留出可通行间隙；末端短距离分叉为一条直行、一条向画面右上转向的平地路线。两条路线没有高差，不设置门或传送门。背景分段使用统一的纹理坐标铺设，保持平地和铺装线条自然，避免按碰撞边缘扭曲图片造成台阶感。场景物件按照脚底位置遮挡排序。
 - 人物走路与闪避只推进到最后一个可行位置；碰到边界或障碍后停止，没有移动后的安全点回推、传送或自动滑动。安全点查询仅用于怪物生成。
@@ -16,13 +16,76 @@
 - 奖励可以「选择并领取」或「选择并丢给队友」。丢出的奖励保持原品质、铭刻、被动与天赋数值；队友靠近按 E 直接领取，不会再次随机。行囊的丢弃也改为真实地面掉落，可重新拾取。替换的装备仍放入本局备用背包。
 - 个人奖励界面使用内置 ImageGen 生成的完整宝藏祭坛插画，配合缩放弹出、逐项显现、贴图粒子和悬停反馈。可花刷新卡重抽个人候选，或放回地面稍后选择；放回再拾取保持原候选，不能免费刷新。图片与完整生成提示位于 `assets/ui/rewards/`。
 - 商店使用本局魔晶，可购买多件，每件只能买一次。刷新卡重抽当前奖励或商店，过期界面点击会被拒绝。
-- 三份秘藏全部完成选择（领取或分享均可）后右侧两条路线开放，队伍自行分配，无需每人领取，四人队伍也不会卡住。队员倒地或断线时会放回未选完的秘藏。全队存活成员靠近分叉、救起倒地成员且没有待选择奖励后，任意队员靠近目标路线末端按 E，一起进入下一区。未拾取掉落只保留在当前区域。第 35 区选择奖励、通过出口后完成结算。
+- 三份秘藏全部完成选择（领取或分享均可）后右侧两条路线开放，队伍自行分配，无需每人领取，四人队伍也不会卡住。队员倒地或断线时会放回未选完的秘藏。全队存活成员靠近分叉、救起倒地成员且没有待选择奖励后，任意队员靠近目标路线末端按 E，一起进入下一区。未拾取掉落只保留在当前区域。走到本局最后一层的守层者节点、完成结算后本局结束（节点总数随种子为 35~50 个）。
 - 开局使用已有城邦金币购买刷新卡（20/张，最多 5 张），可选绿色初始武器（60 金币），或免费使用当前角色自带武器。费用只在成功启动时扣除。
 - 每局免费携带一支急救针。倒地可以按 F 自救一次；队员可以互相救援；全部成员失去战斗能力后本局结束。
 - 角色与城邦加成使用当前存档配置，新增构筑加成仅在本局存在。存档中的背包和次元口袋不带入、不丢失。本局装备不带回仓库。
 - 完成区域结算每区 12 金币，通关额外 250 金币。失败也按已完成区域结算，结算只支付一次。
 
 控制：WASD 移动与地面前后走位、鼠标瞄准、左键攻击、右键战技、空格闪避、Q 技能、F 使用急救针、E 出口、TAB 行囊与属性。此模式没有搜打撤大地图或撤离点。
+
+## 魔境扩展（2026-10-05 · 节点图 / 深渊变数 / 专属房间 / 守层者池 / 每日挑战 / 灰烬成长树）
+
+> 本节说明 2026-10-05 晚扩展的**现状**（哪些已接线、哪些仍是数据层）。逐条契约与裁决见
+> [ROGUE-CONTRACTS.md](output/ROGUE-CONTRACTS.md)；系统 × 接线状态台账、已知红与已知局限见
+> [ROGUELIKE-EXPANSION-SUMMARY.md](output/ROGUELIKE-EXPANSION-SUMMARY.md)。
+
+### 1. 层间节点图（取代固定「每层七区」）
+
+每局关卡结构由 `RogueGraph.build(seed_value, floor)` 确定性生成：节点数 ∈ [7,10]、深度 7~9、每层**唯一守层者且最深**、每节点出口 ∈ [1,2]、无死路且从入口全部可达。种子只由 `seed_value` 与层号派生（**局部 RNG**，不消耗 `s.rng`），因此同种子必得同一张图，客户端可本地重建；上图不进快照。地形与碰撞仍由 `RogueMap.region_key` 按节点所属区域选择。
+
+实现位置：`scripts/rogue_graph.gd`（`build/kinds/neighbors/node/signature`、兼容投影 `legacy_areas/from_route`）、`scripts/roguelike.gd` 的 `new_floor()`/`enter()`；验收 `tests/rogue_graph.gd`（83608 检查 / 0 失败）。
+
+### 2. 深渊变数（每层 1 条 · 全队共享 · HUD 可见）
+
+进入新层时抽 1 条变数，全队共享并显示在 HUD 上（例：「血月：敌人伤害 +15% · 掉落品质 +1 档」）。共 **18 条**（boon / bane / mixed 混合），带权重与最小层数门控，同一局内不重复（`raid.variants_seen` 去重）。效果覆盖：受击、普攻、移速、敌人生命/移速/伤害、敌人弹幕弹速与尺寸、魔晶/经验/掉落品质/商店价格/精英出现率。
+
+**红线**：敌人弹幕只影响速度与表现层字段 `bullet_visual`，**命中判定几何一律不变**（`session.gd` 的 `hit_radius` 仍默认 18.0）。
+
+实现位置：`scripts/rogue_variants.gd`（`modifiers_of/describe/pick/_derive_seed`）、`scripts/session.gd` 的 `rogue_mods()` / `rogue_enemy_bolt()`、`scripts/roguelike.gd` 的 `mod_of()` / `roll_tier()` / `roll_offers()` / `settle()`、`scripts/ecology.gd`（生态怪弹幕）；验收 `tests/rogue_variants.gd`、`tests/rogue_hooks_session.gd`、`tests/rogue_hooks_ecology.gd`、`tests/rogue_hooks_roguelike.gd`。
+
+### 3. 诅咒回廊与幽暗异事
+
+- **诅咒回廊（curse 房）**：进房即给每人一条诅咒（**10 条**，CU01–CU10），与既有减伤池**同池相减**（`defense_penalty`），**不新开乘数**；每条诅咒都配对称的正面回报。
+- **幽暗异事（event 房）**：**9 个事件 / 25 个选项**，在「幽暗异事」面板里选择后由房主结算（动作 `rogue_event`，先校验 `raid.revision` 防重放）。
+
+实现位置：`scripts/rogue_curses.gd`、`scripts/rogue_events.gd`、`scripts/roguelike.gd` 的 `open_room()` 与 `choose()`；验收 `tests/rogue_curses.gd`（218/0）、`tests/rogue_events.gd`（484/0）。
+
+### 4. 三个专属房间
+
+- **游方锻炉（forge）**：熔炼锻造点（复用 `RogueBuild` 既有锻造规则与预算，不另造数值）、当场锻打 +1 级、转移锻造。
+- **赌徒营帐（gamble）**：三种赌法（魔晶 / 奥术灰烬 / 装备升阶），胜率与期望值写进描述文本，三种期望均 ≤ 100%。
+- **镜中挑战（mirror）**：以当前构筑生成镜像对手，两段确认（应战 → 结算），每局一次性（`p.rogue_mirror_used`），奖励有上限。
+
+实现位置：`scripts/rogue_rooms.gd`（`offers/resolve/gamble_stake/mirror_accept/mirror_resolve`）、`scripts/roguelike.gd` 的 `open_room()`/`refresh_dedicated()`/`room_action()`/`mirror_action()`/`apply_room_delta()`（换阶会同步 `refresh_max_hp()` 与 `rogue_inventory_revision`）；验收 `tests/rogue_rooms.gd`（1299/0）。
+
+### 5. 守层者池扩容与半血二阶段
+
+守层者由 5 个扩到 **8 个身份**：幽蕈古王、熔炉暴君、星镜女皇、雷翼舰长、黑曜剑圣，新增**暮钟司祭、岩窟冢主、湮潮之主**。每局由 `(seed_value, floor)` 确定性抽 5 个互不重复；**零新美术**（复用既有 17 个美术 key）。每个守层者由 5 招扩到 **7 招**，血量降到 50% 进入**二阶段**（状态单调、只触发一次），两个专属终结技在一阶段绝不出现；一阶段行为与扩容前逐位一致，伤害几何仍走既有 `zone/contains/bolt` 通道。
+
+已知局限：新身份的身体立绘仍按楼层取帧（`enemy_body.gd → rogue_art.boss_animation(rogue_skin)`），零新美术下会回落，但特效/颜色/招式名/构建物按抽到的身份渲染。
+
+实现位置：`scripts/rogue_combat.gd`（`NAMES`/`MOVES`/`boss_pool`/`moves_of`/`setup_boss`）、`scripts/boss_choreography.gd`（`rq_bell/rq_earth/rq_abyss`）、`scripts/boss_effect_art.gd`（`ROGUE` 8 项）、`scripts/sound.gd`；验收 `tests/rogue_boss_pool.gd`（2305/0）、`tests/rogue_boss_phase2.gd`（406/0）、`tests/roguelike_bosses.gd`（**2 条待修**）。
+
+### 6. 种子分享与每日挑战
+
+种子分享串格式：`CT-` + 8 位大写十六进制 + 校验字符（`RogueDaily.encode()` / `parse_seed()`）。每日挑战用 **UTC** 日期派生种子（`utc_today()` / `global_daily_seed()`），且**必须由房主随 `begin` 下发**，客户端不得按本地日期自行计算。`0` 表示随机局，所以种子输入框对空值 / `0` / 越界 / 乱码一律拒绝并停在页面，**绝不静默变成随机局**。
+
+**未落地**：每日打卡记录写在 `profile.data["daily"]`（契约 v3-1 的第三键），但 `scripts/profile.gd` 目前**没有**注册该键的默认值，而 `record_daily()` 刻意"只在键已存在时才写"，因此**打卡目前是空操作**（不产生假成功）。
+
+实现位置：`scripts/rogue_daily.gd`、`scripts/roguelike.gd`（`raid.daily`/`raid.seed_shared`、`record_daily()`）、`scripts/main.gd` 的种子页；验收 `tests/rogue_daily.gd`（132/0）。
+
+### 7. 灰烬与永久成长树
+
+结算（`settle()`，**唯一结算点**、受 `raid.ended` 守卫，只发一次）按层数与结局发放**奥术灰烬**并写入 `profile.data["ashes"]`；成长树 **14 个节点**（沉甸钱囊 / 灰烬矿脉 / 运势护符 / 铁躯 / 猎杀本能 / 守望重甲 / 深袋 / 拾荒者 / 战地医者 / 疾行长靴 / 博识 / 点金之手 / 猎运 / 屠戮研习），满树共 **7305 灰烬**。`power()` 只输出 4 个键，敌人倍率恒 ≤ 1.0——成长树**永不**让敌人更强。存档 `version` 保持 1，只新增顶层键（`ashes` / `growth`）。
+
+实现位置：`scripts/rogue_growth.gd`、`scripts/profile.gd`（默认键与 `sanitize_growth()`）、`scripts/roguelike.gd`（`reset()` 用 `power()` 加成、`settle()` 里 `Growth.grant`）、`scripts/main.gd` 的成长树弹窗；验收 `tests/rogue_growth.gd`（6886/0）、`tests/rogue_profile_migration.gd`（113/0）。
+
+### 8. 界面与入口
+
+HUD 右列新增 5 行：深渊变数、诅咒摘要、灰烬（本局 / 累计分开）、路线（层 · 深度 · 房间名）、本局种子；另加「幽暗异事」面板（3 个选项 + 门槛文案 + 每项选择按钮，门槛不满足自动禁用）、「种子 · 每日挑战」页（显示 UTC 每日种子、分享串输入 / 复制 / 清空）、「灰烬成长树」弹窗（14 节点双列，买不起 / 前置未满足会禁用并给出原因）。所有新动作都携带 `raid.revision`，过期点击被房主拒绝。
+
+实现位置：`scripts/rogue_ui_model.gd`（无窗口可测的 view-model）、`scripts/main.gd`（节点名 `RogueVariant` / `RogueCurses` / `RogueAsh` / `RogueNode` / `RogueSeedLine`、`RogueEventOption%d`、`GrowthBuy_<id>`、`RogueSeedInput` / `RogueDailyPick` / `RogueSeedButton` / `RogueGrowthButton`）；验收 `tests/rogue_ui.gd`（161/0）、窗口截图用例 `tests/rogue_ui_visual.gd`（13/0）。
 
 ## 美术
 
@@ -94,8 +157,8 @@ Boss 在第三段遭遇登场，显示独立血条与当前招式名。招式有
 
 Godot 4.7.2：
 
-- `tests/roguelike.gd`：115 项通过，覆盖五层 25 区、分段遭遇、购买、刷新、失效点击、失败、结算、原存档保留、岩浆伤害。
-- `tests/roguelike_bosses.gd`：414 项通过，覆盖扩展本层小怪波次与技能朝向、五 Boss 五招轮换、预警延迟、伤害、安全位置、闪避免伤、专属音效、召唤、狂暴与败亡奖励。
+- `tests/roguelike.gd`：**当前不可用**（2026-10-05 晚实测：无汇总行 + `SCRIPT ERROR: Out of bounds get index '1'`（`tests/roguelike.gd:67`），另有 3 条断言失败 `Starting purchases applied` / `Unexpected phase` / `All five floors and every graph row completed`）。它的「五层 25 区」口径已被节点图取代、尚未移植；请改用 `tests/roguelike_seven_rooms.gd`（11832 检查 / 0 失败）与门禁基线里的节点图口径用例。
+- `tests/roguelike_bosses.gd`：已按「8 身份 × 7 招」新口径移植，但**2026-10-05 晚实测 466 检查 / 2 失败**（`Damage geometry includes advertised danger area`、`Standing inside released danger actually takes damage: 4/3 幽蕈深潜`）——两条都是「按 shape 反推一个位于危险区内的点」的启发式在新身份下失效，属**待修**，见门禁基线与汇总文档。
 - `tests/roguelike_vfx.gd`：139 项通过，验证长地图角色事件和语音、原角色大招素材、五主题六类真实粒子/Shader、镜头跟随、实例上限、区域清理以及视觉层不造成额外伤害。
 - `tests/roguelike_vfx_visual.gd`：已截图检查角色攻击、墓煜原有大招与敌人贴图粒子，运行无脚本或绘制错误。
 - `tests/roguelike_minion_vfx.gd`：643 项通过，验证全部 40 种小怪的 80 个招式从实际 AI 发出的蓄力、受击打断、唯一释放、弹幕拖尾、地面预警/主题 Shader、死亡和真实弹丸碰撞事件及切区清理。
@@ -103,7 +166,7 @@ Godot 4.7.2：
 - `tests/roguelike_minion_vfx_visual.gd`：五主题各四种小怪的蓄力、释放和落地法术共 15 张截图，运行无脚本或着色器错误，已人工检查代表画面。这是为并排检查素材而刻意同步动作的展示场景；实际 AI 攻击节奏由独立计时测试验证。
 - `tests/hybrid_vfx.gd`：9 项通过，原搜打撤混合特效回归；`tests/ultimate_release.gd`：41 项通过，角色大招释放回归。
 - `tests/voices.gd`：123 项通过，原角色语音、大招旁白、跳过与结束行为回归。
-- `tests/roguelike_animations.gd`：1090 项通过，覆盖全部动画帧、固定裁剪尺寸、透明边距、25 招音效加载。
+- `tests/roguelike_animations.gd`：**当前不可用**（2026-10-05 晚实测：运行 94 秒到帧上限、无汇总行；用例仍在调用已移除的 `rogue_art.spell_animation`）。
 - `tools/check_rogue_animation_gutters.py`：使用 --hd：880 帧逐帧 Alpha 检查通过，70 张图集没有侵入相邻格。
 - `tests/roguelike_boss_visual.gd`：五层小怪群及全部 25 招的预警和释放分别截图，共 55 张画面；截图位于 `build/rogue-minions-*` 和 `build/rogue-boss-*`。
 - `tests/roguelike_art.gd`：90 项通过，验证 25 区独立背景、最终素材透明边距、完整数量、各层三种区域配置的出口可达性，避开岩浆仍可到达。
@@ -122,7 +185,7 @@ Godot 4.7.2：
 
 新增治疗/增幅连线、临时护盾与破裂、抛物线投掷、回旋/追踪弹、陷阱、召唤与可击毁分身；伤害、治疗、减速和防护都有实际判定。召唤者与额外召唤数量受限，主人死亡召唤物消散，额外召唤不给重复击杀奖励。每个小怪技能有独立合成音效，80 个 WAV 的来源与参数见 `assets/audio/rogue/minion-manifest.json`。小怪声音优先级低于 Boss 与角色关键动作。
 
-验证：小怪技能 103 项、分散刷新 6166 项、错峰出招 55 项、动画与资源 2660 项、模式通关 115 项、原角色语音 123 项；实际 GPU 截图覆盖五层 40 种小怪的两招、五个 Boss 与 25 套技能。
+验证：小怪技能 103 检查（其中 1 条既存失败，见汇总文档）、分散刷新 6166 项、错峰出招 55 项、动画与资源 2660 项、原角色语音 123 项；实际 GPU 截图覆盖五层 40 种小怪的两招、五个 Boss 与 25 套技能。
 
 40 种魔物、80 个特色招式的完整设计见 [ROGUE-MINION-DESIGN.md](ROGUE-MINION-DESIGN.md)。该文档的 40 种、80 招已实装。当前使用重制的 40 种小怪，出生位置已改为战斗段内分散随机采样，避开障碍、岩浆与玩家，并随机排列种类。空间允许时优先保留 150 像素间距，狭窄区域选择最大可用空隙。刷新检查覆盖五层、三段战斗及多个种子。
 
@@ -180,3 +243,5 @@ Godot 4.7.2：
 
 2026-10-05：每层改为 7 关（共 35 关）。普通房间的两个出口从战斗、精英、商店、宝藏、圣坛中随机抽取不同目的地；第 6 关出口选择普通或挑战首领，第 7 关守层者结束后进入下一层。商店、宝藏和圣坛各有五层主题的专用夜景地图，保持 3:1 比例，生成时前景轻虚化、远景重虚化。原 25 张 3x 地图继续用于战斗关卡；地图贴图与碰撞统一通过 RogueMap.region_key 选择，联机同步同一房间类型。生成记录：output/rogue-safe-night/generation-prompts-seven-rooms.json；流程验证：tests/roguelike_seven_rooms.gd。
 2026-10-05：切换用户提供的新增关卡 3x 贴图，25 张均逐图确认宽高严格等于生成原图三倍。RogueMap.texture_path 优先选择已导入的 3x 资源，所有新增关卡已切换到 3x。道路 UV 边界和世界尺寸保持不变。替换的 1x 图及导入文件归档到 output/unused-rogue-maps/seven-room-1x-before-3x/。尺寸报告：build/map-3x-replacement-audit.json。
+
+2026-10-05（晚）：层间结构由固定「每层七区（共 35 关）」改为**节点图**（每层 7~10 节点、共 35~50 个，见上节「魔境扩展」§1），并新增深渊变数、诅咒回廊 / 幽暗异事、游方锻炉 / 赌徒营帐 / 镜中挑战、守层者池 8 身份与半血二阶段、种子分享与每日挑战、灰烬与永久成长树，以及对应的 HUD、事件面板、种子页与成长树弹窗。本条目**取代**上面 2026-10-05 那条「每层改为 7 关（共 35 关）」中的层结构描述；该条关于专用夜景地图与 `RogueMap.region_key` 的部分仍然有效。契约与逐轮验收见 output/ROGUE-CONTRACTS.md、output/ROGUELIKE-EXPANSION-SUMMARY.md。

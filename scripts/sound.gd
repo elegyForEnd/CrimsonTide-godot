@@ -86,10 +86,13 @@ func _ready() -> void:
 			for skill in 2:
 				var minion_cue := "rogue-minion-%d-%d-%d" % [floor_index,variant,skill]
 				clips[minion_cue]=[load("res://assets/audio/rogue/"+minion_cue+".wav")]
-		for move in 5:
+		# 二阶段的两招终结技（5/6）暂未单独录音：先借用同一位守层者的第 5 招，
+		# 让 "每一招都有起手/命中音频线索" 这条不变量在 7 招表下依旧成立。
+		for move in 7:
 			for action in ["charge","release"]:
 				var cue := "rogue-%d-%d-%s" % [floor_index,move,action]
-				clips[cue]=[load("res://assets/audio/rogue/"+cue+".wav")]
+				var direct := "res://assets/audio/rogue/"+cue+".wav"
+				clips[cue]=[load(direct) if ResourceLoader.exists(direct) else clips["rogue-%d-4-%s" % [floor_index,action]][0]]
 		for action in ["phase","fall"]:
 			var cue := "rogue-%d-%s" % [floor_index,action]
 			clips[cue]=[load("res://assets/audio/rogue/"+cue+".wav")]

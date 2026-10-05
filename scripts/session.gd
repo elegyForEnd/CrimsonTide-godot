@@ -71,6 +71,10 @@ var pending_ultimates: Dictionary = {}
 var soul_reaps: Array = []
 var fire_zones: Array = []
 var raid: Dictionary = {}
+# Contracts §C1: the authoritative node graph never enters the snapshot packet.
+# Clients rebuild it from (seed_value, floor) so only the current node/depth ride
+# inside `raid`; keeping it on a plain session var guarantees it stays offline.
+var rogue_graph: Dictionary = {}
 var roguelike = preload("res://scripts/roguelike.gd").new()
 var expedition = preload("res://scripts/expedition.gd").new()
 var mini_bosses = preload("res://scripts/mini_bosses.gd").new()
@@ -101,6 +105,18 @@ func my_id() -> int:
 
 func authority() -> bool:
 	return not online or multiplayer.is_server()
+
+## The meta-progression channel (contracts v3-1/v3-3). `main.gd` attaches the live
+## profile dictionary with `set_meta("profile_data", profile.data)` before a roguelike
+## run so `RogueGrowth.grant()` can bank the run's ash and `RogueGrowth.power()` can pay
+## the growth tree into the starting purse; tests attach a raw dictionary the same way.
+## Returns `{}` while nothing is attached — which is exactly the pre-wiring behaviour,
+## so `power()` stays all-zero and every shipped starting number is bit-identical.
+func profile_data() -> Dictionary:
+	if has_meta("profile_data"):
+		var attached: Variant=get_meta("profile_data")
+		if attached is Dictionary: return attached
+	return {}
 
 func solo(config: Dictionary) -> void:
 	disconnect_room()
@@ -416,6 +432,8 @@ func equipment_hp(p: Dictionary) -> float:
 const RogueEquipment = preload("res://scripts/rogue_equipment.gd")
 const RogueBuild = preload("res://scripts/rogue_build.gd")
 const RogueActions = preload("res://scripts/rogue_actions.gd")
+const RogueVariants = preload("res://scripts/rogue_variants.gd")
+const RogueCurses = preload("res://scripts/rogue_curses.gd")
 
 func rogue_equipment_stat(p: Dictionary, stat: String) -> float:
 	return RogueEquipment.total(p,stat) if roguelike.active(self) else 0.0
@@ -450,6 +468,42 @@ func weapon_scaling(p: Dictionary, index: int = -1) -> float:
 
 func rogue_damage_pool(p: Dictionary) -> float:
 	return minf(1.2,float(p.get("rogue_damage",0))+Homestead.bonus(p,"damage")+p.talents[1]*.08+rogue_equipment_stat(p,"damage")+RogueBuild.stat(self,p,"damage"))
+
+## 魔境数值钩子的**唯一**集中入口：把「当前层的深渊变数」（全队共享）与
+## 「该玩家身上的诅咒」（个人）合成一张数值表，供受击/输出/移速/弹幕读取。
+## 铁律：不消耗 s.rng、不重置种子；绝不产出任何命中判定几何键——弹幕只允许
+## 改表现层 `bullet_visual` 与速度，命中半径永远沿用默认的 18.0。
+## 非魔境模式返回空表（调用方换算恒等）。
+func rogue_mods(p: Dictionary = {}) -> Dictionary:
+	var mods: Dictionary = {}
+	if not roguelike.active(self):
+		return mods
+	var ids: Array = []
+	var variant_id := str(raid.get("variant",""))
+	if variant_id != "":
+		ids.append(variant_id)
+	mods = RogueVariants.modifiers_of(ids)
+	if not p.is_empty():
+		var curse: Dictionary=RogueCurses.stat_delta(p)
+		for key in curse.keys():
+			mods[key]=float(mods.get(key,0.0))+float(curse[key])
+		# 诅咒的「受伤加重」走减伤池**同池相减**（已冻结裁决），这里不出乘数。
+		mods["defense_penalty"]=RogueCurses.defense_penalty(p)
+		mods["curse_count"]=RogueCurses.count(p)
+	return mods
+
+## 敌人普通弹幕的深渊变数钩子：只改弹速与**表现层**尺寸。
+## mods 中性时返回原字典（逐字不变），也绝不写 hit_radius。
+func rogue_enemy_bolt(bolt: Dictionary) -> Dictionary:
+	var mods := rogue_mods()
+	var speed_scale := 1.0+clampf(float(mods.get("bullet_speed",0.0)),-0.5,0.5)
+	var visual_scale := 1.0+clampf(float(mods.get("bullet_size",0.0)),0.0,1.0)
+	if is_equal_approx(speed_scale,1.0) and is_equal_approx(visual_scale,1.0):
+		return bolt
+	var velocity: Vector2=bolt["v"]
+	bolt["v"]=velocity*speed_scale
+	bolt["bullet_visual"]=visual_scale
+	return bolt
 
 func weapon_damage(p: Dictionary, index: int = -1, quality: int = -1) -> float:
 	if roguelike.active(self):
@@ -494,7 +548,16 @@ func recover_mana(p: Dictionary, dt: float) -> void:
 		p.mana=minf(p.max_mana,p.mana+recovering*p.max_mana*0.06*bonus)
 
 func incoming_damage(p: Dictionary, damage: float) -> float:
-	if roguelike.active(self): return maxf(0,damage)*(1-stat_defense(p))*(1-RogueBuild.conditional_defense(self,p))
+	if roguelike.active(self):
+		var mods := rogue_mods(p)
+		# 诅咒与既有减伤池**同池相减**：不开新乘数。
+		var pool := RogueBuild.conditional_defense(self,p)
+		var penalty := float(mods.get("defense_penalty",0.0))
+		if penalty>0.0: pool=clampf(pool-penalty,0.0,RogueCurses.MAX_POOL)
+		var received := maxf(0,damage)*(1-stat_defense(p))*(1-pool)
+		var taken := float(mods.get("player_damage_taken",0.0))
+		if taken!=0.0: received*=1.0+taken
+		return maxf(0.0,received)
 	var bonus := 0.75 if roguelike.active(self) and RogueEquipment.has(p,"last_stand") and p.hp<p.max_hp*0.35 else 1.0
 	return maxf(0.0,damage)*(1.0-stat_defense(p))*(1.0-minf(0.4,float(p.get("rogue_defense",0))))*bonus
 
@@ -1494,7 +1557,7 @@ func snapshot(packet: PackedByteArray) -> void:
 		if rogue:
 			ruins=preload("res://scripts/rogue_map.gd").new()
 			ruins.generate(seed_value+int(next_raid.floor)*100+int(next_raid.area))
-			ruins.configure(int(next_raid.floor)-1,int(next_raid.area),next_raid.room not in ["shop","treasure","talent"],str(next_raid.room))
+			ruins.configure(int(next_raid.floor)-1,int(next_raid.area),next_raid.room not in ["shop","treasure","talent","curse","event","forge","gamble","mirror"],str(next_raid.room))
 		else:
 			ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
 			ruins.generate(seed_value)
@@ -2613,7 +2676,8 @@ func simulate(dt: float) -> void:
 		speed+=float(p.get("rogue_speed",0))
 		speed*=1.0-float(p.get("boss_slow",0))
 		if roguelike.active(self):
-			speed=minf(Catalog.HEROES[p.hero].speed+70,speed+RogueBuild.stat(self,p,"speed"))
+			var move_bonus := float(rogue_mods(p).get("move_speed",0.0))
+			speed=minf(Catalog.HEROES[p.hero].speed+70,speed+RogueBuild.stat(self,p,"speed")+move_bonus)
 			speed*=1.0-float(p.get("rogue_slow",0))*(.75 if RogueBuild.gear(p,64) else 1.0)
 			if p.height>0: speed*=.7
 			if p.flask_time>0: speed*=.5
@@ -2983,6 +3047,9 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 		return
 	var hp_before: float=maxf(0,float(e.hp))
 	if roguelike.active(self) and players.has(owner) and hp_before>0:
+		var attack_mods := rogue_mods(players[owner])
+		var rogue_output := float(attack_mods.get("player_damage",0.0))
+		if rogue_output!=0.0: damage*=1.0+rogue_output
 		damage*=RogueBuild.hit_multiplier(self,players[owner],e,build_context)
 		e["build_shield_bonus"]=minf(.6,RogueBuild.r(players[owner],12,[.15,.25,.35])+(.30 if RogueBuild.weapon_id(players[owner])==34 else 0))
 	if e.get("rogue_minion",false): damage=roguelike.combat.minions.absorb(self,roguelike.combat,e,damage,direction)
@@ -3343,7 +3410,7 @@ func update_enemies(dt: float) -> void:
 				var victim: Dictionary=players.get(e.attack_target,{})
 				if e.type==1:
 					broadcast_audio("enemy-cast",e)
-					bullets.append({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]),"owner":0})
+					bullets.append(rogue_enemy_bolt({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]),"owner":0}))
 				elif not victim.is_empty() and victim.status=="active" and e.p.distance_to(victim.p)<58 and ruins.clear_line(e.p,victim.p):
 					hurt(victim,Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]))
 			continue

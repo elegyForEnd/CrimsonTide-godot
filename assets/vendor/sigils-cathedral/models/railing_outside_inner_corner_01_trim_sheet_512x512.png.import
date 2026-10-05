@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ekjysc5v7t7d"
-path="res://.godot/imported/railing_outside_inner_corner_01_trim_sheet_512x512.png-0eadcea7e408c72e5befb44282569f8f.ctex"
+path.s3tc="res://.godot/imported/railing_outside_inner_corner_01_trim_sheet_512x512.png-0eadcea7e408c72e5befb44282569f8f.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "ca12de754f621902b369f4aada487fab"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/vendor/sigils-cathedral/models/railing_outside_inner_corner_01_trim_sheet_512x512.png"
-dest_files=["res://.godot/imported/railing_outside_inner_corner_01_trim_sheet_512x512.png-0eadcea7e408c72e5befb44282569f8f.ctex"]
+dest_files=["res://.godot/imported/railing_outside_inner_corner_01_trim_sheet_512x512.png-0eadcea7e408c72e5befb44282569f8f.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

@@ -855,7 +855,11 @@ static func award(s, p: Dictionary) -> void:
 	if s.raid.room=="talent":
 		p.build_reward_queue.append("talent")
 		p.build_reward_queue.append("talent")
-		if floor_index==2 and area==2: p.build_reward_queue.append("core")
+		# R5: the node graph no longer guarantees that floor two's sanctuary sits at area 2,
+		# so the flow core is granted in that floor's first sanctuary instead.
+		if floor_index==2 and not bool(p.get("build_core_granted",false)):
+			p.build_reward_queue.append("core")
+			p.build_core_granted=true
 	if (floor_index==1 and area==3) or (floor_index in [2,3,4] and area in [2,4]) or (floor_index==5 and area==3): p.build_forge_points+=1
 	if s.raid.room in ["combat","elite"]:
 		if p.flask_combat_awards<2:

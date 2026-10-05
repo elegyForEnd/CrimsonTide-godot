@@ -1,6 +1,7 @@
 extends SceneTree
 const Content = preload("res://scripts/rogue_content.gd")
 const Build = preload("res://scripts/rogue_build.gd")
+const Graph = preload("res://scripts/rogue_graph.gd")
 var checks := 0
 var failures := 0
 func _initialize() -> void: call_deferred("run")
@@ -23,18 +24,46 @@ func run() -> void:
 		s.roguelike.tick(s,.01)
 		var rooms := 0
 		var sanctuary_counts: Dictionary={}
+		var expected_rooms := 0
 		var talent_choices := 0
 		var core_choices := 0
 		var attribute_shards := 0
 		var guard := 0
-		while s.running and guard<150:
+		while s.running and guard<400:
 			guard+=1
 			if s.raid.area==1:
-				check(s.raid.exits.size()==1 and s.raid.exits[0].room=="talent","Every possible route must enter the first sanctuary")
-			elif s.raid.area==2:
-				check(s.raid.exits.all(func(exit): return exit.room in ["combat","elite"]),"Two combat areas remain guaranteed")
-			elif s.raid.area==3:
-				check(s.raid.exits[0].room in ["shop","treasure"] and s.raid.exits[1].room=="talent","Fourth area offers supplies or a second sanctuary")
+				# R5: the fixed seven-slot route became a per-floor node graph, so the old
+				# slot expectations (first sanctuary / two combat rows / supplies in row four)
+				# are re-expressed as invariants of the generated graph.
+				var graph: Dictionary=s.rogue_graph
+				var kinds: Dictionary={}
+				for node_id in graph.get("order",[]): kinds[str(Graph.node(graph,str(node_id)).kind)]=true
+				check(int(graph.get("order",[]).size())>=7 and int(graph.get("order",[]).size())<=10,"Every floor builds a seven-to-ten node graph")
+				check(kinds.has("boss"),"Every floor ends with a floor guardian")
+				check(kinds.has("shop") or kinds.has("treasure"),"Every floor offers at least one supply node")
+				check(kinds.has("combat") or kinds.has("elite"),"Every floor keeps at least one combat node")
+				check(kinds.has("talent"),"Every floor keeps a sanctuary node")
+				check(s.raid.exits.size()>=1 and s.raid.exits.size()<=2,"Entry node offers one or two doors")
+				# A guarantee only counts on a row with a single node: a sanctuary on the branch
+				# nobody walks would not be guaranteed (see the floor dressing in roguelike.gd).
+				var row_sizes: Dictionary={}
+				for node_id in graph.get("order",[]):
+					var row := int(Graph.node(graph,str(node_id)).get("depth",0))
+					row_sizes[row]=int(row_sizes.get(row,0))+1
+				var sanctuaries := 0
+				var walked_sanctuaries := 0
+				for node_id in graph.get("order",[]):
+					var entry: Dictionary=Graph.node(graph,str(node_id))
+					if str(entry.kind)=="talent":
+						sanctuaries+=1
+						if int(row_sizes.get(int(entry.get("depth",0)),0))==1: walked_sanctuaries+=1
+				check(walked_sanctuaries>=1,"Every floor guarantees a sanctuary on the walked row")
+				check(sanctuaries<=2,"A floor never rolls more than two sanctuaries")
+				expected_rooms+=s.roguelike.depth_count(s)
+			for door in s.raid.exits:
+				check(s.roguelike.ROOM_NAMES.has(str(door.room)) or str(door.room)=="finish","Every door advertises a legal room")
+				if door.has("node"):
+					check(str(door.room)==str(Graph.node(s.rogue_graph,str(door.node)).kind),"Every door leads to the room it advertises")
 			if s.raid.room=="talent":
 				var floor_index: int=s.raid.floor
 				sanctuary_counts[floor_index]=int(sanctuary_counts.get(floor_index,0))+1
@@ -47,7 +76,7 @@ func run() -> void:
 						elif p.rogue_selection.category=="core": personal_cores+=1
 						claim(s,p)
 					check(personal_talents==2,"Two personal talent choices per sanctuary")
-					check(personal_cores==(1 if floor_index==2 and s.raid.area==2 else 0),"Core offered only in floor-two first sanctuary")
+					check(personal_cores==(1 if floor_index==2 and int(sanctuary_counts.get(floor_index,0))==1 else 0),"Core offered in the floor-two first sanctuary")
 					talent_choices+=personal_talents; core_choices+=personal_cores
 					var cultivation: int=p.build_cultivation
 					Build.award(s,p)
@@ -63,7 +92,11 @@ func run() -> void:
 						if wave<3: s.raid.wave+=1; s.roguelike.spawn_wave(s)
 					s.roguelike.clear_room(s)
 				for p in s.players.values():
-					check(p.rogue_selection.is_empty() and p.build_reward_queue.is_empty(),"Ordinary rooms do not grant talents")
+					# W1b: only *ordinary* rooms must arrive empty-handed. A dedicated curse room
+					# pays its symmetric boon on entry, so it legitimately carries a pending
+					# selection into this branch; the drain below consumes it either way.
+					if str(s.raid.room) in ["combat","elite"]:
+						check(p.rogue_selection.is_empty() and p.build_reward_queue.is_empty(),"Ordinary rooms do not grant talents")
 					while not p.rogue_selection.is_empty(): claim(s,p)
 				check(s.raid.phase=="rogue_reward" and not s.raid.reward_chest.opened,"Talent choice does not bypass unopened chest")
 				var opener: Dictionary=s.players[1]; opener.p=s.raid.reward_chest.p; s.perform(1,"rogue_loot"); s.elapsed+=2
@@ -94,19 +127,33 @@ func run() -> void:
 					while not p.rogue_selection.is_empty(): claim(s,p)
 				continue
 			else: check(false,"Unexpected phase "+str(s.raid.phase)); break
-			var exit_index := 1 if s.raid.area==3 and s.raid.floor%2==0 else 0
+			# R5: a node may offer a single door, so the second doorway is only used when it exists.
+			var exit_index := mini(1,s.raid.exits.size()-1) if s.raid.floor%2==0 else 0
 			for p in s.players.values(): p.p=s.ruins.exit_position(exit_index)
 			s.perform(1,"rogue_next",{"revision":s.raid.revision,"index":exit_index})
-		check(rooms==25 and s.raid.cleared==25 and not s.running,"Five complete floors /25 rooms")
-		for floor_index in range(1,6): check(sanctuary_counts.get(floor_index,0)==(2 if floor_index%2==0 else 1),"Every floor has one or two sanctuaries")
-		check(talent_choices==14*count and core_choices==count,"Dedicated-room total choices are personal")
+		check(rooms==expected_rooms and s.raid.cleared==expected_rooms and not s.running,"Five complete floors / every graph node visited")
+		var visited_sanctuaries := 0
+		for floor_index in range(1,6):
+			var seen_sanctuaries := int(sanctuary_counts.get(floor_index,0))
+			visited_sanctuaries+=seen_sanctuaries
+			check(seen_sanctuaries>=1 and seen_sanctuaries<=2,"Every floor walks past one or two sanctuaries")
+		check(talent_choices==2*visited_sanctuaries*count and core_choices==count,"Dedicated-room total choices are personal")
 		for p in s.players.values():
 			check(p.build_cultivation==18 and p.build_forge_points==8,"Each player keeps guaranteed cultivation and forge growth")
 			check(p.build_level==s.players[1].build_level and p.build_xp_total==s.players[1].build_xp_total and p.build_level>=9,"All players gain the full shared kill XP")
 			check(p.rogue_stash.size()<=12,"Reserve bounded")
 			check(s.results.has(p.id) and s.results[p.id].escaped,"Party settles once per player")
 		var points := 0
-		for p in s.players.values(): points+=int(p.build_attribute_points)
-		check(points==(int(s.players[1].build_level)-1)*2*count+attribute_shards,"All points come from levels and actually collected chest shards: %d vs %d" % [points,(int(s.players[1].build_level)-1)*2*count+attribute_shards])
+		# W1b: a curse room pays its symmetric boon on entry, and a boon may carry attribute
+		# points. Curse rooms are the only curse source in this walk (the event action is never
+		# dispatched here), so every held curse contributed exactly one boon.
+		var Curses := preload("res://scripts/rogue_curses.gd")
+		var curse_points := 0
+		for p in s.players.values():
+			points+=int(p.build_attribute_points)
+			for curse_id in p.get("rogue_curses",[]):
+				curse_points+=int(Curses.find(str(curse_id)).get("boon",{}).get("attribute_points",0))
+		var from_sources: int = (int(s.players[1].build_level)-1)*2*count+attribute_shards+curse_points
+		check(points==from_sources,"All points come from levels, collected chest shards and curse boons: %d vs %d" % [points,from_sources])
 	print("BUILD PROGRESSION: %d checks, %d failures" % [checks,failures])
 	s.queue_free(); quit(1 if failures>0 else 0)

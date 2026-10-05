@@ -12,29 +12,36 @@ func run() -> void:
 	s.solo({"hero":0,"mode":"roguelike"})
 	s.launch(false,1729)
 	var p: Dictionary=s.players[1]
-	check(s.raid.exits.size()==2,"Two destinations are prepared")
+	# R5: a node offers one or two doors (whatever the node graph links), not two random ones.
+	var doors: int=s.raid.exits.size()
+	check(doors>=1 and doors<=2,"One or two doors are prepared")
+	var door := doors-1
 	s.enemies.clear()
 	s.roguelike.clear_room(s)
-	s.perform(1,"rogue_next",{"index":1,"revision":s.raid.revision})
+	s.perform(1,"rogue_next",{"index":door,"revision":s.raid.revision})
 	check(s.raid.area==1,"Cannot leave before claiming reward")
 	preload("res://tests/rogue_reward_flow.gd").claim(s,p)
 	var revision: int=s.raid.revision
-	s.perform(1,"rogue_next",{"index":1,"revision":revision})
+	s.perform(1,"rogue_next",{"index":door,"revision":revision})
 	check(s.raid.area==1,"Remote exit requests rejected")
-	p.p=s.ruins.exit_position(0)
-	s.perform(1,"rogue_next",{"index":1,"revision":revision})
-	check(s.raid.area==1,"Cannot select the other doorway from this doorway")
-	p.p=s.ruins.exit_position(1)
-	var expected: String=s.raid.exits[1].room
-	s.perform(1,"rogue_next",{"index":1,"revision":revision})
+	if doors==2:
+		p.p=s.ruins.exit_position(0)
+		s.perform(1,"rogue_next",{"index":1,"revision":revision})
+		check(s.raid.area==1,"Cannot select the other doorway from this doorway")
+	p.p=s.ruins.exit_position(door)
+	var expected: String=s.raid.exits[door].room
+	s.perform(1,"rogue_next",{"index":door,"revision":revision})
 	check(s.raid.area==2 and s.raid.room==expected,"Second exit enters its advertised destination")
-	s.perform(1,"rogue_next",{"index":1,"revision":revision})
+	s.perform(1,"rogue_next",{"index":door,"revision":revision})
 	check(s.raid.area==2,"Stale exit input cannot skip rooms")
-	s.raid.area=4
+	# The row before the guardian always offers both guardian doors; jump straight to it.
+	var depth_total: int=s.roguelike.depth_count(s)
+	s.raid.area=depth_total-1
 	s.roguelike.enter(s)
 	s.enemies.clear()
 	s.roguelike.clear_room(s)
 	preload("res://tests/rogue_reward_flow.gd").claim(s,p)
+	check(s.raid.exits.size()==2,"The guardian gate always offers two doors")
 	p.p=s.ruins.exit_position(1)
 	s.perform(1,"rogue_next",{"index":1,"revision":s.raid.revision})
 	check(s.raid.room=="boss" and s.raid.challenge,"Challenge gate keeps required floor guardian")
@@ -51,8 +58,12 @@ func run() -> void:
 	preload("res://tests/rogue_reward_flow.gd").claim(s,p)
 	p.p=s.ruins.exit_position(1)
 	s.perform(1,"rogue_next",{"index":1,"revision":s.raid.revision})
-	check(s.raid.floor==2 and s.raid.area==1 and s.raid.room=="shop","Floor transition supports shop route")
+	check(s.raid.floor==2 and s.raid.area==1,"Floor transition enters the next floor's first row")
 	check(not s.raid.challenge,"Challenge modifier does not leak into following room")
+	# The opening room of a floor is the door the party picked on the previous floor.
+	s.raid.route[0]="shop"
+	s.roguelike.enter(s)
+	check(s.raid.floor==2 and s.raid.area==1 and s.raid.room=="shop","Floor transition supports shop route")
 	for floor_index in 5:
 		var silhouettes: Dictionary={}
 		for area in range(1,6):

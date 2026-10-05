@@ -73,7 +73,9 @@ func run() -> void:
 						if b.has(field): projectile_patterns[field]=true
 				s.update_bullets(.10)
 			check(not e.choreo_active,"Timeline exits and returns control")
-	check(all_names.size()==73,"All 73 moves across seventeen bosses are authored")
+	# 12 个战役身份各 4 招 + 5 个守层者各 7 招 = 83（R6 把守层者从 5 招扩到 7 招后，
+	# 这里原本写死的 73 = 12*4+5*5 就过期了；R14 只新增独立的 rq_* 编排键，不参与本枚举）。
+	check(all_names.size()==83,"All 83 moves across seventeen bosses are authored")
 	check(constructs>=20 and moving_fields>=8,"Variety includes interactive constructs and moving ground threats")
 	check(projectile_patterns.size()==5,"Refraction, return, orbit, early homing and planted threats all execute")
 	reset_world()

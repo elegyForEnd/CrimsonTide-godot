@@ -25,7 +25,9 @@ func run() -> void:
 	check(s.weapon_damage(p)>base_damage and s.ultimate_damage(p,100)>base_ultimate,"Damage boon benefits attacks and ultimate")
 	p.rogue_damage=0.0
 	var themes: Dictionary={}
+	var expected_cleared := 0
 	while s.running:
+		if not themes.has(s.raid.floor): expected_cleared+=int(s.roguelike.depth_count(s))
 		themes[s.raid.floor]=true
 		if s.raid.phase=="rogue_combat":
 			for e in s.enemies: e.hp=0
@@ -61,11 +63,11 @@ func run() -> void:
 			p.p=s.ruins.exit_position(0)
 			choose(s,"rogue_next")
 		else: check(false,"Unexpected phase"); break
-	check(themes.size()==5 and s.raid.cleared==25,"All five floors and 25 areas completed")
-	check(s.results[1].escaped and s.results[1].coins==550,"Final reward settles exactly once")
+	check(themes.size()==5 and expected_cleared>=35 and s.raid.cleared==expected_cleared,"All five floors and every graph row completed")
+	check(s.results[1].escaped and s.results[1].coins==expected_cleared*12+250,"Final reward settles exactly once")
 	check(not s.results[1].has("pocket") and not s.results[1].has("bags"),"Existing storage preserved")
 	s.roguelike.settle(s)
-	check(s.results[1].coins==550,"Settlement idempotent")
+	check(s.results[1].coins==expected_cleared*12+250,"Settlement idempotent")
 	s.solo({"hero":0,"mode":"roguelike"})
 	s.launch(false,123)
 	p=s.players[1]

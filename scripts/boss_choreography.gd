@@ -17,20 +17,38 @@ const MOVES := {
 	"storm":["雷弧折返","连锁雷笼","风眼收束","雷骸超载"],
 	"abyss":["潮汐吸引","错齿吞噬","蛇流换岸","噬月深潜"],
 	"dragon":["霜息扫庭","冰骨遮城","双翼冻裂","霜华落骨"],
-	"grove":["古根织网","孢荚播散","菌冠滋养","藤须迁行","菌林召生"],
-	"furnace":["锁链拖拽","炽铆连射","泄压熔井","链锤摆荡","熔心过载"],
-	"astral":["棱星折光","镜轨环游","三拍陨星","星棱换位","星镜碎界"],
-	"wing":["逆风航道","折返雷矢","游走风眼","折线俯冲","天穹失速"],
-	"obsidian":["墨影三易","悬剑落墨","禁庭四角","黑曜拔刀","绝剑留白"]}
+	"grove":["古根织网","孢荚播散","菌冠滋养","藤须迁行","菌林召生","孢云窒息","菌林献祭"],
+	"furnace":["锁链拖拽","炽铆连射","泄压熔井","链锤摆荡","熔心过载","锁链绞轮","熔炉过载"],
+	"astral":["棱星折光","镜轨环游","三拍陨星","星棱换位","星镜碎界","万镜回廊","星轨崩塌"],
+	"wing":["逆风航道","折返雷矢","游走风眼","折线俯冲","天穹失速","折返风暴","天穹断翼"],
+	"obsidian":["墨影三易","悬剑落墨","禁庭四角","黑曜拔刀","绝剑留白","千刃返照","终末绝影"],
+	# R14 扩容：三个新守层者各有 7 招。前四招沿用其美术身份既有的编排骨架
+	# （见 TIMELINE_BASE），后三招——含两招二阶段专属终结技——为本轮新增。
+	"rq_bell":["钟摆葬列","止声错拍","敲钟者","九刻终祷","裂钟回响","丧钟连祷","终末叩响"],
+	"rq_earth":["钻地折返","断层立壁","穹顶坠岩","蜕甲震穴","碎岩倾轧","地脉封锁","终末崩落"],
+	"rq_abyss":["潮汐吸引","错齿吞噬","蛇流换岸","噬月深潜","逆流绞杀","万潮归寂","终末深潜"]}
+# 新守层者的前四招复用既有身份的编排骨架，避免重复书写同样的时间线。
+# 注意：这只是把动画/timeline 指向既有分支，招式名与伤害仍来自各自 7 招表。
+const TIMELINE_BASE := {"rq_bell":"bell","rq_earth":"earth","rq_abyss":"abyss"}
 
-static func names(e: Dictionary) -> Array: return MOVES[Art.identity(e)]
+## 编排键与美术键解耦：新守层者用同一个美术身份（零新美术），但有自己的 7 招表与时间线。
+static func choreo_key(e: Dictionary) -> String:
+	var key := str(e.get("choreo_key",""))
+	return key if MOVES.has(key) else Art.identity(e)
+static func names(e: Dictionary) -> Array: return MOVES[choreo_key(e)]
 static func choose(e: Dictionary) -> String:
 	var pool := names(e)
-	var order := [0,1,0,2,3] if int(e.get("phase",1))<2 and not e.get("boss_enraged",false) else [2,0,3,1,4]
+	var phase2: bool = int(e.get("phase",1))>=2 or bool(e.get("boss_enraged",false))
+	var order := [0,1,0,2,3] if not phase2 else [2,0,3,1,4]
+	if pool.size()>=7 and (bool(e.get("rogue_guardian",false)) or e.has("choreo_key")):
+		# 守层者的 7 招表：一阶段只走原来的五招，二阶段才放出两招专属终结技。
+		# 战役/精英/Boss 池的 4 招身份走上一行的原顺序，字节不变。
+		order = [0,1,2,3,4] if not phase2 else [5,2,6,0,3,1,4]
 	return str(pool[int(order[int(e.get("sequence",e.get("move_cursor",0)))%order.size()])%pool.size()])
 
 static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) -> bool:
-	var key := Art.identity(e)
+	var art_key := Art.identity(e)
+	var key := choreo_key(e)
 	var index: int=MOVES[key].find(move)
 	if index<0: return false
 	# A previous sequence's delayed entities must not survive a new cast.
@@ -53,8 +71,11 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 	if e.get("rogue_guardian",false): damage=float(e.get("build_base_damage",20.0+int(e.rogue_skin)*4.0))*float(e.get("build_damage_scale",1))
 	
 	e["choreo_marks"]=[]
-	var roles: Array=Art.MOTIFS[key]
-	match key:
+	var roles: Array=Art.MOTIFS[art_key]
+	# 美术身份决定 motif/贴图；编排键决定时间线。新守层者的前四招复用既有身份的编排，
+	# 后三招（含两招二阶段终结技）由下面的 "rq_*" 分支接管。
+	var timeline := str(TIMELINE_BASE[key]) if index<4 and TIMELINE_BASE.has(key) else key
+	match timeline:
 		"bell":
 			match index:
 				0: # A swinging clapper crosses a fixed row; gaps lie between contacts.
@@ -251,6 +272,18 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 				4:
 					step(e,1.4,{"op":"summon"})
 					for i in 3: zone(s,e,"circle",at+side*(i-1)*125,a,45,1.1+i*.15,damage*.5,roles[2])
+				5:
+					# 二阶段：孢云互相重叠，只有站在缝里才安全。
+					for i in 6:
+						var cloud := point+Vector2.from_angle(i*TAU/6+.3)*150
+						zone(s,e,"circle",cloud,a,58,1.05+i*.16,damage*.7,roles[1],0,{"linger":2.4,"slow":.35,"pulse_interval":.8})
+					zone(s,e,"circle",at,a,120,2.6,damage*1.1,roles[2])
+				6:
+					# 二阶段：献祭一株菌母，换回血与三名召生。
+					construct(e,at+side*140,roles[2],"sacrifice",3.6)
+					step(e,1.5,{"op":"heal","link":"sacrifice","amount":.03})
+					zone(s,e,"circle",at+side*140,a,80,2.4,damage,roles[2],0,{"link":"sacrifice","linger":1.0})
+					step(e,2.0,{"op":"summon"})
 		"furnace":
 			match index:
 				0:
@@ -268,6 +301,14 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 				4:
 					for i in 4: zone(s,e,"circle",at+side*(i-1.5)*130,a,65,1.6+(i%2)*.5,damage,roles[2])
 					e["choreo_recovery"]=1.7
+				5:
+					# 二阶段：三股锁链把玩家绞向熔心。
+					for i in 3: zone(s,e,"lane",at+side*(i-1)*150-a*230,a,470,1.0+i*.3,damage*.7,roles[0],24,{"pull":150,"linger":1.0})
+					zone(s,e,"circle",at+a*90,a,84,2.2,damage*1.15,roles[2])
+				6:
+					for i in 4: zone(s,e,"circle",at+Vector2.from_angle(i*TAU/4+.4)*180,a,60,1.7+(i%2)*.4,damage*.9,roles[1])
+					zone(s,e,"lane",at,a.rotated(-.5),380,1.05,damage*.8,roles[3],26,{"rotate":.55,"linger":1.6,"pulse_interval":.6})
+					e["choreo_recovery"]=1.5
 		"astral":
 			match index:
 				0:
@@ -283,6 +324,16 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 				4:
 					for i in 4: projectile(e,at,Vector2.from_angle(i*TAU/4),1.5,190,damage*.7,roles[2],{"return":true,"life":2.4})
 					e["choreo_recovery"]=1.45
+				5:
+					# 二阶段：四面镜廊各自射出必至的折光，打碎镜身才能断链。
+					for i in 4:
+						var lens := at+Vector2.from_angle(i*TAU/4)*165
+						construct(e,lens,roles[0],"lens_%d"%i,3.6)
+						projectile(e,lens,(point-lens).normalized(),1.0+i*.15,215,damage*.6,roles[1],{"link":"lens_%d"%i,"life":2.4})
+				6:
+					for i in 8: projectile(e,at,Vector2.from_angle(i*TAU/8),.85,150,damage*.5,roles[3],{"orbit":1.2,"life":3.0})
+					zone(s,e,"ring",at,a,240,2.0,damage,roles[2],150)
+					e["choreo_recovery"]=1.4
 		"wing":
 			match index:
 				0:
@@ -299,6 +350,14 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 				4:
 					for i in 6: zone(s,e,"circle",point+side*(i-2.5)*95,a,40,1.45+(i%2)*.38,damage,roles[1])
 					e["choreo_recovery"]=1.6
+				5:
+					# 二阶段：折返雷矢三连，落点生成游走风眼。
+					for i in 3: projectile(e,at,a.rotated((i-1)*.5),.8+i*.25,260,damage*.6,roles[1],{"return":true,"life":2.8})
+					zone(s,e,"circle",at+a*140,a,90,1.8,damage*.95,roles[2],0,{"velocity":side*70,"linger":1.6})
+				6:
+					for i in 3: zone(s,e,"lane",at+side*(i-1)*160-a*130,a,430,1.0+i*.28,damage*.7,roles[0],22,{"push":120,"linger":1.2})
+					zone(s,e,"circle",at-side*120,a,110,2.4,damage,roles[3],0,{"linger":1.4})
+					e["choreo_recovery"]=1.5
 		"obsidian":
 			match index:
 				0:
@@ -319,6 +378,72 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 					zone(s,e,"lane",point+side*140,-side,280,1.15,damage*.75,roles[0],22,{"link":"sword_echo"})
 					zone(s,e,"lane",at,a,420,2.2,damage,roles[0],22)
 					e["choreo_recovery"]=1.6
+				5:
+					# 二阶段：三段瞬影，每一段都留下贯穿的剑痕。
+					for i in 3:
+						var echo := point+Vector2.from_angle(i*TAU/3+.5)*155
+						motion(e,echo,.65+i*.5,true)
+						zone(s,e,"lane",echo,(point-echo).normalized(),320,1.0+i*.5,damage*.85,roles[0],22)
+				6:
+					for i in 4: zone(s,e,"circle",point+Vector2(-1 if i%2==0 else 1,-1 if i<2 else 1)*125,a,62,1.15+(i%2)*.4,damage*.75,roles[3],0,{"linger":.7})
+					zone(s,e,"lane",at,a,460,1.9,damage*1.1,roles[0],20)
+					motion(e,at+a*300,1.9)
+					e["choreo_recovery"]=1.5
+		"rq_bell":
+			match index:
+				4:
+					# 第五招：钟声沿着一排回声裂开，外圈一圈铜响才是真正收口。
+					for i in 5: zone(s,e,"circle",at+a*(80+i*70)+side*sin(i*1.1)*60,a,52,1.0+i*.18,damage*.75,roles[2])
+					zone(s,e,"ring",at,a,180,1.9,damage,roles[1],70)
+				5:
+					# 二阶段终结技：三股丧钟把玩家念向钟心。
+					for i in 3: zone(s,e,"lane",at+side*(i-1)*170-a*220,a,460,1.0+i*.3,damage*.8,roles[0],24,{"pull":140,"linger":1.0})
+					zone(s,e,"circle",at+a*90,a,88,2.2,damage*1.15,roles[2])
+					e["choreo_recovery"]=1.6
+				6:
+					# 二阶段终结技：六刻表盘逐格叩响，挂着的那口钟是唯一能断链的目标。
+					for i in 6:
+						var ray := a.rotated(i*TAU/6)
+						zone(s,e,"circle",at+ray*230,ray,72,1.15+(i%3)*.3,damage*.9,roles[3])
+					construct(e,at+side*155,roles[2],"final_bell",3.8)
+					zone(s,e,"circle",at+side*155,a,95,2.5,damage,roles[2],0,{"link":"final_bell"})
+					e["choreo_recovery"]=1.5
+		"rq_earth":
+			match index:
+				4:
+					# 第五招：错位的岩块依次塌落，留出一条可绕行的斜线。
+					for i in 4: zone(s,e,"circle",at+side*(i-1.5)*125+a*(60 if i%2 else -40),a,58,1.1+(i%2)*.35,damage*.8,roles[1])
+					zone(s,e,"lane",at,a.rotated(-.55),360,1.0,damage*.7,roles[0],26,{"rotate":.5,"linger":1.4})
+				5:
+					# 二阶段终结技：三面断壁立起，最后的地脉环从中心外扩。
+					for i in 3:
+						var wall := at+side*(i-1)*165
+						construct(e,wall,roles[1],"fault_%d"%i,3.6)
+						zone(s,e,"circle",wall,a,80,1.9+i*.25,damage,roles[1],0,{"link":"fault_%d"%i,"linger":1.0})
+					zone(s,e,"ring",at,a,215,2.6,damage*.9,roles[3],95)
+					e["choreo_recovery"]=1.7
+				6:
+					# 二阶段终结技：穹顶石笋成环坠落，中心留下一个巨大陷坑。
+					for i in 6: zone(s,e,"circle",at+Vector2.from_angle(i*TAU/6+.3)*190,a,62,1.2+(i%2)*.45,damage*.85,roles[2])
+					zone(s,e,"circle",at,a,140,2.4,damage*1.2,roles[3])
+					e["choreo_recovery"]=1.6
+		"rq_abyss":
+			match index:
+				4:
+					# 第五招：三道逆流把玩家拖向渊口，落地处是一张咬合的巨口。
+					for i in 3: zone(s,e,"lane",point+side*(i-1)*150-a*200,-a,440,1.0+i*.28,damage*.7,roles[1],25,{"pull":150,"linger":1.2})
+					zone(s,e,"circle",point,a,110,1.9,damage,roles[0])
+				5:
+					# 二阶段终结技：七道潮环先绕行一周，再一起收束回渊心。
+					for i in 7: projectile(e,at,Vector2.from_angle(i*TAU/7),.9+i*.08,175,damage*.5,roles[2],{"orbit":1.0,"life":3.0})
+					zone(s,e,"circle",at,a,150,2.3,damage,roles[0],0,{"pull":120,"linger":1.3})
+					e["choreo_recovery"]=1.6
+				6:
+					# 二阶段终结技：深潜到玩家脚下，随后四面咬合封锁退路。
+					motion(e,point,.7,true)
+					zone(s,e,"circle",point,a,175,1.1,damage*1.1,roles[0])
+					for i in 4: zone(s,e,"circle",point+Vector2.from_angle(i*TAU/4+.8)*165,a,66,1.9+(i%2)*.4,damage*.8,roles[3])
+					e["choreo_recovery"]=1.5
 	resolve_positions(s,e)
 	for action in e.choreo_steps:
 		if action.op=="projectile":
@@ -438,10 +563,14 @@ static func advance(s, dt: float) -> void:
 					s.next_enemy+=1
 					s.enemies.append(prop)
 				"projectile":
-					var b := {"p":action.p,"v":action.aim*action.speed,"life":action.get("life",2.8),"damage":action.damage,"owner":0,"boss_projectile":true,"boss_source":e.id,"art_key":Art.identity(e),"vfx_role":action.role,"boss_age":0.0,"boss_origin":action.p,"boss_aim":action.aim,"boss_speed":action.speed,"boss_total":action.get("life",2.8),"hit_radius":18.0,"boss_token":str(e.id)+":"+str(e.choreo_serial)+":"+str(action.at)+":"+str(action.p)+":"+str(action.aim)}
+					# 深渊变数只改弹速与表现倍率：命中判定 (hit_radius) 与几何始终不变。
+					var shot_speed := float(action.speed)*clampf(float(e.get("boss_bullet_speed",1.0)),0.5,2.0)
+					var b := {"p":action.p,"v":action.aim*shot_speed,"life":action.get("life",2.8),"damage":action.damage,"owner":0,"boss_projectile":true,"boss_source":e.id,"art_key":Art.identity(e),"vfx_role":action.role,"boss_age":0.0,"boss_origin":action.p,"boss_aim":action.aim,"boss_speed":shot_speed,"boss_total":action.get("life",2.8),"hit_radius":18.0,"boss_token":str(e.id)+":"+str(e.choreo_serial)+":"+str(action.at)+":"+str(action.p)+":"+str(action.aim)}
+					var shot_visual := clampf(float(e.get("boss_bullet_visual",1.0)),1.0,3.0)
+					if e.get("rogue_guardian",false) or shot_visual!=1.0: b["bullet_visual"]=shot_visual
 					for flag in ["path","return","orbit","homing","plant","plant_role"]:
 						if action.has(flag): b["boss_"+flag]=action[flag]
-					if b.has("boss_path") and not b.boss_path.is_empty(): b.v=(b.boss_path[0]-b.p).normalized()*action.speed
+					if b.has("boss_path") and not b.boss_path.is_empty(): b.v=(b.boss_path[0]-b.p).normalized()*shot_speed
 					if e.get("rogue_guardian",false): b["rogue_tone"]=e.rogue_skin; b["rogue_guardian"]=true
 					s.bullets.append(b)
 					contact(s,e,action)

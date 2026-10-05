@@ -3,6 +3,7 @@ extends SceneTree
 var checks := 0
 var failures := 0
 const Map = preload("res://scripts/rogue_map.gd")
+const Graph = preload("res://scripts/rogue_graph.gd")
 
 func check(ok: bool, reason: String) -> void:
 	checks+=1
@@ -20,36 +21,47 @@ func run() -> void:
 	while not p.rogue_selection.is_empty():
 		s.perform(1,"rogue_selection_take",{"id":p.rogue_selection.id,"version":p.rogue_selection.version,"index":0})
 	s.roguelike.tick(s,.016)
+	# R5: rooms come from the per-floor node graph, so a node offers whatever the graph links
+	# (one or two doors) instead of a fixed seven-slot template and two random destinations.
 	var seen := {}
-	for seed in 100:
-		s.rng.seed=seed
-		for area in range(1,6):
-			s.raid.area=area
-			var choices: Array=s.roguelike.exit_choices(s)
-			check(choices.size()==2 and choices[0].room!=choices[1].room,"Two different random destinations")
-			for choice in choices: seen[choice.room]=true
-	check(seen.size()==5,"All five destination types can appear")
+	for seed in 200:
+		for floor_number in range(1,6):
+			var graph: Dictionary=Graph.build(seed,floor_number)
+			var nodes: Array=graph.get("order",[])
+			check(nodes.size()>=7 and nodes.size()<=10,"Node count stays between seven and ten")
+			for id in nodes:
+				var entry: Dictionary=Graph.node(graph,str(id))
+				var nexts: Array=Graph.neighbors(graph,str(id))
+				if str(entry.kind)=="boss":
+					check(nexts.is_empty(),"The floor guardian is the only dead end")
+				else:
+					check(nexts.size()>=1 and nexts.size()<=2,"Every other node offers one or two doors")
+				seen[str(entry.kind)]=true
+			check(Graph.neighbors(graph,str(graph.boss)).is_empty(),"No node follows the floor guardian")
+	check(seen.size()==11,"All eleven room kinds can appear: "+str(seen.keys()))
 	s.rng.seed=1729
 	s.raid.floor=1
 	s.raid.area=1
+	s.raid.route=[]
 	s.roguelike.new_floor(s)
 	for f in 5:
-		check(s.raid.route.size()==7,"Seven slots per floor")
-		for area in range(1,8):
-			check(s.raid.floor==f+1 and s.raid.area==area,"Room progression")
+		var depth_total: int=s.roguelike.depth_count(s)
+		check(depth_total>=7 and depth_total<=9,"Floor keeps seven to nine node rows")
+		for depth in range(1,depth_total+1):
+			check(s.raid.floor==f+1 and s.raid.area==depth,"Room progression follows the node depth")
 			# Follow the actual offered destination through the public exit action.
 			s.roguelike.enter(s)
-			check(s.raid.room=="boss" if area==7 else s.raid.room!="boss","Boss is seventh")
-			check(s.raid.exits.size()==(1 if f==4 and area==7 else 2),"Exit count")
+			check((s.raid.room=="boss")==(depth==depth_total),"Floor guardian is the last node of the floor")
+			check(s.raid.exits.size()>=1 and s.raid.exits.size()<=2,"Exit count is one or two")
 			for index in s.raid.exits.size(): check(not s.ruins.blocked(s.ruins.exit_position(index),20),"Exit on ground")
 			p.rogue_selection={}; p.build_reward_queue=[]
-			p.p=s.ruins.exit_position(area%2 if s.raid.exits.size()==2 else 0)
+			var index := (depth+1)%2 if s.raid.exits.size()==2 else 0
+			p.p=s.ruins.exit_position(index)
 			p.status="active"
 			s.raid.phase="rogue_exit"
-			var index := area%2 if s.raid.exits.size()==2 else 0
 			var expected: String=s.raid.exits[index].room
 			s.perform(1,"rogue_next",{"index":index,"revision":s.raid.revision})
-			if not (f==4 and area==7): check(s.raid.room==expected,"Chosen destination entered")
+			if depth<depth_total: check(s.raid.room==expected,"Chosen destination entered")
 	check(not s.running and s.raid.ended,"Final boss exits finish the run")
 	var art=preload("res://scripts/rogue_art.gd").new()
 	for f in 5:

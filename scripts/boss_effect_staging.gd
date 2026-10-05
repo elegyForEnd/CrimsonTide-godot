@@ -38,7 +38,13 @@ static func pose(h: Dictionary, first_seen: float, impact_age: float, tail: floa
 	if kind=="stream":
 		size=clampf(float(h.get("inner",44))*2.4,48.0,100.0); alpha=lead*.55
 		lift=0.0; angle=h.get("aim",Vector2.RIGHT).angle()
-	elif kind=="projectile": size=float(h.get("inner",18))*2.0; lift=0.0; alpha=1.0; angle=h.get("aim",Vector2.RIGHT).angle()
+	elif kind=="projectile":
+		# `inner` is the bolt's hit radius and stays untouched; `bullet_visual` is
+		# the presentation-only variant factor (1.0 whenever absent), applied here
+		# so the deep-abyss fog/surge bolts read as larger without lying about the
+		# circle that hurts.  Bounds match RogueCombat.BULLET_VISUAL_BOUNDS.
+		size=float(h.get("inner",18))*2.5*clampf(float(h.get("bullet_visual",1.0)),1.0,3.0)
+		lift=0.0; alpha=1.0; angle=h.get("aim",Vector2.RIGHT).angle()
 	elif kind=="fall":
 		lift+=pow(1.0-lead,2.0)*230.0
 		alpha=smoothstep(0.0,.16,first_seen)*smoothstep(0.0,.20,lead)*.85

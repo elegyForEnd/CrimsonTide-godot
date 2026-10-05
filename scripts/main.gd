@@ -40,6 +40,15 @@ const INK := Color("e7dfd5")
 const MUTED := Color("969aaa")
 const RED := Color("ad4056")
 const GOLD := Color("c5a67b")
+# R7: the roguelike view-model (HUD strings, event view, growth rows, seeds) and the
+# growth tree it reads. Preloaded by path because the .godot class cache is stale for
+# the newer Rogue* modules and a bare class name would fail at parse time.
+const RogueUi := preload("res://scripts/rogue_ui_model.gd")
+const RogueGrowth := preload("res://scripts/rogue_growth.gd")
+const RogueGraph := preload("res://scripts/rogue_graph.gd")
+# R7b: the dedicated-room view-model (游方锻炉 / 赌徒营帐 / 镜中挑战). Same preload rule
+# as above — no bare class names while the class cache is stale.
+const RogueRoomUi := preload("res://scripts/rogue_room_ui.gd")
 var profile := Profile.new()
 var online_service: OnlineService
 var p2p: TideP2P
@@ -55,6 +64,15 @@ var extraction_inventory = preload("res://scripts/extraction_inventory.gd").new(
 var rogue_pending_cost := -1
 var rogue_cards := 0
 var rogue_weapon := -1
+# R7: the seed/daily choice is armed on the setup page and consumed by `start_rogue()`.
+# 0 means "not chosen" — session.gd:1386 reserves 0 for a random run, so an invalid
+# seed must be refused by the UI instead of silently turning into a random one.
+var rogue_seed_pending := 0
+var rogue_daily_pending := false
+var rogue_seed_field: LineEdit
+var rogue_event_buttons: Array = []
+var rogue_room_buttons: Array = []
+var rogue_growth_buttons: Dictionary = {}
 var field: Battlefield
 var canvas: CanvasLayer
 var root: Control
@@ -1178,6 +1196,27 @@ func on_started() -> void:
 		hud.notice.position=Vector2(375,113)
 		hud.prompt.position=Vector2(335,739)
 		toast.position.y=157
+		# R7: the right-hand column under the seed readout carries the run-wide
+		# information the older HUD had nowhere to put — the floor's 深渊变数, the
+		# curses this Watcher is carrying, ash income and the node-graph position.
+		var variant := label(page,"",Vector2(1175,58),13,GOLD,Vector2(252,58))
+		variant.name="RogueVariant"
+		variant.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		hud.rogue_variant=variant
+		var curses := label(page,"",Vector2(1175,124),12,Color("c8a0b4"),Vector2(252,88))
+		curses.name="RogueCurses"
+		curses.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		hud.rogue_curses=curses
+		var ash := label(page,"",Vector2(1175,218),12,MUTED,Vector2(252,22))
+		ash.name="RogueAsh"
+		hud.rogue_ash=ash
+		var route := label(page,"",Vector2(1175,244),12,GOLD,Vector2(252,40))
+		route.name="RogueNode"
+		route.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		hud.rogue_node=route
+		var run_seed := label(page,"",Vector2(1175,286),11,MUTED,Vector2(252,20))
+		run_seed.name="RogueSeedLine"
+		hud.rogue_seed=run_seed
 		notify("魔境闯关：E开箱 / 拾取 · Tab构筑 · F血瓶 · C跃起")
 		return
 	notify("第一天无法撤离。M 查看黎明印记；血潮收缩完成后迎战 Boss。")
@@ -1556,10 +1595,16 @@ func update_hud() -> void:
 		hud.raid_continue.hide()
 		hud.raid_wait.hide()
 		hud.raid_extract.hide()
-		hud.time.text="第 %d / 5 层 · 第 %d / %d 区" % [session.raid.floor,session.raid.area,session.roguelike.AREAS_PER_FLOOR]
+		hud.time.text=RogueUi.floor_line(session.raid,session.roguelike.depth_count(session))
 		hud.mission.text=session.roguelike.FLOORS[int(session.raid.floor)-1]+" · "+session.roguelike.ROOM_NAMES[session.raid.room]
 		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱爆出随机品质秘藏","rogue_reward":"E 开箱 / 拾取 · 三选一后领取或分享","rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":"直行或斜向 · 靠近路线末端按 E"}.get(session.raid.phase,"")
 		hud.area.text+=" · Lv.%d 经验%d/%d 属性点%d" % [p.build_level,p.build_xp,preload("res://scripts/rogue_build.gd").xp_needed(int(p.build_level)),p.build_attribute_points]
+		if hud.has("rogue_variant"):
+			hud.rogue_variant.text=RogueUi.variant_line(session.raid)
+			hud.rogue_curses.text=RogueUi.curses_text(p)
+			hud.rogue_ash.text=RogueUi.ash_line(p,profile.data)
+			hud.rogue_node.text=RogueUi.node_line(session.raid,session.roguelike.ROOM_NAMES)
+			hud.rogue_seed.text=RogueUi.seed_line(session.raid)
 	hud.health.text="生命   %d / %d" % [maxf(0,p.hp),p.max_hp]
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.mana.text="蓝量   %d / %d" % [p.mana,p.max_mana]
@@ -3063,6 +3108,10 @@ func on_finished() -> void:
 					recruited=str(Catalog.HEROES[i].name)
 		profile.save_profile()
 		session.report_paid=true
+		# R7b: a roguelike settlement credits ash and stamps the daily record straight into
+		# `profile.data` (roguelike.settle()); save once more so a run whose only profile
+		# change is that credit still reaches disk. `version` stays 1.
+		if bool(reward.get("roguelike",false)): profile.save_profile()
 		extra_meds=0
 		economy_changed()
 	new_page("results")
@@ -3071,7 +3120,7 @@ func on_finished() -> void:
 	var hidden_end: bool=bool(reward.get("hidden",false))
 	header("隐藏结局 · 冥火之下" if hidden_end else ("黎明的回响" if reward.get("escaped",false) else "长夜未尽"),
 		"HIDDEN ENDING   /   冥火尸王已伏诛，新的守夜人已经回应召唤" if hidden_end else "EXPEDITION REPORT   /   个人战利品与全队目标已结算")
-	label(page,("魔境闯关 · 已完成 %d / 25 区" % reward.get("cleared",0)) if reward.get("roguelike",false) else ("%d / 3  晨钟封印" % session.objectives),Vector2(83,235),25,GOLD)
+	label(page,("魔境闯关 · 已完成 %d / %d 区" % [int(reward.get("cleared",0)),rogue_total_nodes()]) if reward.get("roguelike",false) else ("%d / 3  晨钟封印" % session.objectives),Vector2(83,235),25,GOLD)
 	if hidden_end:
 		label(page,"骑士的护身符 · 三处晨钟 · 隐藏 Boss 已击败",Vector2(300,241),17,Color("c07ae0"))
 	if not recruited.is_empty():
@@ -3331,23 +3380,47 @@ func show_credits() -> void:
 func show_rogue_setup() -> void:
 	if session.players.is_empty(): session.solo(config())
 	if session.is_leader(): session.select_mode("roguelike")
+	attach_profile()
 	new_page("rogue_setup")
 	background(0.8)
-	header("魔境闯关", "ROGUE ADVENTURE  /  五层魔境 · 每层五区 · 随机装备与角色构筑")
+	header("魔境闯关", "ROGUE ADVENTURE  /  五层魔境 · 每层 7~10 个节点 · 深渊变数与局外成长")
 	label(page,"幽光菌林 → 魔焰铸炉 → 星晶幻境 → 风暴空港 → 黑曜魔宫",Vector2(82,220),23,GOLD,Vector2(1290,50))
-	label(page,"每层：战斗 / 灵契圣坛 / 战斗 / 补给或第二座圣坛 / 守层者\n天赋只在圣坛获得，每层1～2座，每座两轮三选一。装备清场后开箱获取，可分享给队友。",Vector2(82,292),20,INK,Vector2(1200,85))
+	# R5 replaced the fixed five-slot floor with a node graph, so the old "每层五区"
+	# copy would describe a game that no longer exists.
+	label(page,"每层 7~10 个节点，路线按分支自选：战斗 / 精英 / 游商 / 遗落宝藏 / 灵契圣坛 / 守层者，\n另有诅咒回廊、幽暗异事、熔炉工坊、赌徒帐幕与镜像试炼。\n每层开局抽取一条全队共享的深渊变数；天赋只在圣坛获得，装备清场后开箱获取。",Vector2(82,290),19,INK,Vector2(1270,112))
 	rogue_cards=0; rogue_weapon=-1
 	label(page,"免费出发 · 每人3次刷新 · 60魔晶 · 血瓶100%",Vector2(82,405),26,GOLD)
 	label(page,"252项独立构筑：48武器 / 72装备 / 96天赋 / 24铭刻 / 12武器核心",Vector2(82,473),23,INK,Vector2(1260,52))
 	rogue_icon(page,rogue_field.art.item_icons[8],Vector2(816,453),Vector2(80,80))
 	label(page,"开局免费三选一白色武器，保留角色自带武器作后备。不同角色有初始属性；永久分配完整保留。",Vector2(82,551),21,INK,Vector2(1260,66))
 	label(page,"每局保底18修为 / 8锻造点。打怪获得局内经验，每级+2属性点；宝箱概率掉落额外属性灵晶。\nTab → 构筑：天赋、加点、锻造、连招手册和全部素材图鉴。",Vector2(82,628),21,GOLD,Vector2(1260,70))
-	label(page,"WASD移动 · 左键攻击 · 右键战技 · Space闪避 · C跃起 · Q奥义 · F血瓶 · E救援/出口\n不收取城邦金币；原背包与次元口袋留在城邦。",Vector2(82,728),18,MUTED,Vector2(1260,70))
+	label(page,"WASD移动 · 左键攻击 · 右键战技 · Space闪避 · C跃起 · Q奥义 · F血瓶 · E救援/出口\n种子 / 每日挑战与灰烬成长树见下方两个入口：同一条种子必得同一座魔境，灰烬只在局外消费。",Vector2(82,722),18,MUTED,Vector2(1260,72))
+	# R7: the third and fourth slots of the bottom row are the two new魔境 entries —
+	# the run seed / daily challenge, and the ash growth tree.
+	var seed_button := button(page,RogueUi.seed_button_text(rogue_seed_pending,rogue_daily_pending),Vector2(330,813),Vector2(300,56),show_rogue_seed_page)
+	seed_button.name="RogueSeedButton"
+	seed_button.tooltip_text=RogueUi.pending_seed_text(rogue_seed_pending,rogue_daily_pending)
+	var growth_button := button(page,"灰烬成长树",Vector2(650,813),Vector2(300,56),show_growth_tree)
+	growth_button.name="RogueGrowthButton"
+	growth_button.tooltip_text=RogueUi.growth_summary(profile.data)
 	button(page,"返回营地",Vector2(82,813),Vector2(230,56),go_camp)
 	button(page,"全队闯关 · 出发  →" if session.is_leader() else "确认购买 · 准备",Vector2(980,807),Vector2(370,66),start_rogue,true)
 
 func rogue_cost() -> int:
 	return 0
+
+
+## R7b: hand the local save to the session. `TideSession.profile_data()` (session.gd:115)
+## reads `get_meta("profile_data")`, and `RogueGrowth.grant()` probes the same channel; without
+## it the ash bank is never credited (the run-local `p.rogue_ash_run` still ticks, so the HUD
+## looked right while nothing was saved) and `roguelike.reset()` scales the starting gold /
+## rerolls by an empty growth table, i.e. the purchased nodes were a silent no-op.
+## Only the dictionary is attached, never the Profile object, so the session never saves by
+## itself — `on_finished()` stays the single place that writes the file.
+func attach_profile() -> void:
+	if session == null: return
+	session.set_meta("profile_data",profile.data)
+
 
 func start_rogue() -> void:
 	if page_name!="rogue_setup": return
@@ -3360,10 +3433,23 @@ func start_rogue() -> void:
 		return
 	rogue_pending_cost=cost
 	ready_local=true
+	var seed := rogue_launch_seed()
 	var payload := config()
-	payload.merge({"mode":"roguelike","rogue_rerolls":rogue_cards,"rogue_weapon":rogue_weapon},true)
+	# R7: the seed/daily intent rides with the config (so a host can re-read it) and is
+	# handed to `launch()` directly, because session.gd:1386 is the only place that
+	# turns a chosen seed into `seed_value`.
+	payload.merge({"mode":"roguelike","rogue_rerolls":rogue_cards,"rogue_weapon":rogue_weapon,"rogue_seed":seed,"rogue_daily":rogue_daily_pending},true)
+	attach_profile()
 	session.configure(payload)
-	if session.is_leader(): session.request_launch()
+	if seed>0 and session.authority():
+		session.launch(false,seed)
+	elif session.is_leader():
+		session.request_launch()
+		if seed>0 and not session.running:
+			notify("指定种子需要由房主（本地主机）发起；本局按随机种子开始。")
+	if session.running:
+		rogue_seed_pending=0
+		rogue_daily_pending=false
 	if not session.running: notify("闯关准备完成，等待队友确认后由队长免费出发。")
 
 func update_rogue_hud(p: Dictionary) -> void:
@@ -3374,6 +3460,14 @@ func update_rogue_hud(p: Dictionary) -> void:
 	var signature := "%d:%s:%d:%d:%s:%d:%s" % [revision,session.raid.phase,p.rogue_gold,p.rogue_rerolls,claimed,session.raid.get("reward_claims",[]).size(),browsing_shop]
 	signature+="/%s/%s" % [selection.get("id",-1),selection.get("version",-1)]
 	if not selection.is_empty(): signature="selection:%s:%s:%s" % [selection.id,selection.version,p.rogue_rerolls]
+	# R7: an 幽暗异事 room is raid-wide state, so its identity has to be part of the
+	# rebuild key or the panel would never appear for the second player.
+	signature+="/event:%s:%d" % [RogueUi.event_id(session.raid),int(RogueUi.pending_event(session.raid).get("revision",-1))]
+	# R7b: the three dedicated rooms repaint from their own signature — the room kind,
+	# the raid revision and the local resources that decide whether an offer is clickable.
+	var room_kind := str(session.raid.room)
+	if RogueRoomUi.handled(room_kind):
+		signature+="/room:"+RogueRoomUi.signature(room_kind,session.raid,RogueRoomUi.context_of(session,p))
 	if signature==rogue_signature: return
 	rogue_signature=signature
 	if is_instance_valid(rogue_panel):
@@ -3387,6 +3481,12 @@ func update_rogue_hud(p: Dictionary) -> void:
 		var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
 		rogue_panel.add_child(reward_ui)
 		reward_ui.build(self,selection)
+		return
+	if RogueUi.event_active(session.raid):
+		rogue_event_panel(p,revision)
+		return
+	if RogueRoomUi.handled(room_kind):
+		rogue_room_panel(p,revision,room_kind)
 		return
 	label(rogue_panel,"魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls],Vector2(1030,92),18,GOLD,Vector2(380,35))
 	if session.raid.phase=="rogue_reward":
@@ -3411,6 +3511,206 @@ func update_rogue_hud(p: Dictionary) -> void:
 		if session.raid.phase=="rogue_prepare": label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
 	if session.raid.phase in ["rogue_shop","rogue_exit"]:
 		label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+
+
+## R7: the 幽暗异事 room. The offer lives in raid-wide `pending_event` (written by
+## `RogueEvents.roll_offer()`), so every Watcher sees the same choices and only an
+## active Watcher may pick one. The click ships `raid.revision`, which
+## `roguelike.choose()` (roguelike.gd:681) compares before touching state — a stale
+## button from an earlier room is dropped instead of replaying.
+func rogue_event_panel(p: Dictionary, revision: int) -> void:
+	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
+	label(rogue_panel,"幽暗异事",Vector2(360,189),22,GOLD)
+	label(rogue_panel,RogueUi.event_title(session.raid),Vector2(360,226),20,INK,Vector2(1000,34))
+	var body := label(rogue_panel,RogueUi.event_body(session.raid),Vector2(360,264),15,MUTED,Vector2(1000,44))
+	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	rogue_event_buttons=[]
+	var options := RogueUi.event_options(session,p,session.raid)
+	for i in options.size():
+		var option: Dictionary=options[i]
+		var index: int=int(option.get("index",-1))
+		var y := 326+i*100
+		rect(rogue_panel,Vector2(360,y),Vector2(1000,92),Color(0.06,0.045,0.10,0.92))
+		label(rogue_panel,str(option.get("name","")),Vector2(378,y+10),18,GOLD,Vector2(700,28))
+		var require_line := RogueUi.require_text(option)
+		var desc_text := str(option.get("desc",""))
+		if require_line != "": desc_text+="（"+require_line+"）"
+		var desc := label(rogue_panel,desc_text,Vector2(378,y+42),14,MUTED,Vector2(752,40))
+		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var pick := button(rogue_panel,"选择",Vector2(1150,y+22),Vector2(190,48),func(): session.action(RogueUi.ACTION_EVENT,RogueUi.event_payload(session.raid,index)))
+		pick.name="RogueEventOption%d" % i
+		pick.tooltip_text=require_line if require_line!="" else "无门槛"
+		pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
+		rogue_event_buttons.append(pick)
+	if options.is_empty():
+		label(rogue_panel,"事件数据缺失，等待房主重新抽取。",Vector2(378,330),16,Color("c38b98"),Vector2(940,30))
+	if p.status!="active":
+		label(rogue_panel,"你当前无法抉择 · 等待队友",Vector2(360,700),16,Color("c38b98"),Vector2(1000,26))
+
+
+## R7b: 游方锻炉 / 赌徒营帐 / 镜中挑战. `roguelike.open_room()` writes the pending quote
+## and `refresh_dedicated()` re-quotes after every deal, so this panel only renders what the
+## revision guard will actually accept. Clicking ships the frozen action name together with
+## `raid.revision`: a stale button left over from an earlier room is dropped by
+## `roguelike.choose()` instead of replaying the purchase.
+func rogue_room_panel(p: Dictionary, revision: int, kind: String) -> void:
+	var ctx := RogueRoomUi.context_of(session,p)
+	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
+	label(rogue_panel,RogueRoomUi.title(kind),Vector2(360,189),22,GOLD)
+	var body := label(rogue_panel,RogueRoomUi.body(kind,ctx),Vector2(360,226),15,MUTED,Vector2(1000,42))
+	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	label(rogue_panel,"魔晶 %d · 锻造 +%d · 本局灰烬 %d" % [p.rogue_gold,int(p.get("build_forge_level",0)),int(p.get("rogue_ash_run",0))],Vector2(360,270),15,GOLD,Vector2(1000,24))
+	rogue_room_buttons=[]
+	var rows := RogueRoomUi.rows(kind,session.raid,ctx)
+	for i in rows.size():
+		var row: Dictionary=rows[i]
+		var y := 304+i*92
+		rect(rogue_panel,Vector2(360,y),Vector2(1000,84),Color(0.06,0.045,0.10,0.92))
+		label(rogue_panel,str(row.name),Vector2(378,y+8),17,GOLD,Vector2(700,26))
+		var desc_text := str(row.desc)
+		if str(row.reason)!="": desc_text+="（"+str(row.reason)+"）"
+		var desc := label(rogue_panel,desc_text,Vector2(378,y+36),13,MUTED,Vector2(752,42))
+		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var row_action := str(row.action)
+		var row_payload: Dictionary=(row.payload as Dictionary).duplicate(true)
+		var cost := int(row.cost)
+		var take := button(rogue_panel,("%d 魔晶" % cost) if cost>0 else "确认",Vector2(1150,y+20),Vector2(190,46),func(): session.action(row_action,row_payload))
+		take.name="RogueRoomOption%d" % i
+		take.tooltip_text=str(row.reason) if str(row.reason)!="" else "无门槛"
+		take.disabled=not bool(row.enabled) or p.status!="active"
+		rogue_room_buttons.append(take)
+	if rows.is_empty():
+		label(rogue_panel,"这件房契没有可用的服务，向右离开即可。",Vector2(378,308),16,Color("c38b98"),Vector2(940,30))
+	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase))
+	if hint_line!="": label(rogue_panel,hint_line,Vector2(360,690),16,GOLD,Vector2(1000,26))
+	if p.status!="active":
+		label(rogue_panel,"你当前无法交易 · 等待队友",Vector2(360,716),15,Color("c38b98"),Vector2(1000,24))
+
+
+## R7: 种子 / 每日挑战 page. Daily runs are seeded from the **UTC** date and the
+## seed has to be computed by the host (contract v3-2), so this page only arms the
+## choice — `start_rogue()` hands it to `session.launch(false, seed)`.
+func show_rogue_seed_page() -> void:
+	new_page("rogue_seed")
+	background(0.8)
+	header("种子 · 每日挑战","SEED  /  同一串种子必得同一座魔境")
+	label(page,"每日挑战（UTC %s）" % RogueUi.daily_date(),Vector2(82,228),25,GOLD,Vector2(1260,34))
+	label(page,"全球统一种子 · 不受本地时区影响 · 由房主在出发时下发\n种子：%s" % RogueUi.daily_share(),Vector2(82,272),18,INK,Vector2(1260,66))
+	var daily := button(page,"选择每日挑战",Vector2(82,352),Vector2(320,56),func(): choose_daily_seed(true))
+	daily.name="RogueDailyPick"
+	label(page,"自定义种子 / 分享串",Vector2(82,440),25,GOLD,Vector2(1260,34))
+	label(page,"粘贴 CT-XXXXXXXX-X 分享串，或直接输入 1 ~ 2147483647 的十进制种子。\n0 与空值无效——不会被静默换成随机局。",Vector2(82,484),18,INK,Vector2(1260,62))
+	rogue_seed_field=line_edit(page,"",Vector2(82,562),Vector2(520,54),"CT-1A2B3C4D-5 或 123456")
+	rogue_seed_field.name="RogueSeedInput"
+	var apply := button(page,"使用该种子",Vector2(620,562),Vector2(240,54),apply_custom_seed)
+	apply.name="RogueSeedApply"
+	var copy := button(page,"复制种子",Vector2(880,562),Vector2(240,54),copy_seed_text)
+	copy.name="RogueSeedCopy"
+	label(page,"当前已选",Vector2(82,644),20,GOLD,Vector2(1260,30))
+	var chosen := label(page,RogueUi.pending_seed_text(rogue_seed_pending,rogue_daily_pending),Vector2(82,678),20,INK,Vector2(1260,34))
+	chosen.name="RogueSeedChosen"
+	chosen.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	var clear := button(page,"清空选择",Vector2(330,813),Vector2(230,56),func():
+		rogue_seed_pending=0
+		rogue_daily_pending=false
+		show_rogue_seed_page()
+		notify("已清空种子选择：下次出发随机。")
+	)
+	clear.name="RogueSeedClear"
+	var hint := label(page,RogueUi.seed_hint(),Vector2(82,742),15,MUTED,Vector2(1260,56))
+	hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	button(page,"返回魔境",Vector2(82,813),Vector2(230,56),show_rogue_setup)
+
+
+func choose_daily_seed(value: bool) -> void:
+	rogue_daily_pending=value
+	rogue_seed_pending=0
+	show_rogue_setup()
+	if value: notify("已选择每日挑战（UTC %s）· %s" % [RogueUi.daily_date(),RogueUi.daily_share()])
+
+
+func apply_custom_seed() -> void:
+	var text := rogue_seed_field.text if is_instance_valid(rogue_seed_field) else ""
+	var problem := RogueUi.seed_error(text)
+	if problem!="":
+		notify(problem)
+		return
+	rogue_seed_pending=int(RogueUi.parse_seed(text))
+	rogue_daily_pending=false
+	show_rogue_setup()
+	notify("已选择种子 "+RogueUi.share_of(rogue_seed_pending))
+
+
+func copy_seed_text() -> void:
+	var text := RogueUi.copy_text(rogue_seed_pending,rogue_daily_pending)
+	if text=="":
+		notify("尚未选择种子或每日挑战。")
+		return
+	# The headless display server has no clipboard; the test run must not fail on it.
+	if DisplayServer.get_name()!="headless":
+		DisplayServer.clipboard_set(text)
+	notify("已复制种子："+text)
+
+
+## The seed `start_rogue()` should launch with: the armed custom seed, or the UTC
+## daily seed computed here on the host. 0 keeps the engine's random behaviour.
+func rogue_launch_seed() -> int:
+	if rogue_daily_pending: return int(RogueUi.daily_seed())
+	return rogue_seed_pending
+
+
+## R7: 灰烬成长树. Outside a raid this is a local, immediately-saved profile edit;
+## inside a raid it has to go through the revision-guarded action channel instead.
+func show_growth_tree() -> void:
+	var at := modal_box("灰烬成长树",Vector2(1180,790))
+	label(overlay,RogueUi.growth_summary(profile.data),at+Vector2(35,84),20,GOLD,Vector2(1100,30))
+	label(overlay,"灰烬来自每局结算（结算点只有一个）。成长树只对后续开局生效，敌人倍率恒不超过 1.0。",at+Vector2(35,120),14,MUTED,Vector2(1100,24))
+	rogue_growth_buttons={}
+	var rows := RogueUi.growth_rows(profile.data)
+	for i in rows.size():
+		var row: Dictionary=rows[i]
+		var node_id := str(row.id)
+		var x := 35+int(i%2)*560
+		var y := 158+int(i/2)*62
+		label(overlay,"%s  %d / %d" % [row.name,row.level,row.max],at+Vector2(x,y),17,INK,Vector2(320,24))
+		label(overlay,str(row.desc),at+Vector2(x,y+22),12,MUTED,Vector2(390,20))
+		var buy := button(overlay,RogueUi.growth_button_text(row),at+Vector2(x+404,y),Vector2(140,44),func(): buy_growth_node(node_id))
+		buy.name="GrowthBuy_"+node_id
+		buy.tooltip_text=RogueUi.growth_reason_text(str(row.reason))
+		buy.disabled=not bool(row.can_buy)
+		rogue_growth_buttons[node_id]=buy
+	label(overlay,"选定节点后立刻扣灰烬并写入存档；满级与前置未满足的节点会显示原因。",at+Vector2(35,742),14,MUTED,Vector2(1100,24))
+
+
+func buy_growth_node(id: String) -> void:
+	var reason := RogueGrowth.can_buy_reason(profile.data,id)
+	if reason!="":
+		notify(RogueUi.growth_reason_text(reason))
+		return
+	if not RogueGrowth.buy(profile.data,id):
+		notify("购买失败：灰烬不足或前置未满足。")
+		return
+	# Ash and the growth tree are **client-local profile data**: the purchase takes
+	# effect and is saved here, and the current run's enemy scaling was fixed at
+	# `reset()` so nothing in the raid changes. In a raid the purchase is additionally
+	# announced to the host as an audit event — the payload carries `applied: true`,
+	# which forbids the host from charging for it a second time.
+	profile.save_profile()
+	if session.running and session.roguelike.active(session):
+		session.action(RogueUi.ACTION_GROWTH,RogueUi.growth_payload(session.raid,id))
+	if camp: camp.update_static()
+	show_growth_tree()
+	notify("已强化："+RogueGrowth.label(id))
+
+
+## 五层的节点总数。节点图每层生成 7~10 个节点（由种子决定），所以结算面板的分母
+## 必须按本局种子算出来，旧的固定「25 区」是「每层五区」年代的写法。
+func rogue_total_nodes() -> int:
+	var total := 0
+	for floor_index in 5:
+		var graph: Dictionary=RogueGraph.build(int(session.seed_value),floor_index+1)
+		total+=(graph.get("nodes",{}) as Dictionary).size()
+	return maxi(1,total)
 
 
 func rogue_icon(parent: Node, texture: Texture2D, at: Vector2, dimensions: Vector2) -> TextureRect:

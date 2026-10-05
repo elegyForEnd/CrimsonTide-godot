@@ -47,9 +47,15 @@ func generate(value: int) -> void:
 func uv_point(at: Array) -> Vector2:
 	return Vector2(float(at[0])*width,ground_y(float(at[1])))
 
+## Contracts §7.2 ①: every dedicated room maps onto a region key that really exists in
+## `assets/rogue/regions/ground-manifest.json`. The five new rooms borrow the safe-room
+## artwork of their nearest equivalent; anything unmapped would silently become a combat lane.
+const SPECIAL_REGIONS := {"shop":"shop","treasure":"treasure","talent":"talent",
+	"curse":"treasure","event":"talent","forge":"shop","gamble":"treasure","mirror":"talent"}
+
 static func region_key(floor_index: int, area: int, room: String = "") -> String:
-	if room in ["shop","treasure","talent"]:
-		return "f%d-%s" % [floor_index+1,room]
+	if SPECIAL_REGIONS.has(room):
+		return "f%d-%s" % [floor_index+1,SPECIAL_REGIONS[room]]
 	var artwork_area: int=area if room.is_empty() and area<=5 else [1,6,2,7,3,4,5][clampi(area-1,0,6)]
 	return "f%d-a%d" % [floor_index+1,artwork_area]
 

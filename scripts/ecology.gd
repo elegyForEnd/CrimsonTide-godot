@@ -110,7 +110,7 @@ static func update(s, e: Dictionary, dt: float) -> void:
 				for n in 8: bolt(s,e,Vector2.from_angle(n*TAU/8+e.attack_aim.angle()),170,ATTACK_DAMAGE[kind])
 			elif kind==12:
 				for angle in [-0.5,-0.25,0.0,0.25,0.5]:
-					s.bullets.append({"p":e.p,"v":e.attack_aim.rotated(angle)*260,"life":1.55,"damage":damage(e,ATTACK_DAMAGE[kind]),"owner":0,"return_after":0.75,"age":0.0,"reversed":false,"enemy_type":12})
+					s.bullets.append(s.rogue_enemy_bolt({"p":e.p,"v":e.attack_aim.rotated(angle)*260,"life":1.55,"damage":damage(e,ATTACK_DAMAGE[kind]),"owner":0,"return_after":0.75,"age":0.0,"reversed":false,"enemy_type":12}))
 			elif kind==13:
 				for p in s.players.values():
 					var delta: Vector2=p.p-e.p
@@ -166,5 +166,11 @@ static func update(s, e: Dictionary, dt: float) -> void:
 	e.moving=travelled>0.01
 	e.motion_phase+=travelled/12.0
 
+# Every resident bolt funnels through here or the kind-12 ring above, so both go
+# through the roguelike variant hook. That hook only scales the bolt's velocity
+# and writes the presentation-only `bullet_visual`; with neutral mods (every
+# field/battle session) it returns the dictionary untouched, so those modes stay
+# bit-for-bit identical. No hit-geometry key is ever written here: the hit test
+# keeps its default radius of 18.0 in session.gd.
 static func bolt(s, e: Dictionary, direction: Vector2, speed: float, base_damage: float) -> void:
-	s.bullets.append({"p":e.p,"v":direction*speed,"life":2.4,"damage":damage(e,base_damage),"owner":0})
+	s.bullets.append(s.rogue_enemy_bolt({"p":e.p,"v":direction*speed,"life":2.4,"damage":damage(e,base_damage),"owner":0}))

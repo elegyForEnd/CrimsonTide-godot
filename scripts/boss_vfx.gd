@@ -133,8 +133,12 @@ func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 	var progress := 1.0-clampf(float(h.time)/maxf(.01,float(h.total)),0,1)
 	var fired: bool=h.get("fired",false)
 	var shape: String=h.shape
-	var alpha := .40+progress*.44
-	if fired: alpha=.5+sin(elapsed*9.0)*.12 if h.has("pulse_interval") else .85*clampf(1+float(h.time)/.30,0,1)
+	# Breathing alpha plus a white-hot spine: a pastel theme colour alone can
+	# disappear against pale scenery, the hard highlight cannot.
+	var breathe := 0.86+0.14*sin(elapsed*(5.0+9.0*progress))
+	var alpha := (.46+progress*.48)*breathe
+	if fired: alpha=.5+sin(elapsed*9.0)*.12 if h.has("pulse_interval") else .9*clampf(1+float(h.time)/.30,0,1)
+	var spine := Color(1.0,0.97,0.92)
 	var direction: Vector2=h.aim
 	var rotation := direction.angle() if shape in ["line","cone","lane","gap_ring","arc"] else 0.0
 	set_target_transform(target,h.p,rotation)
@@ -144,21 +148,26 @@ func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 	var inner := float(h.get("inner",0))
 	if shape in ["line","lane"]:
 		var half_width: float=inner if shape=="lane" else 44.0
-		target.draw_rect(Rect2(-22,-half_width,radius+22,half_width*2),Color(color,alpha*.09))
+		target.draw_rect(Rect2(-22,-half_width,radius+22,half_width*2),Color(color,alpha*.12))
 		target.draw_rect(Rect2(-22,-half_width,radius+22,half_width*2),color,false,2,true)
 		for i in 6:
 			var x := lerpf(0,radius,(i+.5)/6.0)
 			target.draw_line(Vector2(x,-half_width),Vector2(x,-half_width+8),color,2,true)
 			target.draw_line(Vector2(x,half_width-8),Vector2(x,half_width),color,2,true)
+		if not fired:
+			target.draw_rect(Rect2(-22,-half_width,radius*progress+22,half_width*2),Color(color,alpha*.2))
+			target.draw_rect(Rect2(-22,-half_width,radius*progress+22,half_width*2),Color(spine,alpha*.9),false,2.4,true)
+		target.draw_rect(Rect2(-22,-half_width,radius+22,half_width*2),Color(spine,alpha*.7),false,1.4,true)
 	elif shape=="gap_ring":
 		var gap: float=float(h.get("gap",0.5))
 		for i in 72:
 			var a := lerpf(gap,TAU-gap,float(i)/72.0)
 			var b := lerpf(gap,TAU-gap,float(i+1)/72.0)
-			target.draw_colored_polygon(PackedVector2Array([Vector2.from_angle(a)*inner,Vector2.from_angle(a)*radius,Vector2.from_angle(b)*radius,Vector2.from_angle(b)*inner]),Color(color,alpha*.13))
+			target.draw_colored_polygon(PackedVector2Array([Vector2.from_angle(a)*inner,Vector2.from_angle(a)*radius,Vector2.from_angle(b)*radius,Vector2.from_angle(b)*inner]),Color(color,alpha*.16))
 		target.draw_arc(Vector2.ZERO,radius,gap,TAU-gap,96,color,2,true)
 		target.draw_arc(Vector2.ZERO,inner,gap,TAU-gap,96,color,2,true)
-		for a in [-gap,gap]: target.draw_line(Vector2.from_angle(a)*inner,Vector2.from_angle(a)*radius,Color("a5ffdb",alpha),3,true)
+		target.draw_arc(Vector2.ZERO,radius,gap,TAU-gap,96,Color(spine,alpha*.8),1.5,true)
+		for a in [-gap,gap]: target.draw_line(Vector2.from_angle(a)*inner,Vector2.from_angle(a)*radius,Color("eafff6",alpha),3,true)
 	else:
 		var arc := float(h.get("arc",1.05)) if shape in ["cone","arc"] else PI
 		for i in 48:
@@ -166,12 +175,15 @@ func hazard(target: CanvasItem, h: Dictionary, kind: int = -1) -> void:
 			var b := Vector2.from_angle(lerpf(-arc,arc,(i+1)/48.0))
 			var points := PackedVector2Array([a*inner,a*radius,b*radius])
 			if inner>0: points.append(b*inner)
-			target.draw_colored_polygon(points,Color(color,alpha*.10))
+			target.draw_colored_polygon(points,Color(color,alpha*.13))
 		target.draw_arc(Vector2.ZERO,radius,-arc,arc,65,color,2,true)
 		if inner>0: target.draw_arc(Vector2.ZERO,inner,-arc,arc,65,color,2,true)
 		if shape in ["cone","arc"]:
 			for a in [-arc,arc]: target.draw_line(Vector2.from_angle(a)*inner,Vector2.from_angle(a)*radius,color,2,true)
-		if not fired: target.draw_arc(Vector2.ZERO,radius-5,-arc,lerpf(-arc,arc,maxf(.001,progress)),65,Color(color,alpha*.6),3,true)
+		if not fired:
+			target.draw_arc(Vector2.ZERO,radius-5,-arc,lerpf(-arc,arc,maxf(.001,progress)),65,Color(color,alpha*.62),3,true)
+			target.draw_arc(Vector2.ZERO,radius-5,-arc,lerpf(-arc,arc,maxf(.001,progress)),65,Color(spine,alpha*.95),1.8,true)
+		target.draw_arc(Vector2.ZERO,radius,-arc,arc,65,Color(spine,alpha*.7),1.5,true)
 	set_target_transform(target)
 	# A shrinking charged apparition signals timing, never a shrinking hitbox.
 	if not fired and shape=="circle":

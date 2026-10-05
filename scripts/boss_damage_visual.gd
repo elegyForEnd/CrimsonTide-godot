@@ -8,6 +8,20 @@ const Staging = preload("res://scripts/boss_effect_staging.gd")
 const Language=preload("res://scripts/boss_effect_language.gd")
 const Contacts=preload("res://scripts/boss_entity_contacts.gd")
 const BIRTH_SHADER = preload("res://resources/boss_entity_birth.gdshader")
+const SHELL_SHADER = preload("res://resources/boss_projectile_shell.gdshader")
+# Readability shell for live boss projectiles.  It is its own additive pass on a
+# rect that covers the true footprint plus `shell` pixels of margin, so the
+# damage boundary stays exactly where Geometry.contains() puts it: the shell has
+# no colour inside the footprint and no reach beyond its own rect.
+const PROJECTILE_SHELL := 13.0
+const PROJECTILE_SHELL_LIFT := 0.16
+# Matches RogueCombat.BULLET_VISUAL_BOUNDS: the variant factor can only grow a
+# bolt, and a bolt with no factor draws exactly as before.
+const BULLET_VISUAL_MAX := 3.0
+# The sprite itself gets the same treatment: a saturated skin on its solid alpha
+# and a bloom reaching PROJECTILE_SHELL_REACH source pixels beyond it.
+const PROJECTILE_SHELL_STRENGTH := 0.85
+const PROJECTILE_SHELL_REACH := 8.0
 var particles=preload("res://scripts/combat_particles.gd").new()
 var clock := 0.0
 var field
@@ -20,6 +34,7 @@ func reset() -> void:
 	for node in nodes.values():
 		node.root.queue_free()
 		node.body.queue_free()
+		if node.has("shell"): node.shell.queue_free()
 	nodes.clear()
 func _process(dt: float) -> void:
 	if not field.visible or absf(get_global_transform().determinant())<.000001: return
@@ -34,7 +49,12 @@ func _process(dt: float) -> void:
 		if not b.get("boss_projectile",false): continue
 		var previous: Vector2=b.get("boss_previous",b.p)
 		var delta: Vector2=b.p-previous
-		hazards.append({"shape":"capsule","p":previous,"aim":delta.normalized() if delta.length()>.001 else Vector2.RIGHT,"radius":delta.length(),"inner":float(b.get("hit_radius",18)),"choreographed":true,"vfx_role":b.vfx_role,"art_key":b.art_key,"fired":true,"source":b.boss_source,"token":b.boss_token,"time":0.0,"linger":1.0})
+		hazards.append({"shape":"capsule","p":previous,"aim":delta.normalized() if delta.length()>.001 else Vector2.RIGHT,"radius":delta.length(),"inner":float(b.get("hit_radius",18)),"choreographed":true,"vfx_role":b.vfx_role,"art_key":b.art_key,"fired":true,"source":b.boss_source,"token":b.boss_token,"time":0.0,"linger":1.0,
+			# Presentation-only variant factor: it grows the staged sprite in
+			# boss_effect_staging.pose() and nothing else.  `inner` - and so both
+			# the damage footprint and the shell drawn around it - stays exactly
+			# the bolt's own hit radius, so a bigger bolt never means a bigger hurt.
+			"bullet_visual":clampf(float(b.get("bullet_visual",1.0)),1.0,BULLET_VISUAL_MAX)})
 	for prop in field.session.enemies:
 		if not prop.get("boss_construct",false) or prop.hp<=0: continue
 		var age := float(prop.get("construct_age",0))
@@ -68,6 +88,19 @@ func _process(dt: float) -> void:
 			rect.material=mat
 			container.add_child(rect)
 			add_child(container)
+			# Live projectiles add one additive shell pass.  It is a sibling of the
+			# damage rect, drawn after it and before the sprite, on a rect that is
+			# the true footprint grown by a fixed margin - no scaling of the shape
+			# inside it, so the boundary that hurts is still the boundary drawn.
+			var shell: ColorRect=null
+			var shell_mat: ShaderMaterial=null
+			if str(h.shape)=="capsule":
+				shell=ColorRect.new()
+				shell.mouse_filter=Control.MOUSE_FILTER_IGNORE
+				shell_mat=ShaderMaterial.new()
+				shell_mat.shader=SHELL_SHADER
+				shell.material=shell_mat
+				add_child(shell)
 			var body := Sprite2D.new()
 			body.texture=texture
 			body.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
@@ -76,6 +109,7 @@ func _process(dt: float) -> void:
 			body.material=birth
 			add_child(body)
 			nodes[token]={"root":container,"rect":rect,"mat":mat,"body":body,"birth":birth,"seen":generation,"elapsed":0.0,"impact_age":0.0,"was_active":false,"tail":0.0,"hazard":h.duplicate()}
+			if shell!=null: nodes[token].merge({"shell":shell,"shell_mat":shell_mat})
 		var item: Dictionary=nodes[token]
 		item.seen=generation
 		item.elapsed+=dt
@@ -87,8 +121,25 @@ func _process(dt: float) -> void:
 		var bounds := Geometry.bounds(h)
 		item.rect.position=bounds.position
 		item.rect.size=bounds.size
+		if item.has("shell"):
+			var margin := PROJECTILE_SHELL if str(h.shape)=="capsule" else 0.0
+			item.shell.visible=item.root.visible and margin>0.0
+			if margin>0.0:
+				item.shell.rotation=Geometry.aim(h).angle()
+				var extent := Vector2(float(h.radius)+float(h.inner)*2.0+margin*2.0,float(h.inner)*2.0+margin*2.0)
+				# Positioned as a plain point in the same local frame as h.p, so a
+				# rotated capsule gets a shell that lines up exactly with the bolt.
+				item.shell.position=Vector2.ZERO
+				item.shell.size=extent
+				item.shell.position=-extent*0.5
+			var shell_data := Geometry.shader_data(h)
+			for key in shell_data: item.shell_mat.set_shader_parameter(key,shell_data[key])
+			item.shell_mat.set_shader_parameter("tone",Art.color(h))
+			item.shell_mat.set_shader_parameter("margin",margin)
+			item.shell_mat.set_shader_parameter("clock",clock)
 		var shape_data := Geometry.shader_data(h)
 		for key in shape_data: item.mat.set_shader_parameter(key,shape_data[key])
+		item.mat.set_shader_parameter("halo_strength",0.0)
 		var active: bool=h.get("fired",h.get("active",false))
 		particle_stage(token,item,h,active)
 		if active:
@@ -119,10 +170,12 @@ func _process(dt: float) -> void:
 		if item.seen==generation: continue
 		particles.stop(token)
 		item.root.visible=false # No damage footprint survives the authoritative hazard.
+		if item.has("shell"): item.shell.visible=false
 		item.tail+=dt
 		if not item.was_active or item.tail>=.32:
 			item.root.queue_free()
 			item.body.queue_free()
+			if item.has("shell"): item.shell.queue_free()
 			nodes.erase(token)
 		else:
 			item.elapsed+=dt
@@ -173,6 +226,14 @@ func update_body(item: Dictionary, h: Dictionary) -> void:
 		for key in ["shape","radius","inner","arc","gap"]: item.birth.set_shader_parameter(key,dimensions[key])
 	for key in ["reveal","opacity","flash","from_ground"]:
 		item.birth.set_shader_parameter(key,pose.alpha if key=="opacity" else pose[key])
+	# Live projectiles carry their own outline plus bloom, in the boss's own tone.
+	# Everything else keeps a zeroed shell, so no other staged entity changes.
+	var shell: float=PROJECTILE_SHELL if pose.kind=="projectile" else 0.0
+	item.birth.set_shader_parameter("rim_strength",shell)
+	# Source-art pixels in UV; the bloom reaches PROJECTILE_SHELL_REACH of them
+	# outward.  canvas_item shaders have no TEXEL_SIZE builtin.
+	item.birth.set_shader_parameter("rim_step",Vector2.ONE/maxf(1.0,native.x)*PROJECTILE_SHELL_REACH)
+	item.birth.set_shader_parameter("rim_tone",Art.color(h))
 
 
 static func render_record(record: Dictionary) -> Dictionary:

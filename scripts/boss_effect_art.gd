@@ -4,7 +4,10 @@ const BASE := "res://assets/bosses/imagegen/"
 const KEYS := ["bell","thorn","queen","knight","hidden","mirror","ember","moon","earth","storm","abyss","dragon","grove","furnace","astral","wing","obsidian"]
 const ROLES := ["slash","lance","burst","crest"]
 const MOTIFS := {"bell":["pendulum","score","fracture","dial"],"thorn":["bramble","seed","root","hunt"],"queen":["sabres","regalia","petals","crown"],"hidden":["rift","hands","ribcage","tomb"],"mirror":["frame","thread","glass","loom"],"ember":["censer","moths","pyre","vesper"],"moon":["eye","drop","artery","eclipse"],"earth":["furrow","plate","stalactite","fault"],"storm":["feather","chain","eye","plume"],"abyss":["maw","current","tide","devour"],"dragon":["icicle","breath","wings","frost"],"grove":["roots","spore","bloom","mycelium"],"furnace":["chain","rivets","hammer","kiln"],"astral":["prism","refraction","starfall","orrery"],"wing":["gust","return","cyclone","helm"],"obsidian":["scar","echo","rain","seal"],"knight":["slash","lance","burst","crest"]}
-const ROGUE := ["grove","furnace","astral","wing","obsidian"]
+# 守层者身份池（R14）：前五个是扩容前的原始守层者，索引保持不变；
+# 后三个复用既有 ImageGen key，零新美术。身份与楼层解耦——每局从 8 个里确定性地抽 5 个。
+const ROGUE := ["grove","furnace","astral","wing","obsidian","bell","earth","abyss"]
+const LEGACY_ROGUE := 5
 const READABLE := {"bell_pendulum":"bell_clapper","queen_sabres":"royal_sabre","queen_crown":"royal_crown","earth_plate":"rock_wall","hidden_tomb":"gravestone","mirror_frame":"standing_mirror","furnace_kiln":"ground_vent","obsidian_rain":"black_sword","obsidian_echo":"black_sword"}
 static var cache: Dictionary={}
 static var pending: Dictionary={}
@@ -30,9 +33,13 @@ static func finish_warming() -> void:
 		elif status==ResourceLoader.THREAD_LOAD_FAILED or status==ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 			pending.erase(path)
 
+## 索引 → 守层者身份（越界自动夹紧，扩容后仍与旧索引一一对应）。
+static func rogue_key(index: int) -> String:
+	return ROGUE[clampi(index,0,ROGUE.size()-1)]
+
 static func identity(data: Dictionary) -> String:
 	if data.has("art_key"): return str(data.art_key)
-	if data.get("rogue_guardian",false): return ROGUE[clampi(int(data.get("rogue_skin",data.get("floor",0))),0,4)]
+	if data.get("rogue_guardian",false): return rogue_key(int(data.get("rogue_skin",data.get("floor",0))))
 	if data.get("dragon_boss",false): return "dragon"
 	if data.get("wild_boss",false): return ["earth","storm","abyss"][clampi(int(data.get("wild_kind",0)),0,2)]
 	if data.get("hidden_final",false): return "hidden"

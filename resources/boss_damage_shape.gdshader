@@ -22,6 +22,12 @@ uniform int motif = 0;
 uniform int attack_family = -1;
 uniform int cover_count = 0;
 uniform vec3 covers[8];
+// A visible shell around the authoritative footprint.  It is painted only on
+// pixels OUTSIDE inside_shape(), so the damage boundary the player must respect
+// and the boundary the eye reads stay the same line: the halo can never make a
+// capsule look hittable where it is not, or safe where it is.
+uniform float halo_strength = 0.0;
+uniform float halo_width = 14.0;
 
 float inside_shape(vec2 p) {
 	float d=length(p);
@@ -35,6 +41,27 @@ float inside_shape(vec2 p) {
 	if(shape==5) return float(a>gap);
 	if(shape==6) return float(a<=arc);
 	return 1.0;
+}
+// Signed distance to the same boundary, used only to paint the outer shell.
+// Positive is outside the damage footprint, negative is inside it.
+float signed_distance(vec2 p) {
+	if(shape==7) return length(vec2(p.x-clamp(p.x,0.0,radius),p.y))-inner;
+	if(shape==3) {
+		vec2 c=vec2(clamp(p.x,-22.0,radius),clamp(p.y,-44.0,44.0));
+		float inside=float(p.x>=-22.0 && p.x<=radius && abs(p.y)<=44.0);
+		return mix(length(p-c),-length(p-c),inside);
+	}
+	if(shape==4) {
+		vec2 c=vec2(clamp(p.x,0.0,radius),clamp(p.y,-inner,inner));
+		float inside=float(p.x>=0.0 && p.x<=radius && abs(p.y)<=inner);
+		return mix(length(p-c),-length(p-c),inside);
+	}
+	float d=length(p);
+	float a=abs(atan(p.y,p.x));
+	if(shape==2) return max(d-radius,(a-arc)*max(d,1.0));
+	if(shape==5) return max(max(inner-d,d-radius),(gap-a)*max(d,1.0));
+	if(shape==6) return max(max(inner-d,d-radius),(a-arc)*max(d,1.0));
+	return max(inner-d,d-radius);
 }
 void fragment() {
 	vec2 p=(UV-vec2(.5))*extent+center;
@@ -141,6 +168,18 @@ void fragment() {
 	float body=active?(.065+energy*.48):warning_fill*warning_in;
 	float border=active?.30:warning_edge;
 	float flash=active?exp(-impact_age*16.0)*.14:0.0;
-	vec3 rgb=mix(tone.rgb,vec3(.96,.99,1.0),clamp(energy*.6+flash+edge*.15,0.0,.85));
-	COLOR=vec4(rgb,mask*opacity*max(body+flash,edge*border));
+	// Outer shell, strictly outside the damage boundary: a hard saturated rim
+	// plus the soft bloom it throws, both in the attack's own tone.
+	float sd=signed_distance(p);
+	float halo=0.0;
+	if(halo_strength>0.0) {
+		float rim=exp(-max(sd,0.0)/2.2);
+		float bloom=exp(-max(sd,0.0)/halo_width)*.60;
+		halo=(rim+bloom)*halo_strength*float(sd>0.0);
+	}
+	// The halo rides on top of the body's own coverage instead of being gated by
+	// it, so a dim core cannot swallow its own shell.
+	float core=mask*opacity*max(body+flash,edge*border);
+	vec3 rgb=mix(tone.rgb,vec3(.96,.99,1.0),clamp(energy*.6+flash+edge*.15+halo*.55,0.0,.85));
+	COLOR=vec4(rgb,clamp(core+halo*opacity,0.0,1.0));
 }
