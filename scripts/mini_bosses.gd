@@ -1,4 +1,5 @@
 extends RefCounted
+const Choreography = preload("res://scripts/boss_choreography.gd")
 ## Optional exploration guardians. Their hazards use the authoritative raid hazard clock.
 const Presentation = preload("res://scripts/boss_presentation.gd")
 const NAMES := ["镜墓纺女 · 碎影", "余烬司祭 · 晚祷"]
@@ -8,21 +9,7 @@ const BASE_DAMAGE := [25.0,35.0]
 
 func spawn(s, day: int, forced_index: int = -1) -> void:
 	if s.map_id!="border" or day not in [1,2]: return
-	var occupied: Array=[]
-	for e in s.enemies:
-		if e.get("mini_boss",false): occupied.append(int(e.get("habitat",-1)))
-	var choice := -1
-	var best := -1.0
-	for i in s.ruins.sites.size():
-		var site: Dictionary=s.ruins.sites[i]
-		if site.get("cleared",false) or occupied.has(i): continue
-		var at: Vector2=site.p
-		if s.ruins.blocked(at,42): continue
-		var distance := at.distance_to(Ruins.SPAWN)
-		if distance<550 or at.distance_to(s.raid.center)<500: continue
-		if distance>best:
-			best=distance
-			choice=i
+	var choice: int=s.expedition.guardian_site(s,42)
 	if choice<0: return
 	var at: Vector2=s.ruins.sites[choice].p
 	var index := forced_index if forced_index in [0,1] else day-1
@@ -61,11 +48,12 @@ func update(s, e: Dictionary, dt: float) -> void:
 		Presentation.send(s,e,"entrance")
 	var aim: Vector2=(target.p-e.p).normalized()
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
-	var move: String=(["shard","reflection","mirror_cross","glass_rain"] if e.mini_kind==0 else ["cinder","pyre","ash_cross","last_vesper"])[int(e.sequence)%4]
+	var move: String=Choreography.choose(e)
 	e.sequence+=1
 	cast(s,e,target,move,aim)
 
 func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> void:
+	if Choreography.start(s,e,move,aim,target.p): return
 	var first: int=s.raid.hazards.size()
 	var damage: float=BASE_DAMAGE[e.mini_kind]*(1.12 if e.phase==2 else 1.0)
 	e.attack_aim=aim

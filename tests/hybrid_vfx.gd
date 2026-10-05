@@ -29,10 +29,10 @@ func run() -> void:
 	enemy.attack_total=1.0
 	var event := {"kind":"boss-vfx","p":enemy.p,"id":enemy.id,"boss_kind":0,"action":"charge","total":1.0}
 	boss.event(event)
-	check(boss.energy.bursts.size()==1,"Charge owns a live energy layer")
+	check(boss.effects.size()==1 and boss.effects[0].action=="charge","Charge owns a live painted anticipation layer")
 	enemy.attack_time=0.0
 	boss._process(.01)
-	check(boss.energy.bursts.is_empty(),"Interrupted charge clears its energy layer immediately")
+	check(boss.effects.is_empty() and boss.energy.bursts.is_empty(),"Interrupted charge clears its anticipation immediately")
 	event.action="phase"
 	boss.event(event)
 	check(boss.cinematic.active and not paused,"Boss cut-in does not pause gameplay")

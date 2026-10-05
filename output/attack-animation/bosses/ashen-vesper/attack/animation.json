@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 1.0099,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      165,
+      181,
+      1372,
+      1339
+    ],
+    [
+      24,
+      368,
+      1066,
+      1339
+    ],
+    [
+      24,
+      374,
+      1180,
+      1339
+    ],
+    [
+      24,
+      358,
+      1089,
+      1339
+    ],
+    [
+      24,
+      453,
+      1109,
+      1339
+    ],
+    [
+      24,
+      513,
+      1074,
+      1339
+    ],
+    [
+      170,
+      221,
+      1248,
+      1339
+    ],
+    [
+      24,
+      188,
+      1195,
+      1339
+    ]
+  ],
+  "source_still": "D:\\develop\\school\\CrimsonTide-godot\\output\\minimax-action-pack\\stills\\bosses\\ashen-vesper\\attack.png",
+  "method": "Individual image-generated frames; frame 1 chroma-keyed from approved still; uniform scaling and translation for alignment"
+}

@@ -182,7 +182,7 @@ func rebuild(world: Ruins) -> void:
 	else:
 		for y in 3:
 			for x in 4:
-				floor_tile(Rect2(x*1600,y*1600,1600,1600),load("res://assets/world/ground-%d-%d.jpg" % [x,y]))
+				floor_tile(Rect2(Vector2(x,y)*1600*Ruins.MAP_SCALE,Vector2.ONE*1600*Ruins.MAP_SCALE),load("res://assets/world/ground-%d-%d.jpg" % [x,y]))
 		polygon(world.river,0.8,Color("416c7f"))
 		for feature in world.features:
 			if feature.kind=="lake": polygon(feature.polygon,1,Color("446d80"))

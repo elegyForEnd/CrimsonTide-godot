@@ -1,0 +1,44 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "prompt": "Use case: stylized-concept. Asset type: production game UI sprite atlas, one unified sprite sheet of SIX quality variants of an empty gothic inventory socket. Input image 1 is the STYLE REFERENCE: preserve its antique weathered bronze/gold square rim, triangular engraved corner ornaments, woven velvet/damask lining band, octagonal inset dark central cavity. Create a clean 2-column by 3-row atlas, ideally 1536x2304. Each square occupies its own equal exact rectangular cell, full cell with no gaps or external padding, front-on orthographic and perfectly aligned, matching identical border thickness and symmetrical top/bottom/left/right. Order: row1 left pearl/ash WHITE fabric, right deep forest GREEN; row2 left midnight BLUE, right muted amethyst PURPLE; row3 left antique GOLD/ochre velvet, right rich crimson RED matching reference. The metal rim is antique restrained bronze on all six; only woven lining colour changes. The coloured woven band occupies about 12 percent of the side length around a very dark charcoal near-black octagonal central area occupying about 70 percent of side length. Colour is visible but subtle, richly textured not neon and not flat. The centre must remain near-black so placed weapon/item icons will be legible. No objects, icons, letters, labels, text, watermark, drop shadows outside frame, perspective, or decorative elements across cell boundaries. Exactly six square panels, matching dimensions, with fully visible frames. This is a usable art asset atlas, not a screenshot of a game interface.",
+  "reference": "User supplied crimson gothic socket",
+  "asset": "extraction-quality-slots-v2.png",
+  "regions": [
+    [
+      0,
+      0,
+      508,
+      480
+    ],
+    [
+      516,
+      0,
+      508,
+      480
+    ],
+    [
+      0,
+      485,
+      508,
+      479
+    ],
+    [
+      516,
+      485,
+      508,
+      479
+    ],
+    [
+      0,
+      974,
+      508,
+      506
+    ],
+    [
+      516,
+      974,
+      508,
+      506
+    ]
+  ]
+}

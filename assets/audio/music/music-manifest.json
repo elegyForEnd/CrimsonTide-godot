@@ -245,6 +245,650 @@
         "target_lufs": -20,
         "true_peak_ceiling_db": -2
       }
+    },
+    "title": {
+      "title": "血潮守望 · 标题",
+      "file": "title.ogg",
+      "task_id": "4715ccda-58fd-429d-aa13-0221e8b85dce",
+      "clip_id": "6d3d9d34-7b4a-40ab-96b8-c1ee5a8d2433",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Watch Beneath the Crimson Moon",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 88 bpm, D minor, solo cello, restrained pipe organ, celesta, stately chamber strings, no vocals",
+        "prompt": "[Instrumental] A four-note descending D A F E watchtower motif; moonlit gothic anime title screen, tragic hope, restrained grandeur. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "title.mp3",
+      "source_sha256": "e055947be09ebb97adcd984d9434e9bf84df2c6356e0aff4d0ff4a8d042db98d",
+      "sha256": "a4bfbd774381a8309f86f997c58e5630386f7f35b3866a8c2e771d5680f55a5b",
+      "duration_seconds": 112.38897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "home": {
+      "title": "家园与整备",
+      "file": "home.ogg",
+      "task_id": "dc6f46f8-5fcd-4e2f-ac15-17ad46d9bedf",
+      "clip_id": "e41e9561-188d-4513-81a2-e1acd5f49236",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Hearths of Thunderhold",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 76 bpm, warm felt piano, acoustic harp, clarinet, soft strings, no vocals",
+        "prompt": "[Instrumental] A lived-in haven with farming, fishing, crafting and lanterns beneath distant thunder. Tender daily-life variations of the watchtower motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "home.mp3",
+      "source_sha256": "fe1c50fdf406f7d3f87454493d6cd3922e1b8610be0a2d2424a603c5bb5727d3",
+      "sha256": "6c2d2b825a885278c5aa59e04da52e76247cb718aaf65fb8b8729a66bac94f7a",
+      "duration_seconds": 133.41299319727892,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "city": {
+      "title": "失乡王城 · 探索",
+      "file": "city.ogg",
+      "task_id": "b68cdb09-6470-4e23-bc94-bf9740067473",
+      "clip_id": "88ae540c-9239-4a6b-b0f5-2f6152e61931",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Courtyard of the Exiled Crown",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 96 bpm, bass clarinet, viola ostinato, hollow bells, muted organ, no vocals",
+        "prompt": "[Instrumental] Walk abandoned royal courtyards and guard patrols. Regal ruins and oppressive silence, spacious controlled tension. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "city.mp3",
+      "source_sha256": "2ef9906cc54066ee2f73eb511e7bccd28bf274c07910d94dcc9d33ccde2f5541",
+      "sha256": "4d7622b381714fbf021d8d97ba485dc0fa16f44a9695f1c588e2f52f5ef124c2",
+      "duration_seconds": 91.62897959183674,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "sanctuary": {
+      "title": "灵契圣坛 · 构筑",
+      "file": "sanctuary.ogg",
+      "task_id": "0ac5ffab-ec86-483a-b732-c97deb108c4e",
+      "clip_id": "d286daa4-8f99-4e5a-8839-393b66bbbe09",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Covenant in Starlight",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 68 bpm, glass bells, harp harmonics, soft organ pads, viola, no vocals",
+        "prompt": "[Instrumental] A sacred pause to choose talents and forge a personal build; luminous mystery, no combat percussion. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "sanctuary.mp3",
+      "source_sha256": "6d698ba7b0007017280c597c06d2d4d355f1d7636cb05d2bb03a13c6f0e73568",
+      "sha256": "82144ecc2458eb78fb94cfe97c623f238436730738dec9d02e944517b6d1f206",
+      "duration_seconds": 126.42897959183674,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "shop": {
+      "title": "游商营火",
+      "file": "shop.ogg",
+      "task_id": "55e0995d-1d61-4c52-9948-26af459ea4f5",
+      "clip_id": "817d2b8b-40a8-4131-9ff8-4baf76c81ee7",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Travelling Embers",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 84 bpm, plucked cello, dulcimer, warm clarinet, brush percussion, no vocals",
+        "prompt": "[Instrumental] An eccentric wandering merchant beside a safe campfire. Light gothic waltz with gentle motion and breathing room. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "shop.mp3",
+      "source_sha256": "8bbad6874d0107dd7d35cfc111f232ced0166c5da9848673fa770187f8a172f9",
+      "sha256": "f28757432f2a251b4841fbd8bcb4321af459cf6aa87c5b0d55358b33982fcc2b",
+      "duration_seconds": 132.7409977324263,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "treasure": {
+      "title": "遗落宝藏",
+      "file": "treasure.ogg",
+      "task_id": "6b5e33b7-3200-4ed6-b7db-c2aba5b2bcc9",
+      "clip_id": "fa5eb3e2-7fca-4b7f-9cf4-4e56e0cb18cb",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Reliquary of Forgotten Wishes",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 78 bpm, celesta, pizzicato strings, harp, soft metallic chimes, no vocals",
+        "prompt": "[Instrumental] Discover old treasure in a quiet chamber; curiosity, small wonders, delicate repeating arpeggios. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "treasure.mp3",
+      "source_sha256": "16918bc113418f44830bc418df0d88db81a87f090f8a80bcfe2a32f8de5832a1",
+      "sha256": "ce7c42a826a6a05fa3a9a4cd5e434ff5d68024bb1d23ba5086d9d0afda90ccf2",
+      "duration_seconds": 87.09299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "victory": {
+      "title": "凯旋与成功撤离",
+      "file": "victory.ogg",
+      "task_id": "d360d148-29b4-4e19-8254-e557cf77c279",
+      "clip_id": "1904e6b1-954b-4f2d-8b52-7d192473839e",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Lanterns Beyond the Long Night",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 94 bpm, warm strings, french horn, piano, bells, no vocals",
+        "prompt": "[Instrumental] Successful extraction and return home; relieved hopeful reprise of descending D A F E, earned victory with quiet dignity. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "victory.mp3",
+      "source_sha256": "555d0e0c596a9a98d399b3881265a5d335bec6d05cc1078b4e3975193c17b515",
+      "sha256": "0f95ad11123e9b5225642cce25f182a938c7fc58b520532601a1fd6759b8a879",
+      "duration_seconds": 113.9009977324263,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "defeat": {
+      "title": "阵亡结算",
+      "file": "defeat.ogg",
+      "task_id": "ea4acfc6-5494-4978-9f5a-0f06329270cd",
+      "clip_id": "9c0b14a9-ea77-4c63-9048-a2146bf633b7",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - The Watch Still Remembers",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 62 bpm, solo cello, felt piano, sparse low strings, no vocals",
+        "prompt": "[Instrumental] Loss after a failed expedition; sorrow without despair, a faint surviving lantern, understated repeating lament. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "defeat.mp3",
+      "source_sha256": "f6b3159dea17bd458c9769649c4adf5f7dc7a08bf5bc3ffa45be66a8cb813438",
+      "sha256": "476797407660f86b321cc02384fb5b650c4dd6c106a8bf981db7fec62e2fc095",
+      "duration_seconds": 118.41299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "bishop": {
+      "title": "赤月葬钟主教",
+      "file": "bishop.ogg",
+      "task_id": "e6d6f871-4367-4352-914e-696ad203cc0b",
+      "clip_id": "7fd9de8b-fe4b-475c-99a9-ca3a601cf173",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Bishop of the Funeral Bell",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 134 bpm, pipe organ, tolling bells, rapid low strings, ritual timpani, no vocals",
+        "prompt": "[Instrumental] A funeral bishop attacks with grave rings and spectral lances. Bells cut through precise dark counterpoint and rising ritual pressure. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "bishop.mp3",
+      "source_sha256": "98d29f94c0fcd3eea7226de64ef5b5776d4fc0cf7baf8613a174350d08015f0f",
+      "sha256": "39f021a85136f2a6b04cf3141d6f03799707a8cceba20b8b302ee22a448b3371",
+      "duration_seconds": 128.42099773242631,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "hunter": {
+      "title": "荆棘誓约猎王",
+      "file": "hunter.ogg",
+      "task_id": "386bf1eb-d106-4e60-94f8-df067bd5b3b4",
+      "clip_id": "06fac930-bcde-4741-b573-c388625892f6",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Oath of the Thorn Hunter",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 142 bpm, sharp string spiccato, hunting horns, toms, low cello, no vocals",
+        "prompt": "[Instrumental] A relentless thorn hunter stalks dodge landings; prowling pauses, lunging strings, cutting syncopation and pursuit. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "hunter.mp3",
+      "source_sha256": "407241acd18324d7f1dc3d47508d3bfe5878b8c591de9b18616a1992dafd54d3",
+      "sha256": "a2b5b011a47725fac9cab00332ecccd500986ae2f0c1aa605e7e75ff910bf33e",
+      "duration_seconds": 187.74897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "queen": {
+      "title": "血潮女王 · 永夜月冠",
+      "file": "queen.ogg",
+      "task_id": "8d273f4a-5907-43fb-8ed5-883076b0bfc1",
+      "clip_id": "63aa259d-234e-499d-870b-d9ede10c11d3",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Crown of the Evernight Queen",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 148 bpm, grand string orchestra, regal brass, pipe organ, deep taiko, no vocals",
+        "prompt": "[Instrumental] The third-day blood tide queen, majestic tragic antagonist; royal motif, escalating three-phase combat, a soaring instrumental melody. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "queen.mp3",
+      "source_sha256": "80ed662f9f02f22e4016d8f0389a1d7580153356790ffcb4b8d748c98701b0b5",
+      "sha256": "9b3b3062bdc85687b4b7db931946ae5da049dd98fc1a48a90b9bd6a0e7771a85",
+      "duration_seconds": 88.02897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "hidden": {
+      "title": "冥火尸王 · 墓玥",
+      "file": "hidden.ogg",
+      "task_id": "33446238-7151-4663-ab66-a98337f09474",
+      "clip_id": "e6bafb2f-077c-42b6-bf85-ea46392c2dac",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Corpse King Beneath the Netherfire",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 154 bpm, distorted low organ, contrabass, dissonant strings, huge ritual drums, no vocals",
+        "prompt": "[Instrumental] Hidden final encounter after sunrise seals and the exiled knight amulet; necromantic fire, violent rhythm, crushing late-phase transformation. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "hidden.mp3",
+      "source_sha256": "dfc7493880589c987f6741dc6785dd9f04e1a9e50a6b62f876cc46cbf3f1b3cc",
+      "sha256": "c4c852673bfd74b6edd804f2b5610322516695658b1914050a102f659f218c6a",
+      "duration_seconds": 97.74897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "knight": {
+      "title": "失乡骑士",
+      "file": "knight.ogg",
+      "task_id": "09b72c29-633e-4868-bc83-005cb346dacb",
+      "clip_id": "2db32059-234c-4372-802a-90cf6c143386",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Knight Without a Kingdom",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 128 bpm, mournful horn, cello ostinato, steel percussion, chamber strings, no vocals",
+        "prompt": "[Instrumental] A banished knight guards a fallen court; disciplined sword duels, sorrowful nobility, dangerous elegant rhythmic attacks. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "knight.mp3",
+      "source_sha256": "4b0497f3b2cbf6e61e7033bd38d7447cfc6a11be029a0d5752092e0c55681fa1",
+      "sha256": "debda2ce33f0a2eada2aec5b67d764dd42472314894d938b25e378846fd2cadf",
+      "duration_seconds": 112.02897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "floor_1": {
+      "title": "幽光菌林",
+      "file": "floor_1.ogg",
+      "task_id": "9f74d4a0-1b68-4f1f-92d3-d8f515f416dd",
+      "clip_id": "ae850ca3-d7eb-43e8-b6e5-eb7a804496b4",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Luminous Mycelium",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 104 bpm, breathy flute, bass clarinet, celesta, plucked strings, soft frame drums, no vocals",
+        "prompt": "[Instrumental] Bioluminescent mushroom forest, drifting spores, living roots and hidden creatures. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "floor_1.mp3",
+      "source_sha256": "b95f8534290d71737f6bcdd23a369e550180eb28470328b29055af2b28669a5c",
+      "sha256": "c32955f4ed88725e54f9406e61d52e74d999a31e3d7441b6e500e1c5b4294343",
+      "duration_seconds": 98.37299319727892,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "floor_2": {
+      "title": "魔焰铸炉",
+      "file": "floor_2.ogg",
+      "task_id": "74cede1d-5f4e-4daf-a95c-97b992dc7b07",
+      "clip_id": "9c36bac1-c4c4-4eef-86a8-1543f544d0b0",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Furnace of Demonfire",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 116 bpm, muted brass, iron anvil percussion, cello ostinato, low strings, no vocals",
+        "prompt": "[Instrumental] Molten lava channels, infernal machinery and scorched forge halls. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "floor_2.mp3",
+      "source_sha256": "2d61d5a06c2b503bcb4278d43ec97c2261e4bda6d5171ee5a04a710e92ef2d77",
+      "sha256": "0bc626bbac26cdd2c2bbc9f6115fd77314606b915a882459d5f56d30e91e0bc7",
+      "duration_seconds": 62.4209977324263,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "guardian_1": {
+      "title": "幽蕈古王",
+      "file": "guardian_1.ogg",
+      "task_id": "0b0afd74-9847-4bc3-8495-85deadb84b85",
+      "clip_id": "238b5797-1c4e-4ed2-9db7-81300522f8e9",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Mycelial Ancient King",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 130 bpm, deep bassoon, wooden drums, twisted cello, low organ, no vocals",
+        "prompt": "[Instrumental] An ancient fungal king releases spore storms and erupting roots; organic heavy stalking rhythm. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "guardian_1.mp3",
+      "source_sha256": "554cb90b2831c41bcbea3b71840607fae6f5ce229a8acb9526d679102c5b5c9c",
+      "sha256": "3712e936c40dd2bd874a469f3949fe76aebd4a071b52bb417a54c301146ea404",
+      "duration_seconds": 118.8209977324263,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "floor_3": {
+      "title": "星晶幻境",
+      "file": "floor_3.ogg",
+      "task_id": "3a94b06b-4b35-4ec6-a17c-31fa84b5cefc",
+      "clip_id": "350f4ed7-3c86-4bd7-8d83-fc79bcf57ffd",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Prismatic Star Reverie",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 108 bpm, glass harmonica, celesta, harp, shimmering chamber strings, no vocals",
+        "prompt": "[Instrumental] Floating star crystals, mirrored paths and an ethereal illusion realm. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "floor_3.mp3",
+      "source_sha256": "7019d24362e788493e7c925030f3ac1812ce2e3ec61d341a0ddbc845c38b0c9f",
+      "sha256": "7da95a1cd9197fddb3c443f9f648a4ab1ae050e3f9599e879c11e79bc23943c9",
+      "duration_seconds": 107.01299319727892,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "guardian_3": {
+      "title": "星镜女皇",
+      "file": "guardian_3.ogg",
+      "task_id": "804e015c-96d9-4dc1-a224-c9d80852017c",
+      "clip_id": "e990c9d8-588b-4f8f-9d38-d3152455fd85",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Empress of the Star Mirror",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 140 bpm, fractured celesta, agile violins, glass bells, pipe organ, no vocals",
+        "prompt": "[Instrumental] A crystalline empress warps reflections with stars and mirrored attacks; elegant dazzling danger. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "guardian_3.mp3",
+      "source_sha256": "6558e0220ec26f922a058a0268cf850a729de2646e85e53cb612188b03154107",
+      "sha256": "ca63666512955be4680155a109c6a95f7af1e930a9d7141b881cb7518360b851",
+      "duration_seconds": 97.05299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "floor_4": {
+      "title": "风暴空港",
+      "file": "floor_4.ogg",
+      "task_id": "15cb3abb-b229-4b9d-84a2-b4633644c558",
+      "clip_id": "750cab17-78fa-487e-a219-d006a75536ff",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Stormbound Sky Harbor",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 122 bpm, soaring strings, french horns, snare, airy woodwinds, no vocals",
+        "prompt": "[Instrumental] High-altitude docks, airships, moving storm fronts and lightning. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "floor_4.mp3",
+      "source_sha256": "e56a26234757f10194485ea9370778cec72870192044b3efe4ebd02fbfc7058f",
+      "sha256": "4d22bcb56ab82f68ef8e1f07e0519e234207b82999b4b0cae3674635ed9579b6",
+      "duration_seconds": 119.58897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "guardian_4": {
+      "title": "雷翼舰长",
+      "file": "guardian_4.ogg",
+      "task_id": "600af574-c56c-4fe5-a0a0-fc05ac1123c7",
+      "clip_id": "841b7ac5-95e0-4972-90cb-47aadf8e6ba5",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Captain of the Thunder Wings",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 152 bpm, military snare, plunging brass, racing violins, thunder timpani, no vocals",
+        "prompt": "[Instrumental] A thunder-wing captain dives between lightning barrages; airborne maneuvering and martial energy. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "guardian_4.mp3",
+      "source_sha256": "3bf52bd78a5f7d0bd85794f25bca67893a84fe3ebdc69eabc5d05df99dbfa93e",
+      "sha256": "e33a15a43121a167e6f547cb192c52dccf4843c206f78fe02581777af47952ba",
+      "duration_seconds": 82.38897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "floor_5": {
+      "title": "黑曜魔宫",
+      "file": "floor_5.ogg",
+      "task_id": "ce9fb806-f705-43e6-a36a-14b5129a5ded",
+      "clip_id": "7203055c-89e0-48dc-a27d-240c5c03d7cf",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Palace of Black Glass",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 118 bpm, ominous pipe organ, low viola ostinato, obsidian chimes, restrained drums, no vocals",
+        "prompt": "[Instrumental] The deepest black palace, cursed royal halls and a final blade awaiting the challenger. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "floor_5.mp3",
+      "source_sha256": "220906d9ace042218e9392b55d888c4cd3e64205d820c56fad25893cc214b747",
+      "sha256": "3f7ccabf2528ac6f5eb54b1e70b32036527295e08d85f8249b11a0dead7c6754",
+      "duration_seconds": 108.30897959183673,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "guardian_5": {
+      "title": "黑曜剑圣",
+      "file": "guardian_5.ogg",
+      "task_id": "dfc1c523-d938-4071-bcde-aedecb69b0b7",
+      "clip_id": "f140f2df-c4d5-44fb-8327-7dae360b2ad8",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Sword Saint of Obsidian",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 160 bpm, razor-sharp violin runs, huge taiko, low brass, pipe organ, no vocals",
+        "prompt": "[Instrumental] A disciplined obsidian sword saint uses rapid lethal combos; fierce final duel, brief standoffs then explosive sword rhythms. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "guardian_5.mp3",
+      "source_sha256": "f6d74853509f290cc78f44b66af9052fabc7ee42da277aea1f5db64261c15e8d",
+      "sha256": "6cb1001def2249895807c0f3eff441d8256d7d401e49e96fb36e67b95d89617f",
+      "duration_seconds": 82.8209977324263,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
+    },
+    "guardian_2": {
+      "title": "熔炉暴君",
+      "file": "guardian_2.ogg",
+      "task_id": "1a2158fb-058a-429e-9268-01d65fd7c668",
+      "clip_id": "9a928ea8-3871-41fa-8e8e-071336a8e0a9",
+      "requested_model": "chirp-v4",
+      "returned_model": "chirp-hawk",
+      "request": {
+        "title": "Crimson Tide - Tyrant of the Crucible",
+        "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 144 bpm, huge anvil hits, aggressive brass, taiko, fast low strings, no vocals",
+        "prompt": "[Instrumental] A molten tyrant slams the forge and sweeps lava; brutal measured impacts and rising heat. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out.",
+        "mv": "chirp-v4",
+        "make_instrumental": true,
+        "negative_tags": "vocals, singing, speech, lyrics, choir, pop song, EDM drop"
+      },
+      "source_file": "guardian_2.mp3",
+      "source_sha256": "05640e75095e3eed34a951bf53de08aa2c5520cd02c91fc3e374edcc0049b354",
+      "sha256": "6c477df32e678f57a1c4b1f2760ece43d47e7c4f156f32e56f239b0ff4fa0763",
+      "duration_seconds": 66.81299319727891,
+      "editing": {
+        "trim_start_seconds": 2,
+        "trim_end_seconds": 5,
+        "loop_crossfade_seconds": 3,
+        "target_lufs": -20,
+        "true_peak_ceiling_db": -2,
+        "edge_microfade_seconds": 0.005
+      }
     }
   }
 }

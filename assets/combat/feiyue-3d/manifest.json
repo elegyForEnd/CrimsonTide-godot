@@ -1,0 +1,192 @@
+{
+  "heroes/hero-0/idle": {
+    "path": "res://assets/combat/feiyue-3d/idle",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Idle_A",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/walk": {
+    "path": "res://assets/combat/feiyue-3d/walk",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Walking_A",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/run": {
+    "path": "res://assets/combat/feiyue-3d/run",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Running_A",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/dodge": {
+    "path": "res://assets/combat/feiyue-3d/dodge",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Dodge_Forward",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/sword": {
+    "path": "res://assets/combat/feiyue-3d/sword",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Melee_1H_Attack_Chop",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/heavy": {
+    "path": "res://assets/combat/feiyue-3d/heavy",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Melee_2H_Attack_Chop",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/staff": {
+    "path": "res://assets/combat/feiyue-3d/staff",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Ranged_Magic_Shoot",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/idle_sword": {
+    "path": "res://assets/combat/feiyue-3d/idle_sword",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Melee_1H_Attack_Chop",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/idle_heavy": {
+    "path": "res://assets/combat/feiyue-3d/idle_heavy",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Melee_2H_Idle",
+    "motion_license": "CC0 1.0"
+  },
+  "heroes/hero-0/idle_staff": {
+    "path": "res://assets/combat/feiyue-3d/idle_staff",
+    "frame_count": 8,
+    "pivot": [
+      192.0,
+      314.4650287628174
+    ],
+    "facing": 1,
+    "standing_height": 90,
+    "rect": [
+      -72.63510565899455,
+      -102.96458640753126,
+      145.2702113179891,
+      145.2702113179891
+    ],
+    "source": "Blender 5.2 / feiyue-character.blend",
+    "motion_source": "Ranged_Magic_Shoot",
+    "motion_license": "CC0 1.0"
+  }
+}

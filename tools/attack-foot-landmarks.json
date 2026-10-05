@@ -1,0 +1,39 @@
+{
+  "preview_canvas": 384,
+  "description": "Audited sole centers in each 384px preview tile; same anatomical support foot across each action. Flying creatures use a body/coil pivot.",
+  "anchors": {
+    "heroes/hero-0/sword": [[127,306],[116,306],[104,306],[88,295],[95,304],[94,302],[123,306],[127,305]],
+    "heroes/hero-0/heavy": [[128,280],[131,280],[129,281],[122,280],[32,268],[29,269],[116,280],[110,280]],
+    "heroes/hero-0/staff": [[148,306],[141,306],[141,305],[130,306],[121,306],[120,306],[147,306],[147,306]],
+    "heroes/hero-1/sword": [[115,312],[86,312],[66,312],[76,312],[70,311],[70,312],[92,312],[103,312]],
+    "heroes/hero-1/heavy": [[126,296],[47,296],[118,296],[62,296],[31,293],[35,295],[122,289],[125,289]],
+    "heroes/hero-1/staff": [[155,295],[143,295],[153,295],[127,294],[118,295],[117,295],[150,295],[146,295]],
+    "heroes/hero-2/sword": [[119,300],[86,300],[65,300],[134,300],[81,300],[92,300],[105,300],[109,300]],
+    "heroes/hero-2/heavy": [[119,307],[92,307],[131,307],[165,312],[51,299],[91,307],[105,307],[115,307]],
+    "heroes/hero-2/staff": [[146,314],[142,314],[143,314],[74,314],[59,314],[68,314],[152,314],[146,314]],
+    "bosses/bell-hierophant/attack": [[91,339],[79,337],[84,330],[64,333],[37,328],[47,331],[113,338],[83,337]],
+    "bosses/blood-queen/attack": [[199,331],[201,334],[203,335],[205,335],[192,336],[123,329],[200,334],[168,331]],
+    "bosses/thorn-huntsman/attack": [[80,323],[73,323],[83,323],[88,323],[82,320],[95,320],[80,320],[110,324]],
+    "bosses/ashen-vesper/attack": [[79,331],[43,331],[67,328],[56,328],[25,332],[29,328],[78,331],[64,331]],
+    "bosses/mirror-weaver/attack": [[282,338],[265,338],[263,338],[261,338],[253,338],[247,338],[262,338],[269,338]],
+    "bosses/nameless-moon/attack": [[306,327],[310,327],[309,327],[294,327],[280,328],[286,328],[311,328],[309,328]],
+    "bosses/frostbone-dragon/attack": [[128,300],[112,301],[128,301],[111,301],[91,301],[91,301],[116,305],[97,303]],
+    "bosses/earthsplitter/attack": [[221,324],[239,324],[243,324],[249,324],[207,324],[210,324],[244,324],[253,324]],
+    "bosses/moon-leviathan/attack": [[247,330],[243,330],[248,330],[253,330],[242,330],[259,330],[247,330],[245,330]],
+    "bosses/storm-roc-v2/attack": [[187,284],[157,282],[143,285],[154,281],[181,283],[164,283],[176,284],[173,284]]
+  },
+  "opening_crowns": {
+    "heroes/hero-0/sword": 108, "heroes/hero-0/heavy": 134, "heroes/hero-0/staff": 149,
+    "heroes/hero-1/sword": 120, "heroes/hero-1/heavy": 139, "heroes/hero-1/staff": 134,
+    "heroes/hero-2/sword": 112, "heroes/hero-2/heavy": 112, "heroes/hero-2/staff": 111
+  },
+  "center_offsets": {
+    "heroes/hero-0/sword": 56, "heroes/hero-0/heavy": 51, "heroes/hero-0/staff": 43,
+    "heroes/hero-1/sword": 62, "heroes/hero-1/heavy": 57, "heroes/hero-1/staff": 46,
+    "heroes/hero-2/sword": 65, "heroes/hero-2/heavy": 62, "heroes/hero-2/staff": 50,
+    "bosses/bell-hierophant/attack": 93, "bosses/blood-queen/attack": 56,
+    "bosses/thorn-huntsman/attack": 116, "bosses/ashen-vesper/attack": 104,
+    "bosses/mirror-weaver/attack": -67, "bosses/nameless-moon/attack": -70,
+    "bosses/frostbone-dragon/attack": 76
+  }
+}

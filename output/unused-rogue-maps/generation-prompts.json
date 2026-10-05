@@ -1,0 +1,210 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "reference_role": "Original floor art used for style and palette; one distinct generation per region",
+  "source_uv_ground": [
+    0.59,
+    0.83
+  ],
+  "regions": [
+    {
+      "floor": 1,
+      "area": 1,
+      "key": "forest",
+      "wide": true,
+      "filename": "f1-a1-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Mossbound Root Gate: dense ancient roots, fallen tree arch, small hanging spore lanterns, distant giant mushroom silhouettes, untouched wild forest entrance. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 1,
+      "area": 2,
+      "key": "forest",
+      "wide": false,
+      "filename": "f1-a2-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Spore Lantern Bazaar: cozy clearing under enormous teal mushroom umbrella, fantasy travelling merchant's empty stall made from leaves and roots, warm gold lamps and herb shelves at back. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 1,
+      "area": 3,
+      "key": "forest",
+      "wide": true,
+      "filename": "f1-a3-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Waterfall Mycelium Ravine: winding bridges in DISTANT background, huge cascading blue waterfall, violet mushroom cliffs, rope-root buttresses framing an open earthy fighting route. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 1,
+      "area": 4,
+      "key": "forest",
+      "wide": false,
+      "filename": "f1-a4-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Dreamcap Relic Shrine: an ancient moss-covered broken stone shrine with turquoise runes, luminous fungal grotto and treasure alcoves, mystical still pond entirely in background. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 1,
+      "area": 5,
+      "key": "forest",
+      "wide": true,
+      "filename": "f1-a5-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Crown of the Elder Fungus: gigantic sovereign mushroom temple and twisted root throne in distant background, towering pink-purple caps, ominous blue spirits and carved bark pillars. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 2,
+      "area": 1,
+      "key": "forge",
+      "wide": true,
+      "filename": "f2-a1-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Chainbound Furnace Approach: black iron ramparts, suspended chains, distant smelter towers, orange molten waterfalls behind basalt battle ground. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 2,
+      "area": 2,
+      "key": "forge",
+      "wide": false,
+      "filename": "f2-a2-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Ember Pact Bazaar: safe infernal trader alcove, brass lanterns, an empty black iron shop counter, weapon racks and fire rune banners behind fighting area. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 2,
+      "area": 3,
+      "key": "forge",
+      "wide": true,
+      "filename": "f2-a3-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Anvil of the Fire Giants: giant demonic anvil in back, monumental horned furnaces, pouring metal into distant lava channels, thick chains and amber rune mechanisms. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 2,
+      "area": 4,
+      "key": "forge",
+      "wide": false,
+      "filename": "f2-a4-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Ashen Reliquary: half-buried ancient forge treasure chamber, ash urns, sealed glowing rune vaults, small flame bowls, warm gold light among dark basalt. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 2,
+      "area": 5,
+      "key": "forge",
+      "wide": true,
+      "filename": "f2-a5-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Heart of the Demon Forge: colossal horned furnace head and blazing suspended summoning circle, lava cataracts in distant background, red-black throne architecture. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 3,
+      "area": 1,
+      "key": "crystal",
+      "wide": true,
+      "filename": "f3-a1-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Shattered Star Causeway: fractured astral arch fragments, distant floating islands with violet crystals, blue nebula sky, a broad lavender stone battle path. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 3,
+      "area": 2,
+      "key": "crystal",
+      "wide": false,
+      "filename": "f3-a2-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Astrologer's Refuge: empty mystical traveller stall with hanging brass star charts and crystal lamps in background, quiet violet observatory terrace. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 3,
+      "area": 3,
+      "key": "crystal",
+      "wide": true,
+      "filename": "f3-a3-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Prismatic Mirror Chasm: monumental floating crystal prisms, broken moon bridges in distance, star showers and purple cliff walls, broad crystal-veined rock ground. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 3,
+      "area": 4,
+      "key": "crystal",
+      "wide": false,
+      "filename": "f3-a4-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Wishing Star Sanctum: abandoned celestial wishing well, scattered intact star relic pedestals, radiant falling-star beams, luminous lavender grotto. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 3,
+      "area": 5,
+      "key": "crystal",
+      "wide": true,
+      "filename": "f3-a5-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Oracle of the Constellations: enormous cracked zodiac ring and vacant floating crystal throne in background, galaxy vortex overhead, regal starlit sanctuary. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 4,
+      "area": 1,
+      "key": "skyport",
+      "wide": true,
+      "filename": "f4-a1-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Gale Mooring Deck: long weathered airship boarding platform, rope rails, hanging sails, distant floating islands and arriving airships under a gray storm sky. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 4,
+      "area": 2,
+      "key": "skyport",
+      "wide": false,
+      "filename": "f4-a2-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Cloudfarer's Trading Dock: empty sky trader stall with brass cargo shelves, golden lanterns, bundles of cloth and ship rigging, a calm deck in the clouds. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 4,
+      "area": 3,
+      "key": "skyport",
+      "wide": true,
+      "filename": "f4-a3-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Broken Thunder Span: shattered distant suspension bridges and soaring floating citadels, turquoise lightning in clouds, broad worn stone-and-wood route. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 4,
+      "area": 4,
+      "key": "skyport",
+      "wide": false,
+      "filename": "f4-a4-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Drifting Wreck Treasury: derelict ornate flying ship hull in background, torn flags, abandoned brass vault doors and old navigator statues. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 4,
+      "area": 5,
+      "key": "skyport",
+      "wide": true,
+      "filename": "f4-a5-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Tempest Admiral's Anchorage: monumental storm gate pylons, giant dark airship silhouette behind, charged blue crystal engines and towering suspended dock arches. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 5,
+      "area": 1,
+      "key": "palace",
+      "wide": true,
+      "filename": "f5-a1-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Obsidian Outer Ramparts: jagged black walls, thorn crown banners, tall dark citadel turrets, dim crimson magma in far background, weathered stone ground. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 5,
+      "area": 2,
+      "key": "palace",
+      "wide": false,
+      "filename": "f5-a2-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Crimson Covenant Market: empty demon merchant counter beneath spiked vaulted arches, red crystal lanterns and ornate sealed reliquaries in background. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 5,
+      "area": 3,
+      "key": "palace",
+      "wide": true,
+      "filename": "f5-a3-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: Hall of Fractured Oaths: abandoned cathedral with massive broken stained glass, black statues and collapsed crown reliefs, glowing crimson crevices behind ground. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    },
+    {
+      "floor": 5,
+      "area": 4,
+      "key": "palace",
+      "wide": false,
+      "filename": "f5-a4-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game 16:10 compact rest room. Region: Vault of Fallen Crowns: regal abandoned treasury with broken golden crowns on distant altars, huge sealed obsidian doors and violet light shafts. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Quiet magical rest chamber."
+    },
+    {
+      "floor": 5,
+      "area": 5,
+      "key": "palace",
+      "wide": true,
+      "filename": "f5-a5-v2.png",
+      "prompt": "Use reference image ONLY for hand-painted dark-outline art style and floor palette. Create a DISTINCT NEW original fantasy side-scrolling game very wide 3:1 panorama. Region: The Last Black Throne: enormous horned obsidian throne in deep background, floating infernal crown sigil, red stained glass and black pillars, final confrontation arena. Important composition for game terrain mesh: layered background at upper 59% of image; continuous empty traversable ground band from precisely 59% to 83% image height, textured natural irregular soil/stone/deck and broken shores; dense foreground rim at lower 17%. Do not put barriers inside that empty ground band; scenery and cliffs frame its edges. Keep that band continuous from far left entrance to far right exit. Top-down camera forbidden: 3/4 SIDE VIEW beat-em-up depth walking, hand-painted textured cartoon, original high quality indie fantasy. No characters, no text, no UI, no watermarks, no rodents, no insects. Distinct major architecture and focal scenery from every other area. Gates far left/right, ground not a perfectly geometric rectangle: organic shore textures, roots, rubble, irregular ledges along borders. No big central obstacles; separate gameplay props will be overlaid. Show a long connected route, no panels."
+    }
+  ]
+}

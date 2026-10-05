@@ -28,13 +28,13 @@ func run() -> void:
 	check(site != null, "the camp screen owns its map")
 	check(screen.visible and site.visible, "the camp map starts visible")
 	check(site.built, "the camp map builds itself on entry")
-	check(screen.get_node_or_null("Thunderhold") != null, "the map is a separate node, not the raid map")
+	check(screen.get_node_or_null("Hearthhaven") != null, "the map is a separate node, not the raid map")
 
 	# --- the map is real, and it is not the raid map -------------------------
 	var scenery: Node3D = site.scenery
 	print("CAMP: scenery nodes = ", scenery.get_child_count(), " sprites = ", site.sprites.size())
 	check(scenery.get_child_count() > 90, "the stronghold builds real 3D scenery (%d nodes)" % scenery.get_child_count())
-	check(site.stations.size() == 5, "five interactive stations exist")
+	check(site.stations.size() == 10, "ten interactive stations exist")
 	for id in ["table", "forge", "quarter", "codex", "gate"]:
 		check(not site.station_by_id(id).is_empty(), "station %s resolves by id" % id)
 	check(not site.assets.registry.is_empty(), "the CC0 scene-asset library is available")
@@ -52,33 +52,12 @@ func run() -> void:
 		check(origin.distance_to(site.project(site.hero_position())) < 0.6,
 			"the 2D overlay basis agrees with the camera at %s" % resolution)
 
-	# --- the storm actually fires -------------------------------------------
+	# Home is a peaceful map; production processing never produces storm strikes.
 	var before: int = int(site.storm_state().strikes)
-	# Step the storm on a known delta instead of relying on real frame times. A
-	# lull after a sheet flash can legitimately last 4.6 s, so the wait is bounded
-	# at 20 s and the interval is asserted to stay finite.
-	site.next_strike = 0.0
-	var longest_lull := 0.0
-	for i in 400:
-		site._update_storm(0.05)
-		longest_lull = maxf(longest_lull, float(site.storm_state().next))
-		if int(site.storm_state().strikes) > before:
-			break
-	check(int(site.storm_state().strikes) > before, "the storm strikes without being asked")
-	check(longest_lull < 5.0, "the storm never falls silent for long (%.2fs)" % longest_lull)
-	site.force_strike(1.0, 1200.0)
-	await process_frame
-	check(int(site.storm_state().strikes) > before, "a forced strike lands immediately")
-	check(float(site.storm_state().flash) > 0.0, "a strike lifts the sky flash")
-	check(float(site.flash_light.light_energy) > 0.0, "a strike lights the camp")
-	check(site.storm.get_child_count() > 0, "a strike leaves real bolt geometry in the scene")
-	# The bolt must retire itself instead of piling up over a session. No new
-	# strikes are allowed during the wait, so the check is about retirement only.
-	site.next_strike = 9999.0
-	for i in 60:
-		site._update_storm(0.05)
-	check(site.storm.get_child_count() == 0, "bolt geometry is released after its life")
-	check(site.bolts.is_empty(), "the bolt list drains")
+	for i in 120: site._process(0.05)
+	check(int(site.storm_state().strikes)==before,"Home weather remains calm while running")
+	check(site.is_walkable(Vector2(4000,2390)),"Dock is traversable over the water")
+	check(not site.is_walkable(site.LAKE.get_center()),"Lakeshore prevents walking on water")
 
 	# --- generated audio, no shipped binaries --------------------------------
 	for key in ["wind", "rumble", "thunder", "bell"]:
@@ -168,7 +147,7 @@ func run() -> void:
 		"the camp camera matches the raid's presentation rig")
 
 	# --- actors stand on the stone, not inside it ---------------------------
-	check(site.ground_height(site.CENTRE) > 50.0, "the parade ground is a raised surface")
+	check(is_equal_approx(site.ground_height(site.CENTRE),8.0), "the open council station has a low stone floor")
 	check(is_zero_approx(site.ground_height(Vector2(400, 400))), "the outer field is at ground level")
 	var on_parade: float = site.ground_height(Vector2(2800, 3000))
 	site.hero_at = Vector2(2800, 3000)

@@ -1,0 +1,142 @@
+{
+  "idle": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 6,
+    "preview": false,
+    "motion_source": "Idle_A",
+    "license": "CC0 1.0"
+  },
+  "walk": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 3,
+    "preview": false,
+    "motion_source": "Walking_A",
+    "license": "CC0 1.0"
+  },
+  "run": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 2,
+    "preview": false,
+    "motion_source": "Running_A",
+    "license": "CC0 1.0"
+  },
+  "dodge": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 1,
+    "preview": false,
+    "motion_source": "Dodge_Forward",
+    "license": "CC0 1.0"
+  },
+  "sword": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 3,
+    "preview": false,
+    "motion_source": "Melee_1H_Attack_Chop",
+    "license": "CC0 1.0"
+  },
+  "heavy": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 4,
+    "preview": false,
+    "motion_source": "Melee_2H_Attack_Chop",
+    "license": "CC0 1.0"
+  },
+  "staff": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 3,
+    "preview": false,
+    "motion_source": "Ranged_Magic_Shoot",
+    "license": "CC0 1.0"
+  },
+  "idle_sword": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 6,
+    "preview": false,
+    "motion_source": "Melee_1H_Attack_Chop",
+    "license": "CC0 1.0"
+  },
+  "idle_heavy": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 6,
+    "preview": false,
+    "motion_source": "Melee_2H_Idle",
+    "license": "CC0 1.0"
+  },
+  "idle_staff": {
+    "frame_count": 8,
+    "pivot": [
+      384.0,
+      628.9300575256348
+    ],
+    "standing_height_pixels": 475.8029837837837,
+    "camera": "orthographic",
+    "facing": 1,
+    "blender_frame_step": 6,
+    "preview": false,
+    "motion_source": "Ranged_Magic_Shoot",
+    "license": "CC0 1.0"
+  }
+}

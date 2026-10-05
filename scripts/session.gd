@@ -1,7 +1,9 @@
 class_name TideSession
 extends Node
+const BossChoreography = preload("res://scripts/boss_choreography.gd")
 const BossTactics = preload("res://scripts/boss_tactics.gd")
 const BossPresentation = preload("res://scripts/boss_presentation.gd")
+var enemy_bodies = preload("res://scripts/enemy_body.gd").new()
 
 signal changed
 signal map_changed
@@ -10,6 +12,8 @@ signal finished
 signal message(text: String)
 signal effect(kind: String, pos: Vector2)
 signal combat_event(data: Dictionary)
+signal direct_connect_failed
+signal p2p_connect_failed
 
 var dedicated := false
 var server_room := false
@@ -19,8 +23,14 @@ var ticket_file := ""
 var used_tickets: Dictionary = {}
 var account_peers: Dictionary = {}
 var connect_deadline := 0
+var p2p_attempt := false
+var p2p_room_code := ""
+var p2p_tickets: Dictionary = {}
+var p2p_ticket_peers: Dictionary = {}
 
 const PORT := 24872
+const AMBIENT_SPAWN_MIN := 360.0
+const AMBIENT_SPAWN_MAX := 1050.0
 const DODGE_DURATION := 0.24
 const DODGE_DISTANCE := 145.0
 const RUN_MULTIPLIER := 1.45
@@ -30,7 +40,7 @@ var inputs: Dictionary = {}
 var ruins := Ruins.new()
 var map_id := "border"
 var map_states: Dictionary = {}
-const CITY_GATE := Vector2(3860,1880)
+const CITY_GATE := Vector2(3860,1880)*Ruins.MAP_SCALE
 var enemies: Array = []
 var bullets: Array = []
 var world_drops: Array = []
@@ -48,6 +58,7 @@ var sync_timer := 0.0
 var spawn_timer := 0.0
 var input_timer := 0.0
 var next_enemy := 0
+var selected_mode := "expedition"
 var local_config: Dictionary = {}
 var local_input := {"move":Vector2.ZERO,"aim":Vector2.RIGHT,"fire":false,"interact":false}
 var rng := RandomNumberGenerator.new()
@@ -60,6 +71,7 @@ var pending_ultimates: Dictionary = {}
 var soul_reaps: Array = []
 var fire_zones: Array = []
 var raid: Dictionary = {}
+var roguelike = preload("res://scripts/roguelike.gd").new()
 var expedition = preload("res://scripts/expedition.gd").new()
 var mini_bosses = preload("res://scripts/mini_bosses.gd").new()
 var wild_bosses = preload("res://scripts/wild_bosses.gd").new()
@@ -71,8 +83,18 @@ const SEARCH_RANGE := 86.0
 func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_peer_left)
 	multiplayer.connected_to_server.connect(_connected)
-	multiplayer.connection_failed.connect(func(): disconnect_room(); message.emit("连接失败：请检查地址、防火墙和 UDP 24872 端口。"))
-	multiplayer.server_disconnected.connect(func(): disconnect_room(); message.emit("联机连接已断开。本局未结算的战利品不计入存档。"))
+	multiplayer.connection_failed.connect(func():
+		var p2p := p2p_attempt
+		var direct := not server_room and not p2p
+		disconnect_room()
+		if p2p: p2p_connect_failed.emit()
+		else:
+			message.emit("连接失败：请检查地址、防火墙和 UDP 24872 端口。")
+			if direct: direct_connect_failed.emit())
+	multiplayer.server_disconnected.connect(func():
+		var lobby_p2p := p2p_attempt and not running
+		disconnect_room()
+		message.emit("P2P 房主连接中断，正在检查服务器兜底…" if lobby_p2p else "联机连接已断开。本局未结算的战利品不计入存档。"))
 
 func my_id() -> int:
 	return multiplayer.get_unique_id() if online else 1
@@ -83,6 +105,7 @@ func authority() -> bool:
 func solo(config: Dictionary) -> void:
 	disconnect_room()
 	local_config=config
+	selected_mode="roguelike" if config.get("mode","")=="roguelike" else "expedition"
 	players[1]=make_player(1,config)
 	changed.emit()
 
@@ -95,20 +118,22 @@ func host(config: Dictionary) -> Error:
 	multiplayer.multiplayer_peer=peer
 	online=true
 	local_config=config
+	selected_mode="roguelike" if config.get("mode","")=="roguelike" else "expedition"
 	players[1]=make_player(1,config)
 	changed.emit()
 	return OK
 
-func join(address: String, config: Dictionary, port: int = PORT) -> Error:
+func join(address: String, config: Dictionary, port: int = PORT, local_port: int = 0, p2p: bool = false) -> Error:
 	disconnect_room()
 	local_config=config
 	var peer := ENetMultiplayerPeer.new()
-	var err := peer.create_client(address.strip_edges(),port)
+	var err := peer.create_client(address.strip_edges(),port,0,0,0,local_port)
 	if err != OK:
 		return err
 	multiplayer.multiplayer_peer=peer
 	online=true
-	connect_deadline=Time.get_ticks_msec()+15000
+	p2p_attempt=p2p
+	connect_deadline=Time.get_ticks_msec()+8000
 	return OK
 
 func disconnect_room() -> void:
@@ -119,7 +144,12 @@ func disconnect_room() -> void:
 	used_tickets.clear()
 	account_peers.clear()
 	connect_deadline=0
+	p2p_attempt=false
+	p2p_room_code=""
+	p2p_tickets.clear()
+	p2p_ticket_peers.clear()
 	running=false
+	selected_mode="expedition"
 	pending_ultimates.clear()
 	if multiplayer.multiplayer_peer:
 		multiplayer.multiplayer_peer.close()
@@ -149,6 +179,7 @@ func join_server(room: Dictionary, config: Dictionary) -> Error:
 	if err==OK:
 		server_room=true
 		room_code=str(room.code)
+		connect_deadline=Time.get_ticks_msec()+15000
 	return err
 
 func is_leader() -> bool:
@@ -157,6 +188,22 @@ func is_leader() -> bool:
 func request_launch() -> void:
 	if authority(): launch()
 	elif server_room: room_command.rpc_id(1,"launch")
+
+func select_mode(mode: String) -> void:
+	if running or mode not in ["expedition","roguelike"]: return
+	if authority(): apply_mode(my_id(),mode)
+	else: mode_request.rpc_id(1,mode)
+
+@rpc("any_peer","call_remote","reliable")
+func mode_request(mode: String) -> void:
+	if authority(): apply_mode(multiplayer.get_remote_sender_id(),mode)
+
+func apply_mode(id: int, mode: String) -> void:
+	if running or id!=leader_id or mode not in ["expedition","roguelike"]: return
+	if selected_mode==mode: return
+	selected_mode=mode
+	for p in players.values(): p.ready=false
+	push_lobby()
 
 func request_camp() -> void:
 	if authority(): return_to_camp()
@@ -197,6 +244,7 @@ func validate_ticket(id: int, config: Dictionary) -> bool:
 	return true
 
 func _connected() -> void:
+	connect_deadline=Time.get_ticks_msec()+15000
 	register.rpc_id(1,local_config)
 
 @rpc("any_peer","call_remote","reliable")
@@ -211,14 +259,24 @@ func register(config: Dictionary) -> void:
 	if dedicated and not validate_ticket(id,config):
 		rejected.rpc_id(id,"房间凭证失效，请重新通过服务器加入。")
 		return
+	if not p2p_room_code.is_empty():
+		var digest := str(config.get("_p2p_ticket","")).sha256_text()
+		if not p2p_tickets.has(digest) or (p2p_ticket_peers.has(digest) and p2p_ticket_peers[digest]!=id):
+			rejected.rpc_id(id,"P2P 房间凭证失效，请重新加入。")
+			return
+		p2p_ticket_peers[digest]=id
 	players[id]=make_player(id,config)
 	players[id].ready=id==leader_id
 	push_lobby()
 
 @rpc("authority","call_remote","reliable")
 func rejected(reason: String) -> void:
+	var p2p := p2p_attempt
 	disconnect_room()
 	message.emit(reason)
+	if p2p: p2p_connect_failed.emit()
+
+const Homestead = preload("res://scripts/homestead.gd")
 
 func make_player(id: int, config: Dictionary) -> Dictionary:
 	var h := clampi(int(config.get("hero",0)),0,Catalog.HEROES.size()-1)
@@ -228,7 +286,9 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	for i in 3:
 		talents[i]=clampi(int(talents[i]),0,5)
 	var gear := clampi(int(config.get("gear",0)),0,2)
-	var hp: float=Catalog.HEROES[h].hp+talents[0]*12+Catalog.GEAR[gear].hp
+	var attributes := WatcherAttributes.clean(config.get("attributes",{}))
+	var meal := Homestead.meal_id(config.get("home_meal",""))
+	var hp: float=Homestead.bonus({"home_meal":meal},"hp")+Catalog.HEROES[h].hp+talents[0]*12+Catalog.GEAR[gear].hp+WatcherAttributes.hp_bonus(attributes)
 	var storage := storage_from_config(config)
 	# A raid starts with nothing but the hero issue weapon: the four field weapons
 	# are loot, so the only way into a Watcher's hands is picking one up and
@@ -238,7 +298,10 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	# the backpack. The contents are run-local like everything worn, and the whole
 	# player dictionary travels through the ENet snapshot, so clients see them too.
 	var player := {"id":id,"name":str(config.get("name","守夜人")).left(16),"hero":h,"weapon":Catalog.starter_index(h),"swing_time":0.0,"swing_total":0.0,"pending_strike":false,"strike_aim":Vector2.RIGHT,"combo":0,"combo_timeout":0.0,"hitstop":0.0,"cast_time":0.0,"gear":gear,"talents":talents,"equipped":empty_equipment(),"slots":empty_item_slots(),"ready":id==leader_id,"p":Ruins.SPAWN,"aim":Vector2.RIGHT,"hp":hp,"max_hp":hp,"sanity":100.0,"status":"active","pocket":storage.pocket,"backpack":storage.backpack,"bags":storage.bags,"ammo":Catalog.HEROES[h].clip,"reserve":96,"attack":0.0,"reload":0.0,"skill":0.0,"dash":0.0,"invuln":0.0,"channel":0.0,"search":0.0,"search_ref":-1,"target":"","bleed":40.0,"kills":0,"scent":0.0,"crystals":0,"meds":clampi(int(config.get("meds",1)),1,3),"self_revive":true,"connected":true}
+	player["home_meal"]=meal
+	player.merge({"attributes":attributes,"mana":WatcherAttributes.max_mana(attributes),"max_mana":WatcherAttributes.max_mana(attributes),"mana_delay":0.0,"art_cd":0.0})
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
+	player.merge({"mode":str(config.get("mode","expedition")),"rogue_rerolls":clampi(int(config.get("rogue_rerolls",0)),0,5),"rogue_weapon":clampi(int(config.get("rogue_weapon",-1)),-1,Catalog.WEAPONS.size()-1)})
 	return player
 
 # What the player wears on top of the camp loadout: one weapon plus the three
@@ -348,35 +411,113 @@ func gear_bonus_of(p: Dictionary, slot: int) -> float:
 	return total
 
 func equipment_hp(p: Dictionary) -> float:
-	return gear_bonus_of(p,0)
+	return gear_bonus_of(p,0)+rogue_equipment_stat(p,"hp")
+
+const RogueEquipment = preload("res://scripts/rogue_equipment.gd")
+const RogueBuild = preload("res://scripts/rogue_build.gd")
+const RogueActions = preload("res://scripts/rogue_actions.gd")
+
+func rogue_equipment_stat(p: Dictionary, stat: String) -> float:
+	return RogueEquipment.total(p,stat) if roguelike.active(self) else 0.0
 
 func stat_defense(p: Dictionary) -> float:
+	if roguelike.active(self): return 1.0-(1.0-minf(.35,.05+rogue_equipment_stat(p,"defense")+RogueBuild.stat(self,p,"defense")))*(1.0-stat_resistance(p))
 	var reduction: float=Catalog.GEAR[p.gear].get("defense",0.0)
+	reduction+=rogue_equipment_stat(p,"defense")
 	for entry in kit_gear(p):
 		if entry is Dictionary and not entry.is_empty() and Catalog.gear_slot(entry)==0:
 			reduction+=Catalog.gear_defense(entry)
-	return clampf(reduction,0.0,0.30)
+	return 1.0-(1.0-clampf(reduction,0.0,0.30))*(1.0-stat_resistance(p))
+
+func attributes_of(p: Dictionary) -> Dictionary:
+	if roguelike.active(self): return RogueBuild.attributes(p)
+	var value: Variant=p.get("attributes",{})
+	return value if value is Dictionary else {}
+
+func stat_resistance(p: Dictionary) -> float:
+	return WatcherAttributes.resistance(attributes_of(p))
+
+func stat_discovery(p: Dictionary) -> float:
+	return WatcherAttributes.discovery(attributes_of(p))
+
+func enemy_drop_chance(e: Dictionary) -> float:
+	var killer: Dictionary=players.get(int(e.get("last",0)),{})
+	return clampf(Ecology.drop_chance(e)*stat_discovery(killer)/100.0,0.0,1.0)
+
+func weapon_scaling(p: Dictionary, index: int = -1) -> float:
+	var weapon_index := int(p.weapon) if index<0 else index
+	return WatcherAttributes.scaling(attributes_of(p),RogueBuild.grades(p,weapon_index) if roguelike.active(self) else Catalog.weapon(weapon_index).get("scaling",{}))
+
+func rogue_damage_pool(p: Dictionary) -> float:
+	return minf(1.2,float(p.get("rogue_damage",0))+Homestead.bonus(p,"damage")+p.talents[1]*.08+rogue_equipment_stat(p,"damage")+RogueBuild.stat(self,p,"damage"))
+
+func weapon_damage(p: Dictionary, index: int = -1, quality: int = -1) -> float:
+	if roguelike.active(self):
+		var at := int(p.weapon) if index<0 else index
+		var q: float=RogueBuild.quality(p) if quality<0 else RogueBuild.Content.QUALITY[clampi(quality,0,5)]
+		return float(Catalog.weapon(at).damage)*q*(1.0+weapon_scaling(p,at))*(1.0+rogue_damage_pool(p))
+	var weapon_index := int(p.weapon) if index<0 else index
+	var kit_bonus := equipment_damage(p)
+	if quality>=0:
+		kit_bonus=gear_bonus_of(p,1)+Catalog.WEAPON_DAMAGE_BONUS[Catalog.tier_of(quality)]
+	return float(Catalog.weapon(weapon_index).damage)*(1.0+weapon_scaling(p,weapon_index))*(1.0+float(p.get("rogue_damage",0))+Homestead.bonus(p,"damage")+p.talents[1]*0.08+charms_equipped(p)*0.12+Catalog.GEAR[p.gear].damage+kit_bonus)
+
+const ULTIMATE_MANA := 30.0
+const MANA_REGEN_DELAY := 1.5
+
+func spend_mana(p: Dictionary, cost: float) -> bool:
+	if cost<=0:
+		return true
+	if float(p.get("mana",0.0))<cost:
+		return false
+	p.mana=maxf(0.0,p.mana-cost)
+	p.mana_delay=MANA_REGEN_DELAY
+	if roguelike.active(self): RogueBuild.spend_event(self,p,cost)
+	return true
+
+func recover_mana(p: Dictionary, dt: float) -> void:
+	if p.status!="active":
+		return
+	if roguelike.active(self):
+		var waiting: float=float(p.get("mana_delay",0))
+		p.mana_delay=maxf(0,waiting-dt)
+		var delay: float=1.2 if RogueBuild.gear(p,65) else 1.5
+		var idle: float=maxf(0,dt-maxf(0,waiting-(MANA_REGEN_DELAY-delay)))
+		p.mana=minf(p.max_mana,p.mana+minf(180,p.max_mana)*(.025*dt+.025*idle)*(1+RogueBuild.stat(self,p,"regen")))
+		return
+	var waiting := maxf(0.0,float(p.get("mana_delay",0.0)))
+	p.mana_delay=maxf(0.0,waiting-dt)
+	var recovering := maxf(0.0,dt-waiting)
+	var casting_attack: bool = p.swing_time>0 and float(Catalog.weapon(int(p.weapon)).get("mana_cost",0.0))>0
+	if not casting_attack and p.cast_time<=0 and not pending_ultimates.has(int(p.id)):
+		var bonus := 1.5 if roguelike.active(self) and RogueEquipment.has(p,"clear_mind") and p.hp>=p.max_hp*0.8 else 1.0
+		p.mana=minf(p.max_mana,p.mana+recovering*p.max_mana*0.06*bonus)
 
 func incoming_damage(p: Dictionary, damage: float) -> float:
-	return maxf(0.0,damage)*(1.0-stat_defense(p))
+	if roguelike.active(self): return maxf(0,damage)*(1-stat_defense(p))*(1-RogueBuild.conditional_defense(self,p))
+	var bonus := 0.75 if roguelike.active(self) and RogueEquipment.has(p,"last_stand") and p.hp<p.max_hp*0.35 else 1.0
+	return maxf(0.0,damage)*(1.0-stat_defense(p))*(1.0-minf(0.4,float(p.get("rogue_defense",0))))*bonus
 
 func equipment_damage(p: Dictionary) -> float:
-	var total := gear_bonus_of(p,1)
+	if roguelike.active(self): return rogue_equipment_stat(p,"damage")
+	var total := gear_bonus_of(p,1)+rogue_equipment_stat(p,"damage")
 	if weapon_kit_active(p):
 		total+=Catalog.weapon_bonus(kit_weapon(p))
 	return total
 
 func equipment_speed(p: Dictionary) -> float:
-	return gear_bonus_of(p,2)
+	return gear_bonus_of(p,2)+rogue_equipment_stat(p,"speed")
 
 # Attack interval scale: an upgraded weapon swings faster.
 func equipment_rate(p: Dictionary) -> float:
+	if roguelike.active(self): return RogueBuild.interval(self,p)
 	if not weapon_kit_active(p):
 		return 1.0
 	return maxf(0.4,1.0-Catalog.weapon_rate_bonus(kit_weapon(p)))
 
 func stat_max_hp(p: Dictionary) -> float:
-	return Catalog.HEROES[p.hero].hp+p.talents[0]*12+Catalog.GEAR[p.gear].hp+equipment_hp(p)
+	if roguelike.active(self): return (Homestead.bonus(p,"hp")+Catalog.HEROES[p.hero].hp+p.talents[0]*12+rogue_equipment_stat(p,"hp")+WatcherAttributes.hp_bonus(attributes_of(p))+RogueBuild.stat(self,p,"hp"))*RogueBuild.hp_multiplier(p)
+	return Homestead.bonus(p,"hp")+float(p.get("rogue_hp",0))+Catalog.HEROES[p.hero].hp+p.talents[0]*12+Catalog.GEAR[p.gear].hp+equipment_hp(p)+WatcherAttributes.hp_bonus(attributes_of(p))
 
 # Recomputes the ceiling after gear changes: putting armour on grants the extra
 # health immediately, taking it off only clamps.
@@ -384,7 +525,9 @@ func refresh_max_hp(p: Dictionary) -> void:
 	var value := maxf(1.0,stat_max_hp(p))
 	var gain := value-float(p.max_hp)
 	p.max_hp=value
-	p.hp=minf(value,float(p.hp)+maxf(0.0,gain))
+	p.hp=minf(value,float(p.hp)+(0.0 if roguelike.active(self) else maxf(0.0,gain)))
+	p.max_mana=WatcherAttributes.max_mana(attributes_of(p))+rogue_equipment_stat(p,"mana")+(RogueBuild.stat(self,p,"mana") if roguelike.active(self) else 0)
+	p.mana=minf(float(p.get("mana",0)),p.max_mana)
 
 
 # Every player carries two storages: a permanent 4x4 dimensional pocket that is
@@ -434,6 +577,7 @@ func pocket_label(p: Dictionary) -> String:
 # Consumable and passive effects draw from both containers, so the pocket is a
 # usable reserve rather than a dead display case.
 func carried(p: Dictionary, kind: String) -> int:
+	if roguelike.active(self) and kind=="medicine": return int(p.get("flask",0))/25
 	return Catalog.container_count(p.backpack,kind)+Catalog.container_count(p.pocket,kind)
 
 # Blood crystals are a tally rather than a carried item: they occupy no cell and
@@ -452,6 +596,7 @@ func charms_carried(p: Dictionary) -> int:
 # Consumables are deterministic: the backpack is spent first and exactly one
 # item leaves the player, no matter how many containers hold the same kind.
 func spend(p: Dictionary, kind: String) -> bool:
+	if roguelike.active(self) and kind=="medicine": return false
 	if Catalog.container_count(p.backpack,kind)>0:
 		return Catalog.consume_container(p.backpack,kind)
 	if Catalog.container_count(p.pocket,kind)>0:
@@ -1185,12 +1330,13 @@ func apply_config(id: int, config: Dictionary) -> void:
 func push_lobby() -> void:
 	changed.emit()
 	if online:
-		lobby.rpc(players,leader_id)
+		lobby.rpc(players,leader_id,selected_mode)
 
 @rpc("authority","call_remote","reliable")
-func lobby(value: Dictionary, leader: int = 1) -> void:
+func lobby(value: Dictionary, leader: int = 1, mode: String = "expedition") -> void:
 	connect_deadline=0
 	leader_id=leader
+	selected_mode=mode
 	players=value
 	running=false
 	changed.emit()
@@ -1199,6 +1345,8 @@ func _peer_left(id: int) -> void:
 	if not authority():
 		return
 	inputs.erase(id)
+	for digest in p2p_ticket_peers.keys():
+		if p2p_ticket_peers[digest]==id: p2p_ticket_peers.erase(digest)
 	for user in account_peers.keys():
 		if account_peers[user]==id: account_peers.erase(user)
 	if dedicated and id==leader_id:
@@ -1226,8 +1374,9 @@ func leader_changed(value: int) -> void:
 func launch(_long_run: bool = false, fixed_seed: int = 0) -> bool:
 	if running or not authority() or players.is_empty():
 		return false
+	var mode: String=selected_mode
 	for p in players.values():
-		if not p.ready:
+		if not p.ready or str(p.get("mode","expedition"))!=mode:
 			message.emit("等待所有队友准备完毕。")
 			return false
 	seed_value=fixed_seed if fixed_seed!=0 else randi_range(1,9999999)
@@ -1245,16 +1394,17 @@ func launch(_long_run: bool = false, fixed_seed: int = 0) -> bool:
 			Catalog.add_item(players[id].backpack,"medicine")
 			players[id].backpack.items.back()["provision"]=true
 		i+=1
-	begin(seed_value,duration,players)
+	begin(seed_value,duration,players,mode)
 	if online:
-		begin.rpc(seed_value,duration,players)
+		begin.rpc(seed_value,duration,players,mode)
+	if roguelike.active(self): return true
 	for site in ruins.sites:
 		for j in (4 if site.tier==2 else 2):
 			spawn_enemy(site.p+Vector2(-120+j*80,-40),Ecology.POOLS[int(site.biome)][j%Ecology.POOLS[int(site.biome)].size()])
 	return true
 
 @rpc("authority","call_remote","reliable")
-func begin(value: int, seconds: float, roster: Dictionary) -> void:
+func begin(value: int, seconds: float, roster: Dictionary, mode: String = "expedition") -> void:
 	seed_value=value
 	duration=seconds
 	players=roster
@@ -1276,16 +1426,26 @@ func begin(value: int, seconds: float, roster: Dictionary) -> void:
 	elapsed=0.0
 	threat=0.0
 	spawn_timer=8.0
+	sync_timer=0.0
 	next_enemy=0
 	report_paid=false
 	running=true
-	expedition.reset(self)
+	selected_mode=mode
+	if mode=="roguelike":
+		roguelike.reset(self)
+	else:
+		expedition.reset(self)
 	started.emit()
 
 func _physics_process(delta: float) -> void:
 	if connect_deadline>0 and Time.get_ticks_msec()>connect_deadline:
+		var p2p := p2p_attempt
+		var direct := not server_room and not p2p
 		disconnect_room()
-		message.emit("连接房间超时，请检查服务器地址和 UDP 端口。")
+		if p2p: p2p_connect_failed.emit()
+		else:
+			message.emit("连接房间超时，请检查地址和 UDP 端口。")
+			if direct: direct_connect_failed.emit()
 	if not running:
 		return
 	input_timer-=delta
@@ -1300,7 +1460,10 @@ func _physics_process(delta: float) -> void:
 	simulate(delta)
 	sync_timer-=delta
 	if online and sync_timer<=0:
-		sync_timer=0.08
+		sync_timer+=0.1
+		if roguelike.active(self):
+			raid["visual_effects"]=roguelike.combat.effects
+			raid["visual_missiles"]=roguelike.combat.missiles
 		var packet := var_to_bytes([players,enemies,bullets,world_drops,ruins.chests,ruins.shrines,elapsed,objectives,threat,results,map_id,raid,ruins.sites])
 		snapshot.rpc(packet.compress(FileAccess.COMPRESSION_GZIP))
 
@@ -1313,7 +1476,8 @@ func input_packet(packet: Dictionary) -> void:
 		return
 	if not packet.move.is_finite() or not packet.aim.is_finite():
 		return
-	inputs[id]={"move":packet.move.limit_length(1),"aim":packet.aim.normalized(),"fire":bool(packet.get("fire",false)),"interact":bool(packet.get("interact",false)),"sprint":bool(packet.get("sprint",false))}
+	inputs[id]={"move":packet.move.limit_length(1),"aim":packet.aim.normalized(),"fire":bool(packet.get("fire",false)),"interact":bool(packet.get("interact",false)),"sprint":bool(packet.get("sprint",false)),"flask_held":bool(packet.get("flask_held",false))}
+	if packet.get("aim_point") is Vector2 and packet.aim_point.is_finite(): inputs[id]["aim_point"]=packet.aim_point
 
 @rpc("authority","call_remote","reliable",2)
 func snapshot(packet: PackedByteArray) -> void:
@@ -1322,11 +1486,22 @@ func snapshot(packet: PackedByteArray) -> void:
 	var data = bytes_to_var(packet.decompress_dynamic(2097152,FileAccess.COMPRESSION_GZIP))
 	if not data is Array or data.size() not in [12,13]:
 		return
-	if map_id!=str(data[10]):
+	var next_raid: Dictionary=data[11]
+	var rogue: bool=next_raid.get("mode","")=="roguelike"
+	var rebuild: bool=map_id!=str(data[10]) or (rogue and (raid.get("floor",0)!=next_raid.get("floor",0) or raid.get("area",0)!=next_raid.get("area",0)))
+	if rebuild:
 		map_id=str(data[10])
-		ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
-		ruins.generate(seed_value)
+		if rogue:
+			ruins=preload("res://scripts/rogue_map.gd").new()
+			ruins.generate(seed_value+int(next_raid.floor)*100+int(next_raid.area))
+			ruins.configure(int(next_raid.floor)-1,int(next_raid.area),next_raid.room not in ["shop","treasure","talent"],str(next_raid.room))
+		else:
+			ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
+			ruins.generate(seed_value)
 		map_changed.emit()
+	if rogue:
+		roguelike.combat.effects=next_raid.get("visual_effects",[])
+		roguelike.combat.missiles=next_raid.get("visual_missiles",[])
 	players=data[0]
 	enemies=data[1]
 	bullets=data[2]
@@ -1358,11 +1533,42 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 	if not running or not players.has(id):
 		return
 	var p: Dictionary=players[id]
+	if roguelike.active(self) and kind.begins_with("rogue_"):
+		roguelike.choose(self,p,kind,payload)
+		return
+	# Run equipment is managed by rewards; campaign storage actions do not apply.
+	if roguelike.active(self) and kind in ["bag_move","bag_rotate","use","equip","unequip","unequip_stow","unwear_bag","equip_bag","bag_swap","slot_put","slot_take","slot_drop","slot_apply","search","pickup","loot_take","loot_drop","auto_store","drop","bag_drop","move_to"]: return
 	if kind=="raid_choice":
 		expedition.choose(self,id,str(payload.get("choice","")))
 		return
+	if roguelike.active(self):
+		if kind=="break_combo": p.build_inputs=[]; return
+		if kind=="heal":
+			RogueBuild.drink(self,p)
+			return
+		if kind=="jump":
+			RogueBuild.jump(self,p)
+			return
+		if kind=="attack":
+			p["build_attack_edge"]=true
+			p["build_attack_edge_until"]=elapsed+.20
+			attack(p)
+			return
+		if p.flask_time>0:
+			if kind=="dash": p.flask_time=0.0; p["flask_pending_commit"]=false
+			else: return
+		if kind=="skill" and p.height>0:
+			if p.height_velocity<0 and p.height<=35: p["build_pending_action"]={"kind":kind,"expires":elapsed+.15}
+			return
+		if kind in ["skill","weapon_art"] and p.cast_time>0:
+			if not p.has("build_pending_art") and p.cast_time<=.2: p["build_pending_action"]={"kind":kind,"expires":elapsed+.2}
+			return
+		if kind in ["skill","weapon_art"] and p.swing_time>0:
+			if not p.pending_strike and maxf(p.swing_time,p.attack)<=.2: p["build_pending_action"]={"kind":kind,"expires":elapsed+.2}
+			return
 	if pending_ultimates.has(id):
-		return
+		if roguelike.active(self) and kind=="dash": cancel_ultimate(id); p.cast_time=0.0
+		else: return
 	if p.status not in ["active","down"]:
 		return
 	if kind=="heal":
@@ -1374,18 +1580,21 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		return
 	if p.status!="active":
 		return
-	if p.dodge_time>0 and kind in ["skill","reload"]:
+	if p.dodge_time>0 and kind in ["skill","weapon_art","reload"]:
 		return
 	match kind:
+		"weapon_art": release_weapon_art(p)
 		"reload": reload_player(p)
 		"dash":
-			if p.dash<=0:
+			if p.dash<=0 and (not roguelike.active(self) or p.height<=0 or not p.air_dodge):
 				var direction: Vector2=inputs.get(id,{}).get("move",p.aim)
 				if direction.length()<0.1:
 					direction=p.aim
 				if direction.length()<0.1:
 					direction=Vector2.RIGHT
 				p.dodge_dir=direction.normalized()
+				p["attack_buffer"]=0.0
+				if not roguelike.active(self) or p.pending_strike: p.combo_timeout=0.0
 				p.dodge_time=DODGE_DURATION
 				p.motion="dodge"
 				p.pending_strike=false
@@ -1393,12 +1602,25 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p.cast_time=0.0
 				p.channel=0.0
 				p.dash=2.0
-				p.invuln=maxf(p.invuln,0.4)
+				p.invuln=maxf(p.invuln,.18 if roguelike.active(self) else .4)
+				if roguelike.active(self):
+					if p.height>0:
+						p.air_dodge=true; p.dodge_time=.18; p.invuln=.08
+					p.dash=2.0*(1.0-RogueBuild.stat(self,p,"dodge_cdr"))
+					RogueBuild.action_event(self,p,"D")
 				broadcast_combat({"kind":"dodge","p":p.p,"aim":p.dodge_dir,"id":id})
 				emit_effect("dash",p.p)
 		"skill":
 			if p.skill<=0:
+				if not spend_mana(p,RogueBuild.mana_cost(self,p,ULTIMATE_MANA,"skill") if roguelike.active(self) else ULTIMATE_MANA):
+					if id==my_id(): message.emit("蓝量不足：奥义需要 30 蓝量。")
+					return
+				p["attack_buffer"]=0.0
+				p.combo_timeout=0.0
 				p.skill=18.0
+				if roguelike.active(self):
+					RogueBuild.action_event(self,p,"U")
+					p["build_skill_context"]=RogueBuild.context(self,p,"skill")
 				p.pending_strike=false
 				p.swing_time=0.0
 				p.reload=0.0
@@ -2163,6 +2385,9 @@ func release_ultimate(id: int) -> void:
 	var aim: Vector2=cast.aim
 	# The necromancer's rectangle is placed at release, not where the key was
 	# pressed, so her windup ends in a swing the player can still steer.
+	if roguelike.active(self):
+		RogueBuild.hero_skill(self,p,aim)
+		return
 	if p.hero==NECROMANCER:
 		cast_soul_reap(p,aim)
 		return
@@ -2177,7 +2402,7 @@ func release_ultimate(id: int) -> void:
 	else:
 		p.invuln=maxf(p.invuln,1.0)
 		var quality_bonus := Catalog.weapon_bonus(kit_weapon(p)) if weapon_kit_active(p) else 0.0
-		var ultimate_damage := 115.0*(1.0+0.5*quality_bonus)
+		var ultimate_damage := 115.0*(1.0+0.5*quality_bonus)*(1.0+weapon_scaling(p,Catalog.starter_index(int(p.hero))))
 		for e in enemies:
 			var offset: Vector2=e.p-p.p
 			var reach := 210 if p.hero==2 else 460
@@ -2222,7 +2447,8 @@ func cast_soul_reap(p: Dictionary, aim: Vector2) -> void:
 # Every ultimate in the game pays the same multipliers: talents, charms, camp
 # gear and whatever the Watcher is actually holding.
 func ultimate_damage(p: Dictionary, base: float) -> float:
-	return base*(1.0+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
+	if roguelike.active(self): return base/90.0*RogueBuild.unit(self,p,true)
+	return base*(1.0+weapon_scaling(p,Catalog.starter_index(int(p.hero))))*(1.0+float(p.get("rogue_damage",0))+Homestead.bonus(p,"damage")+p.talents[1]*0.08+mini(3,charms_carried(p))*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
 
 # The rectangle the rain covers, as a plain geometric test so aiming, damage and
 # the drawn patch all agree on exactly which ground is on fire.
@@ -2304,7 +2530,7 @@ func update_burns(dt: float) -> void:
 			e.erase("burn_pulses")
 
 func reload_player(p: Dictionary) -> void:
-	var clip: int=16
+	var clip: int=RogueActions.clip(p) if roguelike.active(self) else 16
 	# Only the rifle family consumes ammunition; the issue weapons never do, so
 	# R on a sword, greatsword or staff is simply ignored.
 	if Catalog.weapon_family(p.weapon)!=0:
@@ -2314,28 +2540,40 @@ func reload_player(p: Dictionary) -> void:
 	if p.reserve<=0 and spend(p,"ammo"):
 		p.reserve+=48
 	if p.reserve>0:
-		p.reload=1.3
+		p.reload=1.3*(1-minf(.25,RogueBuild.r(p,19,[.08,.12,.16])+RogueBuild.buff(p,"reload_haste",elapsed))) if roguelike.active(self) else 1.3
 		broadcast_audio("reload",p)
 
 func simulate(dt: float) -> void:
 	elapsed+=dt
-	expedition.tick(self,dt)
+	for actor in players.values(): actor["boss_slow"]=0.0
+	if roguelike.active(self):
+		for zone_data in roguelike.combat.effects:
+			if zone_data.get("choreographed",false): BossChoreography.modifiers(self,zone_data,0.0)
+	BossChoreography.advance(self,dt)
+	if not roguelike.active(self): expedition.tick(self,dt)
 	# Entering a habitat commits its current defenders. Refill and scent spawns
 	# cannot prolong an encounter after the party has started clearing it.
-	if map_id=="border":
+	if map_id=="border" and not roguelike.active(self):
 		for p in players.values():
 			if p.status!="active": continue
 			var block := Ecology.block_at(ruins,p.p)
 			if block>=0 and Ecology.remaining(self,block)>0: ruins.sites[block].engaged=true
 	threat=clampf(float(raid.day-1)*0.35+float(raid.time)/duration,0,1.6)
 	spawn_timer-=dt
-	if raid.phase=="explore" and map_id=="border" and spawn_timer<=0 and enemies.size()<65:
+	# Opening the map already places about 52 site defenders. Keep only a small
+	# refill margin rather than growing the live population toward the old 65 cap.
+	var ambient_limit := 52+mini(players.size(),4)*2
+	if raid.phase=="explore" and map_id=="border" and spawn_timer<=0 and enemies.size()<ambient_limit:
 		spawn_timer=maxf(2.0,9.0-threat*6.0)
-		for i in players.size():
-			spawn_enemy()
+		for i in mini(2,ambient_limit-enemies.size()):
+			spawn_enemy(Vector2.ZERO,-1,true)
 	for id in players:
 		var p: Dictionary=players[id]
-		for key in ["attack","skill","dash","invuln","combo_timeout","cast_time"]:
+		if roguelike.active(self):
+			RogueBuild.tick(self,p,dt)
+			RogueActions.tick(self,p,dt)
+			RogueActions.tail(self,p,dt)
+		for key in ["attack","skill","dash","invuln","combo_timeout","cast_time","art_cd"]:
 			p[key]=maxf(0,p[key]-dt)
 		if p.status=="down":
 			p.bleed-=dt
@@ -2344,6 +2582,7 @@ func simulate(dt: float) -> void:
 			continue
 		if p.status!="active":
 			continue
+		recover_mana(p,dt)
 		if pending_ultimates.has(id):
 			pending_ultimates[id].remaining-=dt
 			if pending_ultimates[id].remaining<=0:
@@ -2352,47 +2591,70 @@ func simulate(dt: float) -> void:
 			p.hitstop=maxf(0,p.hitstop-dt)
 		else:
 			p.swing_time=maxf(0,p.swing_time-dt)
-			if p.pending_strike and p.swing_total-p.swing_time>=Catalog.weapon(p.weapon).windup:
+			if p.pending_strike and p.swing_total-p.swing_time>=float(p.get("build_strike_windup",Catalog.weapon(p.weapon).windup)):
 				p.pending_strike=false
 				release_strike(p)
 		if p.reload>0:
 			p.reload-=dt
 			if p.reload<=0:
-				var count: int=mini(16-p.ammo,p.reserve)
+				var count: int=mini((RogueActions.clip(p) if roguelike.active(self) else 16)-p.ammo,p.reserve)
 				p.ammo+=count
 				p.reserve-=count
+				if roguelike.active(self): RogueBuild.reload_event(self,p)
 				broadcast_audio("reload-end",p)
 		var cmd: Dictionary=inputs.get(id,{})
+		if roguelike.active(self) and not p.get("rogue_selection",{}).is_empty(): cmd={}
 		var direction: Vector2=cmd.get("move",Vector2.ZERO)
 		if pending_ultimates.has(id):
 			direction=Vector2.ZERO
 		else:
 			p.aim=cmd.get("aim",Vector2.RIGHT)
-		var speed: float=Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed+equipment_speed(p)
+		var speed: float=Homestead.bonus(p,"speed")+Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed+equipment_speed(p)
+		speed+=float(p.get("rogue_speed",0))
+		speed*=1.0-float(p.get("boss_slow",0))
+		if roguelike.active(self):
+			speed=minf(Catalog.HEROES[p.hero].speed+70,speed+RogueBuild.stat(self,p,"speed"))
+			speed*=1.0-float(p.get("rogue_slow",0))*(.75 if RogueBuild.gear(p,64) else 1.0)
+			if p.height>0: speed*=.7
+			if p.flask_time>0: speed*=.5
 		move_player(p,direction,bool(cmd.get("sprint",false)),dt,speed)
+		if roguelike.active(self):
+			p.sanity=100.0
 		auto_pickup_crystals(p)
 		p.scent=move_toward(p.scent,float(crystals_carried(p)*8),dt*0.5)
 		if raid.phase not in ["choice","complete"]:
-			p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002))
+			p.sanity=maxf(0,p.sanity-dt*(0.035+threat*0.055+p.scent*0.002)*(1.0-stat_resistance(p)))
 		if map_id=="border" and p.p.distance_to(safe_center())>safe_radius():
-			p.hp-=dt*(4+threat*5)
-			p.sanity=maxf(0,p.sanity-dt*1.4)
+			p.hp-=incoming_damage(p,dt*(4+threat*5))
+			p.sanity=maxf(0,p.sanity-dt*1.4*(1.0-stat_resistance(p)))
 		if p.sanity<=0 and raid.phase not in ["choice","complete"]:
-			p.hp-=dt*3
+			p.hp-=incoming_damage(p,dt*3)
 		if raid.phase=="explore" and map_id=="border" and p.scent>38 and rng.randf()<dt*0.04 and enemies.size()<70:
 			spawn_enemy(p.p+Vector2(300,0))
 			p.scent-=10
+		if roguelike.active(self) and p.has("build_pending_action"):
+			var buffered: Dictionary=p.build_pending_action
+			if elapsed>float(buffered.expires): p.erase("build_pending_action")
+			elif p.swing_time<=0 and p.attack<=0 and p.cast_time<=0 and (buffered.kind!="skill" or p.height<=0):
+				p.erase("build_pending_action"); perform(id,str(buffered.kind))
+		p["attack_buffer"]=maxf(0,float(p.get("attack_buffer",0))-dt)
 		if bool(cmd.get("fire",false)):
 			attack(p)
+		elif float(p.get("attack_buffer",0))>0 and int(p.get("buffer_weapon",-1))==int(p.weapon) and p.attack<=0 and p.swing_time<=0:
+			attack(p)
+
 		interact(p,bool(cmd.get("interact",false)) and p.dodge_time<=0 and not pending_ultimates.has(id),dt)
 		advance_search(p,dt)
 		if p.hp<=0:
 			down(p)
+	if roguelike.active(self): RogueBuild.tick_enemies(self,dt)
 	update_enemies(dt)
 	update_soul_reaps(dt)
 	update_fire_zones(dt)
 	update_burns(dt)
 	update_bullets(dt)
+	if roguelike.active(self):
+		for player in players.values(): RogueBuild.commit_flask(self,player)
 	var defeated_boss := false
 	# A death is settled after the sweep rather than during it: a boss's own
 	# reward path may raise the next encounter, and that rewrites the enemy list
@@ -2403,31 +2665,38 @@ func simulate(dt: float) -> void:
 		if e.hp>0:
 			continue
 		fallen.append(e)
-		if e.get("raid_boss",false) or e.get("mini_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
+		if roguelike.active(self): RogueBuild.enemy_experience(self,e)
+		if roguelike.active(self) and players.has(int(e.last)): RogueBuild.killed(self,players[int(e.last)],e)
+		if e.get("boss_construct",false):
+			broadcast_combat({"kind":"boss-construct-break","p":e.p,"art_key":e.art_key,"vfx_role":e.vfx_role,"id":e.id})
+			continue
+		if e.get("rogue_guardian",false): roguelike.combat.defeated(self,e)
+		elif e.get("raid_boss",false) or e.get("mini_boss",false) or int(e.type)==4: BossPresentation.send(self,e,"fall")
 		resolve_site_defeat(e)
 		if e.get("dragon_boss",false): dragon_boss.defeated(self,e)
 		elif e.get("hidden_final",false): expedition.hidden_victory(self)
 		elif e.get("wild_boss",false): wild_bosses.defeated(self,e)
 		elif e.get("mini_boss",false): mini_bosses.defeated(self,e)
-		if players.has(e.last):
+		if players.has(e.last) and not e.get("rogue_summoned",false):
 			players[e.last].kills+=1
 		if e.get("raid_boss",false):
 			defeated_boss=true
 		elif e.type==4 and not e.get("mini_boss",false):
 			if map_id=="city": ruins.sites[0]["boss_defeated"]=true
-		elif rng.randf()<Ecology.drop_chance(e):
+		elif not roguelike.active(self) and not e.get("rogue_summoned",false) and rng.randf()<enemy_drop_chance(e):
 			var loot := enemy_loot(e)
 			if str(loot.kind)==CRYSTAL_DROP:
 				world_drops.append(crystal_drop(e.p,rng.randi_range(1,3)))
 			else:
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 		emit_effect("hit",e.p)
-		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"id":e.id})
+		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"rogue_floor":e.get("rogue_skin",-1),"rogue_minion":e.get("rogue_minion",false),"rogue_guardian":e.get("rogue_guardian",false),"id":e.id})
 	for e in fallen:
 		enemies.erase(e)
 	if map_id=="city" and ruins.sites[0].get("boss_defeated",false) and not ruins.sites[0].get("cleared",false) and enemies.is_empty():
 		ruins.sites[0]["cleared"]=true
 		knight_reward(RoyalCity.BOSS)
+	if roguelike.active(self): roguelike.tick(self,dt)
 	if defeated_boss:
 		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
 		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("map_boss_defeats",{}).size()>=2: wild_bosses.spawn_final(self)
@@ -2443,13 +2712,20 @@ func simulate(dt: float) -> void:
 	for p in players.values():
 		if p.status in ["active","down"]:
 			alive=true
-	if not alive:
+	if roguelike.active(self):
+		var standing := false
+		for p in players.values():
+			if p.status=="active" and p.connected: standing=true
+		raid["party_down_time"]=0.0 if standing else float(raid.get("party_down_time",0))+dt
+		if float(raid.party_down_time)>=3: roguelike.settle(self)
+	elif not alive:
 		settle()
 
 func safe_center() -> Vector2:
 	return raid.get("center",Ruins.CENTER)
 
 func safe_radius() -> float:
+	if roguelike.active(self): return 10000.0
 	if map_id=="city": return 10000.0
 	if raid.is_empty(): return Ruins.SIZE.length()
 	if raid.phase in ["choice","complete"]: return Ruins.SIZE.length()
@@ -2462,6 +2738,7 @@ func safe_radius() -> float:
 	return lerpf(full,final_radius,clampf((float(raid.time)-SHRINK_START)/maxf(1.0,duration-SHRINK_START),0,1))
 
 func can_extract() -> bool:
+	if roguelike.active(self): return false
 	return not raid.is_empty() and (raid.day==2 or raid.phase=="complete")
 
 # --- the hidden ending -------------------------------------------------------
@@ -2496,13 +2773,14 @@ func hidden_ending_ready() -> bool:
 	return bells_lit()>=BELL_SEALS and not amulet_carrier().is_empty()
 
 func can_travel() -> bool:
+	if roguelike.active(self): return false
 	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<SHRINK_START)
 
 func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
 	var before: Vector2=p.p
 	if p.dodge_time>0:
 		var step := minf(dt,p.dodge_time)
-		p.p=ruins.move(p.p,p.dodge_dir*(DODGE_DISTANCE/DODGE_DURATION)*step)
+		p.p=ruins.move(p.p,p.dodge_dir*((80.0/.18 if p.get("height",0)>0 else DODGE_DISTANCE/DODGE_DURATION)*(1.12 if roguelike.active(self) and RogueBuild.gear(p,61) else 1.0))*step)
 		p.dodge_time=maxf(0,p.dodge_time-dt)
 		p.move_dir=p.dodge_dir
 		p.motion="dodge" if p.dodge_time>0 else "idle"
@@ -2511,7 +2789,10 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 		var running_now := sprint and not active_attack and direction.length()>0.1
 		var multiplier := RUN_MULTIPLIER if running_now else 1.0
 		if p.swing_time>0 and Catalog.weapon_family(p.weapon)==2:
-			multiplier*=0.48
+			multiplier*=(.6 if RogueBuild.weapon_id(p)==20 else .7)+(.15 if RogueBuild.gear(p,55) else 0)+(.05 if RogueBuild.core(p,4)==1 else .1 if RogueBuild.core(p,4)==2 else 0) if roguelike.active(self) else .48
+		if roguelike.active(self):
+			if p.reload>0: multiplier*=.9 if RogueBuild.gear(p,57) else .6
+			elif active_attack and Catalog.weapon_family(p.weapon)!=2: multiplier*=.65 if RogueBuild.weapon_id(p)==45 else .9 if RogueBuild.weapon_id(p)==33 else 1.0 if RogueBuild.gear(p,18) and Catalog.weapon_family(p.weapon)==1 else .8
 		p.p=ruins.move(p.p,direction.limit_length(1)*speed*dt*multiplier)
 		if direction.length()>0.1:
 			p.move_dir=direction.normalized()
@@ -2524,6 +2805,8 @@ func down(p: Dictionary) -> void:
 	cancel_ultimate(p.id)
 	p.hp=0
 	p.status="down"
+	p["attack_buffer"]=0.0
+	p.combo_timeout=0.0
 	p.bleed=35
 	p.pending_strike=false
 	p.swing_time=0.0
@@ -2531,20 +2814,36 @@ func down(p: Dictionary) -> void:
 	p.motion="idle"
 	p.channel=0
 	# Going down scatters the droppable storage only; the pocket stays sealed.
-	spill_storage(p)
+	if roguelike.active(self):
+		p.flask_time=0.0; p.height=0.0; p.height_velocity=0.0
+		p["flask_pending_commit"]=false
+		p.build_inputs=[]; p.build_summons=[]; p.build_fields=[]
+		p.erase("build_pending_art"); p.erase("build_pending_art_tail"); p.erase("build_pending_action")
+	else: spill_storage(p)
 	emit_effect("hurt",p.p)
 	broadcast_audio("down",p)
 
 func attack(p: Dictionary) -> void:
+	if roguelike.active(self) and elapsed>float(p.get("build_attack_edge_until",-1)): p.build_attack_edge=false
+	if roguelike.active(self) and (p.flask_time>0 or (p.height>0 and p.air_attacks>=2)): return
+	if roguelike.active(self) and raid.phase!="rogue_combat": return
 	if p.attack>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or p.status!="active":
+		if roguelike.active(self) and p.status=="active" and p.dodge_time>0 and p.dodge_time<=.08:
+			p.attack_buffer=.20; p.buffer_weapon=int(p.weapon)
+		if p.status=="active" and p.reload<=0 and p.cast_time<=0 and p.dodge_time<=0 and p.hitstop<=0 and not p.pending_strike and maxf(p.attack,p.swing_time)<=.18:
+			p["attack_buffer"]=.22
+			p["buffer_weapon"]=int(p.weapon)
 		return
+	p["attack_buffer"]=0.0
 	var family := Catalog.weapon_family(p.weapon)
 	var weapon: Dictionary=Catalog.weapon(p.weapon)
 	if family==0 and p.ammo<=0:
 		reload_player(p)
 		return
+	if not spend_mana(p,RogueBuild.mana_cost(self,p,float(weapon.get("mana_cost",0)),"attack") if roguelike.active(self) else float(weapon.get("mana_cost",0.0))):
+		return
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
-	p.combo_timeout=1.2
+	p.combo_timeout=maxf(1.2,float(weapon.rate)*equipment_rate(p)+.65)
 	# A looted weapon of matching quality swings faster than the issue weapon.
 	var rate: float=weapon.rate*equipment_rate(p)
 	p.attack=rate
@@ -2552,8 +2851,15 @@ func attack(p: Dictionary) -> void:
 	p.swing_time=rate
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=true
-	# Every consumer of a combat event wants the four-way art/effect family, not
-	# the index of the exact weapon; a hero issue weapon borrows its family's.
+	if roguelike.active(self):
+		if p.get("build_attack_edge",false): RogueBuild.action_event(self,p,"A"); p.build_attack_edge=false
+		if p.height>0: p.air_attacks+=1
+		p["build_strike_context"]=RogueBuild.context(self,p,"attack")
+		p["build_strike_windup"]=float(weapon.windup)/(1.0+minf(.25,RogueBuild.stat(self,p,"rate")))
+		if p.height>0 and family==3 and RogueBuild.core(p,10)>0: p.build_strike_windup=maxf(.25,float(p.build_strike_windup)*(.95 if RogueBuild.core(p,10)==1 else .92))
+		if p.height>0 and family==2: p.build_strike_windup=maxf(.45,float(p.build_strike_windup)); p.air_attacks=2
+	# Animation consumers use the family; broadcast_combat also adds the exact
+	# weapon index so presentation and projectiles keep their individual artwork.
 	# The necromancer also fires a caster cue, because her issue weapon imitates
 	# the one-handed family and would otherwise read as a plain sword swing.
 	broadcast_combat({"kind":"windup","p":p.p,"aim":p.strike_aim,"weapon":family,"spell":str(weapon.get("spell","star")),"windup":float(weapon.windup),"id":p.id,"combo":p.combo})
@@ -2563,29 +2869,88 @@ func attack(p: Dictionary) -> void:
 		p.pending_strike=false
 		release_strike(p)
 
+func release_weapon_art(p: Dictionary) -> bool:
+	if roguelike.active(self): return RogueActions.start_art(self,p)
+	if not authority() or p.status!="active" or p.art_cd>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or pending_ultimates.has(int(p.id)):
+		return false
+	var move := WeaponArts.of(int(p.weapon))
+	if roguelike.active(self) and (p.flask_time>0 or (p.height>0 and p.air_art)): return false
+	if not spend_mana(p,RogueBuild.mana_cost(self,p,float(move.mana),"art") if roguelike.active(self) else float(move.mana)):
+		if int(p.id)==my_id(): message.emit("蓝量不足：%s需要 %d 蓝量。" % [move.name,move.mana])
+		return false
+	p.art_cd=float(move.cooldown)
+	var build_ctx: Dictionary={}
+	if roguelike.active(self):
+		p.art_cd=maxf(3,float(move.cooldown)*(1.0-RogueBuild.stat(self,p,"art_cdr"))*(1.15 if RogueBuild.rank(p,64)>0 else 1.0))
+		p["build_art_base"]=p.art_cd
+		if p.height>0: p.air_art=true
+		RogueBuild.action_event(self,p,"S")
+		build_ctx=RogueBuild.context(self,p,"art")
+	p.cast_time=0.35
+	p.attack=maxf(p.attack,0.35)
+	p.channel=0.0
+	var aim: Vector2=p.aim.normalized()
+	if aim.length_squared()<0.1: aim=Vector2.RIGHT
+	var family := Catalog.weapon_family(int(p.weapon))
+	var damage := weapon_damage(p)*float(move.damage)
+	var reach := float(move.reach)
+	var kind := str(move.kind)
+	var spell := str(move.get("spell",Catalog.weapon(int(p.weapon)).get("spell","star")))
+	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name})
+	if kind=="volley":
+		var count := int(move.get("count",3))
+		var speed := float(Catalog.weapon(int(p.weapon)).get("speed",850.0))
+		var pellet_hits: Dictionary = {}
+		for i in count:
+			var direction := aim.rotated((i-(count-1)*0.5)*0.12)
+			var shot := {"p":p.p+direction*23,"v":direction*speed,"life":reach/speed,"damage":damage,"build_context":build_ctx,"owner":p.id,"weapon":family,"weapon_index":int(p.weapon),"spell":spell,"knock":20.0,"remaining":int(move.get("pierce",1)),"hit_ids":[]}
+			if spell=="scatter": shot["pellet_hits"]=pellet_hits
+			shot["ground_origin"]=p.p
+			bullets.append(shot)
+		return true
+	var center: Vector2=p.p
+	if kind=="burst":
+		# Keep the impact on the caster's side of walls.
+		center=ruins.move(p.p,aim*reach)
+		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell})
+	elif kind=="beam":
+		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell})
+	for e in enemies:
+		if e.hp<=0 or not ruins.clear_line(p.p,e.p): continue
+		var delta: Vector2=e.p-p.p
+		var hit := false
+		match kind:
+			"thrust", "beam", "circle", "cone": hit=enemy_bodies.attack_hit(e,p.p,aim,reach,elapsed,false,kind,float(move.get("width",35.0)),-0.35)
+			"burst": hit=enemy_bodies.attack_hit(e,center,aim,float(move.get("radius",180.0)),elapsed,false,"circle") and ruins.clear_line(center,e.p)
+		if hit:
+			var push: Vector2=(e.p-center).normalized()
+			var force := 55.0 if family in [1,2] else 25.0
+			if move.has("pull"):
+				push=(center-e.p).normalized()
+				force=minf(float(move.pull),e.p.distance_to(center))
+			damage_enemy(e,damage,int(p.id),push,force,family,-1,build_ctx)
+	return true
+
 func release_strike(p: Dictionary) -> void:
+	if roguelike.active(self): RogueActions.normal(self,p); return
 	var family := Catalog.weapon_family(p.weapon)
 	var w: Dictionary=Catalog.weapon(p.weapon)
 	var direction: Vector2=p.strike_aim
-	var damage: float=w.damage*(1+p.talents[1]*0.08+charms_equipped(p)*0.12+Catalog.GEAR[p.gear].damage+equipment_damage(p))
+	var damage: float=weapon_damage(p)
+	var build_ctx: Dictionary=p.get("build_strike_context",{}) if roguelike.active(self) else {}
 	if family==1 and p.combo==2:
-		damage*=1.4
+		damage*=1.2 if roguelike.active(self) and RogueBuild.weapon_id(p)==4 else 1.0 if roguelike.active(self) and RogueBuild.weapon_id(p)==12 else 1.4
 	var spell := str(w.get("spell","star"))
 	var pattern := str(w.get("pattern",""))
 	broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"spell":spell,"pattern":pattern,"reach":float(w.reach),"id":p.id,"combo":p.combo})
 	if family in [1,2]:
 		for e in enemies:
 			var v: Vector2=e.p-p.p
-			if e.hp<=0 or v.length()>=w.reach or not ruins.clear_line(p.p,e.p):
+			if e.hp<=0 or not ruins.clear_line(p.p,e.p):
 				continue
-			var facing: float=v.normalized().dot(direction)
-			var hits := facing>-0.1
-			match pattern:
-				"thrust": hits=v.dot(direction)>0 and absf(v.cross(direction))<26
-				"spin", "quake": hits=true
-				"cleave": hits=facing>-0.35
+			var hits: bool=enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),elapsed,false,pattern,26.0,-0.35 if pattern=="cleave" else -0.1)
 			if hits:
-				damage_enemy(e,damage,p.id,v.normalized() if pattern in ["spin","quake"] else direction,w.knock,family)
+				damage_enemy(e,damage,p.id,v.normalized() if pattern in ["spin","quake"] else direction,w.knock,family,-1,build_ctx)
 	else:
 		if family==0:
 			p.ammo-=1
@@ -2596,19 +2961,31 @@ func release_strike(p: Dictionary) -> void:
 			# sight rule as melee, then its full path is drawn on every client.
 			for e in enemies:
 				var delta: Vector2=e.p-p.p
-				if e.hp>0 and delta.dot(direction)>0 and delta.dot(direction)<w.reach and absf(delta.cross(direction))<30 and ruins.clear_line(p.p,e.p):
-					damage_enemy(e,damage,p.id,direction,w.knock,3)
+				if e.hp>0 and enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),elapsed,false,"beam",30.0) and ruins.clear_line(p.p,e.p):
+					damage_enemy(e,damage,p.id,direction,w.knock,3,-1,build_ctx)
 			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell})
 		else:
 			var count := 5 if spell=="scatter" else 1
 			var pellet_hits: Dictionary = {}
 			for shot in count:
 				var shot_dir: Vector2=direction.rotated((float(shot)-2.0)*0.15) if count==5 else direction
-				var projectile := {"p":p.p+shot_dir*23,"v":shot_dir*float(w.get("speed",850.0 if family==0 else 620.0)),"life":float(w.reach)/float(w.get("speed",850.0 if family==0 else 620.0)),"damage":damage,"owner":p.id,"weapon":family,"spell":spell,"knock":float(w.knock),"remaining":5 if spell=="eclipse" else 4 if spell=="moon" else 2 if spell=="arrow" else 1,"hit_ids":[]}
+				var projectile := {"p":p.p+shot_dir*23,"v":shot_dir*float(w.get("speed",850.0 if family==0 else 620.0)),"life":float(w.reach)/float(w.get("speed",850.0 if family==0 else 620.0)),"damage":damage,"build_context":build_ctx,"owner":p.id,"weapon":family,"weapon_index":int(p.weapon),"spell":spell,"knock":float(w.knock),"remaining":5 if spell=="eclipse" else 4 if spell=="moon" else 2 if spell=="arrow" else 1,"hit_ids":[]}
 				if spell=="scatter": projectile["pellet_hits"]=pellet_hits
+				projectile["ground_origin"]=p.p
 				bullets.append(projectile)
 
-func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1) -> void:
+func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1, weapon_index: int = -1, build_context: Dictionary = {}) -> void:
+	if e.get("boss_construct",false):
+		e.hp-=damage
+		e.last=owner
+		e.flash=.12
+		broadcast_combat({"kind":"impact","p":e.p,"aim":direction,"damage":damage,"id":owner,"enemy_id":e.id,"heavy":false})
+		return
+	var hp_before: float=maxf(0,float(e.hp))
+	if roguelike.active(self) and players.has(owner) and hp_before>0:
+		damage*=RogueBuild.hit_multiplier(self,players[owner],e,build_context)
+		e["build_shield_bonus"]=minf(.6,RogueBuild.r(players[owner],12,[.15,.25,.35])+(.30 if RogueBuild.weapon_id(players[owner])==34 else 0))
+	if e.get("rogue_minion",false): damage=roguelike.combat.minions.absorb(self,roguelike.combat,e,damage,direction)
 	var block := int(e.get("habitat",-1))
 	if map_id=="border" and block>=0 and damage>0: ruins.sites[block].engaged=true
 	var blocked := BossTactics.blocks(e,direction,weapon)
@@ -2616,10 +2993,15 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 		damage=BossTactics.absorb(self,e,damage,weapon)
 		knock=0.0
 	e.hp-=damage
+	if roguelike.active(self): e["build_last_kind"]=str(build_context.get("kind","proc"))
+	if roguelike.active(self) and players.has(owner) and hp_before>0:
+		RogueBuild.hit_event(self,players[owner],e,minf(hp_before,maxf(0,damage)),e.hp<=0,build_context)
 	e.last=owner
 	e["flash"]=0.14
 	if blocked:
 		pass # Guard pressure replaces ordinary poise; a guard break keeps its stagger.
+	elif e.get("rogue_guardian",false):
+		knock=0.0
 	elif e.get("raid_boss",false):
 		knock=0.0
 	elif e.type==4:
@@ -2639,20 +3021,27 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 			e.cd=1.0
 		knock*=0.08
 	else:
+		if e.get("rogue_minion",false) and e.attack_time>0:
+			roguelike.combat.minion_event(self,e,"interrupt")
 		e["attack_time"]=0.0
 		e["stagger"]=0.12 if knock<40 else 0.26
 	var impact: Vector2=e.p
 	e.p=ruins.move(e.p,direction*knock)
 	if players.has(owner):
 		players[owner].hitstop=0.045 if knock<40 else 0.085
-	broadcast_combat({"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"enemy_type":e.type})
+	broadcast_combat({"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id})
 
 func broadcast_audio(cue: String, p: Dictionary, variant: int = -1) -> void:
 	broadcast_combat({"kind":"audio","cue":cue,"p":p.p,"id":p.get("id",0),"variant":variant})
 
 func broadcast_combat(data: Dictionary) -> void:
+	# Include the exact item, not just its animation family, for every client.
+	var source: Dictionary=players.get(int(data.get("id",-1)),{})
+	if not source.is_empty():
+		if not data.has("weapon_index"): data["weapon_index"]=int(source.weapon)
+		if not data.has("hero"): data["hero"]=int(source.hero)
 	combat_event.emit(data)
-	if online:
+	if online and authority():
 		remote_combat.rpc(data)
 
 @rpc("authority","call_remote","reliable")
@@ -2667,6 +3056,18 @@ func channel_cancel(p: Dictionary) -> void:
 	p.target=""
 
 func interact(p: Dictionary, held: bool, dt: float) -> void:
+	if roguelike.active(self):
+		if p.flask_time>0 or p.height>0: p.channel=0.0; p.target=""; return
+		if roguelike.rescue(self,p,held,dt): return
+		var pressed: bool=held and not p.get("rogue_interact_held",false)
+		p.rogue_interact_held=held
+		if pressed: roguelike.loot_interact(self,p)
+		if held and p.p.x>ruins.fork_start and raid.phase in ["rogue_shop","rogue_exit"]:
+			for index in raid.get("exits",[]).size():
+				if p.p.distance_to(ruins.exit_position(index))<=64:
+					roguelike.choose(self,p,"rogue_next",{"revision":raid.revision,"index":index})
+					break
+		return
 	if not held:
 		channel_cancel(p)
 		return
@@ -2776,7 +3177,7 @@ func visible_items(container: Dictionary) -> Array:
 func peek_items(container: Dictionary) -> Array:
 	return Catalog.container_items(container)
 
-func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
+func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1, ambient: bool = false) -> void:
 	if type < -1 or type>=Ecology.HEALTH.size(): return
 	var pos := at
 	var kind := type
@@ -2786,6 +3187,13 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 		var candidates: Array[int]=[]
 		for i in ruins.sites.size():
 			if ruins.sites[i].get("cleared",false) or ruins.sites[i].get("engaged",false): continue
+			if ambient:
+				var nearby := false
+				for player in players.values():
+					if player.status=="active" and player.p.distance_squared_to(ruins.sites[i].p)<1400.0*1400.0:
+						nearby=true
+						break
+				if not nearby: continue
 			if type<0 or type in Ecology.POOLS[int(ruins.sites[i].biome)]: candidates.append(i)
 		if candidates.is_empty(): return
 		if at!=Vector2.ZERO:
@@ -2799,7 +3207,12 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 					if ruins.sites[index].p.distance_squared_to(at)<ruins.sites[closest].p.distance_squared_to(at): closest=index
 				candidates=[closest]
 		var found := false
-		for attempt in 80:
+		var residents := {}
+		for resident in enemies:
+			if resident.hp>0:
+				var habitat := int(resident.get("habitat",-1))
+				residents[habitat]=int(residents.get(habitat,0))+1
+		for attempt in (40 if ambient else 80):
 			if attempt==0 and at!=Vector2.ZERO:
 				block=Ecology.block_at(ruins,pos)
 			else:
@@ -2807,13 +3220,16 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 				var area: Rect2=ruins.sites[block].rect.grow(145)
 				pos=area.position+Vector2(rng.randf(),rng.randf())*area.size
 			if block<0 or not block in candidates or Ecology.block_at(ruins,pos)!=block: continue
-			var count := 0
-			for resident in enemies:
-				if int(resident.get("habitat",-1))==block and resident.hp>0: count+=1
-			if count>=5: continue
+			if int(residents.get(block,0))>=5: continue
 			var near := false
+			var in_ambient_range := false
 			for p in players.values():
-				if p.status=="active" and p.p.distance_to(pos)<260: near=true
+				if p.status!="active": continue
+				var distance_sq: float=p.p.distance_squared_to(pos)
+				if distance_sq<260.0*260.0: near=true
+				if distance_sq>=AMBIENT_SPAWN_MIN*AMBIENT_SPAWN_MIN and distance_sq<=AMBIENT_SPAWN_MAX*AMBIENT_SPAWN_MAX:
+					in_ambient_range=true
+			if ambient and not in_ambient_range: continue
 			var pool: Array=Ecology.POOLS[int(ruins.sites[block].biome)]
 			kind=type if type>=0 else Ecology.random_kind(pool,rng)
 			# Keep the same minimum terrain clearance guaranteed by the original
@@ -2839,6 +3255,7 @@ func spawn_enemy(at: Vector2 = Vector2.ZERO, type: int = -1) -> void:
 # Rewards are driven by actual defender deaths, never by an empty list during
 # travel or boss transitions. Habitat ownership survives chasing out of a site.
 func resolve_site_defeat(e: Dictionary) -> void:
+	if roguelike.active(self): return
 	if not authority() or map_id!="border" or e.get("raid_boss",false): return
 	var block := int(e.get("habitat",-1))
 	if block<0 or block>=ruins.sites.size(): return
@@ -2873,8 +3290,15 @@ func append_chest(chest: Dictionary) -> void:
 	ruins.chests.append(chest)
 
 func update_enemies(dt: float) -> void:
+	if roguelike.active(self) and raid.phase!="rogue_combat": return
 	for e in enemies:
 		if e.hp<=0:
+			continue
+		if e.get("boss_construct",false):
+			e["flash"]=maxf(0,float(e.get("flash",0))-dt)
+			continue
+		if e.get("rogue_guardian",false) or e.get("rogue_minion",false):
+			roguelike.combat.update(self,e,dt)
 			continue
 		if e.get("raid_boss",false):
 			if e.get("wild_boss",false): wild_bosses.update(self,e,dt)
@@ -2885,6 +3309,17 @@ func update_enemies(dt: float) -> void:
 			elif e.get("wild_boss",false): wild_bosses.update(self,e,dt)
 			else: mini_bosses.update(self,e,dt)
 			continue
+		# Distant ordinary residents do not need pathfinding or collision checks.
+		# Check every active player so a split party still wakes both regions.
+		if e.type!=4:
+			var awake := false
+			for player in players.values():
+				if player.status=="active" and e.p.distance_squared_to(player.p)<1600.0*1600.0:
+					awake=true
+					break
+			if not awake:
+				e["moving"]=false
+				continue
 		if e.type>=5:
 			Ecology.update(self,e,dt)
 			continue
@@ -2947,10 +3382,21 @@ func update_enemies(dt: float) -> void:
 		if travelled>0.01 and absf(e.p.x-before.x)>0.01:
 			e["facing"]=signf(e.p.x-before.x)
 
-func hurt(p: Dictionary, damage: float) -> void:
+func hurt(p: Dictionary, damage: float, source: Dictionary = {}, height_tag: String = "normal", damage_tag: String = "direct", element: String = "physical") -> void:
+	if roguelike.active(self):
+		if not RogueActions.height_hit(float(p.height),height_tag): return
+		if p.invuln>0 and p.dodge_time>0: RogueBuild.perfect(self,p)
 	if p.invuln>0 or p.status!="active":
 		return
-	p.hp-=incoming_damage(p,damage)
+	var received := incoming_damage(p,damage)
+	if roguelike.active(self): received=RogueBuild.incoming(self,p,received,source,damage_tag,element)
+	if roguelike.active(self): p.build_inputs=[]
+	if roguelike.active(self) and RogueEquipment.has(p,"mana_guard"):
+		var absorbed := minf(float(p.mana),received*0.30)
+		p.mana-=absorbed
+		received-=absorbed
+		if absorbed>0: p.mana_delay=MANA_REGEN_DELAY
+	p.hp-=received
 	p.invuln=0.3
 	p.channel=0
 	# Taking a hit is what a channel counts against: the key-held ring restarts
@@ -2968,6 +3414,9 @@ func update_bullets(dt: float) -> void:
 	for i in range(bullets.size()-1,-1,-1):
 		var b: Dictionary=bullets[i]
 		var old: Vector2=b.p
+		var old_height := float(b.get("height",0))
+		if roguelike.active(self) and b.has("height"): b.height=maxf(0,float(b.height)+float(b.get("height_velocity",0))*dt)
+		if b.get("boss_projectile",false): b["boss_previous"]=old
 		var spell := str(b.get("spell","star"))
 		if b.has("return_after"):
 			b.age+=dt
@@ -2976,32 +3425,42 @@ func update_bullets(dt: float) -> void:
 				b.reversed=true
 		b.p+=b.v*dt
 		b.life-=dt
-		var wall_hit := not ruins.clear_line(old,b.p)
+		var wall_hit: bool=not (enemy_bodies.projectile_clear_line(ruins,old,b.p,roguelike.active(self)) if int(b.owner)>0 else ruins.clear_line(old,b.p))
 		if wall_hit:
 			b.life=0
 		if b.life>0:
 			if b.owner==0:
 				for p in players.values():
-					if p.status=="active" and Geometry2D.get_closest_point_to_segment(p.p,old,b.p).distance_to(p.p)<18:
-						hurt(p,b.damage)
+					if p.status=="active" and Geometry2D.get_closest_point_to_segment(p.p,old,b.p).distance_to(p.p)<float(b.get("hit_radius",18.0)):
+						var source: Dictionary={}
+						for enemy in enemies:
+							if enemy.id==int(b.get("boss_source",-1)): source=enemy; break
+						hurt(p,b.damage,source)
 						b.life=0
 						break
 			else:
 				for e in enemies:
 					if e.hp<=0 or (e.id in b.get("hit_ids",[])):
 						continue
-					var radius := float(Ecology.RADIUS[e.type])+(18.0 if spell in ["moon","eclipse"] else 0.0)
-					if Geometry2D.get_closest_point_to_segment(e.p,old,b.p).distance_to(e.p)<radius:
+					var rogue: bool=roguelike.active(self)
+					var projection: float=1.0 if rogue else enemy_bodies.GROUND_Y
+					var from := old-Vector2(0,old_height/projection)
+					var to: Vector2=b.p-Vector2(0,float(b.get("height",0))/projection)
+					var ground_origin: Vector2=b.get("ground_origin",players.get(b.owner,{}).get("p",old))
+					if enemy_bodies.segment_hit(e,from,to,elapsed,rogue,18.0 if spell in ["moon","eclipse"] else 0.0) and ruins.clear_line(ground_origin,e.p):
 						if spell in ["meteor","vortex"]:
 							spell_burst(b,e.p)
 						else:
 							var dealt: float=b.damage
+							var attenuation: Array=b.get("build_attenuation",[])
+							var pierce_count: int=b.get("hit_ids",[]).size()
+							if not attenuation.is_empty(): dealt*=float(attenuation[mini(pierce_count,attenuation.size()-1)])
 							if spell=="scatter":
 								var pellet_hits: Dictionary=b.pellet_hits
 								var previous := int(pellet_hits.get(e.id,0))
 								if previous>0: dealt*=0.12
 								pellet_hits[e.id]=previous+1
-							damage_enemy(e,dealt,b.owner,b.v.normalized(),float(b.get("knock",16.0)),int(b.get("weapon",0)))
+							damage_enemy(e,dealt,b.owner,b.v.normalized(),float(b.get("knock",16.0)),int(b.get("weapon",0)),int(b.get("weapon_index",-1)),b.get("build_context",{}))
 							if spell=="chain":
 								spell_chain(b,e)
 						if not b.has("hit_ids"):
@@ -3012,29 +3471,34 @@ func update_bullets(dt: float) -> void:
 							b.life=0
 							break
 		if b.life<=0:
+			if b.get("boss_projectile",false): BossChoreography.projectile_end(self,b)
+			if b.has("rogue_tone"):
+				broadcast_combat({"kind":"rogue-projectile-impact","p":old if wall_hit else b.p,"floor":b.rogue_tone})
 			if spell in ["meteor","vortex"] and b.get("hit_ids",[]).is_empty():
 				spell_burst(b,old if wall_hit else b.p)
 			bullets.remove_at(i)
 
 func spell_burst(b: Dictionary, at: Vector2) -> void:
 	var spell := str(b.get("spell",""))
-	var radius := 115.0 if spell=="meteor" else 135.0
+	var radius := (100.0 if spell=="meteor" else 90.0) if roguelike.active(self) else 115.0 if spell=="meteor" else 135.0
+	var build_hits := 0
 	var direction: Vector2=b.v.normalized()
 	for e in enemies:
-		if e.hp<=0 or e.p.distance_to(at)>radius or not ruins.clear_line(at,e.p):
+		if e.hp<=0 or not enemy_bodies.attack_hit(e,at,direction,radius,elapsed,roguelike.active(self),"circle") or not ruins.clear_line(at,e.p):
 			continue
 		var pull: Vector2=(at-e.p).normalized()
-		damage_enemy(e,float(b.damage)*(1.0-e.p.distance_to(at)/radius*0.35),int(b.owner),direction,float(b.get("knock",0.0)) if spell=="meteor" else 0.0,3)
-		if spell=="vortex" and e.hp>0:
-			e.p=ruins.move(e.p,pull*42.0)
-	broadcast_combat({"kind":"spell_burst","p":at,"spell":spell})
+		damage_enemy(e,float(b.damage)*((1.0 if build_hits==0 else .60) if roguelike.active(self) else (1.0-minf(1.0,e.p.distance_to(at)/radius)*0.35)),int(b.owner),direction,float(b.get("knock",0.0)) if spell=="meteor" else 0.0,3,int(b.get("weapon_index",-1)),b.get("build_context",{}))
+		build_hits+=1
+		if spell=="vortex" and e.hp>0 and not e.get("rogue_guardian",false):
+			e.p=ruins.move(e.p,pull*(35 if roguelike.active(self) else 42))
+	broadcast_combat({"kind":"spell_burst","p":at,"spell":spell,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))})
 
 func spell_chain(b: Dictionary, first: Dictionary) -> void:
 	var visited: Array=[first.id]
 	var from: Dictionary=first
-	for hop in 3:
+	for hop in (2 if roguelike.active(self) else 3):
 		var nearest: Dictionary={}
-		var best := 175.0
+		var best: float=160.0+RogueBuild.r(players.get(b.owner,{}),43,[15,25,35]) if roguelike.active(self) else 175.0
 		for e in enemies:
 			var distance: float=e.p.distance_to(from.p)
 			if e.hp>0 and not (e.id in visited) and distance<best and ruins.clear_line(from.p,e.p):
@@ -3042,9 +3506,9 @@ func spell_chain(b: Dictionary, first: Dictionary) -> void:
 				best=distance
 		if nearest.is_empty():
 			break
-		broadcast_combat({"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain"})
+		broadcast_combat({"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain","id":int(b.owner),"weapon_index":int(b.get("weapon_index",6))})
 		var direction: Vector2=(nearest.p-from.p).normalized()
-		damage_enemy(nearest,float(b.damage)*pow(0.68,hop+1),int(b.owner),direction,8.0,3)
+		damage_enemy(nearest,float(b.damage)*([.45,.30][hop] if roguelike.active(self) else pow(.68,hop+1)),int(b.owner),direction,8.0,3,int(b.get("weapon_index",-1)),b.get("build_context",{}))
 		visited.append(nearest.id)
 		from=nearest
 
@@ -3058,6 +3522,9 @@ func remote_effect(kind: String, pos: Vector2) -> void:
 	effect.emit(kind,pos)
 
 func settle() -> void:
+	if roguelike.active(self):
+		roguelike.settle(self)
+		return
 	if not running:
 		return
 	results.clear()
@@ -3066,12 +3533,19 @@ func settle() -> void:
 		var extracted: bool=p.status=="extracted"
 		# Extraction banks both containers; death already scattered the backpack
 		# in down(), so only the sealed pocket survives it.
-		var loot := (Catalog.container_value(p.backpack)+Catalog.container_value(p.pocket)) if extracted else 0
+		var loot := Catalog.market_total(p.backpack.items)+Catalog.market_total(p.pocket.items) if extracted else Catalog.market_total(p.pocket.items)
 		var shared := objectives*55+(100 if objectives==3 else 0)+int(p.get("boss_reward",0))
 		var hidden := bool(p.get("hidden_ending",false))
 		if hidden:
 			shared+=expedition.HIDDEN_REWARD
-		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":loot+shared,"hidden":hidden,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0)+(240 if hidden else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted),"worn":worn_names(p)}
+		var equipment_loot: Array = []
+		if extracted:
+			var weapon := kit_weapon(p)
+			if not weapon.is_empty(): equipment_loot.append(weapon.duplicate(true))
+			for entry in kit_gear(p)+charm_slots(p.equipped)+item_slots(p):
+				if entry is Dictionary and not entry.is_empty(): equipment_loot.append(entry.duplicate(true))
+			loot+=Catalog.market_total(equipment_loot)
+		results[id]={"name":p.name,"escaped":extracted,"loot":loot,"shared":shared,"kills":p.kills,"coins":shared,"equipment_loot":equipment_loot,"hidden":hidden,"xp":35+p.kills*8+objectives*25+(60 if extracted else 0)+(240 if hidden else 0),"pocket":Catalog.clean_container(p.pocket,Catalog.POCKET_GRID),"bags":saved_bags(p,extracted),"worn":worn_names(p)}
 	running=false
 	finished.emit()
 	if online:
@@ -3200,6 +3674,9 @@ func update_knight(e: Dictionary, dt: float) -> void:
 				break
 	BossTactics.tick(self,e,dt)
 	if e.stagger>0 or BossTactics.update_guard(e,dt): return
+	if e.attack_time>0 and e.get("choreo_cast",false):
+		e.attack_time=maxf(0,e.attack_time-dt)
+		return
 	if e.attack_time>0:
 		var before: float=e.attack_total-e.attack_time
 		e.attack_time=maxf(0,e.attack_time-dt)
@@ -3241,14 +3718,14 @@ func update_knight(e: Dictionary, dt: float) -> void:
 	if not response.is_empty():
 		if response.kind=="attack" and BossTactics.start_guard(e,response.aim,self): return
 		if response.kind!="attack":
-			var move := "counter" if response.kind=="counter" else ("thrust" if response.kind=="dodge" or best>190 else "quick")
+			var move: String=BossChoreography.names(e)[2 if response.kind=="counter" else 1 if response.kind=="dodge" else 0]
 			start_knight_attack(e,move,response.aim)
 			return
 	if not e.get("reaction",{}).is_empty(): return
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
 	if e.cd<=0 and best<360 and ruins.clear_line(e.p,target.p):
 		var sequence := int(e.get("sequence",0))
-		var move_name: String=["combo","thrust","storm" if e.hp<=e.max_hp*0.5 else "delayed","quick","delayed","guard"][sequence%6]
+		var move_name: String=BossChoreography.choose(e)
 		if best>240 and move_name in ["combo","quick","delayed"]: move_name="thrust"
 		e["sequence"]=sequence+1
 		if move_name=="guard":
@@ -3264,6 +3741,7 @@ func update_knight(e: Dictionary, dt: float) -> void:
 		e.motion_phase+=e.p.distance_to(previous)/12
 
 func start_knight_attack(e: Dictionary, move: String, aim: Vector2) -> void:
+	if BossChoreography.start(self,e,move,aim,e.p+aim*180): return
 	var spec: Dictionary=BossTactics.KNIGHT_MOVES[move]
 	e["move_name"]=move
 	e["hit_ids"]=[]

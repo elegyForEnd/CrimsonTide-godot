@@ -126,7 +126,7 @@ func run() -> void:
 	check(app.selected_item_slot==1,"the socket a drag lands in becomes the selected one")
 	check(Catalog.item_size(app.session.item_slot(walker,1))==Vector2i(2,2),"a socket keeps the real 2x2 footprint")
 	check(not app.session.item_slot(walker,1).has("x"),"a socket strips the grid coordinates it came with")
-	# Clicking a socket selects it, and the number keys pick one directly.
+	# Clicking selects a socket; number keys also apply its item immediately.
 	await app.slot_at(app.slot_zones()[0].get_center())
 	var first_box: Rect2=app.slot_zones()[0]
 	app.select_item_slot(0)
@@ -141,10 +141,12 @@ func run() -> void:
 	await process_frame
 	await drag_item_to("backpack",index_of(walker.backpack,"relic"),zone_point("slot0"))
 	check(str(app.session.item_slot(walker,0).get("kind",""))=="relic","a 2x2 relic fits one socket")
-	check(app.apply_item_slot(0)==false,"[E] on a relic does nothing at all")
+	await press_key(KEY_1)
+	check(app.apply_item_slot(0)==false,"a relic has no use action")
 	check(str(app.session.item_slot(walker,0).get("kind",""))=="relic","the inert relic is still in its socket")
 	# A weapon in a socket swaps with what is in hand.
-	check(app.apply_item_slot(1),"[E] on a socket with a weapon swaps it into the hand")
+	await press_key(KEY_2)
+	check(app.selected_item_slot==1,"2 selects the weapon socket as it equips it")
 	check(int(walker.weapon)==2,"the socket's weapon is now in hand")
 	check(app.session.weapon_kit_active(walker),"the swapped-in weapon is the active one")
 	check(app.session.item_slot(walker,1).is_empty(),"the temporary issue weapon is not an item, so the socket is empty")
@@ -168,7 +170,7 @@ func run() -> void:
 	app.show_inventory()
 	await process_frame
 	await drag_item_to("backpack",0,zone_point("slot2"))
-	check(app.apply_item_slot(2),"E wears the gear in a socket")
+	await press_key(KEY_3)
 	check(int(app.session.kit_gear(walker)[1].get("tier",0))==4,"the socket's sight is the one worn")
 	check(app.session.item_slot(walker,2).is_empty(),"an empty gear socket gives nothing back")
 	# "收回" is the way back out of a socket.
@@ -193,14 +195,16 @@ func run() -> void:
 	walker.hp=40.0
 	check(Catalog.add_item(walker.backpack,"medicine"),"a medkit waits for a socket")
 	app.session.slot_put(walker,2,"backpack",0)
-	check(app.apply_item_slot(2),"the bar spends the medkit in a socket")
+	await key_event(KEY_3,true)
+	check(int(walker.hp)==85,"3 spends the medkit immediately on key down")
+	await key_event(KEY_3,false)
 	check(int(walker.hp)==85,"the socket's medkit heals for 45")
 	check(app.session.item_slot(walker,2).is_empty(),"the used supply leaves the socket")
 	# A backpack is a special kind of weapon: the two packs change places.
 	check(Catalog.add_item(walker.backpack,"backpack"),"a loose pack waits for a socket")
 	walker.backpack.items.back()["quality"]="purple"
 	app.session.slot_put(walker,2,"backpack",walker.backpack.items.size()-1)
-	check(app.apply_item_slot(2),"the bar wears the pack in a socket")
+	await press_key(KEY_3)
 	check(str(walker.backpack.key)=="purple","the socket's pack is the one on the player's back")
 	check(str(app.session.item_slot(walker,2).get("quality",""))=="green","the pack that was worn waits in the socket")
 	check(Catalog.item_size(app.session.item_slot(walker,2))==Vector2i(1,1),"a green pack takes a single cell in a socket")

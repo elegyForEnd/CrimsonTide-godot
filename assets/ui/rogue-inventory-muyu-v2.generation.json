@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "asset": "res://assets/ui/rogue-inventory-muyu-v2.png",
+  "reference": "res://assets/portrait-3.png",
+  "prompt": "Edit reference into a production transparent full-body standing character portrait for a gothic anime RPG equipment screen. Preserve EXACT character identity: adult silver-haired necromancer woman, violet eyes, fine round glasses, pointed elf ears, dark black and burgundy lace dress, ruby collar brooch, hair bows, dark coat, purple arcane markings on thigh. Same polished anime illustration style and face. Show ENTIRE body head to shoes with generous transparent padding. Vertical portrait composition, centered, calm standing pose, feet together on same baseline; black lace stockings and ornate black ankle boots visible. Keep small open eye-grimoire held at waist and ornate crimson dagger lowered along her opposite leg, all close to body for narrow silhouette. Long dress/coat drapes down gracefully. Remove ALL background: cathedral, magic circle, scenery, smoke, floating sparks, glow panels. Actual transparent alpha around character. No background patch, no text, no frame. Keep entire character including shoes inside canvas. Output vertical 1024x1536.",
+  "transparent_background": true
+}

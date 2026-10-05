@@ -18,9 +18,11 @@ func target(s: TideSession, pos: Vector2) -> Dictionary:
 	e.p=pos
 	e.hp=1000.0
 	e.max_hp=1000.0
+	e.stagger=10.0 # Keep each body's position fixed while the weapon winds up.
 	return e
 
 func ready(p: Dictionary, index: int) -> void:
+	p.mana=p.max_mana
 	p.weapon=index
 	p.attack=0.0
 	p.swing_time=0.0
@@ -69,8 +71,10 @@ func run() -> void:
 		s.enemies.clear()
 		s.bullets.clear()
 		var front := target(s,p.p+Vector2(90,0))
-		var flank := target(s,p.p+Vector2(0,95))
-		var behind := target(s,p.p+Vector2(-85,0))
+		# A body below the player extends up into the attack line. Put the flank
+		# above it, and centre the rear body beside it, to test actual misses.
+		var flank := target(s,p.p+Vector2(0,-70))
+		var behind := target(s,p.p+Vector2(-85,65))
 		fire(s,p)
 		check(front.hp<1000,"Sword %d hits in front" % index)
 		check((behind.hp<1000)==(index in [13,15]),"Only circular sword attacks hit behind")
@@ -128,7 +132,7 @@ func run() -> void:
 	s.enemies.clear()
 	s.bullets.clear()
 	direct=target(s,p.p+Vector2(250,0))
-	nearby=target(s,p.p+Vector2(250,90))
+	nearby=target(s,p.p+Vector2(250,-90))
 	fire(s,p)
 	check(direct.hp<1000 and nearby.hp==1000 and s.bullets.is_empty(),"Prism beam is an aimed instant line")
 	# A point-blank scatter burst may land all five feathers, but one target only

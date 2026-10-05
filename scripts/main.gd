@@ -1,4 +1,4 @@
-﻿extends Node
+extends Node
 
 # A frame that can be moved and recoloured every frame: used for the ghost plate,
 # the landing-cell preview and the "cannot drop here" hatch.
@@ -42,9 +42,19 @@ const RED := Color("ad4056")
 const GOLD := Color("c5a67b")
 var profile := Profile.new()
 var online_service: OnlineService
+var p2p: TideP2P
 var online_ui_busy := false
+var economy_syncing := false
 var session: TideSession
 var sound: TideSound
+var rogue_field: Control
+var rogue_panel: Control
+var rogue_signature := ""
+var rogue_inventory = preload("res://scripts/rogue_inventory.gd").new()
+var extraction_inventory = preload("res://scripts/extraction_inventory.gd").new()
+var rogue_pending_cost := -1
+var rogue_cards := 0
+var rogue_weapon := -1
 var field: Battlefield
 var canvas: CanvasLayer
 var root: Control
@@ -135,6 +145,10 @@ func _ready() -> void:
 	session=TideSession.new()
 	session.name="Session"
 	add_child(session)
+	p2p=TideP2P.new()
+	add_child(p2p)
+	p2p.setup(online_service,session)
+	p2p.status.connect(notify)
 	field=Battlefield.new()
 	field.session=session
 	field.visible=false
@@ -146,6 +160,10 @@ func _ready() -> void:
 	root.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(root)
 	root.theme=make_theme()
+	rogue_field=preload("res://scripts/rogue_field.gd").new()
+	rogue_field.session=session
+	rogue_field.visible=false
+	root.add_child(rogue_field)
 	var serif := FontVariation.new()
 	serif.base_font=load("res://assets/NotoSerifSC.ttf")
 	serif.variation_embolden=0.55
@@ -168,6 +186,10 @@ func _ready() -> void:
 	session.finished.connect(on_finished)
 	session.changed.connect(on_lobby)
 	session.message.connect(say)
+	session.direct_connect_failed.connect(func():
+		if page_name=="network":
+			show_server_rooms()
+			notify("直连失败：请与房主改用服务器房间号重新集结。"))
 	session.effect.connect(on_effect)
 	session.combat_event.connect(on_combat_audio)
 	get_viewport().size_changed.connect(fit_ui)
@@ -376,7 +398,40 @@ func show_server_rooms() -> void:
 	code.max_length=6
 	button(page,"加入服务器房间",Vector2(735,575),Vector2(470,60),func(): connect_server_room(code.text.strip_edges().to_upper(),false),true)
 	label(page,"游客也可联机；账号的本地 / 云端选择与联机方式独立。",Vector2(230,682),18,MUTED,Vector2(1000,40))
-	button(page,"← 返回直连",Vector2(230,780),Vector2(470,55),show_network)
+	button(page,"← 返回联机",Vector2(230,780),Vector2(470,55),show_p2p_rooms)
+
+func show_p2p_rooms() -> void:
+	new_page("p2p_rooms")
+	background(0.75)
+	header("P2P 联机","STUN · NAT 打洞   /   直连优先，专用服务器兜底")
+	label(page,"创建六位房间号，好友加入后自动探测公网 UDP 地址。",Vector2(230,255),22,GOLD,Vector2(1030,48))
+	label(page,"你的代号",Vector2(230,327),18,MUTED)
+	nickname=line_edit(page,profile.data.name,Vector2(230,370),Vector2(975,55),"输入代号")
+	nickname.max_length=16
+	button(page,"创建 P2P 房间",Vector2(230,480),Vector2(470,60),func(): connect_p2p_room(""),true)
+	var code := line_edit(page,"",Vector2(735,480),Vector2(470,60),"输入六位房间号")
+	code.max_length=6
+	button(page,"加入 P2P 房间",Vector2(735,575),Vector2(470,60),func(): connect_p2p_room(code.text.strip_edges().to_upper(),false),true)
+	label(page,"打洞不支持所有 NAT；失败时全队自动切换到专用服务器。",Vector2(230,675),18,MUTED,Vector2(1000,40))
+	button(page,"手动 IP 直连",Vector2(230,780),Vector2(320,55),show_network)
+	button(page,"直接使用服务器",Vector2(575,780),Vector2(370,55),show_server_rooms)
+	button(page,"← 返回",Vector2(970,780),Vector2(235,55),show_title)
+
+func connect_p2p_room(code: String, create_room: bool = true) -> void:
+	if online_ui_busy: return
+	if not create_room and code.length()!=6:
+		notify("请输入六位房间号。")
+		return
+	remember_name()
+	set_online_busy(true)
+	var reply: Dictionary=await p2p.create_room(config()) if create_room else await p2p.join_room(code,config())
+	if page_name=="p2p_rooms": set_online_busy(false)
+	else: online_ui_busy=false
+	if not reply.ok:
+		notify(str(reply.get("error","P2P 房间连接失败。")))
+		if create_room: show_p2p_rooms()
+	else:
+		notify("P2P 房间 "+str(reply.code)+(" 已创建，等待好友加入。" if create_room else "：正在进行 STUN 探测…"))
 
 func connect_server_room(code: String, create_room: bool = true) -> void:
 	if online_ui_busy: return
@@ -407,7 +462,7 @@ func fit_ui() -> void:
 	root.position=(view-Vector2(1440,900)*scale_factor)/2
 
 func setup_inputs() -> void:
-	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"search_drop":KEY_H,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"sprint":KEY_SHIFT,"heal":KEY_F,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
+	var keys := {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"interact":KEY_E,"loot":KEY_F,"search_drop":KEY_H,"reload":KEY_R,"skill":KEY_Q,"dash":KEY_SPACE,"jump":KEY_C,"sprint":KEY_SHIFT,"heal":KEY_F,"bag":KEY_TAB,"map":KEY_M,"pause":KEY_ESCAPE}
 	# The smart-click modifier is a real action rather than a raw key read so the
 	# gesture is bound, rebindable and visible to the input system like every
 	# other control. Both control keys are bound; the action is only ever polled,
@@ -428,6 +483,11 @@ func setup_inputs() -> void:
 	var click := InputEventMouseButton.new()
 	click.button_index=MOUSE_BUTTON_LEFT
 	InputMap.action_add_event("fire",click)
+	if not InputMap.has_action("weapon_art"):
+		InputMap.add_action("weapon_art")
+		var art_click := InputEventMouseButton.new()
+		art_click.button_index=MOUSE_BUTTON_RIGHT
+		InputMap.action_add_event("weapon_art",art_click)
 
 func make_theme() -> Theme:
 	var theme := Theme.new()
@@ -609,7 +669,10 @@ func new_page(name_value: String) -> void:
 	page_name=name_value
 	sound.set_scene(name_value)
 	toast_time=0
-	field.visible=name_value=="game"
+	field.visible=name_value=="game" and not session.roguelike.active(session)
+	rogue_field.visible=name_value=="game" and session.roguelike.active(session)
+	rogue_signature=""
+	rogue_panel=null
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
 
@@ -624,7 +687,10 @@ func ensure_camp() -> Control:
 	add_child(camp)
 	camp.set_context(session,profile)
 	camp.station_requested.connect(on_camp_station)
-	camp.launch_requested.connect(on_camp_launch)
+	camp.launch_requested.connect(camp_departure)
+	camp.home_changed.connect(func():
+		if not session.running and not session.players.is_empty(): session.configure(config())
+		camp.update_static())
 	camp.codex_requested.connect(show_help)
 	camp.exit_requested.connect(func():
 		if page_name=="ground":
@@ -636,6 +702,10 @@ func ensure_camp() -> Control:
 ## Enters the standalone pre-raid camp map. A solo expedition is prepared first so
 ## the camp has a real loadout to edit, exactly as the old整备 panel required.
 func go_camp() -> void:
+	if page_name=="rogue_setup" and rogue_pending_cost>=0 and not session.running:
+		rogue_pending_cost=-1
+		ready_local=false
+		session.configure(config())
 	if not session.running and session.players.is_empty():
 		session.solo(config())
 	ensure_camp()
@@ -648,16 +718,21 @@ func go_camp() -> void:
 	new_page("ground")
 	camp.set_active(true)
 	sound.set_scene("camp")
+	sound.music.set_scene("home")
 	# The camp owns the bottom of the screen here, so the hint goes through its
 	# own line instead of the shared toast band.
 	if camp.has_method("say"):
-		camp.say("雷霆要塞 · 按 E 使用设施，走到出征闸门按 Space 出发。")
+		camp.say("营地 · 南侧闸门进入搜打撤，东侧紫色传送门进入魔境闯关。走近按 E 或 Space。")
 
 
 ## The camp raises these and this scene performs them, so the camp can never fork
 ## the expedition flow, the online protocol or the profile save.
 func on_camp_station(id: String) -> void:
 	match id:
+		"warehouse":
+			show_economy(false)
+		"market":
+			show_economy(true)
 		"table":
 			show_camp()
 		"forge":
@@ -667,8 +742,25 @@ func on_camp_station(id: String) -> void:
 		"codex":
 			show_help()
 		"launch":
+			if session.is_leader(): session.select_mode("expedition")
+			if session.selected_mode!="expedition":
+				notify("队长选择了闯关，请走到魔境传送门准备。")
+				return
+			rogue_pending_cost=-1
 			on_camp_launch()
+		"rogue":
+			if session.is_leader(): session.select_mode("roguelike")
+			if session.selected_mode!="roguelike":
+				notify("请等待队长选择魔境闯关。")
+				return
+			show_rogue_setup()
 
+
+func camp_departure() -> void:
+	var station: Dictionary=camp.site.station_at(camp.site.hero_position())
+	if station.get("action","") in ["launch","rogue"]:
+		on_camp_station(str(station.action))
+	else: camp.say("走到南侧搜打撤闸门或东侧魔境传送门，再出发。")
 
 func on_camp_launch() -> void:
 	if session.players.is_empty():
@@ -703,28 +795,67 @@ func buy_camp_supply() -> void:
 	else:
 		say(message)
 
+func show_economy(market: bool = false) -> void:
+	if session.running: return
+	modal_box("晨钟交易行" if market else "守夜人仓库",Vector2(1320,820))
+	var screen := preload("res://scripts/economy_screen.gd").new()
+	screen.name="EconomyScreen"
+	screen.host=self
+	screen.market=market
+	overlay.add_child(screen)
+
+func economy_changed() -> void:
+	ready_local=false
+	economy_syncing=true
+	if not session.players.is_empty() and not session.running: session.configure(config())
+	economy_syncing=false
+	if camp: camp.update_static()
+
 
 func show_camp_forge() -> void:
-	var at := modal_box("锻炉 · 灵契天赋",Vector2(760,550))
-	label(overlay,"永久提升所有角色的能力    ·    银币 %d" % profile.data.coins,
-		at+Vector2(38,96),18,GOLD,Vector2(680,34))
-	label(overlay,"临时武器无法强化；在这里以银币磨炼守夜人的灵契。",
-		at+Vector2(38,139),16,MUTED,Vector2(680,32))
+	if session.running: return
+	var at := modal_box("锻炉 · 角色属性",Vector2(1080,760))
+	var points := profile.attribute_points()
+	var preview := session.make_player(session.my_id(),config())
+	label(overlay,"Lv.%d  ·  可用属性点 %d  ·  银币 %d" % [profile.level(),points,profile.data.coins],at+Vector2(35,86),19,GOLD,Vector2(990,30))
+	label(overlay,"初始 5 点；每升一级获得 1 点。全角色共享，40 / 70 后收益递减。",at+Vector2(35,125),15,MUTED,Vector2(1000,26))
+	for i in WatcherAttributes.KEYS.size():
+		var key: String=WatcherAttributes.KEYS[i]
+		var rank := int(profile.data.attributes[key])
+		var y := 175+i*74
+		label(overlay,"%s  %d" % [WatcherAttributes.NAMES[i],rank],at+Vector2(38,y),22,INK,Vector2(270,29))
+		label(overlay,WatcherAttributes.DESCRIPTIONS[i],at+Vector2(38,y+31),13,MUTED,Vector2(435,25))
+		var raise_button := button(overlay,"+ 1",at+Vector2(485,y),Vector2(105,44),func():
+			if profile.raise_attribute(key):
+				ready_local=false
+				session.configure(config())
+				if camp: camp.update_static()
+				show_camp_forge()
+		)
+		raise_button.name="Attribute_"+key
+		raise_button.disabled=points<=0 or rank>=WatcherAttributes.CAP
+	var weapon := int(preview.weapon)
+	label(overlay,"出战能力",at+Vector2(640,173),23,GOLD,Vector2(385,32))
+	var summary := "生命 %d    蓝量 %d\n受击减伤 %.1f%%    耐力抗性 %.1f%%\n寻宝力 %.0f    击杀掉率 ×%.2f\n%s    攻击 %.1f\n%s\n%s" % [preview.max_hp,preview.max_mana,session.stat_defense(preview)*100.0,session.stat_resistance(preview)*100.0,session.stat_discovery(preview),session.stat_discovery(preview)/100.0,Catalog.weapon_name(weapon),session.weapon_damage(preview),Catalog.scaling_text(weapon),WeaponArts.text(weapon)]
+	var summary_label := label(overlay,summary,at+Vector2(640,219),14,INK,Vector2(395,188))
+	summary_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	summary_label.add_theme_constant_override("line_spacing",5)
+	label(overlay,"灵契天赋 · 保留原有成长",at+Vector2(640,417),20,GOLD,Vector2(390,30))
 	for i in 3:
 		var rank: int=profile.data.talents[i]
 		var cost := 80+rank*65
-		var y := 202+i*94
-		label(overlay,"%s  %d / 5" % [Catalog.TALENTS[i],rank],at+Vector2(40,y),23,INK)
-		label(overlay,["每级生命 +12","每级伤害 +8%","每级移速 +9"][i],at+Vector2(40,y+37),16,MUTED)
-		var upgrade := button(overlay,"已满阶" if rank>=5 else "升级 · %d 银币" % cost,
-			at+Vector2(478,y),Vector2(240,54),func():
+		var y := 464+i*78
+		label(overlay,"%s  %d / 5" % [Catalog.TALENTS[i],rank],at+Vector2(640,y),17,INK,Vector2(205,27))
+		label(overlay,["生命 +12 / 级","伤害 +8% / 级","移速 +9 / 级"][i],at+Vector2(640,y+30),13,MUTED,Vector2(210,24))
+		var upgrade := button(overlay,"满阶" if rank>=5 else "%d ◈" % cost,at+Vector2(891,y),Vector2(145,45),func():
 			if profile.upgrade(i):
 				ready_local=false
 				session.configure(config())
-				camp.update_static()
+				if camp: camp.update_static()
 				show_camp_forge()
 		)
 		upgrade.disabled=rank>=5 or profile.data.coins<cost
+	label(overlay,"加点永久生效；蓝量在停止施法 1.5 秒后自动恢复。",at+Vector2(38,710),14,MUTED,Vector2(990,26))
 
 func show_title() -> void:
 	new_page("title")
@@ -746,9 +877,9 @@ func show_title() -> void:
 	motto.add_theme_constant_override("line_spacing",12)
 	ornament(page,Vector2(74,498),Vector2(40,287),"rail",Color("9b5c65"))
 	var entries := ["开始游戏","创建 / 加入房间","设置","制作组","退出游戏"]
-	var actions: Array[Callable]=[go_camp,show_network,show_settings,show_credits,func(): get_tree().quit()]
+	var actions: Array[Callable]=[go_camp,show_p2p_rooms,show_settings,show_credits,func(): get_tree().quit()]
 	for i in entries.size():
-		var b := button(page,entries[i],Vector2(74,493+i*57),Vector2(445,57),actions[i]) as GothicButton
+		var b := button(page,entries[i],Vector2(74,493+i*50),Vector2(445,50),actions[i]) as GothicButton
 		b.menu=true
 		b.selected=i==0
 		b.heat=1 if i==0 else 0
@@ -768,7 +899,7 @@ func select_title_entry(target: GothicButton) -> void:
 
 func config() -> Dictionary:
 	var payload := profile.storage_payload()
-	return {"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key}
+	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key}
 
 func show_network() -> void:
 	new_page("network")
@@ -791,8 +922,8 @@ func show_network() -> void:
 	label(page,"02  /  接入信标",Vector2(741,251),26)
 	label(page,"房主的 IP 地址",Vector2(742,317),15,MUTED)
 	address=line_edit(page,"127.0.0.1",Vector2(742,357),Vector2(580,55),"例如 192.168.1.20")
-	label(page,"同一局域网，或使用虚拟局域网连接。",Vector2(742,436),18,MUTED)
-	label(page,"公网直连需要房主映射 UDP 24872。",Vector2(742,470),16,MUTED)
+	label(page,"优先直连：同一局域网或虚拟局域网。",Vector2(742,436),18,MUTED)
+	label(page,"失败后进入服务器房间；公网直连需映射 UDP 24872。",Vector2(742,470),16,MUTED)
 	button(page,"加入房间",Vector2(742,531),Vector2(580,60),func():
 		remember_name()
 		var host_address := address.text.strip_edges().trim_suffix(":24872")
@@ -801,7 +932,7 @@ func show_network() -> void:
 	,true)
 	button(page,"服务器房间 · 无需端口映射",Vector2(430,671),Vector2(580,60),show_server_rooms,true)
 	label(page,"IP 直连由房主结算；服务器房间由服务器运行。最多 4 人。",Vector2(85,755),17,MUTED)
-	button(page,"← 返回",Vector2(80,811),Vector2(180,48),func(): session.disconnect_room(); show_title())
+	button(page,"← 返回",Vector2(80,811),Vector2(180,48),func(): session.disconnect_room(); show_p2p_rooms())
 
 func remember_name() -> void:
 	profile.data.name=nickname.text.strip_edges() if not nickname.text.strip_edges().is_empty() else "守夜人"
@@ -814,11 +945,14 @@ func header(title: String, subtitle: String) -> void:
 	ornament(page,Vector2(80,203),Vector2(1280,12))
 
 func on_lobby() -> void:
+	if economy_syncing: return
 	if session.players.is_empty():
 		if page_name in ["ground","camp","game","results"]:
 			show_title()
 		return
 	if not session.running:
+		if page_name=="rogue_setup": return
+		if modal and overlay.has_node("EconomyScreen"): return
 		# The walking camp map has its own start button; do not yank the player out
 		# of it when a lobby refresh arrives.
 		if page_name=="ground":
@@ -827,7 +961,7 @@ func on_lobby() -> void:
 		if page_name=="results":
 			extra_meds=0
 			ready_local=false
-		show_camp()
+		go_camp()
 
 func show_camp() -> void:
 	new_page("camp")
@@ -887,6 +1021,7 @@ func show_camp() -> void:
 	label(page,"背包本身就是一件装备：双击或 Ctrl+左键换装，紫色及以上占 2×2",Vector2(584,398),12,MUTED,Vector2(384,20))
 	ornament(page,Vector2(578,406),Vector2(384,12))
 	label(page,"灵契天赋",Vector2(583,431),27,INK,Vector2(250,45))
+	button(page,"角色属性 · %d 点" % profile.attribute_points(),Vector2(784,431),Vector2(184,43),show_camp_forge)
 	for i in 3:
 		var level: int=profile.data.talents[i]
 		var y := 495+i*78
@@ -918,7 +1053,7 @@ func show_camp() -> void:
 		label(page,"◇",Vector2(1066,260+i*69),22,Color("68505d"),Vector2(36,40))
 		label(page,"等待守夜人" if session.online else "空席",Vector2(1116,263+i*69),15,Color("746671"))
 	if session.online:
-		button(page,"房间号 "+session.room_code+" · 复制" if session.server_room else "邀请好友 · 复制地址",Vector2(1050,555),Vector2(310,42),copy_invite)
+		button(page,"房间号 "+session.room_code+" · 复制" if not session.room_code.is_empty() else "邀请好友 · 复制地址",Vector2(1050,555),Vector2(310,42),copy_invite)
 	else:
 		label(page,"单人远征  /  无需联网",Vector2(1061,561),13,MUTED)
 	ornament(page,Vector2(1047,611),Vector2(314,10))
@@ -932,17 +1067,19 @@ func show_camp() -> void:
 	label(page,"每天 5 分钟 · 第 3 分钟缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
 	ornament(page,Vector2(62,814),Vector2(1314,10))
 	button(page,"← 返回营地",Vector2(60,839),Vector2(183,43),go_camp)
-	button(page,"守夜手册",Vector2(251,839),Vector2(165,43),show_help)
-	label(page,"活着带回来的，才属于你。",Vector2(583,849),16,Color("a797a3"))
+	button(page,"仓库",Vector2(255,839),Vector2(140,43),func(): show_economy(false))
+	button(page,"交易行",Vector2(405,839),Vector2(140,43),func(): show_economy(true))
+	button(page,"守夜手册",Vector2(555,839),Vector2(165,43),show_help)
+	label(page,"活着带回来的，才属于你。",Vector2(738,849),16,Color("a797a3"),Vector2(280,35))
 	if session.is_leader():
-		button(page,"全队出发    →",Vector2(1032,831),Vector2(340,61),func(): session.request_launch(),true).add_theme_font_size_override("font_size",27)
+		button(page,"返回营地 · 选择入口",Vector2(1032,831),Vector2(340,61),go_camp,true).add_theme_font_size_override("font_size",27)
 	else:
 		button(page,"取消准备" if session.players.get(session.my_id(),{}).get("ready",false) else "准备出发",Vector2(1032,831),Vector2(340,61),func(): ready_local=not ready_local; session.configure(config()),true)
 
 func copy_invite() -> void:
-	if session.server_room:
+	if not session.room_code.is_empty():
 		DisplayServer.clipboard_set(session.room_code)
-		notify("已复制服务器房间号："+session.room_code)
+		notify("已复制房间号："+session.room_code)
 		return
 	var ip := "127.0.0.1"
 	for candidate in IP.get_local_addresses():
@@ -953,6 +1090,16 @@ func copy_invite() -> void:
 	notify("已复制 "+ip+":24872  ·  发给同一网络的好友")
 
 func on_started() -> void:
+	if session.roguelike.active(session) and rogue_pending_cost>=0:
+		profile.data.coins-=rogue_pending_cost
+		profile.save_profile()
+	rogue_pending_cost=-1
+	toast.position.y=700
+	rogue_field.camera_x=0.0
+	rogue_field.camera_y=0.0
+	rogue_field.area_signature=""
+	var home := preload("res://scripts/homestead.gd").new(profile)
+	home.consume_started(str(session.players.get(session.my_id(),{}).get("home_meal","")))
 	extra_meds=0
 	ready_local=false
 	# The camp map hides itself as soon as the raid screen takes over, and the
@@ -969,14 +1116,28 @@ func on_started() -> void:
 	fade(page,Vector2(0,0),Vector2(365,245),Color(0.025,0.018,0.035,0.7))
 	label(page,"血潮守望",Vector2(29,17),24).add_theme_font_override("font",title_font)
 	hud.time=label(page,"",Vector2(30,54),15,GOLD)
+	var meal_id: String = preload("res://scripts/homestead.gd").meal_id(session.players[session.my_id()].get("home_meal",""))
+	if not meal_id.is_empty():
+		var food: Dictionary = preload("res://scripts/homestead.gd").MEALS[meal_id]
+		var badge := TextureRect.new()
+		badge.texture = preload("res://scripts/home_art.gd").icon(meal_id)
+		badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		badge.position = Vector2(30,92)
+		badge.size = Vector2(26,26)
+		page.add_child(badge)
+		var meal_label := label(page,str(food.name)+" · "+str(food.desc).replace("本次远征",""),Vector2(62,93),13,Color("b9d7a6"),Vector2(310,25))
+		meal_label.name = "HomeMealBuff"
+		meal_label.tooltip_text = str(food.desc)
+
 	hud.mission=label(page,"",Vector2(550,18),20,INK)
 	hud.area=label(page,"",Vector2(550,49),14,GOLD,Vector2(610,25))
 	ornament(page,Vector2(540,83),Vector2(300,10))
 	hud.seed=label(page,"遗迹 #"+str(session.seed_value),Vector2(1175,26),14,MUTED)
 	hud.team=label(page,"",Vector2(31,125),15,INK,Vector2(320,180))
 	hud.team.add_theme_constant_override("line_spacing",10)
-	button(page,"背包  TAB",Vector2(1175,310),Vector2(234,39),toggle_bag)
-	button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
+	button(page,"行囊 · 构筑  TAB" if session.roguelike.active(session) else "背包  TAB",Vector2(1175,310),Vector2(234,39),toggle_bag)
+	if not session.roguelike.active(session): button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
 	button(page,"菜单",Vector2(1298,360),Vector2(111,38),pause_menu)
 	hud.notice=label(page,"",Vector2(375,624),22,GOLD,Vector2(690,40))
 	hud.notice.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -986,40 +1147,55 @@ func on_started() -> void:
 	ornament(page,Vector2(20,775),Vector2(475,110),"frame")
 	portrait(page,session.players[session.my_id()].hero,Vector2(80,824),102)
 	hud.health=label(page,"",Vector2(132,794),17,Color("efc3c4"),Vector2(230,32))
-	hud.sanity=label(page,"",Vector2(132,841),13,Color("b5b8d4"),Vector2(280,30))
+	hud.mana=label(page,"",Vector2(132,835),13,Color("83b9ef"),Vector2(240,23))
+	rect(page,Vector2(134,860),Vector2(220,5),Color("203149"))
+	hud.mpbar=rect(page,Vector2(134,860),Vector2(220,5),Color("548fd0"))
+	hud.sanity=label(page,"",Vector2(132,868),11,Color("b5b8d4"),Vector2(280,19))
 	rect(page,Vector2(134,832),Vector2(220,5),Color("3c2333"))
 	hud.hpbar=rect(page,Vector2(134,832),Vector2(220,5),RED)
 	hud.weapon_icon=item_icon(page,"rifle",Vector2(404,791),Vector2(39,39))
 	hud.ammo=label(page,"",Vector2(454,791),18,INK,Vector2(267,35))
 	hud.scent=label(page,"",Vector2(412,842),13,GOLD,Vector2(260,33))
-	ornament(page,Vector2(722,785),Vector2(48,85),"seal",Color("b8a0c8"))
-	item_icon(page,"skill",Vector2(728,801),Vector2(40,40))
-	hud.skill=label(page,"",Vector2(792,793),17,Color("d4c0de"),Vector2(283,33))
-	hud.items=label(page,"",Vector2(792,842),13,MUTED,Vector2(315,30))
+	if not session.roguelike.active(session):
+		ornament(page,Vector2(722,717),Vector2(48,65),"seal",Color("b8a0c8"))
+		item_icon(page,"skill",Vector2(728,732),Vector2(40,40))
+	hud.skill=label(page,"",Vector2(792,714),14,Color("d4c0de"),Vector2(350,26))
+	hud.art=label(page,"",Vector2(792,748),14,Color("83b9ef"),Vector2(350,26))
+	hud.items=label(page,"",Vector2(412,870),11,MUTED,Vector2(310,20))
 	label(page,"WASD 走路 · SHIFT 奔跑 · 鼠标攻击",Vector2(1170,754),11,MUTED,Vector2(241,20))
-	label(page,"SPACE 闪避 · R 装填 · 武器只能捡到后装备",Vector2(1170,776),11,MUTED,Vector2(241,20))
-	label(page,"F 拾取/搜索 · 道具栏使用或互换",Vector2(1170,798),11,MUTED,Vector2(241,20))
-	label(page,"E 长按 救援/城门/撤离/封印 · TAB 背包 · M 地图",Vector2(1170,820),11,MUTED,Vector2(241,20))
+	label(page,"右键 战技 · SPACE 闪避 · C 跃起",Vector2(1170,776),11,MUTED,Vector2(241,20))
+	label(page,"F 血瓶 · 倒地长按F魂灯" if session.roguelike.active(session) else "F 拾取/搜索 · 1/2/3 道具",Vector2(1170,798),11,MUTED,Vector2(241,20))
+	label(page,"E 选择路线 · TAB 行囊构筑" if session.roguelike.active(session) else "E 长按 救援/城门/撤离/封印 · TAB 背包 · M 地图",Vector2(1170,820),11,MUTED,Vector2(241,20))
 	hud.loadout=label(page,"",Vector2(1170,846),11,GOLD,Vector2(241,18))
 	hud.loadout2=label(page,"",Vector2(1170,864),11,MUTED,Vector2(241,18))
 	hud.raid_continue=button(page,"留下挑战 [Y]",Vector2(400,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"continue"}))
 	hud.raid_extract=button(page,"安全撤离 [N]",Vector2(618,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"extract"}))
 	hud.raid_wait=button(page,"取消就绪 [U]",Vector2(836,351),Vector2(205,42),func(): session.action("raid_choice",{"choice":"wait"}))
 	for key in ["raid_continue","raid_extract","raid_wait"]: hud[key].hide()
+	if session.roguelike.active(session):
+		hud.skill.position=Vector2(770,800)
+		hud.art.position=Vector2(770,837)
+		hud.notice.position=Vector2(375,113)
+		hud.prompt.position=Vector2(335,739)
+		toast.position.y=157
+		notify("魔境闯关：E开箱 / 拾取 · Tab构筑 · F血瓶 · C跃起")
+		return
 	notify("第一天无法撤离。M 查看黎明印记；血潮收缩完成后迎战 Boss。")
 	# The two things a first raid has to know: the backpack is a piece of equipment
 	# like any other, and three sockets at the bottom of the screen are one key away.
-	popup_tip("屏幕下方新增三格道具栏：[F] 使用或与手上的互换，[1][2][3] 切换。捡到背包后双击即可换装。")
+	popup_tip("屏幕下方新增三格道具栏：按 [1][2][3] 直接使用对应格的道具或换装。捡到背包后双击即可换装。")
 func _process(dt: float) -> void:
 	if camp:
 		camp.input_blocked=modal
 	toast_time-=dt
-	toast.visible=toast_time>0
+	toast.visible=toast_time>0 and not inventory_open
+	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty(): toast.hide()
 	if page_name!="game" or not session.running:
 		return
-	sound.update_world(field.camera,session.players,dt)
-	var blocked := inventory_open or modal or field.map_open
-	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":field.aim(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint")}
+	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
+	var blocked: bool=inventory_open or modal or field.map_open or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
+	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint"),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
+	if session.roguelike.active(session): session.local_input["aim_point"]=mouse_point()+rogue_field.camera_offset()
 	time_ui+=dt
 	if time_ui>0.1:
 		time_ui=0
@@ -1030,11 +1206,13 @@ func _process(dt: float) -> void:
 			var container: Dictionary=session.container_at(_loot_index) if _loot_index>=0 else {}
 			if container.is_empty() and _loot_index>=0:
 				_loot_index=-1
-			var signature := str(p.get("backpack",{}))+str(p.get("pocket",{}))+str(p.get("equipped",{}))+str(container)
+			var signature := rogue_inventory.signature(p,session) if session.roguelike.active(session) else str(p.get("backpack",{}))+str(p.get("pocket",{}))+str(p.get("equipped",{}))+str(container)
+			if session.roguelike.active(session): rogue_inventory.update_live(p)
 			if _loot_index>=0:
 				signature+=str(int(float(p.get("search",0.0))*10.0))
 			if signature!=bag_signature:
 				show_inventory()
+	if inventory_open and not session.roguelike.active(session): extraction_inventory.update_hover()
 	# The grabbed item follows the cursor on every frame, not only on a rebuild.
 	sync_drag()
 
@@ -1045,13 +1223,14 @@ func mouse_over_button() -> bool:
 # Dragging lives on the overlay: item bodies ignore the mouse, so the pointer is
 # hit-tested against whichever grid is underneath it.
 func _input(event: InputEvent) -> void:
+	if session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
 	if not inventory_open or modal or page_name!="game":
 		return
 	if event.button_index==MOUSE_BUTTON_RIGHT:
 		# Right click is the mouse shortcut for the same R rotation.
-		rotate_selected()
+		if event.pressed: rotate_selected()
 		get_viewport().set_input_as_handled()
 		return
 	if event.button_index!=MOUSE_BUTTON_LEFT:
@@ -1082,7 +1261,7 @@ func _input(event: InputEvent) -> void:
 		if hit.is_empty():
 			return
 		var slot := str(hit.slot)
-		var index := index_at(slot,Vector2i(hit.cell))
+		var index: int=index_at(slot,Vector2i(hit.cell))
 		if index<0:
 			return
 		if ctrl_held():
@@ -1135,7 +1314,7 @@ func _input(event: InputEvent) -> void:
 		# item so the details panel can offer its use / equip buttons.
 		if not press_moved and mouse_point().distance_to(press_point)<8.0:
 			var slot := str(drag.slot)
-			var index := int(drag.source)
+			var index: int=int(drag.source)
 			stop_drag()
 			pick_item(slot,index)
 		else:
@@ -1176,6 +1355,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if page_name!="game" or modal:
 		return
+	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty():
+		if event.is_action_pressed("bag"): toggle_bag()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and session.raid.get("phase","") in ["choice","complete"]:
 		var code: int=event.physical_keycode if event.physical_keycode else event.keycode
 		if code in [KEY_Y,KEY_N,KEY_U]:
@@ -1190,17 +1372,27 @@ func _unhandled_input(event: InputEvent) -> void:
 		toggle_map()
 	if field.map_open:
 		return
+	if session.roguelike.active(session):
+		if event.is_action_pressed("loot") and not event.is_echo():
+			heal_action()
+			get_viewport().set_input_as_handled()
+			return
+		if event.is_action_released("loot") or event.is_action_pressed("search_drop"):
+			return
+		if event is InputEventKey and event.pressed and event.physical_keycode in [KEY_1,KEY_2,KEY_3]: return
+		if inventory_open: return
 	if event.is_action_pressed("search_drop") and not event.is_echo():
 		search_drops_action()
 		get_viewport().set_input_as_handled()
 		return
-	# --- 1 / 2 / 3 pick the item bar socket ---------------------------------
+	# --- 1 / 2 / 3 directly use the corresponding item bar socket -----------
 	# The map screen owns the same keys while it is open, so the map is asked
 	# first: with it up, 1-4 still switch the filter it has always switched.
 	if event is InputEventKey and event.pressed and not event.echo:
 		var code: int=event.physical_keycode if event.physical_keycode else event.keycode
 		if code in [KEY_1,KEY_2,KEY_3]:
 			select_item_slot(code-KEY_1)
+			apply_item_slot(code-KEY_1)
 			get_viewport().set_input_as_handled()
 			return
 	# --- F: the item bar, looting and the fallback heal ---------------------
@@ -1244,7 +1436,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if field.map_open:
 		return
-	for action in ["reload","skill","dash"]:
+	if session.roguelike.active(session) and event.is_action_pressed("fire") and not event.is_echo(): session.action("attack")
+	for action in ["reload","skill","dash","weapon_art","jump"]:
 		if event.is_action_pressed(action) and not event.is_echo():
 			session.action(action)
 
@@ -1348,14 +1541,8 @@ func update_hud() -> void:
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty() or hud.is_empty():
 		return
-	var encounter_cue := ""
-	for enemy in session.enemies:
-		if enemy.get("raid_boss",false):
-			encounter_cue="abyss" if enemy.get("abyss_final",false) else "hidden" if enemy.get("hidden_final",false) else "final" if enemy.get("final_form",false) else "mirror" if int(enemy.boss_kind)==0 else "ember" if int(enemy.boss_kind)==1 else ""
-			break
-		if enemy.get("mini_boss",false) and enemy.p.distance_to(p.p)<850:
-			encounter_cue="dragon" if enemy.get("dragon_boss",false) else ("earth" if int(enemy.wild_kind)==0 else "storm") if enemy.get("wild_boss",false) else "mirror" if int(enemy.mini_kind)==0 else "ember"
-	sound.music.set_encounter(encounter_cue)
+	if session.roguelike.active(session): update_rogue_hud(p)
+	sound.music.set_world(session.map_id,session.raid,session.enemies,p.p)
 	var choosing: bool=session.raid.get("phase","")=="choice" and p.status=="active"
 	hud.raid_continue.visible=choosing
 	hud.raid_wait.visible=choosing
@@ -1365,8 +1552,18 @@ func update_hud() -> void:
 	hud.mission.text="王城探索 · 缩圈前自动返回边境" if session.map_id=="city" else ("晨钟封印 %d/3 · %s" % [session.objectives,"可撤离" if session.can_extract() else "撤离封锁 · 击败黎明 Boss"])
 	var block := Ecology.block_at(session.ruins,p.p) if session.map_id=="border" else -1
 	hud.area.text=str(session.ruins.sites[block].name)+" · "+Ecology.site_status(session,block) if block>=0 else ("击败骑士与全部守卫，领取王庭珍藏" if session.map_id=="city" else "野外稀有补给 · 清理据点获得宝箱")
+	if session.roguelike.active(session):
+		hud.raid_continue.hide()
+		hud.raid_wait.hide()
+		hud.raid_extract.hide()
+		hud.time.text="第 %d / 5 层 · 第 %d / %d 区" % [session.raid.floor,session.raid.area,session.roguelike.AREAS_PER_FLOOR]
+		hud.mission.text=session.roguelike.FLOORS[int(session.raid.floor)-1]+" · "+session.roguelike.ROOM_NAMES[session.raid.room]
+		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱爆出随机品质秘藏","rogue_reward":"E 开箱 / 拾取 · 三选一后领取或分享","rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":"直行或斜向 · 靠近路线末端按 E"}.get(session.raid.phase,"")
+		hud.area.text+=" · Lv.%d 经验%d/%d 属性点%d" % [p.build_level,p.build_xp,preload("res://scripts/rogue_build.gd").xp_needed(int(p.build_level)),p.build_attribute_points]
 	hud.health.text="生命   %d / %d" % [maxf(0,p.hp),p.max_hp]
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
+	hud.mana.text="蓝量   %d / %d" % [p.mana,p.max_mana]
+	hud.mpbar.size.x=220*clampf(p.mana/maxf(1.0,p.max_mana),0,1)
 	hud.sanity.text="理智  %d%%    ·    血香  %d" % [p.sanity,p.scent]
 	var family := Catalog.weapon_family(p.weapon)
 	# The HUD icon follows whatever is in hand, looted or temporary. The cache
@@ -1374,11 +1571,14 @@ func update_hud() -> void:
 	# ship its own icon inside a family it only borrows.
 	if int(hud.get("weapon_icon_index",-1))!=int(p.weapon):
 		hud.weapon_icon_index=int(p.weapon)
-		hud.weapon_icon.texture=TideUIArt.icon(Catalog.weapon_icon(int(p.weapon)))
+		hud.weapon_icon.texture=preload("res://scripts/rogue_build_art.gd").item_icon(p.equipped.get("weapon",{})) if session.roguelike.active(session) and int(p.weapon)>=600 else TideUIArt.icon(Catalog.weapon_icon(int(p.weapon)))
 	hud.ammo.text=weapon_title(p)+(" · 装填中" if p.reload>0 else (" %02d/%d" % [p.ammo,p.reserve] if family==0 else " · 三连击" if family==1 else ""))
 	hud.scent.text="战利品  %d ◈   /   击杀 %d" % [loot_total(p),p.kills]
-	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  就绪")
-	hud.items.text="[F] 拾取/宝箱 · 道具栏使用  [H] 搜索掉落包    血晶 ×%d    /    %s" % [session.crystals_carried(p),session.backpack_label(p)]
+	hud.skill.text="[Q] "+Catalog.HEROES[p.hero].skill+("  %.0fs" % ceil(p.skill) if p.skill>0 else "  蓝量不足" if p.mana<session.ULTIMATE_MANA else "  就绪")+" · 30 蓝"
+	var art := WeaponArts.of(int(p.weapon))
+	hud.art.text="[右键] %s · %d 蓝 · %s" % [art.name,art.mana,"%.1fs" % p.art_cd if p.art_cd>0 else "蓝量不足" if p.mana<float(art.mana) else "就绪"]
+	hud.art.tooltip_text=WeaponArts.text(int(p.weapon))+"\n"+Catalog.scaling_text(int(p.weapon))
+	hud.items.text="血瓶 %d%% · F饮用 / 倒地长按F魂灯" % p.flask if session.roguelike.active(session) else "血晶 ×%d    /    %s" % [session.crystals_carried(p),session.backpack_label(p)]
 	var kit: Array=loadout_lines(p)
 	hud.loadout.text=str(kit[0])
 	hud.loadout2.text=str(kit[1])
@@ -1392,6 +1592,16 @@ func update_hud() -> void:
 	# The bar rides with the HUD, so it is drawn before any of the early returns
 	# below: a downed Watcher still sees what is in their sockets.
 	draw_hud_item_bar()
+	if session.roguelike.active(session):
+		hud.items.text="血瓶 %d%% · 刷新卡 %d · %s" % [p.flask,p.rogue_rerolls,"饮用中" if p.flask_time>0 else "%.1fs" % p.flask_cd if p.flask_cd>0 else "F饮用"]
+		hud.sanity.text="补正 +%d%% · 修为 %d/%d · 武器 +%d" % [session.weapon_scaling(p)*100,session.RogueBuild.talent_cost(p),p.build_cultivation,session.RogueBuild.forge_level(p)]
+		hud.scent.text="本局魔晶 %d · 击杀 %d" % [p.rogue_gold,p.kills]
+		if p.status=="down":
+			hud.notice.text="倒地 · 长按F两秒使用魂灯" if p.soul_lamp else "倒地 · 等待队友长按E救援"
+		elif session.raid.phase=="rogue_combat":
+			hud.prompt.text=("剩余魔物 %d · 第 %d / 3 段遭遇" % [session.enemies.size(),session.raid.wave]) if not session.enemies.is_empty() else "继续向右探索 · 前方还有魔物"
+		if p.get("rogue_lava",false): hud.notice.text="岩浆灼烧！离开橙红色熔岩区域"
+		return
 	if p.status=="down":
 		hud.notice.text="你已倒地 · 等待队友救援"
 		hud.prompt.text="[F] 消耗急救针自救（每局一次）" if p.self_revive and session.carried(p,"medicine")>0 else "倒计时结束后阵亡；队友靠近并长按 E 可救起你。"
@@ -1449,6 +1659,7 @@ func loot_total(p: Dictionary) -> int:
 # panel layout is only rebuilt when something in it changes, and the player needs
 # to watch the bar fill up while looting with the bag shut.
 func draw_hud_item_bar() -> void:
+	if session.roguelike.active(session): return
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty():
 		return
@@ -1528,6 +1739,7 @@ func put_in_item_slot(index: int, slot: String, item_index: int) -> void:
 		show_inventory()
 
 func toggle_bag() -> void:
+	if session.roguelike.active(session): session.action("break_combo")
 	if modal:
 		return
 	if inventory_open:
@@ -1574,6 +1786,7 @@ func detach_drag_nodes() -> void:
 			node.get_parent().remove_child(node)
 
 func toggle_map() -> void:
+	if session.roguelike.active(session): return
 	field.map_open=not field.map_open
 	page.visible=not field.map_open
 	if field.map_open: toast_time=0; toast.visible=false
@@ -1677,7 +1890,7 @@ func quick_inventory_at(point: Vector2) -> bool:
 	var hit := grid_at(point)
 	if not hit.is_empty():
 		var slot := str(hit.slot)
-		var index := index_at(slot,Vector2i(hit.cell))
+		var index: int=index_at(slot,Vector2i(hit.cell))
 		if index<0:
 			return false
 		if slot=="loot":
@@ -1805,6 +2018,8 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 func grid_at(point: Vector2) -> Dictionary:
 	for key in grids:
 		var entry: Dictionary=grids[key]
+		if entry.has("clip") and not Rect2(entry.clip).has_point(point):
+			continue
 		var local: Vector2=point-entry.origin
 		if local.x<0 or local.y<0:
 			continue
@@ -2041,7 +2256,7 @@ func mouse_point() -> Vector2:
 # grid, so an item lifted out of the bar leaves its whole box outlined instead.
 func drag_slot_rect() -> Rect2:
 	var slot := str(drag.slot)
-	var index := int(drag.source)
+	var index: int=int(drag.source)
 	if slot.begins_with("slot:"):
 		var at := slot_source(slot)
 		if at<0 or at>=slot_zone_rects.size():
@@ -2107,7 +2322,7 @@ func held_item() -> Dictionary:
 	if not drag.active:
 		return {}
 	var slot := str(drag.slot)
-	var index := int(drag.source)
+	var index: int=int(drag.source)
 	if slot=="loot":
 		var container: Dictionary=session.container_at(_loot_index)
 		var visible: Array=session.visible_items(container)
@@ -2219,6 +2434,19 @@ func show_inventory() -> void:
 	# the panels back on a screen the player already dismissed.
 	if not inventory_open or modal:
 		return
+	if session.roguelike.active(session):
+		stop_drag()
+		clear(overlay)
+		grids.clear()
+		equip_zones.clear()
+		slot_zone_rects.clear()
+		panel_rects.clear()
+		_loot_index=-1
+		var player: Dictionary=session.players.get(session.my_id(),{})
+		if not player.is_empty():
+			bag_signature=rogue_inventory.signature(player,session)
+			rogue_inventory.draw(self,player)
+		return
 	# The lifted icon and the landing ring live on the overlay, but they must
 	# outlive a rebuild: clear() queue_frees every child, and a rotation mid-drag
 	# rebuilds the panel, which used to free the ghost out of the player's hand.
@@ -2244,43 +2472,7 @@ func show_inventory() -> void:
 		selected=-1
 	if selected_slot=="pocket" and selected>=p.pocket.items.size():
 		selected=-1
-	var blocker := rect(overlay,Vector2.ZERO,Vector2(1440,900),Color(0.015,0.02,0.04,0.65))
-	blocker.mouse_filter=Control.MOUSE_FILTER_STOP
-	var tint: Color=Catalog.bag_color(p.backpack)
-	var right_x := 980.0
-	var bag_at := Vector2(70,150)
-	var pocket_at := Vector2(70,600)
-	var close_at := Vector2(802,160)
-	if _loot_index>=0:
-		# Search mode: carried storage on the left, container and its details right.
-		bag_cell=34.0
-		bag_gap=5.0
-		pocket_cell=32.0
-		pocket_gap=5.0
-	else:
-		# TAB mode: carried storage left, equipment and quick slots right. Scale
-		# large packs so the fixed pocket still fits below them on screen.
-		bag_cell=40.0 if bag_grid.x>=8 else 42.0 if bag_grid.x>=6 else 46.0
-		bag_gap=4.0 if bag_grid.x>=8 else 5.0 if bag_grid.x>=6 else 6.0
-		pocket_cell=32.0 if bag_grid.x>=8 else 37.0 if bag_grid.x>=7 else 44.0
-		pocket_gap=4.0 if bag_grid.x>=8 else 5.0 if bag_grid.x>=7 else 6.0
-		var bag_width: float=bag_grid.x*(bag_cell+bag_gap)-bag_gap+34.0
-		var bag_height: float=bag_grid.y*(bag_cell+bag_gap)-bag_gap+96.0
-		var pocket_width: float=pocket_grid.x*(pocket_cell+pocket_gap)-pocket_gap+34.0
-		bag_at=Vector2(70.0+(444.0-bag_width)*0.5,150.0)
-		pocket_at=Vector2(70.0+(444.0-pocket_width)*0.5,maxf(560.0,bag_at.y+bag_height+20.0))
-	draw_grid("backpack",bag_at,bag_cell,bag_gap,bag_grid,"角色背包 · "+Catalog.bag_name(p.backpack),
-		"%s品质  %d×%d  /  阵亡时连同物资掉落  /  价值 %d ◈" % [Catalog.bag_quality(p.backpack),bag_grid.x,bag_grid.y,Catalog.container_value(p.backpack)],tint)
-	draw_grid("pocket",pocket_at,pocket_cell,pocket_gap,pocket_grid,Catalog.POCKET_NAME,
-		"固定 %d×%d  /  永不掉落  /  价值 %d ◈" % [pocket_grid.x,pocket_grid.y,Catalog.container_value(p.pocket)],Color("b9a7d6"))
-	button(overlay,"关闭 TAB",close_at,Vector2(150,44),close_bag)
-	if _loot_index<0:
-		draw_details(p,right_x,150.0,390.0,700.0)
-	else:
-		# The search window sits clear of the HUD buttons and the details panel
-		# slides underneath it, so a run in progress stays readable.
-		draw_search_window(container,right_x,190.0)
-		draw_loot_details(p,container,right_x,190.0)
+	extraction_inventory.draw(self,p,container)
 	# The held item must stay above every panel, so the live drag nodes are
 	# re-attached to the end of the overlay after the panels are rebuilt.
 	if drag.active:
@@ -2318,6 +2510,9 @@ func draw_details(p: Dictionary, x: float, y: float, wide: float, tall: float) -
 		var text := label(overlay,Catalog.item_desc(item),Vector2(ix,y+474),12,MUTED,Vector2(inner,32))
 		text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 		text.tooltip_text=Catalog.item_desc(item)
+		if str(item.kind)=="weapon":
+			text.text="补正后攻击 %.1f · %s" % [session.weapon_damage(p,int(item.get("weapon",0)),int(item.get("tier",0))),Catalog.scaling_text(int(item.get("weapon",0)))]
+			text.tooltip_text="补正后攻击 %.1f\n%s" % [session.weapon_damage(p,int(item.get("weapon",0)),int(item.get("tier",0))),Catalog.item_desc(item)]
 		var action: Dictionary=use_action(item,p)
 		if not action.is_empty():
 			var action_text := "生命已满" if not bool(action.enabled) else "使用" if str(item.kind) in ["medicine","ammo"] else "装备"
@@ -2368,7 +2563,7 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 		var by := y+102.0
 		var item: Dictionary=entry.item
 		var kind := str(entry.type)
-		var index := int(entry.slot)
+		var index: int=int(entry.slot)
 		var zone_key := "weapon" if kind=="weapon" else "%s%d" % [kind,index]
 		equip_zones[zone_key]=Rect2(bx,by,box,box)
 		var filled := not item.is_empty()
@@ -2412,6 +2607,7 @@ func draw_equipment(p: Dictionary, x: float, y: float, wide: float) -> void:
 
 # Compact slot bonus for the equipment list: one glance, no wrapping.
 func equipment_bonus_text(item: Dictionary, kind: String) -> String:
+	if item.has("rogue_id"): return preload("res://scripts/rogue_equipment.gd").attributes_text(item)
 	if kind=="weapon":
 		return "伤+%d%% 速+%d%%" % [int(round(Catalog.weapon_bonus(item)*100.0)),int(round(Catalog.weapon_rate_bonus(item)*100.0))]
 	if kind=="charm":
@@ -2519,14 +2715,14 @@ func draw_item_bar(p: Dictionary, x: float, y: float, wide: float, bottom: bool)
 		body.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		if filled:
 			var out := button(overlay,"收回",Vector2(at.x+box-38,at.y+box-17),Vector2(37,16),func(): take_item_slot(i),false,10)
-			out.tooltip_text="把这一格收回背包（关闭背包后也能按 [F] 使用或互换）"
+			out.tooltip_text="把这一格收回背包（按对应数字键直接使用或换装）"
 	var label_at := Vector2(from_left,y-22)
 	if bottom:
-		var hud_head := label(overlay,"道具栏   /   [F] 使用·互换   [1][2][3] 切换",label_at,15,GOLD,Vector2(bottom_slot_width,20))
+		var hud_head := label(overlay,"道具栏 · 1/2/3 直接使用",label_at,11,GOLD,Vector2(count*box+(count-1)*6.0,20))
 		hud_head.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		return
 	label(overlay,"道具栏   /   快捷位",Vector2(x+22,y-22),17,GOLD,Vector2(170,26))
-	label(overlay,"悬停 [F] 收回 · [1-3] 切换",Vector2(x+200,y-16),11,MUTED,Vector2(inner-178,20))
+	label(overlay,"悬停 [F] 收回 · [1-3] 使用",Vector2(x+200,y-16),11,MUTED,Vector2(inner-178,20))
 
 func draw_cabinet(p: Dictionary, x: float, y: float, wide: float) -> void:
 	var ix := x+22
@@ -2685,7 +2881,7 @@ func draw_loot_details(p: Dictionary, container: Dictionary, x: float, y: float)
 	for entry in quick:
 		var kind := str(entry.kind)
 		var slot := str(entry.slot)
-		var index := int(entry.index)
+		var index: int=int(entry.index)
 		var chip := button(overlay,"%s ×%d" % [Catalog.ITEMS[kind].name,Catalog.container_count(p[slot],kind)],Vector2(slot_x,top+204),Vector2(112,34),func(): use_item(slot,index),false,13)
 		chip.tooltip_text=Catalog.ITEMS[kind].desc
 		slot_x+=118.0
@@ -2799,7 +2995,11 @@ func quick_use_slots(p: Dictionary) -> Array:
 
 func weapon_title(p: Dictionary) -> String:
 	var title: String=Catalog.weapon_name(p.weapon)
+	if session.roguelike.active(session): return title+" +%d" % session.RogueBuild.forge_level(p)+(" · "+Catalog.quality_name(int(p.equipped.weapon.get("tier",0))) if not p.equipped.weapon.is_empty() else " · 初始")
 	if session.weapon_kit_active(p):
+		var item: Dictionary=session.kit_weapon(p)
+		if item.has("rogue_id"):
+			return title+" · "+Catalog.item_short_name(item)+" 攻击+%d%%" % roundi(preload("res://scripts/rogue_equipment.gd").value(item,"damage")*100)
 		return title+" 强化+%d%%" % int(round(Catalog.weapon_bonus(session.kit_weapon(p))*100.0))
 	# An issue weapon is temporary: say so, so nobody mistakes it for a real one.
 	return title+" · 临时"
@@ -2841,7 +3041,7 @@ func on_finished() -> void:
 		profile.data.runs+=1
 		if reward.escaped:
 			profile.data.extracts+=1
-		profile.data.best=maxi(profile.data.best,reward.coins)
+		profile.data.best=maxi(profile.data.best,int(reward.loot)+int(reward.shared))
 		# The pocket always comes home; the backpack only if the player escaped.
 		if reward.has("pocket"):
 			profile.data.pocket=reward.pocket
@@ -2849,6 +3049,7 @@ func on_finished() -> void:
 			profile.data.bags=reward.bags
 			profile.data.bag_key=str(reward.bags[0].get("key",Catalog.DEFAULT_BAG_KEY))
 		profile.sanitize_storage()
+		profile.bank_carried_items(reward.get("equipment_loot",[]))
 		# Reaching the hidden ending is what recruits 墓煜, and the flag is
 		# written straight into the save file so she stays pickable afterwards.
 		if reward.get("hidden",false):
@@ -2862,12 +3063,15 @@ func on_finished() -> void:
 					recruited=str(Catalog.HEROES[i].name)
 		profile.save_profile()
 		session.report_paid=true
+		extra_meds=0
+		economy_changed()
 	new_page("results")
+	sound.music.set_result(bool(reward.get("escaped",false)))
 	background(0.85)
 	var hidden_end: bool=bool(reward.get("hidden",false))
 	header("隐藏结局 · 冥火之下" if hidden_end else ("黎明的回响" if reward.get("escaped",false) else "长夜未尽"),
 		"HIDDEN ENDING   /   冥火尸王已伏诛，新的守夜人已经回应召唤" if hidden_end else "EXPEDITION REPORT   /   个人战利品与全队目标已结算")
-	label(page,"%d / 3  晨钟封印" % session.objectives,Vector2(83,235),25,GOLD)
+	label(page,("魔境闯关 · 已完成 %d / 25 区" % reward.get("cleared",0)) if reward.get("roguelike",false) else ("%d / 3  晨钟封印" % session.objectives),Vector2(83,235),25,GOLD)
 	if hidden_end:
 		label(page,"骑士的护身符 · 三处晨钟 · 隐藏 Boss 已击败",Vector2(300,241),17,Color("c07ae0"))
 	if not recruited.is_empty():
@@ -2882,7 +3086,7 @@ func on_finished() -> void:
 		portrait(page,session.players[id].hero,Vector2(122,y+40),72)
 		label(page,r.name,Vector2(162,y+18),24)
 		label(page,"成功撤离" if r.escaped else "阵亡 / 失联",Vector2(370,y+21),18,Color("85c8b1") if r.escaped else Color("d38193"))
-		label(page,"战利品 %d   +   共享 %d" % [r.loot,r.shared],Vector2(585,y+21),18,MUTED)
+		label(page,"入库估值 %d · 奖励 %d" % [r.loot,r.shared],Vector2(585,y+21),18,MUTED)
 		label(page,"%d ◈     +%d XP" % [r.coins,r.xp],Vector2(1020,y+21),22,GOLD)
 		if r.get("bags",[]).size()>0 and r.escaped:
 			label(page,"带出 "+Catalog.bag_quality(r.bags[0])+"背包",Vector2(585,y+50),13,Catalog.bag_color(r.bags[0]),Vector2(175,22))
@@ -2891,11 +3095,14 @@ func on_finished() -> void:
 			var shown: String="  ".join(PackedStringArray(worn.slice(0,2)))
 			if worn.size()>2:
 				shown+=" 等 %d 件" % worn.size()
-			label(page,"身上装备 %s · %s" % [shown,"撤离后已消耗" if r.escaped else "已散落在废墟"],Vector2(770,y+50),12,MUTED,Vector2(540,22))
+			label(page,"身上装备 %s · %s" % [shown,"已存入仓库" if r.escaped else "已散落在废墟"],Vector2(770,y+50),12,MUTED,Vector2(540,22))
 		i+=1
 	label(page,"当前等级  Lv.%02d     ·     城邦银币  %d     ·     历史最佳  %d" % [profile.level(),profile.data.coins,profile.data.best],Vector2(83,741),19,MUTED)
 	button(page,"返回标题",Vector2(80,804),Vector2(205,57),leave_to_title)
-	if session.is_leader():
+	button(page,"仓库 / 出售战利品",Vector2(310,804),Vector2(260,57),func(): show_economy(true))
+	if reward.get("roguelike",false):
+		button(page,"返回营地  →",Vector2(978,797),Vector2(382,66),func(): session.request_camp(),true)
+	elif session.is_leader():
 		button(page,"返回营地 · 继续守夜  →",Vector2(978,797),Vector2(382,66),func(): session.request_camp(),true)
 	else:
 		label(page,"等待房主带领小队返回营地…",Vector2(987,814),18,GOLD)
@@ -2905,7 +3112,7 @@ func on_effect(kind: String,pos: Vector2) -> void:
 	if kind in ["shot","skill","hurt"]:
 		return
 	if page_name=="game":
-		sound.listener.global_position=field.camera
+		sound.listener.global_position=rogue_field.camera if session.roguelike.active(session) else field.camera
 		if kind.begins_with("search-reveal-"):
 			sound.play("search-reveal",clampi(kind.substr(14).to_int(),0,5),pos)
 			return
@@ -2931,7 +3138,7 @@ func clear_damage_feedback() -> void:
 func on_combat_audio(data: Dictionary) -> void:
 	if page_name!="game":
 		return
-	sound.listener.global_position=field.camera
+	sound.listener.global_position=rogue_field.camera if session.roguelike.active(session) else field.camera
 	var emitter := int(data.get("id",0))
 	var speaker: Dictionary=session.players.get(emitter,{})
 	var voice_hero := int(speaker.get("hero",0))
@@ -2944,7 +3151,7 @@ func on_combat_audio(data: Dictionary) -> void:
 			sound.stop_cue("magic-windup",emitter)
 		"strike":
 			sound.attack(int(data.weapon),int(data.get("combo",0)),data.p,emitter,str(data.get("spell","star")))
-			sound.dialogue.play_line(voice_hero,"attack",emitter,data.p,field.camera)
+			sound.dialogue.play_line(voice_hero,"attack",emitter,data.p,sound.listener.global_position)
 		"windup":
 			if int(data.weapon)==3:
 				sound.play("magic-windup",-1,data.p,0.0,emitter)
@@ -2963,17 +3170,17 @@ func on_combat_audio(data: Dictionary) -> void:
 				sound.stop_cue("magic-windup",emitter)
 			sound.play(str(data.cue),int(data.get("variant",-1)),data.p,0.0,emitter)
 			if str(data.cue) in ["heal","hurt","down"]:
-				sound.dialogue.play_line(voice_hero,str(data.cue),emitter,data.p,field.camera)
+				sound.dialogue.play_line(voice_hero,str(data.cue),emitter,data.p,sound.listener.global_position)
 		"dodge":
 			sound.stop_cue("magic-windup",emitter)
-			sound.dialogue.play_line(voice_hero,"dash",emitter,data.p,field.camera)
+			sound.dialogue.play_line(voice_hero,"dash",emitter,data.p,sound.listener.global_position)
 		"skill":
 			# A host release may arrive just before the final local CG frame.
 			if emitter==session.my_id() and ultimate.active:
 				ultimate.stop(false)
 			sound.play("skill",int(data.hero),data.p,0.0,emitter)
 			if emitter!=session.my_id():
-				sound.dialogue.play_line(int(data.hero),"ultimate-short",emitter,data.p,field.camera)
+				sound.dialogue.play_line(int(data.hero),"ultimate-short",emitter,data.p,sound.listener.global_position)
 
 func notify(text: String) -> void:
 	toast.text=text
@@ -3102,7 +3309,7 @@ func show_help() -> void:
 	var at := modal_box("守夜手册",Vector2(1060,720))
 	var left := at+Vector2(36,100)
 	label(overlay,"01  /  活着带回去",left,23,GOLD)
-	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取单件 / 搜索宝箱；H = 搜索附近的多件掉落包\nF 同时也是道具栏的互动键：[F] 使用或与手上的互换，[1] [2] [3] 切换当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
+	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取单件 / 搜索宝箱；H = 搜索附近的多件掉落包\n[1] [2] [3] 直接使用对应格道具 / 换装；[F] 也可使用当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
 	label(overlay,"02  /  搜刮要慢慢来",left+Vector2(0,318),23,GOLD)
 	var risk := label(overlay,"对着物资箱按 [F] 搜索，附近多件掉落包按 [H] 搜索。物品按品质逐件浮出，未搜索的卡片呈灰色。\n\n用鼠标把搜出的物品拖进背包或次元口袋即可拿走；按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽即可换装。\n\n背包内按 [R]（或右键）旋转物品；拖出有效网格和装备槽后松开，就会丢到地上。地面单件物品按 [F] 拾取。",left+Vector2(0,361),17,MUTED,Vector2(462,262))
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -3111,7 +3318,7 @@ func show_help() -> void:
 	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 [E] 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点：第二天起长按 [E] 4 秒独立撤离，受伤会中断。城门是往返王城的路，全队到齐后长按 [E] 1.5 秒通过。\n\n第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),17,MUTED,Vector2(463,262))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	label(overlay,"04  /  道具栏与不要遗忘时间",right+Vector2(0,318),23,GOLD)
-	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 切换当前格，按 [F] 使用或互换。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天每天 5 分钟，第 3 分钟围绕黎明印记缩圈，第 5 分钟 Boss 降临。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,366),17,MUTED,Vector2(463,268))
+	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 直接使用对应格的道具或换装。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天每天 5 分钟，第 3 分钟围绕黎明印记缩圈，第 5 分钟 Boss 降临。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,366),17,MUTED,Vector2(463,268))
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:
@@ -3119,3 +3326,100 @@ func show_credits() -> void:
 	label(overlay,"血潮守望 · Crimson Tide",at+Vector2(37,107),29,GOLD)
 	label(overlay,"游戏实现  /  Godot 4 · GDScript\n主视觉、立绘与精灵  /  AI 原创插画\n音效  /  Lentikula · Kenney 等 CC0 素材再设计\n日语真人语音  /  フリーボイス素材屋すぱらんど\n声优  /  すぱるな瀟洒 · 三套角色演绎\n攻击 · 施法 · 受伤 · 奥义出招\n免费授权录音 · 日语台词 · 中文奥义字幕\n完整鸣谢  /  AUDIO-CREDITS.txt · VOICE-CREDITS.txt\n字体  /  Noto Serif & Sans SC · SIL OFL",at+Vector2(37,172),18,MUTED,Vector2(750,340)).add_theme_constant_override("line_spacing",10)
 	label(overlay,"献给每一位在长夜中守望黎明的人。",at+Vector2(37,550),18,INK)
+
+
+func show_rogue_setup() -> void:
+	if session.players.is_empty(): session.solo(config())
+	if session.is_leader(): session.select_mode("roguelike")
+	new_page("rogue_setup")
+	background(0.8)
+	header("魔境闯关", "ROGUE ADVENTURE  /  五层魔境 · 每层五区 · 随机装备与角色构筑")
+	label(page,"幽光菌林 → 魔焰铸炉 → 星晶幻境 → 风暴空港 → 黑曜魔宫",Vector2(82,220),23,GOLD,Vector2(1290,50))
+	label(page,"每层：战斗 / 灵契圣坛 / 战斗 / 补给或第二座圣坛 / 守层者\n天赋只在圣坛获得，每层1～2座，每座两轮三选一。装备清场后开箱获取，可分享给队友。",Vector2(82,292),20,INK,Vector2(1200,85))
+	rogue_cards=0; rogue_weapon=-1
+	label(page,"免费出发 · 每人3次刷新 · 60魔晶 · 血瓶100%",Vector2(82,405),26,GOLD)
+	label(page,"252项独立构筑：48武器 / 72装备 / 96天赋 / 24铭刻 / 12武器核心",Vector2(82,473),23,INK,Vector2(1260,52))
+	rogue_icon(page,rogue_field.art.item_icons[8],Vector2(816,453),Vector2(80,80))
+	label(page,"开局免费三选一白色武器，保留角色自带武器作后备。不同角色有初始属性；永久分配完整保留。",Vector2(82,551),21,INK,Vector2(1260,66))
+	label(page,"每局保底18修为 / 8锻造点。打怪获得局内经验，每级+2属性点；宝箱概率掉落额外属性灵晶。\nTab → 构筑：天赋、加点、锻造、连招手册和全部素材图鉴。",Vector2(82,628),21,GOLD,Vector2(1260,70))
+	label(page,"WASD移动 · 左键攻击 · 右键战技 · Space闪避 · C跃起 · Q奥义 · F血瓶 · E救援/出口\n不收取城邦金币；原背包与次元口袋留在城邦。",Vector2(82,728),18,MUTED,Vector2(1260,70))
+	button(page,"返回营地",Vector2(82,813),Vector2(230,56),go_camp)
+	button(page,"全队闯关 · 出发  →" if session.is_leader() else "确认购买 · 准备",Vector2(980,807),Vector2(370,66),start_rogue,true)
+
+func rogue_cost() -> int:
+	return 0
+
+func start_rogue() -> void:
+	if page_name!="rogue_setup": return
+	var cost := rogue_cost()
+	if profile.data.coins<cost:
+		notify("金币不足，请减少开局准备。")
+		return
+	if session.selected_mode!="roguelike":
+		notify("队长已切换为搜打撤，请返回营地。")
+		return
+	rogue_pending_cost=cost
+	ready_local=true
+	var payload := config()
+	payload.merge({"mode":"roguelike","rogue_rerolls":rogue_cards,"rogue_weapon":rogue_weapon},true)
+	session.configure(payload)
+	if session.is_leader(): session.request_launch()
+	if not session.running: notify("闯关准备完成，等待队友确认后由队长免费出发。")
+
+func update_rogue_hud(p: Dictionary) -> void:
+	var revision: int=int(session.raid.revision)
+	var claimed: bool=p.id in session.raid.get("reward_claims",[])
+	var selection: Dictionary=p.get("rogue_selection",{})
+	var browsing_shop: bool=p.p.x<session.ruins.fork_start-80
+	var signature := "%d:%s:%d:%d:%s:%d:%s" % [revision,session.raid.phase,p.rogue_gold,p.rogue_rerolls,claimed,session.raid.get("reward_claims",[]).size(),browsing_shop]
+	signature+="/%s/%s" % [selection.get("id",-1),selection.get("version",-1)]
+	if not selection.is_empty(): signature="selection:%s:%s:%s" % [selection.id,selection.version,p.rogue_rerolls]
+	if signature==rogue_signature: return
+	rogue_signature=signature
+	if is_instance_valid(rogue_panel):
+		page.remove_child(rogue_panel)
+		rogue_panel.queue_free()
+	rogue_panel=Control.new()
+	rogue_panel.size=Vector2(1440,900)
+	rogue_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	page.add_child(rogue_panel)
+	if not selection.is_empty():
+		var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
+		rogue_panel.add_child(reward_ui)
+		reward_ui.build(self,selection)
+		return
+	label(rogue_panel,"魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls],Vector2(1030,92),18,GOLD,Vector2(380,35))
+	if session.raid.phase=="rogue_reward":
+		label(rogue_panel,"E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑",Vector2(380,130),20,GOLD,Vector2(900,40))
+	if session.raid.phase=="rogue_shop" and browsing_shop:
+		rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
+		label(rogue_panel,"游商 · 可购买多件" if session.raid.phase=="rogue_shop" else "区域通关 · 选择一项奖励",Vector2(360,187),22,GOLD)
+		for i in p.get("rogue_shop_offers",[]).size():
+			var offer: Dictionary=p.rogue_shop_offers[i]
+			var index: int=i
+			var x: int=360+(i%3)*330
+			var y: int=floori(i/3.0)*230
+			rogue_icon(rogue_panel,rogue_field.art.offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
+			var title := label(rogue_panel,offer.name,Vector2(x+73,230+y),17,INK,Vector2(240,52))
+			title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+			var details := label(rogue_panel,offer.desc,Vector2(x,289+y),14,MUTED,Vector2(300,111))
+			details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+			var b := button(rogue_panel,"已售出" if offer.get("sold",false) else ("%d 魔晶 · 购买" % offer.price if offer.price>0 else "领取"),Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":index,"revision":revision}))
+			b.disabled=offer.get("sold",false) or p.rogue_gold<int(offer.price) or (offer.has("flask_refill") and p.flask>50)
+		var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":revision}))
+		reroll.disabled=p.rogue_rerolls<=0
+		if session.raid.phase=="rogue_prepare": label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
+	if session.raid.phase in ["rogue_shop","rogue_exit"]:
+		label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+
+
+func rogue_icon(parent: Node, texture: Texture2D, at: Vector2, dimensions: Vector2) -> TextureRect:
+	var node := TextureRect.new()
+	node.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	node.texture=texture
+	node.position=at
+	node.size=dimensions
+	node.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	node.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	parent.add_child(node)
+	return node

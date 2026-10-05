@@ -61,14 +61,13 @@ func run() -> void:
 		check(events.size()==s.BossTactics.KNIGHT_MOVES[move].marks.size()+1,"Knight multi-hit event count: "+move)
 		for event in events:
 			check(ResourceLoader.exists("res://assets/audio/bosses/"+P.cue(event)+".wav"),"Knight audio exists")
-	for key in P.KEYS:
-		var texture: Texture2D=load("res://assets/bosses/vfx/"+key+".png")
-		var im := texture.get_image()
-		check(im.detect_alpha()!=Image.ALPHA_NONE,"Generated VFX keeps real transparency: "+key)
-		for cell in 16:
-			var unit := im.get_size()/4
-			var rect := Rect2i(Vector2i(cell%4,cell/4)*unit,unit)
-			check(im.get_region(rect).get_used_rect().size.x>30,"Nonempty effect cell")
+	var art = preload("res://scripts/boss_effect_art.gd")
+	for key in art.KEYS:
+		for role in art.ROLES:
+			var texture: Texture2D=art.texture(key,role)
+			check(not texture is AtlasTexture,"Boss uses whole independent image")
+			check(texture.get_width()>=1024,"Native HD boss image")
+			check(texture.get_image().detect_alpha()!=Image.ALPHA_NONE,"Original real transparency")
 	print("BOSS VFX ",checks," checks, ",failures," failures")
 	s.queue_free()
 	quit(1 if failures else 0)

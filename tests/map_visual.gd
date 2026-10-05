@@ -16,7 +16,7 @@ func run() -> void:
 		await create_timer(0.2).timeout
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png("res://build/map-region-%d.png" % i)
-	p.p=Vector2(Ruins.river_x(2400)-100,2400)
+	p.p=app.session.ruins.bridges[1].get_center()-Vector2(100,0)
 	app.field.camera=p.p
 	await create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw

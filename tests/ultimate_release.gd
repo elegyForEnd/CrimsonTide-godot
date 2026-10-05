@@ -32,6 +32,7 @@ func run() -> void:
 	)
 	for hero in 3:
 		p.hero=hero
+		p.mana=p.max_mana
 		p.skill=0.0
 		p.hp=p.max_hp-60.0
 		p.aim=Vector2.RIGHT
@@ -69,6 +70,7 @@ func run() -> void:
 		check(releases==before+1,"Repeated completion cannot double damage")
 		app.sound.stop_cue("skill",1)
 
+	p.mana=p.max_mana
 	p.skill=0.0
 	session.action("skill")
 	var before := releases
@@ -77,6 +79,7 @@ func run() -> void:
 	skip.pressed=true
 	app.ultimate._input(skip)
 	check(not paused and releases==before+1,"User skip releases once and resumes")
+	p.mana=p.max_mana
 	p.skill=0.0
 	session.action("skill")
 	before=releases
@@ -100,6 +103,7 @@ func run() -> void:
 	check(releases==before,"Online skill waits for full short duration")
 	session.simulate(.06)
 	check(releases==before+1,"Host releases after 0.85 seconds")
+	p.mana=p.max_mana
 	p.skill=0.0
 	session.action("skill")
 	session.down(p)

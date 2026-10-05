@@ -1,0 +1,1133 @@
+{
+  "generator": "builtin ImageGen",
+  "atlas": false,
+  "active_asset_count": 68,
+  "identities": 17,
+  "motifs": {
+    "bell": [
+      "pendulum",
+      "score",
+      "fracture",
+      "dial"
+    ],
+    "thorn": [
+      "bramble",
+      "seed",
+      "root",
+      "hunt"
+    ],
+    "queen": [
+      "sabres",
+      "regalia",
+      "petals",
+      "crown"
+    ],
+    "hidden": [
+      "rift",
+      "hands",
+      "ribcage",
+      "tomb"
+    ],
+    "mirror": [
+      "frame",
+      "thread",
+      "glass",
+      "loom"
+    ],
+    "ember": [
+      "censer",
+      "moths",
+      "pyre",
+      "vesper"
+    ],
+    "moon": [
+      "eye",
+      "drop",
+      "artery",
+      "eclipse"
+    ],
+    "earth": [
+      "furrow",
+      "plate",
+      "stalactite",
+      "fault"
+    ],
+    "storm": [
+      "feather",
+      "chain",
+      "eye",
+      "plume"
+    ],
+    "abyss": [
+      "maw",
+      "current",
+      "tide",
+      "devour"
+    ],
+    "dragon": [
+      "icicle",
+      "breath",
+      "wings",
+      "frost"
+    ],
+    "grove": [
+      "roots",
+      "spore",
+      "bloom",
+      "mycelium"
+    ],
+    "furnace": [
+      "chain",
+      "rivets",
+      "hammer",
+      "kiln"
+    ],
+    "astral": [
+      "prism",
+      "refraction",
+      "starfall",
+      "orrery"
+    ],
+    "wing": [
+      "gust",
+      "return",
+      "cyclone",
+      "helm"
+    ],
+    "obsidian": [
+      "scar",
+      "echo",
+      "rain",
+      "seal"
+    ],
+    "knight": [
+      "slash",
+      "lance",
+      "burst",
+      "crest"
+    ]
+  },
+  "reference_thread": "codex://threads/01a100c8-35b1-7dd0-873a-cb3259697595",
+  "assets": [
+    {
+      "key": "bell_pendulum",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-60a8e747-a338-4283-9661-e2278c5f8958.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: a single spectral funeral bell clapper swinging on a long thin chain diagonally, one lilac angular resonance trail; recognizably a hanging pendulum, NOT a crescent blade. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "64b05eeea241cb70c5b03b9fb31dab2e0f8d0b4bdf81ce8a4d4242cb4506e47f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/bell_pendulum.png"
+    },
+    {
+      "key": "bell_score",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-06ff8758-9565-4adc-b405-18f9e2502eb9.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one horizontal sheet of spectral violet sound bars, three separated narrow oscillating ribbons and sharp tuning-fork ends, like an abstract musical stave without notes or text. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "aa28504c89588f250709258ba138594ccaf941211ef17d1b06ad1ed00dc14e86",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/bell_score.png"
+    },
+    {
+      "key": "thorn_bramble",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-648f540a-a7d9-4013-8038-2e15c29b7da2.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one jagged fork of thorny rose-crimson creeping vines, three branching stems with hook thorns, angular organic root silhouette. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "fe4cd3b9276cba21547076071642e52b680fd11c7dd900022c7a34d299408f25",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/thorn_bramble.png"
+    },
+    {
+      "key": "thorn_seed",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-30a226cc-195a-49d1-8726-414ca9c9670f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one thorn-wrapped crimson seed pod emitting two short thin curling vines, compact airborne orb with an open serrated husk. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "13f1c0a67823388a3c45acc40b54a9da3193e1cc2bb1d5615630cca3ca5ab9c7",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/thorn_seed.png"
+    },
+    {
+      "key": "bell_fracture",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-723eb0a5-dd9c-4a34-ab6c-7a439b17d3d9.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one spectral bronze-violet funeral bell cracking open, bell silhouette breaking into a few flat resonant plates, upright composition. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c605d486a3fede5a79987d466b365d169bcb207eb9d459bedcb0a45702049c49",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/bell_fracture.png"
+    },
+    {
+      "key": "thorn_root",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-dda031e6-d656-4793-b328-2a91956f80e9.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one crown of ground-piercing hooked thorn roots rising upward with gaps between stems, silver edged rose red plant matter. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f5509f23129739e0e27a52e9fa931b975dff0efb1fa258ebd671ab44f629349f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/thorn_root.png"
+    },
+    {
+      "key": "bell_dial",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-3bbd5ec2-1365-4262-8645-8b8392317bb0.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow pale lavender clock dial with 12 unequal ticks and a small off-center hour hand, restrained spectral glyph, transparent open center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "90afe85f3fdf4cc73b5eeef9c5062ba218b5e219c7636496233cb5e1fe49c023",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/bell_dial.png"
+    },
+    {
+      "key": "thorn_hunt",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-9c2b1da8-e3e2-443f-9e03-fa49344cae88.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one sparse hunter's trap mark made of three intertwined red thorn stems shaped as a triangle, hollow center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "39a1171cd99cdef53f1ee9c6c493b44917fe26ef8ac10e7088cbb5cc692929d3",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/thorn_hunt.png"
+    },
+    {
+      "key": "queen_sabres",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-17390766-b01c-447f-aba4-d7e95eb526c8.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one floating antique-gold ivory royal sabre composed of angular moon facets, vertical blade, narrow delicate silhouette with ornamental diamond hilt. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7571950fb7fbc19ea4c26f18e383afa1d3249694eb5e6d30b6423536c7b6064c",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/queen_sabres.png"
+    },
+    {
+      "key": "queen_regalia",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-8d28cb4c-978d-4e3b-9a48-9ba9ea671059.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one ivory-gold geometric crown with three thin dangling execution strings ending in small diamond stars, open composition. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "bd03ec54bad4b7517ef30ebc5d0098338314fd8e9059290d2b1603ff0cb0800f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/queen_regalia.png"
+    },
+    {
+      "key": "queen_petals",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-eb54f72f-4d9b-488b-81b0-f2d02226a248.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one burst of precisely six gold crystal moon petals unfolding around a dark empty center, sharp royal crystal shapes. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c5562efa13dbbe40c3f11867d698b187ab9c1dceaa7fedddcee9c56197df3bef",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/queen_petals.png"
+    },
+    {
+      "key": "queen_crown",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-9372c252-a33c-419c-8ac7-dcfb12b0f294.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow royal crown seal, asymmetric golden crescent enclosing four small orbital diamonds, ample clear center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a9e2540eb76df261ee0f322797a00c89373b4e62fff178afac64fc9b5417920f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/queen_crown.png"
+    },
+    {
+      "key": "hidden_rift",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-f32ba62d-3d94-489f-95f1-0b1179e07592.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one upright jagged amethyst void tear, broken dark edges enclosing empty transparent portal center, black-purple angular fracture fins. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "43deaff0194ef3d87fa14ba323328b4e9d25d4cee568d2d67c9707fffc72478b",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/hidden_rift.png"
+    },
+    {
+      "key": "hidden_hands",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-db12648f-91f4-4766-a949-cc51903883ad.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one spectral bony hand reaching diagonally out of purple smoke strips, stylized energy fingers and wrist, no body. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "aed24efb49d920b9848abce34e40399529270ce62b8d29120bf77cf41bebc7d5",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/hidden_hands.png"
+    },
+    {
+      "key": "hidden_ribcage",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-8793005f-fa2e-4660-90a9-3ad409208187.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one row of five ivory-purple skeletal ribs rising from ground, hooked upward claws forming an open cage, transparent gaps. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "5f0f8f4f7addc1b19d58ef6fd69371944d5df4c341e7cab7e1b59e6eeacbf7a1",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/hidden_ribcage.png"
+    },
+    {
+      "key": "hidden_tomb",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-1332b845-a9d3-4c02-8c10-ff8e8006c481.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one floating broken black-amethyst tombstone energy tablet with three thin ghost wisps, no lettering. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "beae75a9a14b207d4a02826d2e421683529130b3b34a89c435fd064388daf41a",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/hidden_tomb.png"
+    },
+    {
+      "key": "mirror_frame",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-dd1e3458-bf42-4d8e-a31c-e35665f1fcd1.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one oblique pale cyan silver shattered mirror frame with visibly empty reflective center, pointed corners and three detached facets. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "889ad8d7954b6c7c4e6b36c7bca02f84b7ea5a91d0b90abd4676a7a2c2998daa",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/mirror_frame.png"
+    },
+    {
+      "key": "mirror_glass",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-46223bb2-579e-454d-99c6-c2c772a3aa85.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one sparse downward cascade of seven pointed clear cyan glass shards, varied lengths, no radial explosion. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "145d4831b10a6e25bd2836b9788cc00bad49b2efffc458421d4ddf41dda577ba",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/mirror_glass.png"
+    },
+    {
+      "key": "mirror_thread",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-179bc6eb-6ed3-4808-917e-931c171b80a2.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one silky cyan energy thread connecting three tiny diamond mirror facets along an angular zigzag horizontal path, precise narrow refraction ribbon. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1562e4fcd05489331bd0e4a9efa6f753cfc76bf340459f2a7b59059353ea0ca3",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/mirror_thread.png"
+    },
+    {
+      "key": "mirror_loom",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-cd56a003-1f52-4321-805b-c8a3842853a4.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow hexagonal mirror loom formed by six silver-cyan facets linked with a few hair-thin strands, no symbols. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d237f302ffb6798b759d1f533d66cb6d13633b3c695da31e0aec21e108d6bf1a",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/mirror_loom.png"
+    },
+    {
+      "key": "ember_censer",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-45d7bb5d-0f40-4e46-b9ca-4869b9ec9e9d.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one suspended angular charcoal-and-copper incense censer, glowing orange aperture and long upward smoke ribbon with clean cel-painted edges. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4da9ae27830e81b8d2bfd0d2cd8046c4bf8e616ed5f7cc0fbbb9f84e5cafd0e3",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/ember_censer.png"
+    },
+    {
+      "key": "ember_moths",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-4ec5272d-b0c7-40ec-b532-88b286a58ff1.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one coherent flock of five small orange ember moth sparks sweeping diagonally, elongated glowing insect-wing silhouettes with little gaps. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1982844891bffaee0428a9a421e4928463a49d2c08ba2da5ad780af560d2d5db",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/ember_moths.png"
+    },
+    {
+      "key": "ember_pyre",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-8bc28330-9f32-4b77-ba43-dff3adc12234.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one narrow upright candle flame with black center branching into three ascending orange smoke fingers, no explosion. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "54b125b4d78a07050b969d89f27778145eaa09fabd7199975ca663ba97fd66f8",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/ember_pyre.png"
+    },
+    {
+      "key": "moon_eye",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-9ff9e073-109c-4af2-b81a-fead874003a4.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one ominous red lunar eye of energy, almond opening with a small fractured pupil and two crimson orbital droplets, no face. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "cda9cb666ada8678142e0063abe55120329de7d44a2a07535eb1897b6f9ee2b7",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/moon_eye.png"
+    },
+    {
+      "key": "ember_vesper",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-750eb4fb-3853-4c92-80ea-6950939b48a6.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one sparse triangular ritual of three small floating candles joined by fine orange incense trails, empty center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4879e89a0a6e85d4ee0f0861f0bf677defd9bdbb9dba358b00f79fcb53d9bee2",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/ember_vesper.png"
+    },
+    {
+      "key": "moon_drop",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-7d2725b5-cae0-47a5-8a24-837976eae0f7.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one elongated descending crimson blood droplet with forked threadlike trails above, pointed downward, no weapon. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e469767cdc0451aee5fea5703693b6317ab6ab32a1b71175ee86112bd2078419",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/moon_drop.png"
+    },
+    {
+      "key": "moon_artery",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-80287a7c-6be2-42cc-bb0d-d25ada679048.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one branching red liquid artery tree erupting upward, three forked branches with dark liquid interiors, narrow ivory rim. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e21b9a3745a5e74b2e245c96a05b409c6847ce553e3357936284a8a6b5f48eed",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/moon_artery.png"
+    },
+    {
+      "key": "moon_eclipse",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-5cefd063-0638-49dc-a826-473d1852640e.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one broken scarlet lunar disc with hollow black-transparent center and three orbital liquid droplets, incomplete ring. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "cc69a79e35655317982ef179110492f0651e23f1c71297c430c3659409300386",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/moon_eclipse.png"
+    },
+    {
+      "key": "earth_furrow",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d97da802-d4ee-4752-b081-dfe26debb776.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one serrated diagonal earthen excavation furrow consisting of staggered ochre claw marks and a few chipped stones, strongly directional. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e0b5de17550e7bb6ffdc21b55a563878b9cbadfb5dc03b0a75b0f7faaa2f143f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/earth_furrow.png"
+    },
+    {
+      "key": "earth_stalactite",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d5f10958-b0e8-4728-a5b2-3035c90bc303.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one downward pointing heavy ochre stalactite impact rock surrounded by just three tiny chips, long jagged crystalline stone silhouette. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "27d4696d9ad446fde9e51cb0f4f674a956c01da96ac56c6d1237a23b131339f4",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/earth_stalactite.png"
+    },
+    {
+      "key": "earth_plate",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-74d6153e-5af0-4145-b9a1-fdcca49d5a3f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one massive angular amber stone armor plate with a diagonal white-hot fault running through it, coherent airborne rock fragment. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6d359cc2614c2d65b61e6b26868732e64da46509659f6721d114b213749c4cd3",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/earth_plate.png"
+    },
+    {
+      "key": "earth_fault",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-3e6441c3-c296-48d5-8a3d-ec2afff4347a.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one sparse branching top-down tectonic fault mark, a Y of glowing amber fissures with dark rock wedges along sides. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "57804df817c832c195f15a2b9e8b00ffeaed2cf5d08400533a9a82f2a2f7e302",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/earth_fault.png"
+    },
+    {
+      "key": "storm_feather",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-bc926490-8e14-47de-bf85-748c9ef80302.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one long jagged electric cyan-blue feather with distinct barbs and one fork of lightning near quill, aimed horizontally right. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "88769b388614ffb4e5e36aead4c5be03a5606155339251993c6762d7db15702a",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/storm_feather.png"
+    },
+    {
+      "key": "storm_chain",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-4573a6d9-a25a-4078-81a9-aa2bb95cf461.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one thin sharply kinked lightning chain linking four small cyan nodes, irregular zigzag horizontal shape, no lance. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "71ab7ef73d888e5ad5315f2275afc9bbd843fe66bd7d0a159dac70f7a3eed03f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/storm_chain.png"
+    },
+    {
+      "key": "storm_plume",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-78b43d30-f149-4bc0-a6f7-0a117563957b.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one angular blue crest of three lightning feathers around a hollow diamond center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f970386291d5c0dec19166a8a678ac617e864da94260a37d6a586cceb7b1a4f2",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/storm_plume.png"
+    },
+    {
+      "key": "storm_eye",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-21dae441-d2c5-4ed4-b98b-7246ee173af0.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow miniature cyclone eye made of three cyan curved wind bands and tiny blue lightning needles, very open transparent center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "ed0c5912d4fe458b8076a44bd8974fc3dbad572aa2aea54bca26f8d5b4d50d5c",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/storm_eye.png"
+    },
+    {
+      "key": "abyss_maw",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-eabf0a05-9755-40d6-b8f7-49e063b1a37e.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one huge abstract indigo-violet spectral maw arc with six inward facing uneven fangs, broad open transparent mouth, no animal body. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "dd80bcd6f7c697902fdf0bf39882438fc8719d49fe25f12a0a58b46ed94004a4",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/abyss_maw.png"
+    },
+    {
+      "key": "abyss_current",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-fcff9cfa-f7ad-44f0-827a-c53088e7d4e8.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one sinuous S-shaped black-violet tidal current ribbon with foam-like sharp violet edge, horizontal serpentine shape. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0863c058bb31d2d9cf53fae2a9021e14934a820cd2cacf37d8cbd99e72141407",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/abyss_current.png"
+    },
+    {
+      "key": "abyss_tide",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-29b173a6-2382-423d-86cb-1d80be3bd26d.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one jagged upright dark indigo tidal wall with three curling tips and violet reflections, clean flat planes not realistic water. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4a9058e985fed838435cd8c9671e2010e22d4968984158cae55b390b1e38bbf0",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/abyss_tide.png"
+    },
+    {
+      "key": "abyss_devour",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-889cf91b-e2dc-4d7d-b4e2-5c34d75c3dae.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one broken violet moon between two slender inward closing jaw motifs, hollow center and few orbiting fragments. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f70feede60561e203ca4dba26f59d1cb1b1733c35d545918d85d4aaf3f94b4c3",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/abyss_devour.png"
+    },
+    {
+      "key": "dragon_breath",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-6e91645a-9fc7-4e11-94e8-4801af0ff72e.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one horizontal expanding frost breath plume travelling right, thin skeletal ice streaks in translucent cyan vapor sharply bounded, narrowing left source. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d5eb48e7048c6ce474910e3cf3f67c537900ce5dd31a8c01113a3c4f3478cd00",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/dragon_breath.png"
+    },
+    {
+      "key": "dragon_icicle",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-69260142-320f-4972-9ea5-763c92ef00bc.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one tall angular white-cyan frostbone ice pillar with asymmetric bony crystalline forks, upright. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c4dc54791bbaff5a4be4724b2959fcc160be8ea7209a4968df117c476c067a14",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/dragon_icicle.png"
+    },
+    {
+      "key": "dragon_wings",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-1e315d7b-8380-4b4f-8857-122db4392a1a.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one fan of five long white-blue ice wing quills radiating upward from one compact base, wide gaps. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1873224491e2aa811a2bfc1a83abd742050c4a1541c700bf8ad95deff9faa820",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/dragon_wings.png"
+    },
+    {
+      "key": "dragon_frost",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-22336e1e-8153-4a11-9400-96de6d88dedc.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow angular frostbone hexagram made of six detached ice shards and skeletal branches, open center. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "3fd7557bf0555567693a4b87e8122a4963b71c4ab8d8d5825aad64a10fc1f03d",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/dragon_frost.png"
+    },
+    {
+      "key": "grove_bloom",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-03dfe609-5e23-4d94-b673-0420cc21ff0a.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one upright spectral green mushroom blossom with three pointed petal caps and dripping spore threads, stylized energy only. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f59fe9f444d69ab59573d837f2f174b26c633071dc81cc2ea5c1a142ebfe70d5",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/grove_bloom.png"
+    },
+    {
+      "key": "grove_roots",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-2bc223c0-a823-492f-9012-ef03591d406e.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one intertwined jade-mint root braid growing horizontally with branching small hooked ends, organic angular energy plant. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b43338bbda74b5256f50777cfd1cf39490c5d81835e1e8a57bfc96cb7a89b29c",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/grove_roots.png"
+    },
+    {
+      "key": "grove_spore",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-2f505516-c51c-4a99-bc92-a6294934078c.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one luminous mint-green fungal spore capsule, transparent little cap with dotted core and thin dangling mycelium tails. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a92451428e4e28adaadabcd4d050ffc18cf0fca6c5461cd5418c0b80384ab090",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/grove_spore.png"
+    },
+    {
+      "key": "furnace_chain",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-e679854c-852e-448d-ac42-cf8f5b685c7f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one swinging dark iron chain with five large angular links, heated orange edges and heavy hooked end, diagonal orientation. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "78ea10dece9c6fb40559db0a72f5076f975c41a3aa141a58cf10aebfa4d8b78b",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/furnace_chain.png"
+    },
+    {
+      "key": "furnace_rivets",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-e346749e-4cbe-4b6c-bae0-0655d5a1359f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one coherent small scatter of four hot orange forged iron rivets flying horizontally, short fiery wake, no beam. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7d538ef88c396a5bd7fb2f44f478fc451403aaa4cdb8b7a25b144be5de28fd76",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/furnace_rivets.png"
+    },
+    {
+      "key": "grove_mycelium",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-257c812b-37e8-4d4c-831c-aa23e27ff37f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one asymmetric network of thin jade mycelium tendrils enclosing an empty center with three tiny fungal caps. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "899281c06e2a73924afce983cd7659edcf7c56aa93042153215582550d6f2a7e",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/grove_mycelium.png"
+    },
+    {
+      "key": "astral_prism",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-7bfe963b-a4d9-4ffe-8cde-b1aef3afeeea.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one floating tall lilac-opal triangular prism with thin silver facets and three tiny orbital stars, no weapon. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d5ea61907a1a55bc1df9fabcd30fc7291a73cac1bf606d03dcb9caf1be2f0c55",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/astral_prism.png"
+    },
+    {
+      "key": "furnace_hammer",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-87c008ce-720d-4b7a-add1-6d6a6717fc17.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one abstract molten hammerhead impact scar, rectangular iron silhouette splitting open into angular orange cracks at base. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9a0c3bf2770b242afd21541ab0d996185004eb1d410aaf479e36579814c853e9",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/furnace_hammer.png"
+    },
+    {
+      "key": "furnace_kiln",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-02335562-ed32-4df4-a5c2-f8864ebc00be.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow hexagonal iron kiln door frame with tiny molten orange vents, crisp dark steel edges. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "72fb08ba1ad051e5852dde45d8cae79392848b3eaaeb2eb66f4169e28a4f0693",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/furnace_kiln.png"
+    },
+    {
+      "key": "astral_refraction",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-41b5adbb-4a30-4f21-bb12-314583150c39.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one extremely narrow laser ribbon taking two visible angular bends through two tiny violet prism points, horizontal zigzag. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d3909beaa55d6af0fd96ed1636b1e7d9e2aa0f3b582784c2b5cb9fc31b1074d9",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/astral_refraction.png"
+    },
+    {
+      "key": "astral_orrery",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d2ace0ee-87b2-46a2-9c58-37323bb484a4.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow asymmetric silver lilac orbital diagram with three tiny stars on thin intersecting elliptical tracks. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "fe8108314b7214a61da8ef8caa782edf7639b42b345f385607d888a0e2d56fbe",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/astral_orrery.png"
+    },
+    {
+      "key": "astral_starfall",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-e997e255-00d2-4038-bbf5-b7dd79dcb747.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one descending silver-lilac eight-point star with two long thin comet streamers above, clear star silhouette. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7cb2e39b4af0a9d9010e472b71f20d7765ee158f7b0e3e6359898b81793e7534",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/astral_starfall.png"
+    },
+    {
+      "key": "wing_gust",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-01b8ed4d-c7f2-4be8-aed6-b8519d95917f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one braided turquoise wind stream with angular gold lightning slivers carried between three separated ribbons, horizontal. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6cd50c06d70ecdc411d5a1afbe8376c96ec14d69c466fe4cc360a44b8848a1ac",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/wing_gust.png"
+    },
+    {
+      "key": "wing_return",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-6b49202f-4cc3-45c5-90d6-9fd7a2f95ca5.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one V-shaped electric blue returning feather boomerang with gold angular tips and short cyan trails, no crescent. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b763c2359806e63353266e3add9276818cd9a70cc2e9117eb14cd1a0523082ed",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/wing_return.png"
+    },
+    {
+      "key": "wing_cyclone",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-93018e1d-0801-4ddb-8b47-44c032088108.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one vertical turquoise funnel cyclone with narrow lower tip, three clean separated wind strips and very sparse lightning. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2465aeb7dde24a54befdd04a87a5e1803c821229dd2c71b7bca5d44fc711b116",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/wing_cyclone.png"
+    },
+    {
+      "key": "wing_helm",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-e64bc219-d12a-444d-bf20-e252351bb7ef.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow winged diamond emblem with gold rim and two sharp turquoise wing extensions. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "509e08efcedc38bf6bc1c155d1367b1e6cb3a008d113854fbfa7be644d59a7bb",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/wing_helm.png"
+    },
+    {
+      "key": "obsidian_scar",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-b11b4181-858a-4102-925b-7f3bf5d44eac.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one sharply tapered black ink sword scar with vivid crimson-magenta thin outer cutting rim, dramatic horizontal slash, sparse droplets. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c544db3def293c80c6972cf049314fee074bdfd636dceead5d842b8abe024e0d",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/obsidian_scar.png"
+    },
+    {
+      "key": "obsidian_echo",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-e56b8a1e-ffe7-45fa-8153-012634798a44.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one spectral empty black samurai sword silhouette with a second faint offset sword ghost, upright diagonal, no character or body. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f26ca74806fdb93bf4ed977ea3036abf5c449175b60a95bbfadb16ad6086a8a2",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/obsidian_echo.png"
+    },
+    {
+      "key": "obsidian_rain",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-7ece10f0-5715-49e5-b2da-136d12e217b9.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one falling black obsidian sword with three angular red fragments and two thin ink streamers, pointed downward. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7befd4bf5f0a342aec43c0c0e46bc0e6bad18bdd8dbaae2b00d926721b2ed131",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/obsidian_rain.png"
+    },
+    {
+      "key": "obsidian_seal",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-0e01c69c-455e-4115-aeb6-33c5f2c0c487.png",
+      "prompt": "Use case: stylized-concept. Asset type: one original standalone high resolution combat VFX texture for an action game boss. Primary subject: one hollow jagged ink brush ritual square with a single magenta slash through one corner, sparse black drips. Follow this specific motif, DO NOT replace it with a generic crescent slash, spear, shockwave or radial explosion. Art direction inspired by BlazBlue Entropy Effect boss effects: disciplined clean cel-painted angular forms, saturated distinct main planes, very narrow bright edge, dark internal contrast; sparse short secondary trails. Keep a readable coherent silhouette with substantial transparent negative space; minimal bloom. Square 1280x1280 composition, entire ONE effect centered within 80% of canvas, uncropped tips with transparent margin. True transparent RGBA backdrop, no grid, sprite sheet, atlas, multiple variants, text, scenery or UI.",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "bf9747d7098881f85d95c1a85f373ba1bb9d3f8c43c32f616562dc45dbb6def7",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/obsidian_seal.png"
+    },
+    {
+      "key": "knight_burst",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-08e86e0b-9d9c-4fb0-a85f-b7b0c3cdc08e.png",
+      "prompt_file": "knight_burst.png.prompt.txt",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "879e9051931655a6b2601660f4308bc89c94db889df31310b34b832a05128db1",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/knight_burst.png"
+    },
+    {
+      "key": "knight_crest",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-9a4dc8bd-6ccd-41fd-b463-6e5b29475bca.png",
+      "prompt_file": "knight_crest.png.prompt.txt",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9ce727db9c7128170661905d283c8047a0e2e0629efab32015d4edcaeb6da0d9",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/knight_crest.png"
+    },
+    {
+      "key": "knight_lance",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-9b3a3628-e3d8-4312-b1f4-ace8dc34d3f4.png",
+      "prompt_file": "knight_lance.png.prompt.txt",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f6a851abf882ab424369b8f75a3c76c0087dc86624f80e1820e0206c10ab6938",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/knight_lance.png"
+    },
+    {
+      "key": "knight_slash",
+      "path": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-f2118ddd-ea63-46d3-93ed-dced5a805c59.png",
+      "prompt_file": "knight_slash.png.prompt.txt",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "029f79dec3de0c5a44989d5f968117fe3593c4a40a82d61407864ff2723e078b",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "runtime_path": "res://assets/bosses/imagegen/knight_slash.png"
+    }
+  ]
+}

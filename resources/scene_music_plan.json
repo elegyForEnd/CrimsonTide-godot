@@ -1,0 +1,140 @@
+{
+  "title": {
+    "label": "血潮守望 · 标题",
+    "title": "Crimson Tide - Watch Beneath the Crimson Moon",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 88 bpm, D minor, solo cello, restrained pipe organ, celesta, stately chamber strings, no vocals",
+    "prompt": "[Instrumental] A four-note descending D A F E watchtower motif; moonlit gothic anime title screen, tragic hope, restrained grandeur. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "home": {
+    "label": "家园与整备",
+    "title": "Crimson Tide - Hearths of Thunderhold",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 76 bpm, warm felt piano, acoustic harp, clarinet, soft strings, no vocals",
+    "prompt": "[Instrumental] A lived-in haven with farming, fishing, crafting and lanterns beneath distant thunder. Tender daily-life variations of the watchtower motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "city": {
+    "label": "失乡王城 · 探索",
+    "title": "Crimson Tide - Courtyard of the Exiled Crown",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 96 bpm, bass clarinet, viola ostinato, hollow bells, muted organ, no vocals",
+    "prompt": "[Instrumental] Walk abandoned royal courtyards and guard patrols. Regal ruins and oppressive silence, spacious controlled tension. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "sanctuary": {
+    "label": "灵契圣坛 · 构筑",
+    "title": "Crimson Tide - Covenant in Starlight",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 68 bpm, glass bells, harp harmonics, soft organ pads, viola, no vocals",
+    "prompt": "[Instrumental] A sacred pause to choose talents and forge a personal build; luminous mystery, no combat percussion. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "shop": {
+    "label": "游商营火",
+    "title": "Crimson Tide - Travelling Embers",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 84 bpm, plucked cello, dulcimer, warm clarinet, brush percussion, no vocals",
+    "prompt": "[Instrumental] An eccentric wandering merchant beside a safe campfire. Light gothic waltz with gentle motion and breathing room. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "treasure": {
+    "label": "遗落宝藏",
+    "title": "Crimson Tide - Reliquary of Forgotten Wishes",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 78 bpm, celesta, pizzicato strings, harp, soft metallic chimes, no vocals",
+    "prompt": "[Instrumental] Discover old treasure in a quiet chamber; curiosity, small wonders, delicate repeating arpeggios. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "victory": {
+    "label": "凯旋与成功撤离",
+    "title": "Crimson Tide - Lanterns Beyond the Long Night",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 94 bpm, warm strings, french horn, piano, bells, no vocals",
+    "prompt": "[Instrumental] Successful extraction and return home; relieved hopeful reprise of descending D A F E, earned victory with quiet dignity. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "defeat": {
+    "label": "阵亡结算",
+    "title": "Crimson Tide - The Watch Still Remembers",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 62 bpm, solo cello, felt piano, sparse low strings, no vocals",
+    "prompt": "[Instrumental] Loss after a failed expedition; sorrow without despair, a faint surviving lantern, understated repeating lament. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "bishop": {
+    "label": "赤月葬钟主教",
+    "title": "Crimson Tide - Bishop of the Funeral Bell",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 134 bpm, pipe organ, tolling bells, rapid low strings, ritual timpani, no vocals",
+    "prompt": "[Instrumental] A funeral bishop attacks with grave rings and spectral lances. Bells cut through precise dark counterpoint and rising ritual pressure. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "hunter": {
+    "label": "荆棘誓约猎王",
+    "title": "Crimson Tide - Oath of the Thorn Hunter",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 142 bpm, sharp string spiccato, hunting horns, toms, low cello, no vocals",
+    "prompt": "[Instrumental] A relentless thorn hunter stalks dodge landings; prowling pauses, lunging strings, cutting syncopation and pursuit. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "queen": {
+    "label": "血潮女王 · 永夜月冠",
+    "title": "Crimson Tide - Crown of the Evernight Queen",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 148 bpm, grand string orchestra, regal brass, pipe organ, deep taiko, no vocals",
+    "prompt": "[Instrumental] The third-day blood tide queen, majestic tragic antagonist; royal motif, escalating three-phase combat, a soaring instrumental melody. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "hidden": {
+    "label": "冥火尸王 · 墓玥",
+    "title": "Crimson Tide - Corpse King Beneath the Netherfire",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 154 bpm, distorted low organ, contrabass, dissonant strings, huge ritual drums, no vocals",
+    "prompt": "[Instrumental] Hidden final encounter after sunrise seals and the exiled knight amulet; necromantic fire, violent rhythm, crushing late-phase transformation. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "knight": {
+    "label": "失乡骑士",
+    "title": "Crimson Tide - Knight Without a Kingdom",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 128 bpm, mournful horn, cello ostinato, steel percussion, chamber strings, no vocals",
+    "prompt": "[Instrumental] A banished knight guards a fallen court; disciplined sword duels, sorrowful nobility, dangerous elegant rhythmic attacks. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "floor_1": {
+    "label": "幽光菌林",
+    "title": "Crimson Tide - Luminous Mycelium",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 104 bpm, breathy flute, bass clarinet, celesta, plucked strings, soft frame drums, no vocals",
+    "prompt": "[Instrumental] Bioluminescent mushroom forest, drifting spores, living roots and hidden creatures. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "guardian_1": {
+    "label": "幽蕈古王",
+    "title": "Crimson Tide - Mycelial Ancient King",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 130 bpm, deep bassoon, wooden drums, twisted cello, low organ, no vocals",
+    "prompt": "[Instrumental] An ancient fungal king releases spore storms and erupting roots; organic heavy stalking rhythm. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "floor_2": {
+    "label": "魔焰铸炉",
+    "title": "Crimson Tide - Furnace of Demonfire",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 116 bpm, muted brass, iron anvil percussion, cello ostinato, low strings, no vocals",
+    "prompt": "[Instrumental] Molten lava channels, infernal machinery and scorched forge halls. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "guardian_2": {
+    "label": "熔炉暴君",
+    "title": "Crimson Tide - Tyrant of the Crucible",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 144 bpm, huge anvil hits, aggressive brass, taiko, fast low strings, no vocals",
+    "prompt": "[Instrumental] A molten tyrant slams the forge and sweeps lava; brutal measured impacts and rising heat. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "floor_3": {
+    "label": "星晶幻境",
+    "title": "Crimson Tide - Prismatic Star Reverie",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 108 bpm, glass harmonica, celesta, harp, shimmering chamber strings, no vocals",
+    "prompt": "[Instrumental] Floating star crystals, mirrored paths and an ethereal illusion realm. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "guardian_3": {
+    "label": "星镜女皇",
+    "title": "Crimson Tide - Empress of the Star Mirror",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 140 bpm, fractured celesta, agile violins, glass bells, pipe organ, no vocals",
+    "prompt": "[Instrumental] A crystalline empress warps reflections with stars and mirrored attacks; elegant dazzling danger. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "floor_4": {
+    "label": "风暴空港",
+    "title": "Crimson Tide - Stormbound Sky Harbor",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 122 bpm, soaring strings, french horns, snare, airy woodwinds, no vocals",
+    "prompt": "[Instrumental] High-altitude docks, airships, moving storm fronts and lightning. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "guardian_4": {
+    "label": "雷翼舰长",
+    "title": "Crimson Tide - Captain of the Thunder Wings",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 152 bpm, military snare, plunging brass, racing violins, thunder timpani, no vocals",
+    "prompt": "[Instrumental] A thunder-wing captain dives between lightning barrages; airborne maneuvering and martial energy. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "floor_5": {
+    "label": "黑曜魔宫",
+    "title": "Crimson Tide - Palace of Black Glass",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 118 bpm, ominous pipe organ, low viola ostinato, obsidian chimes, restrained drums, no vocals",
+    "prompt": "[Instrumental] The deepest black palace, cursed royal halls and a final blade awaiting the challenger. Exploratory action underscore, keep space for sound effects. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  },
+  "guardian_5": {
+    "label": "黑曜剑圣",
+    "title": "Crimson Tide - Sword Saint of Obsidian",
+    "tags": "Instrumental gothic anime dark fantasy RPG soundtrack, 160 bpm, razor-sharp violin runs, huge taiko, low brass, pipe organ, no vocals",
+    "prompt": "[Instrumental] A disciplined obsidian sword saint uses rapid lethal combos; fierce final duel, brief standoffs then explosive sword rhythms. Boss combat escalation and a memorable recurring motif. Develop a clear motif in contrasting instrumental sections; immediate musical start, no long intro, no sung or spoken voices. Return to opening ostinato for a loopable game soundtrack; avoid a final cadence or fade-out."
+  }
+}

@@ -141,7 +141,10 @@ func run() -> void:
 	session.bullets.clear()
 	session.spawn_enemy(p.p+Vector2(100,0),2)
 	var target: Dictionary=session.enemies[0]
-	target.p=p.p+Vector2(100,0)
+	# Keep the body beyond the first projectile step, so this checks release
+	# separately from contact with the new upright hurtbox.
+	target.p=p.p+Vector2(180,0)
+	target.stagger=2.0
 	target.hp=500.0
 	target.max_hp=500.0
 	session.attack(caster)

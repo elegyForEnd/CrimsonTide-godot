@@ -7,3 +7,7 @@ output/imagegen/
 
 server/data/
 __pycache__/
+
+*.blend1
+# Build executables and editor backups
+*.exe

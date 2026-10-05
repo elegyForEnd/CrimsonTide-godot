@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 1.1429,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      175,
+      316,
+      1362,
+      1258
+    ],
+    [
+      128,
+      172,
+      1413,
+      1258
+    ],
+    [
+      170,
+      209,
+      1390,
+      1258
+    ],
+    [
+      75,
+      94,
+      1424,
+      1258
+    ],
+    [
+      106,
+      396,
+      1335,
+      1258
+    ],
+    [
+      78,
+      356,
+      1344,
+      1258
+    ],
+    [
+      73,
+      329,
+      1341,
+      1258
+    ],
+    [
+      40,
+      318,
+      1301,
+      1258
+    ]
+  ],
+  "source_still": "D:\\develop\\school\\CrimsonTide-godot\\output\\minimax-action-pack\\stills\\bosses\\frostbone-dragon\\attack.png",
+  "method": "Individual image-generated frames; frame 1 chroma-keyed from approved still; uniform scaling and translation for alignment"
+}

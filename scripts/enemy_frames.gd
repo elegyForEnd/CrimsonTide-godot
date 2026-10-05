@@ -17,6 +17,9 @@ static func pose(e: Dictionary, clock: float) -> int:
 		return 11
 	if float(e.get("stagger",0))>0 or float(e.get("flash",0))>0:
 		return 10
+	if int(e.type)==4 and e.get("choreo_cast",false) and float(e.get("attack_time",0))>0:
+		# Legacy knight strike cells contain a second giant painted slash with no hit geometry.
+		return posmod(int(e.get("motion_phase",0)),4) if e.get("moving",false) else 8+posmod(int(clock*2+float(e.id)),2)
 	if float(e.get("guard_time",0))>0: return 5
 	if float(e.get("attack_time",0))>0:
 		var elapsed: float=float(e.attack_total)-float(e.attack_time)

@@ -69,23 +69,18 @@ func run() -> void:
 	for i in 20:
 		await process_frame
 
-	var wide: Dictionary = await shoot("thunderhold")
+	var wide: Dictionary = await shoot("hearthhaven")
 	print("CAMP VISUAL overview: ", wide)
 	check(float(wide.deviation) > 0.045, "the camp frame has real structure, not a flat fill")
 	check(float(wide.mean) > 0.02, "the camp is lit enough to read")
 	check(float(wide.hot) > 0.35, "the camp has highlights (fire, badges, sky)")
 
-	# A strike has to visibly move the frame. The bolt is advanced to a known
-	# point in its strobe and then frozen, so the capture is deterministic.
-	var base_mean := float(wide.mean)
-	site.force_strike(1.0, 700.0)
-	site._update_storm(0.15)
-	site.storm_age = 0.0
-	var strike: Dictionary = await shoot("strike")
-	site.storm_age = 1.0
-	print("CAMP VISUAL strike: ", strike)
-	check(float(strike.hot) > float(wide.hot) * 0.95, "a strike keeps the frame hot")
-	check(site.bolts.size() > 0 or float(strike.mean) > base_mean, "a strike is visible on screen")
+	check(site.bolts.is_empty(), "home environment stays calm")
+	check(site.get_node_or_null("Rain")==null,"home is a peaceful lakeside map")
+	screen.home_map.open()
+	var guide: Dictionary = await shoot("guide")
+	check(float(guide.deviation)>0.04,"generated map guide has real painted detail")
+	screen.home_map.close()
 
 	# The departure gate, where a raid starts.
 	screen.warp_to("gate")
@@ -95,13 +90,6 @@ func run() -> void:
 	print("CAMP VISUAL gate: ", gate)
 	check(float(gate.deviation) > 0.04, "the departure gate renders with structure")
 
-	# Rain must be a real, living particle system.
-	var rain: Node = site.get_node_or_null("Rain")
-	check(rain is GPUParticles3D, "the camp has a rain pass")
-	if rain is GPUParticles3D:
-		check(int(rain.amount) >= 1000, "rain is dense enough to read as a storm")
-		check(rain.draw_pass_1 != null, "rain drops have a drawn shape")
-
 	# A HUD pass with all station markers on screen.
 	screen.warp_to("table")
 	for i in 6:
@@ -110,15 +98,12 @@ func run() -> void:
 	print("CAMP VISUAL war table: ", table)
 	check(float(table.deviation) > 0.04, "the war table and its markers render")
 
-	# The whole camp under a burst of strikes, for the art check.
-	for i in 3:
-		site.force_strike(1.0, 420.0 + i * 260.0)
-		site._update_storm(0.15)
-	site.storm_age = 0.0
-	var barrage: Dictionary = await shoot("barrage")
-	site.storm_age = 1.0
-	print("CAMP VISUAL barrage: ", barrage)
-	check(float(barrage.hot) > 0.4, "a lightning barrage blows out the sky")
+	screen.warp_to("garden")
+	var garden: Dictionary = await shoot("garden")
+	check(float(garden.deviation)>0.04,"garden renders with structural detail")
+	screen.warp_to("fish")
+	var lake: Dictionary = await shoot("lake")
+	check(float(lake.deviation)>0.04,"lakeshore and dock render")
 
 	print("CAMP VISUAL: failures=", failures)
 	screen.queue_free()

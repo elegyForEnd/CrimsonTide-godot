@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 0.9618,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      304,
+      376,
+      1342,
+      1261
+    ],
+    [
+      181,
+      273,
+      1270,
+      1261
+    ],
+    [
+      46,
+      191,
+      1137,
+      1261
+    ],
+    [
+      136,
+      502,
+      1327,
+      1261
+    ],
+    [
+      116,
+      497,
+      1304,
+      1261
+    ],
+    [
+      99,
+      423,
+      1255,
+      1261
+    ],
+    [
+      153,
+      381,
+      1301,
+      1261
+    ],
+    [
+      238,
+      376,
+      1317,
+      1261
+    ]
+  ],
+  "source_still": "output\\minimax-action-pack\\stills\\heroes\\hero-1\\sword.png",
+  "method": "ImageGen individual frames; frame 1 chroma-keyed from approved still; translation only for alignment"
+}

@@ -1,4 +1,5 @@
 extends RefCounted
+const Choreography = preload("res://scripts/boss_choreography.gd")
 ## A grounded, four-legged lair guardian. Frost patches continue to pulse after impact.
 const Presentation = preload("res://scripts/boss_presentation.gd")
 const NAME := "霜骨古龙 · 苍殒"
@@ -7,20 +8,7 @@ const BASE_DAMAGE := 40.0
 
 func spawn(s, day: int) -> void:
 	if day not in [1,2] or s.map_id!="border": return
-	var occupied: Array=[]
-	for e in s.enemies:
-		if e.get("mini_boss",false): occupied.append(int(e.get("habitat",-1)))
-	var choice := -1
-	var best := -1.0
-	for i in s.ruins.sites.size():
-		var site: Dictionary=s.ruins.sites[i]
-		var at: Vector2=site.p
-		if site.get("cleared",false) or occupied.has(i) or s.ruins.blocked(at,58): continue
-		var distance := at.distance_to(Ruins.SPAWN)
-		if distance<480 or at.distance_to(s.raid.center)<470: continue
-		if distance>best:
-			best=distance
-			choice=i
+	var choice: int=s.expedition.guardian_site(s,58)
 	if choice<0: return
 	var at: Vector2=s.ruins.sites[choice].p
 	var participants := 0
@@ -58,12 +46,12 @@ func update(s, e: Dictionary, dt: float) -> void:
 	var aim: Vector2=(target.p-e.p).normalized()
 	if aim.length_squared()<0.1: aim=Vector2.RIGHT
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
-	var moves := ["breath","tail","wings","ice_bloom"]
-	var move: String=moves[int(e.sequence)%moves.size()]
+	var move: String=Choreography.choose(e)
 	e.sequence+=1
 	cast(s,e,target,move,aim)
 
 func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> void:
+	if Choreography.start(s,e,move,aim,target.p): return
 	var phase: int=e.phase
 	var damage: float=BASE_DAMAGE*(1.0+0.12*(phase-1))
 	var first: int=s.raid.hazards.size()

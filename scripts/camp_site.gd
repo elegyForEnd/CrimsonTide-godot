@@ -1,10 +1,10 @@
-﻿extends Node3D
-## 初始营地 · 雷霆要塞（The Thunderhold）
+extends Node3D
+## 晨钟家园 · 独立营地地图（Hearthhaven）
 ##
-## A standalone pre-raid map. It owns its camera, its storm, its interactable
+## A standalone pre-raid map. It owns its camera, its garden, its interactable
 ## stations and its hero/NPC billboards, and shares nothing with the raid map but
 ## the CC0 scene-asset library — so nothing here can move a collision rectangle
-## in Ruins or RoyalCity.
+## in any expedition map.
 ##
 ## Layout convention matches the rest of the project: simulation space is 2D in
 ## "pixels" with 100 px = 1 m, and simulation (x, y) maps to 3D (x, 0, z).
@@ -13,14 +13,13 @@ const UNIT := 0.01
 const AssetLibrary = preload("res://scripts/scene_assets.gd")
 const Frames = preload("res://scripts/character_frames.gd")
 
-const GROUND := "res://assets/world/ground-1-1.jpg"
-const GROUND_FAR := "res://assets/world/ground-0-1.jpg"
+const GROUND := "res://assets/home/generated/stone-path-v1.png"
 const SKY := preload("res://resources/storm_sky.gdshader")
 const BOLT := preload("res://resources/storm_bolt.gdshader")
 const BURST := preload("res://resources/energy_burst.gdshader")
 
 const CENTRE := Vector2(2800, 2800)
-const SPAWN := Vector2(2800, 3640)
+const SPAWN := Vector2(2800, 3180)
 const CAMP_RADIUS := 1560.0
 # The same rig the raid's presentation camera uses: 24 up / 19 back, i.e. a
 # 51.7-degree pitch. Matching it means a hero is drawn exactly as tall in the camp
@@ -35,6 +34,10 @@ const STATION_CODEX := "codex"
 const STATION_GATE := "gate"
 
 var assets := AssetLibrary.new()
+var architecture = preload("res://scripts/home_architecture.gd").new()
+const CODEX_AT := Vector2(4140, 3960)
+const SHOP_AT := Vector2(1600, 3180)
+const PATHS := [Rect2(2670,2260,260,2510), Rect2(1220,2780,2890,200), Rect2(2000,2880,180,900), Rect2(1980,2270,1470,170), Rect2(2910,4120,1360,180)]
 var frames = Frames.new()
 var scenery := Node3D.new()
 var storm := Node3D.new()
@@ -52,6 +55,8 @@ var obstacles: Array = []
 var occluders: Array = []
 const OCCLUDER_SHADER = preload("res://resources/camp_occluder.gdshader")
 const ACTOR_RADIUS := 24.0
+const Idle = preload("res://scripts/character_idle.gd")
+var idle_billboards = preload("res://scripts/character_idle_billboards.gd").new()
 var sprites: Array[Sprite3D] = []
 var shadows: Array[MeshInstance3D] = []
 var soft_blob_texture: GradientTexture2D
@@ -60,7 +65,15 @@ var flames: Array = []
 var braziers: Array = []
 var materials: Dictionary = {}
 var built := false
-var extras: Array = []
+var home_state: Dictionary = {}
+var crop_layer := Node3D.new()
+var crop_signature := ""
+const LAKE := Rect2(3500, 1530, 1220, 980)
+var SHORE := PackedVector2Array([Vector2(3500,1700),Vector2(3670,1480),Vector2(4200,1430),Vector2(4660,1610),Vector2(4800,1990),Vector2(4640,2430),Vector2(4150,2580),Vector2(3750,2530),Vector2(3460,2300),Vector2(3400,1960)])
+const DOCK := Rect2(3270, 2300, 850, 180)
+
+func garden_at(index: int) -> Vector2:
+	return Vector2(1450 + (index % 3) * 240, 2060 + int(index / 3) * 240)
 var npc_plan: Array = []
 var npc_sprites: Array = []
 
@@ -72,6 +85,10 @@ var site_focus := CENTRE
 var hero_facing := 1.0
 var hero_walking := false
 var hero_phase := 0.0
+var hero_idle_time := 0.0
+var hero_activity := ""
+var hero_activity_progress := 0.0
+var activity_frames = preload("res://scripts/home_activity_frames.gd").new()
 # A sigil under the player, tinted by the selected hero: the camp is a character
 # showcase, so the controlled figure is the one thing that always glows.
 var hero_ring: MeshInstance3D
@@ -100,6 +117,7 @@ var thunder_cursor := 0
 
 
 func _ready() -> void:
+	add_child(idle_billboards)
 	# Two catalog models live outside models.json; register them like world_3d does.
 	assets.registry["nature/tree_1"] = "res://assets/vendor/quaternius/NormalTree_1.fbx"
 	assets.registry["nature/tree_3"] = "res://assets/vendor/quaternius/NormalTree_3.fbx"
@@ -109,6 +127,8 @@ func _ready() -> void:
 	add_child(storm)
 	_build_lighting()
 	_build_audio()
+	wind_player.volume_db = -32
+	rumble_player.volume_db = -80
 
 
 # ---------------------------------------------------------------- coordinates
@@ -147,6 +167,8 @@ func ground_height(at: Vector2) -> float:
 
 ## Oriented footprints share the visible props' fitted size and rotation.
 func is_walkable(at: Vector2) -> bool:
+	if not Rect2(1050,1250,3900,3600).has_point(at): return false
+	if Geometry2D.is_point_in_polygon(at,SHORE) and not DOCK.grow(-ACTOR_RADIUS).has_point(at): return false
 	for obstacle in obstacles:
 		var local: Vector2 = (at - obstacle.at).rotated(-float(obstacle.angle))
 		var half: Vector2 = obstacle.half
@@ -197,6 +219,8 @@ func register_occluder(node: Node3D) -> void:
 
 
 func occludes_actor(entry: Dictionary) -> bool:
+	if Vector2(entry.node.global_position.x,entry.node.global_position.z).distance_to(hero_at*UNIT)>22.0:
+		return false
 	var feet := point(hero_at, ground_height(hero_at) + 6)
 	var projection := maxf(0.1, camp_camera.global_basis.y.dot(Vector3.UP))
 	# Sample feet, torso and head, including the two sides of the silhouette.
@@ -211,6 +235,7 @@ func occludes_actor(entry: Dictionary) -> bool:
 
 
 func update_occlusion(dt: float) -> void:
+	architecture.update()
 	for entry in occluders:
 		var target := 0.25 if occludes_actor(entry) else 1.0
 		var opacity := move_toward(float(entry.opacity), target, dt * 4.0)
@@ -252,7 +277,7 @@ func sync_viewport() -> void:
 	var viewport := get_viewport()
 	if viewport == null:
 		return
-	camp_camera.size = float(viewport.get_visible_rect().size.y) * UNIT
+	camp_camera.size = float(viewport.get_visible_rect().size.y) * UNIT * 1.6
 
 
 func set_camera_focus(at: Vector2, instant: bool = false) -> void:
@@ -305,14 +330,21 @@ func mesh_node(mesh: Mesh, at: Vector3, mat: Material, parent: Node3D = null) ->
 	node.position = at
 	node.material_override = mat
 	(parent if parent else scenery).add_child(node)
-	if (mesh is BoxMesh or mesh is CylinderMesh) and mesh.get_aabb().size.y > 0.12:
+	if parent != crop_layer and (mesh is BoxMesh or mesh is CylinderMesh) and mesh.get_aabb().size.y > 0.12:
 		register_occluder(node)
 	return node
 
 
 func prop(key: String, at: Vector2, size: Vector3, tint: Color = Color.WHITE,
 		foliage: Color = Color.WHITE, angle: float = 0.0, base: float = 0.0, parent: Node3D = null) -> Node3D:
-	var node := assets.place(parent if parent else scenery, key, point(at, maxf(base, ground_height(at))), size * UNIT, tint, foliage, angle)
+	# Home props keep their authored proportions, fitting inside the requested box.
+	var sample := assets.instance(key, tint, foliage)
+	var source_box: AABB = assets.bounds[key]
+	sample.free()
+	var factor := size.y / source_box.size.y
+	if size.x > 0: factor = minf(factor, size.x / source_box.size.x)
+	if size.z > 0: factor = minf(factor, size.z / source_box.size.z)
+	var node := assets.place(parent if parent else scenery, key, point(at, maxf(base, ground_height(at))), Vector3(0, source_box.size.y * factor, 0) * UNIT, tint, foliage, angle)
 	# Floors and overhead arches remain traversable; columns block their supports.
 	if not ("floor" in key or "arch" in key or "waterplant" in key or "tree" in key or "torch" in key or "banner" in key):
 		var fitted: Vector3 = node.get_meta("fitted_size") / UNIT
@@ -396,18 +428,17 @@ func build() -> void:
 	if built:
 		return
 	built = true
-	_harvest()
-	_build_ground()
-	_build_stronghold()
+	architecture.site = self
+	_build_home_ground()
+	architecture.castle_boundary()
+	_build_home_village()
 	_build_gate()
-	_build_tents()
 	_build_forge()
 	_build_depot()
 	_build_codex()
-	_build_scatter()
-	_build_signal_fire()
+	_build_garden()
+	_build_lake()
 	_build_stations()
-	_build_rain()
 	_build_hero_ring()
 	hero_at = safe_position(hero_at)
 	# Only the smith is kept: he is a working silhouette at the forge, while idle
@@ -419,19 +450,177 @@ func build() -> void:
 		npc_sprites.append(_new_sprite())
 
 
-func _harvest() -> void:
-	# Wall fragments and dead trees are lifted out of the real generator and
-	# re-laid around the camp. The generator's own instance is never touched.
-	var world := Ruins.new()
-	for i in 4:
-		world.generate(1337 + i * 977)
-		for wall in world.walls:
-			extras.append({"kind": "wall", "rect": wall})
-		for item in world.decor:
-			if int(item.type) == 4:
-				extras.append({"kind": "dead_tree", "at": item.p, "size": float(item.size)})
-		if extras.size() > 60:
-			break
+func home_box(at: Vector2, size: Vector3, color: Color, height: float = 0.0, parent: Node3D = null) -> MeshInstance3D:
+	var box := BoxMesh.new()
+	box.size = size * UNIT
+	return mesh_node(box, point(at, height + size.y * 0.5), material(color), parent)
+
+
+func _build_home_ground() -> void:
+	var ground := PlaneMesh.new()
+	ground.size = Vector2(70,70)
+	var grass := ShaderMaterial.new()
+	grass.shader = preload("res://resources/home_ground.gdshader")
+	grass.set_shader_parameter("meadow",load("res://assets/home/generated/meadow-v1.png"))
+	mesh_node(ground, point(CENTRE,-4), grass)
+	for path in PATHS:
+		var road := home_box(path.get_center(),Vector3(path.size.x,2,path.size.y),Color("454553"))
+		road.material_override = material(Color("a39bab"),load("res://assets/courtyard.png"),0.98,0.22)
+	# An occupied civic square, with a clear approach to the meeting hall.
+	var courtyard := home_box(Vector2(2800,3190),Vector3(1040,4,470),Color("4e4c5c"))
+	courtyard.material_override = material(Color("aaa0ad"),load("res://assets/courtyard.png"),0.98,0.22)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7841
+	for i in 38:
+		var angle := i * TAU / 38
+		var direction := Vector2.from_angle(angle)
+		var distance := 1.0/maxf(absf(direction.x)/2060.0,absf(direction.y)/1940.0)
+		var at := Vector2(3000,3035)+direction*distance
+		if at.y > 4700 and at.x > 2350 and at.x < 3250: continue
+		prop("nature/tree_1" if i % 3 else "nature/tree_3",at,Vector3(0,rng.randf_range(310,450),0),Color("aca1b4"),Color("785568"),angle)
+	for at in [Vector2(1220,1630),Vector2(4560,2930),Vector2(4490,3890),Vector2(1390,4030)]:
+		prop("medieval/rock_single_A",at,Vector3(160,100,140),Color("626472"))
+
+func _build_home_village() -> void:
+	_build_war_table()
+	# Two rear spires frame the sanctuary, rather than rows of residential boxes.
+	for at in [Vector2(2270,1570),Vector2(3070,1570)]:
+		architecture.model("spire_01",at,0.18)
+		obstacles.append({"at":at,"half":Vector2(65,65),"angle":0.0})
+	architecture.open_station("kitchen",Vector2(2650,2060),true)
+	architecture.workbench(Vector2(2650,1990),175)
+	_brazier(Vector2(2860,1940),0.65)
+	architecture.open_station("shop",SHOP_AT,true)
+	prop("dungeon/chest",SHOP_AT+Vector2(-160,-90),Vector3(95,70,80),Color("988a85"))
+	# Fountain, seats and garden edges belong to the public court, off the route.
+	var court_light := OmniLight3D.new()
+	court_light.position = point(Vector2(2800,3100),330)
+	court_light.light_color = Color("bac5ef")
+	court_light.light_energy = 0.7
+	court_light.omni_range = 10.0
+	scenery.add_child(court_light)
+	band(Vector2(2800,3190),175,1.0,4.0,Color("91747f"),64,5)
+	for at in [Vector2(2460,3350),Vector2(3130,3350),Vector2(2260,2380),Vector2(3220,2380)]:
+		home_box(at,Vector3(145,24,70),Color("4d4559"))
+		obstacles.append({"at":at,"half":Vector2(72.5,35),"angle":0.0})
+		for i in 5:
+			var rose := SphereMesh.new()
+			rose.radius = 0.12
+			rose.height = 0.20
+			mesh_node(rose,point(at+Vector2(-50+i*25,0),35),material(Color("6f334c")))
+	architecture.model("fountain",Vector2(2410,3200),0.85,0,4)
+	obstacles.append({"at":Vector2(2410,3200),"half":Vector2(85,85),"angle":0.0})
+	for at in [Vector2(2200,3150),Vector2(3120,3210)]:
+		prop("halloween/bench_decorated",at,Vector3(140,65,65),Color("8a7985"))
+	for at in [Vector2(2440,3950),Vector2(3120,4090),Vector2(2320,2360),Vector2(3150,2340),Vector2(1280,2820),Vector2(4050,2820)]:
+		var stem := CylinderMesh.new()
+		stem.top_radius = 0.035
+		stem.bottom_radius = 0.055
+		stem.height = 1.4
+		mesh_node(stem,point(at,70),material(Color("292633")))
+		architecture.model("chandelier_01",at,0.10,0,100)
+		var lamp := OmniLight3D.new()
+		lamp.light_color = Color("efb49a")
+		lamp.light_energy = 0.5
+		lamp.omni_range = 3.0
+		lamp.position = point(at,155)
+		scenery.add_child(lamp)
+
+func _build_garden() -> void:
+	crop_layer.name = "GrowingCrops"
+	scenery.add_child(crop_layer)
+	for i in 9:
+		var at := garden_at(i)
+		home_box(at,Vector3(202,12,185),Color("3d303c"))
+		for side in [-1,1]:
+			home_box(at+Vector2(side*102,0),Vector3(9,20,199),Color("77717e"))
+			home_box(at+Vector2(0,side*95),Vector3(210,20,9),Color("77717e"))
+		for row in 4:
+			home_box(at+Vector2(0,-65+row*42),Vector3(182,6,8),Color("75604a"),12)
+	prop("dungeon/chest",Vector2(1240,2650),Vector3(85,60,65),Color("b9ab86"))
+	refresh_crops({})
+
+
+func refresh_crops(state: Dictionary) -> void:
+	home_state = state
+	var signature := str(state.get("beds",6))
+	var stages: Array = []
+	for i in 9:
+		var plot: Dictionary = state.get("plots",[])[i] if state.get("plots",[]).size()>i else {}
+		var crop := str(plot.get("crop",""))
+		var stage := 0
+		if preload("res://scripts/homestead.gd").CROPS.has(crop):
+			var duration: float = preload("res://scripts/homestead.gd").CROPS[crop].seconds * (0.65 if plot.get("watered",false) else 1.0)
+			stage = 3 if Time.get_unix_time_from_system()-float(plot.planted)>=duration else (2 if Time.get_unix_time_from_system()-float(plot.planted)>duration*0.4 else 1)
+		stages.append({"crop":crop,"stage":stage})
+		signature += crop+str(stage)
+	if signature==crop_signature: return
+	crop_signature = signature
+	for child in crop_layer.get_children():
+		crop_layer.remove_child(child)
+		child.queue_free()
+	for i in 9:
+		var stage: int = stages[i].stage
+		if i>=int(state.get("beds",6)):
+			for angle in [-0.55,0.55]:
+				var plank := home_box(garden_at(i),Vector3(175,5,13),Color("9c8a68"),20,crop_layer)
+				plank.rotation.y = angle
+		if stage==0: continue
+		var tint := Color(preload("res://scripts/homestead.gd").CROPS[stages[i].crop].color)
+		for j in 6:
+			var at := garden_at(i)+Vector2(-60+(j%3)*60,-42+int(j/3)*84)
+			if stage==3:
+				var plant := Sprite3D.new()
+				var crop_texture: AtlasTexture = preload("res://scripts/home_art.gd").icon(str(stages[i].crop))
+				plant.texture = crop_texture.atlas
+				plant.region_enabled = true
+				plant.region_rect = crop_texture.region
+				plant.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+				plant.pixel_size = 0.0019
+				plant.position = point(at,48)
+				plant.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+				plant.no_depth_test = false
+				crop_layer.add_child(plant)
+				continue
+			var stem := CylinderMesh.new()
+			stem.top_radius = 0.035
+			stem.bottom_radius = 0.05
+			stem.height = 0.18*stage
+			mesh_node(stem,point(at,16+9*stage),material(Color("739663")),crop_layer)
+			var leaf := SphereMesh.new()
+			leaf.radius = 0.10+stage*0.035
+			leaf.height = 0.18+stage*0.075
+			mesh_node(leaf,point(at,18+18*stage),material(tint if stage==3 else Color("80ad70")),crop_layer)
+
+
+func _build_lake() -> void:
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for index in Geometry2D.triangulate_polygon(SHORE):
+		var at: Vector2 = SHORE[index]
+		surface.set_normal(Vector3.UP)
+		surface.set_uv((at-LAKE.position)/LAKE.size)
+		surface.add_vertex(point(at,5))
+	var mat := ShaderMaterial.new()
+	mat.shader = preload("res://resources/home_water.gdshader")
+	mat.set_shader_parameter("water_color",Color("192b44"))
+	mesh_node(surface.commit(),Vector3.ZERO,mat).name = "MoonwaterLake"
+	for i in SHORE.size():
+		var start: Vector2 = SHORE[i]
+		var end: Vector2 = SHORE[(i+1)%SHORE.size()]
+		var count := maxi(1,int(start.distance_to(end)/100))
+		for j in count:
+			var at := start.lerp(end,float(j)/count)
+			# Keep the footpath and the mouth of the dock open.
+			if DOCK.grow(55).has_point(at): continue
+			prop("medieval/rock_single_A",at,Vector3(105,38+(j%3)*12,70),Color("879783"),Color.WHITE,(end-start).angle())
+	for i in 17:
+		home_box(Vector2(3290+i*48,2390),Vector3(45,14,180),Color("716676"),22)
+	for at in [Vector2(3300,2320),Vector2(3300,2460),Vector2(4080,2320),Vector2(4080,2460)]:
+		home_box(at,Vector3(16,85,16),Color("514a5a"))
+
+	for at in [Vector2(3530,1700),Vector2(4630,2130),Vector2(4380,2480)]:
+		prop("medieval/waterplant_A",at,Vector3(0,100,0),Color("c0c79c"),Color("7da688"))
 
 
 func _build_lighting() -> void:
@@ -455,6 +644,10 @@ func _build_lighting() -> void:
 	dome.rings = 20
 	sky_material = ShaderMaterial.new()
 	sky_material.shader = SKY
+	sky_material.set_shader_parameter("horizon", Color("809caa"))
+	sky_material.set_shader_parameter("zenith", Color("31485c"))
+	sky_material.set_shader_parameter("moon_color", Color("ffe5b8"))
+	sky_material.set_shader_parameter("coverage", 0.25)
 	var sky_node := MeshInstance3D.new()
 	sky_node.name = "Thunderhead"
 	sky_node.mesh = dome
@@ -465,8 +658,8 @@ func _build_lighting() -> void:
 	moon = DirectionalLight3D.new()
 	moon.name = "BloodMoon"
 	moon.rotation_degrees = Vector3(-54, -36, 0)
-	moon.light_color = Color("c9b0c8")
-	moon.light_energy = 0.32
+	moon.light_color = Color("a3b8ee")
+	moon.light_energy = 0.72
 	moon.shadow_enabled = true
 	moon.directional_shadow_max_distance = 55.0
 	add_child(moon)
@@ -474,7 +667,7 @@ func _build_lighting() -> void:
 	hero_lamp = OmniLight3D.new()
 	hero_lamp.name = "HeroLamp"
 	hero_lamp.light_color = Color("b9cdf2")
-	hero_lamp.light_energy = 0.9
+	hero_lamp.light_energy = 0.25
 	hero_lamp.omni_range = 6.0
 	hero_lamp.shadow_enabled = false
 	add_child(hero_lamp)
@@ -491,14 +684,14 @@ func _build_lighting() -> void:
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color("060a11")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("4a5f7d")
-	env.ambient_light_energy = 0.215
+	env.ambient_light_color = Color("8795bc")
+	env.ambient_light_energy = 0.42
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	# A night storm has to stay dark: heavy fog here would wash the map to grey.
-	env.fog_enabled = true
+	env.fog_enabled = false
 	env.fog_light_color = Color("33465c")
 	env.fog_light_energy = 0.55
-	env.fog_density = 0.0014
+	env.fog_density = 0.0005
 	env.glow_enabled = true
 	env.glow_intensity = 0.95
 	env.glow_bloom = 0.06
@@ -509,283 +702,64 @@ func _build_lighting() -> void:
 	add_child(world_environment)
 
 
-func _build_ground() -> void:
-	# One 14.5 m painted cobble tile per cell: a texture per tile keeps the scale
-	# honest, where a single stretched plane would smear the courtyard into haze.
-	var tiles := ["4a5260", "454d5b", "515866", "484f5d", "4d5564", "434a58", "4f5765", "4a5260"]
-	for y in 4:
-		for x in 4:
-			var tile := Rect2(560 + x * 1450, 560 + y * 1450, 1450, 1450)
-			var mesh := PlaneMesh.new()
-			mesh.size = tile.size * UNIT
-			var mat: StandardMaterial3D = material(Color(tiles[(y * 4 + x) % tiles.size()]),
-				load(GROUND), 0.94).duplicate()
-			mat.uv1_triplanar = false
-			mat.uv1_scale = Vector3.ONE
-			mesh_node(mesh, point(tile.get_center(), 0.0), mat)
-	# Furrowed approach road from the departure gate to the parade ground.
-	pad(PackedVector2Array([Vector2(2560, 5200), Vector2(3040, 5200), Vector2(2960, 3300), Vector2(2640, 3300)]),
-		0.5, Color("3f454e"), 0.0, true)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 9091
-	# The camp sits inside a shattered crater rim; rocks break the silhouette at
-	# every camera height instead of ringing it with a clean circle.
-	for i in 22:
-		var angle := i * TAU / 22 + rng.randf_range(-0.05, 0.05)
-		var at: Vector2 = CENTRE + Vector2.from_angle(angle) * (CAMP_RADIUS + rng.randf_range(-40, 90))
-		var scale := rng.randf_range(1.5, 2.9)
-		prop(["medieval/rock_single_A", "medieval/rock_single_B", "dungeon/rubble_large"][i % 3],
-			at, Vector3(scale * 100, scale * 90, scale * 100), Color("9aa1b2"), Color.WHITE, angle)
-	for i in 30:
-		var angle2 := i * TAU / 30 + 0.11
-		var far: Vector2 = CENTRE + Vector2.from_angle(angle2) * (CAMP_RADIUS + rng.randf_range(430, 920))
-		var tall := rng.randf_range(2.4, 5.6)
-		prop("medieval/rock_single_B", far, Vector3(tall * 105, tall * 130, tall * 105),
-			Color("6f7787"), Color.WHITE, angle2)
-	for i in 18:
-		var angle3 := i * TAU / 18 + 0.4
-		var at3: Vector2 = CENTRE + Vector2.from_angle(angle3) * rng.randf_range(2150, 2480)
-		prop("halloween/tree_dead_large" if i % 3 else "halloween/tree_dead_medium",
-			at3, Vector3(0, rng.randf_range(250, 430), 0), Color("9fa6bb"), Color.WHITE, angle3)
-
-
-func _build_stronghold() -> void:
-	plate(CENTRE, Vector2(1180, 1000), Color("3a414e"), 34.0)
-	band(CENTRE, 940, 2.0, 26.0, Color("4a5260"), 52, 34.0)
-	band(CENTRE, 640, 2.0, 14.0, Color("424a58"), 48, 34.0)
-	band(CENTRE, 320, 2.0, 12.0, Color("3d4451"), 40, 34.0)
-	_build_war_table()
-	# Four corner bastions with torch pillars: the camp reads as fortified.
-	for corner in [Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)]:
-		var at: Vector2 = CENTRE + Vector2(corner.x * 1120, corner.y * 950)
-		plate(at, Vector2(210, 210), Color("3c4350"), 62.0)
-		prop("dungeon/pillar_decorated", at, Vector3(120, 180, 120), Color("b8bed0"))
-		prop("dungeon/torch_lit", at + Vector2(corner.x * 150, corner.y * 130), Vector3(0, 150, 0),
-			Color("ecdbc6"))
-		_brazier(at + Vector2(corner.x * 150, corner.y * 130), 0.9)
-	# Palisade teeth across the north edge: cheap, hard, readable at a glance.
-	for i in 13:
-		prop("dungeon/column", Vector2(1900.0 + i * 150.0, 1780), Vector3(78, 150 + (i % 3) * 22, 78),
-			Color("a3a9ba"), Color.WHITE, 0.0, 30.0)
-	# Generator wall fragments as hard cover around the parade ground.
-	var index := 0
-	for extra in extras:
-		if extra.kind != "wall":
-			continue
-		var wall: Rect2 = extra.rect
-		var angle := (index % 12) * TAU / 12 + 0.09
-		var at: Vector2 = CENTRE + Vector2.from_angle(angle) * 1420
-		var length := clampf(maxf(wall.size.x, wall.size.y), 200, 430)
-		prop("dungeon/wall_cracked" if index % 2 else "dungeon/wall_broken",
-			at, Vector3(length, 96, 46), Color("a8aec0"), Color.WHITE, angle + PI * 0.5)
-		index += 1
-		if index >= 12:
-			break
-
-
-## The war table is the camp's landmark: a stone drum, a carved slab and a lit
-## map surface the three camp figures stand around.
 func _build_war_table() -> void:
-	var at := CENTRE
-	obstacles.append({"at": at, "half": Vector2(215, 215), "angle": 0.0})
+	# An open nave court: rose window backdrop, arcades and a usable council table.
+	architecture.open_station("council",CENTRE)
+	architecture.model("wall_rose_window_01",CENTRE+Vector2(0,-240),0.28)
+	obstacles.append({"at":CENTRE+Vector2(0,-240),"half":Vector2(112,20),"angle":0.0})
+	for side in [-1,1]:
+		architecture.model("doorway_inner_01",CENTRE+Vector2(side*235,-220),0.22)
+		for edge in [-1,1]:
+			obstacles.append({"at":CENTRE+Vector2(side*235+edge*74,-220),"half":Vector2(14,25),"angle":0.0})
+	var table: Node3D = architecture.workbench(CENTRE,210)
+	table.name = "WarChart"
+	for side in [-1,1]:
+		prop("dungeon/chair",CENTRE+Vector2(side*160,0),Vector3(70,85,70),Color("ceb595"),Color.WHITE,side*PI/2)
+	# Quiet parchment and engraved route lines, without a decorative item atlas.
+	home_box(CENTRE,Vector3(140,2,70),Color("aaa0a3"),93)
 	for i in 3:
-		var drum := CylinderMesh.new()
-		drum.bottom_radius = 1.55 - i * 0.06
-		drum.top_radius = 1.55 - i * 0.06
-		drum.height = 0.24
-		drum.radial_segments = 24
-		mesh_node(drum, point(at, ground_height(at) + 36 + i * 24), material(Color("5a6272"), null, 0.85))
-	var slab := CylinderMesh.new()
-	slab.bottom_radius = 2.15
-	slab.top_radius = 2.05
-	slab.height = 0.22
-	slab.radial_segments = 32
-	mesh_node(slab, point(at, ground_height(at) + 124), material(Color("757d8b"), load(GROUND), 0.8))
-	# Lit map surface: a disc that reads as the campaign chart.
-	var chart := CylinderMesh.new()
-	chart.bottom_radius = 1.86
-	chart.top_radius = 1.86
-	chart.height = 0.05
-	chart.radial_segments = 32
-	var chart_node := mesh_node(chart, point(at, ground_height(at) + 150), glow_material(Color("7fd0ff"), 0.5))
-	chart_node.name = "WarChart"
-	var rim := CylinderMesh.new()
-	rim.bottom_radius = 1.94
-	rim.top_radius = 1.94
-	rim.height = 0.03
-	rim.radial_segments = 32
-	mesh_node(rim, point(at, ground_height(at) + 118), glow_material(Color("e8c98a"), 1.6))
-	for i in 4:
-		var corner := Vector2.from_angle(i * TAU / 4 + PI * 0.25)
-		prop("dungeon/column", at + corner * 330, Vector3(86, 190, 86), Color("b6bdd0"))
-		prop("dungeon/torch_lit", at + corner * 300, Vector3(0, 150, 0), Color("e4d7c2"))
-		if i % 2 == 0:
-			_brazier(at + corner * 430, 0.7)
-	# Benches around the drum, where the three camp figures stand.
-	for i in 2:
-		prop("halloween/bench_decorated", at + Vector2(0, 300 - i * 600), Vector3(0, 74, 0),
-			Color("b0a9b6"), Color.WHITE, 0.0 if i == 0 else PI)
-	prop("dungeon/banner_red", at + Vector2(-520, 0), Vector3(0, 145, 0), Color("ccd2e0"), Color.WHITE, PI * 0.5)
-	prop("dungeon/banner_red", at + Vector2(520, 0), Vector3(0, 145, 0), Color("ccd2e0"), Color.WHITE, -PI * 0.5)
-	var lamp := OmniLight3D.new()
-	lamp.light_color = Color("9fd4ff")
-	lamp.light_energy = 1.7
-	lamp.omni_range = 6.5
-	lamp.position = point(at, ground_height(at) + 210)
-	scenery.add_child(lamp)
-	braziers.append({"light": lamp, "energy": 1.7, "seed": 1.7})
+		home_box(CENTRE+Vector2(0,-22+i*22),Vector3(110,1,2),Color("55536a"),95)
 
 func _build_gate() -> void:
-	var at := Vector2(2800, 4420)
-	plate(at, Vector2(430, 150), Color("767e8e"), 48.0)
-	for side in [-1, 1]:
-		var spot := at + Vector2(side * 330, 0)
-		plate(spot, Vector2(95, 95), Color("c6cdde"), 96.0)
-		prop("dungeon/column", spot, Vector3(120, 320, 120), Color("c0c7d8"))
-		prop("dungeon/chest_gold", spot + Vector2(side * 100, -130), Vector3(0, 62, 0), Color("c6cdde"))
-	# The arch itself, plus a plank causeway so the threshold is walkable-looking.
-	prop("halloween/arch", at, Vector3(660, 430, 130), Color("b4bbc9"))
-	for i in 8:
-		prop("dungeon/floor_wood_large", Vector2(at.x - 350 + i * 100, at.y),
-			Vector3(104, 16, 250), Color("9fa6b4"))
-	band(at + Vector2(0, 230), 215, 1.2, 16.0, Color("7ee0ff"), 40, ground_height(at + Vector2(0, 230)) + 1.0)
-	var sigil: Texture2D = load("res://assets/world/landmarks/extraction-sigil.png")
-	var quad := QuadMesh.new()
-	quad.size = Vector2(4.6, 4.6)
-	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = sigil
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.emission_enabled = true
-	mat.emission_texture = sigil
-	mat.emission = Color("8fe6ff")
-	mat.emission_energy_multiplier = 2.6
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	var node := mesh_node(quad, point(at + Vector2(0, 230), 1.8), mat)
-	node.rotation.x = -PI / 2
-
-
-func _build_tents() -> void:
-	var plan := [
-		{"at": Vector2(1880, 2280), "angle": 0.30, "tint": "c4c0cb"},
-		{"at": Vector2(2360, 1900), "angle": -0.40, "tint": "b6b3bf"},
-		{"at": Vector2(3300, 1980), "angle": 2.70, "tint": "bfbcc8"},
-		{"at": Vector2(3760, 2380), "angle": -2.90, "tint": "b2afbb"},
-		{"at": Vector2(1900, 3300), "angle": 0.62, "tint": "c8c5d0"},
-		{"at": Vector2(3690, 3340), "angle": -0.58, "tint": "bab7c3"},
-	]
-	for item in plan:
-		var at: Vector2 = item.at
-		prop("medieval/tent", at, Vector3(0, 215, 0), Color(item.tint), Color.WHITE, float(item.angle))
-		if item.angle > 0.0:
-			_brazier(at + Vector2(0, 320), 0.75)
-		prop("halloween/bench_decorated", at + Vector2(240, 190), Vector3(0, 72, 0), Color("b0a9b6"),
-			Color.WHITE, float(item.angle) + 0.4)
-		prop("dungeon/banner_red", at + Vector2(-200, 130), Vector3(0, 135, 0), Color("ccd2e0"),
-			Color.WHITE, float(item.angle))
-	# The command tent sits due west of the war table: tallest thing on the plate.
-	prop("medieval/tent", Vector2(2020, 2800), Vector3(0, 265, 0), Color("bcc4d4"))
-	prop("dungeon/banner_shield_red", Vector2(2020, 2530), Vector3(0, 195, 0), Color("d2d8e6"))
-	for side in [-1, 1]:
-		prop("dungeon/torch_lit", Vector2(2020 + side * 155, 3030), Vector3(0, 152, 0), Color("e4d7c2"))
-
+	var at := Vector2(2800,4420)
+	for side in [-1,1]:
+		architecture.model("column_small_01",at+Vector2(side*220,0),0.4)
+		obstacles.append({"at":at+Vector2(side*220,0),"half":Vector2(35,35),"angle":0.0})
+		prop("dungeon/banner_red",at+Vector2(side*235,-20),Vector3(0,130,0),Color("bd8695"),Color.WHITE,side*PI/2,160)
+	var lintel := home_box(at,Vector3(500,35,55),Color("9faaa7"),300)
+	lintel.name = "DepartureLintel"
+	band(at+Vector2(0,180),150,1.2,8,Color("7ec8cf"),40,4)
 
 func _build_forge() -> void:
-	var at := Vector2(3560, 3150)
-	plate(at, Vector2(290, 240), Color("737a86"), 54.0)
-	prop("dungeon/table_long_decorated_A", at + Vector2(0, 60), Vector3(215, 98, 94), Color("b6b2bb"))
-	prop("dungeon/chest_gold", at + Vector2(-220, -170), Vector3(0, 72, 0), Color("c9bea2"))
-	prop("dungeon/shelf_small_candles", at + Vector2(-270, 140), Vector3(0, 98, 0), Color("c6c0c8"),
-		Color.WHITE, -0.5)
-	# Anvil on a stump: the one hard, unmistakable silhouette in the corner.
-	var anvil_at := at + Vector2(150, 80)
-	obstacles.append({"at": anvil_at, "half": Vector2(100, 36), "angle": 0.0})
+	var at := Vector2(3560,3150)
+	architecture.open_station("forge",at,true)
+	var anvil_at := at+Vector2(150,-60)
+	obstacles.append({"at":anvil_at,"half":Vector2(80,40),"angle":0.0})
 	var stump := CylinderMesh.new()
 	stump.bottom_radius = 0.36
 	stump.top_radius = 0.31
 	stump.height = 0.64
-	mesh_node(stump, point(anvil_at, ground_height(anvil_at) + 32), material(Color("574f45"), null, 0.85))
-	var anvil_mesh := BoxMesh.new()
-	anvil_mesh.size = Vector3(1.15, 0.36, 0.52)
-	var anvil := mesh_node(anvil_mesh, point(anvil_at, ground_height(anvil_at) + 82), material(Color("3d434e"), null, 0.45))
+	mesh_node(stump,point(anvil_at,40),material(Color("665240")))
+	var anvil := home_box(anvil_at,Vector3(115,36,52),Color("444c51"),72)
 	anvil.name = "Anvil"
-	anvil.set_meta("anvil", anvil_at)
-	var horn := CylinderMesh.new()
-	horn.bottom_radius = 0.19
-	horn.top_radius = 0.03
-	horn.height = 0.5
-	var horn_node := mesh_node(horn, point(anvil_at, ground_height(anvil_at) + 82) + Vector3(0.78, 0, 0), material(Color("3d434e"), null, 0.45))
-	horn_node.rotation.z = PI * 0.5
-	_brazier(at + Vector2(215, -185), 1.3)
-
+	anvil.set_meta("anvil",anvil_at)
+	architecture.workbench(at+Vector2(-110,-70),175)
+	_brazier(at+Vector2(200,-130),0.8)
+	architecture.model("spire_01",at+Vector2(210,-145),0.11,0,420,true)
 
 func _build_depot() -> void:
-	var at := Vector2(2180, 3560)
-	plate(at, Vector2(310, 215), Color("6f7584"), 46.0)
-	prop("dungeon/table_long_decorated_A", at, Vector3(235, 94, 98), Color("b7b4bc"))
-	for i in 6:
-		var side := -1.0 if i % 2 == 0 else 1.0
-		prop("dungeon/chest" if i % 2 else "dungeon/chest_gold",
-			at + Vector2(side * (185 + (i % 3) * 65), -155 + i * 78), Vector3(0, 66, 0),
-			Color("c4c9d6"), Color.WHITE, side * 0.2)
-	prop("dungeon/shelf_small_candles", at + Vector2(320, 130), Vector3(0, 104, 0), Color("cbc4cb"))
-	prop("halloween/lantern_standing", at + Vector2(-340, 130), Vector3(0, 172, 0), Color("ddd4d0"))
-	_brazier(at + Vector2(0, 250), 0.9)
-
+	var at := Vector2(2180,3560)
+	architecture.open_station("quartermaster",at,true)
+	architecture.workbench(at+Vector2(0,-90),175)
+	for side in [-1,1]:
+		prop("dungeon/chest",at+Vector2(side*200,-100),Vector3(90,65,70),Color("d4c09e"))
+	prop("dungeon/chest",at+Vector2(-180,-30),Vector3(95,70,80),Color("a39694"))
 
 func _build_codex() -> void:
-	var at := Vector2(2820, 3340)
-	plate(at, Vector2(240, 175), Color("747a86"), 56.0)
-	prop("halloween/crypt", at + Vector2(0, -50), Vector3(0, 310, 0), Color("b8becc"), Color.WHITE, 0.0, 56.0)
-	prop("halloween/shrine_candles", at + Vector2(0, 160), Vector3(0, 132, 0), Color("ccc6cc"), Color.WHITE, 0.0, 56.0)
-	for side in [-1, 1]:
-		prop("halloween/lantern_standing", at + Vector2(side * 215, 150), Vector3(0, 180, 0), Color("ddd2ce"))
-	var sigil: Texture2D = load("res://assets/world/landmarks/shrine-sigil.png")
-	var quad := QuadMesh.new()
-	quad.size = Vector2(2.0, 2.6)
-	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = sigil
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.emission_enabled = true
-	mat.emission_texture = sigil
-	mat.emission = Color("b9dcff")
-	mat.emission_energy_multiplier = 2.2
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	mesh_node(quad, point(at + Vector2(0, -50), 250), mat).name = "CodexSigil"
-
-
-func _build_scatter() -> void:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 4242
-	for i in 30:
-		var angle := rng.randf_range(0, TAU)
-		var at: Vector2 = CENTRE + Vector2.from_angle(angle) * rng.randf_range(1150, 1520)
-		var pick := rng.randi_range(0, 3)
-		if pick == 0:
-			prop("halloween/gravestone", at, Vector3(0, rng.randf_range(62, 98), 0), Color("aab0bc"),
-				Color.WHITE, rng.randf_range(-0.5, 0.5))
-		elif pick == 1:
-			prop("dungeon/rubble_large", at, Vector3(0, rng.randf_range(52, 80), 0), Color("a4aab5"),
-				Color.WHITE, rng.randf_range(-1.0, 1.0))
-		elif pick == 2:
-			prop("medieval/waterplant_A", at, Vector3(0, rng.randf_range(70, 120), 0), Color("8fb0b8"))
-		else:
-			prop("dungeon/column", at, Vector3(70, rng.randf_range(90, 155), 70), Color("9ea4b1"),
-				Color.WHITE, rng.randf_range(-0.4, 0.4))
-	for i in 12:
-		var at2: Vector2 = CENTRE + Vector2.from_angle(i * TAU / 12 + 0.2) * rng.randf_range(880, 1120)
-		prop("dungeon/chest" if i % 3 else "dungeon/chest_gold", at2, Vector3(0, 58, 0),
-			Color("bcc2cf"), Color.WHITE, rng.randf_range(-1.0, 1.0))
-	# Dead trees harvested from the generator gather behind the tents.
-	var placed := 0
-	for extra in extras:
-		if extra.kind != "dead_tree":
-			continue
-		var angle := (placed % 14) * TAU / 14 + 0.22
-		var at: Vector2 = CENTRE + Vector2.from_angle(angle) * (CAMP_RADIUS + randf_range(140, 420))
-		prop("halloween/tree_dead_large", at, Vector3(0, maxf(240.0, extra.size * 2.6), 0), Color("9ca2b0"))
-		placed += 1
-
+	architecture.house("library",CODEX_AT)
+	prop("dungeon/shelf_small_candles",CODEX_AT+Vector2(-190,-80),Vector3(150,120,80),Color("ddc8a8"))
+	architecture.workbench(CODEX_AT+Vector2(70,-80),175)
+	prop("dungeon/chair",CODEX_AT+Vector2(70,60),Vector3(60,75,60),Color("c8b393"))
 
 func _brazier(at: Vector2, scale: float) -> void:
 	var group := Node3D.new()
@@ -962,42 +936,52 @@ func _build_rain() -> void:
 func _build_stations() -> void:
 	stations = [
 		{"id": STATION_TABLE, "name": "作战会议桌", "en": "WAR TABLE", "no": "01",
-			"at": Vector2(2800, 2800), "offset": Vector2(430, 0), "radius": 250.0,
+			"at": CENTRE, "offset": Vector2(0, 140), "radius": 250.0,
 			"hint": "编队 · 换装 · 天赋", "tint": Color("ffd9a6"), "icon": "command", "action": "table"},
 		{"id": STATION_FORGE, "name": "锻炉", "en": "THE FORGE", "no": "02",
-			"at": Vector2(3560, 3150), "offset": Vector2(150, 80), "radius": 215.0,
+			"at": Vector2(3560, 3150), "offset": Vector2(0, 90), "radius": 215.0,
 			"hint": "灵契天赋 · 永久成长", "tint": Color("9fd0ff"), "icon": "forge", "action": "forge"},
 		{"id": STATION_QUARTER, "name": "军需官", "en": "QUARTERMASTER", "no": "03",
-			"at": Vector2(2180, 3560), "offset": Vector2(0, 0), "radius": 215.0,
+			"at": Vector2(2180, 3560), "offset": Vector2(0, 90), "radius": 215.0,
 			"hint": "补给 · 急救针", "tint": Color("bfeecb"), "icon": "supply", "action": "quarter"},
 		{"id": STATION_CODEX, "name": "晨钟书匣", "en": "THE CODEX", "no": "04",
-			"at": Vector2(2820, 3340), "offset": Vector2(0, 260), "radius": 205.0,
+			"at": CODEX_AT, "offset": Vector2(0, 100), "radius": 205.0,
 			"hint": "守夜手册", "tint": Color("dcc7ff"), "icon": "codex", "action": "codex"},
-		{"id": STATION_GATE, "name": "出征闸门", "en": "THE DEPARTURE", "no": "05",
+		{"id": STATION_GATE, "name": "搜打撤闸门", "en": "EXTRACTION", "no": "05",
 			"at": Vector2(2800, 4420), "offset": Vector2(0, 230), "radius": 265.0,
-			"hint": "全队出发", "tint": Color("8fe6ff"), "icon": "launch", "action": "launch"},
+			"hint": "搜打撤 · 全队出发", "tint": Color("8fe6ff"), "icon": "launch", "action": "launch"},
 	]
+	stations.append_array([
+		{"id":"rogue_gate","name":"魔境传送门","en":"ROGUE ADVENTURE","no":"10","at":Vector2(4050,3450),"offset":Vector2.ZERO,"radius":230.0,"hint":"五层闯关 · 开局商店 · 联机合作","tint":Color("ce92ff"),"icon":"codex","action":"rogue"},
+		{"id":"garden","name":"晨光菜园","en":"THE GARDEN","no":"06","at":Vector2(2030,2300),"offset":Vector2.ZERO,"radius":200.0,"hint":"播种 · 浇水 · 收获","tint":Color("a8db93"),"icon":"supply","action":"garden"},
+		{"id":"fish","name":"月湾栈桥","en":"MOONWATER","no":"07","at":Vector2(3370,2390),"offset":Vector2.ZERO,"radius":170.0,"hint":"抛竿 · 精准收竿","tint":Color("80d8df"),"icon":"supply","action":"fish"},
+		{"id":"kitchen","name":"炉边厨房","en":"HEARTH KITCHEN","no":"08","at":Vector2(2650,2060),"offset":Vector2(0,100),"radius":170.0,"hint":"烹饪 · 出征餐食","tint":Color("efbe87"),"icon":"forge","action":"kitchen"},
+		{"id":"home_shop","name":"家园商店","en":"SEEDS & TACKLE","no":"09","at":SHOP_AT,"offset":Vector2(0,160),"radius":170.0,"hint":"种子 · 钓竿 · 出售收获","tint":Color("ead699"),"icon":"supply","action":"home_shop"},
+	])
+	# An upright arc makes the eastern mode entrance visible from the walking path.
+	var portal_at := Vector2(4050,3450)
+	var ring := TorusMesh.new()
+	ring.inner_radius=0.88
+	ring.outer_radius=1.06
+	ring.rings=32
+	ring.ring_segments=12
+	var portal := mesh_node(ring,point(portal_at,115),glow_material(Color("aa63ed"),1.4))
+	portal.rotation.x=PI/2
+	for side in [-1,1]:
+		var pillar := BoxMesh.new()
+		pillar.size=Vector3(.38,1.5,.48)
+		mesh_node(pillar,point(portal_at+Vector2(side*118,0),75),material(Color("403752")))
+		obstacles.append({"at":portal_at+Vector2(side*118,0),"half":Vector2(19,24),"angle":0.0})
 	for station in stations:
-		var quad := QuadMesh.new()
-		quad.size = Vector2(1.95, 1.95)
-		var mat := StandardMaterial3D.new()
-		var icon := station_icon(str(station.icon), station.tint)
-		mat.albedo_texture = icon
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		mat.emission_enabled = true
-		mat.emission_texture = icon
-		mat.emission = station.tint
-		mat.emission_energy_multiplier = 2.0
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-		var node := mesh_node(quad, point(station.at + station.offset, 255), mat)
-		node.name = "Station_" + str(station.id)
+		var node := Node3D.new()
+		node.name = "Station_"+str(station.id)
+		node.position = point(station.at+station.offset)
+		scenery.add_child(node)
 		station["node"] = node
-		band(station.at + station.offset, float(station.radius) * 0.62, 1.6, 10.0, station.tint, 34, ground_height(station.at + station.offset) + 1.0)
 
 
-## Station badges are procedural gradients, so the camp ships without new PNGs
-## and every badge can be re-tinted by an icon's own colour.
+
+## Classic facilities use procedural badges; home facilities use ImageGen icons.
 func station_icon(kind: String, tint: Color) -> GradientTexture2D:
 	var texture := GradientTexture2D.new()
 	var gradient := Gradient.new()
@@ -1082,7 +1066,7 @@ func _build_hero_ring() -> void:
 	var quad := QuadMesh.new()
 	quad.size = Vector2(1.9, 1.9)
 	hero_ring_material = StandardMaterial3D.new()
-	hero_ring_material.albedo_texture = load("res://assets/world/landmarks/extraction-sigil.png")
+	hero_ring_material.albedo_texture = station_icon("command",Color("e6c58b"))
 	hero_ring_material.albedo_color = Color(1, 1, 1, 0.45)
 	hero_ring_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	hero_ring_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -1178,9 +1162,18 @@ func end_sprites() -> void:
 ## player's own station is not crowded by idle figures.
 func refresh_sprites() -> void:
 	begin_sprites()
-	var hero_frame: Dictionary = frames.motion_frame(hero, "run" if hero_walking else "idle", hero_phase, 0.0)
-	submit_sprite(hero_frame.texture, hero_frame.rect, Rect2(), Color("f6f9ff"),
-		Transform2D(Vector2(hero_facing, 0), Vector2.DOWN, hero_at))
+	idle_billboards.begin()
+	var hero_frame: Dictionary = activity_frames.frame(hero,hero_activity,hero_activity_progress,frames.walk_height(hero)) if not hero_activity.is_empty() else {}
+	if hero_frame.is_empty(): hero_frame = frames.motion_frame(hero, "run" if hero_walking else "idle", hero_phase, 0.0)
+	if not hero_walking and hero_activity.is_empty():
+		var weapon := Catalog.starter_index(hero)
+		hero_frame=frames.held_idle_frame(hero,weapon,hero_phase/2.0)
+		var side: float=float(hero_frame.get("hand_side",1.0))
+		var data := Idle.geometry(hero_frame,weapon,hero_idle_time,smoothstep(0.0,.28,hero_idle_time),side)
+		idle_billboards.submit(0,data,point(hero_at,ground_height(hero_at)+3),camp_camera,hero_facing,Color("f6f9ff"),soft_blob())
+	else:
+		submit_sprite(hero_frame.texture, hero_frame.rect, hero_frame.get("region",Rect2()), Color("f6f9ff"),
+			Transform2D(Vector2(hero_facing, 0), Vector2.DOWN, hero_at))
 	for item in npc_plan:
 		var npc_hero := int(item.hero)
 		# The smith uses the attack row as a hammer swing, held on the impact frames
@@ -1196,7 +1189,11 @@ func refresh_sprites() -> void:
 		var hero_id := int(member.get("hero", 0))
 		var frame: Dictionary = frames.motion_frame(hero_id, "idle", routine * 5.0 + slot, 0.0)
 		var at := safe_position(Vector2(3180, 2600 + slot * 150))
-		submit_sprite(frame.texture, frame.rect, Rect2(), Color("d6ddf0"), Transform2D(Vector2.LEFT, Vector2.DOWN, at))
+		var weapon := Catalog.starter_index(hero_id)
+		frame=frames.held_idle_frame(hero_id,weapon,routine+slot)
+		var side: float=float(frame.get("hand_side",1.0))
+		var data := Idle.geometry(frame,weapon,routine+slot,1.0,side)
+		idle_billboards.submit(slot+1,data,point(at,ground_height(at)+3),camp_camera,-1.0,Color("d6ddf0"),soft_blob())
 		slot += 1
 	end_sprites()
 	_update_hero_ring()
@@ -1461,7 +1458,8 @@ func _process(dt: float) -> void:
 	time += step
 	routine += step
 	_update_fire(step)
-	_update_storm(step)
+	# Home weather is calm; the raid keeps its own storm.
+	sky_material.set_shader_parameter("flash", 0.0)
 	_update_hero(step)
 	refresh_sprites()
 	update_occlusion(step)
@@ -1474,8 +1472,10 @@ func _process(dt: float) -> void:
 func _update_hero(dt: float) -> void:
 	if hero_walking:
 		hero_phase += dt * 9.0
+		hero_idle_time = 0.0
 	else:
-		hero_phase = 0.0
+		hero_idle_time += dt
+		hero_phase = hero_idle_time * 2.0
 	# The lamp rides the hero so the player is never a dark silhouette.
 	hero_lamp.position = lerp(hero_lamp.position,
 		point(hero_at, ground_height(hero_at) + 300.0), 0.35)
@@ -1531,7 +1531,7 @@ func _update_storm(dt: float) -> void:
 			bolts.remove_at(i)
 	if world_environment and world_environment.environment:
 		world_environment.environment.ambient_light_energy = 0.215 + flash * 0.40
-		moon.light_energy = 0.32 + flash * 0.30
+		moon.light_energy = 0.72 + flash * 0.30
 
 
 func _update_fire(dt: float) -> void:

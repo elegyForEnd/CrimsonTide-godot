@@ -1,0 +1,19 @@
+{
+  "author": "Kenney",
+  "pack_version": "2.0",
+  "source_page": "https://kenney.nl/assets/fantasy-town-kit",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "commercial_use": true,
+  "retrieved": "2026-10-04",
+  "files": [
+    {
+      "path": "models/fountain.glb",
+      "sha256": "05cdd740e3175c2d3208d4cb6630a279a9b4cbc48393b28c92e3e40cca2a5d6b"
+    },
+    {
+      "path": "models/Textures/colormap.png",
+      "sha256": "4aac939dc33195e35caf8c382ee3cb170054da763577f22d3c22692ec6afccdf"
+    }
+  ]
+}

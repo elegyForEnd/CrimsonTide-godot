@@ -1,0 +1,162 @@
+[
+  {
+    "frame": 0,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      189,
+      178,
+      978,
+      1166
+    ],
+    "height_ratio": 0.7879,
+    "hair_sample_rgb": [
+      237.62,
+      216.48,
+      221.33
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 1,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      192,
+      178,
+      991,
+      1166
+    ],
+    "height_ratio": 0.7879,
+    "hair_sample_rgb": [
+      235.86,
+      214.9,
+      219.85
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 2,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      204,
+      174,
+      930,
+      1166
+    ],
+    "height_ratio": 0.7911,
+    "hair_sample_rgb": [
+      236.12,
+      215.32,
+      220.11
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 3,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      200,
+      184,
+      1040,
+      1166
+    ],
+    "height_ratio": 0.7831,
+    "hair_sample_rgb": [
+      236.22,
+      215.65,
+      221.74
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 4,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      190,
+      186,
+      978,
+      1166
+    ],
+    "height_ratio": 0.7815,
+    "hair_sample_rgb": [
+      232.59,
+      212.48,
+      218.58
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 5,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      180,
+      181,
+      985,
+      1166
+    ],
+    "height_ratio": 0.7855,
+    "hair_sample_rgb": [
+      234.53,
+      213.21,
+      218.31
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 6,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      177,
+      169,
+      985,
+      1166
+    ],
+    "height_ratio": 0.7951,
+    "hair_sample_rgb": [
+      232.49,
+      209.03,
+      213.09
+    ],
+    "transparent_corner": 0
+  },
+  {
+    "frame": 7,
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      179,
+      191,
+      1004,
+      1166
+    ],
+    "height_ratio": 0.7775,
+    "hair_sample_rgb": [
+      235.13,
+      215.64,
+      221.58
+    ],
+    "transparent_corner": 0
+  }
+]

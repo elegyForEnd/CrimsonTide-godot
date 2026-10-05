@@ -1,6 +1,9 @@
 class_name Battlefield
 extends Node2D
 const WorldPresentation = preload("res://scripts/world_3d.gd")
+const Idle = preload("res://scripts/character_idle.gd")
+var idle = Idle.new()
+var idle_billboards = preload("res://scripts/character_idle_billboards.gd").new()
 var world_3d: Node3D
 var world_pose := Transform2D.IDENTITY
 var session: TideSession
@@ -44,10 +47,12 @@ var boss_fx: Node2D
 var character_frames: CharacterFrames
 var move_phases: Dictionary = {}
 var blood_tide = preload("res://scripts/blood_tide.gd").new()
+var chest_sync_timer := 0.0
 
 func _ready() -> void:
 	world_3d=WorldPresentation.new()
 	add_child(world_3d)
+	world_3d.add_child(idle_billboards)
 	visibility_changed.connect(func(): world_3d.visible=visible)
 	world_3d.visible=visible
 	blood_tide.setup(self)
@@ -61,6 +66,8 @@ func _ready() -> void:
 	texture_repeat=CanvasItem.TEXTURE_REPEAT_ENABLED
 	enemy_frames=EnemyFrames.new()
 	boss_frames=BossFrames.new()
+	session.enemy_bodies.enemies=enemy_frames
+	session.enemy_bodies.bosses=boss_frames
 	var boss_layer := CanvasLayer.new()
 	boss_layer.layer=1
 	add_child(boss_layer)
@@ -93,14 +100,15 @@ func _ready() -> void:
 			var fallen := event.duplicate()
 			fallen["age"]=0.0
 			defeated_enemies.append(fallen))
-	session.map_changed.connect(func(): waypoint=Vector2(-1,-1); explored.clear(); defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); camera=session.players.get(session.my_id(),{"p":RoyalCity.GATE}).p)
-	session.started.connect(func(): boss_seen.clear(); boss_health.clear(); waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
+	session.map_changed.connect(func(): chest_sync_timer=0.0; waypoint=Vector2(-1,-1); explored.clear(); defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); camera=session.players.get(session.my_id(),{"p":RoyalCity.GATE}).p)
+	session.started.connect(func(): chest_sync_timer=0.0; boss_seen.clear(); boss_health.clear(); waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
 
 func _process(dt: float) -> void:
 	if not visible:
 		blood_tide.update(self)
 		return
 	clock+=dt
+	for actor: Dictionary in session.players.values(): idle.tick(actor,dt)
 	for e in session.enemies:
 		if not e.get("raid_boss",false): continue
 		if not boss_seen.has(e.id): boss_seen[e.id]=clock
@@ -137,7 +145,10 @@ func _process(dt: float) -> void:
 			for y in range(-2,3):
 				explored[Vector2i(target/160)+Vector2i(x,y)]=true
 	world_3d.sync(session.ruins,camera,get_viewport_rect().size)
-	world_3d.sync_chests(session.ruins.chests)
+	chest_sync_timer-=dt
+	if chest_sync_timer<=0.0:
+		world_3d.sync_chests(session.ruins.chests)
+		chest_sync_timer=0.2
 	var shake := Vector2(sin(clock*89),cos(clock*107))*combat.trauma*combat.trauma*13
 	world_3d.view_camera.h_offset=shake.x*WorldPresentation.UNIT
 	world_3d.view_camera.v_offset=shake.y*WorldPresentation.UNIT
@@ -155,16 +166,20 @@ func _draw() -> void:
 	if not session or session.ruins.sites.is_empty():
 		return
 	world_3d.begin_sprites()
+	idle_billboards.begin()
 	set_world_transform()
 	var world := session.ruins
 	var gate := session.portal_position()
-	draw_arc(gate,45,0,TAU,48,Color("a5ebed"),4,true)
-	label(gate+Vector2(-95,-58),("返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]") if session.can_travel() else "血潮封锁 · 城门关闭",18,Color("ecdfba"))
+	var visible_distance_sq := 1500.0*1500.0
+	if gate.distance_squared_to(camera)<visible_distance_sq:
+		draw_arc(gate,45,0,TAU,48,Color("a5ebed"),4,true)
+		label(gate+Vector2(-95,-58),("返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]") if session.can_travel() else "血潮封锁 · 城门关闭",18,Color("ecdfba"))
 	for site in world.sites:
 		if site.p.distance_to(camera)<1000:
 			label(site.p+Vector2(-80,-site.rect.size.y/2-45),site.name,19,Color("fff1db"))
 	for i in world.exits.size():
 		var pos: Vector2=world.exits[i]
+		if pos.distance_squared_to(camera)>visible_distance_sq: continue
 		var channel := extraction_progress(i)
 		var gate_rect := Rect2(pos-Vector2(105,52),Vector2(210,105))
 		if channel>0:
@@ -173,6 +188,7 @@ func _draw() -> void:
 		label(pos+Vector2(-58,80),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else " · [E] 撤离"),15,Color("a5ead6") if session.can_extract() else Color("98a3aa"))
 	for shrine in world.shrines:
 		var pos: Vector2=shrine.p
+		if pos.distance_squared_to(camera)>visible_distance_sq: continue
 		var color := Color("9ee7ce") if shrine.done else Color("e8bf81")
 		var shrine_rect := Rect2(pos-Vector2(63,31),Vector2(126,63))
 		if shrine.done:
@@ -181,6 +197,7 @@ func _draw() -> void:
 		label(pos+Vector2(-40,50),"已点亮" if shrine.done else "晨钟封印",14,color)
 	for chest in world.chests:
 		var pos: Vector2=chest.p
+		if pos.distance_squared_to(camera)>visible_distance_sq: continue
 		var empty: bool=chest.open and chest.items.is_empty()
 		if chest.get("fixed_loot",false) and not empty:
 			var reward_color: Color=Catalog.BAG_TIERS[int(chest.get("reward_tier",4))].color
@@ -200,6 +217,7 @@ func _draw() -> void:
 	# Bags dropped by dead players, and loose enemy loot.
 	for bag in session.world_drops:
 		var at: Vector2=bag.p
+		if at.distance_squared_to(camera)>visible_distance_sq: continue
 		var is_bag := str(bag.get("key","")).begins_with("bag:")
 		var bundled: bool=session.container_units(bag)>1
 		if is_bag:
@@ -221,7 +239,7 @@ func _draw() -> void:
 				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
 	for fallen in defeated_enemies:
 		if int(fallen.get("boss_kind",-1))>=0:
-			var kind: int=fallen.boss_kind
+			var kind: int=clampi(int(fallen.boss_kind),0,2)
 			if fallen.get("mini_boss",false) or fallen.get("final_form",false) or fallen.get("abyss_final",false):
 				draw_special_boss(fallen,1-fallen.age/1.6)
 			else:
@@ -332,6 +350,14 @@ func actor(p: Dictionary) -> void:
 	if p.cast_time>0:
 		frame=1 if p.cast_time>0.55 else 2 if p.cast_time>0.2 else 3
 		lean=-0.06*facing
+	var generated_attack := character_frames.has_generated(p.hero,Catalog.weapon_family(p.weapon))
+	if generated_attack:
+		if p.swing_time>0:
+			frame=GeneratedAttacks.timeline_frame(float(p.swing_total)-float(p.swing_time),float(p.swing_total),float(Catalog.weapon(p.weapon).windup))
+		elif p.cast_time>0:
+			frame=GeneratedAttacks.timeline_frame(0.75-float(p.cast_time),0.75,0.55)
+		lean=0.0
+		lunge=Vector2.ZERO
 	if travelling:
 		var pose := character_frames.motion_frame(p.hero,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
 		if p.motion=="dodge":
@@ -340,11 +366,21 @@ func actor(p: Dictionary) -> void:
 				draw_billboard(pose.texture,pose.rect,false,Color(color,0.21/ghost))
 		set_world_transform(pos,0,Vector2(facing,1))
 		draw_billboard(pose.texture,pose.rect,false)
-	elif Catalog.weapon_family(p.weapon)>0:
-		var pose := character_frames.attack_frame(p.hero,Catalog.weapon_family(p.weapon),frame)
+	elif Idle.active(p):
+		var pose := character_frames.held_idle_frame(p.hero,p.weapon,float(idle.sample(p).time))
+		var state := idle.sample(p)
+		var side: float=float(pose.get("hand_side",1.0))
+		var data := Idle.geometry(pose,p.weapon,state.time,state.blend,side)
+		idle_billboards.submit(p.id,data,world_3d.point(pos,2),world_3d.view_camera,facing)
+	elif Catalog.weapon_family(p.weapon)==0:
+		var pose := character_frames.equipped_attack_frame(p)
+		set_world_transform(pos,0,Vector2(facing,1))
+		draw_billboard(pose.texture,pose.rect,false)
+	elif Catalog.weapon_family(p.weapon)>0 or p.hero==3:
+		var pose := character_frames.attack_frame(p.hero,maxi(1,Catalog.weapon_family(p.weapon)),frame)
 		var sprite_rect: Rect2=pose.rect
-		sprite_rect.position.y+=sway*0.35
-		if frame==2 and p.swing_time>0:
+		if not generated_attack: sprite_rect.position.y+=sway*0.35
+		if not generated_attack and frame==2 and p.swing_time>0:
 			for ghost in [2,1]:
 				set_world_transform(pos+lunge-direction*ghost*12,lean,Vector2(facing,1))
 				draw_billboard(pose.texture,sprite_rect,false,Color(color,0.12/ghost))
@@ -367,6 +403,7 @@ func actor(p: Dictionary) -> void:
 		draw_arc(pos,37,-PI/2,-PI/2+TAU*minf(1,p.channel/maxf(0.05,seconds)),40,Color("9af8dc") if str(p.get("target","")).begins_with("exit:") else Color("d9ca91"),4)
 
 func monster(e: Dictionary) -> void:
+	if e.get("boss_construct",false): return # Dedicated boss layer draws targetable constructs.
 	if e.get("mini_boss",false):
 		draw_special_boss(e)
 		return
@@ -383,43 +420,45 @@ func monster(e: Dictionary) -> void:
 	var aura: Color=Ruins.COLORS[biome].darkened(0.28)
 	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind]+(5 if kind>=14 else 2),Color(aura,0.22 if kind>=5 else 0.0))
 	draw_circle(pos+Vector2(0,8),Ecology.RADIUS[kind],Color(0,0,0,0.24))
+	var warning_progress := clampf((float(e.get("attack_total",0))-float(e.get("attack_time",0)))/maxf(.01,float(Ecology.WINDUP[kind])),0,1)
+	var warning_alpha := smoothstep(0.0,.20,warning_progress)
 	if kind!=4 and float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
 		var progress: float=clampf((e.attack_total-e.attack_time)/Ecology.WINDUP[kind],0,1)
-		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,0.4+progress*0.5),2.5,true)
+		draw_arc(pos,26+progress*8,aim.angle()-0.65,aim.angle()+0.65,20,Color(color,(0.22+progress*0.5)*warning_alpha),2.5,true)
 	if kind>=5 and float(e.get("attack_time",0))>0 and not e.get("attack_released",false):
 		var aim: Vector2=e.attack_aim
 		if kind in [8,10,11]:
 			var point: Vector2=e.get("attack_point",pos)
 			var radius := 60.0 if kind==11 else (76.0 if kind==8 else 100.0)
-			draw_circle(point,radius,Color(color,0.16))
-			draw_arc(point,radius,0,TAU,48,Color(color,0.85),2,true)
-			if kind==11: draw_line(pos,point,Color(color,0.55),2,true)
+			draw_circle(point,radius,Color(color,0.16*warning_alpha))
+			draw_arc(point,radius,0,TAU,48,Color(color,0.85*warning_alpha),2,true)
+			if kind==11: draw_line(pos,point,Color(color,0.55*warning_alpha),2,true)
 		elif kind==7:
-			draw_line(pos,pos+aim*235,Color(color,0.17),65,true)
-			draw_line(pos,pos+aim*235,Color(color,0.9),2,true)
+			draw_line(pos,pos+aim*235,Color(color,0.17*warning_alpha),65,true)
+			draw_line(pos,pos+aim*235,Color(color,0.9*warning_alpha),2,true)
 		elif kind==9:
-			draw_arc(pos,85,0,TAU,40,Color(color,0.65),2,true)
+			draw_arc(pos,85,0,TAU,40,Color(color,0.65*warning_alpha),2,true)
 		elif kind==12:
 			for angle in [-0.5,0.0,0.5]:
-				draw_line(pos,pos+aim.rotated(angle)*195,Color(color,0.4),2,true)
+				draw_line(pos,pos+aim.rotated(angle)*195,Color(color,0.4*warning_alpha),2,true)
 		elif kind==13:
 			var sector := PackedVector2Array([pos])
 			for i in 25: sector.append(pos+aim.rotated(lerpf(-1.05,1.05,i/24.0))*190)
-			draw_colored_polygon(sector,Color(color,0.15))
-			draw_arc(pos,190,aim.angle()-1.05,aim.angle()+1.05,32,Color(color,0.8),2,true)
+			draw_colored_polygon(sector,Color(color,0.15*warning_alpha))
+			draw_arc(pos,190,aim.angle()-1.05,aim.angle()+1.05,32,Color(color,0.8*warning_alpha),2,true)
 		elif kind==14:
-			draw_circle(pos,135,Color(color,0.13))
-			draw_arc(pos,135,0,TAU,48,Color(color,0.85),3,true)
-			for n in 12: draw_line(pos+Vector2.from_angle(n*TAU/12)*55,pos+Vector2.from_angle(n*TAU/12)*135,Color(color,0.42),2,true)
+			draw_circle(pos,135,Color(color,0.13*warning_alpha))
+			draw_arc(pos,135,0,TAU,48,Color(color,0.85*warning_alpha),3,true)
+			for n in 12: draw_line(pos+Vector2.from_angle(n*TAU/12)*55,pos+Vector2.from_angle(n*TAU/12)*135,Color(color,0.42*warning_alpha),2,true)
 		elif kind==15:
-			draw_arc(pos,145,0,TAU,48,Color(color,0.75),3,true)
-			draw_arc(pos,85,0,TAU,40,Color(color,0.4),2,true)
+			draw_arc(pos,145,0,TAU,48,Color(color,0.75*warning_alpha),3,true)
+			draw_arc(pos,85,0,TAU,40,Color(color,0.4*warning_alpha),2,true)
 		elif kind==16:
 			var point: Vector2=e.get("attack_point",pos)
-			draw_circle(point,145,Color(color,0.15))
-			draw_arc(point,145,0,TAU,48,Color(color,0.85),3,true)
-			draw_line(pos,point,Color(color,0.6),3,true)
+			draw_circle(point,145,Color(color,0.15*warning_alpha))
+			draw_arc(point,145,0,TAU,48,Color(color,0.85*warning_alpha),3,true)
+			draw_line(pos,point,Color(color,0.6*warning_alpha),3,true)
 	if kind==13 and e.get("attack_released",false) and float(e.get("attack_time",0))>0.35:
 		var aim: Vector2=e.attack_aim
 		var sweep: float=clampf((e.attack_total-e.attack_time-Ecology.WINDUP[kind])/0.25,0,1)
@@ -427,14 +466,11 @@ func monster(e: Dictionary) -> void:
 		draw_dashed_line(pos,end,Color("bd9874"),3,8,true)
 		draw_circle(end,9,Color("d6b88c"))
 	if kind==4 and not e.get("raid_boss",false): knight_telegraph(e)
-	var hover := sin(clock*4+e.id)*3 if kind in [1,5,6,9,12] else 0.0
-	if kind==11 and float(e.get("attack_time",0))>0:
-		var progress: float=clampf((e.attack_total-e.attack_time-Ecology.WINDUP[kind])/0.48,0,1)
-		hover=-sin(progress*PI)*44
 	# All frames share a fixed canvas and foot anchor; mirroring never shifts feet.
-	set_world_transform(pos+Vector2(0,hover),0,Vector2(facing,1))
+	var body_pose: Dictionary=session.enemy_bodies.pose(e,session.elapsed,false)
+	set_world_transform(pos+Vector2(0,float(body_pose.hover)),0,Vector2(float(body_pose.facing),1))
 	var tint := Color(1.6,1.5,1.5) if float(e.get("flash",0))>0 else Color.WHITE
-	draw_billboard_region(enemy_frames.sheets[kind],EnemyFrames.sprite_rect(kind),enemy_frames.region(frame),tint)
+	draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
 	set_world_transform()
 	if frame==6 and kind!=4:
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
@@ -567,6 +603,9 @@ func _input(event: InputEvent) -> void:
 
 func knight_telegraph(e: Dictionary) -> void:
 	guard_telegraph(e)
+	if e.get("choreo_cast",false):
+		if e.attack_time>0: label(e.p+Vector2(-80,-178),str(e.move_name),15,Color("ffe1b6"))
+		return
 	if e.attack_time<=0: return
 	var passed: float=e.attack_total-e.attack_time
 	var name: String=e.get("move_name","combo")
@@ -621,16 +660,16 @@ func draw_boss(e: Dictionary) -> void:
 	if e.get("final_form",false) or e.get("abyss_final",false):
 		draw_special_boss(e)
 		return
-	var kind: int=e.boss_kind
+	var kind: int=clampi(int(e.boss_kind),0,2)
 	var pos: Vector2=e.p
 	var color: Color=BossFrames.COLORS[kind]
-	var hover := sin(clock*2.6)*3.0 if kind!=1 else 0.0
 	set_world_transform(pos,0,Vector2(1,0.34))
 	draw_circle(Vector2.ZERO,45,Color(0.04,0.025,0.06,0.40))
 	draw_arc(Vector2.ZERO,51,0,TAU,56,Color(color,0.38),3,true)
-	set_world_transform(pos+Vector2(0,hover),0,Vector2(float(e.get("facing",1)),1))
+	var body_pose: Dictionary=session.enemy_bodies.pose(e,session.elapsed,false)
+	set_world_transform(pos+Vector2(0,float(body_pose.hover)),0,Vector2(float(body_pose.facing),1))
 	var tint := Color(1.3,1.2,1.2) if float(e.get("flash",0))>0 else Color.WHITE
-	draw_billboard_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(BossFrames.pose(e,clock)),tint)
+	draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
 	set_world_transform()
 	guard_telegraph(e)
 
@@ -646,11 +685,15 @@ func draw_special_boss(e: Dictionary, alpha: float = 1.0) -> void:
 	draw_circle(Vector2.ZERO,49 if index==2 else 39,Color(0.04,0.015,0.04,0.48*alpha))
 	draw_arc(Vector2.ZERO,58 if index==2 else 46,0,TAU,56,Color(color,0.58*alpha),3,true)
 	set_world_transform(pos,0,Vector2(float(e.get("facing",1)),1))
-	var hover := sin(clock*(2.2 if index==2 else 3.1)+int(e.id))*(5 if index==0 else 2)
 	var appearance: float=0.26 if index==3 and e.has("travel_target") else 0.68 if index==4 and e.has("travel_target") else 1.0
 	var tint := Color(1.45,1.3,1.3,alpha*appearance) if float(e.get("flash",0))>0 else Color(1,1,1,alpha*appearance)
 	var frame := 11 if alpha<1.0 else BossFrames.pose(e,clock)
-	draw_billboard_region(tex,Rect2(sprite.position+Vector2(0,hover),sprite.size),BossFrames.region(frame),tint)
+	if alpha>=1.0:
+		var body_pose: Dictionary=session.enemy_bodies.pose(e,session.elapsed,false)
+		set_world_transform(pos+Vector2(0,float(body_pose.hover)),0,Vector2(float(body_pose.facing),1))
+		draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
+	else:
+		draw_billboard_region(tex,sprite,BossFrames.region(frame),tint)
 	set_world_transform()
 	if alpha>=1.0:
 		set_actor_overlay(pos)
@@ -664,6 +707,30 @@ func draw_special_boss(e: Dictionary, alpha: float = 1.0) -> void:
 ## Shared projection contract for ground effects and mouse picking.
 func ground_transform() -> Transform2D:
 	return world_3d.ground_transform()
+
+func weapon_effect_socket(source: int) -> Dictionary:
+	var p: Dictionary=session.players.get(source,{})
+	if p.is_empty() or p.status!="active": return {}
+	var family := Catalog.weapon_family(p.weapon)
+	var active_attack: bool=p.swing_time>0 or p.cast_time>0
+	var aim: Vector2=p.strike_aim if p.swing_time>0 else p.aim
+	var frame := CharacterFrames.attack_pose_frame(p)
+	var facing := -1.0 if aim.x<0 else 1.0
+	var upright_weapon: bool=family>0
+	var lunge := aim*(12 if frame==2 else -3 if frame==1 else 4) if p.swing_time>0 and upright_weapon else Vector2.ZERO
+	var tip := (character_frames.weapon_tip(p.hero,maxi(1,family),frame) if upright_weapon else character_frames.ranged_weapon_tip(p))*Vector2(facing,1)
+	# submit_sprite uses a two-unit height and ignores the legacy pose lean.
+	var pos: Vector2=smooth_positions.get(p.id,p.p)
+	var at: Vector2=world_3d.view_camera.unproject_position(world_3d.point(pos+lunge,2))
+	var moving := minf(1.0,float(velocity_visual.get(p.id,0.0))/100)
+	var sway := sin(clock*(4+moving*9)+p.id)*(1.3+moving*2)
+	if upright_weapon: tip.y+=sway*.35
+	var screen_aim := ground_transform().basis_xform(aim).normalized()
+	var stroke_pivot := at+Vector2(0,tip.y)
+	# Upright sprites only mirror horizontally. The painted swing must still
+	# originate in the actual attack direction, including vertical/diagonal aims.
+	var stroke_tip := stroke_pivot+screen_aim*absf(tip.x) if family in [1,2] else at+tip
+	return {"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":screen_aim,"active":active_attack}
 
 func set_world_transform(at: Vector2 = Vector2.ZERO, angle: float = 0.0, scale_value: Vector2 = Vector2.ONE) -> void:
 	world_pose=Transform2D(angle,scale_value,0,at)

@@ -1,24 +1,28 @@
 class_name CombatVisuals
 extends Node2D
 ## Textured additive effects; no dependency on renderer-specific 2D bloom.
-var field: Node2D
-var atlas: Texture2D = preload("res://assets/combat/vfx-atlas.png")
-var spell_atlas: Texture2D = preload("res://assets/combat/spell-vfx.png")
+var field: CanvasItem
+const Motion = preload("res://scripts/effect_motion.gd")
+const Library = preload("res://scripts/vfx_library.gd")
+var stylized = preload("res://scripts/stylized_vfx.gd").new()
 var extraction_vortex: Texture2D = preload("res://assets/world/landmarks/extraction-vortex.png")
 const SPELL_CELLS := {"meteor":0,"needle":1,"chain":2,"moon":3,"prism":4,"scatter":5,"vortex":6,"eclipse":7}
 var motes: Array = []
 var extract_flashes: Array = []
-# 墓煜's ultimate leaves two kinds of residue on the field: the rune-sword rain
+# 澧撶厹's ultimate leaves two kinds of residue on the field: the rune-sword rain
 # itself, and the patch of underworld fire it burns into the ground afterwards.
 var rune_patches: Array = []
 var flames: Array = []
 var trauma := 0.0
 var numbers: Array = []
+var particles=preload("res://scripts/combat_particles.gd").new()
+var enemy_particle_states: Dictionary={}
+var last_particle_trail := 0.0
 var elapsed := 0.0
 var spell_light: Node2D
 var energy = preload("res://scripts/energy_bursts.gd").new()
 const SPELL_COLORS := [Color("ff8454"),Color("a7e9ff"),Color("c6a6ff"),Color("cfdbff"),Color("ffd7a0"),Color("ffb474"),Color("ac85ff"),Color("ed95de")]
-# 墓煜's palette: a violet rune glow over a darker underworld flame.
+# 澧撶厹's palette: a violet rune glow over a darker underworld flame.
 const SOUL := Color("c07ae0")
 const SOUL_FIRE := Color("a855f7")
 # The ultimate's art, all of it from assets/combat/ with the rest of the hero
@@ -52,6 +56,10 @@ func _ready() -> void:
 	material=additive
 	z_index=1
 	add_child(energy)
+	add_child(particles)
+	add_child(stylized)
+	if field.has_method("weapon_effect_socket"):
+		stylized.socket_provider=field.weapon_effect_socket
 	spell_light=Node2D.new()
 	var spell_material := CanvasItemMaterial.new()
 	spell_material.blend_mode=CanvasItemMaterial.BLEND_MODE_ADD
@@ -61,18 +69,21 @@ func _ready() -> void:
 
 func reset() -> void:
 	motes.clear()
+	particles.reset()
+	enemy_particle_states.clear()
 	extract_flashes.clear()
 	rune_patches.clear()
 	flames.clear()
 	energy.reset()
+	stylized.reset()
 	numbers.clear()
 	trauma=0.0
 
 # Loaded on first use: the necromancer's art is optional, so a missing file
-# degrades to the shared atlas instead of stopping the whole effect layer.
+# degrades to individual common textures if optional art is unavailable.
 func soul_art() -> void:
 	if fire_art==null and ResourceLoader.exists("res://assets/combat/muyu-flames.png"):
-		fire_art=load("res://assets/combat/muyu-flames.png")
+		fire_art=Library.texture("soul_fire_0")
 	if sigil_art==null and ResourceLoader.exists("res://assets/combat/muyu-hex-ring.png"):
 		sigil_art=load("res://assets/combat/muyu-hex-ring.png")
 	if ring_art==null and ResourceLoader.exists("res://assets/combat/muyu-circle.png"):
@@ -86,11 +97,21 @@ func necro_cell(sheet: Texture2D, columns: int, rows: int, index: int) -> Rect2:
 	return Rect2(Vector2(cell)*unit+Vector2.ONE*3,unit-Vector2.ONE*6)
 
 func necro_stamp(sheet: Texture2D, columns: int, rows: int, index: int, at: Vector2,
-		extent: Vector2, angle: float, tint: Color) -> void:
-	spell_light.draw_set_transform(at,angle)
-	spell_light.draw_texture_rect_region(sheet,Rect2(-extent.abs()/2,extent.abs()),
-		necro_cell(sheet,columns,rows,index),tint)
-	spell_light.draw_set_transform(Vector2.ZERO)
+		extent: Vector2, angle: float, tint: Color, target: CanvasItem = null) -> void:
+	if target==null: target=spell_light
+	if sheet==fire_art:
+		if absf(target.get_global_transform().determinant())<.000001: return
+		target.draw_set_transform_matrix(target.get_global_transform().affine_inverse()*Transform2D(angle,target.get_global_transform()*at))
+		var key := "soul_fire_%d" % (index%5)
+		var fitted := Library.fitted_size(key,extent)
+		Motion.draw(target,Library.texture(key),Rect2(-fitted/2,fitted),clampf(float(tint.a)*1.4,0,1),"rise",tint)
+		target.draw_set_transform(Vector2.ZERO)
+		return
+	target.draw_set_transform(at,angle)
+	var region := necro_cell(sheet,columns,rows,index)
+	var fitted := region.size*minf(absf(extent.x)/region.size.x,absf(extent.y)/region.size.y)
+	target.draw_texture_rect_region(sheet,Rect2(-fitted*.5,fitted),region,tint)
+	target.draw_set_transform(Vector2.ZERO)
 
 # The rain: the curse sigil opens on the ground, then the patch itself brings in
 # the ring and the six blades that stand in it (see draw_spells).  Host settles
@@ -105,11 +126,9 @@ func necromancer_burst(at: Vector2, aim_angle: float) -> void:
 		motes[motes.size()-1]["art"]=sigil_art
 		motes[motes.size()-1]["columns"]=1
 		motes[motes.size()-1]["rows"]=1
-	for i in 5:
-		spawn(6,at+aim*(60+i*70),Vector2(46,72),0.6,
-			aim_angle,Color(SOUL_FIRE),i*0.07,Vector2(0,-120))
-	if sigil_art:
-		necro_stamp(sigil_art,1,1,0,at,Vector2(360,360),0.0,Color(SOUL,0.5))
+	energy.spawn(at+aim*200,Vector2(400,65),Color(SOUL_FIRE,.55),1,.6,aim_angle)
+	spawn(6,at+aim*300,Vector2(72,72),.6,aim_angle,Color(SOUL_FIRE),.08,Vector2(0,-50))
+	# The sigil mote above is rendered by _draw; combat events run outside drawing.
 
 func spawn(cell: int, at: Vector2, size: Vector2, duration: float, angle: float = 0.0, tint: Color = Color.WHITE, delay: float = 0.0, velocity: Vector2 = Vector2.ZERO) -> void:
 	if motes.size()>=240:
@@ -123,6 +142,7 @@ func spell_fx(spell: String, at: Vector2, size: Vector2, duration: float, angle:
 	motes[motes.size()-1]["spell_art"]=true
 
 func event(data: Dictionary) -> void:
+	if field.has_method("ground_transform"): transform=field.ground_transform()
 	var at: Vector2=data.p
 	if at.distance_to(field.camera)>1100:
 		return
@@ -130,91 +150,59 @@ func event(data: Dictionary) -> void:
 	var angle := aim_dir.angle()
 	var weapon := int(data.get("weapon",0))
 	var spell := str(data.get("spell","star"))
+	if data.kind=="enemy_defeated" and not data.get("rogue_guardian",false) and not data.get("raid_boss",false):
+		var style: String=["stone","soul","ember","feather"][int(data.get("type",0))%4]
+		particles.burst(at-Vector2(0,25),Vector2.UP,Color("c6a6a0"),style,20,.8,PI)
+	var source_hero := int(data.get("hero",0))
+	var source: Dictionary=field.session.players.get(int(data.get("id",-1)),{})
+	if not data.has("hero") and not source.is_empty(): source_hero=int(source.get("hero",source_hero))
+	var visual_data := data
+	if data.kind=="impact":
+		visual_data=data.duplicate()
+		var radius := 20.0
+		for enemy in field.session.enemies:
+			if enemy.id==int(data.get("enemy_id",-1)):
+				radius=float(enemy.get("rogue_radius",Ecology.RADIUS[clampi(int(enemy.type),0,16)])); break
+		if absf(get_global_transform().determinant())>.000001:
+			var screen_aim := get_global_transform().basis_xform(aim_dir).normalized()
+			var contact := get_global_transform()*at-screen_aim*radius*.65-Vector2(0,26)
+			visual_data["contact_p"]=get_global_transform().affine_inverse()*contact
+	stylized.event(visual_data,source_hero)
 	spell_energy(data,spell,at,aim_dir)
 	match data.kind:
 		"spell_beam":
-			spell_fx("prism",at+aim_dir*float(data.reach)*0.44,Vector2(float(data.reach)*0.9,130),0.38,angle)
+			spell_fx("prism",at,Vector2.ONE*70,0.26,angle)
 		"spell_arc":
 			var target: Vector2=data.target
 			var delta := target-at
-			spell_fx("chain",(at+target)*0.5,Vector2(delta.length()*1.3,100),0.26,delta.angle())
+			spell_fx("chain",target,Vector2.ONE*70,0.26,delta.angle())
 		"spell_burst":
 			spell_fx(spell,at,Vector2.ONE*(290 if spell=="meteor" else 260),0.65)
 			trauma=maxf(trauma,0.38 if spell=="meteor" else 0.20)
-		"dodge":
-			spawn(7,at,Vector2(85,45),0.25,angle,Color(0.5,0.55,1,0.35))
-		"windup":
-			if weapon==3:
-				if SPELL_CELLS.has(spell):
-					spell_fx(spell,at+aim_dir*25-Vector2(0,28),Vector2(72,72),maxf(0.16,float(data.get("windup",0.25)))*0.9,angle,Color(1,1,1,0.62))
-				else:
-					spawn(6,at+aim_dir*27-Vector2(0,27),Vector2(62,62),0.26)
-			elif weapon==2:
-				spawn(5,at-Vector2(0,72),Vector2(44,70),0.30,0,Color(1,0.7,0.35))
+		"dodge": pass
+		"windup": pass
 		"necromancer-cast":
 			# The grimoire opens and a violet ward sigil hangs under her feet for
 			# the whole cast, so the staff branch reads as a spell rather than a bow.
 			spawn(8,at-Vector2(0,14),Vector2(132,132),maxf(0.32,float(data.get("windup",0.3)))*1.1,0,Color(SOUL,0.62))
 			spawn(6,at+aim_dir*24-Vector2(0,30),Vector2(72,72),0.34,angle,Color(SOUL,0.8))
+			motes.back()["socket_source"]=int(data.get("id",-1))
 		"strike":
-			var pattern := str(data.get("pattern",""))
-			match weapon:
-				0:
-					if spell=="arrow":
-						spawn(5,at+aim_dir*42,Vector2(50,20),0.16,angle,Color("c9d8b8"))
-					else:
-						spawn(5,at+aim_dir*34,Vector2(52,42),0.12,angle)
-				1:
-					if pattern=="thrust":
-						spawn(5,at+aim_dir*float(data.reach)*0.5,Vector2(float(data.reach)*1.6,36),0.24,angle,Color("e0c7f0"))
-					elif pattern=="spin":
-						for quarter in 4:
-							spawn(0,at+Vector2.from_angle(quarter*TAU/4)*56,Vector2(150,116),0.29,quarter*TAU/4,Color("d9b9d2"),quarter*0.03)
-					else:
-						var reverse := -1.0 if int(data.get("combo",0))==1 else 1.0
-						spawn(0,at+aim_dir*38,Vector2(182,142*reverse),0.25,angle)
-						spawn(0,at+aim_dir*42,Vector2(205,156*reverse),0.20,angle+0.18,Color(0.65,0.5,0.7),0.035)
-				2:
-					if pattern=="quake":
-						spawn(1,at,Vector2(300,300),0.55,0,Color("e4b276"))
-						spawn(7,at,Vector2(300,300),0.45,0,Color(1,0.65,0.4),0.04)
-					else:
-						spawn(1,at+aim_dir*83-Vector2(0,30),Vector2(230,260) if pattern=="cleave" else Vector2(190,235),0.48)
-						spawn(7,at+aim_dir*75,Vector2(290,130) if pattern=="cleave" else Vector2(240,110),0.45,angle,Color(1,0.65,0.4),0.04)
-					trauma=maxf(trauma,0.36)
-				3:
-					if SPELL_CELLS.has(spell):
-						spell_fx(spell,at+aim_dir*35-Vector2(0,15),Vector2(110,90),0.24,angle)
-					else:
-						spawn(3,at,Vector2(110,66),0.45,0,Color(0.6,0.8,1))
-						spawn(6,at+aim_dir*40-Vector2(0,12),Vector2(80,80),0.23)
+			if weapon==2: trauma=maxf(trauma,.3)
+			if weapon in [0,3]:
+				spawn(4,at,Vector2.ONE*18,.12,angle,Color.WHITE)
+				motes.back()["launch_source"]=int(data.get("id",-1))
+				if field.has_method("weapon_effect_socket") and absf(get_global_transform().determinant())>.000001:
+					var socket: Dictionary=field.weapon_effect_socket(int(data.get("id",-1)))
+					if not socket.is_empty(): motes.back()["launch_local"]=get_global_transform().affine_inverse()*socket.tip
 		"impact":
 			var heavy: bool=data.get("heavy",false)
-			spawn(5,at-Vector2(0,20),Vector2.ONE*(130 if heavy else 82),0.25,angle)
-			spawn(4,at-Vector2(0,20),Vector2.ONE*(110 if heavy else 65),0.32,angle,Color(1,0.65,0.7))
-			for i in 8 if heavy else 5:
-				var ray := aim_dir.rotated(sin(i*17.1)*1.7)
-				spawn(5,at-Vector2(0,14),Vector2(18,8),0.25+i*0.02,ray.angle(),Color(1,0.8,0.55),0,ray*(100+i*24))
 			trauma=maxf(trauma,0.65 if heavy else 0.24)
 			numbers.append({"p":at-Vector2(0,55),"age":0.0,"value":str(roundi(data.damage)),"heavy":heavy})
 		"skill":
-			var hero := int(data.hero)
-			trauma=maxf(trauma,0.5)
-			if hero==1:
-				spawn(3,at,Vector2(590,350),1.2,0,Color(0.65,0.85,1,0.7))
-				spawn(8,at-Vector2(0,105),Vector2(260,400),0.95,0,Color(0.7,0.9,1,0.42),0.1)
-				for i in 9:
-					spawn(6,at+Vector2.from_angle(i*TAU/9)*110,Vector2(28,55),0.9,0,Color(0.5,1,0.85),i*0.03,Vector2(0,-85))
-			elif hero==2:
-				spawn(4,at,Vector2(470,420),0.8)
-				for i in 3:
-					spawn(0,at,Vector2(425,310),0.4,angle+i*TAU/3,Color(0.6,0.55,1),i*0.09)
-			elif hero==TideSession.NECROMANCER:
-				necromancer_burst(at,angle if angle!=0.0 else aim_dir.angle())
-			else:
-				spawn(7,at,Vector2(270,150),0.7)
-				for i in 5:
-					spawn(0,at+aim_dir*(75+i*70),Vector2(190,210),0.45,angle,Color.WHITE,i*0.055)
+			trauma=maxf(trauma,.45)
+			if int(data.hero)==TideSession.NECROMANCER:
+				necromancer_burst(at,angle)
 		"necromancer-fire":
 			var forward := float(data.get("forward",480.0))
 			var half := float(data.get("half",175.0))
@@ -236,11 +224,11 @@ func legacy(kind: String, at: Vector2) -> void:
 		"guard-break":
 			spawn(4,at,Vector2(180,140),0.45,0,Color(1,0.76,0.35))
 			trauma=maxf(trauma,0.2)
-		"hit": spawn(4,at,Vector2(100,90),0.35,0,Color(1,0.45,0.55))
+		"hit": pass # Authoritative impact owns the one contact flash.
 		"hurt":
 			spawn(7,at,Vector2(105,90),0.25)
 			trauma=maxf(trauma,0.35)
-		"dash": spawn(4,at,Vector2(120,90),0.4,0,Color(0.6,0.65,1))
+		"dash": pass # The authoritative dodge event owns its painted trail.
 		"bell": spawn(8,at-Vector2(0,100),Vector2(210,330),1.0)
 		"extract":
 			extract_flashes.append({"p":at,"age":0.0})
@@ -256,11 +244,23 @@ func _process(dt: float) -> void:
 		return
 	elapsed+=dt
 	energy.advance(dt)
+	for player in field.session.players.values():
+		if player.status!="active" or player.dodge_time>0 or (not player.pending_strike and player.cast_time<=0):
+			stylized.cancel_charge(int(player.id))
+	stylized.advance(dt)
+	observe_particles(dt)
 	trauma=move_toward(trauma,0,dt*2.6)
 	if field.has_method("ground_transform"):
 		transform=field.ground_transform()
 	else:
 		position=field.offset
+	if field.has_method("weapon_effect_socket"):
+		for burst in energy.bursts:
+			if not burst.has("socket_source"): continue
+			var socket: Dictionary=field.weapon_effect_socket(int(burst.socket_source))
+			if socket.is_empty(): continue
+			if absf(energy.get_global_transform().determinant())<.000001: continue
+			burst.mount.transform=energy.get_global_transform().affine_inverse()*Transform2D(0,socket.tip)
 	for i in range(motes.size()-1,-1,-1):
 		motes[i].age+=dt
 		if motes[i].age>motes[i].duration:
@@ -285,15 +285,10 @@ func _process(dt: float) -> void:
 	spell_light.queue_redraw()
 
 func stamp(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> void:
-	var unit := atlas.get_size()/3.0
-	# Inset removes sampling bleed between neighbouring atlas tiles.
-	var source := Rect2(Vector2(cell%3,cell/3)*unit+Vector2.ONE*3,unit-Vector2.ONE*6)
-	# Negative Rect2 extents do not mirror around their centre in CanvasItem.
-	# Mirror the transform instead, keeping both slash layers on their pivot.
-	var extent := size.abs()
+	var extent := Library.fitted_size("common_%d" % cell,size)
 	var mirror := Vector2(-1.0 if size.x<0 else 1.0,-1.0 if size.y<0 else 1.0)
 	draw_set_transform(at,angle,mirror)
-	draw_texture_rect_region(atlas,Rect2(-extent/2,extent),source,tint)
+	Motion.draw(self,Library.texture("common_%d" % cell),Rect2(-extent/2,extent),clampf(tint.a*1.5,0,1),"center",tint)
 
 func _draw() -> void:
 	for player in field.session.players.values():
@@ -319,28 +314,55 @@ func _draw() -> void:
 		var fade := minf(1,t*18)*pow(1-t,1.3)
 		var tint: Color=fx.tint
 		tint.a*=fade
+		if fx.has("launch_source") and field.has_method("weapon_effect_socket"):
+			var socket: Dictionary={"tip":get_global_transform()*fx.launch_local} if fx.has("launch_local") else {}
+			if not socket.is_empty():
+				var endpoint: Vector2=fx.p
+				var closest := INF
+				for bullet in field.session.bullets:
+					if int(bullet.get("owner",-1))!=int(fx.launch_source): continue
+					var distance: float=bullet.p.distance_squared_to(fx.p)
+					if distance<closest: closest=distance; endpoint=bullet.p
+				var end := get_global_transform()*endpoint
+				# The short launch trail joins the upright muzzle to the ground trajectory.
+				# Whole independent sparks are placed along it without stretching art.
+				draw_set_transform_matrix(get_global_transform().affine_inverse())
+				draw_line(socket.tip,end,Color(tint,tint.a*.35),1.6,true)
+				draw_set_transform(Vector2.ZERO)
+				continue
+		if fx.has("socket_source") and field.has_method("weapon_effect_socket"):
+			var socket: Dictionary=field.weapon_effect_socket(int(fx.socket_source))
+			if not socket.is_empty():
+				var screen_pose := Transform2D(socket.aim.angle(),socket.tip)
+				draw_set_transform_matrix(get_global_transform().affine_inverse()*screen_pose)
+				var key := "common_%d" % int(fx.cell)
+				var extent := Library.fitted_size(key,fx.size)
+				draw_texture_rect(Library.texture(key),Rect2(-extent*.5,extent),false,tint)
+				draw_set_transform(Vector2.ZERO)
+				continue
 		if fx.has("art"):
 			# A reference piece with its own sheet rather than a cell of the
-			# shared vfx atlas.
+			# independent effect textures.
 			necro_stamp(fx.art,int(fx.get("columns",1)),int(fx.get("rows",1)),
 				int(fx.get("index",0)),fx.p+fx.velocity*fx.age,
-				fx.size*lerpf(0.72,1.18,t),fx.angle,tint)
+				fx.size*lerpf(0.72,1.18,t),fx.angle,tint,self)
 		elif not fx.get("spell_art",false):
 			stamp(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(0.72,1.18,t),fx.angle,tint)
 	for bullet in field.session.bullets:
+		if bullet.get("boss_projectile",false): continue
+		if bullet.has("rogue_tone"): continue
 		var spell := str(bullet.get("spell","star"))
 		if SPELL_CELLS.has(spell): continue
-		if spell=="arrow":
-			var arrow_dir: Vector2=bullet.v.normalized()
-			draw_line(bullet.p-arrow_dir*23,bullet.p+arrow_dir*13,Color("e3d5b6"),3,true)
-			draw_line(bullet.p+arrow_dir*13,bullet.p+arrow_dir*20,Color("d7e5ed"),2,true)
-			continue
-		var magic: bool=bullet.get("weapon",0)==3
-		var tint := Color(1,0.45,0.65) if bullet.owner==0 else Color.WHITE
-		if int(bullet.get("enemy_type",-1))==12:
-			tint=Color("91b8af") if not bullet.get("reversed",false) else Color("c4cbb0")
-			draw_arc(bullet.p,11,0,TAU,20,Color(tint,0.85),2,true)
-		stamp(2 if magic or bullet.owner==0 else 5,bullet.p-bullet.v.normalized()*13,Vector2(94,44) if magic else Vector2(36,16),bullet.v.angle(),tint)
+		if int(bullet.get("owner",0))>0:
+			var index := int(bullet.get("weapon_index",field.session.players.get(bullet.owner,{}).get("weapon",0)))
+			var extent := Vector2(65,30) if int(bullet.get("weapon",0))==3 else Vector2(42,18)
+			var key := Library.weapon_key(index)
+			extent=Library.fitted_size(key,Vector2.ONE*extent.x)
+			draw_set_transform(bullet.p-Vector2(0,float(bullet.get("height",0))),bullet.v.angle(),Vector2(Library.facing_scale(key),1))
+			Motion.draw(self,Library.texture(key),Rect2(-extent*.5,extent),Motion.coverage(float(bullet.get("visual_age",.1)),.3,.03),"forward",Color.WHITE,Library.facing_scale(key)<0)
+		else:
+			stamp(2,bullet.p,Vector2(65,34),bullet.v.angle(),Color(1,.5,.6))
+
 	draw_set_transform(Vector2.ZERO)
 
 # The patch's outline in its own frame: the caster sits at the origin, the
@@ -443,9 +465,12 @@ static func stamp_blade(target: Node2D, art: Texture2D, blade: Array, at: Vector
 	var width: float=float(blade[BLADE_EXTENT].x)*scale
 	var frame := Transform2D(aim.angle(),at)
 	var centre: Vector2=frame*Vector2(blade[BLADE_CENTRE])
+	centre.y-=pow(1.0-clampf(tint.a,0,1),2.0)*100.0
 	var lean := aim.angle()+float(blade[BLADE_ANGLE])*(1.0 if mirrored>0.0 else -1.0)
 	target.draw_set_transform(centre,lean,Vector2(mirrored,1))
-	target.draw_texture_rect(art,Rect2(-width/2,-height/2,width,height),false,tint)
+	var native := art.get_size()
+	var fitted := native*minf(width/native.x,height/native.y)
+	target.draw_texture_rect(art,Rect2(-fitted*.5,fitted),false,tint)
 	target.draw_set_transform(Vector2.ZERO)
 
 func draw_spells() -> void:
@@ -455,7 +480,7 @@ func draw_spells() -> void:
 		var t: float=fx.age/fx.duration
 		var tint := Color(fx.tint,float(fx.tint.a)*minf(1,t*18)*pow(1-t,1.3))
 		stamp_spell(fx.cell,fx.p+fx.velocity*fx.age,fx.size*lerpf(.72,1.18,t),fx.angle,tint)
-	# 墓煜's lingering fire is drawn before her projectiles so a spell never hides
+	# 澧撶厹's lingering fire is drawn before her projectiles so a spell never hides
 	# under the patch it was cast from.
 	for patch in rune_patches:
 		var age: float=float(patch.age)
@@ -466,19 +491,14 @@ func draw_spells() -> void:
 		var grow := minf(1.0,age/0.35)
 		var fade := clampf((duration-age)/1.1,0,1)
 		if fade<=0.0: continue
-		# The ring stands in for the rectangle that used to be outlined here.  It
-		# is stretched across the patch's own extent - the same numbers the damage
-		# test reads - so the circle and the ground that burns are the same shape
-		# and the same size, and growing it in is the cast landing.
-		var rect := patch_local_rect(forward,half,grow)
+		# The rectangle is the actual damage entity. No stretched ring decal.
+		var rect := patch_local_rect(forward,half,1.0)
 		spell_light.draw_set_transform(patch.at,aim.angle())
-		if ring_art:
-			var centre := rect.get_center()
-			var span := rect.size*(1.0+0.06*(1.0-grow))
-			spell_light.draw_texture_rect(ring_art,Rect2(centre-span/2,span),false,
-				Color(1,1,1,0.92*fade))
-		else:
-			spell_light.draw_rect(rect,Color(SOUL_FIRE,0.62*fade),false,3.0,true)
+		var reveal := smoothstep(0.0,.16,age)
+		spell_light.draw_rect(rect,Color(SOUL_FIRE,(.025+.055*reveal)*fade))
+		spell_light.draw_rect(rect,Color(SOUL_FIRE,(.15+.25*reveal)*fade),false,1.6,true)
+		var front := lerpf(rect.position.x,rect.end.x,grow)
+		spell_light.draw_line(Vector2(front,-half),Vector2(front,half),Color(SOUL_FIRE,.35*(1.0-grow)*fade),2,true)
 		if fire_art:
 			# Six flames standing in the same ring as the blades, spread over it
 			# the same way and turned half a sector so the two sets interleave
@@ -494,14 +514,14 @@ func draw_spells() -> void:
 				var index := int(fposmod(age*6.0+ground.x*0.05+ground.y*0.07,
 					float(FIRE_COLUMNS*FIRE_ROWS)))
 				necro_stamp(fire_art,FIRE_COLUMNS,FIRE_ROWS,index,
-					ground+Vector2(0,-flame_size*0.45*grow),Vector2(flame_size,flame_size*grow),
+					ground+Vector2(0,-flame_size*0.45*grow),Vector2.ONE*flame_size,
 					0.0,Color(SOUL_FIRE,0.86*fade))
 		if blade_art:
 			# The rain: the blades arrive with the ring and leave with it, so they
 			# read as what the circle is made of rather than as a second effect.
 			for blade in patch.get("blades",[]):
 				stamp_blade(spell_light,blade_art,blade,patch.at,aim,
-					lerpf(0.62,1.0,grow),Color(1,1,1,0.95*fade))
+					1.0,Color(1,1,1,0.95*fade))
 		spell_light.draw_set_transform(Vector2.ZERO)
 	for flame in flames:
 		var t: float=float(flame.age)/maxf(0.01,float(flame.duration))
@@ -509,24 +529,26 @@ func draw_spells() -> void:
 		if fire_art:
 			necro_stamp(fire_art,FIRE_COLUMNS,2,int(fposmod(float(flame.age)*22.0,6.0)),
 				flame.p,Vector2(94,120)*(1.0+t*0.4),0,Color(SOUL_FIRE,fade*0.9))
-		necro_stamp(spell_atlas,4,2,6,flame.p-Vector2(0,26),Vector2.ONE*66*(1+t*0.5),0,
+		stamp_spell(6,flame.p-Vector2(0,26),Vector2.ONE*66*(1+t*0.5),0,
 			Color(SPELL_COLORS[6],fade*0.5))
 	for bullet in field.session.bullets:
+		if bullet.get("boss_projectile",false): continue
+		if bullet.has("rogue_tone"): continue
 		var spell := str(bullet.get("spell","star"))
 		if not SPELL_CELLS.has(spell): continue
 		if bullet.p.distance_to(field.camera)>1100: continue
 		var cell := int(SPELL_CELLS[spell])
 		var diameter := 90.0 if spell in ["meteor","vortex","eclipse"] else 65.0
-		for i in range(3,0,-1):
-			stamp_spell(cell,bullet.p-bullet.v.normalized()*i*14,Vector2.ONE*diameter*(1-i*.16),bullet.v.angle(),Color(SPELL_COLORS[cell],.18*(1-i*.22)))
-		stamp_spell(cell,bullet.p,Vector2.ONE*diameter,bullet.v.angle(),Color.WHITE)
+		var at: Vector2=bullet.p-Vector2(0,float(bullet.get("height",0)))
+		var tail: Vector2=at-bullet.v.normalized()*clampf(bullet.v.length()*.025,10,34)
+		spell_light.draw_line(tail,at,Color(SPELL_COLORS[cell],.25),2,true)
+		stamp_spell(cell,at,Vector2.ONE*diameter,bullet.v.angle(),Color.WHITE)
 
 func stamp_spell(cell: int, at: Vector2, size: Vector2, angle: float, tint: Color) -> void:
-	var unit := Vector2(spell_atlas.get_width()/4.0,spell_atlas.get_height()/2.0)
-	var source := Rect2(Vector2(cell%4,cell/4)*unit+Vector2.ONE*3,unit-Vector2.ONE*6)
-	spell_light.draw_set_transform(at,angle)
-	var extent := source.size*minf(size.x/source.size.x,size.y/source.size.y)
-	spell_light.draw_texture_rect_region(spell_atlas,Rect2(-extent/2,extent),source,tint)
+	var key := "spell_%d" % cell
+	spell_light.draw_set_transform(at,angle,Vector2(Library.facing_scale(key),1))
+	var extent := Library.fitted_size(key,size)
+	Motion.draw(spell_light,Library.texture(key),Rect2(-extent/2,extent),clampf(tint.a*1.5,0,1),"center",tint)
 	spell_light.draw_set_transform(Vector2.ZERO)
 
 func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) -> void:
@@ -548,6 +570,48 @@ func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) ->
 			energy.particles(at,col,30,Vector2.UP,175,1)
 		"windup":
 			energy.spawn(at+aim*25-Vector2(0,28),Vector2.ONE*95,Color(col,.55),4,maxf(.1,float(data.get("windup",.25))),0,0,1.05,source)
+			if field.has_method("weapon_effect_socket"): energy.bursts.back()["socket_source"]=source
 		"strike":
 			if int(data.get("weapon",0))==3:
 				energy.particles(at+aim*35-Vector2(0,15),col,8 if spell=="needle" else 14,aim,35,.55)
+				if field.has_method("weapon_effect_socket"):
+					var socket: Dictionary=field.weapon_effect_socket(source)
+					if not socket.is_empty() and absf(get_global_transform().determinant())>.000001: energy.emitters.back().position=get_global_transform().affine_inverse()*socket.tip
+
+func observe_particles(dt: float) -> void:
+	var seen: Dictionary={}
+	if not field.session.roguelike.active(field.session):
+		for e in field.session.enemies:
+			if e.hp<=0 or e.get("choreo_cast",false) or e.get("boss_construct",false) or e.type==4 or e.get("raid_boss",false) or e.get("mini_boss",false) or e.get("wild_boss",false) or e.get("dragon_boss",false): continue
+			if e.p.distance_to(field.camera)>1100: continue
+			var key := "enemy:"+str(e.id)
+			seen[key]=true
+			if not enemy_particle_states.has(key): enemy_particle_states[key]={"charged":false,"released":false}
+			var state: Dictionary=enemy_particle_states[key]
+			var style: String=["stone","soul","ember","spark","spark","feather","soul","ice","ember","water","spark","ice","water","spark","ice","water","ember"][clampi(int(e.type),0,16)]
+			var color: Color=EnemyFrames.COLORS[int(e.type)]
+			var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)
+			var at: Vector2=e.p-Vector2(0,28)
+			if float(e.get("attack_time",0))<=0:
+				particles.stop(key); state.charged=false; state.released=false; continue
+			if not e.get("attack_released",false) and not state.charged:
+				state.charged=true
+				particles.start(key,at,aim,color,style,"gather",Ecology.WINDUP[int(e.type)],24,25)
+			particles.move(key,at)
+			if e.get("attack_released",false) and not state.released:
+				state.released=true; particles.stop(key)
+				particles.burst(at+aim*24,aim,color,style,18 if int(e.type)>=7 else 11,.9,1.1)
+	for key in enemy_particle_states.keys():
+		if not seen.has(key): particles.stop(key); enemy_particle_states.erase(key)
+	if elapsed-last_particle_trail>=.035:
+		last_particle_trail=elapsed
+		for b in field.session.bullets:
+			if b.get("boss_projectile",false) or b.p.distance_to(field.camera)>1100: continue
+			var index := int(b.get("weapon_index",field.session.players.get(b.get("owner",0),{}).get("weapon",3)))
+			var style := particles.weapon_style(index)
+			var color := Library.weapon_color(index)
+			if b.has("rogue_tone"):
+				style=preload("res://scripts/effect_semantics.gd").style(str(b.get("fx_move","")),int(b.rogue_tone))
+				color=Color(["6cedce","ff9b56","bfa1ff","83dcff","ff638a"][clampi(int(b.rogue_tone),0,4)])
+			particles.spawn(b.p,-b.v.normalized()*35,color,style,.65)
+	particles.advance(dt)

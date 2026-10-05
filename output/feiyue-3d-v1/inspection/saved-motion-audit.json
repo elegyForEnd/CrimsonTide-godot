@@ -1,0 +1,482 @@
+[
+  {
+    "clip": "idle",
+    "frame": 0,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 1,
+    "ground_error": -1.0477378964424133e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 2,
+    "ground_error": -1.0244548320770264e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 3,
+    "ground_error": -4.6566128730773926e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 4,
+    "ground_error": 5.471520125865936e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 5,
+    "ground_error": -7.450580596923828e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 6,
+    "ground_error": 3.841705620288849e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle",
+    "frame": 7,
+    "ground_error": -4.0745362639427185e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 0,
+    "ground_error": 9.313225746154785e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 1,
+    "ground_error": -1.955777406692505e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 2,
+    "ground_error": -1.7229467630386353e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 3,
+    "ground_error": -1.862645149230957e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 4,
+    "ground_error": 4.656612873077393e-10,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 5,
+    "ground_error": -1.1292286217212677e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 6,
+    "ground_error": -1.641456037759781e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "walk",
+    "frame": 7,
+    "ground_error": -2.514570951461792e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 0,
+    "ground_error": -2.421438694000244e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 1,
+    "ground_error": -8.847564458847046e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 2,
+    "ground_error": 4.0978193283081055e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 3,
+    "ground_error": -4.470348358154297e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 4,
+    "ground_error": -9.313225746154785e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 5,
+    "ground_error": -5.587935447692871e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 6,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "run",
+    "frame": 7,
+    "ground_error": -4.470348358154297e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 0,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 1,
+    "ground_error": -2.9802322387695312e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 2,
+    "ground_error": -2.2351741790771484e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 3,
+    "ground_error": 1.1175870895385742e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 4,
+    "ground_error": 2.2351741790771484e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 5,
+    "ground_error": -7.450580596923828e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 6,
+    "ground_error": -3.725290298461914e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "dodge",
+    "frame": 7,
+    "ground_error": -2.2351741790771484e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 0,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 1,
+    "ground_error": -9.080395102500916e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 2,
+    "ground_error": -7.450580596923828e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 3,
+    "ground_error": 9.313225746154785e-10,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 4,
+    "ground_error": 7.450580596923828e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 5,
+    "ground_error": 3.259629011154175e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 6,
+    "ground_error": 6.28642737865448e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "sword",
+    "frame": 7,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "heavy",
+    "frame": 0,
+    "ground_error": -1.3853423297405243e-08,
+    "heavy_grip_lateral_error": 2.27799293371095e-07
+  },
+  {
+    "clip": "heavy",
+    "frame": 1,
+    "ground_error": -2.9103830456733704e-09,
+    "heavy_grip_lateral_error": 9.387897858253554e-08
+  },
+  {
+    "clip": "heavy",
+    "frame": 2,
+    "ground_error": 6.752088665962219e-09,
+    "heavy_grip_lateral_error": 1.0464021492889627e-07
+  },
+  {
+    "clip": "heavy",
+    "frame": 3,
+    "ground_error": -1.4901161193847656e-08,
+    "heavy_grip_lateral_error": 7.974644984531271e-08
+  },
+  {
+    "clip": "heavy",
+    "frame": 4,
+    "ground_error": 1.3969838619232178e-09,
+    "heavy_grip_lateral_error": 3.494632065164618e-08
+  },
+  {
+    "clip": "heavy",
+    "frame": 5,
+    "ground_error": -2.6542693376541138e-08,
+    "heavy_grip_lateral_error": 7.08677733768132e-08
+  },
+  {
+    "clip": "heavy",
+    "frame": 6,
+    "ground_error": -4.6566128730773926e-09,
+    "heavy_grip_lateral_error": 1.0011609383208073e-07
+  },
+  {
+    "clip": "heavy",
+    "frame": 7,
+    "ground_error": -1.3853423297405243e-08,
+    "heavy_grip_lateral_error": 2.27799293371095e-07
+  },
+  {
+    "clip": "staff",
+    "frame": 0,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 1,
+    "ground_error": -1.5599653124809265e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 2,
+    "ground_error": 1.3154931366443634e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 3,
+    "ground_error": -4.889443516731262e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 4,
+    "ground_error": 1.4551915228366852e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 5,
+    "ground_error": -9.89530235528946e-09,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 6,
+    "ground_error": -1.0128132998943329e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "staff",
+    "frame": 7,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 0,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 1,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 2,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 3,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 4,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 5,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 6,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_sword",
+    "frame": 7,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 0,
+    "ground_error": -1.3853423297405243e-08,
+    "heavy_grip_lateral_error": 1.6417714021668067e-07
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 1,
+    "ground_error": 9.313225746154785e-09,
+    "heavy_grip_lateral_error": 1.623816394634796e-08
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 2,
+    "ground_error": 9.080395102500916e-09,
+    "heavy_grip_lateral_error": 9.653462856896176e-08
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 3,
+    "ground_error": -4.656612873077393e-10,
+    "heavy_grip_lateral_error": 1.685565219430804e-07
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 4,
+    "ground_error": 2.7939677238464355e-09,
+    "heavy_grip_lateral_error": 9.815627430569677e-08
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 5,
+    "ground_error": -4.656612873077393e-10,
+    "heavy_grip_lateral_error": 7.593563612788733e-08
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 6,
+    "ground_error": 9.080395102500916e-09,
+    "heavy_grip_lateral_error": 1.5010192705620662e-07
+  },
+  {
+    "clip": "idle_heavy",
+    "frame": 7,
+    "ground_error": 9.313225746154785e-09,
+    "heavy_grip_lateral_error": 2.968567879965385e-08
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 0,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 1,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 2,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 3,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 4,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 5,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 6,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  },
+  {
+    "clip": "idle_staff",
+    "frame": 7,
+    "ground_error": -1.30385160446167e-08,
+    "heavy_grip_lateral_error": null
+  }
+]

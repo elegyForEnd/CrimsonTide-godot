@@ -1,0 +1,3 @@
+DEPRECATED — 2026-09-25
+These 12-frame generated character animation assets were rejected and rolled back at the user's request. They are archived for reference only and are not loaded by the game or included in the Windows export. The original 4-frame character animations are active again.
+The folder contains game-assets (24 processed 4K atlases), raw-api-outputs, and generation notes/tools. Do not move game-assets back into assets/combat/animations without a fresh review.

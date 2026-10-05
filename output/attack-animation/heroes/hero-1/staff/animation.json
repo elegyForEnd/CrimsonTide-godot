@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 0.7521,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      408,
+      457,
+      1253,
+      1186
+    ],
+    [
+      341,
+      471,
+      1206,
+      1186
+    ],
+    [
+      315,
+      394,
+      1206,
+      1186
+    ],
+    [
+      312,
+      326,
+      1062,
+      1186
+    ],
+    [
+      280,
+      544,
+      1195,
+      1186
+    ],
+    [
+      263,
+      537,
+      1196,
+      1186
+    ],
+    [
+      382,
+      448,
+      1239,
+      1186
+    ],
+    [
+      391,
+      461,
+      1240,
+      1186
+    ]
+  ],
+  "source_still": "output\\minimax-action-pack\\stills\\heroes\\hero-1\\staff.png",
+  "method": "ImageGen individual frames; frame 1 chroma-keyed from approved still; translation only for alignment"
+}

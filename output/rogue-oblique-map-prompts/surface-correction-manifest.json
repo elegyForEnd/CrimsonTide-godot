@@ -1,0 +1,8 @@
+[
+  {
+    "floor": 1,
+    "area": 1,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-4c4e7c51-3e47-4f57-87be-ee1c3bd2bcee.png",
+    "prompt": "Retexture only wood and stone in this exact image; keep the entire composition, geometry, path width, props, vegetation, 3:1 proportions, night lighting, colors and depth-of-field unchanged.\nTREE BARK: use smooth dark aged BEECH-WOOD bark, broad continuous surfaces with only faint LONG longitudinal striations. Replace all polygon/oval cells and swollen scales. NO deep cracked cellular oak bark, NO patterned bark segments, NO raised overlapping chips.\nBOULDERS: smooth weathered BASALT river-rock surfaces, entire continuous broad rock faces, subtle matte gradient shading, NO mosaic lines, NO tiny polygon facets, NO crack network, NO scales, NO pebbles encrusted in the surface. Keep each boulder's existing silhouette.\nPAVING: keep current slab sizes and outer joints, but slab interiors are continuous smooth flat slate faces, NO internal crack networks, NO tessellated tiny polygons, NO bump or displacement map. Only broad gentle color variation.\nThese material changes must be unmistakable; ERASE ALL the existing repeating cellular surface patterns rather than making them finer or softer. Natural premium semi-realistic game render, quiet low-frequency materials, no noisy normal maps. No other changes."
+  }
+]

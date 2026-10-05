@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "path": "assets/ui/rewards/treasure-altar-v1.png",
+      "prompt": "Use case: ui-mockup. Asset type: production background artwork for Godot fantasy roguelike reward selection UI, landscape 1536x1024. Paint a richly illustrated dark fantasy treasure revelation altar in the Crimson Tide game: obsidian carved stone, antique gold filigree, teal ghost light and violet magical dust. A majestic open treasure chest at top center spilling luminous stars, atmospheric dark background, three identical tall ornate EMPTY reward card recesses arranged horizontally at x=15%, 50%, 85%, from y=28% to 84%. Their interiors must be near-black calm negative space so runtime Chinese titles, icons, description and buttons remain legible. Each recess has a circular empty icon mounting near its upper third and a broad empty footer. Strong handcrafted painted materials, intricate ornamental frame integrated as ONE complete composition, polished premium game UI art, no flat rectangles, no text, no letters, no numbers, no items inside card recesses. Keep all ornament away from card interior readability area. Frame margin 5%. No watermark."
+    },
+    {
+      "path": "assets/ui/rewards/open-chest-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: single transparent 2D game sprite. An OPEN dark fantasy treasure chest, black obsidian wood, ornate antique gold fittings, turquoise crystal lock, red velvet lining, hinged lid visibly lifted, radiant purple and gold magical light spilling from inside, subtle floating sparks immediately above chest. Three quarter front view matching a hand-painted premium fantasy roguelike, crisp silhouette, entire chest centered with generous transparent padding, no floor, no background, no shadow plane, no text, no UI. This is the opened treasure state sprite for Crimson Tide."
+    }
+  ]
+}

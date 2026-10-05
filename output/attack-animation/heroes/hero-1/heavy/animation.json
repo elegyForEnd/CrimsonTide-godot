@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 0.8709,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      369,
+      464,
+      1316,
+      1191
+    ],
+    [
+      24,
+      432,
+      1037,
+      1191
+    ],
+    [
+      294,
+      201,
+      1190,
+      1191
+    ],
+    [
+      24,
+      203,
+      985,
+      1191
+    ],
+    [
+      24,
+      496,
+      1050,
+      1191
+    ],
+    [
+      24,
+      501,
+      1068,
+      1191
+    ],
+    [
+      330,
+      463,
+      1343,
+      1191
+    ],
+    [
+      344,
+      464,
+      1348,
+      1191
+    ]
+  ],
+  "source_still": "output\\minimax-action-pack\\stills\\heroes\\hero-1\\heavy.png",
+  "method": "ImageGen individual frames; frame 1 chroma-keyed from approved still; translation only for alignment"
+}

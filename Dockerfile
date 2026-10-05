@@ -29,7 +29,7 @@ COPY --from=engine /usr/local/bin/godot /usr/local/bin/godot
 COPY --from=engine /usr/local/share/licenses/godot /usr/local/share/licenses/godot
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
     HOME=/home/crimson GODOT=/usr/local/bin/godot \
-    PUBLIC_HOST=example.com ROOM_PORT_START=24900 MAX_ROOMS=16
+    PUBLIC_HOST=example.com ROOM_PORT_START=24900 MAX_ROOMS=16 STUN_PORT=3478
 RUN groupadd --gid 10001 crimson \
     && useradd --uid 10001 --gid crimson --create-home crimson \
     && install -d -o crimson -g crimson -m 0700 /data /opt/crimson-tide
@@ -51,12 +51,13 @@ RUN godot --headless --path . --editor --import --quit > /tmp/import.log 2>&1 \
 FROM prepared AS test
 COPY --chown=crimson:crimson tests/ tests/
 RUN python tests/test_server.py \
+    && python tests/test_p2p.py \
     && godot --headless --path . --script tests/systems.gd
 
 FROM prepared AS runtime
 LABEL org.opencontainers.image.title="Crimson Tide Server" \
     org.opencontainers.image.description="Account/cloud API and Godot 4.7.2 ENet room workers"
-EXPOSE 8080/tcp 24900-24915/udp
+EXPOSE 8080/tcp 3478/udp 24900-24915/udp
 VOLUME ["/data"]
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=3).read()"]

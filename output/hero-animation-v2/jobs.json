@@ -1,0 +1,1010 @@
+[
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\000.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/000.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\001.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/001.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\002.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/002.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\003.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/003.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\004.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/004.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\005.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/005.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\006.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/006.png"
+  },
+  {
+    "hero": 0,
+    "action": "sword",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\sword\\007.txt",
+    "output": "output/hero-animation-v2/hero-0/sword/007.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\000.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/000.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\001.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/001.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\002.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/002.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\003.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/003.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\004.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/004.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\005.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/005.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\006.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/006.png"
+  },
+  {
+    "hero": 0,
+    "action": "heavy",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\heavy\\007.txt",
+    "output": "output/hero-animation-v2/hero-0/heavy/007.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\000.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/000.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\001.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/001.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\002.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/002.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\003.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/003.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\004.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/004.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\005.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/005.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\006.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/006.png"
+  },
+  {
+    "hero": 0,
+    "action": "staff",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\staff\\007.txt",
+    "output": "output/hero-animation-v2/hero-0/staff/007.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\000.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/000.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\001.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/001.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\002.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/002.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\003.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/003.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\004.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/004.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\005.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/005.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\006.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/006.png"
+  },
+  {
+    "hero": 0,
+    "action": "walk",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\walk\\007.txt",
+    "output": "output/hero-animation-v2/hero-0/walk/007.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\000.txt",
+    "output": "output/hero-animation-v2/hero-0/run/000.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\001.txt",
+    "output": "output/hero-animation-v2/hero-0/run/001.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\002.txt",
+    "output": "output/hero-animation-v2/hero-0/run/002.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\003.txt",
+    "output": "output/hero-animation-v2/hero-0/run/003.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\004.txt",
+    "output": "output/hero-animation-v2/hero-0/run/004.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\005.txt",
+    "output": "output/hero-animation-v2/hero-0/run/005.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\006.txt",
+    "output": "output/hero-animation-v2/hero-0/run/006.png"
+  },
+  {
+    "hero": 0,
+    "action": "run",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\run\\007.txt",
+    "output": "output/hero-animation-v2/hero-0/run/007.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\000.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/000.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\001.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/001.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\002.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/002.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\003.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/003.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\004.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/004.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\005.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/005.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\006.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/006.png"
+  },
+  {
+    "hero": 0,
+    "action": "dodge",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-0\\dodge\\007.txt",
+    "output": "output/hero-animation-v2/hero-0/dodge/007.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\000.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/000.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\001.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/001.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\002.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/002.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\003.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/003.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\004.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/004.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\005.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/005.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\006.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/006.png"
+  },
+  {
+    "hero": 1,
+    "action": "sword",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\sword\\007.txt",
+    "output": "output/hero-animation-v2/hero-1/sword/007.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\000.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/000.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\001.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/001.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\002.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/002.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\003.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/003.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\004.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/004.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\005.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/005.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\006.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/006.png"
+  },
+  {
+    "hero": 1,
+    "action": "heavy",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\heavy\\007.txt",
+    "output": "output/hero-animation-v2/hero-1/heavy/007.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\000.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/000.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\001.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/001.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\002.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/002.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\003.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/003.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\004.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/004.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\005.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/005.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\006.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/006.png"
+  },
+  {
+    "hero": 1,
+    "action": "staff",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\staff\\007.txt",
+    "output": "output/hero-animation-v2/hero-1/staff/007.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\000.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/000.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\001.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/001.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\002.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/002.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\003.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/003.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\004.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/004.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\005.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/005.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\006.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/006.png"
+  },
+  {
+    "hero": 1,
+    "action": "walk",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\walk\\007.txt",
+    "output": "output/hero-animation-v2/hero-1/walk/007.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\000.txt",
+    "output": "output/hero-animation-v2/hero-1/run/000.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\001.txt",
+    "output": "output/hero-animation-v2/hero-1/run/001.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\002.txt",
+    "output": "output/hero-animation-v2/hero-1/run/002.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\003.txt",
+    "output": "output/hero-animation-v2/hero-1/run/003.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\004.txt",
+    "output": "output/hero-animation-v2/hero-1/run/004.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\005.txt",
+    "output": "output/hero-animation-v2/hero-1/run/005.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\006.txt",
+    "output": "output/hero-animation-v2/hero-1/run/006.png"
+  },
+  {
+    "hero": 1,
+    "action": "run",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\run\\007.txt",
+    "output": "output/hero-animation-v2/hero-1/run/007.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\000.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/000.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\001.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/001.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\002.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/002.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\003.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/003.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\004.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/004.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\005.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/005.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\006.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/006.png"
+  },
+  {
+    "hero": 1,
+    "action": "dodge",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-1\\dodge\\007.txt",
+    "output": "output/hero-animation-v2/hero-1/dodge/007.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\000.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/000.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\001.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/001.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\002.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/002.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\003.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/003.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\004.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/004.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\005.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/005.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\006.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/006.png"
+  },
+  {
+    "hero": 2,
+    "action": "sword",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\sword\\007.txt",
+    "output": "output/hero-animation-v2/hero-2/sword/007.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\000.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/000.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\001.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/001.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\002.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/002.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\003.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/003.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\004.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/004.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\005.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/005.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\006.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/006.png"
+  },
+  {
+    "hero": 2,
+    "action": "heavy",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\heavy\\007.txt",
+    "output": "output/hero-animation-v2/hero-2/heavy/007.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\000.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/000.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\001.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/001.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\002.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/002.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\003.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/003.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\004.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/004.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\005.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/005.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\006.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/006.png"
+  },
+  {
+    "hero": 2,
+    "action": "staff",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\staff\\007.txt",
+    "output": "output/hero-animation-v2/hero-2/staff/007.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\000.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/000.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\001.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/001.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\002.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/002.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\003.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/003.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\004.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/004.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\005.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/005.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\006.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/006.png"
+  },
+  {
+    "hero": 2,
+    "action": "walk",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\walk\\007.txt",
+    "output": "output/hero-animation-v2/hero-2/walk/007.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\000.txt",
+    "output": "output/hero-animation-v2/hero-2/run/000.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\001.txt",
+    "output": "output/hero-animation-v2/hero-2/run/001.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\002.txt",
+    "output": "output/hero-animation-v2/hero-2/run/002.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\003.txt",
+    "output": "output/hero-animation-v2/hero-2/run/003.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\004.txt",
+    "output": "output/hero-animation-v2/hero-2/run/004.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\005.txt",
+    "output": "output/hero-animation-v2/hero-2/run/005.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\006.txt",
+    "output": "output/hero-animation-v2/hero-2/run/006.png"
+  },
+  {
+    "hero": 2,
+    "action": "run",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\run\\007.txt",
+    "output": "output/hero-animation-v2/hero-2/run/007.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 0,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\000.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/000.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 1,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\001.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/001.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 2,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\002.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/002.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 3,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\003.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/003.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 4,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\004.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/004.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 5,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\005.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/005.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 6,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\006.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/006.png"
+  },
+  {
+    "hero": 2,
+    "action": "dodge",
+    "frame": 7,
+    "prompt": "output\\hero-animation-v2\\prompts\\hero-2\\dodge\\007.txt",
+    "output": "output/hero-animation-v2/hero-2/dodge/007.png"
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "prompt": "Use case: stylized-concept. Asset type: one production game UI atlas containing SIX gothic inventory sockets, 2 equal columns by 3 equal rows, ideally 1024x1536. Input image 1 is reference for matching overall gothic tactile material style and colour order; redesign the METAL BORDERS so each quality is distinctly identifiable by silhouette and corner ornament, not just lining colour. Keep all six frames square, orthographic front view, precisely centered inside their equal cells with same dimensions, symmetrical top and bottom, minimal equal outside margin. All six have dark charcoal octagonal central cavity (70% area), richly textured but restrained woven coloured band (12% width around center), no objects or icons. Order and border design: row1 left WHITE/ash cloth with plain worn iron frame and tiny round corner rivets, humble very simple; row1 right GREEN forest cloth, antiqued bronze frame with elegant small thorn-leaf corner clasps; row2 left BLUE midnight cloth, cool silver-steel frame with angular beveled corners and tiny engraved geometric rune strokes (ornament only, not readable text); row2 right PURPLE amethyst cloth, dark silver frame with crescent moon corner ornaments and delicate twisted filigree; row3 left GOLD ochre cloth, gilded brass double rim with small sunburst corner clasps; row3 right RED deep crimson damask cloth, weathered antique gold frame with large sharp triangular engraved corner clasps inspired by the user's red reference, clearly most prestigious but not glowing. All ornament must stay within outer 19 percent border so they can be nine-sliced in UI. Center nearly black and quiet, textured lining colours softly visible not neon. No labels, no letters, no numbers, no icons, no items, no text, no watermark, no perspective, no screen mockup. Exactly six evenly sized panels in tight 2x3 grid. Full frames visible, no decoration crossing cell boundaries.",
+  "reference": "extraction-quality-slots-v2.png",
+  "asset": "extraction-quality-slots-v3.png",
+  "regions": [
+    [
+      0,
+      0,
+      508,
+      478
+    ],
+    [
+      516,
+      0,
+      508,
+      478
+    ],
+    [
+      0,
+      485,
+      508,
+      473
+    ],
+    [
+      516,
+      485,
+      508,
+      473
+    ],
+    [
+      0,
+      968,
+      508,
+      508
+    ],
+    [
+      516,
+      968,
+      508,
+      508
+    ]
+  ]
+}

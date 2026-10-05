@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 1.0702,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      174,
+      174,
+      1363,
+      1334
+    ],
+    [
+      436,
+      211,
+      1512,
+      1334
+    ],
+    [
+      493,
+      185,
+      1504,
+      1334
+    ],
+    [
+      486,
+      196,
+      1450,
+      1334
+    ],
+    [
+      334,
+      199,
+      1512,
+      1334
+    ],
+    [
+      342,
+      374,
+      1495,
+      1334
+    ],
+    [
+      412,
+      217,
+      1512,
+      1334
+    ],
+    [
+      176,
+      177,
+      1376,
+      1334
+    ]
+  ],
+  "source_still": "D:\\develop\\school\\CrimsonTide-godot\\output\\minimax-action-pack\\stills\\bosses\\storm-roc-v2\\attack.png",
+  "method": "Individual image-generated frames; frame 1 chroma-keyed from approved still; uniform scaling and translation for alignment"
+}

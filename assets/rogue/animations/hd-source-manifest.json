@@ -1,0 +1,573 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "file": "minion-hd-0-4.png",
+      "prompt": "Use case: stylized-concept. Production 2D fantasy game sprite animation atlas, transparent RGBA background, 2048x2048 pixels. ONE original monster: 月露花灵 Moondew Flower Spirit, tiny cute sinister flower fairy with a tulip hood, dark face, glowing pale yellow eyes, mint leaf cloak, little gold dew staff, no insect anatomy or wings. Crisp thick dark cartoon outlines, simple flat cel shading, clean readable large color shapes, hand-drawn roguelike brawler look. NO painterly microtextures, NO blurry glow on body, NO text, NO ground, NO watermark. Exact 4 columns by 4 rows, exactly 16 full-body poses of SAME character facing right: row1 idle breathing 4 distinct frames, row2 walking 4 distinct frames, row3 healing spell raise staff/gather dew/release luminous dew/recover 4 frames, row4 defensive flower petal burst anticipate/open cloak/release petals/recover 4 frames. Each cell 512 square, feet at same height, body about 300 pixels tall, center each pose, minimum64px truly transparent margin on every cell edge; weapons and effects MUST stay inside own cell, never overlap other frames. Transparent actual alpha, isolated sprites. High sharpness and clear silhouette at small game sizes.",
+      "floor": 0,
+      "variant": 4,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-0.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 苔冠木灵 moss-crowned treant with branching wooden arms. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: branch-arm sweep, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: rooted defensive guard, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 0,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-1.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 菌灵拳手 chunky mushroom boxer with purple boxing fists. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: jumping punch, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: left-right punch combo, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 1,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-2.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 根面巫师 root-masked shaman with vine staff. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: ground root spikes, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: vine hook pull, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 2,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-3.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 幽角灵 ghost deer spirit with leaf antlers. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: three thrown leaf blades, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: antler dash, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 3,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-5.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 灯笼蕈客 mushroom lantern alchemist carrying glowing jars. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: throw exploding spore lantern, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: throw slowing mist potion, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 5,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-6.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 苔石幼像 mossy stone guardian with a stone shield. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: cast moss stone shield, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: rolling shoulder dash, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 6,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-0-7.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 森影面灵 forest shadow mask spirit with twin leaf daggers. Theme palette: mint green, violet, moonlit gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: shadow teleport dagger strike, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: summon shadow decoy, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 0,
+      "variant": 7,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-0.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 炉渣骑兵 slag knight with lance and furnace shield. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: lance charge, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: shield counter thrust, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 0,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-1.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 煤焰小鬼 coal-flame imp throwing coal bombs. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: throw coal bomb, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: plant two coal mines, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 1,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-2.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 铸铁魔卫 iron sentinel carrying a huge forging hammer. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: hammer ground shockwave, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: wide iron arm sweep, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 2,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-3.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 火核灵 floating flame-core spirit with small basalt limbs. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: three fireball shots, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: flamethrower cone, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 3,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-4.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 熔链狱卒 molten-chain jailer holding hooked chains. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: chain hook pull, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: wide chain sweep, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 4,
+      "rows": 4,
+      "columns": 4,
+      "source_file": "minion-hd-1-4-v2.png",
+      "correction_prompt": "EDIT target sprite atlas. Preserve the exact creature identity, outfit, weapon, palette and 16 distinct chronological animation poses from the reference. Re-layout and redraw EVERY sprite SMALLER inside its own cell. Required grid 4 columns by 4 rows. Main body must occupy only CENTRAL HALF of each cell. Reserve a continuous transparent moat at least25% of cell width between neighboring sprites. All limbs weapons and spell effects fit inside central60% of each cell. SHORTEN chains and energy beams; no long beams crossing a cell. Summoning creatures/effects stay immediately beside the caster. ALL poses are fully separate disconnected alpha islands, absolutely no bridges, no overlapping spells, no touching neighbors. Keep faces and outlines crisp, use simpler clean cel shading and large color blocks, remove noisy microtexture. Actual RGBA transparency, no text, no background, no frame lines. Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 熔链狱卒 molten-chain jailer holding hooked chains. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: chain hook pull, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: wide chain sweep, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency."
+    },
+    {
+      "file": "minion-hd-1-5.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 炉心祭师 furnace priest with flaming sigil staff. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: fire attack-speed buff, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: delayed flame sigil, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 5,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-6.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 焰晶幼魔 fire-crystal horned demon with crystal fists. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: leaping crystal explosion, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: ground fire fissures, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 6,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-1-7.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 铸魂匠 soul-forging smith with hammer and little metal puppet. Theme palette: charcoal, molten orange, ember red. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: summon iron puppet, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: repair puppet channel, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 1,
+      "variant": 7,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-0.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 星晶守卫 star crystal guard with angular crystal shield. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: shield bash, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: projectile blocking crystal ward, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 0,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-1.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 晶刃侍从 crystal-blade squire with twin violet swords. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: crossed twin blade combo, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: side-step crystal thrust, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 1,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-2.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 星眼法师 star-eye wizard with oversized single glowing eye and staff. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: aimed star laser, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: two falling star crystals, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 2,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-3.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 棱镜幼龙 tiny prism dragon with faceted rainbow horns. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: prism shard breath, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: returning crystal orb, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 3,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-4.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 镜面舞者 mirror dancer with crescent mirror blade. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: parry and counter slash, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: short range mirror shard fan, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 4,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-5.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 星砂瓶灵 star-sand bottle genie carrying potion flasks. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: throw star-sand potion, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: plant crystal mine, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 5,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-6.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 共鸣晶簇 living resonant crystal cluster with floating orbit stones. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: cast ally damage-reduction link, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: expanding crystal ring pulse, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 6,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-2-7.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 星缝织者 star-rift weaver with astral spindle and constellation cloak. Theme palette: violet, turquoise, crystalline pale gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: summon star shadow archer, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: two delayed star-rift explosions, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 2,
+      "variant": 7,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-0.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 风咒祭司 wind priest with ribbon staff and storm mask. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: two parallel wind blades, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: pulling wind vortex, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 0,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-1.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 云羽剑士 cloud-feather swordsman with curved saber. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: dash slash and return slash, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: rising sword slash, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 1,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-2.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 雷面萨满 lightning-mask shaman with lightning rod. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: two sequential ground lightning marks, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: three lightning needle shots, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 2,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-3.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 风灵幼狮 tiny wind lion with flowing cloud mane. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: leaping lion bite, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: wind roar knockback, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 3,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-4.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 云帆投手 cloud-sail thrower with boomerang discs and thunder jars. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: throw boomerang wind disc, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: throw delayed thunder jar, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 4,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-5.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 风铃医灵 wind-chime healer spirit with bell staff. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: healing bell channel, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: cast ally wind shield, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 5,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-6.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 雷鼓魔童 thunder-drum imp carrying a small drum and mallets. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: cast ally movement-speed drum buff, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: expanding thunder ring, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 6,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-3-7.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 空港翼卫 sky-port winged guardian with feather blades, bird demon. Theme palette: navy, sky cyan, electric gold. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: low swooping dive, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: three falling feather blade traps, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 3,
+      "variant": 7,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-0.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 魔宫禁卫 dark palace guard with black halberd and red crest. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: wide halberd sweep, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: halberd parry counter thrust, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 0,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-1.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 影刃魔童 shadow blade imp with twin obsidian daggers. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: shadow teleport backstab, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: two shadow dagger slashes, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 1,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-2.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 魔典侍僧 forbidden-tome acolyte with flying magic book. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: summon living spell-page, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: two staggered magic page fans, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 2,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-3.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 黑曜幼兽 obsidian horned beast with crystal armor. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: short pouncing bite, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: armor breaking crystal roar, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 3,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-4.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 血月侍医 blood-moon healer with crescent staff and crimson hood. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: sacrificial blood moon healing, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: retreating crescent projectile, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 4,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-5.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 禁印执事 forbidden-sigil steward with ritual seals. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: ally damage-increase contract, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: two delayed forbidden seal traps, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 5,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-6.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 魂灯提刑者 soul-lantern executioner with lantern pole and ghostfire jars. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: throw explosive soul lantern, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: slow homing ghostfire, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 6,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "minion-hd-4-7.png",
+      "prompt": "Use case: stylized-concept. Asset: production 2D fantasy game animation atlas on genuinely transparent RGBA. Output 2048x2048. ONE original creature: 王庭傀儡 royal armored puppet with huge black greatsword. Theme palette: obsidian black, crimson, purple. Crisp THICK dark cartoon ink outlines, flat clean cel shading, SIMPLE READABLE large shapes, cute sinister fantasy brawler monster, glowing eyes in dark face where appropriate. NO mice, NO insects, NO painterly noise or microtexture, NO body blur or diffuse glow. Exactly FOUR columns FOUR rows =16 full-body frames, SAME character facing RIGHT. Row1 idle breathing 4 distinct poses. Row2 walking 4 distinct poses with visibly different foot positions. Row3 skill ONE: three heavy sword strikes, 4 frames anticipation/windup/release/recovery. Row4 skill TWO: charged berserk dash, 4 frames anticipation/windup/release/recovery. 512x512 cells. Body height about300px, same feet baseline, centered each cell. AT LEAST64px transparent empty margins at EVERY cell edge. Keep weapons, wings, particles, shadows strictly WITHIN own cell, NEVER bridge or touch other poses. No backgrounds, no text, no labels, no borders, no watermark. Razor sharp silhouettes readable at80px screen size. Actual transparency.",
+      "floor": 4,
+      "variant": 7,
+      "rows": 4,
+      "columns": 4
+    },
+    {
+      "file": "boss-hd-0.png",
+      "floor": 0,
+      "rows": 7,
+      "columns": 4,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D fantasy game Boss animation atlas. Transparent RGBA. Output2048x3584 pixels, exactly4 columns7 rows, 28 isolated full-body sprites. SAME ONE original Boss facing RIGHT: giant mushroom-crowned ancient treant king with turquoise eyes and huge branch claws. Crisp thick black ink outlines, clean flat cel shading, strong large readable shapes, polished cartoon fantasy brawler, NOT painterly, NO microtexture, NO blur, no diffuse body glow. Cell512x512, character about360px tall, at least64px transparent border on every side per cell. All poses share proportions and feet baseline. Row1 idle breathing4frames. Row2 heavy walking4frames. Rows3 to7 are FIVE DIFFERENT attacks, each4 distinct chronological animation frames anticipate/windup/release/recover: row3 root claw sweep, row4 radial glowing spore burst, row5 ground root cage spell, row6 charging stomp, row7 summon mushrooms from roots. Keep ALL weapons, magic and limbs inside OWN cell; NEVER overlap adjacent frames. NO words, NO labels, NO panel borders, NO background, NO watermark. Genuine transparent alpha. Keep sprite faces and armor shapes crisp enough for a300px tall screen character.",
+      "used_rows": 2
+    },
+    {
+      "file": "boss-hd-1.png",
+      "floor": 1,
+      "rows": 7,
+      "columns": 4,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D fantasy game Boss animation atlas. Transparent RGBA. Output2048x3584 pixels, exactly4 columns7 rows, 28 isolated full-body sprites. SAME ONE original Boss facing RIGHT: massive armored molten furnace tyrant with volcanic hammer and chain. Crisp thick black ink outlines, clean flat cel shading, strong large readable shapes, polished cartoon fantasy brawler, NOT painterly, NO microtexture, NO blur, no diffuse body glow. Cell512x512, character about360px tall, at least64px transparent border on every side per cell. All poses share proportions and feet baseline. Row1 idle breathing4frames. Row2 heavy walking4frames. Rows3 to7 are FIVE DIFFERENT attacks, each4 distinct chronological animation frames anticipate/windup/release/recover: row3 hammer ground slam, row4 fiery iron shard fan, row5 ground eruption spell, row6 chain dash, row7 expanding furnace fire ring. Keep ALL weapons, magic and limbs inside OWN cell; NEVER overlap adjacent frames. NO words, NO labels, NO panel borders, NO background, NO watermark. Genuine transparent alpha. Keep sprite faces and armor shapes crisp enough for a300px tall screen character.",
+      "used_rows": 2
+    },
+    {
+      "file": "boss-hd-2.png",
+      "floor": 2,
+      "rows": 7,
+      "columns": 4,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D fantasy game Boss animation atlas. Transparent RGBA. Output2048x3584 pixels, exactly4 columns7 rows, 28 isolated full-body sprites. SAME ONE original Boss facing RIGHT: regal star-mirror crystal queen with faceted crown, violet cloak, prism staff. Crisp thick black ink outlines, clean flat cel shading, strong large readable shapes, polished cartoon fantasy brawler, NOT painterly, NO microtexture, NO blur, no diffuse body glow. Cell512x512, character about360px tall, at least64px transparent border on every side per cell. All poses share proportions and feet baseline. Row1 idle breathing4frames. Row2 heavy walking4frames. Rows3 to7 are FIVE DIFFERENT attacks, each4 distinct chronological animation frames anticipate/windup/release/recover: row3 long crystal laser, row4 three mirror projection spell, row5 falling meteor spell, row6 orbiting star ring, row7 mirror blink. Keep ALL weapons, magic and limbs inside OWN cell; NEVER overlap adjacent frames. NO words, NO labels, NO panel borders, NO background, NO watermark. Genuine transparent alpha. Keep sprite faces and armor shapes crisp enough for a300px tall screen character.",
+      "used_rows": 2
+    },
+    {
+      "file": "boss-hd-3.png",
+      "floor": 3,
+      "rows": 7,
+      "columns": 4,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D fantasy game Boss animation atlas. Transparent RGBA. Output2048x3584 pixels, exactly4 columns7 rows, 28 isolated full-body sprites. SAME ONE original Boss facing RIGHT: storm-wing airship captain demon with thunder saber, feathered navy coat and electric wings. Crisp thick black ink outlines, clean flat cel shading, strong large readable shapes, polished cartoon fantasy brawler, NOT painterly, NO microtexture, NO blur, no diffuse body glow. Cell512x512, character about360px tall, at least64px transparent border on every side per cell. All poses share proportions and feet baseline. Row1 idle breathing4frames. Row2 heavy walking4frames. Rows3 to7 are FIVE DIFFERENT attacks, each4 distinct chronological animation frames anticipate/windup/release/recover: row3 thunder wing slash, row4 lightning chain spell, row5 wandering cyclone spell, row6 diving dash, row7 ground thunderstorm spell. Keep ALL weapons, magic and limbs inside OWN cell; NEVER overlap adjacent frames. NO words, NO labels, NO panel borders, NO background, NO watermark. Genuine transparent alpha. Keep sprite faces and armor shapes crisp enough for a300px tall screen character.",
+      "used_rows": 2
+    },
+    {
+      "file": "boss-hd-4.png",
+      "floor": 4,
+      "rows": 7,
+      "columns": 4,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D fantasy game Boss animation atlas. Transparent RGBA. Output2048x3584 pixels, exactly4 columns7 rows, 28 isolated full-body sprites. SAME ONE original Boss facing RIGHT: obsidian royal swordmaster with black armor, crimson cloak, long black greatsword. Crisp thick black ink outlines, clean flat cel shading, strong large readable shapes, polished cartoon fantasy brawler, NOT painterly, NO microtexture, NO blur, no diffuse body glow. Cell512x512, character about360px tall, at least64px transparent border on every side per cell. All poses share proportions and feet baseline. Row1 idle breathing4frames. Row2 heavy walking4frames. Rows3 to7 are FIVE DIFFERENT attacks, each4 distinct chronological animation frames anticipate/windup/release/recover: row3 three heavy sword slashes, row4 shadow draw-sword dash, row5 falling black sword rain, row6 forbidden circular rune seal, row7 cross-shaped final sword strike. Keep ALL weapons, magic and limbs inside OWN cell; NEVER overlap adjacent frames. NO words, NO labels, NO panel borders, NO background, NO watermark. Genuine transparent alpha. Keep sprite faces and armor shapes crisp enough for a300px tall screen character.",
+      "used_rows": 2
+    },
+    {
+      "file": "boss-hd-0-skill-0.png",
+      "floor": 0,
+      "skill": 0,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: giant mushroom-crowned ancient treant king with turquoise eyes and branch claws. Action root claw sweep. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-0-skill-1.png",
+      "floor": 0,
+      "skill": 1,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: giant mushroom-crowned ancient treant king with turquoise eyes and branch claws. Action radial glowing spore burst. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-0-skill-2.png",
+      "floor": 0,
+      "skill": 2,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: giant mushroom-crowned ancient treant king with turquoise eyes and branch claws. Action ground root cage spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-0-skill-3.png",
+      "floor": 0,
+      "skill": 3,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: giant mushroom-crowned ancient treant king with turquoise eyes and branch claws. Action charging stomp. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-0-skill-4.png",
+      "floor": 0,
+      "skill": 4,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: giant mushroom-crowned ancient treant king with turquoise eyes and branch claws. Action summon mushrooms from roots. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping.",
+      "source_file": "boss-hd-0-skill-4-v2.png",
+      "correction_prompt": "EDIT target sprite atlas. Preserve the exact creature identity, outfit, weapon, palette and 8 distinct chronological animation poses from the reference. Re-layout and redraw EVERY sprite SMALLER inside its own cell. Required grid 4 columns by 2 rows. Main body must occupy only CENTRAL HALF of each cell. Reserve a continuous transparent moat at least25% of cell width between neighboring sprites. All limbs weapons and spell effects fit inside central60% of each cell. SHORTEN chains and energy beams; no long beams crossing a cell. Summoning creatures/effects stay immediately beside the caster. ALL poses are fully separate disconnected alpha islands, absolutely no bridges, no overlapping spells, no touching neighbors. Keep faces and outlines crisp, use simpler clean cel shading and large color blocks, remove noisy microtexture. Actual RGBA transparency, no text, no background, no frame lines. Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: giant mushroom-crowned ancient treant king with turquoise eyes and branch claws. Action summon mushrooms from roots. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-1-skill-0.png",
+      "floor": 1,
+      "skill": 0,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: massive armored molten furnace tyrant with volcanic hammer and chain. Action hammer ground slam. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-1-skill-1.png",
+      "floor": 1,
+      "skill": 1,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: massive armored molten furnace tyrant with volcanic hammer and chain. Action fiery iron shard fan. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-1-skill-2.png",
+      "floor": 1,
+      "skill": 2,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: massive armored molten furnace tyrant with volcanic hammer and chain. Action ground eruption spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-1-skill-3.png",
+      "floor": 1,
+      "skill": 3,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: massive armored molten furnace tyrant with volcanic hammer and chain. Action chain dash. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-1-skill-4.png",
+      "floor": 1,
+      "skill": 4,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: massive armored molten furnace tyrant with volcanic hammer and chain. Action expanding furnace fire ring. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-2-skill-0.png",
+      "floor": 2,
+      "skill": 0,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: regal star-mirror crystal queen with faceted crown violet cloak prism staff. Action long crystal laser. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping.",
+      "source_file": "boss-hd-2-skill-0-v2.png",
+      "correction_prompt": "EDIT target sprite atlas. Preserve the exact creature identity, outfit, weapon, palette and 8 distinct chronological animation poses from the reference. Re-layout and redraw EVERY sprite SMALLER inside its own cell. Required grid 4 columns by 2 rows. Main body must occupy only CENTRAL HALF of each cell. Reserve a continuous transparent moat at least25% of cell width between neighboring sprites. All limbs weapons and spell effects fit inside central60% of each cell. SHORTEN chains and energy beams; no long beams crossing a cell. Summoning creatures/effects stay immediately beside the caster. ALL poses are fully separate disconnected alpha islands, absolutely no bridges, no overlapping spells, no touching neighbors. Keep faces and outlines crisp, use simpler clean cel shading and large color blocks, remove noisy microtexture. Actual RGBA transparency, no text, no background, no frame lines. Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: regal star-mirror crystal queen with faceted crown violet cloak prism staff. Action long crystal laser. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-2-skill-1.png",
+      "floor": 2,
+      "skill": 1,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: regal star-mirror crystal queen with faceted crown violet cloak prism staff. Action three mirror projection spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-2-skill-2.png",
+      "floor": 2,
+      "skill": 2,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: regal star-mirror crystal queen with faceted crown violet cloak prism staff. Action falling meteor spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-2-skill-3.png",
+      "floor": 2,
+      "skill": 3,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: regal star-mirror crystal queen with faceted crown violet cloak prism staff. Action orbiting star ring. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-2-skill-4.png",
+      "floor": 2,
+      "skill": 4,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: regal star-mirror crystal queen with faceted crown violet cloak prism staff. Action mirror blink. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-3-skill-0.png",
+      "floor": 3,
+      "skill": 0,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: storm-wing airship captain demon with thunder saber feathered navy coat electric wings. Action thunder wing slash. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping.",
+      "source_file": "boss-hd-3-skill-0-v2.png",
+      "correction_prompt": "EDIT target sprite atlas. Preserve the exact creature identity, outfit, weapon, palette and 8 distinct chronological animation poses from the reference. Re-layout and redraw EVERY sprite SMALLER inside its own cell. Required grid 4 columns by 2 rows. Main body must occupy only CENTRAL HALF of each cell. Reserve a continuous transparent moat at least25% of cell width between neighboring sprites. All limbs weapons and spell effects fit inside central60% of each cell. SHORTEN chains and energy beams; no long beams crossing a cell. Summoning creatures/effects stay immediately beside the caster. ALL poses are fully separate disconnected alpha islands, absolutely no bridges, no overlapping spells, no touching neighbors. Keep faces and outlines crisp, use simpler clean cel shading and large color blocks, remove noisy microtexture. Actual RGBA transparency, no text, no background, no frame lines. Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: storm-wing airship captain demon with thunder saber feathered navy coat electric wings. Action thunder wing slash. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-3-skill-1.png",
+      "floor": 3,
+      "skill": 1,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: storm-wing airship captain demon with thunder saber feathered navy coat electric wings. Action lightning chain spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-3-skill-2.png",
+      "floor": 3,
+      "skill": 2,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: storm-wing airship captain demon with thunder saber feathered navy coat electric wings. Action wandering cyclone spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-3-skill-3.png",
+      "floor": 3,
+      "skill": 3,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: storm-wing airship captain demon with thunder saber feathered navy coat electric wings. Action diving dash. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-3-skill-4.png",
+      "floor": 3,
+      "skill": 4,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: storm-wing airship captain demon with thunder saber feathered navy coat electric wings. Action ground thunderstorm spell. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-4-skill-0.png",
+      "floor": 4,
+      "skill": 0,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: obsidian royal swordmaster with black armor crimson cloak long black greatsword. Action three heavy sword slashes. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-4-skill-1.png",
+      "floor": 4,
+      "skill": 1,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: obsidian royal swordmaster with black armor crimson cloak long black greatsword. Action shadow draw-sword dash. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-4-skill-2.png",
+      "floor": 4,
+      "skill": 2,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: obsidian royal swordmaster with black armor crimson cloak long black greatsword. Action falling black sword rain. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-4-skill-3.png",
+      "floor": 4,
+      "skill": 3,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: obsidian royal swordmaster with black armor crimson cloak long black greatsword. Action forbidden circular rune seal. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    },
+    {
+      "file": "boss-hd-4-skill-4.png",
+      "floor": 4,
+      "skill": 4,
+      "columns": 4,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production HIGH RESOLUTION 2D game Boss skill animation SPRITE ATLAS on genuine transparent RGBA. Output2048x1024 landscape. Exactly FOUR columns TWO rows, EIGHT consecutive frames of ONE action by ONE IDENTICAL original boss: obsidian royal swordmaster with black armor crimson cloak long black greatsword. Action cross-shaped final sword strike. Frames1-2 anticipate, frames3-4 charge, frames5-6 execute attack with sharp readable magic/sword effects, frames7-8 follow through and recover. Read LEFT TO RIGHT then second row. Crisp thick dark outlines, flat simple cel shading, strong large color shapes, cartoon fantasy roguelike brawler style. SAME identity armor weapon proportions throughout. Whole body facing RIGHT, consistent feet baseline. Each512-square cell has full-body boss about340px tall; reserve MINIMUM64px truly empty transparent margins on all FOUR sides of every cell. All limbs weapons and magic stay strictly inside OWN cell; NEVER overlap other frames. Sharp face and armor, no painterly noise, no microscopic texture, no diffuse blurry body glow. NO backgrounds, NO labels, NO text, NO watermark, NO frames. Large transparent gutters essential for cropping."
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 extends RefCounted
+const Choreography = preload("res://scripts/boss_choreography.gd")
 const Tactics = preload("res://scripts/boss_tactics.gd")
 const Presentation = preload("res://scripts/boss_presentation.gd")
 
@@ -9,6 +10,30 @@ const BASE_DAMAGE := [34.0,42.0,51.0]
 const PARTY_HEALTH_BONUS := 0.80
 const MAP_WEAK := ["mirror","earth"]
 const MAP_STRONG := ["ash","bird","dragon"]
+const GUARDIAN_SPACING := 2200.0
+
+func guardian_site(s, radius: float) -> int:
+	var guardians: Array=s.enemies.filter(func(e: Dictionary): return e.get("mini_boss",false))
+	var candidates: Array[int]=[]
+	var best := -1
+	var best_spacing := -1.0
+	for i in s.ruins.sites.size():
+		var site: Dictionary=s.ruins.sites[i]
+		var at: Vector2=site.p
+		if site.get("cleared",false) or s.ruins.blocked(at,maxf(radius,58)): continue
+		if at.distance_to(Ruins.SPAWN)<700 or at.distance_to(s.raid.center)<1000: continue
+		var spacing := INF
+		for guardian in guardians:
+			spacing=minf(spacing,at.distance_to(guardian.get("home",guardian.p)))
+		if spacing<GUARDIAN_SPACING: continue
+		candidates.append(i)
+		if spacing>best_spacing:
+			best_spacing=spacing
+			best=i
+	if candidates.is_empty(): return -1
+	# The first lair varies with the run seed; subsequent lairs spread across the map.
+	if guardians.is_empty(): return candidates[s.rng.randi_range(0,candidates.size()-1)]
+	return best
 const REWARDS := [150,300,650]
 
 # --- the hidden encounter ----------------------------------------------------
@@ -116,6 +141,9 @@ func arena(s) -> Vector2:
 	for site in s.ruins.sites:
 		var at: Vector2=site.p
 		var clear: bool=not s.ruins.blocked(at,36)
+		for enemy in s.enemies:
+			if enemy.get("mini_boss",false) and at.distance_to(enemy.get("home",enemy.p))<1000:
+				clear=false
 		for i in 16:
 			var edge := at+Vector2.from_angle(TAU*i/16.0)*185
 			if s.ruins.blocked(edge,22) or not s.ruins.clear_line(at,edge): clear=false
@@ -286,6 +314,20 @@ func hazard(s, shape: String, at: Vector2, aim: Vector2, radius: float, delay: f
 func update_hazards(s, dt: float) -> void:
 	for i in range(s.raid.hazards.size()-1,-1,-1):
 		var h: Dictionary=s.raid.hazards[i]
+		if h.get("choreographed",false):
+			var owner_alive := false
+			for boss in s.enemies:
+				if boss.id==h.source and boss.hp>0: owner_alive=true; break
+			if not owner_alive: s.raid.hazards.remove_at(i); continue
+			if not Choreography.linked(s,int(h.source),str(h.get("link",""))): s.raid.hazards.remove_at(i); continue
+			if h.get("cancel_on_break",false):
+				var broken := false
+				for boss in s.enemies:
+					if boss.id==h.source and float(boss.get("stagger",0))>0: broken=true
+				if broken: s.raid.hazards.remove_at(i); continue
+			if h.fired:
+				h.p+=h.get("velocity",Vector2.ZERO)*dt
+				h.aim=h.aim.rotated(float(h.get("rotate",0))*dt)
 		h.time-=dt
 		if h.time<=0 and not h.fired:
 			h.fired=true
@@ -295,14 +337,25 @@ func update_hazards(s, dt: float) -> void:
 				s.broadcast_combat(event)
 			else: s.emit_effect("hit",h.p)
 			for p in s.players.values():
-				if hazard_contains(h,p.p) and s.ruins.clear_line(h.p,p.p): s.hurt(p,h.damage)
+				if h.damage>0 and hazard_contains(h,p.p) and not Choreography.cover_blocks(s,h,p.p) and (h.get("choreographed",false) or s.ruins.clear_line(h.p,p.p)):
+					s.hurt(p,h.damage)
+					if h.get("choreographed",false) and p.id not in h.hit_ids: h.hit_ids.append(p.id)
 		if h.fired and h.has("pulse_interval") and h.time<=-float(h.next_pulse) and h.time>=-float(h.linger):
 			h.next_pulse=float(h.next_pulse)+float(h.pulse_interval)
 			for p in s.players.values():
-				if hazard_contains(h,p.p) and s.ruins.clear_line(h.p,p.p): s.hurt(p,h.damage)
+				if h.damage>0 and hazard_contains(h,p.p) and not Choreography.cover_blocks(s,h,p.p) and (h.get("choreographed",false) or s.ruins.clear_line(h.p,p.p)): s.hurt(p,h.damage)
+		if h.get("choreographed",false):
+			# A visible active footprint can catch a late entrant once, until it fades out.
+			if h.fired and h.time>=-float(h.linger) and h.damage>0:
+				for p in s.players.values():
+					if p.status=="active" and p.invuln<=0 and p.id not in h.hit_ids and hazard_contains(h,p.p) and not Choreography.cover_blocks(s,h,p.p) and (h.get("choreographed",false) or s.ruins.clear_line(h.p,p.p)):
+						s.hurt(p,h.damage)
+						h.hit_ids.append(p.id)
+			Choreography.modifiers(s,h,dt)
 		if h.time < -float(h.linger): s.raid.hazards.remove_at(i)
 
 func hazard_contains(h: Dictionary, at: Vector2) -> bool:
+	if h.get("choreographed",false): return Choreography.Geometry.contains(h,at)
 	var v: Vector2=at-h.p
 	if h.shape=="line":
 		return v.dot(h.aim)>=-22 and v.dot(h.aim)<=h.radius and absf(v.dot(h.aim.orthogonal()))<=44
@@ -339,7 +392,7 @@ func update_boss(s, e: Dictionary, dt: float) -> void:
 	if not response.is_empty():
 		if response.kind=="attack" and Tactics.start_guard(e,response.aim,s): return
 		if response.kind!="attack":
-			cast_boss(s,e,target,str(response.kind),response.aim,response.point)
+			cast_boss(s,e,target,Choreography.choose(e),response.aim,response.point)
 			return
 	if e.attack_time<=0 and not e.get("reaction",{}).is_empty(): return
 	var aim: Vector2=(target.p-e.p).normalized()
@@ -356,10 +409,7 @@ func update_boss(s, e: Dictionary, dt: float) -> void:
 		best=target.p.distance_to(e.p)
 	if e.cd>0 or e.attack_time>0 or not s.ruins.clear_line(e.p,target.p): return
 	var seq: int=e.sequence
-	var moves: Array=HIDDEN_MOVES if hidden else (["blood_moon","orbit","sunder","nightfall","last_light"] if e.get("final_form",false) else (["bell","marks","quick_bell","slow_bell","cross"] if e.boss_kind==0 else (["spear","cleave","feint","guard","fan","reap"] if e.boss_kind==1 else ["crown","lances","coronation","execution","eclipse"])))
-	var move: String=moves[seq%moves.size()]
-	if not hidden and e.boss_kind==0 and move in ["bell","quick_bell"] and best>340: move="marks"
-	if not hidden and e.boss_kind==1 and move in ["cleave","feint","reap"] and best>260: move="spear"
+	var move: String=Choreography.choose(e)
 	e.sequence+=1
 	if move=="guard":
 		if Tactics.start_guard(e,aim,s): return
@@ -372,6 +422,7 @@ func update_boss(s, e: Dictionary, dt: float) -> void:
 const HIDDEN_MOVES := ["grave_ring","soul_lance","tomb_patch","cinder_fan","bone_cage","rift_walk","necro_pyre","marrow","hidden_cross","pyre_finale"]
 
 func cast_boss(s, e: Dictionary, _target: Dictionary, move: String, aim: Vector2, point: Vector2) -> void:
+	if Choreography.start(s,e,move,aim,point): return
 	var phase := int(e.get("phase",1))
 	var hidden: bool=bool(e.get("hidden_final",false))
 	e.attack_aim=aim

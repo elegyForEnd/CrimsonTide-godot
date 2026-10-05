@@ -133,8 +133,8 @@ func done() -> void:
 	stage=3
 	var pass_test := session.results.size()==expected and session.seed_value==54321 and got_effect and got_combat and got_audio and saw_weapon and saw_running
 	for reward in session.results.values():
-		# 125 from the relic in the backpack plus 32 from the scrap in the pocket.
-		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==157
+		# 125 relic + 32 scrap + 162 equipped blue field weapon, all banked on extraction.
+		pass_test=pass_test and reward.escaped and reward.shared==110 and reward.loot==319
 	if host_mode:
 		pass_test=pass_test and saw_independent
 	else:

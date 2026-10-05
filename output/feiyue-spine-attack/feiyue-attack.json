@@ -1,0 +1,435 @@
+{
+  "skeleton": {
+    "spine": "3.8.75",
+    "images": "./images/",
+    "fps": 30,
+    "x": -250,
+    "y": 0,
+    "width": 500,
+    "height": 620
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "y": 150
+    },
+    {
+      "name": "hair",
+      "parent": "body",
+      "y": 210
+    },
+    {
+      "name": "leg_left",
+      "parent": "root",
+      "x": -62,
+      "y": 160
+    },
+    {
+      "name": "leg_right",
+      "parent": "root",
+      "x": 62,
+      "y": 160
+    },
+    {
+      "name": "arm_free",
+      "parent": "body",
+      "x": 80,
+      "y": 220,
+      "rotation": 18
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "y": 260
+    },
+    {
+      "name": "arm_sword",
+      "parent": "body",
+      "x": -82,
+      "y": 220,
+      "rotation": -25
+    },
+    {
+      "name": "sword",
+      "parent": "arm_sword",
+      "x": 0,
+      "y": -158,
+      "rotation": -12
+    }
+  ],
+  "slots": [
+    {
+      "name": "hair",
+      "bone": "hair",
+      "attachment": "hair"
+    },
+    {
+      "name": "leg_left",
+      "bone": "leg_left",
+      "attachment": "leg_left"
+    },
+    {
+      "name": "leg_right",
+      "bone": "leg_right",
+      "attachment": "leg_right"
+    },
+    {
+      "name": "arm_free",
+      "bone": "arm_free",
+      "attachment": "arm_free"
+    },
+    {
+      "name": "body",
+      "bone": "body",
+      "attachment": "body"
+    },
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
+      "name": "sword",
+      "bone": "sword",
+      "attachment": "sword"
+    },
+    {
+      "name": "arm_sword",
+      "bone": "arm_sword",
+      "attachment": "arm_sword"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "hair": {
+          "hair": {
+            "type": "region",
+            "path": "hair",
+            "x": 0.0,
+            "y": -145.0,
+            "width": 350,
+            "height": 420
+          }
+        },
+        "leg_left": {
+          "leg_left": {
+            "type": "region",
+            "path": "leg_left",
+            "x": 0.0,
+            "y": -80.0,
+            "width": 85,
+            "height": 160
+          }
+        },
+        "leg_right": {
+          "leg_right": {
+            "type": "region",
+            "path": "leg_right",
+            "x": 0.0,
+            "y": -80.0,
+            "width": 85,
+            "height": 160
+          }
+        },
+        "arm_free": {
+          "arm_free": {
+            "type": "region",
+            "path": "arm_free",
+            "x": 0.0,
+            "y": -80.0,
+            "width": 100,
+            "height": 190
+          }
+        },
+        "body": {
+          "body": {
+            "type": "region",
+            "path": "body",
+            "x": 0.0,
+            "y": 140.0,
+            "width": 280,
+            "height": 280
+          }
+        },
+        "head": {
+          "head": {
+            "type": "region",
+            "path": "head",
+            "x": 0.0,
+            "y": 60.0,
+            "width": 300,
+            "height": 320
+          }
+        },
+        "sword": {
+          "sword": {
+            "type": "region",
+            "path": "sword",
+            "x": 0.0,
+            "y": -126.0,
+            "width": 100,
+            "height": 300
+          }
+        },
+        "arm_sword": {
+          "arm_sword": {
+            "type": "region",
+            "path": "arm_sword",
+            "x": 0.0,
+            "y": -80.0,
+            "width": 100,
+            "height": 190
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "attack": {
+      "bones": {
+        "body": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.16,
+              "angle": -7
+            },
+            {
+              "time": 0.3,
+              "angle": -12
+            },
+            {
+              "time": 0.4,
+              "angle": 10
+            },
+            {
+              "time": 0.49,
+              "angle": 13
+            },
+            {
+              "time": 0.65,
+              "angle": 5
+            },
+            {
+              "time": 0.83,
+              "angle": -2
+            },
+            {
+              "time": 1.05,
+              "angle": 0
+            }
+          ]
+        },
+        "head": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.16,
+              "angle": 3
+            },
+            {
+              "time": 0.3,
+              "angle": 5
+            },
+            {
+              "time": 0.4,
+              "angle": -6
+            },
+            {
+              "time": 0.49,
+              "angle": -8
+            },
+            {
+              "time": 0.65,
+              "angle": 2
+            },
+            {
+              "time": 0.83,
+              "angle": 1
+            },
+            {
+              "time": 1.05,
+              "angle": 0
+            }
+          ]
+        },
+        "arm_sword": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.16,
+              "angle": -60
+            },
+            {
+              "time": 0.3,
+              "angle": -125
+            },
+            {
+              "time": 0.4,
+              "angle": 5
+            },
+            {
+              "time": 0.49,
+              "angle": 90
+            },
+            {
+              "time": 0.65,
+              "angle": 45
+            },
+            {
+              "time": 0.83,
+              "angle": 5
+            },
+            {
+              "time": 1.05,
+              "angle": 0
+            }
+          ]
+        },
+        "sword": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.16,
+              "angle": -15
+            },
+            {
+              "time": 0.3,
+              "angle": -30
+            },
+            {
+              "time": 0.4,
+              "angle": 20
+            },
+            {
+              "time": 0.49,
+              "angle": 25
+            },
+            {
+              "time": 0.65,
+              "angle": -10
+            },
+            {
+              "time": 0.83,
+              "angle": 0
+            },
+            {
+              "time": 1.05,
+              "angle": 0
+            }
+          ]
+        },
+        "arm_free": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.16,
+              "angle": 10
+            },
+            {
+              "time": 0.3,
+              "angle": 22
+            },
+            {
+              "time": 0.4,
+              "angle": -25
+            },
+            {
+              "time": 0.49,
+              "angle": -35
+            },
+            {
+              "time": 0.65,
+              "angle": -10
+            },
+            {
+              "time": 0.83,
+              "angle": 5
+            },
+            {
+              "time": 1.05,
+              "angle": 0
+            }
+          ]
+        },
+        "hair": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.16,
+              "angle": 3
+            },
+            {
+              "time": 0.3,
+              "angle": 8
+            },
+            {
+              "time": 0.4,
+              "angle": -4
+            },
+            {
+              "time": 0.49,
+              "angle": -13
+            },
+            {
+              "time": 0.65,
+              "angle": -5
+            },
+            {
+              "time": 0.83,
+              "angle": 3
+            },
+            {
+              "time": 1.05,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    },
+    "idle": {
+      "bones": {
+        "hair": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.8,
+              "angle": 2
+            },
+            {
+              "time": 1.6,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -32,7 +32,7 @@ func _draw() -> void:
 			draw_rect(Rect2(mini_at+Vector2(0,45),Vector2(mini_width*clampf(float(e.hp)/float(e.max_hp),0,1),13)),mini_color)
 			continue
 		if not e.get("raid_boss",false): continue
-		var kind: int=e.boss_kind
+		var kind: int=clampi(int(e.boss_kind),0,2)
 		var hidden: bool=e.get("hidden_final",false)
 		var color: Color=Presentation.HIDDEN_COLOR if hidden else Color("b86bff") if e.get("abyss_final",false) else Color("ff4a70") if e.get("final_form",false) else BossFrames.COLORS[kind]
 		var width := minf(700,size.x-490)
@@ -69,7 +69,7 @@ func _draw() -> void:
 			var portrait_at := Vector2(18-(1-alpha)*45,size.y-440)
 			var portrait: Texture2D=field.special_boss_art[5] if e.get("abyss_final",false) else field.special_boss_art[2] if e.get("final_form",false) else boss_frames.portraits[kind]
 			draw_texture_rect(portrait,Rect2(portrait_at,portrait_size),false,Color(1,1,1,alpha))
-			label(portrait_at+Vector2(12,333),("吞月渊蛇" if e.get("abyss_final",false) else "无名赤月" if e.get("final_form",false) else BossFrames.TITLES[kind])+" · 降临",18,Color(color,alpha))
+			label(portrait_at+Vector2(12,333),("冥火尸王" if hidden else "吞月渊蛇" if e.get("abyss_final",false) else "无名赤月" if e.get("final_form",false) else BossFrames.TITLES[kind])+" · 降临",18,Color(color,alpha))
 	if session.players.get(session.my_id(),{}).get("status","")!="active": return
 	if session.raid.get("phase","") in ["choice","complete"]:
 		var at := Vector2(size.x/2-320,245)

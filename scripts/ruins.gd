@@ -1,9 +1,11 @@
 class_name Ruins
 extends RefCounted
 
-const SIZE := Vector2(6400,4800)
+const BASE_SIZE := Vector2(6400,4800)
+const MAP_SCALE := 1.5
+const SIZE := BASE_SIZE*MAP_SCALE
 const CENTER := SIZE/2
-const SPAWN := Vector2(560,2400)
+const SPAWN := Vector2(560,2400)*MAP_SCALE
 const EXIT_NAMES := ["西境驿站","东岸渡口","北境钟门","晨钟归途"]
 const BIOME_NAMES := ["风铃原野","白垩旧城","月晶高地","蔷薇庭域","雾汐湿地","圣血王庭"]
 const COLORS := [Color("809d83"),Color("b1a28c"),Color("9990b5"),Color("ae7f8c"),Color("689c9b"),Color("c9b99c")]
@@ -13,6 +15,7 @@ const WILDERNESS_CHESTS := 6
 const CACHE_TIERS := [0,1,2,2,3,4]
 const AssetLayout = preload("res://scripts/scene_asset_layout.gd")
 var extent := SIZE
+var layout_scale := MAP_SCALE
 var interior := false
 var walls: Array[Rect2] = []
 var sites: Array = []
@@ -33,6 +36,9 @@ var features: Array=[]
 var building_footprints: Array[Rect2]=[]
 
 func generate(value: int) -> void:
+	# Author geometry in the baked terrain's coordinates, then expand it together.
+	extent=BASE_SIZE
+	layout_scale=1.0
 	map_seed=value
 	rng.seed=value
 	walls.clear()
@@ -60,11 +66,11 @@ func generate(value: int) -> void:
 		regions.append({"polygon":PackedVector2Array(outlines[i]),"color":COLORS[i],"name":BIOME_NAMES[i]})
 	river.clear()
 	for y in range(0,4801,80):
-		river.append(Vector2(river_x(y)-105,y))
+		river.append(Vector2(base_river_x(y)-105,y))
 	for y in range(4800,-1,-80):
-		river.append(Vector2(river_x(y)+105,y))
+		river.append(Vector2(base_river_x(y)+105,y))
 	for y in [950,2400,3850]:
-		bridges.append(Rect2(river_x(y)-220,y-105,440,210))
+		bridges.append(Rect2(base_river_x(y)-220,y-105,440,210))
 	# Landmark placements are intentional; seed varies supplies and peripheral props.
 	var specs := [
 		["风铃驿站",Vector2(950,2100),0,1,6],["巡礼礼拜堂",Vector2(1000,780),0,1,0],["白花营地",Vector2(1770,1520),0,1,7],
@@ -92,7 +98,7 @@ func generate(value: int) -> void:
 		if not building.is_empty(): building_footprints.append(building.rect)
 	# Three east-west crossings and a loop on both banks create route choices.
 	for y in [950,2400,3850]:
-		roads.append(PackedVector2Array([Vector2(420,y),Vector2(1900,y+100 if y!=2400 else y),Vector2(river_x(y)-240,y),Vector2(river_x(y)+240,y),Vector2(4560,y-90 if y!=2400 else y),Vector2(6010,y)]))
+		roads.append(PackedVector2Array([Vector2(420,y),Vector2(1900,y+100 if y!=2400 else y),Vector2(base_river_x(y)-240,y),Vector2(base_river_x(y)+240,y),Vector2(4560,y-90 if y!=2400 else y),Vector2(6010,y)]))
 	roads.append(PackedVector2Array([Vector2(850,500),Vector2(620,950),Vector2(600,2400),Vector2(850,3850),Vector2(1700,4400),Vector2(2400,3850),Vector2(2500,2400),Vector2(2250,950),Vector2(2700,400),Vector2(3650,380)]))
 	roads.append(PackedVector2Array([Vector2(3650,380),Vector2(3900,500),Vector2(4150,950),Vector2(4320,2400),Vector2(4450,3850),Vector2(5530,4400),Vector2(5800,3850),Vector2(6010,2400),Vector2(5760,950),Vector2(5400,500)]))
 	for r in roads.size():
@@ -107,7 +113,7 @@ func generate(value: int) -> void:
 				var t := float(k)/steps
 				var point := a.lerp(b,t)
 				var bend := sin(t*PI)*sin(j*2.3+r+0.8)*100
-				if absf(point.x-river_x(point.y))>350: point+=normal*bend
+				if absf(point.x-base_river_x(point.y))>350: point+=normal*bend
 				curved.append(point)
 		curved.append(road[-1])
 		roads[r]=curved
@@ -127,7 +133,7 @@ func generate(value: int) -> void:
 	for i in 480:
 		var center := Vector2(terrain_rng.randf_range(500,5900),terrain_rng.randf_range(500,4300))
 		var radius := terrain_rng.randf_range(95,210)
-		if near_road(center,radius+140) or absf(center.x-river_x(center.y))<radius+180: continue
+		if near_road(center,radius+140) or absf(center.x-base_river_x(center.y))<radius+180: continue
 		var close := false
 		for site in sites:
 			if site.rect.grow(radius+100).has_point(center): close=true; break
@@ -146,7 +152,7 @@ func generate(value: int) -> void:
 				if not wall_cells.has(key): wall_cells[key]=[]
 				wall_cells[key].append(wall)
 	for i in 600:
-		var pos := Vector2(rng.randf_range(100,SIZE.x-100),rng.randf_range(100,SIZE.y-100))
+		var pos := Vector2(rng.randf_range(100,BASE_SIZE.x-100),rng.randf_range(100,BASE_SIZE.y-100))
 		if blocked(pos,60) or near_road(pos,100): continue
 		var close := false
 		for site in sites:
@@ -162,7 +168,7 @@ func generate(value: int) -> void:
 	cache_rng.seed=value+1307
 	for biome in WILDERNESS_CHESTS:
 		for attempt in 2500:
-			var at := Vector2(cache_rng.randf_range(400,SIZE.x-400),cache_rng.randf_range(400,SIZE.y-400)).snapped(Vector2(40,40))
+			var at := Vector2(cache_rng.randf_range(400,BASE_SIZE.x-400),cache_rng.randf_range(400,BASE_SIZE.y-400)).snapped(Vector2(40,40))
 			if biome_at(at)!=biome or blocked(at,45) or not near_road(at,100): continue
 			var close := false
 			for site in sites:
@@ -172,8 +178,51 @@ func generate(value: int) -> void:
 			if close: continue
 			chests.append({"p":at,"key":"container","items":[],"open":false,"searched":0,"bonus":false,"class":1,"cache_tier":CACHE_TIERS[biome],"title":"野外遗落物资箱 · %d档" % (CACHE_TIERS[biome]+1)})
 			break
+	expand_layout()
+
+func expand_layout() -> void:
+	coast=scaled_points(coast)
+	river=scaled_points(river)
+	for region in regions: region.polygon=scaled_points(region.polygon)
+	for i in roads.size(): roads[i]=scaled_points(roads[i])
+	for site in sites:
+		site.p*=MAP_SCALE
+		site.rect=Rect2(site.rect.position*MAP_SCALE,site.rect.size*MAP_SCALE)
+	for items in [chests,shrines,decor]:
+		for item in items:
+			item.p*=MAP_SCALE
+			if item.has("size"): item.size*=MAP_SCALE
+	for feature in features:
+		feature.p*=MAP_SCALE
+		feature.radius*=MAP_SCALE
+		feature.polygon=scaled_points(feature.polygon)
+	for i in exits.size(): exits[i]*=MAP_SCALE
+	for rects in [walls,bridges]:
+		for i in rects.size(): rects[i]=Rect2(rects[i].position*MAP_SCALE,rects[i].size*MAP_SCALE)
+	building_footprints.clear()
+	for item in decor:
+		var building: Dictionary=AssetLayout.building(item)
+		if not building.is_empty(): building_footprints.append(building.rect)
+	wall_cells.clear()
+	for wall in walls:
+		for x in range(int(wall.position.x/200)-1,int(wall.end.x/200)+2):
+			for y in range(int(wall.position.y/200)-1,int(wall.end.y/200)+2):
+				var key := Vector2i(x,y)
+				if not wall_cells.has(key): wall_cells[key]=[]
+				wall_cells[key].append(wall)
+	indexed_wall_count=walls.size()
+	extent=SIZE
+	layout_scale=MAP_SCALE
+
+func scaled_points(points: PackedVector2Array) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	for point in points: result.append(point*MAP_SCALE)
+	return result
 
 static func river_x(y: float) -> float:
+	return base_river_x(y/MAP_SCALE)*MAP_SCALE
+
+static func base_river_x(y: float) -> float:
 	return 3200+sin(y/610.0)*170
 
 func biome_at(pos: Vector2) -> int:
@@ -188,7 +237,7 @@ func near_road(pos: Vector2, distance: float) -> bool:
 	return false
 
 func blocked(pos: Vector2, radius: float = 15.0) -> bool:
-	if pos.x<40+radius or pos.y<40+radius or pos.x>SIZE.x-40-radius or pos.y>SIZE.y-40-radius: return true
+	if pos.x<40+radius or pos.y<40+radius or pos.x>extent.x-40-radius or pos.y>extent.y-40-radius: return true
 	if not coast.is_empty() and not Geometry2D.is_point_in_polygon(pos,coast): return true
 	for footprint in building_footprints:
 		if footprint.grow(radius).has_point(pos): return true
@@ -197,7 +246,7 @@ func blocked(pos: Vector2, radius: float = 15.0) -> bool:
 		if Geometry2D.is_point_in_polygon(pos,feature.polygon): return true
 		for i in feature.polygon.size():
 			if Geometry2D.get_closest_point_to_segment(pos,feature.polygon[i],feature.polygon[(i+1)%feature.polygon.size()]).distance_to(pos)<radius: return true
-	if absf(pos.x-river_x(pos.y))<105+radius:
+	if absf(pos.x-base_river_x(pos.y/layout_scale)*layout_scale)<105*layout_scale+radius:
 		var crossing := false
 		for bridge in bridges:
 			if bridge.grow(-radius).has_point(pos): crossing=true; break

@@ -1,0 +1,444 @@
+{
+  "author": "Kevin Barany / SigilsVault",
+  "pack_version": "1.0",
+  "source_page": "https://sigilsvault.itch.io/modular-cathedral-kit",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "commercial_use": true,
+  "retrieved": "2026-10-04",
+  "files": [
+    {
+      "path": "models/altar_01.glb",
+      "sha256": "9f7cb2101021657da89bad6ae44b37f9b5db732b9e0510ccf21f276f5889c6dc"
+    },
+    {
+      "path": "models/altar_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/chandelier_01.glb",
+      "sha256": "497d3f47143492783927cfa09dde8f64d8e758d33502457ddf3269140cccc3de"
+    },
+    {
+      "path": "models/chandelier_01_chandelier_diffuse_256x256.png",
+      "sha256": "7b16aa1a642017a7a57ec576d690f754a6a091026920f9be705a6bce0d5fdfce"
+    },
+    {
+      "path": "models/column_01.glb",
+      "sha256": "5272db1a059ca1acd615594a8cd6c070dbef8a41b9278db8e34b0147671d7bb1"
+    },
+    {
+      "path": "models/column_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/column_small_01.glb",
+      "sha256": "49a81b1367667d5b65b871470a941e32857bf846d006df08067ccc28075eb1c0"
+    },
+    {
+      "path": "models/column_small_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/door_01.glb",
+      "sha256": "2141a93c46eaf410251601fb1d6ca5120356a436da73e77e632422d1640b889b"
+    },
+    {
+      "path": "models/door_01_door_diffuse_256x256.png",
+      "sha256": "603b7529e326be8fed2dbfaaf22cef84cfbaf421b69459644c72fc24a50a9523"
+    },
+    {
+      "path": "models/doorway_01.glb",
+      "sha256": "ed2d6e07d2fe3bde628caaccd0c0c78403fbfc4a69ebab91f6fd7eed702702f4"
+    },
+    {
+      "path": "models/doorway_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/doorway_inner_01.glb",
+      "sha256": "2817b127d0b6547eb5e03a44ca687017f3d98a590cc265134b6a91983d5c63a7"
+    },
+    {
+      "path": "models/doorway_inner_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/facade_wall_01.glb",
+      "sha256": "0392a5d32c64f391a6d491e1853d1b3e083cc8dca0abb2eb4019b6f833d5face"
+    },
+    {
+      "path": "models/facade_wall_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/facade_wall_01_window_diffuse_512x512.png",
+      "sha256": "0a662be4a22b73575677bf54a990694f257a011bee2b639254467120bd1e9130"
+    },
+    {
+      "path": "models/facade_wall_01_window_emission_512x512.png",
+      "sha256": "9319d9f6c7dc22db953dabc2b59469ff6044fe4635295631132830715209d613"
+    },
+    {
+      "path": "models/floor_01.glb",
+      "sha256": "42d175edc273154d52510f0decd5bbed62a9715808e8c8ffb8aee316838c4a89"
+    },
+    {
+      "path": "models/floor_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/floor_02.glb",
+      "sha256": "6d650f36b6637af49c1813feaa435a2f3befce3b309e42ae5b73e34cc39c10f7"
+    },
+    {
+      "path": "models/floor_02_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/floor_03.glb",
+      "sha256": "59a83cc8006c6c34fb28ca38203fcd00587736ff80dfa49ebc4cb6598db35b51"
+    },
+    {
+      "path": "models/floor_03_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/flying_buttress_01.glb",
+      "sha256": "e91565210a23d60fca86bf78d852d8e945716b3a802115fd74b869fc1f05a706"
+    },
+    {
+      "path": "models/flying_buttress_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/pedestal_01.glb",
+      "sha256": "84fe469a34cab6f364816e4e6547ba6e9feaf75ed735f34f05493db11ae283f9"
+    },
+    {
+      "path": "models/pedestal_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/platform_01.glb",
+      "sha256": "dca025215c83bd9ff796e652cd2d4de67a2b2891f774af0d6300d87a21ab1192"
+    },
+    {
+      "path": "models/platform_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/platform_stairs_01.glb",
+      "sha256": "9cbcbd07400e4df24355f54e265679b9df7f0ae4f234a531ae3a0eda8cd1f955"
+    },
+    {
+      "path": "models/platform_stairs_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/railing_01.glb",
+      "sha256": "d46465ebb469cda1c95a43d4d6d62df8c199b1bf3666d9afdbb74e95d7fbb960"
+    },
+    {
+      "path": "models/railing_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/railing_corner_01.glb",
+      "sha256": "b93cc70b4c1bc6f8708747534479ec029ef300551289a20d88673b1ce79d107e"
+    },
+    {
+      "path": "models/railing_corner_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/railing_outside_01.glb",
+      "sha256": "aed5c404a2cb29a32dd2d425ab61f89706c76a93057c2992963bcf33bb8980c9"
+    },
+    {
+      "path": "models/railing_outside_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/railing_outside_corner_01.glb",
+      "sha256": "c654f1e1bfb3e57f08c9ff8eae40f2460890df9bd2fda1b081691b55f10a887e"
+    },
+    {
+      "path": "models/railing_outside_corner_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/railing_outside_inner_corner_01.glb",
+      "sha256": "798866c90e8567b163434aa3d195ab6ad33b5892ffa87472c3068c8c3795cade"
+    },
+    {
+      "path": "models/railing_outside_inner_corner_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/rooftop_01.glb",
+      "sha256": "dfe94c9fde1d2c894be818f783ff4b02728d9b146af9b3caa4d3836e199ec0df"
+    },
+    {
+      "path": "models/rooftop_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/rooftop_02.glb",
+      "sha256": "172ddc50ccff2a8db5acfb2eeff4fef8d78a94d6810a34507e94c7753a0c9441"
+    },
+    {
+      "path": "models/rooftop_02_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/rooftop_cross_junction_01.glb",
+      "sha256": "dcdc193c02545949a0cdb7311a739ebb99aba2c6eb0fcaba9bee06392132618c"
+    },
+    {
+      "path": "models/rooftop_cross_junction_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_base_01.glb",
+      "sha256": "b0f4bd05d54676637c5c109fba29546c55a69b4a98acbc8b9a83355dc684689d"
+    },
+    {
+      "path": "models/sanctum_base_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_doorway_01.glb",
+      "sha256": "90a837e7f532f6f020c244f615f32dc9a702a5208811de32f84ad8db10e0c904"
+    },
+    {
+      "path": "models/sanctum_doorway_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_floor_01.glb",
+      "sha256": "4bf68d54c00da7697badfcab42e5e25df4292523cac928154167fb7a26931186"
+    },
+    {
+      "path": "models/sanctum_floor_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_floor_02.glb",
+      "sha256": "9e4ceea2a4b0d4ce528d65e30d8249c98834137931fc42fc6c900d7d43056afa"
+    },
+    {
+      "path": "models/sanctum_floor_02_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_roof_01.glb",
+      "sha256": "7b0e2bad392ff2e073b49e9dde7cd7ae20446e72919a2b0ccbbb95a1c3bec38f"
+    },
+    {
+      "path": "models/sanctum_roof_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_roof_01_window_diffuse_512x512.png",
+      "sha256": "0a662be4a22b73575677bf54a990694f257a011bee2b639254467120bd1e9130"
+    },
+    {
+      "path": "models/sanctum_roof_01_window_emission_512x512.png",
+      "sha256": "9319d9f6c7dc22db953dabc2b59469ff6044fe4635295631132830715209d613"
+    },
+    {
+      "path": "models/sanctum_stairs_01.glb",
+      "sha256": "b7042936eff7f18315fdaa002f638476362f6d7b78c816d0937ad5e4098ceeab"
+    },
+    {
+      "path": "models/sanctum_stairs_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_upper_01.glb",
+      "sha256": "dbd84a5ab5f0d673d14983d46b8dc66dae707ae3fe01b4658a76ec649e8df69d"
+    },
+    {
+      "path": "models/sanctum_upper_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/sanctum_upper_01_window_diffuse_512x512.png",
+      "sha256": "0a662be4a22b73575677bf54a990694f257a011bee2b639254467120bd1e9130"
+    },
+    {
+      "path": "models/sanctum_upper_01_window_emission_512x512.png",
+      "sha256": "9319d9f6c7dc22db953dabc2b59469ff6044fe4635295631132830715209d613"
+    },
+    {
+      "path": "models/spire_01.glb",
+      "sha256": "56ed4a1bbfc952ede65257678c40db86e4cee308f0954f11e2a3aed569690d48"
+    },
+    {
+      "path": "models/spire_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/tower_base_01.glb",
+      "sha256": "22e19131716ab23d73e02d0848fe55838b17bf4cb36ac04eff1e98edf218e7af"
+    },
+    {
+      "path": "models/tower_base_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/tower_cap_01.glb",
+      "sha256": "c1e271328a3b8d480a6dc62fab0395b7c646c3e4faf63e708bcf1caf3dc31523"
+    },
+    {
+      "path": "models/tower_cap_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/tower_cap_02.glb",
+      "sha256": "4a8ccb36f1171931450b4e3796ff76cef9a82eb67c1786d62e574c480a80795c"
+    },
+    {
+      "path": "models/tower_cap_02_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/tower_small_01.glb",
+      "sha256": "3987e15e4179310110e2245d244513df471f53a6db4886d45b74c278f7ca9f48"
+    },
+    {
+      "path": "models/tower_small_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/vault_cross_junction_01.glb",
+      "sha256": "7074749bb261b74f8f24d9672cceb5952b0e3f7af5d59df389fbfd78c42b3048"
+    },
+    {
+      "path": "models/vault_cross_junction_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/vault_large_01.glb",
+      "sha256": "b3916bc1d9326a5b6a351752c982f419aa68ea30225736751cd1a3550ac8ff02"
+    },
+    {
+      "path": "models/vault_large_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/vault_small_corner_L_01.glb",
+      "sha256": "c738b451d0744e549303c8cf7cef07b1109817ce6ce77af7a5dc255f84b683c7"
+    },
+    {
+      "path": "models/vault_small_corner_L_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/vault_small_corner_R_01.glb",
+      "sha256": "14d4ccf56ea34522cfcf5cd4ab51fdbeac0ce064f01e2366dd3fef14268b5573"
+    },
+    {
+      "path": "models/vault_small_corner_R_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/vault_small_front_01.glb",
+      "sha256": "f357d6c4e7ab2d0a61d399f397f2403e2bc1c8886df09dfd47ad411748dc2445"
+    },
+    {
+      "path": "models/vault_small_front_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_01.glb",
+      "sha256": "911fcb890a94f8a5e2447803a9414d52e3927921c9376464e8fd41b31224f20f"
+    },
+    {
+      "path": "models/wall_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_corner_01.glb",
+      "sha256": "c5ffa2d278c82abee396b07b2dc2c98bce68585760cc4fe60b59f9f474ef17ef"
+    },
+    {
+      "path": "models/wall_corner_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_corner_02.glb",
+      "sha256": "6c2f66dbcdbd7755149639d1b59fcf0924abae85858cc4de0588cce23a6087d7"
+    },
+    {
+      "path": "models/wall_corner_02_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_corner_inner_01.glb",
+      "sha256": "98f1ec7ce515fdd68abded9c958a101e119123e0bfc9967f5bf20801c0c99832"
+    },
+    {
+      "path": "models/wall_corner_inner_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_rose_window_01.glb",
+      "sha256": "90733bbfe545d79d728c5f50b00d2673a43c20bb23edf15f4ca5e08311bd5977"
+    },
+    {
+      "path": "models/wall_rose_window_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_rose_window_01_window_diffuse_512x512.png",
+      "sha256": "0a662be4a22b73575677bf54a990694f257a011bee2b639254467120bd1e9130"
+    },
+    {
+      "path": "models/wall_rose_window_01_window_emission_512x512.png",
+      "sha256": "9319d9f6c7dc22db953dabc2b59469ff6044fe4635295631132830715209d613"
+    },
+    {
+      "path": "models/wall_trim_01.glb",
+      "sha256": "8d7c2a79ee807dc8fa72ba05bed06b99c13c6108ec0cb8607818c7c99612c988"
+    },
+    {
+      "path": "models/wall_trim_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_window_01.glb",
+      "sha256": "d2ce4f5b338201d7e178d3ff0fcbb61b71c50e63d42ebfab05697f93eaf436bd"
+    },
+    {
+      "path": "models/wall_window_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_window_01_window_diffuse_512x512.png",
+      "sha256": "0a662be4a22b73575677bf54a990694f257a011bee2b639254467120bd1e9130"
+    },
+    {
+      "path": "models/wall_window_01_window_emission_512x512.png",
+      "sha256": "9319d9f6c7dc22db953dabc2b59469ff6044fe4635295631132830715209d613"
+    },
+    {
+      "path": "models/wall_window_large_01.glb",
+      "sha256": "7be5176af68e5101b01cab18561ad26f1151210883b4fdc503c745880d4c2c35"
+    },
+    {
+      "path": "models/wall_window_large_01_trim_sheet_512x512.png",
+      "sha256": "5c67f969ebdc359cd0954ee5d59d01d799459ee9200b330e1095f24e72773c0b"
+    },
+    {
+      "path": "models/wall_window_large_01_window_diffuse_512x512.png",
+      "sha256": "0a662be4a22b73575677bf54a990694f257a011bee2b639254467120bd1e9130"
+    },
+    {
+      "path": "models/wall_window_large_01_window_emission_512x512.png",
+      "sha256": "9319d9f6c7dc22db953dabc2b59469ff6044fe4635295631132830715209d613"
+    }
+  ],
+  "source_archive_sha256": "6d683a496f3e78f46fe78869105d5165f74564689063294a4e857b25168fc0db"
+}

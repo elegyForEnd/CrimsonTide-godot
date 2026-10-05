@@ -1,0 +1,416 @@
+{
+  "atlas": false,
+  "asset_count": 34,
+  "weapons": 21,
+  "heroes": 4,
+  "assets": [
+    {
+      "key": "hero_0_charge",
+      "file": "hero_0_charge.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-df76007b-3826-49af-95cf-35ab72292ff5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6a6418674f441a3ea5c333482835ddfdc965bf0626967c4cf5c31119ad7598d0",
+      "alpha": true
+    },
+    {
+      "key": "hero_0_dash",
+      "file": "hero_0_dash.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-794a7b94-00a2-48b6-9e6d-f03cc5353fa1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "af7e1689219ce0dd1a15a2fe57229a81689aa3a3ff83a5bf9553f561bb33a06b",
+      "alpha": true
+    },
+    {
+      "key": "hero_0_ultimate",
+      "file": "hero_0_ultimate.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-41158217-0f62-4977-8812-80ae37f4065b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "fa7104297aad35f171e739aa3c9e0b4ec2cc1d1d6821d58212f500dca3f7d2ae",
+      "alpha": true
+    },
+    {
+      "key": "hero_1_charge",
+      "file": "hero_1_charge.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-f3330382-fd54-4032-baee-05a352254373.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0f659033e5301f434e91d8a6dd1a98e60be9c4f5b00fa5f8e2ebe3958e2fa85a",
+      "alpha": true
+    },
+    {
+      "key": "hero_1_dash",
+      "file": "hero_1_dash.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-b40bb3c8-2d07-4ef0-9497-a208205d0c0f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d8892d56397f1b55d67c9c5843a0e01bbb20309a8fc0dd4db352cc886d25e6be",
+      "alpha": true
+    },
+    {
+      "key": "hero_1_ultimate",
+      "file": "hero_1_ultimate.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-73415e2f-efc7-46ee-8936-f37398833277.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "87b9a7f9758238e22a6cd737d5e4ee56945ab36b0ce5f0d5e79896a0e57154c5",
+      "alpha": true
+    },
+    {
+      "key": "hero_2_charge",
+      "file": "hero_2_charge.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-2bad7a6a-a6cd-41b7-93e4-520660af21d8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "46031961ba68019126b1f9cb5f3e93d714fc7db90ab183a1ab007fcd495c2522",
+      "alpha": true
+    },
+    {
+      "key": "hero_2_dash",
+      "file": "hero_2_dash.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-f7b549cb-db1d-4258-845f-e040903fc989.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "687f0e283eff54c01677cc0993d1ec148a34b683ca509a1aa97ec833b9e09f78",
+      "alpha": true
+    },
+    {
+      "key": "hero_2_ultimate",
+      "file": "hero_2_ultimate.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-c83e55df-35df-4acb-bd42-26990974fed8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "5ec529dec557bcc578ec226e0c4d57946a8b05ea401ce37868627d96e203397e",
+      "alpha": true
+    },
+    {
+      "key": "hero_3_charge",
+      "file": "hero_3_charge.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d7aaf8bb-4eb5-48de-bd5b-125ac394484a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "205b9c8225ad6a8e9451228a07db42ee8d4fdcbd3791c98f59bca33b5f889453",
+      "alpha": true
+    },
+    {
+      "key": "hero_3_dash",
+      "file": "hero_3_dash.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-72383197-f08b-463d-b883-9456f67c7828.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f2ca4ecf128cc13bc1b7257603463eb5ac0b535626c9a5d60d107bf3d7ba61b8",
+      "alpha": true
+    },
+    {
+      "key": "hero_3_ultimate",
+      "file": "hero_3_ultimate.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-2f3fbc22-f15e-4aac-9f9d-2155766103e0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "fd67e518eea5973434c72d9593a26e069e071fe80f2095838f164749fe4ac546",
+      "alpha": true
+    },
+    {
+      "key": "hit_flash",
+      "file": "hit_flash.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-fbe3bed8-b67e-4400-b3d1-e16e7a9c0d2f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0cd8ecb15dc823975c7ff961b1a931f65d59a742696dabe31ebea723b7a91f3f",
+      "alpha": true
+    },
+    {
+      "key": "weapon_00_release",
+      "file": "weapon_00_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-684c4f71-8000-4606-b932-b1f1f4113781.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "3ce646e7a6b17bf0ead5f5749e965f3ad286105d00c79aeba92ee54ffd932381",
+      "alpha": true
+    },
+    {
+      "key": "weapon_01_release",
+      "file": "weapon_01_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d3f07944-9a36-4897-8ef9-eeb3984d637e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "be753e5b879a1dbd740a4305b5945edf87918081a5c50d9524531ac08c9189c3",
+      "alpha": true
+    },
+    {
+      "key": "weapon_02_release",
+      "file": "weapon_02_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-addd0d78-2784-4ebf-9a7f-58edae3b0eed.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "814fde0c8736008fb3b8ccc4e83efeb36adb57dad07a80b6a36743d6c4f2548e",
+      "alpha": true
+    },
+    {
+      "key": "weapon_03_release",
+      "file": "weapon_03_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-85174157-d886-4fec-b936-e7af92738d11.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "69fed66b94ceb6197b7c3ad5cbad4c251b7a4d20a564e4a6e28de6c09c301cd0",
+      "alpha": true
+    },
+    {
+      "key": "weapon_04_release",
+      "file": "weapon_04_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-8ab47664-6615-4fd5-a2e1-f7344a1f370f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b8bc6d2d74e709c4f0d3287e0929881001fec35640aebe8cec62a8cfe6a92fea",
+      "alpha": true
+    },
+    {
+      "key": "weapon_05_release",
+      "file": "weapon_05_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-b80c8df9-2641-4514-95ee-90b05cd713f2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4716695d68e3ed99067441f714bac334127cb73bd5b0784c268b13ad748e7846",
+      "alpha": true
+    },
+    {
+      "key": "weapon_06_release",
+      "file": "weapon_06_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-5f2c439f-7a05-4a24-a4e1-b6a2d11d02cd.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f5dd76c915a7759f44debaca05d72545da6173b7862b6f85ad44de74d5daa645",
+      "alpha": true
+    },
+    {
+      "key": "weapon_07_release",
+      "file": "weapon_07_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-1dbef996-134b-41c3-84d7-44ee30ad3209.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "ed9574dcaa59cd2738566af9134f8a37797321246a9a1dbb22fc376a05029360",
+      "alpha": true
+    },
+    {
+      "key": "weapon_08_release",
+      "file": "weapon_08_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-4f8e79aa-186e-48a8-9229-7e6466079d8e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "32ed88cc338918a2d44474330d641439ee0fa909196bb0a3cfa48cd4648b756e",
+      "alpha": true
+    },
+    {
+      "key": "weapon_09_release",
+      "file": "weapon_09_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-36da15a3-ffc5-4719-8def-607f098c8567.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "56b2bf2e6f4fd50d1b12b18b1a7813d0d3147ba294cdb86f67a6efc7aa1d86d8",
+      "alpha": true
+    },
+    {
+      "key": "weapon_10_release",
+      "file": "weapon_10_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-1e1f79b3-7172-48be-a08c-1cb0b3b9e149.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2ae828516c1ca07358170adac09f844da522b92f16ddac77a283f8f1d2475a3b",
+      "alpha": true
+    },
+    {
+      "key": "weapon_11_release",
+      "file": "weapon_11_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-1a28998b-326f-4e4f-a381-87b92ab53d1d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "8faa47fc1aa3dfe423b30e58358911d1677054ae9133c86c537353f98fbe695a",
+      "alpha": true
+    },
+    {
+      "key": "weapon_12_release",
+      "file": "weapon_12_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d19f74da-ce4e-4594-9025-ff188359c312.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "20664854ca008c5d7d0408fd7d683891000f174c476153f7055a952b0d63b0ce",
+      "alpha": true
+    },
+    {
+      "key": "weapon_13_release",
+      "file": "weapon_13_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-50c666a2-1582-43a2-bf08-35c5ca025a15.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7ee4d9180407625b4c3fedeb723b791b23f00d62da2c5a6da6170904973cf386",
+      "alpha": true
+    },
+    {
+      "key": "weapon_14_release",
+      "file": "weapon_14_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-387663ca-8e91-4f21-91f6-e3539e5fb090.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "bb23e204f45f6927c42acbd7c821b3692ab9e0ed9f400352090cbdab937829bd",
+      "alpha": true
+    },
+    {
+      "key": "weapon_15_release",
+      "file": "weapon_15_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-436455a5-5650-48c1-a8ac-c4e8bdff11f6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f7350d061820adabb82edf253d7652f74c07f94717ff1277f790498a6eac49da",
+      "alpha": true
+    },
+    {
+      "key": "weapon_16_release",
+      "file": "weapon_16_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-ba4c3a9f-80a7-490c-8ead-44136af68ae9.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f058aba8bc954ea824dc520c9f310e2fed94c586443ec971a0198299100fcb37",
+      "alpha": true
+    },
+    {
+      "key": "weapon_17_release",
+      "file": "weapon_17_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-d1f357bb-c908-4625-9d97-67796677ec94.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "5c296c97d1c2246fef2763ec0d1ec1c2c87645b0a24a917836f9730010dd9cb5",
+      "alpha": true
+    },
+    {
+      "key": "weapon_18_release",
+      "file": "weapon_18_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-15c462d1-655f-43ea-9b28-9acd819bf4c8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0516c04233994f5566689152a5e7f2bd8ec3afa4bebaf11b085bc46975a64c39",
+      "alpha": true
+    },
+    {
+      "key": "weapon_19_release",
+      "file": "weapon_19_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-0c8368ea-e7ba-415d-befa-6ef56006bc73.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e64130a1a1ef272b788e95bd68ffc77f9429cc04960ef799436f06662805e0d0",
+      "alpha": true
+    },
+    {
+      "key": "weapon_20_release",
+      "file": "weapon_20_release.png",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a100d1-463f-7ef2-bb28-5df7e8605bc2\\exec-78f68ac0-c3bc-4212-a49a-d131fd6e21fb.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "5dba5bfef3c629477e06c589bf747ed10fd5f42f3f680f81417dd56083b00009",
+      "alpha": true
+    }
+  ]
+}

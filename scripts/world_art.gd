@@ -38,9 +38,9 @@ func terrain(f: Node2D, world: Ruins, camera: Vector2, time: float) -> void:
 		return
 	for y in 3:
 		for x in 4:
-			var rect := Rect2(x*1600,y*1600,1600,1600)
+			var rect := Rect2(Vector2(x,y)*1600*Ruins.MAP_SCALE,Vector2.ONE*1600*Ruins.MAP_SCALE)
 			if rect.grow(1000).has_point(camera): f.draw_texture_rect(chunks[y*4+x],rect,false)
-	for y in range(maxi(0,int(camera.y-650)),mini(4800,int(camera.y+650)),42):
+	for y in range(maxi(0,int(camera.y-650)),mini(int(world.extent.y),int(camera.y+650)),42):
 		var p := Vector2(Ruins.river_x(y),y)
 		f.draw_line(p+Vector2(-65+sin(time+y)*12,0),p+Vector2(55+sin(time+y)*12,-5),Color(0.75,0.91,0.89,0.25),2)
 	for bridge in world.bridges:
@@ -64,7 +64,7 @@ func terrain(f: Node2D, world: Ruins, camera: Vector2, time: float) -> void:
 		f.draw_rect(Rect2(wall.position-Vector2(0,14),wall.size),Color("f3e2c6"),false,2)
 	# Blood moon grades scenery before interactables and combat are drawn.
 	f.draw_rect(Rect2(Vector2.ZERO,world.extent),Color(0.13,0.025,0.085,0.63))
-	var moon := Vector2(Ruins.river_x(2400),2400)
+	var moon := Vector2(Ruins.river_x(2400*Ruins.MAP_SCALE),2400*Ruins.MAP_SCALE)
 	if moon.distance_to(camera)<1100:
 		f.draw_texture_rect(candle_glow,Rect2(moon-Vector2(140,220),Vector2(280,440)),false,Color(1,0.22,0.25,0.65))
 		for stripe in range(-54,55,4):
@@ -120,7 +120,7 @@ func atlas(f: Node2D, world: Ruins, rect: Rect2, big: bool) -> void:
 	if big:
 		for i in 6:
 			var centers := [Vector2(1100,380),Vector2(3200,1120),Vector2(5200,380),Vector2(1050,4630),Vector2(3230,4630),Vector2(5400,4630)]
-			f.label(rect.position+centers[i]*scale-Vector2(45,0),world.regions[i].name,17,Color("e2d8c4"))
+			f.label(rect.position+centers[i]*Ruins.MAP_SCALE*scale-Vector2(45,0),world.regions[i].name,17,Color("e2d8c4"))
 		for x in 9:
 			var at := rect.position+Vector2(x*rect.size.x/8,0)
 			f.draw_line(at,at+Vector2(0,rect.size.y),Color(0.94,0.88,0.75,0.055),1)

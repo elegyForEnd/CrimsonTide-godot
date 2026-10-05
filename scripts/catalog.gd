@@ -136,23 +136,23 @@ const TALENTS = ["生命强化", "火力校准", "轻装步伐"]
 # Watcher can only ever hold one of them by finding it and putting it on, so the
 # index below is also the index a looted weapon stores in its "weapon" field.
 const WEAPONS = [
-	{"name":"守夜步枪", "rate":0.23, "windup":0.0, "damage":31.0, "reach":680.0, "knock":9.0},
-	{"name":"绯红单手剑", "rate":0.38, "windup":0.10, "damage":38.0, "reach":112.0, "knock":20.0},
-	{"name":"破晓双手剑", "rate":0.88, "windup":0.34, "damage":88.0, "reach":158.0, "knock":58.0},
-	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":55.0, "reach":700.0, "knock":16.0},
-	{"name":"赤陨法杖", "family":3, "spell":"meteor", "desc":"陨石命中后爆炸，波及附近敌人。", "rate":1.38, "windup":0.72, "damage":145.0, "reach":650.0, "knock":48.0, "speed":430.0},
-	{"name":"霜针短杖", "family":3, "spell":"needle", "desc":"短吟唱高速连射冰针，单发伤害低。", "rate":0.20, "windup":0.045, "damage":21.0, "reach":690.0, "knock":5.0, "speed":1050.0},
-	{"name":"鸣雷之杖", "family":3, "spell":"chain", "desc":"雷击命中后向最多三名附近敌人跳跃。", "rate":0.68, "windup":0.27, "damage":60.0, "reach":660.0, "knock":16.0, "speed":700.0},
-	{"name":"月弧法杖", "family":3, "spell":"moon", "desc":"月刃穿过最多四名敌人。", "rate":0.76, "windup":0.30, "damage":66.0, "reach":720.0, "knock":12.0, "speed":700.0},
-	{"name":"曦光棱镜杖", "family":3, "spell":"prism", "desc":"释放瞬间贯穿直线上的所有敌人。", "rate":0.96, "windup":0.45, "damage":86.0, "reach":640.0, "knock":25.0},
-	{"name":"烬羽散华杖", "family":3, "spell":"scatter", "desc":"一次射出五枚扇形火羽，近距可集中命中；同次攻击的后续火羽对同一目标造成 12% 伤害。", "rate":0.55, "windup":0.16, "damage":50.0, "reach":550.0, "knock":8.0, "speed":670.0},
-	{"name":"虚涡法杖", "family":3, "spell":"vortex", "desc":"制造范围爆发，并将附近敌人卷向中心。", "rate":1.08, "windup":0.46, "damage":93.0, "reach":570.0, "knock":0.0, "speed":390.0},
-	{"name":"蚀月长枪杖", "family":3, "spell":"eclipse", "desc":"漫长蓄力后发射贯穿最多五名敌人的重型魔枪。", "rate":1.58, "windup":0.95, "damage":175.0, "reach":850.0, "knock":65.0, "speed":920.0},
-	{"name":"鸦喙刺剑", "family":1, "pattern":"thrust", "desc":"狭长突刺，贯穿前方一线敌人。", "rate":0.42, "windup":0.13, "damage":42.0, "reach":174.0, "knock":24.0},
-	{"name":"回环弯刀", "family":1, "pattern":"spin", "desc":"旋身环斩，命中身边所有敌人。", "rate":0.64, "windup":0.23, "damage":51.0, "reach":118.0, "knock":20.0},
-	{"name":"断潮巨刃", "family":2, "pattern":"cleave", "desc":"向前横扫宽阔扇面，击退敌群。", "rate":1.02, "windup":0.39, "damage":105.0, "reach":192.0, "knock":72.0},
-	{"name":"裂地重剑", "family":2, "pattern":"quake", "desc":"蓄力砸地，震伤周身敌人。", "rate":1.24, "windup":0.56, "damage":122.0, "reach":140.0, "knock":85.0},
-	{"name":"暮羽长弓", "family":0, "spell":"arrow", "desc":"拉弓射出贯穿两名敌人的箭矢；消耗弹药。", "rate":0.56, "windup":0.18, "damage":58.0, "reach":820.0, "knock":24.0, "speed":1050.0}
+	{"name":"守夜步枪", "rate":0.23, "windup":0.0, "damage":31.0, "reach":680.0, "knock":9.0, "scaling":{"strength":"D","dexterity":"B","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"绯红单手剑", "rate":0.38, "windup":0.10, "damage":38.0, "reach":112.0, "knock":20.0, "scaling":{"strength":"C","dexterity":"B","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"破晓双手剑", "rate":0.88, "windup":0.34, "damage":88.0, "reach":158.0, "knock":58.0, "scaling":{"strength":"A","dexterity":"D","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"星辉法杖", "rate":0.62, "windup":0.22, "damage":55.0, "reach":700.0, "knock":16.0, "scaling":{"strength":"-","dexterity":"-","intelligence":"B","arcane":"-"}, "mana_cost":5},
+	{"name":"赤陨法杖", "family":3, "spell":"meteor", "desc":"陨石命中后爆炸，波及附近敌人。", "rate":1.38, "windup":0.72, "damage":145.0, "reach":650.0, "knock":48.0, "speed":430.0, "scaling":{"strength":"D","dexterity":"-","intelligence":"A","arcane":"-"}, "mana_cost":12},
+	{"name":"霜针短杖", "family":3, "spell":"needle", "desc":"短吟唱高速连射冰针，单发伤害低。", "rate":0.20, "windup":0.045, "damage":21.0, "reach":690.0, "knock":5.0, "speed":1050.0, "scaling":{"strength":"-","dexterity":"D","intelligence":"B","arcane":"-"}, "mana_cost":2},
+	{"name":"鸣雷之杖", "family":3, "spell":"chain", "desc":"雷击命中后向最多三名附近敌人跳跃。", "rate":0.68, "windup":0.27, "damage":60.0, "reach":660.0, "knock":16.0, "speed":700.0, "scaling":{"strength":"-","dexterity":"C","intelligence":"B","arcane":"-"}, "mana_cost":6},
+	{"name":"月弧法杖", "family":3, "spell":"moon", "desc":"月刃穿过最多四名敌人。", "rate":0.76, "windup":0.30, "damage":66.0, "reach":720.0, "knock":12.0, "speed":700.0, "scaling":{"strength":"-","dexterity":"D","intelligence":"A","arcane":"C"}, "mana_cost":6},
+	{"name":"曦光棱镜杖", "family":3, "spell":"prism", "desc":"释放瞬间贯穿直线上的所有敌人。", "rate":0.96, "windup":0.45, "damage":86.0, "reach":640.0, "knock":25.0, "scaling":{"strength":"-","dexterity":"-","intelligence":"A","arcane":"-"}, "mana_cost":7},
+	{"name":"烬羽散华杖", "family":3, "spell":"scatter", "desc":"一次射出五枚扇形火羽，近距可集中命中；同次攻击的后续火羽对同一目标造成 12% 伤害。", "rate":0.55, "windup":0.16, "damage":50.0, "reach":550.0, "knock":8.0, "speed":670.0, "scaling":{"strength":"-","dexterity":"C","intelligence":"B","arcane":"-"}, "mana_cost":4},
+	{"name":"虚涡法杖", "family":3, "spell":"vortex", "desc":"制造范围爆发，并将附近敌人卷向中心。", "rate":1.08, "windup":0.46, "damage":93.0, "reach":570.0, "knock":0.0, "speed":390.0, "scaling":{"strength":"-","dexterity":"-","intelligence":"B","arcane":"B"}, "mana_cost":8},
+	{"name":"蚀月长枪杖", "family":3, "spell":"eclipse", "desc":"漫长蓄力后发射贯穿最多五名敌人的重型魔枪。", "rate":1.58, "windup":0.95, "damage":175.0, "reach":850.0, "knock":65.0, "speed":920.0, "scaling":{"strength":"C","dexterity":"-","intelligence":"S","arcane":"-"}, "mana_cost":14},
+	{"name":"鸦喙刺剑", "family":1, "pattern":"thrust", "desc":"狭长突刺，贯穿前方一线敌人。", "rate":0.42, "windup":0.13, "damage":42.0, "reach":174.0, "knock":24.0, "scaling":{"strength":"E","dexterity":"A","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"回环弯刀", "family":1, "pattern":"spin", "desc":"旋身环斩，命中身边所有敌人。", "rate":0.64, "windup":0.23, "damage":51.0, "reach":118.0, "knock":20.0, "scaling":{"strength":"D","dexterity":"A","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"断潮巨刃", "family":2, "pattern":"cleave", "desc":"向前横扫宽阔扇面，击退敌群。", "rate":1.02, "windup":0.39, "damage":105.0, "reach":192.0, "knock":72.0, "scaling":{"strength":"S","dexterity":"E","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"裂地重剑", "family":2, "pattern":"quake", "desc":"蓄力砸地，震伤周身敌人。", "rate":1.24, "windup":0.56, "damage":122.0, "reach":140.0, "knock":85.0, "scaling":{"strength":"S","dexterity":"-","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"暮羽长弓", "family":0, "spell":"arrow", "desc":"拉弓射出贯穿两名敌人的箭矢；消耗弹药。", "rate":0.56, "windup":0.18, "damage":58.0, "reach":820.0, "knock":24.0, "speed":1050.0, "scaling":{"strength":"D","dexterity":"A","intelligence":"-","arcane":"-"}, "mana_cost":0}
 ]
 # The temporary weapon every hero sets out with, one per hero, appended after the
 # field weapons so the whole game keeps addressing a weapon by a single int.
@@ -166,10 +166,10 @@ const WEAPONS = [
 # asserts the two stay equal.
 const STARTER_BASE := 17
 const STARTER_WEAPONS = [
-	{"name":"黑铁短剑", "rate":0.30, "windup":0.05, "damage":13.0, "reach":84.0, "knock":10.0, "family":1},
-	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":22.0, "reach":520.0, "knock":8.0, "family":3},
-	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":37.0, "reach":150.0, "knock":40.0, "family":2},
-	{"name":"湮魂之镰", "rate":0.62, "windup":0.22, "damage":18.0, "reach":110.0, "knock":16.0, "family":1, "icon":"soul_scythe"}
+	{"name":"黑铁短剑", "rate":0.30, "windup":0.05, "damage":13.0, "reach":84.0, "knock":10.0, "family":1, "scaling":{"strength":"E","dexterity":"D","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"祭祀短杖", "rate":0.58, "windup":0.20, "damage":22.0, "reach":520.0, "knock":8.0, "family":3, "scaling":{"strength":"-","dexterity":"-","intelligence":"D","arcane":"-"}, "mana_cost":3},
+	{"name":"破碎大剑", "rate":0.98, "windup":0.34, "damage":37.0, "reach":150.0, "knock":40.0, "family":2, "scaling":{"strength":"D","dexterity":"E","intelligence":"-","arcane":"-"}, "mana_cost":0},
+	{"name":"湮魂之镰", "rate":0.62, "windup":0.22, "damage":18.0, "reach":110.0, "knock":16.0, "family":1, "icon":"soul_scythe", "scaling":{"strength":"E","dexterity":"-","intelligence":"C","arcane":"D"}, "mana_cost":0}
 ]
 const GEAR = [
 	{"name":"守夜护甲", "desc":"最大生命 +20，受击伤害 -5%", "hp":20.0,"defense":0.05,"damage":0.0,"speed":0.0},
@@ -252,9 +252,19 @@ static func is_starter(index: int) -> bool:
 	return index>=STARTER_BASE and index<STARTER_BASE+STARTER_WEAPONS.size()
 
 static func weapon(index: int) -> Dictionary:
+	var build: Dictionary=preload("res://scripts/rogue_content.gd").weapon(index)
+	if not build.is_empty(): return build
 	if is_starter(index):
 		return STARTER_WEAPONS[index-STARTER_BASE]
 	return WEAPONS[clampi(index,0,WEAPONS.size()-1)]
+
+static func scaling_text(index: int) -> String:
+	var grades: Dictionary=weapon(index).get("scaling",{})
+	var parts: Array[String] = []
+	for key in ["strength","dexterity","intelligence","arcane"]:
+		var at := WatcherAttributes.KEYS.find(key)
+		parts.append("%s %s" % [WatcherAttributes.NAMES[at],str(grades.get(key,"-"))])
+	return "补正 · "+" / ".join(parts)
 
 static func weapon_name(index: int) -> String:
 	return str(weapon(index).name)
@@ -306,22 +316,27 @@ static func make_equipment(kind: String, index: int, tier: int) -> Dictionary:
 	return {"kind":"gear","gear":clampi(index,0,GEAR.size()-1),"tier":tier_of(tier),"x":0,"y":0,"rot":false}
 
 static func weapon_bonus(item: Dictionary) -> float:
+	if item.has("rogue_id"): return 0.0 # Run attributes are summed across all slots.
 	return WEAPON_DAMAGE_BONUS[tier_of(int(item.get("tier",0)))]
 
 static func weapon_rate_bonus(item: Dictionary) -> float:
+	if item.has("rogue_id"): return preload("res://scripts/rogue_equipment.gd").value(item,"rate")
 	return WEAPON_RATE_BONUS[tier_of(int(item.get("tier",0)))]
 
 static func gear_slot(item: Dictionary) -> int:
 	return clampi(int(item.get("gear",0)),0,GEAR.size()-1)
 
 static func gear_bonus(item: Dictionary) -> float:
+	if item.has("rogue_id"): return 0.0
 	var table: Array = [GEAR_HP,GEAR_DAMAGE,GEAR_SPEED][gear_slot(item)]
 	return table[tier_of(int(item.get("tier",0)))]
 
 static func gear_defense(item: Dictionary) -> float:
+	if item.has("rogue_id"): return 0.0
 	return GEAR_DEFENSE[tier_of(int(item.get("tier",0)))] if gear_slot(item)==0 else 0.0
 
 static func gear_desc(item: Dictionary) -> String:
+	if item.has("rogue_id"): return preload("res://scripts/rogue_equipment.gd").description(item)
 	var bonus := gear_bonus(item)
 	match gear_slot(item):
 		0: return "最大生命 +%d、受击伤害 -%d%%" % [int(round(bonus)),int(round(gear_defense(item)*100.0))]
@@ -332,9 +347,13 @@ static func gear_slot_name(item: Dictionary) -> String:
 	return ["护甲","瞄具","轻靴"][gear_slot(item)]
 
 static func item_name(item: Dictionary) -> String:
+	if item.has("rogue_id"):
+		var info: Dictionary=preload("res://scripts/rogue_equipment.gd").definition(item)
+		if not info.is_empty():
+			return "%s %s%s" % [quality_name(int(item.get("tier",0))),info.name," · "+str(weapon(int(item.get("weapon",0))).name) if item.get("kind","")=="weapon" else ""]
 	var kind := str(item.get("kind",""))
 	if kind=="weapon":
-		return "%s %s" % [quality_name(int(item.get("tier",0))),WEAPONS[clampi(int(item.get("weapon",0)),0,WEAPONS.size()-1)].name]
+		return "%s %s" % [quality_name(int(item.get("tier",0))),weapon(int(item.get("weapon",0))).name]
 	if kind=="gear":
 		return "%s %s" % [quality_name(int(item.get("tier",0))),GEAR[gear_slot(item)].name]
 	return str(ITEMS.get(kind,{"name":kind}).name)
@@ -342,19 +361,21 @@ static func item_name(item: Dictionary) -> String:
 # The same name without the quality prefix, for cells too narrow to show it. The
 # quality is already carried by the slot colour and the border.
 static func item_short_name(item: Dictionary) -> String:
+	if item.has("rogue_id"): return str(preload("res://scripts/rogue_equipment.gd").definition(item).get("name","装备"))
 	var kind := str(item.get("kind",""))
 	if kind=="weapon":
-		return WEAPONS[clampi(int(item.get("weapon",0)),0,WEAPONS.size()-1)].name
+		return weapon(int(item.get("weapon",0))).name
 	if kind=="gear":
 		return GEAR[gear_slot(item)].name
 	return item_name(item)
 
 static func item_desc(item: Dictionary) -> String:
+	if item.has("rogue_id"): return preload("res://scripts/rogue_equipment.gd").description(item)
 	var kind := str(item.get("kind",""))
 	if kind=="weapon":
 		var info: Dictionary=weapon(int(item.get("weapon",0)))
 		var rhythm := "前摇 %.2f 秒 · 周期 %.2f 秒 · 基础伤害 %d。" % [float(info.windup),float(info.rate),int(info.damage)]
-		return str(info.get("desc",""))+rhythm+"持有时伤害 +%d%%、攻速 +%d%%。" % [int(round(weapon_bonus(item)*100.0)),int(round(weapon_rate_bonus(item)*100.0))]
+		return str(info.get("desc",""))+rhythm+WeaponArts.text(int(item.get("weapon",0)))+" "+scaling_text(int(item.get("weapon",0)))+"。蓝耗 %d。" % int(info.get("mana_cost",0))+"持有时伤害 +%d%%、攻速 +%d%%。" % [int(round(weapon_bonus(item)*100.0)),int(round(weapon_rate_bonus(item)*100.0))]
 	if kind=="gear":
 		return "装备到%s槽：本局%s。" % [gear_slot_name(item),gear_desc(item)]
 	return str(ITEMS.get(kind,{"desc":""}).desc)
@@ -364,9 +385,21 @@ static func item_desc(item: Dictionary) -> String:
 static func item_value(item: Dictionary) -> int:
 	var kind := str(item.get("kind",""))
 	var info: Dictionary=ITEMS.get(kind,{"value":0})
+	if kind=="backpack":
+		return int(round(float(info.value)*(1.0+0.65*tier_index(bag_key_of_item(item)))))
 	if is_equipment(kind):
 		return int(round(float(info.value)*(1.0+0.45*float(tier_of(int(item.get("tier",0)))))))
 	return int(info.value)
+
+static func market_value(item: Dictionary) -> int:
+	if item.get("provision",false): return 0
+	var quantity := clampi(int(item.get("count",1)),1,max_stack(str(item.get("kind",""))))
+	return item_value(item)*quantity
+
+static func market_total(items: Array) -> int:
+	var total := 0
+	for item in items: total+=market_value(item)
+	return total
 
 static func item_color(item: Dictionary) -> Color:
 	var kind := str(item.get("kind",""))
@@ -391,6 +424,7 @@ static func item_icon(item: Dictionary) -> String:
 # A field weapon always uses its family's icon; an issue weapon may ship its own
 # art, which is what lets a recruit carry a visibly different starter.
 static func weapon_icon(index: int) -> String:
+	if index>=600: return WEAPON_ICONS[visual_weapon_index(index)]
 	if is_starter(index):
 		var starter: Dictionary=STARTER_WEAPONS[clampi(index-STARTER_BASE,0,STARTER_WEAPONS.size()-1)]
 		return str(starter.get("icon",WEAPON_ICONS[clampi(weapon_family(index),0,WEAPON_ICONS.size()-1)]))
@@ -398,6 +432,14 @@ static func weapon_icon(index: int) -> String:
 
 # Icons for a bare kind, used by the code that preloads one texture per item
 # kind; a concrete weapon or gear item resolves through item_icon() instead.
+static func visual_weapon_index(index: int) -> int:
+	if index<600: return clampi(index,0,20)
+	var info: Dictionary=weapon(index)
+	if int(info.family)==0: return 16 if info.spell=="arrow" else 0
+	if int(info.family)==1: return 12 if info.pattern=="thrust" else 13 if info.pattern=="spin" else 1
+	if int(info.family)==2: return 15 if info.pattern=="spin" else 14
+	return {"star":3,"meteor":4,"needle":5,"chain":6,"moon":7,"prism":8,"scatter":9,"vortex":10,"eclipse":11}.get(info.spell,3)
+
 static func kind_icon(kind: String) -> String:
 	if kind=="weapon":
 		return WEAPON_ICONS[0]

@@ -1,0 +1,869 @@
+{
+  "resolution": 1024,
+  "atlas": false,
+  "weapons": [
+    "守夜步枪",
+    "绯红单手剑",
+    "破晓双手剑",
+    "星辉法杖",
+    "赤陨法杖",
+    "霜针短杖",
+    "鸣雷之杖",
+    "月弧法杖",
+    "曦光棱镜杖",
+    "烬羽散华杖",
+    "虚涡法杖",
+    "蚀月长枪杖",
+    "鸦喙刺剑",
+    "回环弯刀",
+    "断潮巨刃",
+    "裂地重剑",
+    "暮羽长弓",
+    "黑铁短剑",
+    "祭祀短杖",
+    "破碎大剑",
+    "湮魂之镰"
+  ],
+  "effects": {
+    "weapon_00_release": {
+      "file": "weapon_00_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_00_impact": {
+      "file": "weapon_00_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_00_finisher": {
+      "file": "weapon_00_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_01_release": {
+      "file": "weapon_01_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_01_impact": {
+      "file": "weapon_01_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_01_finisher": {
+      "file": "weapon_01_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_02_release": {
+      "file": "weapon_02_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_02_impact": {
+      "file": "weapon_02_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_02_finisher": {
+      "file": "weapon_02_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_03_release": {
+      "file": "weapon_03_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_03_impact": {
+      "file": "weapon_03_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_03_finisher": {
+      "file": "weapon_03_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_04_release": {
+      "file": "weapon_04_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_04_impact": {
+      "file": "weapon_04_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_04_finisher": {
+      "file": "weapon_04_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_05_release": {
+      "file": "weapon_05_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_05_impact": {
+      "file": "weapon_05_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_05_finisher": {
+      "file": "weapon_05_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_06_release": {
+      "file": "weapon_06_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_06_impact": {
+      "file": "weapon_06_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_06_finisher": {
+      "file": "weapon_06_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_07_release": {
+      "file": "weapon_07_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_07_impact": {
+      "file": "weapon_07_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_07_finisher": {
+      "file": "weapon_07_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_08_release": {
+      "file": "weapon_08_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_08_impact": {
+      "file": "weapon_08_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_08_finisher": {
+      "file": "weapon_08_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_09_release": {
+      "file": "weapon_09_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_09_impact": {
+      "file": "weapon_09_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_09_finisher": {
+      "file": "weapon_09_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_10_release": {
+      "file": "weapon_10_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_10_impact": {
+      "file": "weapon_10_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_10_finisher": {
+      "file": "weapon_10_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_11_release": {
+      "file": "weapon_11_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_11_impact": {
+      "file": "weapon_11_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_11_finisher": {
+      "file": "weapon_11_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_12_release": {
+      "file": "weapon_12_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_12_impact": {
+      "file": "weapon_12_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_12_finisher": {
+      "file": "weapon_12_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_13_release": {
+      "file": "weapon_13_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_13_impact": {
+      "file": "weapon_13_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_13_finisher": {
+      "file": "weapon_13_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_14_release": {
+      "file": "weapon_14_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_14_impact": {
+      "file": "weapon_14_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_14_finisher": {
+      "file": "weapon_14_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_15_release": {
+      "file": "weapon_15_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_15_impact": {
+      "file": "weapon_15_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_15_finisher": {
+      "file": "weapon_15_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_16_release": {
+      "file": "weapon_16_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_16_impact": {
+      "file": "weapon_16_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_16_finisher": {
+      "file": "weapon_16_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_17_release": {
+      "file": "weapon_17_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_17_impact": {
+      "file": "weapon_17_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_17_finisher": {
+      "file": "weapon_17_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_18_release": {
+      "file": "weapon_18_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_18_impact": {
+      "file": "weapon_18_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_18_finisher": {
+      "file": "weapon_18_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_19_release": {
+      "file": "weapon_19_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_19_impact": {
+      "file": "weapon_19_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_19_finisher": {
+      "file": "weapon_19_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_20_release": {
+      "file": "weapon_20_release.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_20_impact": {
+      "file": "weapon_20_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "weapon_20_finisher": {
+      "file": "weapon_20_finisher.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_0_slash": {
+      "file": "hero_0_slash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_0_impact": {
+      "file": "hero_0_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_0_dash": {
+      "file": "hero_0_dash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_0_sigil": {
+      "file": "hero_0_sigil.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_0_ultimate": {
+      "file": "hero_0_ultimate.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_0_charge": {
+      "file": "hero_0_charge.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_1_slash": {
+      "file": "hero_1_slash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_1_impact": {
+      "file": "hero_1_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_1_dash": {
+      "file": "hero_1_dash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_1_sigil": {
+      "file": "hero_1_sigil.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_1_ultimate": {
+      "file": "hero_1_ultimate.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_1_charge": {
+      "file": "hero_1_charge.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_2_slash": {
+      "file": "hero_2_slash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_2_impact": {
+      "file": "hero_2_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_2_dash": {
+      "file": "hero_2_dash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_2_sigil": {
+      "file": "hero_2_sigil.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_2_ultimate": {
+      "file": "hero_2_ultimate.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_2_charge": {
+      "file": "hero_2_charge.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_3_slash": {
+      "file": "hero_3_slash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_3_impact": {
+      "file": "hero_3_impact.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_3_dash": {
+      "file": "hero_3_dash.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_3_sigil": {
+      "file": "hero_3_sigil.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_3_ultimate": {
+      "file": "hero_3_ultimate.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "hero_3_charge": {
+      "file": "hero_3_charge.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_0": {
+      "file": "common_0.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_1": {
+      "file": "common_1.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_2": {
+      "file": "common_2.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_3": {
+      "file": "common_3.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_4": {
+      "file": "common_4.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_5": {
+      "file": "common_5.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_6": {
+      "file": "common_6.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_7": {
+      "file": "common_7.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "common_8": {
+      "file": "common_8.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_0": {
+      "file": "spell_0.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_1": {
+      "file": "spell_1.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_2": {
+      "file": "spell_2.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_3": {
+      "file": "spell_3.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_4": {
+      "file": "spell_4.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_5": {
+      "file": "spell_5.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_6": {
+      "file": "spell_6.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spell_7": {
+      "file": "spell_7.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    },
+    "spark": {
+      "file": "spark.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "original": true
+    }
+  }
+}

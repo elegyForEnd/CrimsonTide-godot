@@ -16,6 +16,7 @@ func run() -> void:
 	var app = load("res://scenes/main.tscn").instantiate()
 	root.add_child(app)
 	app.profile.path="user://test-camp-flow.json"
+	app.profile.data.home=preload("res://scripts/homestead.gd").clean({})
 	app.profile.data.coins=400
 	app.profile.data.talents=[0,0,0]
 	app.profile.data.hero=0
@@ -38,7 +39,7 @@ func run() -> void:
 	check(app.modal and app.camp.input_blocked, "forge blocks camp controls")
 	var upgraded := false
 	for child in app.overlay.get_children():
-		if child is Button and child.text=="升级 · 80 银币":
+		if child is Button and child.text=="80 ◈":
 			child.pressed.emit()
 			upgraded=true
 			break
@@ -76,7 +77,13 @@ func run() -> void:
 	app.session.players.erase(2)
 	app.session.leader_id=1
 	app.session.players[1].ready=true
+	app.profile.data.home.meals.bread=1
+	app.profile.data.home.prepared="bread"
 	app.on_camp_launch()
+	check(app.profile.data.home.meals.bread==0 and app.profile.data.home.prepared=="", "main start callback consumes selected meal exactly once")
+	check(app.session.players[1].home_meal=="bread", "main loadout preserves food through real launch")
+	check(app.page.get_node_or_null("HomeMealBuff")!=null,"Live HUD displays active food bonus")
+	check(app.session.players[1].max_hp==app.session.stat_max_hp(app.session.players[1]), "food persists through live stat recalculation")
 	check(app.session.running and app.page_name=="game", "host departure enters the expedition")
 	check(not app.camp.visible, "departure hides the camp")
 	app.queue_free()

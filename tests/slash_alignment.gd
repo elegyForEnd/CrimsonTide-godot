@@ -33,8 +33,7 @@ func run() -> void:
 	for combo in 3:
 		for column in 4:
 			fx.event({"kind":"strike","weapon":1,"combo":combo,"id":1,"p":Vector2(170+column*355,170+combo*280),"aim":Vector2.from_angle(column*PI/2)})
-	for mote in fx.motes:
-		mote.age=0.08
+	fx.stylized.advance(.08)
 	fx.queue_redraw()
 	await process_frame
 	await RenderingServer.frame_post_draw

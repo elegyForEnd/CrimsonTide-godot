@@ -1,0 +1,68 @@
+{
+  "bounds_min": [
+    -0.4211989939212799,
+    -0.2687971889972687,
+    -3.6115260115821e-08
+  ],
+  "bounds_max": [
+    0.42604300379753113,
+    0.27111703157424927,
+    1.1476631164550781
+  ],
+  "meshes": [
+    {
+      "name": "node_0",
+      "vertices": 949534,
+      "polygons": 1490620,
+      "triangles": 1490620,
+      "materials": [
+        "Material.001"
+      ],
+      "shape_keys": [],
+      "modifiers": []
+    }
+  ],
+  "images": [
+    {
+      "name": "Render Result",
+      "size": [
+        0,
+        0
+      ],
+      "packed": false
+    },
+    {
+      "name": "texture_pbr_20250901",
+      "size": [
+        4096,
+        4096
+      ],
+      "packed": true
+    },
+    {
+      "name": "texture_pbr_20250901_metallic-texture_pbr_20250901_roughness",
+      "size": [
+        4096,
+        4096
+      ],
+      "packed": true
+    },
+    {
+      "name": "texture_pbr_20250901_normal",
+      "size": [
+        4096,
+        4096
+      ],
+      "packed": true
+    },
+    {
+      "name": "Viewer Node",
+      "size": [
+        256,
+        256
+      ],
+      "packed": false
+    }
+  ],
+  "armatures": []
+}

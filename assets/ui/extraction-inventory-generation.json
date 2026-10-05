@@ -1,0 +1,44 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "transparent_background": false,
+  "prompts": [
+    {
+      "asset": "res://assets/ui/extraction-inventory-v2.png",
+      "prompt": "Production background asset for a gothic anime extraction RPG inventory interface, landscape 1536x1024. NO text NO letters NO numbers NO characters NO items NO pre-drawn item slots. Handcrafted dark black leather field satchel interior and oxidized bronze reliquary frame, subtle blood red cloth, fine brass thorn engravings, luxurious painterly realism, clear restrained structure. Thin outer metal perimeter inset 2%, ruby details at corners, not large roses. Three vertical sections: LEFT x3%-28% tall recessed gothic character niche with faint dark burgundy arcane halo and subtle light near base at y65%; MIDDLE x30%-65% flat very dark charcoal leather with quiet texture and open uninterrupted space to receive a large grid; RIGHT x67%-97% flat dark indigo leather quieter than left, open space for secure pocket or loot contents. Fine engraved dividers at x29% and x66%. TOP y3%-12% empty dark horizontal header. BOTTOM y78%-96% quiet black leather footer. No bright patterns in central or right fields. Dim gold highlights confined to perimeter, subtle worn stitching, elegant authentic dark fantasy game art, no realistic objects or clutter. Most screen stays dark for overlay legibility, clear material hierarchy."
+    },
+    {
+      "asset": "res://assets/ui/extraction-slot-atlas-v1.png",
+      "prompt": "Production sprite atlas for dark gothic fantasy extraction RPG inventory slots, 1024x1024 image with EXACTLY 2 columns and 2 rows equal cells 512x512, each cell filled edge to edge and perfectly aligned, no gutters. No text, no letters, no numbers, no icons, no items, no gems, no roses. Four square recessed storage compartments, consistent exact square shape with 5% margins and slightly clipped corners, quiet black center ready for item overlay. Top LEFT: empty main backpack cell, dark burgundy suede inset inside aged dark brass fine frame, small angular hand-engraved corner brackets, black recessed center. Top RIGHT: empty secure dimensional pocket cell, blue-violet velvet inset inside antique silver fine frame, subtle moon line engraving at top corners, black recessed center. Bottom LEFT: occupied item cell, nearly black center with extremely subtle amber ambient light toward perimeter, antique gold thin frame and four tiny metal corner rivets, premium clean. Bottom RIGHT: selected item cell, nearly black center, double fine bright champagne gold border with restrained gold corner illumination. Hand-painted realistic metal and fabric, polished beautiful game HUD artwork, tactile relief, bevels and inner shadows, tiny ornamental detail only at edges, center 75% very dark and uncluttered. Flat orthographic front view. All four compartments exactly centered in their own equal 512px cell. Dark background fills entire atlas, no scene, no perspective."
+    }
+  ],
+  "actual_atlas_size": [
+    1254,
+    1254
+  ],
+  "atlas_regions": [
+    [
+      0,
+      0,
+      625,
+      586
+    ],
+    [
+      631,
+      0,
+      621,
+      586
+    ],
+    [
+      0,
+      594,
+      625,
+      624
+    ],
+    [
+      631,
+      594,
+      621,
+      624
+    ]
+  ]
+}

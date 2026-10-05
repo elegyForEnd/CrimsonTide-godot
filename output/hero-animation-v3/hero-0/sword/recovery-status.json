@@ -1,0 +1,118 @@
+{
+  "status": "8 source frames saved; scale and support-foot calibration and game integration pending",
+  "generator": "built-in image_gen",
+  "frames": [
+    {
+      "frame": 1,
+      "file": "000.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "e6a301fbfb0006a2b8aecbd8cb60256a98066a6dbe6ea8c0bd8eba35dd063b29"
+    },
+    {
+      "frame": 2,
+      "file": "001.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "de2120489d24b071b7ea0ab173292240e0dc23aa86818eefbf4d4307af16c2a4"
+    },
+    {
+      "frame": 3,
+      "file": "002.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "e3c505bafd04f8c62439fbec7be7b65c6cb5217ead98865c4e45cb26215204a6"
+    },
+    {
+      "frame": 4,
+      "file": "003.png",
+      "size": [
+        1331,
+        1181
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "09471c052a2b4a2d9b414ddf9bba73797e0c99165d32645908e25bca0cde5161"
+    },
+    {
+      "frame": 5,
+      "file": "004.png",
+      "size": [
+        1331,
+        1181
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "b1d7256897fe59eb630566100cf98741dcf46ecf1cde725daa7c4c02c2e21c28"
+    },
+    {
+      "frame": 6,
+      "file": "005.png",
+      "size": [
+        1331,
+        1181
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "6761ba14e7bbc39cd3cee14c955b86e74502efeee83d87a3a3a5b39be65fe8a9"
+    },
+    {
+      "frame": 7,
+      "file": "006.png",
+      "size": [
+        1331,
+        1181
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "73a8e89d150a45894c9c6202be5b9e27bd62f865e75ad3af7a1f062d619a3559"
+    },
+    {
+      "frame": 8,
+      "file": "007.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "sha256": "5ac1535289be5ba7dca9101cf26f1666bd8ec72a08d937091e190431eb0caff2"
+    }
+  ],
+  "remaining_total_frames": 130,
+  "notes": [
+    "Frame 3 uses corrected grip",
+    "Frame 4 uses straight-blade correction recovered from interrupted thread",
+    "Frames 5 and 6 visually checked straight sword and hilt grip",
+    "Frame 8 approaches opening stance; uncalibrated source images differ in dimensions",
+    "Impact frame 5 edited with a brief exertion shout expression per user request"
+  ]
+}

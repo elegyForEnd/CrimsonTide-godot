@@ -73,6 +73,7 @@ SERVER_DOMAIN=game.yourdomain.com
 | 80 | TCP | HTTPS 自动证书验证和 HTTP 跳转 |
 | 443 | TCP | 注册、登录、云存档和房间 API |
 | 24900–24915 | UDP | 最多 16 个服务器房间，每房间最多 4 人 |
+| 3478 | UDP | P2P STUN 映射探测与打洞信令 |
 
 8080 仅绑定本机回环地址，不需要向公网开放。此部署方式也不需要开放原 IP 直连的 24872 端口。已有 SSH 规则保持不变。
 
@@ -82,6 +83,7 @@ SERVER_DOMAIN=game.yourdomain.com
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow 24900:24915/udp
+sudo ufw allow 3478/udp
 ```
 
 ## 5. 一条命令启动

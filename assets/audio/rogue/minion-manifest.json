@@ -1,0 +1,645 @@
+{
+  "source": "original procedural synthesis",
+  "clips": [
+    {
+      "cue": "rogue-minion-0-0-0",
+      "move": "枝臂横扫",
+      "kind": "sweep",
+      "file": "rogue-minion-0-0-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-0-1",
+      "move": "盘根护体",
+      "kind": "guard",
+      "file": "rogue-minion-0-0-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-1-0",
+      "move": "弹跳重拳",
+      "kind": "jump",
+      "file": "rogue-minion-0-1-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-1-1",
+      "move": "左右摆拳",
+      "kind": "combo",
+      "file": "rogue-minion-0-1-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-2-0",
+      "move": "缠根刺",
+      "kind": "roots",
+      "file": "rogue-minion-0-2-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-2-1",
+      "move": "藤蔓牵引",
+      "kind": "pull",
+      "file": "rogue-minion-0-2-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-3-0",
+      "move": "幽角飞叶",
+      "kind": "fan",
+      "file": "rogue-minion-0-3-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-3-1",
+      "move": "灵角冲刺",
+      "kind": "dash",
+      "file": "rogue-minion-0-3-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-4-0",
+      "move": "月露回春",
+      "kind": "heal",
+      "file": "rogue-minion-0-4-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-4-1",
+      "move": "花瓣退散",
+      "kind": "burst",
+      "file": "rogue-minion-0-4-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-5-0",
+      "move": "孢灯投掷",
+      "kind": "throw",
+      "file": "rogue-minion-0-5-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-5-1",
+      "move": "幽光残雾",
+      "kind": "mist",
+      "file": "rogue-minion-0-5-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-6-0",
+      "move": "苔石壁垒",
+      "kind": "shield",
+      "file": "rogue-minion-0-6-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-6-1",
+      "move": "滚石肩撞",
+      "kind": "dash",
+      "file": "rogue-minion-0-6-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-7-0",
+      "move": "影叶闪袭",
+      "kind": "blink",
+      "file": "rogue-minion-0-7-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-0-7-1",
+      "move": "诱影分身",
+      "kind": "decoy",
+      "file": "rogue-minion-0-7-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-0-0",
+      "move": "炉渣突刺",
+      "kind": "dash",
+      "file": "rogue-minion-1-0-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-0-1",
+      "move": "熔盾反击",
+      "kind": "counter",
+      "file": "rogue-minion-1-0-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-1-0",
+      "move": "煤球抛射",
+      "kind": "throw",
+      "file": "rogue-minion-1-1-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-1-1",
+      "move": "连锁煤雷",
+      "kind": "mines",
+      "file": "rogue-minion-1-1-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-2-0",
+      "move": "铸锤震地",
+      "kind": "wave",
+      "file": "rogue-minion-1-2-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-2-1",
+      "move": "铁臂横拦",
+      "kind": "sweep",
+      "file": "rogue-minion-1-2-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-3-0",
+      "move": "火核连弹",
+      "kind": "shots",
+      "file": "rogue-minion-1-3-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-3-1",
+      "move": "余烬喷流",
+      "kind": "breath",
+      "file": "rogue-minion-1-3-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-4-0",
+      "move": "锁链捕获",
+      "kind": "pull",
+      "file": "rogue-minion-1-4-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-4-1",
+      "move": "灼链横扫",
+      "kind": "sweep",
+      "file": "rogue-minion-1-4-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-5-0",
+      "move": "炽热鼓舞",
+      "kind": "haste",
+      "file": "rogue-minion-1-5-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-5-1",
+      "move": "熔炉印记",
+      "kind": "trap",
+      "file": "rogue-minion-1-5-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-6-0",
+      "move": "焰晶跃爆",
+      "kind": "jump",
+      "file": "rogue-minion-1-6-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-6-1",
+      "move": "焦土裂缝",
+      "kind": "fissure",
+      "file": "rogue-minion-1-6-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-7-0",
+      "move": "铸魂小像",
+      "kind": "summon",
+      "file": "rogue-minion-1-7-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-1-7-1",
+      "move": "修补锻打",
+      "kind": "repair",
+      "file": "rogue-minion-1-7-1.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-0-0",
+      "move": "晶盾猛推",
+      "kind": "bash",
+      "file": "rogue-minion-2-0-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-0-1",
+      "move": "折射护罩",
+      "kind": "ward",
+      "file": "rogue-minion-2-0-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-1-0",
+      "move": "棱刃交斩",
+      "kind": "combo",
+      "file": "rogue-minion-2-1-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-1-1",
+      "move": "碎晶滑步",
+      "kind": "sidestep",
+      "file": "rogue-minion-2-1-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-2-0",
+      "move": "星眼射线",
+      "kind": "beam",
+      "file": "rogue-minion-2-2-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-2-1",
+      "move": "坠星点名",
+      "kind": "meteors",
+      "file": "rogue-minion-2-2-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-3-0",
+      "move": "棱彩吐息",
+      "kind": "breath",
+      "file": "rogue-minion-2-3-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-3-1",
+      "move": "折返晶球",
+      "kind": "boomerang",
+      "file": "rogue-minion-2-3-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-4-0",
+      "move": "镜步反斩",
+      "kind": "counter",
+      "file": "rogue-minion-2-4-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-4-1",
+      "move": "碎镜散花",
+      "kind": "burst",
+      "file": "rogue-minion-2-4-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-5-0",
+      "move": "星砂瓶",
+      "kind": "mist",
+      "file": "rogue-minion-2-5-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-5-1",
+      "move": "悬晶地雷",
+      "kind": "mines",
+      "file": "rogue-minion-2-5-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-6-0",
+      "move": "共鸣连线",
+      "kind": "armor",
+      "file": "rogue-minion-2-6-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-6-1",
+      "move": "晶脉脉冲",
+      "kind": "ring",
+      "file": "rogue-minion-2-6-1.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-7-0",
+      "move": "星缝召影",
+      "kind": "summon",
+      "file": "rogue-minion-2-7-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-2-7-1",
+      "move": "错位星门",
+      "kind": "rifts",
+      "file": "rogue-minion-2-7-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-0-0",
+      "move": "横风刃",
+      "kind": "parallel",
+      "file": "rogue-minion-3-0-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-0-1",
+      "move": "风旋牵引",
+      "kind": "vortex",
+      "file": "rogue-minion-3-0-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-1-0",
+      "move": "燕返二连",
+      "kind": "return_dash",
+      "file": "rogue-minion-3-1-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-1-1",
+      "move": "升风挑斩",
+      "kind": "sweep",
+      "file": "rogue-minion-3-1-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-2-0",
+      "move": "链雷刻印",
+      "kind": "marks",
+      "file": "rogue-minion-3-2-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-2-1",
+      "move": "雷针三射",
+      "kind": "shots",
+      "file": "rogue-minion-3-2-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-3-0",
+      "move": "云鬃扑咬",
+      "kind": "jump",
+      "file": "rogue-minion-3-3-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-3-1",
+      "move": "风鬃咆哮",
+      "kind": "roar",
+      "file": "rogue-minion-3-3-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-4-0",
+      "move": "回旋风盘",
+      "kind": "boomerang",
+      "file": "rogue-minion-3-4-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-4-1",
+      "move": "雷罐抛投",
+      "kind": "throw",
+      "file": "rogue-minion-3-4-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-5-0",
+      "move": "回响疗铃",
+      "kind": "heal",
+      "file": "rogue-minion-3-5-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-5-1",
+      "move": "清风庇护",
+      "kind": "shield",
+      "file": "rogue-minion-3-5-1.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-6-0",
+      "move": "战鼓疾奏",
+      "kind": "speed",
+      "file": "rogue-minion-3-6-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-6-1",
+      "move": "震鼓雷环",
+      "kind": "ring",
+      "file": "rogue-minion-3-6-1.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-7-0",
+      "move": "俯冲掠袭",
+      "kind": "dash",
+      "file": "rogue-minion-3-7-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-3-7-1",
+      "move": "羽刃封路",
+      "kind": "feathers",
+      "file": "rogue-minion-3-7-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-0-0",
+      "move": "黑戟横扫",
+      "kind": "sweep",
+      "file": "rogue-minion-4-0-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-0-1",
+      "move": "王庭架势",
+      "kind": "counter",
+      "file": "rogue-minion-4-0-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-1-0",
+      "move": "影步背刺",
+      "kind": "blink",
+      "file": "rogue-minion-4-1-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-1-1",
+      "move": "双影交刃",
+      "kind": "shadow_combo",
+      "file": "rogue-minion-4-1-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-2-0",
+      "move": "禁书召灵",
+      "kind": "summon",
+      "file": "rogue-minion-4-2-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-2-1",
+      "move": "墨咒飞页",
+      "kind": "double_fan",
+      "file": "rogue-minion-4-2-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-3-0",
+      "move": "黑曜撕咬",
+      "kind": "jump",
+      "file": "rogue-minion-4-3-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-3-1",
+      "move": "碎甲震吼",
+      "kind": "roar",
+      "file": "rogue-minion-4-3-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-4-0",
+      "move": "血月缝合",
+      "kind": "sacrifice_heal",
+      "file": "rogue-minion-4-4-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-4-1",
+      "move": "赤月退击",
+      "kind": "retreat_shot",
+      "file": "rogue-minion-4-4-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-5-0",
+      "move": "恶契赐印",
+      "kind": "power",
+      "file": "rogue-minion-4-5-0.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-5-1",
+      "move": "禁印陷阱",
+      "kind": "rifts",
+      "file": "rogue-minion-4-5-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-6-0",
+      "move": "魂灯投掷",
+      "kind": "throw",
+      "file": "rogue-minion-4-6-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-6-1",
+      "move": "缓行魂火",
+      "kind": "homing",
+      "file": "rogue-minion-4-6-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-7-0",
+      "move": "重刃三段",
+      "kind": "triple",
+      "file": "rogue-minion-4-7-0.wav",
+      "samples": 17640,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-minion-4-7-1",
+      "move": "断线暴走",
+      "kind": "berserk",
+      "file": "rogue-minion-4-7-1.wav",
+      "samples": 17640,
+      "rate": 44100
+    }
+  ]
+}

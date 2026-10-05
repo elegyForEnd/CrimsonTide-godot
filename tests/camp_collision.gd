@@ -28,7 +28,7 @@ func run() -> void:
 	check(not site.is_walkable(site.CENTRE), "table blocks movement")
 	var start: Vector2 = site.CENTRE + Vector2(450, 0)
 	var stopped: Vector2 = site.move_actor(start, Vector2(-900, 0))
-	check(stopped.x > site.CENTRE.x + 215, "large movement cannot tunnel through table")
+	check(stopped.x > site.CENTRE.x + 105, "large movement cannot tunnel through council table")
 	check(site.is_walkable(stopped), "collision leaves actor outside obstacle")
 	site.hero_at = stopped
 	screen.drive_hero(Vector2.LEFT, 1.0)
@@ -39,7 +39,7 @@ func run() -> void:
 	check(site.hero_phase > phase, "blocked walking animation continues advancing")
 	screen.drive_hero(Vector2.ZERO, 0.1)
 	check(not site.hero_walking, "releasing directional input stops walking animation")
-	check(is_equal_approx(site.ground_height(Vector2(3280, 2920)), 58.0), "chamfer corner is not an invisible raised floor")
+	check(is_equal_approx(site.ground_height(Vector2(3280, 2920)), 0.0), "space between houses has no invisible raised floor")
 	site.hero_at = site.SPAWN
 	site.hero_facing = -1
 	site.refresh_sprites()

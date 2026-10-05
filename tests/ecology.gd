@@ -27,6 +27,23 @@ func run() -> void:
 			check(e.p.distance_to(s.players[1].p)>=260,"No spawning on player")
 			counts[e.habitat]=int(counts.get(e.habitat,0))+1
 		for count in counts.values(): check(count<=5,"Per-block population limit")
+		s.enemies.clear()
+		var observer: Dictionary=s.players[1]
+		observer.p=s.ruins.sites[0].p
+		for attempt in 40: s.spawn_enemy(Vector2.ZERO,-1,true)
+		check(not s.enemies.is_empty(),"Ambient refill finds a nearby habitat")
+		for e in s.enemies:
+			var distance: float=e.p.distance_to(observer.p)
+			check(distance>=s.AMBIENT_SPAWN_MIN and distance<=s.AMBIENT_SPAWN_MAX,"Ambient refill stays near the player without spawning on them")
+		var sleeper: Dictionary=s.enemies[0]
+		observer.p=sleeper.p+Vector2(1800,0)
+		sleeper.cd=10.0
+		sleeper.moving=true
+		s.update_enemies(0.1)
+		check(sleeper.cd==10.0 and not sleeper.moving,"Distant ordinary enemies skip simulation")
+		observer.p=sleeper.p+Vector2(180,0)
+		s.update_enemies(0.1)
+		check(sleeper.cd<10.0,"Approaching player wakes ordinary enemies")
 		for kind in [0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16]:
 			s.enemies.clear()
 			s.spawn_enemy(Vector2(10,10),kind)

@@ -1,4 +1,5 @@
 extends RefCounted
+const Choreography = preload("res://scripts/boss_choreography.gd")
 ## Additional non-humanoid encounters. All hit checks remain host authoritative.
 const Presentation = preload("res://scripts/boss_presentation.gd")
 const NAMES := ["裂地钻兽 · 断层", "雷骸巨鸟 · 风暴眼", "吞月渊蛇 · 无光潮"]
@@ -7,20 +8,7 @@ const BASE_DAMAGE := [31.0,37.0,51.0]
 
 func spawn_mini(s, day: int, forced_kind: int = -1) -> void:
 	if s.map_id!="border" or day not in [1,2]: return
-	var occupied: Array=[]
-	for e in s.enemies:
-		if e.get("mini_boss",false): occupied.append(int(e.get("habitat",-1)))
-	var choice := -1
-	var best := -1.0
-	for i in s.ruins.sites.size():
-		var site: Dictionary=s.ruins.sites[i]
-		var at: Vector2=site.p
-		if site.get("cleared",false) or occupied.has(i) or s.ruins.blocked(at,55): continue
-		var distance := at.distance_to(Ruins.SPAWN)
-		if distance<500 or at.distance_to(s.raid.center)<480: continue
-		if distance>best:
-			best=distance
-			choice=i
+	var choice: int=s.expedition.guardian_site(s,55)
 	if choice<0: return
 	var at: Vector2=s.ruins.sites[choice].p
 	var participants := 0
@@ -92,12 +80,12 @@ func update(s, e: Dictionary, dt: float) -> void:
 	var aim: Vector2=(target.p-e.p).normalized()
 	if aim.length_squared()<0.1: aim=Vector2.RIGHT
 	if absf(aim.x)>0.05: e.facing=signf(aim.x)
-	var moves: Array=["burrow","fault","molt","collapse"] if int(e.wild_kind)==0 else ["dive","front","feathers","thunder_eye"] if int(e.wild_kind)==1 else ["coil","undertow","maw","black_tide","devour"]
-	var move: String=moves[int(e.sequence)%moves.size()]
+	var move: String=Choreography.choose(e)
 	e.sequence+=1
 	cast(s,e,target,move,aim)
 
 func cast(s, e: Dictionary, target: Dictionary, move: String, aim: Vector2) -> void:
+	if Choreography.start(s,e,move,aim,target.p): return
 	var kind: int=e.wild_kind
 	var phase: int=e.phase
 	var damage: float=BASE_DAMAGE[kind]*(1.0+0.12*(phase-1))

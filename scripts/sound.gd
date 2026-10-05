@@ -81,6 +81,18 @@ func _ready() -> void:
 		for i in int(VARIANTS[kind]):
 			variants.append(load("res://assets/audio/%s-%d.wav" % [kind,i]))
 		clips[kind]=variants
+	for floor_index in 5:
+		for variant in 8:
+			for skill in 2:
+				var minion_cue := "rogue-minion-%d-%d-%d" % [floor_index,variant,skill]
+				clips[minion_cue]=[load("res://assets/audio/rogue/"+minion_cue+".wav")]
+		for move in 5:
+			for action in ["charge","release"]:
+				var cue := "rogue-%d-%d-%s" % [floor_index,move,action]
+				clips[cue]=[load("res://assets/audio/rogue/"+cue+".wav")]
+		for action in ["phase","fall"]:
+			var cue := "rogue-%d-%s" % [floor_index,action]
+			clips[cue]=[load("res://assets/audio/rogue/"+cue+".wav")]
 	# Every boss theme borrows the queen's take for an action it does not ship,
 	# so a new encounter only needs the recordings it really uses and a missing
 	# file can never leave a null stream in the cue table. Guard and break only
@@ -118,11 +130,15 @@ func _ready() -> void:
 # has no recording of their own. Keeps the per-hero arrays indexable.
 func _load_or_first(pattern: String, hero: int, so_far: Array[AudioStream]) -> AudioStream:
 	var path := pattern % hero
-	if ResourceLoader.exists(path):
-		return load(path)
+	# Stale .import files can report an available recording after its source was removed.
+	if ResourceLoader.exists(path) and (FileAccess.file_exists(path) or not OS.has_feature("editor")):
+		var stream: AudioStream=load(path)
+		if stream: return stream
 	return so_far[0] if not so_far.is_empty() else null
 
 func priority(kind: String) -> int:
+	if kind.begins_with("rogue-minion-"): return 55
+	if kind.begins_with("rogue-"): return 92
 	if kind.contains("-") and kind.get_slice("-",0) in BossPresentation.KEYS+["mirror","ember","moon","earth","storm","abyss","dragon"]: return 92
 	if kind=="skill": return 95
 	if kind in ["hurt","down","bell"]: return 90
@@ -191,7 +207,7 @@ func play(kind: String, variant: int = -1, at: Vector2 = Vector2.INF, gain: floa
 	voice.global_position=position
 	voice.stream=samples[index]
 	voice.pitch_scale=randf_range(.97,1.03) if kind not in ["heal","bell","skill","reload"] else 1.0
-	voice.volume_db=float(LEVELS.get(kind,-12.0))+gain
+	voice.volume_db=float(LEVELS.get(kind,-16.0 if kind.begins_with("rogue-minion-") else -12.0))+gain
 	voice.play()
 
 func stop_cue(kind: String, emitter: int) -> void:

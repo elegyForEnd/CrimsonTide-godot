@@ -1,5 +1,5 @@
-﻿extends Control
-## 出征前的初始营地界面：一座可以走动的 3D 雷霆要塞。
+extends Control
+## 出征前的初始营地界面：一座可以走动、种植、垂钓的独立 3D 家园。
 ##
 ## The screen owns the camp map (`scripts/camp_site.gd`), the on-station prompts
 ## and the bottom bar. It never launches a raid itself: it raises a signal and
@@ -7,21 +7,31 @@
 ## Pressing `F` falls back to the classic整备 panel for players who would rather
 ## read menus than walk.
 
+signal home_changed
+
 signal station_requested(id: String)
 signal launch_requested
 signal exit_requested
 signal codex_requested
 
 const Site = preload("res://scripts/camp_site.gd")
+const HomeSkin = preload("res://scripts/home_ui_skin.gd")
+const HomeArt = preload("res://scripts/home_art.gd")
 
 const BG := Color("070b12")
 const PANEL := Color("0e1420")
-const INK := Color("f2f6ff")
-const MUTED := Color("a7b3c6")
-const ARC := Color("7fd4ff")
-const GOLD := Color("c8b184")
+const INK := Color("d4c8c8")
+const MUTED := Color("a599a4")
+const ARC := Color("c4919c")
+const GOLD := Color("c7b5b1")
 const RED := Color("d3556b")
-const BOUNDS := Rect2(180, 180, 5240, 5240)
+const BOUNDS := Rect2(1050, 1250, 3900, 3600)
+
+var home_ui: Control
+var home_map: Control
+var activities: Node3D
+var fishing_meter: ProgressBar
+var seed_status: Label
 
 var site: Node3D
 var hud: Control
@@ -48,6 +58,8 @@ var launch_button: Button
 var warp_charge := 0.0
 var warp_target := ""
 var toast_tween: Tween
+var squad_panel: Panel
+var station_shortcuts: Dictionary = {}
 var squad_count: Label
 var supply_status: Label
 var extra_meds := 0
@@ -60,15 +72,15 @@ func _ready() -> void:
 	ensure_actions()
 	var serif := FontVariation.new()
 	serif.base_font = load("res://assets/NotoSerifSC.ttf")
-	serif.variation_embolden = 0.5
+	serif.variation_embolden = 0.0
 	title_font = serif
 	var face := FontVariation.new()
 	face.base_font = load("res://assets/NotoSansSC.ttf")
-	face.variation_opentype = {"wght": 500.0}
+	face.variation_opentype = {"wght": 400.0}
 	face_font = face
 
 	site = Site.new()
-	site.name = "Thunderhold"
+	site.name = "Hearthhaven"
 	add_child(site)
 	site.build()
 
@@ -85,6 +97,7 @@ func _ready() -> void:
 	add_child(hud)
 
 	flash = ColorRect.new()
+	flash.color = Color.TRANSPARENT
 	flash.name = "Flash"
 	flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -102,12 +115,31 @@ func _ready() -> void:
 	flash_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	flash_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	flash_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Home has no lightning; an always-visible flash washed out even the HUD.
+	flash_art.visible = false
 	flash.add_child(flash_art)
 	add_child(flash)
 
+	_build_vignette()
 	_build_hud()
 	_build_markers()
-	_build_vignette()
+	home_ui = preload("res://scripts/home_screen.gd").new()
+	home_ui.camp = self
+	add_child(home_ui)
+	home_map = preload("res://scripts/home_map.gd").new()
+	home_map.camp = self
+	add_child(home_map)
+	activities = preload("res://scripts/camp_activities.gd").new()
+	activities.camp = self
+	site.add_child(activities)
+	fishing_meter = preload("res://scripts/fishing_meter.gd").new()
+	fishing_meter.custom_minimum_size = Vector2(260,24)
+	fishing_meter.size = Vector2(260,24)
+	fishing_meter.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fishing_meter.visible = false
+	marker_layer.add_child(fishing_meter)
+	seed_status = _struck("",Vector2(470,600),15,GOLD,Vector2(500,24),HORIZONTAL_ALIGNMENT_CENTER)
+
 
 
 ## A storm-locked frame: dark, cool edges over the 3D map, drawn under the HUD.
@@ -124,6 +156,11 @@ func _build_vignette() -> void:
 	rect.color = Color.WHITE
 	var material := ShaderMaterial.new()
 	material.shader = preload("res://resources/camp_vignette.gdshader")
+	material.set_shader_parameter("strength",0.32)
+	material.set_shader_parameter("inner",0.20)
+	material.set_shader_parameter("outer",0.74)
+	material.set_shader_parameter("edge_tint",Color("170c17"))
+	material.set_shader_parameter("saturation",1.0)
 	rect.material = material
 	add_child(rect)
 	move_child(rect, marker_layer.get_index())
@@ -135,9 +172,16 @@ func set_context(session_value: TideSession, profile_value: Profile) -> void:
 	selected = int(profile.data.hero) if profile else 0
 	if site:
 		site.hero = selected
+		site.refresh_crops(profile.data.home)
+		activities.context(profile)
+		update_static()
+		refresh_roster()
 
 
 func set_active(value: bool) -> void:
+	if not value and activities: activities.cancel()
+	if not value and home_ui and home_ui.visible: home_ui.close()
+	if not value and home_map and home_map.visible: home_map.close()
 	visible = value
 	site.visible = value
 	site.set_process(value)
@@ -181,11 +225,12 @@ func _struck(text: String, at: Vector2, size: int, color: Color = INK,
 	node.size = box
 	node.clip_text = true
 	node.horizontal_alignment = align
-	node.add_theme_font_override("font", title_font if size >= 26 else face_font)
+	node.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	node.add_theme_font_override("font", title_font if size >= 22 else face_font)
 	node.add_theme_font_size_override("font_size", size)
 	node.add_theme_color_override("font_color", color)
-	node.add_theme_color_override("font_shadow_color", Color(0.0, 0.01, 0.03, 0.98))
-	node.add_theme_constant_override("shadow_offset_y", 2)
+	node.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.40))
+	node.add_theme_constant_override("shadow_offset_y", 1)
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(node)
 	return node
@@ -196,11 +241,10 @@ func _panel(at: Vector2, size: Vector2, color: Color = PANEL) -> Panel:
 	panel.position = at
 	panel.size = size
 	var style := StyleBoxFlat.new()
-	style.bg_color = color
-	style.border_color = Color(0.45, 0.58, 0.72, 0.35)
+	style.bg_color = Color(0.035, 0.032, 0.065, 0.94)
+	style.border_color = Color("655f50")
 	style.set_border_width_all(1)
-	style.border_width_left = 2
-	style.border_color = Color(0.45, 0.62, 0.78, 0.5)
+	style.set_corner_radius_all(8)
 	panel.add_theme_stylebox_override("panel", style)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(panel)
@@ -223,86 +267,157 @@ func _action(text: String, at: Vector2, size: Vector2, callback: Callable, prima
 	node.size = size
 	node.focus_mode = Control.FOCUS_NONE
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.06, 0.10, 0.16, 0.92) if primary else Color(0.05, 0.07, 0.11, 0.82)
-	normal.border_color = ARC if primary else Color(0.42, 0.5, 0.62, 0.55)
-	normal.set_border_width_all(1)
-	normal.border_width_bottom = 2
-	normal.border_width_top = 2
-	node.add_theme_stylebox_override("normal", normal)
-	var hover := normal.duplicate()
-	hover.bg_color = Color(0.10, 0.20, 0.30, 0.95) if primary else Color(0.10, 0.14, 0.20, 0.9)
-	hover.border_color = Color("bfe9ff")
-	node.add_theme_stylebox_override("hover", hover)
-	var pressed := normal.duplicate()
-	pressed.bg_color = Color(0.16, 0.30, 0.42, 0.98)
-	node.add_theme_stylebox_override("pressed", pressed)
+	HomeSkin.dress(node,primary)
+	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color("643849") if primary else Color(0.12,0.085,0.14,0.94)
+		if state in ["hover", "pressed", "focus"]: style.bg_color = Color("483747")
+		style.border_color = Color("91836a") if primary else Color("65505f")
+		style.set_border_width_all(1)
+		style.set_corner_radius_all(5)
+		style.content_margin_left = 12
+		style.content_margin_right = 12
+		node.add_theme_stylebox_override(state,style)
 	node.add_theme_font_override("font", title_font)
-	node.add_theme_font_size_override("font_size", 22 if primary else 18)
+	node.add_theme_font_size_override("font_size", 18 if primary else 16)
 	node.add_theme_color_override("font_color", INK)
-	node.add_theme_color_override("font_hover_color", Color.WHITE)
-	node.pressed.connect(callback)
+	node.add_theme_color_override("font_hover_color", Color("e7d6d3"))
+	node.pressed.connect(func():
+		if activities and activities.busy(): say("先完成操作，或按 Esc 收起工具。")
+		else: callback.call())
 	hud.add_child(node)
 	return node
 
 
 func _build_hud() -> void:
-	# Top-left: where you are and what the storm is doing.
-	_panel(Vector2(30, 26), Vector2(430, 132), Color(0.02, 0.035, 0.065, 0.93))
-	_struck("晨钟城 · 雷霆要塞", Vector2(50, 36), 30)
-	_struck("T H E   T H U N D E R H O L D", Vector2(52, 76), 12, ARC)
-	_rule(Vector2(52, 100), Vector2(386, 1), ARC)
-	strikes = _struck("", Vector2(52, 108), 14, MUTED)
-	charges = _struck("", Vector2(52, 132), 14, MUTED)
-
-	# Top-right: the storm's own readout, because the storm is the landmark here.
-	_panel(Vector2(1120, 26), Vector2(290, 132), Color(0.02, 0.035, 0.065, 0.93))
-	_struck("雷暴强度", Vector2(1140, 36), 14, MUTED)
-	_struck("THUNDERHEAD  LIVE", Vector2(1140, 60), 11, ARC)
-	_rule(Vector2(1140, 84), Vector2(250, 1), ARC)
-	_struck("每 0.4–4.6 秒落雷", Vector2(1140, 92), 13, MUTED)
-	_struck("雷光先到，雷声后到", Vector2(1140, 116), 13, MUTED)
-
-	# Right column: the squad.
-	_panel(Vector2(1120, 176), Vector2(290, 236), Color(0.02, 0.035, 0.065, 0.9))
-	_struck("远征小队", Vector2(1140, 186), 22)
-	squad_count = _struck("", Vector2(1142, 214), 11, ARC)
-	_rule(Vector2(1140, 234), Vector2(250, 1))
+	# Compact image plaques keep the playable world in view.
+	var heading_art := _panel(Vector2(24,22),Vector2(250,104))
+	var heading := _struck("晨钟家园",Vector2.ZERO,23,GOLD,Vector2(186,32),HORIZONTAL_ALIGNMENT_CENTER)
+	heading.reparent(heading_art)
+	heading.position = Vector2(42,24)
+	strikes = _struck("",Vector2.ZERO,12,MUTED,Vector2(186,20),HORIZONTAL_ALIGNMENT_CENTER)
+	strikes.reparent(heading_art)
+	strikes.position = Vector2(42,62)
+	# Text stays in the slate's inner area, clear of the pointed corner artwork.
+	squad_panel = _panel(Vector2(1084,22),Vector2(332,176))
+	var squad_title := _struck("远征小队",Vector2.ZERO,19,GOLD,Vector2(176,28))
+	squad_title.add_theme_font_override("font",title_font)
+	squad_title.reparent(squad_panel)
+	squad_title.position = Vector2(68,32)
+	squad_count = _struck("",Vector2.ZERO,12,MUTED,Vector2(36,22),HORIZONTAL_ALIGNMENT_RIGHT)
+	squad_count.reparent(squad_panel)
+	squad_count.position = Vector2(214,36)
+	charges = _struck("",Vector2.ZERO,13,MUTED,Vector2(228,24))
+	charges.reparent(squad_panel)
 	roster = VBoxContainer.new()
-	roster.position = Vector2(1140, 244)
-	roster.size = Vector2(252, 150)
-	roster.add_theme_constant_override("separation", 4)
+	roster.position = Vector2(56,78)
+	roster.size = Vector2(228,40)
+	roster.add_theme_constant_override("separation",6)
 	roster.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(roster)
-	_panel(Vector2(30, 176), Vector2(260, 352), Color(0.02, 0.035, 0.065, 0.9))
-	_struck("营地设施", Vector2(50, 188), 22)
-	_struck("点击前往 · 抵达后按 E 使用", Vector2(50, 224), 13, MUTED)
-	for i in site.stations.size():
-		var station: Dictionary = site.stations[i]
-		_action("%02d  %s" % [i + 1, station.name], Vector2(48, 262 + i * 49),
-			Vector2(224, 41), func(): warp_to(str(station.id)); say("已抵达 " + str(station.name)))
-	supply_status = _struck("急救针 ×1 / 3", Vector2(1140, 430), 16, GOLD, Vector2(260, 30))
-	_action("打开整备  [F]", Vector2(1120, 474), Vector2(290, 44),
-		func(): station_requested.emit("table"))
-
-	# Bottom bar: hero identity, controls and the departure pair.
-	_panel(Vector2(30, 800), Vector2(1380, 76), Color(0.015, 0.028, 0.05, 0.95))
-	_rule(Vector2(30, 800), Vector2(1380, 2), ARC)
-	_struck("整备 · 出征", Vector2(50, 810), 26)
-	loadout = _struck("", Vector2(246, 818), 15, MUTED, Vector2(620, 24))
-	_struck("WASD 走动 · SHIFT 疾行 · 右键指向设施蓄力 · E 交互 · F 整备 · TAB 手册", Vector2(246, 846),
-		13, MUTED, Vector2(824, 24), HORIZONTAL_ALIGNMENT_LEFT)
-	_action("← 离开营地", Vector2(1090, 814), Vector2(150, 46), func(): exit_requested.emit())
-	_action("晨钟手册", Vector2(1250, 814), Vector2(150, 46), func(): codex_requested.emit())
-	launch_button = _action("全队出发    →", Vector2(880, 736), Vector2(530, 58),
-		func(): launch_requested.emit(), true)
-	_struck("踏出闸门，血潮开始计时", Vector2(880, 700), 14, MUTED, Vector2(530, 22),
-		HORIZONTAL_ALIGNMENT_CENTER)
-
-	toast = _struck("", Vector2(470, 616), 18, ARC, Vector2(500, 30), HORIZONTAL_ALIGNMENT_CENTER)
-	prompt = _struck("", Vector2(470, 652), 20, INK, Vector2(500, 30), HORIZONTAL_ALIGNMENT_CENTER)
-	_struck("（提示：走近发光站点，按 E 使用）", Vector2(470, 682), 13, MUTED, Vector2(500, 22),
-		HORIZONTAL_ALIGNMENT_CENTER)
+	squad_panel.add_child(roster)
+	var facilities := PanelContainer.new()
+	facilities.name = "HomeFacilities"
+	facilities.position = Vector2(24,150)
+	facilities.size = Vector2(250,592)
+	var facility_style := StyleBoxFlat.new()
+	facility_style.bg_color = Color(0.035,0.032,0.065,0.90)
+	facility_style.border_color = Color("655f50")
+	facility_style.set_border_width_all(1)
+	facility_style.set_corner_radius_all(8)
+	facility_style.content_margin_left = 18
+	facility_style.content_margin_right = 18
+	facility_style.content_margin_top = 14
+	facility_style.content_margin_bottom = 14
+	facilities.add_theme_stylebox_override("panel",facility_style)
+	hud.add_child(facilities)
+	var links := VBoxContainer.new()
+	links.add_theme_constant_override("separation",4)
+	facilities.add_child(links)
+	var facilities_title := Label.new()
+	facilities_title.text = "家园设施"
+	facilities_title.add_theme_font_override("font",title_font)
+	facilities_title.add_theme_font_size_override("font_size",18)
+	facilities_title.add_theme_color_override("font_color",GOLD)
+	facilities_title.custom_minimum_size.y = 32
+	links.add_child(facilities_title)
+	for group in [["生活",["garden","fish","kitchen","home_shop"]],["整备",["table","forge","quarter","codex"]],["出征",["gate","rogue_gate"]]]:
+		var group_title := Label.new()
+		group_title.text = group[0]
+		group_title.custom_minimum_size.y = 24
+		group_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		group_title.add_theme_font_override("font",face_font)
+		group_title.add_theme_font_size_override("font_size",12)
+		group_title.add_theme_color_override("font_color",MUTED)
+		links.add_child(group_title)
+		for id in group[1]:
+			var station: Dictionary = site.station_by_id(id)
+			var shortcut := _action(station.name,Vector2.ZERO,Vector2(206,36),func(): warp_to(str(station.id)))
+			shortcut.reparent(links)
+			shortcut.toggle_mode = true
+			shortcut.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			shortcut.clip_text = true
+			shortcut.custom_minimum_size = Vector2(206,36)
+			var quiet := StyleBoxEmpty.new()
+			quiet.content_margin_left = 18
+			quiet.content_margin_right = 18
+			quiet.content_margin_top = 4
+			quiet.content_margin_bottom = 4
+			shortcut.add_theme_stylebox_override("normal",quiet)
+			var selected_style := StyleBoxFlat.new()
+			selected_style.bg_color = Color("493442")
+			selected_style.set_corner_radius_all(4)
+			shortcut.add_theme_stylebox_override("pressed",selected_style)
+			for state in ["normal","hover","focus","pressed","disabled"]:
+				var row_style: StyleBox = shortcut.get_theme_stylebox(state).duplicate()
+				row_style.content_margin_left = 24
+				row_style.content_margin_right = 18
+				row_style.content_margin_top = 4
+				row_style.content_margin_bottom = 4
+				if row_style is StyleBoxTexture:
+					row_style.texture_margin_left = 0
+					row_style.texture_margin_right = 0
+				shortcut.add_theme_stylebox_override(state,row_style)
+			shortcut.add_theme_color_override("font_pressed_color",Color("e2b6b7"))
+			station_shortcuts[id] = shortcut
+	_panel(Vector2(24,812),Vector2(1392,66))
+	loadout = _struck("",Vector2(54,830),16,INK,Vector2(320,26))
+	supply_status = _struck("",Vector2(390,830),15,MUTED,Vector2(190,26))
+	var navigation := HBoxContainer.new()
+	navigation.name = "HomeNavigation"
+	navigation.position = Vector2(618,827)
+	navigation.size = Vector2(642,36)
+	navigation.add_theme_constant_override("separation",6)
+	hud.add_child(navigation)
+	var destinations := [
+		["整备",func(): station_requested.emit("table")],
+		["仓库",func(): station_requested.emit("warehouse")],
+		["交易",func(): station_requested.emit("market")],
+		["地图",func(): home_map.open()],
+		["手册",func(): codex_requested.emit()],
+		["离开",func(): exit_requested.emit()]
+	]
+	for entry in destinations:
+		var action := _action(entry[0],Vector2.ZERO,Vector2(102,36),entry[1])
+		for state in ["normal","hover","focus","pressed","disabled"]:
+			var frame: StyleBox = action.get_theme_stylebox(state).duplicate()
+			frame.content_margin_top = 6
+			frame.content_margin_bottom = 6
+			action.add_theme_stylebox_override(state,frame)
+		action.custom_minimum_size = Vector2(102,36)
+		action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		action.reparent(navigation)
+	var info := HomeSkin.info(hud,self,"家园指南", "WASD 移动 · Shift 疾行 · E 使用设施
+左侧设施名称可直接前往；M 打开地图。
+菜园：E 播种、浇水与收获，Q 换种子；浇水加速生长，离线继续生长。
+栈桥：E / Space 抛竿，等咬钩后在绿色区域收竿；Esc 收起工具。
+厨房：烹饪后携带一份餐食，成功出征时消耗。
+F 整备 · Tab 手册 · 仓库和交易行保存远征收获。
+南侧闸门进入搜打撤，东侧传送门进入魔境。出发按钮跟随当前模式，联机需要全队准备。")
+	info.position = Vector2(1354,824)
+	info.size = Vector2(40,40)
+	launch_button = _action("出发 →",Vector2(1136,740),Vector2(280,58),func(): launch_requested.emit(),true)
+	toast = _struck("",Vector2(470,670),18,GOLD,Vector2(500,30),HORIZONTAL_ALIGNMENT_CENTER)
+	prompt = _struck("",Vector2(470,708),20,INK,Vector2(500,30),HORIZONTAL_ALIGNMENT_CENTER)
 	refresh_roster()
 	update_static()
 
@@ -323,6 +438,7 @@ func _build_markers() -> void:
 func refresh_roster() -> void:
 	site.squad.clear()
 	for child in roster.get_children():
+		roster.remove_child(child)
 		child.queue_free()
 	var rows: Array = []
 	if session and not session.players.is_empty():
@@ -334,28 +450,46 @@ func refresh_roster() -> void:
 				"state": "就绪" if player.get("ready", false) else "整备"})
 	else:
 		rows.append({"name": "守夜人", "hero": selected, "tag": "单人", "state": "整备"})
-	squad_count.text = "WATCHERS  /  %02d" % rows.size()
+	squad_count.text = "%d / 4" % rows.size()
 	if session and not session.is_leader():
 		launch_button.text = "取消准备" if session.players.get(session.my_id(), {}).get("ready", false) else "准备出发    →"
 	else:
-		launch_button.text = "全队出发    →"
+		launch_button.text = "魔境 · 出发 →" if session and session.selected_mode=="roguelike" else "搜打撤 · 出发 →"
+	squad_panel.size.y = 136 + maxi(1,rows.size())*40
+	charges.position = Vector2(56,squad_panel.size.y-42)
 	for row in rows:
-		var line := Label.new()
-		line.text = "%s  ·  %s  ·  %s" % [row.tag, row.name, row.state]
-		line.clip_text = true
-		line.add_theme_font_override("font", face_font)
-		line.add_theme_font_size_override("font_size", 15)
-		line.add_theme_color_override("font_color", INK if row.state == "就绪" else MUTED)
-		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		roster.add_child(line)
-	for i in range(rows.size(), 4):
-		var empty := Label.new()
-		empty.text = "◇  空席"
-		empty.add_theme_font_override("font", face_font)
-		empty.add_theme_font_size_override("font_size", 15)
-		empty.add_theme_color_override("font_color", Color(0.42, 0.48, 0.6))
-		empty.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		roster.add_child(empty)
+		var member := VBoxContainer.new()
+		member.add_theme_constant_override("separation",0)
+		member.custom_minimum_size.y = 34
+		roster.add_child(member)
+		var identity := HBoxContainer.new()
+		member.add_child(identity)
+		var name_label := Label.new()
+		name_label.text = row.name
+		name_label.tooltip_text = row.name
+		name_label.clip_text = true
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_label.add_theme_font_override("font",face_font)
+		name_label.add_theme_font_size_override("font_size",15)
+		name_label.add_theme_color_override("font_color",INK)
+		identity.add_child(name_label)
+		var readiness := Label.new()
+		readiness.text = row.state
+		readiness.custom_minimum_size.x = 42
+		readiness.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		readiness.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		readiness.add_theme_font_override("font",face_font)
+		readiness.add_theme_font_size_override("font_size",12)
+		readiness.add_theme_color_override("font_color",Color("c59b9e") if row.state=="就绪" else MUTED)
+		identity.add_child(readiness)
+		var role := Label.new()
+		role.text = row.tag
+		role.add_theme_font_override("font",face_font)
+		role.add_theme_font_size_override("font_size",11)
+		role.add_theme_color_override("font_color",MUTED)
+		member.add_child(role)
+
+
 
 
 func update_static() -> void:
@@ -363,17 +497,27 @@ func update_static() -> void:
 		selected = int(profile.data.hero)
 		site.hero = selected
 		var hero: Dictionary = Catalog.HEROES[clampi(selected, 0, Catalog.HEROES.size() - 1)]
-		loadout.text = "%s  ·  %s    Lv.%02d    ◈ %d" % [hero.name, hero.title,
-			profile.level(), profile.data.coins]
-		strikes.text = "本次守夜落雷 %d 次    营地岗哨 %d 处" % [int(site.storm_state().strikes), site.stations.size()]
-		charges.text = "已选角色 %s    %s" % [hero.name, String(hero.desc).left(26)]
-	supply_status.text = "急救针 ×%d / 3  ·  补给 25 银币" % (1 + extra_meds)
+		loadout.text = "%s    Lv.%02d    ◈ %d" % [hero.name, profile.level(), profile.data.coins]
+		strikes.text = home_summary()
+		var meal := str(profile.data.home.prepared)
+		var meals: Dictionary = preload("res://scripts/homestead.gd").MEALS
+		charges.text = "餐食  %s" % [meals[meal].name if meals.has(meal) else "未携带"]
+	supply_status.text = "急救针 ×%d / 3" % (1 + extra_meds)
 
 
 # ---------------------------------------------------------------------- input
 
 func _process(dt: float) -> void:
 	if not visible:
+		return
+	fishing_meter.visible = activities.action=="fish" and activities.fishing_phase=="bite"
+	if fishing_meter.visible:
+		fishing_meter.position = (site.project(activities.target)-Vector2(130,-24)).clamp(Vector2(310,170),Vector2(840,560))
+		fishing_meter.value = activities.fishing_value()
+		fishing_meter.fine = profile.data.home.rod==2
+	if activities.busy():
+		site.hero_walking = false
+		prompt.text = "[Space / E] 收竿  ·  [Esc] 收起钓竿" if activities.action=="fish" else "正在操作田畦  ·  [Esc] 取消"
 		return
 	if input_blocked:
 		warp_charge = 0.0
@@ -419,11 +563,12 @@ func _process(dt: float) -> void:
 	_update_markers()
 	var state: Dictionary = site.storm_state()
 	flash.color = Color(1, 1, 1, clampf(float(state.flash) * 0.10, 0.0, 0.24))
-	strikes.text = "本次守夜落雷 %d 次    营地岗哨 %d 处" % [int(state.strikes), site.stations.size()]
+	strikes.text = home_summary()
 
 
 ## The single place the hero moves, so a test drives exactly the player's path.
 func drive_hero(stick: Vector2, dt: float) -> void:
+	if activities and activities.busy(): return
 	var at: Vector2 = site.hero_position()
 	if stick.length() > 0.01:
 		var destination: Vector2 = (at + stick * 420.0 * dt).clamp(BOUNDS.position, BOUNDS.end)
@@ -464,15 +609,35 @@ func pointed_station(at: Vector2) -> Dictionary:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible or input_blocked:
 		return
+	if event is InputEventMouseButton and event.pressed and event.button_index==MOUSE_BUTTON_LEFT:
+		var ground: Vector2 = site.unproject(event.position)
+		for i in 9:
+			if Rect2(site.garden_at(i)-Vector2(106,100),Vector2(212,200)).has_point(ground):
+				activities.farm(i)
+				get_viewport().set_input_as_handled()
+				return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var code: int = event.physical_keycode if event.physical_keycode else event.keycode
+		if activities.busy():
+			if code==KEY_ESCAPE: activities.cancel(); say("已收起工具。")
+			elif code in [KEY_E,KEY_SPACE,KEY_ENTER] and activities.action=="fish": activities.reel()
+			get_viewport().set_input_as_handled()
+			return
+		if code==KEY_Q:
+			activities.cycle_seed()
+			get_viewport().set_input_as_handled()
+			return
+		if code==KEY_SPACE and activities.at_pier():
+			activities.cast()
+			get_viewport().set_input_as_handled()
+			return
 		# Space is the hard commitment: it only exists at the departure gate.
 		if code == KEY_SPACE:
 			var gate: Dictionary = site.station_at(site.hero_position())
-			if not gate.is_empty() and str(gate.id) == "gate":
-				launch_requested.emit()
+			if not gate.is_empty() and str(gate.action) in ["launch","rogue"]:
+				station_requested.emit(str(gate.action))
 			else:
-				say("先走到出征闸门，再按 Space 出发。")
+				say("先走到搜打撤闸门或魔境传送门，再按 Space 出发。")
 			get_viewport().set_input_as_handled()
 			return
 		match code:
@@ -482,6 +647,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				station_requested.emit("table")
 			KEY_TAB:
 				codex_requested.emit()
+			KEY_M:
+				home_map.open()
 			KEY_ESCAPE:
 				exit_requested.emit()
 			_:
@@ -491,12 +658,20 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Uses whichever station the player is standing in, and reports what happened.
 func interact() -> Dictionary:
+	if activities.interact(): return {"action":"world_activity"}
 	var station: Dictionary = site.station_at(site.hero_position())
 	if station.is_empty():
 		say("附近没有可用设施，去发光的地标处。")
 		return {}
 	say("进入 " + str(station.name))
-	station_requested.emit(str(station.action))
+	if str(station.action)=="garden":
+		say("走近具体田块，E 播种、浇水或收获；Q 切换种子。")
+	elif str(station.action)=="fish":
+		activities.cast()
+	elif str(station.action) in ["kitchen","home_shop"]:
+		home_ui.open(str(station.action))
+	else:
+		station_requested.emit(str(station.action))
 	return station
 
 
@@ -512,10 +687,15 @@ func say(text: String) -> void:
 
 ## Public so a preview or a test can pose the camp without moving a mouse.
 func warp_to(id: String) -> void:
+	if activities and activities.busy():
+		say("先完成操作，或按 Esc 收起工具。")
+		return
 	var station: Dictionary = site.station_by_id(id)
 	if station.is_empty():
 		return
 	site.hero_at = site.safe_position(station.at + station.offset + Vector2(0, 120))
+	if id=="garden": site.hero_at = site.safe_position(Vector2(2050,2300))
+	if id=="fish": site.hero_at = site.safe_position(Vector2(3460,2390))
 	site.set_camera_focus(site.hero_at, true)
 
 
@@ -525,15 +705,24 @@ func _update_markers() -> void:
 		var marker: Control = station_markers[str(station.id)]
 		var active: bool = not near.is_empty() and str(near.id) == str(station.id)
 		marker.position = site.project(station.at + station.offset) - marker.size / 2
+		marker.visible = active or site.hero_at.distance_to(station.at + station.offset) < 650
 		marker.set_active(active)
+		if station_shortcuts.has(station.id): station_shortcuts[station.id].set_pressed_no_signal(active)
 	hero_marker.position = site.project(site.hero_position()) - Vector2(26, 78)
 	hero_marker.queue_redraw()
 	if near.is_empty():
 		if warp_charge <= 0.0:
-			prompt.text = "从左侧选择设施，或走近站点按 E"
+			prompt.text = ""
 	else:
 		if warp_charge <= 0.0:
-			prompt.text = "[E]  %s   ·   %s" % [near.name, near.hint]
+			prompt.text = "[E]  %s" % near.name
+	var plot: int = activities.nearest_plot(site.hero_at)
+	seed_status.text = ""
+	if plot>=0:
+		prompt.text = activities.plot_hint(plot)
+		seed_status.text = str(preload("res://scripts/homestead.gd").CROPS[activities.selected_crop].name)+"  [Q]"
+	elif activities.at_pier(): prompt.text = "[E / Space] 抛竿"
+
 
 
 # ------------------------------------------------------------------- drawings
@@ -556,7 +745,7 @@ class StationMarker extends Control:
 	func _draw() -> void:
 		var centre := size / 2
 		var pulse := 1.0 + (0.06 * sin(Time.get_ticks_msec() * 0.004) if active else 0.0)
-		var radius := (40.0 if active else 30.0) * pulse
+		var radius := (23.0 if active else 16.0) * pulse
 		draw_arc(centre, radius + 9, 0, TAU, 40, Color(color, 0.22 if active else 0.10), 2.0, true)
 		draw_arc(centre, radius, 0, TAU, 32, Color(color, 0.95 if active else 0.55), 2.5 if active else 1.5, true)
 		for i in 4:
@@ -576,3 +765,12 @@ class StationMarker extends Control:
 		draw_rect(Rect2(at + Vector2(-6, -14), Vector2(width + 12, 21)), Color(0.02, 0.04, 0.07, 0.72), true)
 		draw_string(font, at, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16,
 			Color(1, 1, 1) if active else Color(color, 0.9))
+
+
+func home_summary() -> String:
+	if not profile: return "独立家园 · 种植 / 垂钓 / 烹饪"
+	var ripe := 0
+	var rules := preload("res://scripts/homestead.gd").new(profile)
+	for i in rules.state().beds:
+		if not str(rules.state().plots[i].crop).is_empty() and rules.remaining(i)==0: ripe += 1
+	return "可收获 %d  ·  鱼饵 %d" % [ripe,rules.state().bait]

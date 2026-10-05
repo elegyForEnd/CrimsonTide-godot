@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 1.15,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      172,
+      251,
+      1386,
+      1299
+    ],
+    [
+      56,
+      257,
+      1334,
+      1299
+    ],
+    [
+      137,
+      285,
+      1352,
+      1299
+    ],
+    [
+      90,
+      328,
+      1311,
+      1299
+    ],
+    [
+      205,
+      504,
+      1477,
+      1299
+    ],
+    [
+      254,
+      533,
+      1498,
+      1299
+    ],
+    [
+      154,
+      342,
+      1415,
+      1299
+    ],
+    [
+      264,
+      403,
+      1512,
+      1299
+    ]
+  ],
+  "source_still": "D:\\develop\\school\\CrimsonTide-godot\\output\\minimax-action-pack\\stills\\bosses\\thorn-huntsman\\attack.png",
+  "method": "Individual image-generated frames; frame 1 chroma-keyed from approved still; uniform scaling and translation for alignment"
+}

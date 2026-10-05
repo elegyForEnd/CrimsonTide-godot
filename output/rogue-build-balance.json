@@ -1,0 +1,482 @@
+[
+	{
+		"dps_10": 108.35,
+		"dps_60": 115.05,
+		"family": 1,
+		"grown": false,
+		"id": "W001",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 117.18,
+		"dps_60": 116.41,
+		"family": 1,
+		"grown": false,
+		"id": "W002",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 93.6,
+		"dps_60": 99.85,
+		"family": 1,
+		"grown": false,
+		"id": "W003",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 102.89,
+		"dps_60": 106.27,
+		"family": 1,
+		"grown": false,
+		"id": "W004",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 119.53,
+		"dps_60": 120.15,
+		"family": 1,
+		"grown": false,
+		"id": "W005",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 102.91,
+		"dps_60": 103.74,
+		"family": 1,
+		"grown": false,
+		"id": "W006",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 107.65,
+		"dps_60": 106.14,
+		"family": 1,
+		"grown": false,
+		"id": "W007",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 115.38,
+		"dps_60": 116.94,
+		"family": 1,
+		"grown": false,
+		"id": "W008",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 114.48,
+		"dps_60": 118.29,
+		"family": 1,
+		"grown": false,
+		"id": "W009",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 110.35,
+		"dps_60": 111.98,
+		"family": 1,
+		"grown": false,
+		"id": "W010",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 106.85,
+		"dps_60": 107.4,
+		"family": 1,
+		"grown": false,
+		"id": "W011",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 97.0,
+		"dps_60": 99.31,
+		"family": 1,
+		"grown": false,
+		"id": "W012",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 129.59,
+		"dps_60": 122.72,
+		"family": 2,
+		"grown": false,
+		"id": "W013",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 114.56,
+		"dps_60": 121.05,
+		"family": 2,
+		"grown": false,
+		"id": "W014",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 109.43,
+		"dps_60": 113.64,
+		"family": 2,
+		"grown": false,
+		"id": "W015",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 102.59,
+		"dps_60": 105.61,
+		"family": 2,
+		"grown": false,
+		"id": "W016",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 98.99,
+		"dps_60": 102.56,
+		"family": 2,
+		"grown": false,
+		"id": "W017",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 119.72,
+		"dps_60": 119.35,
+		"family": 2,
+		"grown": false,
+		"id": "W018",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 102.1,
+		"dps_60": 106.02,
+		"family": 2,
+		"grown": false,
+		"id": "W019",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 109.47,
+		"dps_60": 117.7,
+		"family": 2,
+		"grown": false,
+		"id": "W020",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 103.29,
+		"dps_60": 104.9,
+		"family": 2,
+		"grown": false,
+		"id": "W021",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 107.43,
+		"dps_60": 106.63,
+		"family": 2,
+		"grown": false,
+		"id": "W022",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 100.99,
+		"dps_60": 96.86,
+		"family": 2,
+		"grown": false,
+		"id": "W023",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 107.54,
+		"dps_60": 111.67,
+		"family": 2,
+		"grown": false,
+		"id": "W024",
+		"remaining_mana": 80.0
+	},
+	{
+		"dps_10": 90.74,
+		"dps_60": 64.72,
+		"family": 0,
+		"grown": false,
+		"id": "W025",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 110.63,
+		"dps_60": 100.79,
+		"family": 0,
+		"grown": false,
+		"id": "W026",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 90.88,
+		"dps_60": 69.95,
+		"family": 0,
+		"grown": false,
+		"id": "W027",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 95.85,
+		"dps_60": 99.87,
+		"family": 0,
+		"grown": false,
+		"id": "W028",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 97.86,
+		"dps_60": 92.62,
+		"family": 0,
+		"grown": false,
+		"id": "W029",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 98.32,
+		"dps_60": 83.49,
+		"family": 0,
+		"grown": false,
+		"id": "W030",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 71.36,
+		"dps_60": 76.06,
+		"family": 0,
+		"grown": false,
+		"id": "W031",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 89.67,
+		"dps_60": 81.49,
+		"family": 0,
+		"grown": false,
+		"id": "W032",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 92.38,
+		"dps_60": 93.74,
+		"family": 0,
+		"grown": false,
+		"id": "W033",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 106.0,
+		"dps_60": 101.58,
+		"family": 0,
+		"grown": false,
+		"id": "W034",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 103.63,
+		"dps_60": 101.47,
+		"family": 0,
+		"grown": false,
+		"id": "W035",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 100.66,
+		"dps_60": 93.32,
+		"family": 0,
+		"grown": false,
+		"id": "W036",
+		"remaining_mana": 84.0
+	},
+	{
+		"dps_10": 92.22,
+		"dps_60": 77.06,
+		"family": 3,
+		"grown": false,
+		"id": "W037",
+		"remaining_mana": 3.95
+	},
+	{
+		"dps_10": 95.67,
+		"dps_60": 92.07,
+		"family": 3,
+		"grown": false,
+		"id": "W038",
+		"remaining_mana": 1.67
+	},
+	{
+		"dps_10": 88.04,
+		"dps_60": 61.38,
+		"family": 3,
+		"grown": false,
+		"id": "W039",
+		"remaining_mana": 1.95
+	},
+	{
+		"dps_10": 96.22,
+		"dps_60": 72.74,
+		"family": 3,
+		"grown": false,
+		"id": "W040",
+		"remaining_mana": 2.56
+	},
+	{
+		"dps_10": 103.8,
+		"dps_60": 83.61,
+		"family": 3,
+		"grown": false,
+		"id": "W041",
+		"remaining_mana": 0.97
+	},
+	{
+		"dps_10": 95.53,
+		"dps_60": 86.68,
+		"family": 3,
+		"grown": false,
+		"id": "W042",
+		"remaining_mana": 1.85
+	},
+	{
+		"dps_10": 99.93,
+		"dps_60": 87.26,
+		"family": 3,
+		"grown": false,
+		"id": "W043",
+		"remaining_mana": 3.95
+	},
+	{
+		"dps_10": 92.12,
+		"dps_60": 92.12,
+		"family": 3,
+		"grown": false,
+		"id": "W044",
+		"remaining_mana": 3.18
+	},
+	{
+		"dps_10": 113.98,
+		"dps_60": 98.15,
+		"family": 3,
+		"grown": false,
+		"id": "W045",
+		"remaining_mana": 7.71
+	},
+	{
+		"dps_10": 95.99,
+		"dps_60": 88.53,
+		"family": 3,
+		"grown": false,
+		"id": "W046",
+		"remaining_mana": 0.04
+	},
+	{
+		"dps_10": 96.29,
+		"dps_60": 83.78,
+		"family": 3,
+		"grown": false,
+		"id": "W047",
+		"remaining_mana": 4.01
+	},
+	{
+		"dps_10": 98.28,
+		"dps_60": 88.2,
+		"family": 3,
+		"grown": false,
+		"id": "W048",
+		"remaining_mana": 3.95
+	},
+	{
+		"dps_10": 243.27,
+		"dps_60": 283.37,
+		"family": 1,
+		"grown": true,
+		"id": "W001",
+		"remaining_mana": 97.3
+	},
+	{
+		"dps_10": 301.21,
+		"dps_60": 301.16,
+		"family": 2,
+		"grown": true,
+		"id": "W020",
+		"remaining_mana": 94.53
+	},
+	{
+		"dps_10": 321.68,
+		"dps_60": 335.54,
+		"family": 0,
+		"grown": true,
+		"id": "W026",
+		"remaining_mana": 80.14
+	},
+	{
+		"dps_10": 196.3,
+		"dps_60": 242.4,
+		"family": 3,
+		"grown": true,
+		"id": "W038",
+		"remaining_mana": 2.29
+	},
+	{
+		"dps_10": 160.67,
+		"dps_60": 192.36,
+		"family": 3,
+		"grown": true,
+		"id": "W039",
+		"remaining_mana": 1.38
+	},
+	{
+		"dps_10": 191.43,
+		"dps_60": 215.22,
+		"family": 3,
+		"grown": true,
+		"id": "W040",
+		"remaining_mana": 4.12
+	},
+	{
+		"dps_10": 241.26,
+		"dps_60": 247.48,
+		"family": 3,
+		"grown": true,
+		"id": "W037",
+		"remaining_mana": 201.67
+	},
+	{
+		"dps_10": 220.88,
+		"dps_60": 240.58,
+		"family": 1,
+		"grown": true,
+		"id": "W011",
+		"remaining_mana": 135.53
+	},
+	{
+		"dps_10": 202.95,
+		"dps_60": 228.03,
+		"family": 2,
+		"grown": true,
+		"id": "W021",
+		"remaining_mana": 34.15
+	},
+	{
+		"dps_10": 228.35,
+		"dps_60": 251.3,
+		"family": 1,
+		"grown": true,
+		"id": "W005",
+		"remaining_mana": 109.61
+	},
+	{
+		"dps_10": 156.67,
+		"dps_60": 208.5,
+		"family": 3,
+		"grown": true,
+		"id": "W047",
+		"remaining_mana": 8.9
+	},
+	{
+		"dps_10": 141.38,
+		"dps_60": 176.39,
+		"family": 3,
+		"grown": true,
+		"id": "W048",
+		"remaining_mana": 5.99
+	}
+]

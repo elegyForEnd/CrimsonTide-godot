@@ -1,0 +1,365 @@
+{
+  "source": "original procedural synthesis",
+  "clips": [
+    {
+      "cue": "rogue-0-0-charge",
+      "file": "rogue-0-0-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-0-release",
+      "file": "rogue-0-0-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-1-charge",
+      "file": "rogue-0-1-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-1-release",
+      "file": "rogue-0-1-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-2-charge",
+      "file": "rogue-0-2-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-2-release",
+      "file": "rogue-0-2-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-3-charge",
+      "file": "rogue-0-3-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-3-release",
+      "file": "rogue-0-3-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-4-charge",
+      "file": "rogue-0-4-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-4-release",
+      "file": "rogue-0-4-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-phase",
+      "file": "rogue-0-phase.wav",
+      "samples": 50714,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-0-fall",
+      "file": "rogue-0-fall.wav",
+      "samples": 61739,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-0-charge",
+      "file": "rogue-1-0-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-0-release",
+      "file": "rogue-1-0-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-1-charge",
+      "file": "rogue-1-1-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-1-release",
+      "file": "rogue-1-1-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-2-charge",
+      "file": "rogue-1-2-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-2-release",
+      "file": "rogue-1-2-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-3-charge",
+      "file": "rogue-1-3-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-3-release",
+      "file": "rogue-1-3-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-4-charge",
+      "file": "rogue-1-4-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-4-release",
+      "file": "rogue-1-4-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-phase",
+      "file": "rogue-1-phase.wav",
+      "samples": 50714,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-1-fall",
+      "file": "rogue-1-fall.wav",
+      "samples": 61739,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-0-charge",
+      "file": "rogue-2-0-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-0-release",
+      "file": "rogue-2-0-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-1-charge",
+      "file": "rogue-2-1-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-1-release",
+      "file": "rogue-2-1-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-2-charge",
+      "file": "rogue-2-2-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-2-release",
+      "file": "rogue-2-2-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-3-charge",
+      "file": "rogue-2-3-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-3-release",
+      "file": "rogue-2-3-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-4-charge",
+      "file": "rogue-2-4-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-4-release",
+      "file": "rogue-2-4-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-phase",
+      "file": "rogue-2-phase.wav",
+      "samples": 50714,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-2-fall",
+      "file": "rogue-2-fall.wav",
+      "samples": 61739,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-0-charge",
+      "file": "rogue-3-0-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-0-release",
+      "file": "rogue-3-0-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-1-charge",
+      "file": "rogue-3-1-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-1-release",
+      "file": "rogue-3-1-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-2-charge",
+      "file": "rogue-3-2-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-2-release",
+      "file": "rogue-3-2-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-3-charge",
+      "file": "rogue-3-3-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-3-release",
+      "file": "rogue-3-3-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-4-charge",
+      "file": "rogue-3-4-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-4-release",
+      "file": "rogue-3-4-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-phase",
+      "file": "rogue-3-phase.wav",
+      "samples": 50714,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-3-fall",
+      "file": "rogue-3-fall.wav",
+      "samples": 61739,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-0-charge",
+      "file": "rogue-4-0-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-0-release",
+      "file": "rogue-4-0-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-1-charge",
+      "file": "rogue-4-1-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-1-release",
+      "file": "rogue-4-1-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-2-charge",
+      "file": "rogue-4-2-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-2-release",
+      "file": "rogue-4-2-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-3-charge",
+      "file": "rogue-4-3-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-3-release",
+      "file": "rogue-4-3-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-4-charge",
+      "file": "rogue-4-4-charge.wav",
+      "samples": 28665,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-4-release",
+      "file": "rogue-4-4-release.wav",
+      "samples": 37485,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-phase",
+      "file": "rogue-4-phase.wav",
+      "samples": 50714,
+      "rate": 44100
+    },
+    {
+      "cue": "rogue-4-fall",
+      "file": "rogue-4-fall.wav",
+      "samples": 61739,
+      "rate": 44100
+    }
+  ]
+}

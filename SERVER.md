@@ -47,10 +47,10 @@ godot --headless --path /srv/crimson-tide --editor --import --quit
 python3 /srv/crimson-tide/server/app.py \
   --project /srv/crimson-tide --godot /usr/local/bin/godot \
   --data /var/lib/crimson-tide --public-host example.com \
-  --bind 127.0.0.1 --port 8080 --room-port-start 24900 --max-rooms 16
+  --bind 127.0.0.1 --port 8080 --stun-port 3478 --room-port-start 24900 --max-rooms 16
 ```
 
-默认需要开放 TCP 443 和 UDP 24900–24915。房间通过 ENet UDP 连接，因此 DNS 必须指向实际主机，不能仅依赖普通 HTTP/CDN 代理。原有 IP 直连继续使用 UDP 24872，无需经过 API。
+默认需要开放 TCP 443、UDP 3478（STUN）和 UDP 24900–24915（专用房间）。P2P 房间通过 HTTPS 信令交换经 STUN 观测的公网地址，从房主 UDP 24872 和加入者的随机本地端口同时打洞；客户端可在局域网地址与公网地址之间尝试，房主本机防火墙也需允许游戏的 UDP 24872。失败时，出发前全队自动切换到同一房间号的专用服务器。对称 NAT、严格运营商 NAT 和封锁 UDP 的网络可能无法直连。UDP 服务必须指向实际主机，不能仅依赖普通 HTTP/CDN 代理。手动 IP 直连仍可独立使用。
 
 使用 Caddy 等反向代理签发 TLS 证书并转发 HTTP，例如 `server/Caddyfile.example`；API 默认只监听回环地址。生产环境通过 systemd 等进程管理器管理 Python 服务及其整个进程组，并在边缘代理设置连接/请求速率限制。示例应用内的登录/建房限流以直连来源 IP 为单位，反向代理后的流量会共享此额度，需要按实际部署配置边缘限流后调整。
 
@@ -59,6 +59,7 @@ python3 /srv/crimson-tide/server/app.py \
 - `accounts.sqlite3` 持久保存账号、加盐 scrypt 密码哈希、令牌哈希和云存档；令牌有效期为 24 小时。没有邮件绑定、找回密码或管理后台。
 - API 为房间签发 45 秒有效的一次性随机入场凭证，Godot 房间验证并防止同一身份重复入场；单个账号同时只能创建一个活跃房间。
 - 每个房间启动一个无窗口 Godot 权威模拟进程，使用独立 UDP 端口。创建者离开后，将管理权交给仍连接的玩家；房间空置 90 秒回收，最长运行 6 小时。未完成的远征不支持断线恢复。
+- P2P 房间只占用短时 HTTPS 信令和 UDP 3478 STUN 服务，不启动 Godot 房间进程；需要兜底时才分配专用房间端口。房间号成员能看到彼此的公网 UDP 映射与局域网候选地址。对局出发后禁止自动迁移，以免丢失战斗状态。
 - 启动失败返回错误；房间工作目录中的 `worker.log` 保留诊断信息。服务退出会终止工作进程；重启保留账号和云存档，房间需要重建。
 - `--data` 目录包含私人存档、账号数据库和短时入场凭证，仅允许服务账号访问，禁止放在静态网站根目录。数据库备份应使用 SQLite 在线备份或停服后复制（WAL 模式）。已结束房间的日志目录可定期清理。
 - ENet 实时流量未做传输加密。云存档/登录通过 HTTPS 保护。公网延迟、丢包及容量需在实际部署环境继续测试。

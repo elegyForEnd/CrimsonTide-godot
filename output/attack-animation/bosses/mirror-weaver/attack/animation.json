@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 1.0909,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      200,
+      173,
+      1346,
+      1352
+    ],
+    [
+      179,
+      239,
+      1241,
+      1352
+    ],
+    [
+      137,
+      190,
+      1265,
+      1352
+    ],
+    [
+      105,
+      231,
+      1201,
+      1352
+    ],
+    [
+      156,
+      388,
+      1353,
+      1352
+    ],
+    [
+      57,
+      353,
+      1321,
+      1352
+    ],
+    [
+      119,
+      227,
+      1254,
+      1352
+    ],
+    [
+      78,
+      172,
+      1234,
+      1352
+    ]
+  ],
+  "source_still": "D:\\develop\\school\\CrimsonTide-godot\\output\\minimax-action-pack\\stills\\bosses\\mirror-weaver\\attack.png",
+  "method": "Individual image-generated frames; frame 1 chroma-keyed from approved still; uniform scaling and translation for alignment"
+}

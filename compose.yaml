@@ -13,9 +13,11 @@ services:
       PUBLIC_HOST: ${SERVER_DOMAIN:-example.com}
       ROOM_PORT_START: "24900"
       MAX_ROOMS: "16"
+      STUN_PORT: "3478"
     ports:
       - "127.0.0.1:8080:8080/tcp"
       - "24900-24915:24900-24915/udp"
+      - "3478:3478/udp"
     volumes:
       - game-data:/data
     logging:

@@ -9,9 +9,11 @@ func check(ok: bool, text: String) -> void:
 func _initialize() -> void:
 	call_deferred("run")
 func run() -> void:
+	check(Ruins.SIZE==Vector2(9600,7200),"Expanded extraction map dimensions")
 	for seed_value in [1,1729,9899]:
 		var world := Ruins.new()
 		world.generate(seed_value)
+		check(world.extent==Ruins.SIZE,"Generated world uses the expanded bounds")
 		var queue: Array[Vector2i]=[Vector2i(Ruins.SPAWN/40)]
 		var visited := {queue[0]:true}
 		var cursor := 0
@@ -31,7 +33,7 @@ func run() -> void:
 		for bridge in world.bridges:
 			var center: Vector2=bridge.get_center()
 			check(world.clear_line(center-Vector2(260,0),center+Vector2(260,0)),"Bridge crossing blocked")
-		check(world.blocked(Vector2(Ruins.river_x(1600),1600)),"River prevents traversal")
+		check(world.blocked(Vector2(Ruins.river_x(1600*Ruins.MAP_SCALE),1600*Ruins.MAP_SCALE)),"River prevents traversal")
 		for feature in world.features: check(world.blocked(feature.p),"Lake or cliff blocks walking")
 		check(world.blocked(Vector2(70,70)),"Sea blocks traversal")
 	var session := TideSession.new()

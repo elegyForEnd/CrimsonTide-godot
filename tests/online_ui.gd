@@ -62,6 +62,17 @@ func run() -> void:
 	app.show_storage()
 	press("使用本地 · 进入游戏")
 	check(not app.online_service.syncing,"local mode disables upload")
+	app.show_p2p_rooms()
+	await app.connect_p2p_room("")
+	check(app.session.online and not app.session.server_room,"P2P room starts a direct ENet host")
+	check(app.session.room_code.length()==6,"P2P room exposes a six-character invite code")
+	check(app.page_name=="camp","P2P host enters camp")
+	var p2p_invite := false
+	for child in app.page.get_children():
+		if child is Button and child.text=="房间号 "+app.session.room_code+" · 复制":
+			p2p_invite=true
+	check(p2p_invite,"P2P camp displays the invite code")
+	app.session.disconnect_room()
 	app.show_server_rooms()
 	await app.connect_server_room("",false)
 	check(not app.session.online,"empty room code does not create a room")

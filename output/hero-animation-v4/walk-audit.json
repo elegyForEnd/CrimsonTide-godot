@@ -1,0 +1,130 @@
+[
+  {
+    "frame": 0,
+    "source": "output/hero-animation-v4/source/hero-0/walk/000.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      121,
+      71,
+      1045,
+      1227
+    ],
+    "phase": 0.0,
+    "locked_canvas": false
+  },
+  {
+    "frame": 1,
+    "source": "output/hero-animation-v4/source/hero-0/walk/001.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      182,
+      178,
+      991,
+      1167
+    ],
+    "phase": 0.7853981633974483,
+    "locked_canvas": true
+  },
+  {
+    "frame": 2,
+    "source": "output/hero-animation-v4/source/hero-0/walk/002.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      190,
+      174,
+      930,
+      1166
+    ],
+    "phase": 1.5707963267948966,
+    "locked_canvas": true
+  },
+  {
+    "frame": 3,
+    "source": "output/hero-animation-v4/source/hero-0/walk/003.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      191,
+      179,
+      1040,
+      1160
+    ],
+    "phase": 2.356194490192345,
+    "locked_canvas": true
+  },
+  {
+    "frame": 4,
+    "source": "output/hero-animation-v4/source/hero-0/walk/004.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      190,
+      178,
+      978,
+      1158
+    ],
+    "phase": 3.141592653589793,
+    "locked_canvas": true
+  },
+  {
+    "frame": 5,
+    "source": "output/hero-animation-v4/source/hero-0/walk/005.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      189,
+      178,
+      985,
+      1164
+    ],
+    "phase": 3.9269908169872414,
+    "locked_canvas": true
+  },
+  {
+    "frame": 6,
+    "source": "output/hero-animation-v4/source/hero-0/walk/006.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      189,
+      178,
+      985,
+      1175
+    ],
+    "phase": 4.71238898038469,
+    "locked_canvas": true
+  },
+  {
+    "frame": 7,
+    "source": "output/hero-animation-v4/source/hero-0/walk/007.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "bbox": [
+      188,
+      176,
+      1004,
+      1150
+    ],
+    "phase": 5.497787143782138,
+    "locked_canvas": true
+  }
+]

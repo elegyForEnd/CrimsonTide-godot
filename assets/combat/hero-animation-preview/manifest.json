@@ -1,0 +1,210 @@
+{
+  "heroes/hero-0/sword": {
+    "path": "res://assets/combat/hero-animation-preview/heroes/hero-0/sword",
+    "frame_count": 8,
+    "pivot": [
+      281.8014705882353,
+      638.6029411764706
+    ],
+    "facing": 1,
+    "standing_height": 90.0,
+    "rect": [
+      -56.98884758364313,
+      -113.14498141263942,
+      182.00743494423793,
+      144.39256505576208
+    ],
+    "source": "output/hero-animation-v3/hero-0/sword",
+    "source_anchors": [
+      [
+        477.5,
+        1155
+      ],
+      [
+        467,
+        1149
+      ],
+      [
+        421,
+        1163
+      ],
+      [
+        449,
+        1127
+      ],
+      [
+        204,
+        1040
+      ],
+      [
+        197,
+        1046
+      ],
+      [
+        528,
+        1115
+      ],
+      [
+        477,
+        1157
+      ]
+    ],
+    "source_scales": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "review_only": false
+  },
+  "heroes/hero-0/walk": {
+    "path": "res://assets/combat/hero-animation-preview/heroes/hero-0/walk",
+    "frame_count": 8,
+    "pivot": [
+      532.8393135725429,
+      826.9890795631825
+    ],
+    "facing": 1,
+    "standing_height": 90.0,
+    "rect": [
+      -73.92857142857143,
+      -98.74025974025975,
+      123.89891774891775,
+      124.87012987012987
+    ],
+    "source": "output/hero-animation-v4/hero-0/walk",
+    "source_anchors": [
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ],
+      [
+        735.0,
+        1166.0
+      ]
+    ],
+    "source_scales": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "review_only": false
+  },
+  "heroes/hero-1/walk": {
+    "path": "res://assets/combat/hero-animation-preview/heroes/hero-1/walk",
+    "frame_count": 4,
+    "pivot": [
+      487.36556104446015,
+      808.8944753876261
+    ],
+    "facing": 1,
+    "standing_height": 90.0,
+    "rect": [
+      -68.12636874815036,
+      -97.07127075310905,
+      125.80645161290325,
+      122.1720430107527
+    ],
+    "source": "output/hero-animation-v3/hero-1/walk",
+    "source_anchors": [
+      [
+        653.0,
+        1160.0
+      ],
+      [
+        695.5247524752475,
+        1177.0
+      ],
+      [
+        733.8316831683169,
+        1200.0
+      ],
+      [
+        740.8217821782179,
+        1211.0
+      ]
+    ],
+    "source_scales": [
+      1.0,
+      0.9882583170254403,
+      0.926605504587156,
+      0.8662092624356775
+    ],
+    "review_only": true
+  },
+  "heroes/hero-2/walk": {
+    "path": "res://assets/combat/hero-animation-preview/heroes/hero-2/walk",
+    "frame_count": 4,
+    "pivot": [
+      543.0330812244199,
+      813.0163678877631
+    ],
+    "facing": 1,
+    "standing_height": 90.0,
+    "rect": [
+      -73.57037415110145,
+      -94.14783526927138,
+      121.9324181626188,
+      117.73252375923971
+    ],
+    "source": "output/hero-animation-v3/hero-2/walk",
+    "source_anchors": [
+      [
+        754.0,
+        1192.0
+      ],
+      [
+        778.7867298578199,
+        1197.0
+      ],
+      [
+        837.9952606635071,
+        1239.0
+      ],
+      [
+        832.6018957345972,
+        1223.0
+      ]
+    ],
+    "source_scales": [
+      1.0,
+      0.9705611775528978,
+      0.8887952822240943,
+      0.9009393680614859
+    ],
+    "review_only": true
+  }
+}

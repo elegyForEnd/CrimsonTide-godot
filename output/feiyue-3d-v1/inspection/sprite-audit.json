@@ -1,0 +1,802 @@
+[
+  {
+    "action": "idle",
+    "frame": 0,
+    "bbox": [
+      247,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 1,
+    "bbox": [
+      246,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 2,
+    "bbox": [
+      246,
+      157,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 3,
+    "bbox": [
+      247,
+      158,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 4,
+    "bbox": [
+      248,
+      158,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 5,
+    "bbox": [
+      248,
+      158,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 6,
+    "bbox": [
+      249,
+      157,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle",
+    "frame": 7,
+    "bbox": [
+      248,
+      156,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 0,
+    "bbox": [
+      246,
+      169,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 1,
+    "bbox": [
+      245,
+      181,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 2,
+    "bbox": [
+      245,
+      165,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 3,
+    "bbox": [
+      245,
+      162,
+      523,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 4,
+    "bbox": [
+      246,
+      169,
+      536,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 5,
+    "bbox": [
+      247,
+      179,
+      523,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 6,
+    "bbox": [
+      248,
+      163,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "walk",
+    "frame": 7,
+    "bbox": [
+      247,
+      163,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 0,
+    "bbox": [
+      259,
+      193,
+      509,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 1,
+    "bbox": [
+      260,
+      170,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 2,
+    "bbox": [
+      258,
+      190,
+      525,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 3,
+    "bbox": [
+      255,
+      203,
+      540,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 4,
+    "bbox": [
+      254,
+      195,
+      539,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 5,
+    "bbox": [
+      259,
+      172,
+      540,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 6,
+    "bbox": [
+      264,
+      190,
+      526,
+      630
+    ]
+  },
+  {
+    "action": "run",
+    "frame": 7,
+    "bbox": [
+      261,
+      202,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 0,
+    "bbox": [
+      246,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 1,
+    "bbox": [
+      249,
+      178,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 2,
+    "bbox": [
+      253,
+      202,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 3,
+    "bbox": [
+      255,
+      195,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 4,
+    "bbox": [
+      260,
+      187,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 5,
+    "bbox": [
+      263,
+      186,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 6,
+    "bbox": [
+      264,
+      188,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "dodge",
+    "frame": 7,
+    "bbox": [
+      262,
+      188,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 0,
+    "bbox": [
+      246,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 1,
+    "bbox": [
+      247,
+      154,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 2,
+    "bbox": [
+      249,
+      156,
+      505,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 3,
+    "bbox": [
+      235,
+      152,
+      505,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 4,
+    "bbox": [
+      253,
+      221,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 5,
+    "bbox": [
+      252,
+      196,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 6,
+    "bbox": [
+      252,
+      163,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "sword",
+    "frame": 7,
+    "bbox": [
+      246,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 0,
+    "bbox": [
+      242,
+      163,
+      636,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 1,
+    "bbox": [
+      238,
+      165,
+      534,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 2,
+    "bbox": [
+      233,
+      163,
+      506,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 3,
+    "bbox": [
+      239,
+      157,
+      516,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 4,
+    "bbox": [
+      263,
+      227,
+      515,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 5,
+    "bbox": [
+      260,
+      184,
+      521,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 6,
+    "bbox": [
+      251,
+      165,
+      620,
+      630
+    ]
+  },
+  {
+    "action": "heavy",
+    "frame": 7,
+    "bbox": [
+      242,
+      163,
+      636,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 0,
+    "bbox": [
+      246,
+      107,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 1,
+    "bbox": [
+      245,
+      80,
+      505,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 2,
+    "bbox": [
+      241,
+      95,
+      504,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 3,
+    "bbox": [
+      243,
+      99,
+      504,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 4,
+    "bbox": [
+      247,
+      95,
+      505,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 5,
+    "bbox": [
+      248,
+      96,
+      506,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 6,
+    "bbox": [
+      248,
+      102,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "staff",
+    "frame": 7,
+    "bbox": [
+      246,
+      107,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 0,
+    "bbox": [
+      246,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 1,
+    "bbox": [
+      245,
+      155,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 2,
+    "bbox": [
+      245,
+      155,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 3,
+    "bbox": [
+      245,
+      155,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 4,
+    "bbox": [
+      246,
+      156,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 5,
+    "bbox": [
+      247,
+      157,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 6,
+    "bbox": [
+      248,
+      157,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle_sword",
+    "frame": 7,
+    "bbox": [
+      247,
+      157,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 0,
+    "bbox": [
+      242,
+      163,
+      636,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 1,
+    "bbox": [
+      241,
+      163,
+      637,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 2,
+    "bbox": [
+      242,
+      165,
+      637,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 3,
+    "bbox": [
+      243,
+      168,
+      638,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 4,
+    "bbox": [
+      245,
+      170,
+      637,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 5,
+    "bbox": [
+      246,
+      170,
+      637,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 6,
+    "bbox": [
+      245,
+      167,
+      637,
+      630
+    ]
+  },
+  {
+    "action": "idle_heavy",
+    "frame": 7,
+    "bbox": [
+      243,
+      164,
+      637,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 0,
+    "bbox": [
+      246,
+      107,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 1,
+    "bbox": [
+      245,
+      106,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 2,
+    "bbox": [
+      245,
+      106,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 3,
+    "bbox": [
+      245,
+      106,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 4,
+    "bbox": [
+      246,
+      107,
+      507,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 5,
+    "bbox": [
+      247,
+      108,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 6,
+    "bbox": [
+      248,
+      108,
+      508,
+      630
+    ]
+  },
+  {
+    "action": "idle_staff",
+    "frame": 7,
+    "bbox": [
+      247,
+      108,
+      508,
+      630
+    ]
+  }
+]

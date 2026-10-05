@@ -1,0 +1,365 @@
+[
+  {
+    "name": "KayKit free 1.1",
+    "source": "https://kaylousberg.itch.io/kaykit-character-animations",
+    "license": "CC0 1.0",
+    "files": [
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Large/Rig_Large_CombatMelee.glb",
+        "animations": [
+          "Melee_1H_Slash",
+          "Melee_1H_Stab",
+          "Melee_2H_Attack",
+          "Melee_2H_Idle",
+          "Melee_2H_Slam",
+          "Melee_Block",
+          "Melee_Block_Attack",
+          "Melee_Block_Hit",
+          "Melee_Blocking",
+          "Melee_Dualwield_Slash",
+          "Melee_Dualwield_SlashCombo",
+          "Melee_Unarmed_Idle",
+          "Melee_Unarmed_Kick",
+          "Melee_Unarmed_Punch",
+          "Melee_Unarmed_Smash",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Large/Rig_Large_General.glb",
+        "animations": [
+          "Death_A",
+          "Death_A_Pose",
+          "Hit_A",
+          "Idle_A",
+          "Idle_B",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Large/Rig_Large_MovementAdvanced.glb",
+        "animations": [
+          "Dodge_Backwards",
+          "Dodge_Forward",
+          "Dodge_Left",
+          "Dodge_Right",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Large/Rig_Large_MovementBasic.glb",
+        "animations": [
+          "Running_A",
+          "T-Pose",
+          "Walking_A"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Large/Rig_Large_Simulation.glb",
+        "animations": [
+          "Flexing",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Large/Rig_Large_Special.glb",
+        "animations": [
+          "EXPERIMENTAL_Large_Transform",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_CombatMelee.glb",
+        "animations": [
+          "Melee_1H_Attack_Chop",
+          "Melee_1H_Attack_Jump_Chop",
+          "Melee_1H_Attack_Slice_Diagonal",
+          "Melee_1H_Attack_Slice_Horizontal",
+          "Melee_1H_Attack_Stab",
+          "Melee_2H_Attack_Chop",
+          "Melee_2H_Attack_Slice",
+          "Melee_2H_Attack_Spin",
+          "Melee_2H_Attack_Spinning",
+          "Melee_2H_Attack_Stab",
+          "Melee_2H_Idle",
+          "Melee_Block",
+          "Melee_Block_Attack",
+          "Melee_Block_Hit",
+          "Melee_Blocking",
+          "Melee_Dualwield_Attack_Chop",
+          "Melee_Dualwield_Attack_Slice",
+          "Melee_Dualwield_Attack_Stab",
+          "Melee_Unarmed_Attack_Kick",
+          "Melee_Unarmed_Attack_Punch_A",
+          "Melee_Unarmed_Idle",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_CombatRanged.glb",
+        "animations": [
+          "Ranged_1H_Aiming",
+          "Ranged_1H_Reload",
+          "Ranged_1H_Shoot",
+          "Ranged_1H_Shooting",
+          "Ranged_2H_Aiming",
+          "Ranged_2H_Reload",
+          "Ranged_2H_Shoot",
+          "Ranged_2H_Shooting",
+          "Ranged_Bow_Aiming_Idle",
+          "Ranged_Bow_Draw",
+          "Ranged_Bow_Draw_Up",
+          "Ranged_Bow_Idle",
+          "Ranged_Bow_Release",
+          "Ranged_Bow_Release_Up",
+          "Ranged_Magic_Raise",
+          "Ranged_Magic_Shoot",
+          "Ranged_Magic_Spellcasting",
+          "Ranged_Magic_Spellcasting_Long",
+          "Ranged_Magic_Summon",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_General.glb",
+        "animations": [
+          "Death_A",
+          "Death_A_Pose",
+          "Death_B",
+          "Death_B_Pose",
+          "Hit_A",
+          "Hit_B",
+          "Idle_A",
+          "Idle_B",
+          "Interact",
+          "PickUp",
+          "Spawn_Air",
+          "Spawn_Ground",
+          "T-Pose",
+          "Throw",
+          "Use_Item"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_MovementAdvanced.glb",
+        "animations": [
+          "Crawling",
+          "Crouching",
+          "Dodge_Backward",
+          "Dodge_Forward",
+          "Dodge_Left",
+          "Dodge_Right",
+          "Running_HoldingBow",
+          "Running_HoldingRifle",
+          "Running_Strafe_Left",
+          "Running_Strafe_Right",
+          "Sneaking",
+          "T-Pose",
+          "Walking_Backwards"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_MovementBasic.glb",
+        "animations": [
+          "Jump_Full_Long",
+          "Jump_Full_Short",
+          "Jump_Idle",
+          "Jump_Land",
+          "Jump_Start",
+          "Running_A",
+          "Running_B",
+          "T-Pose",
+          "Walking_A",
+          "Walking_B",
+          "Walking_C"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_Simulation.glb",
+        "animations": [
+          "Cheering",
+          "Lie_Down",
+          "Lie_Idle",
+          "Lie_StandUp",
+          "Push_Ups",
+          "Sit_Chair_Down",
+          "Sit_Chair_Idle",
+          "Sit_Chair_StandUp",
+          "Sit_Floor_Down",
+          "Sit_Floor_Idle",
+          "Sit_Floor_StandUp",
+          "Sit_Ups",
+          "T-Pose",
+          "Waving"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_Special.glb",
+        "animations": [
+          "EXPERIMENTAL_Medium_Transform",
+          "Skeletons_Awaken_Floor",
+          "Skeletons_Awaken_Floor_Long",
+          "Skeletons_Awaken_Standing",
+          "Skeletons_Death",
+          "Skeletons_Death_Pose",
+          "Skeletons_Death_Resurrect",
+          "Skeletons_Idle",
+          "Skeletons_Inactive_Floor_Pose",
+          "Skeletons_Inactive_Standing_Pose",
+          "Skeletons_Spawn_Ground",
+          "Skeletons_Taunt",
+          "Skeletons_Taunt_Longer",
+          "Skeletons_Walking",
+          "T-Pose"
+        ]
+      },
+      {
+        "file": "kaykit-free-1.1/KayKit_Character_Animations_1.1/Animations/gltf/Rig_Medium/Rig_Medium_Tools.glb",
+        "animations": [
+          "Chop",
+          "Chopping",
+          "Dig",
+          "Digging",
+          "Fishing_Bite",
+          "Fishing_Cast",
+          "Fishing_Catch",
+          "Fishing_Idle",
+          "Fishing_Reeling",
+          "Fishing_Struggling",
+          "Fishing_Tug",
+          "Hammer",
+          "Hammering",
+          "Holding_A",
+          "Holding_B",
+          "Holding_C",
+          "Lockpick",
+          "Lockpicking",
+          "Pickaxe",
+          "Pickaxing",
+          "Saw",
+          "Sawing",
+          "T-Pose",
+          "Work_A",
+          "Work_B",
+          "Work_C",
+          "Working_A",
+          "Working_B",
+          "Working_C"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quaternius library 1 Standard",
+    "source": "https://opengameart.org/content/universal-animation-library",
+    "license": "CC0 1.0",
+    "files": [
+      {
+        "file": "quaternius-library-1-standard/Animation Library[Standard]/Godot/AnimationLibrary_Godot_Standard.glb",
+        "animations": [
+          "A_TPose",
+          "Crouch_Fwd_Loop",
+          "Crouch_Idle_Loop",
+          "Dance_Loop",
+          "Death01",
+          "Driving_Loop",
+          "Fixing_Kneeling",
+          "Hit_Chest",
+          "Hit_Head",
+          "Idle_Loop",
+          "Idle_Talking_Loop",
+          "Idle_Torch_Loop",
+          "Interact",
+          "Jog_Fwd_Loop",
+          "Jump_Land",
+          "Jump_Loop",
+          "Jump_Start",
+          "PickUp_Table",
+          "Pistol_Aim_Down",
+          "Pistol_Aim_Neutral",
+          "Pistol_Aim_Up",
+          "Pistol_Idle_Loop",
+          "Pistol_Reload",
+          "Pistol_Shoot",
+          "Punch_Cross",
+          "Punch_Enter",
+          "Punch_Jab",
+          "Push_Loop",
+          "Roll",
+          "Roll_RM",
+          "Sitting_Enter",
+          "Sitting_Exit",
+          "Sitting_Idle_Loop",
+          "Sitting_Talking_Loop",
+          "Spell_Simple_Enter",
+          "Spell_Simple_Exit",
+          "Spell_Simple_Idle_Loop",
+          "Spell_Simple_Shoot",
+          "Sprint_Loop",
+          "Swim_Fwd_Loop",
+          "Swim_Idle_Loop",
+          "Sword_Attack",
+          "Sword_Attack_RM",
+          "Sword_Idle",
+          "Walk_Formal_Loop",
+          "Walk_Loop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Quaternius library 2 Standard",
+    "source": "https://opengameart.org/content/universal-animation-library-2",
+    "license": "CC0 1.0",
+    "files": [
+      {
+        "file": "quaternius-library-2-standard/Universal Animation Library 2 [Standard]/Unreal-Godot/UAL2_Standard.glb",
+        "animations": [
+          "A_TPose",
+          "Chest_Open",
+          "ClimbUp_1m_RM",
+          "Consume",
+          "Farm_Harvest",
+          "Farm_PlantSeed",
+          "Farm_Watering",
+          "Hit_Knockback",
+          "Hit_Knockback_RM",
+          "Idle_FoldArms_Loop",
+          "Idle_Lantern_Loop",
+          "Idle_No_Loop",
+          "Idle_Rail_Call",
+          "Idle_Rail_Loop",
+          "Idle_Shield_Break",
+          "Idle_Shield_Loop",
+          "Idle_TalkingPhone_Loop",
+          "LayToIdle",
+          "Melee_Hook",
+          "Melee_Hook_Rec",
+          "NinjaJump_Idle_Loop",
+          "NinjaJump_Land",
+          "NinjaJump_Start",
+          "OverhandThrow",
+          "Shield_Dash_RM",
+          "Shield_OneShot",
+          "Slide_Exit",
+          "Slide_Loop",
+          "Slide_Start",
+          "Sword_Block",
+          "Sword_Dash_RM",
+          "Sword_Regular_A",
+          "Sword_Regular_A_Rec",
+          "Sword_Regular_B",
+          "Sword_Regular_B_Rec",
+          "Sword_Regular_C",
+          "Sword_Regular_Combo",
+          "TreeChopping_Loop",
+          "Walk_Carry_Loop",
+          "Yes",
+          "Zombie_Idle_Loop",
+          "Zombie_Scratch",
+          "Zombie_Walk_Fwd_Loop"
+        ]
+      }
+    ]
+  }
+]

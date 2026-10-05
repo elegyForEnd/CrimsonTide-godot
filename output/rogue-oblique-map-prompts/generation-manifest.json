@@ -1,0 +1,68 @@
+[
+  {
+    "floor": 1,
+    "area": 1,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-88575405-4490-4202-b3e4-622d780a3620.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 1,
+    "area": 2,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-9f4bbe40-c603-46ab-992a-261ab901b09b.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 1,
+    "area": 3,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-653df67f-1b73-41eb-9777-0fba61c3c5f2.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 1,
+    "area": 4,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-74fe38de-988c-4990-9750-88e46b126017.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 1,
+    "area": 5,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-b83671bd-310c-4a67-956d-8f5aea01f7af.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 2,
+    "area": 1,
+    "path": "D:/develop/school/CrimsonTide-godot/assets/rogue/regions/f2-a1-oblique.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 2,
+    "area": 2,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-f57834d5-8981-4c27-b43c-73ee9c9503c2.png",
+    "prompt": "Restored from the generation batch immediately before the user's style change."
+  },
+  {
+    "floor": 2,
+    "area": 3,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-a3037568-1c8e-4fb9-b581-e3771e151080.png",
+    "prompt": "Use case: stylized-concept. Finished 3:1 panoramic 2.5D roguelike environment asset. Image 1 is approved material/lighting/style and center-road width reference ONLY. Image 2 is EXACT ROAD SHAPE GUIDE, gray = walkable paving, dark = scenery. Render image 2 into premium finished art. Follow gray silhouette closely, especially broad entry extending off LEFT frame edge and broad main road through RIGHT approach. Do not shrink either end with foreground scenery. Keep the modest (~30% image height) width in guide; don't make a huge deep arena or a thin trail. Keep the SAME moderately broad center width as the reference. Left approach slightly broader, right fighting section equally broad; a small bank alcove creates asymmetry. Do NOT turn this into a thin trail. Scene: industrial stone loading courtyard, iron pipes and abandoned crane beyond the edge. Elevated oblique orthographic camera, slightly looking down at level ground. One flat plane including both short right-side branches, no uphill or ramps. Guide's two level exits straight right and diagonal upper-right are open roads, separated by scenery wedge, NO doors or gates. Clean smooth readable paving with subtle seams. Same night semi-realistic premium dark fantasy painted style as image 1, softly brighter moonlight, natural balanced saturation, no glare, cartoon, grain or scales. Near background lightly optically blurred, distant background heavily blurred, playable ground clear. Scenery, trees, architecture and small edging rocks ONLY OUTSIDE gray silhouette; do not intrude into gray floor. Sparse one small warm lantern. Distinct scene, consistent floor biome. Do not copy gray flat diagram colors: render natural stone paving and detailed atmospheric scenery. No text, no UI, no characters, no monsters. CRITICAL: Preserve the guide's wide open start, moderately broad continuous floor and both broad ends; do not use oval centered clearing silhouette."
+  },
+  {
+    "floor": 2,
+    "area": 4,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-19963781-a394-419a-aad2-4ce4b5bb1ca7.png",
+    "prompt": "Use case: stylized-concept. Finished 3:1 panoramic 2.5D roguelike environment asset. Image 1 is approved material/lighting/style and center-road width reference ONLY. Image 2 is EXACT ROAD SHAPE GUIDE, gray = walkable paving, dark = scenery. Render image 2 into premium finished art. Follow gray silhouette closely, especially broad entry extending off LEFT frame edge and broad main road through RIGHT approach. Do not shrink either end with foreground scenery. Keep the modest (~30% image height) width in guide; don't make a huge deep arena or a thin trail. Keep the SAME moderately broad width as reference. One gentle elbow shifts both road edges together without squeezing them. Entry remains open broad, exit approach equally broad. Do NOT taper both ends. Scene: ruined furnace hall, cool moonlight through broken ceiling, restrained warm embers. Elevated oblique orthographic camera, slightly looking down at level ground. One flat plane including both short right-side branches, no uphill or ramps. Guide's two level exits straight right and diagonal upper-right are open roads, separated by scenery wedge, NO doors or gates. Clean smooth readable paving with subtle seams. Same night semi-realistic premium dark fantasy painted style as image 1, softly brighter moonlight, natural balanced saturation, no glare, cartoon, grain or scales. Near background lightly optically blurred, distant background heavily blurred, playable ground clear. Scenery, trees, architecture and small edging rocks ONLY OUTSIDE gray silhouette; do not intrude into gray floor. Sparse one small warm lantern. Distinct scene, consistent floor biome. Do not copy gray flat diagram colors: render natural stone paving and detailed atmospheric scenery. No text, no UI, no characters, no monsters. CRITICAL: Preserve the guide's wide open start, moderately broad continuous floor and both broad ends; do not use oval centered clearing silhouette."
+  },
+  {
+    "floor": 2,
+    "area": 5,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-b21271f4-0872-478b-9310-81ba07105678.png",
+    "prompt": "Use case: stylized-concept. Finished 3:1 panoramic 2.5D roguelike environment asset. Image 1 is approved material/lighting/style and center-road width reference ONLY. Image 2 is EXACT ROAD SHAPE GUIDE, gray = walkable paving, dark = scenery. Render image 2 into premium finished art. Follow gray silhouette closely, especially broad entry extending off LEFT frame edge and broad main road through RIGHT approach. Do not shrink either end with foreground scenery. Keep the modest (~30% image height) width in guide; don't make a huge deep arena or a thin trail. Keep the SAME moderately broad width as reference. Broad start and broad middle, mild asymmetrical inward bend only along one bank near the last third. Keep wide approach to the fork. Do NOT make an hourglass or thin path. Scene: royal forge sanctuary, massive silent furnace against distant wall. Elevated oblique orthographic camera, slightly looking down at level ground. One flat plane including both short right-side branches, no uphill or ramps. Guide's two level exits straight right and diagonal upper-right are open roads, separated by scenery wedge, NO doors or gates. Clean smooth readable paving with subtle seams. Same night semi-realistic premium dark fantasy painted style as image 1, softly brighter moonlight, natural balanced saturation, no glare, cartoon, grain or scales. Near background lightly optically blurred, distant background heavily blurred, playable ground clear. Scenery, trees, architecture and small edging rocks ONLY OUTSIDE gray silhouette; do not intrude into gray floor. Sparse one small warm lantern. Distinct scene, consistent floor biome. Do not copy gray flat diagram colors: render natural stone paving and detailed atmospheric scenery. No text, no UI, no characters, no monsters. CRITICAL: Preserve the guide's wide open start, moderately broad continuous floor and both broad ends; do not use oval centered clearing silhouette."
+  },
+  {
+    "floor": 3,
+    "area": 1,
+    "path": "C:/Users/wangk/.codex/generated_images/01a0fd33-cd55-7e32-9498-ee5c93f0e099/exec-3b9ae403-386d-45d5-ad8f-e291fa5803a0.png",
+    "prompt": "Use case: stylized-concept. Finished 3:1 panoramic 2.5D roguelike environment asset. Image 1 is approved material/lighting/style and center-road width reference ONLY. Image 2 is EXACT ROAD SHAPE GUIDE, gray = walkable paving, dark = scenery. Render image 2 into premium finished art. Follow gray silhouette closely, especially broad entry extending off LEFT frame edge and broad main road through RIGHT approach. Do not shrink either end with foreground scenery. Keep the modest (~30% image height) width in guide; don't make a huge deep arena or a thin trail. Keep the SAME moderately broad center width as the reference. Change only the entry and end contours: road START on LEFT stays AS BROAD AS THE CENTER and reaches off left edge, not pinched by foreground trees. Main road before right fork also stays broad. A slight bend offset toward upper bank is enough. Scene: moonlit crystal garden terrace, muted violet crystals and dark stone ruins outside floor. Elevated oblique orthographic camera, slightly looking down at level ground. One flat plane including both short right-side branches, no uphill or ramps. Guide's two level exits straight right and diagonal upper-right are open roads, separated by scenery wedge, NO doors or gates. Clean smooth readable paving with subtle seams. Same night semi-realistic premium dark fantasy painted style as image 1, softly brighter moonlight, natural balanced saturation, no glare, cartoon, grain or scales. Near background lightly optically blurred, distant background heavily blurred, playable ground clear. Scenery, trees, architecture and small edging rocks ONLY OUTSIDE gray silhouette; do not intrude into gray floor. Sparse one small warm lantern. Distinct scene, consistent floor biome. Do not copy gray flat diagram colors: render natural stone paving and detailed atmospheric scenery. No text, no UI, no characters, no monsters. CRITICAL: Preserve the guide's wide open start, moderately broad continuous floor and both broad ends; do not use oval centered clearing silhouette."
+  }
+]

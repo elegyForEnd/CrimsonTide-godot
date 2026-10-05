@@ -1,0 +1,234 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "assembly": "Read-only alpha component indexing; Godot atlas assembly with 64px padding",
+  "assets": [
+    {
+      "file": "boss-0.png",
+      "columns": 4,
+      "rows": 4,
+      "used_rows": 2,
+      "role": "idle4, walk4; unused prototype attack rows preserved only in source",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent Godot 2D beat-em-up BOSS animation sprite atlas. Subject: Ancient mushroom king: massive gnarled humanoid tree with luminous teal mushroom crown, wooden claws, hanging violet spores, NOT an insect. Original chunky dark fantasy hand-painted cartoon, thick clean dark outlines, expressive glowing eyes, three quarter side view facing right, full body with feet. Exactly 4 columns by 4 rows equal grid (16 frames), 1536x1536 square. One consistent character in EVERY cell, same scale and identity. Row1 idle breathing 4 successive frames; row2 walking four successive stride poses; row3 melee heavy attack four successive frames: anticipation, windup, extended impact, recovery; row4 magical cast four successive frames: anticipation, power gathering, release with arms extended, recovery. Each cell character is SMALL: contained in CENTRAL 65% width and 65% height of its cell. Minimum 60 pixel completely TRANSPARENT gutter on ALL FOUR sides inside every cell; weapons and wings MUST remain inside central65%, never touch neighboring cells. Align feet at same level within cells. Pure actual alpha transparent background, no floor shadows, no labels, no grid lines, no watermark, no borders. No rats, rodents or insects. This boss is called 幽蕈古王."
+    },
+    {
+      "file": "boss-skills-0.png",
+      "columns": 4,
+      "rows": 5,
+      "prompt": "Use case: stylized-concept. Asset type: transparent animated boss SKILL atlas. Input reference is STYLE AND EXACT CHARACTER IDENTITY reference only. Preserve the boss's exact outfit silhouette palette weapon and anatomy from the supplied reference. Create exactly4 columns x5 rows (20 poses) on a transparent 1536x1920 portrait canvas. In each row, FOUR successive frames anticipation, windup, impact, recovery. Row1 root claw sweep; row2 spore cloud cast from crown; row3 both hands slamming down to grow roots; row4 low forward running stomp charge; row5 arms raised to heal and summon small mushrooms. Same full-body creature facing right in ALL20 cells. Critical layout: draw each character SMALL, max45% cell width and55% cell height INCLUDING weapons/effects. Center inside each cell, feet same baseline. At least85px completely transparent padding EACH side EACH cell. NOTHING may approach cell edges. Keep magical effects close to character; broad combat VFX are separate runtime assets. Never bridge between frames. No frame labels or grid lines, no backdrop no shadows no text watermark. Hand painted cute chunky dark fantasy thick outlines glowing eyes. Actual alpha transparency.",
+      "reference_role": "same boss identity/style"
+    },
+    {
+      "file": "minion-0-0.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: moss crowned wooden forest sprite with branch claws. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-0-1.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small mushroom brawler with wooden fists. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-0-2.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: root masked goblin shaman with staff. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-0-3.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: glowing teal antler spirit walking on two feet. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "boss-1.png",
+      "columns": 4,
+      "rows": 4,
+      "used_rows": 2,
+      "role": "idle4, walk4; unused prototype attack rows preserved only in source",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent Godot 2D beat-em-up BOSS animation sprite atlas. Subject: Forge tyrant: stocky horned magma demon inside black iron armor, giant furnace hammer, orange glowing core. Original chunky dark fantasy hand-painted cartoon, thick clean dark outlines, expressive glowing eyes, three quarter side view facing right, full body with feet. Exactly 4 columns by 4 rows equal grid (16 frames), 1536x1536 square. One consistent character in EVERY cell, same scale and identity. Row1 idle breathing 4 successive frames; row2 walking four successive stride poses; row3 melee heavy attack four successive frames: anticipation, windup, extended impact, recovery; row4 magical cast four successive frames: anticipation, power gathering, release with arms extended, recovery. Each cell character is SMALL: contained in CENTRAL 65% width and 65% height of its cell. Minimum 60 pixel completely TRANSPARENT gutter on ALL FOUR sides inside every cell; weapons and wings MUST remain inside central65%, never touch neighboring cells. Align feet at same level within cells. Pure actual alpha transparent background, no floor shadows, no labels, no grid lines, no watermark, no borders. No rats, rodents or insects. This boss is called 熔炉暴君."
+    },
+    {
+      "file": "boss-skills-1.png",
+      "columns": 4,
+      "rows": 5,
+      "prompt": "Use case: stylized-concept. Asset type: transparent animated boss SKILL atlas. Input reference is STYLE AND EXACT CHARACTER IDENTITY reference only. Preserve the boss's exact outfit silhouette palette weapon and anatomy from the supplied reference. Create exactly4 columns x5 rows (20 poses) on a transparent 1536x1920 portrait canvas. In each row, FOUR successive frames anticipation, windup, impact, recovery. Row1 overhead hammer slam; row2 one hand throwing burning iron sparks; row3 hammer touching ground to erupt lava; row4 low charging forward with hammer tucked; row5 both hands raising hammer to form small flame ring. Same full-body creature facing right in ALL20 cells. Critical layout: draw each character SMALL, max45% cell width and55% cell height INCLUDING weapons/effects. Center inside each cell, feet same baseline. At least85px completely transparent padding EACH side EACH cell. NOTHING may approach cell edges. Keep magical effects close to character; broad combat VFX are separate runtime assets. Never bridge between frames. No frame labels or grid lines, no backdrop no shadows no text watermark. Hand painted cute chunky dark fantasy thick outlines glowing eyes. Actual alpha transparency.",
+      "reference_role": "same boss identity/style"
+    },
+    {
+      "file": "minion-1-0.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small furnace slag armored knight with coal sword. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-1-1.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small orange horned coal imp. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-1-2.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: compact iron golem with mallet. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-1-3.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: floating fiery humanoid elemental. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "boss-2.png",
+      "columns": 4,
+      "rows": 4,
+      "used_rows": 2,
+      "role": "idle4, walk4; unused prototype attack rows preserved only in source",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent Godot 2D beat-em-up BOSS animation sprite atlas. Subject: Star mirror empress: floating crystalline humanoid sorceress, faceted violet and cyan gown, constellation crown, star staff. Original chunky dark fantasy hand-painted cartoon, thick clean dark outlines, expressive glowing eyes, three quarter side view facing right, full body with feet. Exactly 4 columns by 4 rows equal grid (16 frames), 1536x1536 square. One consistent character in EVERY cell, same scale and identity. Row1 idle breathing 4 successive frames; row2 walking four successive stride poses; row3 melee heavy attack four successive frames: anticipation, windup, extended impact, recovery; row4 magical cast four successive frames: anticipation, power gathering, release with arms extended, recovery. Each cell character is SMALL: contained in CENTRAL 65% width and 65% height of its cell. Minimum 60 pixel completely TRANSPARENT gutter on ALL FOUR sides inside every cell; weapons and wings MUST remain inside central65%, never touch neighboring cells. Align feet at same level within cells. Pure actual alpha transparent background, no floor shadows, no labels, no grid lines, no watermark, no borders. No rats, rodents or insects. This boss is called 星镜女皇."
+    },
+    {
+      "file": "boss-skills-2.png",
+      "columns": 4,
+      "rows": 5,
+      "prompt": "Use case: stylized-concept. Asset type: transparent animated boss SKILL atlas. Input reference is STYLE AND EXACT CHARACTER IDENTITY reference only. Preserve the boss's exact outfit silhouette palette weapon and anatomy from the supplied reference. Create exactly4 columns x5 rows (20 poses) on a transparent 1536x1920 portrait canvas. In each row, FOUR successive frames anticipation, windup, impact, recovery. Row1 staff thrust releasing crystal lance; row2 arms pointing outward to conjure three small mirrors; row3 staff raised to call meteors; row4 hands circling to cast orbiting stars; row5 body dissolving into small prism teleport shards. Same full-body creature facing right in ALL20 cells. Critical layout: draw each character SMALL, max45% cell width and55% cell height INCLUDING weapons/effects. Center inside each cell, feet same baseline. At least85px completely transparent padding EACH side EACH cell. NOTHING may approach cell edges. Keep magical effects close to character; broad combat VFX are separate runtime assets. Never bridge between frames. No frame labels or grid lines, no backdrop no shadows no text watermark. Hand painted cute chunky dark fantasy thick outlines glowing eyes. Actual alpha transparency.",
+      "reference_role": "same boss identity/style"
+    },
+    {
+      "file": "minion-2-0.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small star crystal armored sentinel. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-2-1.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small violet crystal duelist. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-2-2.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: cyan single star eyed hooded wizard. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-2-3.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: tiny four legged prism dragon. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "boss-3.png",
+      "columns": 4,
+      "rows": 4,
+      "used_rows": 2,
+      "role": "idle4, walk4; unused prototype attack rows preserved only in source",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent Godot 2D beat-em-up BOSS animation sprite atlas. Subject: Thunderwing admiral: winged armored griffin humanoid pirate, cloud-white feathers, blue lightning saber, brass captain coat. Original chunky dark fantasy hand-painted cartoon, thick clean dark outlines, expressive glowing eyes, three quarter side view facing right, full body with feet. Exactly 4 columns by 4 rows equal grid (16 frames), 1536x1536 square. One consistent character in EVERY cell, same scale and identity. Row1 idle breathing 4 successive frames; row2 walking four successive stride poses; row3 melee heavy attack four successive frames: anticipation, windup, extended impact, recovery; row4 magical cast four successive frames: anticipation, power gathering, release with arms extended, recovery. Each cell character is SMALL: contained in CENTRAL 65% width and 65% height of its cell. Minimum 60 pixel completely TRANSPARENT gutter on ALL FOUR sides inside every cell; weapons and wings MUST remain inside central65%, never touch neighboring cells. Align feet at same level within cells. Pure actual alpha transparent background, no floor shadows, no labels, no grid lines, no watermark, no borders. No rats, rodents or insects. This boss is called 雷翼舰长."
+    },
+    {
+      "file": "boss-skills-3.png",
+      "columns": 4,
+      "rows": 5,
+      "prompt": "Use case: stylized-concept. Asset type: transparent animated boss SKILL atlas. Input reference is STYLE AND EXACT CHARACTER IDENTITY reference only. Preserve the boss's exact outfit silhouette palette weapon and anatomy from the supplied reference. Create exactly4 columns x5 rows (20 poses) on a transparent 1536x1920 portrait canvas. In each row, FOUR successive frames anticipation, windup, impact, recovery. Row1 lightning saber slash; row2 left claw pointing forward to cast chain lightning; row3 both wings curled to summon cyclone; row4 forward wing-assisted diving charge; row5 saber raised skyward summoning thunder. Same full-body creature facing right in ALL20 cells. Critical layout: draw each character SMALL, max45% cell width and55% cell height INCLUDING weapons/effects. Center inside each cell, feet same baseline. At least85px completely transparent padding EACH side EACH cell. NOTHING may approach cell edges. Keep magical effects close to character; broad combat VFX are separate runtime assets. Never bridge between frames. No frame labels or grid lines, no backdrop no shadows no text watermark. Hand painted cute chunky dark fantasy thick outlines glowing eyes. Actual alpha transparency.",
+      "reference_role": "same boss identity/style"
+    },
+    {
+      "file": "minion-3-0.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small blue wind rune masked priest with staff. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-3-1.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small feathered bird humanoid with saber. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-3-2.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: blue thunder masked wizard. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-3-3.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small winged cloud lion. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "boss-4.png",
+      "columns": 4,
+      "rows": 4,
+      "used_rows": 2,
+      "role": "idle4, walk4; unused prototype attack rows preserved only in source",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent Godot 2D beat-em-up BOSS animation sprite atlas. Subject: Obsidian sword saint: imposing horned shadow knight with crimson cape, angular black gold armor, long red glowing greatsword. Original chunky dark fantasy hand-painted cartoon, thick clean dark outlines, expressive glowing eyes, three quarter side view facing right, full body with feet. Exactly 4 columns by 4 rows equal grid (16 frames), 1536x1536 square. One consistent character in EVERY cell, same scale and identity. Row1 idle breathing 4 successive frames; row2 walking four successive stride poses; row3 melee heavy attack four successive frames: anticipation, windup, extended impact, recovery; row4 magical cast four successive frames: anticipation, power gathering, release with arms extended, recovery. Each cell character is SMALL: contained in CENTRAL 65% width and 65% height of its cell. Minimum 60 pixel completely TRANSPARENT gutter on ALL FOUR sides inside every cell; weapons and wings MUST remain inside central65%, never touch neighboring cells. Align feet at same level within cells. Pure actual alpha transparent background, no floor shadows, no labels, no grid lines, no watermark, no borders. No rats, rodents or insects. This boss is called 黑曜剑圣."
+    },
+    {
+      "file": "boss-skills-4.png",
+      "columns": 4,
+      "rows": 5,
+      "prompt": "Use case: stylized-concept. Asset type: transparent animated boss SKILL atlas. Input reference is STYLE AND EXACT CHARACTER IDENTITY reference only. Preserve the boss's exact outfit silhouette palette weapon and anatomy from the supplied reference. Create exactly4 columns x5 rows (20 poses) on a transparent 1536x1920 portrait canvas. In each row, FOUR successive frames anticipation, windup, impact, recovery. Row1 three-stage sword cleave; row2 low quickdraw forward lunge; row3 blade raised calling falling swords; row4 left hand drawing crimson rune seal; row5 greatsword cutting a crossed slash. Same full-body creature facing right in ALL20 cells. Critical layout: draw each character SMALL, max45% cell width and55% cell height INCLUDING weapons/effects. Center inside each cell, feet same baseline. At least85px completely transparent padding EACH side EACH cell. NOTHING may approach cell edges. Keep magical effects close to character; broad combat VFX are separate runtime assets. Never bridge between frames. No frame labels or grid lines, no backdrop no shadows no text watermark. Hand painted cute chunky dark fantasy thick outlines glowing eyes. Actual alpha transparency.",
+      "reference_role": "same boss identity/style"
+    },
+    {
+      "file": "minion-4-0.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small black gold armored demon palace sentinel. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents.",
+      "source_file": "minion-4-0-v2.png",
+      "correction_prompt": "Edit this monster animation atlas. Preserve exact black gold armored horned winged demon guard identity and all twelve original poses. Re-layout exactly4 columns by3 rows. Make EACH of12 characters dramatically smaller to only40% of cell width and50% of cell height INCLUDING fully extended halberd and wings. This is crucial: third and fourth attacks must NEVER touch; enormous empty transparent gutters between EVERY sprite, minimum100px each side within each cell. Row1 four idle frames, row2 four walk frames, row3 four halberd attack frames anticipation/windup/impact/recovery. Actual alpha transparency; no labels no grid no shadow. Full bodies, no clipped weapon or wing, consistent scale in every frame.",
+      "reference_role": "edit prior atlas to separate long halberd poses"
+    },
+    {
+      "file": "minion-4-1.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small horned shadow duelist. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-4-2.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: hooded red spellbook acolyte. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "minion-4-3.png",
+      "columns": 4,
+      "rows": 3,
+      "prompt": "Use case: stylized-concept. Asset type: production transparent 2D Godot monster animation atlas. Subject: small quadruped obsidian horned beast. Original hand-painted chunky cute dark fantasy, thick clean outlines expressive glowing eyes, side three-quarter view facing right. Exactly FOUR equal columns x THREE equal rows,1536x1152 landscape. ALL12 cells show the SAME creature with identical colors equipment and proportions. Row1 FOUR successive idle breathing animation poses; row2 FOUR successive WALK animation frames alternating stride and limb swing; row3 FOUR successive ATTACK frames: crouch anticipation, pulled-back windup, fully extended attack impact, easing recovery. Full bodies including feet. Use SAME character scale every frame, grounded feet at fixed cell-relative baseline. Center every subject strictly within CENTRAL60% width and60% height of EACH cell. At least60 pixels completely TRANSPARENT gap inside every cell on ALL FOUR sides. Weapons horns wings magic fully INSIDE central60%. Each frame isolated, no frame overlap. Actual alpha transparent background, no floor shadow, no grid lines, no labels, no text, no watermark. NO insects NO rodents."
+    },
+    {
+      "file": "effects-0.png",
+      "columns": 2,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production Godot transparent spell VFX animation atlas. Exactly TWO columns and TWO rows, four successive frames. Subject: teal magical roots and luminous mushroom spores eruption. Top left rising small energy, top right forming energy, bottom left impact burst, bottom right dissolving particles. Hand-painted bold fantasy style. No characters, no text. Actual alpha transparency. Every effect MUST be small within central40% width AND40% height of its cell, leaving enormous 120px empty transparent margin on ALL FOUR sides. Four isolated effects separated by hundreds of empty pixels. No touch or overlap. Square1024x1024. No grid, no floor, no shadows no watermark."
+    },
+    {
+      "file": "effects-1.png",
+      "columns": 2,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production Godot transparent spell VFX animation atlas. Exactly TWO columns and TWO rows, four successive frames. Subject: orange molten lava fire explosion. Top left rising small energy, top right forming energy, bottom left impact burst, bottom right dissolving particles. Hand-painted bold fantasy style. No characters, no text. Actual alpha transparency. Every effect MUST be small within central40% width AND40% height of its cell, leaving enormous 120px empty transparent margin on ALL FOUR sides. Four isolated effects separated by hundreds of empty pixels. No touch or overlap. Square1024x1024. No grid, no floor, no shadows no watermark."
+    },
+    {
+      "file": "effects-2.png",
+      "columns": 2,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production Godot transparent spell VFX animation atlas. Exactly TWO columns and TWO rows, four successive frames. Subject: violet cyan star crystal shard explosion. Top left rising small energy, top right forming energy, bottom left impact burst, bottom right dissolving particles. Hand-painted bold fantasy style. No characters, no text. Actual alpha transparency. Every effect MUST be small within central40% width AND40% height of its cell, leaving enormous 120px empty transparent margin on ALL FOUR sides. Four isolated effects separated by hundreds of empty pixels. No touch or overlap. Square1024x1024. No grid, no floor, no shadows no watermark."
+    },
+    {
+      "file": "effects-3.png",
+      "columns": 2,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production Godot transparent spell VFX animation atlas. Exactly TWO columns and TWO rows, four successive frames. Subject: blue white electric cyclone and lightning. Top left rising small energy, top right forming energy, bottom left impact burst, bottom right dissolving particles. Hand-painted bold fantasy style. No characters, no text. Actual alpha transparency. Every effect MUST be small within central40% width AND40% height of its cell, leaving enormous 120px empty transparent margin on ALL FOUR sides. Four isolated effects separated by hundreds of empty pixels. No touch or overlap. Square1024x1024. No grid, no floor, no shadows no watermark."
+    },
+    {
+      "file": "effects-4.png",
+      "columns": 2,
+      "rows": 2,
+      "prompt": "Use case: stylized-concept. Production Godot transparent spell VFX animation atlas. Exactly TWO columns and TWO rows, four successive frames. Subject: crimson black spectral sword crescent. Top left rising small energy, top right forming energy, bottom left impact burst, bottom right dissolving particles. Hand-painted bold fantasy style. No characters, no text. Actual alpha transparency. Every effect MUST be small within central40% width AND40% height of its cell, leaving enormous 120px empty transparent margin on ALL FOUR sides. Four isolated effects separated by hundreds of empty pixels. No touch or overlap. Square1024x1024. No grid, no floor, no shadows no watermark."
+    }
+  ]
+}

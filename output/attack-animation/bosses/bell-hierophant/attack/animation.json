@@ -1,0 +1,72 @@
+{
+  "frame_count": 8,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "one_shot_fps": 10,
+  "generated_frame_scale": 1.0949,
+  "loop": false,
+  "frame_order": [
+    "000.png",
+    "001.png",
+    "002.png",
+    "003.png",
+    "004.png",
+    "005.png",
+    "006.png",
+    "007.png"
+  ],
+  "content_boxes": [
+    [
+      193,
+      149,
+      1367,
+      1358
+    ],
+    [
+      147,
+      159,
+      1321,
+      1358
+    ],
+    [
+      160,
+      194,
+      1303,
+      1358
+    ],
+    [
+      90,
+      195,
+      1215,
+      1358
+    ],
+    [
+      24,
+      507,
+      1179,
+      1358
+    ],
+    [
+      24,
+      461,
+      1216,
+      1358
+    ],
+    [
+      259,
+      168,
+      1417,
+      1358
+    ],
+    [
+      181,
+      146,
+      1324,
+      1358
+    ]
+  ],
+  "source_still": "D:\\develop\\school\\CrimsonTide-godot\\output\\minimax-action-pack\\stills\\bosses\\bell-hierophant\\attack.png",
+  "method": "Individual image-generated frames; frame 1 chroma-keyed from approved still; uniform scaling and translation for alignment"
+}

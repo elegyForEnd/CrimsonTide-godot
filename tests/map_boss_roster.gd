@@ -48,6 +48,11 @@ func run() -> void:
 		var habitats: Dictionary={}
 		var identities: Dictionary={}
 		for e in roster:
+			check(not s.ruins.blocked(e.p,58),"Boss lair remains walkable after map expansion")
+			check(e.p.distance_to(s.raid.center)>=1000,"World boss keeps clear of the dawn arena")
+			for other in roster:
+				if int(other.id)>int(e.id):
+					check(e.p.distance_to(other.p)>=s.expedition.GUARDIAN_SPACING,"Seed %d separates world boss lairs" % seed)
 			var name: String=str(e.boss_name)
 			appeared[name]=true
 			identities[name]=true
@@ -72,6 +77,7 @@ func run() -> void:
 			var next_day: Array=guardians(s)
 			check(next_day.size()==1 and int(next_day[0].id)==survivor_id and is_equal_approx(float(next_day[0].max_hp),survivor_hp),"The surviving boss persists into day two without scaling or replacement")
 			if next_day.size()==1:
+				check(next_day[0].p.distance_to(s.raid.center)>=1000,"Day-two dawn arena avoids the surviving world boss")
 				next_day[0].hp=0
 				s.simulate(0.01)
 				check(reward_matches(s,next_day[0]),"Day-two map boss reward keeps its own fixed quality")
