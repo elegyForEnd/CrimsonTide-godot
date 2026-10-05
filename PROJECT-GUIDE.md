@@ -47,8 +47,6 @@ D:\dsh\Game\
    ├─ server\                  ← Python 标准库房间服务器（app.py）+ Godot 房间进程（room.gd）
    ├─ pv\ output\              ← 宣传片；生成产物/性能探针/报告（非游戏资源）
    ├─ DEPRECATED-…09-25\       ← 已废弃的角色动画归档（.gdignore，勿动）
-   ├─ CrimsonTide-godot\       ← ⚠️ 本机多出来的重复副本（未跟踪的嵌套克隆，远程仓库里没有），
-   │                              勿改、勿 `git add .`；确认无用可直接删除（见 §11.1）
    ├─ Godot_v4.7.2-…win64.exe            ← 编辑器版引擎
    ├─ Godot_v4.7.2-…win64_console.exe    ← 控制台版（跑测试/服务器必用它）
    ├─ 游戏启动.cmd / Start-Game.cmd / 源码版启动.cmd
@@ -512,7 +510,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 ## 11. 已知坑与注意事项（改码前必读）
 
-1. **本机多出来的 `CrimsonTide-godot/CrimsonTide-godot/` 是未跟踪的嵌套克隆**（远程仓库里没有它，脚本/场景与根目录同 commit）。危害有两个：让 `git status` 永远显示 `?? CrimsonTide-godot/`；让后来者/AI 改错目录。处理：① 一切修改只在根目录做；② **禁止 `git add .`**（会把整个副本当成 gitlink 提交）；③ 确认无用后直接删除该副本。
+1. **`git status` 里出现 `?? 某目录/` 时先查清再动**：这类目录没进版本库（可能是重复克隆，也可能是本机构建产物）。危害是 `git add .` 会把整个目录当成一个 gitlink 提交进来。处理：① 一切修改只在项目根做；② **禁止 `git add .`**，只 add 你真正改的文件；③ 确认无用后再删除该目录。
 2. **`STARTER_BASE=17`（catalog.gd:167）必须等于 WEAPONS.size()**，tests/systems.gd 有断言——增删野战武器后必须同步这个字面量。
 3. **藏品序号只追加不插入**：`catalog.gd:106 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
@@ -571,7 +569,7 @@ git status --porcelain
 
 ### 12.4 提交规范
 
-- 只 add 本次真正改动的文件：`git add PROJECT-GUIDE.md scripts\xxx.gd`；**禁止 `git add .`**——本机有 1700+ 个 `*.import` 导入差异和一个未跟踪的嵌套副本，会把提交弄脏。
+- 只 add 本次真正改动的文件：`git add PROJECT-GUIDE.md scripts\xxx.gd`；**禁止 `git add .`**——工作区常混着未跟踪目录，而且 `git status` 会常年列出上千个 `*.import`、`project.godot` 等"已修改"条目（实测 `git diff` 内容为空，属行尾/归一化噪声），一提交就脏。
 - 提交信息：`docs(guide): 更新路牌——<功能域>`；若与代码同一提交，写 `feat(xxx): …（同步 PROJECT-GUIDE.md §4.x/§5/§6）`。
 - 在分支上开发时：合并 / 变基主线之后要**重新核对一遍锚点**（主线改过行号，你的锚点可能已经漂了），再合并。合并进主线的那一次提交同样要更新 §12.6。
 
@@ -587,7 +585,7 @@ git status --porcelain
    - §6 若动了数值常量，更新对应行；
    - §11 若引入新的「必须成对改」的约束或坑，追加一条；
    - §12.6 修订记录追加一行（日期 / 提交 / 改了什么）。
-4. 提交时只 add 你实际改动的文件，禁止 `git add .`（本机有大量 *.import 差异和未跟踪的嵌套副本）。
+4. 提交时只 add 你实际改动的文件，禁止 `git add .`（工作区常混着未跟踪目录和大量行尾差异条目）。
 5. 交接说明里写清：改了哪些文件、对应测试是否通过、路牌哪几节被更新。
 ```
 
