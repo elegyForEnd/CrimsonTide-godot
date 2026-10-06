@@ -2976,9 +2976,9 @@ func release_weapon_art(p: Dictionary) -> bool:
 	if kind=="burst":
 		# Keep the impact on the caster's side of walls.
 		center=ruins.move(p.p,aim*reach)
-		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell})
+		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 	elif kind=="beam":
-		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell})
+		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 	for e in enemies:
 		if e.hp<=0 or not ruins.clear_line(p.p,e.p): continue
 		var delta: Vector2=e.p-p.p
@@ -3027,7 +3027,7 @@ func release_strike(p: Dictionary) -> void:
 				var delta: Vector2=e.p-p.p
 				if e.hp>0 and enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),elapsed,false,"beam",30.0) and ruins.clear_line(p.p,e.p):
 					damage_enemy(e,damage,p.id,direction,w.knock,3,-1,build_ctx)
-			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell})
+			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 		else:
 			var count := 5 if spell=="scatter" else 1
 			var pellet_hits: Dictionary = {}

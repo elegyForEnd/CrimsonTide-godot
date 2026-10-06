@@ -96,7 +96,7 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 	var damage: float=float(pending.damage)*share
 	var spell: String=move.get("spell","star")
 	var reach: float=move.reach
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height,"combo_route":int(ctx.get("route",-1))})
 	if kind=="volley":
 		var count: int=int(move.get("count",3))
 		var pellets: Dictionary={}
@@ -138,7 +138,7 @@ static func normal(s, p: Dictionary) -> void:
 	if ctx.is_empty(): ctx=Build.context(s,p,"attack")
 	var damage: float=s.weapon_damage(p)
 	if family==1 and p.combo==2: damage*=1.2 if n==4 else 1.0 if n==12 else 1.4
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"weapon_index":p.weapon,"spell":w.get("spell","star"),"pattern":w.get("pattern",""),"reach":float(w.reach),"id":p.id,"combo":p.combo,"height":p.height})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"weapon_index":p.weapon,"spell":w.get("spell","star"),"pattern":w.get("pattern",""),"reach":float(w.reach),"id":p.id,"combo":p.combo,"height":p.height,"combo_route":int(ctx.get("route",-1))})
 	if family in [1,2]:
 		var index := 0
 		for e in ordered_targets(s,p.p):

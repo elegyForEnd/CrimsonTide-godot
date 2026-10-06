@@ -11,6 +11,10 @@ var light: Node2D
 var density := 1.0
 const Motion = preload("res://scripts/effect_motion.gd")
 const Library = preload("res://scripts/vfx_library.gd")
+const WeaponVfx = preload("res://scripts/weapon_vfx.gd")
+var current_identity: Dictionary={}
+var current_stage := 0
+var current_route := -1
 var impact_marks: Dictionary={}
 var current_texture := ""
 var current_hero := 0
@@ -35,6 +39,9 @@ func _ready() -> void:
 
 func reset() -> void:
 	effects.clear()
+	current_identity={}
+	current_stage=0
+	current_route=-1
 	impact_marks.clear()
 	shards.clear()
 	particles.reset()
@@ -53,6 +60,10 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 		effects.remove_at(victim)
 	var effect := {"kind":kind,"p":at,"aim":aim.normalized() if aim.length_squared()>.01 else Vector2.RIGHT,
 		"color":color,"radius":radius,"life":maxf(.05,life),"age":-delay,"reverse":reverse,"priority":priority,"hero":current_hero,"source":current_source,"texture":current_texture if current_texture!="" else "hero_%d_%s" % [current_hero,"slash" if kind=="echo" else "sigil" if kind=="ring" else "dash" if kind=="lance" else kind]}
+	if not current_identity.is_empty():
+		effect["identity"]=current_identity.duplicate()
+		effect["stage"]=current_stage
+		effect["route"]=current_route
 	if kind!="charge" and uses_weapon_socket(effect) and socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
 		var socket: Dictionary=socket_provider.call(current_source)
 		if not socket.is_empty():
@@ -65,7 +76,7 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 func uses_weapon_socket(effect: Dictionary) -> bool:
 	var kind: String=effect.kind
 	if kind=="eruption" and float(effect.radius)>100: return false
-	return (kind in ["slash","echo","lance","spin","muzzle","cast","charge","vortex","eruption"] and Library.source_weapon(effect.texture)>=0) or kind=="charge" or (kind in ["slash","echo","judgment","soul"] and str(effect.texture).ends_with("_ultimate"))
+	return (kind in ["slash","echo","lance","spin","muzzle","cast","charge","vortex","eruption","route","hero_combo"] and Library.source_weapon(effect.texture)>=0) or kind=="charge" or (kind in ["slash","echo","judgment","soul"] and str(effect.texture).ends_with("_ultimate"))
 
 func cancel_charge(source: int) -> void:
 	particles.stop("charge:"+str(source))
@@ -91,7 +102,10 @@ func event(data: Dictionary, hero: int = 0) -> void:
 	current_hero=clampi(hero,0,3)
 	var hero_color: Color=skin_colors.get(current_hero,PALETTES[current_hero])
 	var exact_weapon := int(data.get("weapon_index",data.get("weapon",0)))
-	var color: Color=Library.weapon_color(exact_weapon).lerp(hero_color,.22)
+	current_identity=WeaponVfx.profile(exact_weapon)
+	current_stage=clampi(int(data.get("combo",0)),0,2)
+	current_route=int(data.get("combo_route",-1))
+	var color: Color=current_identity.color
 	current_texture=Library.weapon_key(exact_weapon,"finisher" if int(data.get("combo",0))==2 else "release")
 	var weapon := int(data.get("weapon",0))
 	var reach := clampf(float(data.get("reach",150 if weapon==2 else 112)),48,650)
@@ -106,45 +120,68 @@ func event(data: Dictionary, hero: int = 0) -> void:
 		var mark := str(current_source)+":"+str(data.get("enemy_id",-1))
 		if particles.clock-float(impact_marks.get(mark,-10))<.075: return
 		impact_marks[mark]=particles.clock
+	if data.kind in ["windup","necromancer-cast","strike"]: cancel_charge(current_source)
 	particle_event(data,weapon_emitter,aim,color,exact_weapon,reach)
 	match str(data.kind):
 		"strike":
 			var finishing := int(data.get("combo",0))==2
+			var stroke := WeaponVfx.stroke(current_stage,weapon,int(current_identity.detail))
 			if weapon not in [1,2]:
 				var form := "muzzle" if weapon==0 else "vortex" if exact_weapon==10 else "eruption" if exact_weapon==4 else "cast"
-				emit(form,anchor+aim*30,aim,color,62 if weapon==0 else 54,.18 if weapon==0 else .26)
+				emit(form,anchor+aim*30,aim,color,(62 if weapon==0 else 54)*float(stroke.scale),float(stroke.life))
+				# Ranged finishers amplify their own spell/muzzle, never borrow a sword slash.
+				combo_route_fx(anchor,aim,color,minf(reach,120))
 				shatter(weapon_emitter,aim,color,3,.45)
 				return
 			var heavy := weapon==2
 			var pattern := str(data.get("pattern",""))
 			if pattern=="thrust":
-				emit("lance",anchor+aim*reach*.48,aim,color,reach*.62,.24)
+				emit("lance",anchor+aim*reach*.48,aim,color,reach*.62*float(stroke.scale),float(stroke.life))
 			elif pattern=="spin":
-				emit("spin",anchor,aim,color,reach,.34,reverse)
+				emit("spin",anchor,aim,color,reach*float(stroke.scale),float(stroke.life),reverse)
 			elif pattern=="quake":
-				emit("cast",anchor,aim,color,38,.2)
-				emit("eruption",at-Vector2(0,reach*.28),Vector2.RIGHT,color,reach*.85,.4,1,0,2)
-				emit("ring",at,aim,color,reach,.38,1,.025)
+				emit("cast",anchor,aim,color,38*float(stroke.scale),float(stroke.life))
+				emit("eruption",at-Vector2(0,reach*.28),Vector2.RIGHT,color,reach*.85*float(stroke.scale),.4,1,0,2)
+				emit("ring",at,aim,color,reach*float(stroke.scale),.38,1,.025)
 				shatter(at,Vector2.UP,color,10,1.15)
 			else:
-				emit("slash",anchor,aim,color,reach,.32 if heavy else .25,reverse,0,2 if heavy else 1)
+				emit("slash",anchor,aim,color,reach*float(stroke.scale),float(stroke.life),reverse,0,2 if heavy else 1)
 			if finishing:
-				emit("echo",anchor,aim.rotated(.32),color,reach*.94,.32,reverse,.065,0)
+				emit("echo",anchor,aim,color,reach*.78,.24,-reverse,.065,0)
+			combo_route_fx(anchor,aim,color,minf(reach,180))
 			shatter(weapon_emitter,aim,color,5 if heavy else 3,.6)
 		"impact":
 			var heavy: bool=data.get("heavy",false)
 			current_texture="hit_flash"
 			emit("impact",anchor,aim,color,28 if heavy else 18,.14 if heavy else .10,1,0,2)
 		"dodge":
+			current_identity={}
 			current_texture="hero_%d_dash" % current_hero
 			color=hero_color
 			emit("dash",anchor,aim,color,112,.26)
 			shatter(anchor,-aim,color,6,.55)
 		"windup", "necromancer-cast":
 			if float(data.get("windup",0))>0 or data.kind=="necromancer-cast":
-				current_texture="hero_%d_charge" % current_hero
+				current_texture=Library.weapon_key(exact_weapon,"charge")
 				emit("charge",at-Vector2(0,28),aim,color,40 if weapon==3 else 24,maxf(.04,float(data.get("windup",.25))))
+		"hero_combo":
+			current_identity=current_identity.duplicate()
+			current_identity.color=hero_color
+			current_identity.motif=["blood","frost","feather","soul"][current_hero]
+			current_identity.detail=clampi(int(data.get("hero_route",0)),0,3)
+			emit("hero_combo",anchor,aim,hero_color,72+int(data.get("hero_route",0))*14,.36,1,0,2)
+			particles.burst(weapon_emitter,aim,hero_color,["petal","ice","feather","soul"][current_hero],8,.7,.7)
+		"spell_burst", "spell_beam", "spell_arc":
+			if not current_identity.procedural: return
+			var form := "detonation" if data.kind=="spell_burst" else "beam" if data.kind=="spell_beam" else "chain"
+			var length := 110.0 if form=="detonation" else float(data.get("reach",200))
+			if form=="chain":
+				var delta: Vector2=data.get("target",at)-at
+				length=delta.length(); aim=delta.normalized()
+			emit(form,at,aim,color,length,.42 if form=="detonation" else .28,1,0,2)
+			particles.burst(at,aim,color,str(current_identity.style),10,.9,PI if form=="detonation" else .6)
 		"skill":
+			current_identity={}
 			current_hero=clampi(int(data.get("hero",hero)),0,3)
 			color=skin_colors.get(current_hero,PALETTES[current_hero])
 			current_texture="hero_%d_ultimate" % current_hero
@@ -160,6 +197,10 @@ func event(data: Dictionary, hero: int = 0) -> void:
 					# Ground rectangle and flame residues still follow the host's patch.
 					emit("soul",anchor+aim*70-Vector2(0,70),Vector2.RIGHT,color,95,.46,1,0,3)
 			shatter(anchor,Vector2.UP,color,12,1.0)
+
+func combo_route_fx(at: Vector2, aim: Vector2, color: Color, radius: float) -> void:
+	if current_route<0: return
+	emit("route",at,aim,color,radius,.30,1,.02,2)
 
 func advance(dt: float) -> void:
 	if socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
@@ -201,6 +242,9 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 		var at: Vector2=fx.p
 		var angle: float=fx.aim.angle()
 		var mirror := Vector2(Library.facing_scale(fx.texture),float(fx.reverse))
+		var identity: Dictionary=fx.get("identity",{})
+		var native: bool=not identity.is_empty() and ((identity.procedural and kind not in ["dash","ring","sigil"]) or kind in ["charge","impact","route","hero_combo"])
+		if native: mirror.x=1.0
 		match kind:
 			"slash", "echo":
 				angle+=float(fx.reverse)*lerpf(-.28,.36,1.0-pow(1.0-t,3.0))
@@ -222,7 +266,7 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 				target.draw_arc(Vector2.ZERO,radius,0,TAU,48,Color(fx.color,fade*.38),1.5,true)
 				target.draw_set_transform(Vector2.ZERO)
 				continue
-		extent=Library.fitted_size(fx.texture,extent)
+		if not native: extent=Library.fitted_size(fx.texture,extent)
 		var socket: Dictionary={}
 		if kind=="charge" and socket_provider.is_valid():
 			socket=socket_provider.call(int(fx.source))
@@ -231,15 +275,31 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 				fx["socket_aim"]=socket.aim
 		if socket.is_empty() and fx.has("socket_local"):
 			socket={"tip":get_global_transform()*fx.socket_local,"aim":fx.socket_aim}
+		var draw_pose := Transform2D(angle,mirror,0,at)
 		if not socket.is_empty():
 			# Cancel ground foreshortening: the blade and this image share screen space.
 			angle=socket.aim.angle()
-			var painted_contact := Library.blade_contact(fx.texture) if kind in ["slash","echo","spin"] and Library.source_weapon(fx.texture)>=0 else Vector2(-.35*Library.facing_scale(fx.texture),0) if kind=="lance" else Vector2.ZERO
+			var painted_contact := Vector2.ZERO if native else Library.blade_contact(fx.texture) if kind in ["slash","echo","spin"] and Library.source_weapon(fx.texture)>=0 else Vector2(-.35*Library.facing_scale(fx.texture),0) if kind=="lance" else Vector2.ZERO
 			var contact := (painted_contact*extent*mirror).rotated(angle)
-			var screen_pose := Transform2D(angle,mirror,0,socket.tip-contact)
-			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*screen_pose)
+			if native:
+				contact=(Vector2(r*.94,0) if kind in ["slash","echo","spin"] else Vector2.ZERO).rotated(angle)
+			draw_pose=get_global_transform().affine_inverse()*Transform2D(angle,mirror,0,socket.tip-contact)
+			target.draw_set_transform_matrix(draw_pose)
 		else:
 			target.draw_set_transform(at,angle,mirror)
+		if not identity.is_empty() and kind not in ["dash","ring","sigil"]:
+			if not native:
+				# The painted crescent may face left in its PNG. Geometry is authored
+				# forward and must not inherit that source-image correction.
+				var decor := Transform2D(angle,Vector2(1,float(fx.reverse)),0,at)
+				if not socket.is_empty():
+					decor=get_global_transform().affine_inverse()*Transform2D(angle,Vector2(1,float(fx.reverse)),0,socket.tip-Vector2(r*.94,0).rotated(angle))
+				target.draw_set_transform_matrix(decor)
+			WeaponVfx.draw(target,fx,additive)
+			if not native: target.draw_set_transform_matrix(draw_pose)
+		if native:
+			target.draw_set_transform(Vector2.ZERO)
+			continue
 		var opacity := fade*(.08 if additive else .92)
 		if kind=="echo": opacity*=.22
 		if kind=="impact": opacity*=.55
@@ -264,7 +324,7 @@ func draw_light() -> void:
 	draw_pass(light,true)
 
 func particle_event(data: Dictionary, at: Vector2, aim: Vector2, color: Color, weapon: int, reach: float) -> void:
-	var style := particles.weapon_style(weapon)
+	var style: String=WeaponVfx.profile(weapon).style
 	var source := "charge:"+str(current_source)
 	match str(data.kind):
 		"windup","necromancer-cast":

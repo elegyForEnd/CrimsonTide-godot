@@ -35,7 +35,7 @@ func reset() -> void:
 	if glow_batch and glow_batch.multimesh: glow_batch.multimesh.visible_instance_count=0
 	queue_redraw()
 	if light: light.queue_redraw()
-static func weapon_style(index: int) -> String: return WEAPON_STYLES[clampi(index,0,20)]
+static func weapon_style(index: int) -> String: return preload("res://scripts/weapon_vfx.gd").profile(index).style
 static func boss_style(key: String) -> String:
 	var authored := preload("res://scripts/boss_effect_language.gd").particle_style(key)
 	return authored if not authored.is_empty() else BOSS_STYLES.get(key,"spark")

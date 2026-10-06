@@ -4,6 +4,7 @@ extends Node2D
 var field: CanvasItem
 const Motion = preload("res://scripts/effect_motion.gd")
 const Library = preload("res://scripts/vfx_library.gd")
+const WeaponVfx = preload("res://scripts/weapon_vfx.gd")
 var stylized = preload("res://scripts/stylized_vfx.gd").new()
 var extraction_vortex: Texture2D = preload("res://assets/world/landmarks/extraction-vortex.png")
 const SPELL_CELLS := {"meteor":0,"needle":1,"chain":2,"moon":3,"prism":4,"scatter":5,"vortex":6,"eclipse":7}
@@ -152,6 +153,7 @@ func event(data: Dictionary) -> void:
 	var aim_dir: Vector2=data.get("aim",Vector2.RIGHT)
 	var angle := aim_dir.angle()
 	var weapon := int(data.get("weapon",0))
+	var run_weapon: bool=int(data.get("weapon_index",-1))>=600 and int(data.get("weapon_index",-1))<648
 	var spell := str(data.get("spell","star"))
 	if data.kind=="enemy_defeated" and not data.get("rogue_guardian",false) and not data.get("raid_boss",false):
 		var style: String=["stone","soul","ember","feather"][int(data.get("type",0))%4]
@@ -174,13 +176,13 @@ func event(data: Dictionary) -> void:
 	spell_energy(data,spell,at,aim_dir)
 	match data.kind:
 		"spell_beam":
-			spell_fx("prism",at,Vector2.ONE*70,0.26,angle)
+			if not run_weapon: spell_fx("prism",at,Vector2.ONE*70,0.26,angle)
 		"spell_arc":
 			var target: Vector2=data.target
 			var delta := target-at
-			spell_fx("chain",target,Vector2.ONE*70,0.26,delta.angle())
+			if not run_weapon: spell_fx("chain",target,Vector2.ONE*70,0.26,delta.angle())
 		"spell_burst":
-			spell_fx(spell,at,Vector2.ONE*(290 if spell=="meteor" else 260),0.65)
+			if not run_weapon: spell_fx(spell,at,Vector2.ONE*(290 if spell=="meteor" else 260),0.65)
 			trauma=maxf(trauma,0.38 if spell=="meteor" else 0.20)
 		"dodge": pass
 		"windup": pass
@@ -447,6 +449,10 @@ func _draw() -> void:
 		if bullet.get("boss_projectile",false): continue
 		if bullet.has("rogue_tone"): continue
 		var spell := str(bullet.get("spell","star"))
+		var concrete := int(bullet.get("weapon_index",-1))
+		if concrete>=600 and concrete<648:
+			draw_run_projectile(self,bullet,false)
+			continue
 		if SPELL_CELLS.has(spell): continue
 		if int(bullet.get("owner",0))>0:
 			var index := int(bullet.get("weapon_index",field.session.players.get(bullet.owner,{}).get("weapon",0)))
@@ -632,6 +638,10 @@ func draw_spells() -> void:
 		if bullet.get("boss_projectile",false): continue
 		if bullet.has("rogue_tone"): continue
 		var spell := str(bullet.get("spell","star"))
+		var concrete := int(bullet.get("weapon_index",-1))
+		if concrete>=600 and concrete<648:
+			draw_run_projectile(spell_light,bullet,true)
+			continue
 		if not SPELL_CELLS.has(spell): continue
 		if bullet.p.distance_to(field.camera)>1100: continue
 		var cell := int(SPELL_CELLS[spell])
@@ -648,9 +658,26 @@ func stamp_spell(cell: int, at: Vector2, size: Vector2, angle: float, tint: Colo
 	Motion.draw(spell_light,Library.texture(key),Rect2(-extent/2,extent),clampf(tint.a*1.5,0,1),"center",tint)
 	spell_light.draw_set_transform(Vector2.ZERO)
 
+func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> void:
+	if bullet.p.distance_to(field.camera)>1100: return
+	var world := get_global_transform()
+	if absf(world.determinant())<.000001: return
+	var identity := WeaponVfx.profile(int(bullet.weapon_index))
+	var at: Vector2=bullet.p-Vector2(0,float(bullet.get("height",0)))
+	var direction: Vector2=world.basis_xform(bullet.v).normalized()
+	target.draw_set_transform_matrix(world.affine_inverse()*Transform2D(direction.angle(),world*at))
+	var r := 21.0 if int(identity.family)==0 else 29.0
+	var color := Color(identity.color,.8)
+	if int(identity.family)==0: WeaponVfx.projectile_shape(target,identity,r,1.0,color,glow)
+	else: WeaponVfx.cast_shape(target,identity,r,1.0,color,glow)
+	WeaponVfx.line(target,PackedVector2Array([Vector2(-r*1.5,0),Vector2.ZERO]),Color(color,.20),1.2,glow)
+	target.draw_set_transform(Vector2.ZERO)
+
 func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) -> void:
 	if not SPELL_CELLS.has(spell): return
-	var col: Color=SPELL_COLORS[int(SPELL_CELLS[spell])]
+	var index := int(data.get("weapon_index",Library.SPELL_WEAPONS[int(SPELL_CELLS[spell])]))
+	if index>=600 and index<648: return # The concrete weapon owns its beam/burst.
+	var col: Color=Library.weapon_color(index)
 	var source := int(data.get("id",-1))
 	match str(data.kind):
 		"spell_beam", "spell_arc":
@@ -665,15 +692,8 @@ func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) ->
 				energy.spawn(at,Vector2.ONE*240,col,4,.55,0,0,1.05,source)
 			energy.spawn(at,Vector2.ONE*270,col,2,.6,0,0,1.05,source)
 			energy.particles(at,col,30,Vector2.UP,175,1)
-		"windup":
-			energy.spawn(at+aim*25-Vector2(0,28),Vector2.ONE*95,Color(col,.55),4,maxf(.1,float(data.get("windup",.25))),0,0,1.05,source)
-			if field.has_method("weapon_effect_socket"): energy.bursts.back()["socket_source"]=source
-		"strike":
-			if int(data.get("weapon",0))==3:
-				energy.particles(at+aim*35-Vector2(0,15),col,8 if spell=="needle" else 14,aim,35,.55)
-				if field.has_method("weapon_effect_socket"):
-					var socket: Dictionary=field.weapon_effect_socket(source)
-					if not socket.is_empty() and absf(get_global_transform().determinant())>.000001: energy.emitters.back().position=get_global_transform().affine_inverse()*socket.tip
+		# Weapon-owned sigils/particles already cover windup and strike. An extra
+		# shared energy orb here used to wash every staff into the same white flash.
 
 func observe_particles(dt: float) -> void:
 	var seen: Dictionary={}

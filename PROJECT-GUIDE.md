@@ -39,7 +39,7 @@ D:\dsh\Game\
 └─ CrimsonTide-godot\          ← 项目根（唯一代码库）
    ├─ project.godot            ← 引擎配置（主场景 boot.tscn，无 autoload）
    ├─ scenes\                  ← 仅 2 个场景：boot.tscn（开场）、main.tscn（空壳根节点）
-   ├─ scripts\                 ← 全部游戏逻辑（102 个 .gd，UI/逻辑均由代码构建）
+   ├─ scripts\                 ← 全部游戏逻辑（UI/逻辑均由代码构建；新增 weapon_vfx.gd 编排具体武器和连段）
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
    ├─ shaders\                 ← hero_hair_motion.gdshader（仅离线烘帧用）
    ├─ assets\                  ← 全部美术/音频/模型资源（见 §8.4）
@@ -91,7 +91,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 - 同一个 `TideSession`（session.gd:78-82 同时持有 roguelike/expedition/mini_bosses/wild_bosses/dragon_boss 实例）；
 - 库存类动作在 `session.gd:1595 perform()` 里分派：魔境把库存动作移交 `roguelike`，远征走本文件存储区；
 - 魔境七子系统（abcbaaf 新增）在 `roguelike.gd:4-17` 预载：Variants / NodeGraph / Curses / Events / Rooms / Growth / Daily；
-- 背包 UI：main.gd:2477 `show_inventory()` 分支转交 `rogue_inventory.gd`（魔境）或 `extraction_inventory.gd`（远征）。
+- 背包 UI：main.gd:2486 `show_inventory()` 分支转交 `rogue_inventory.gd`（魔境）或 `extraction_inventory.gd`（远征）。
 
 ---
 
@@ -103,20 +103,20 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | 开场忠告/PV/跳过 | `scripts/boot.gd`（忠告 boot.gd:24，按键跳过 `_unhandled_input` boot.gd:49）；文案与视频流在 `scenes/boot.tscn` |
 | 窗口缩放/1440×900 适配 | `scripts/main.gd:476 fit_ui()` |
-| 全局键位表（WASD/Tab/M/E/F/Q/R/Y/N/U…） | `scripts/main.gd:482 setup_inputs()`；游戏内按键语义分发在 `main.gd:1384 _unhandled_input()` 与 `main.gd:1264 _input()` |
+| 全局键位表（WASD/Tab/M/E/F/Q/R/Y/N/U…） | `scripts/main.gd:482 setup_inputs()`；游戏内按键语义分发在 `main.gd:1384 _unhandled_input()` 与 `main.gd:1270 _input()` |
 | 标题页菜单 | `main.gd:878 show_title()`（菜单数组 main.gd:897-898 `entries/actions`） |
 | 登录/注册/游客、云存档页 | `main.gd:286 show_account()`、`main.gd:337 show_storage()`；存档切换 `main.gd:326 switch_profile()` |
-| P2P 房间页 / 服务器房间页 / IP 直连页 | `main.gd:421 show_p2p_rooms()` / `main.gd:406 show_server_rooms()` / `main.gd:922 show_network()` |
+| P2P 房间页 / 服务器房间页 / IP 直连页 | `main.gd:421 show_p2p_rooms()` / `main.gd:406 show_server_rooms()` / `main.gd:928 show_network()` |
 | 设置（音量三条滑杆/全屏） | `main.gd:3303 show_settings()`，音量总线 main.gd:3294-3306 |
-| 暂停菜单/离开对局 | `main.gd:3282 pause_menu()` |
+| 暂停菜单/离开对局 | `main.gd:3291 pause_menu()` |
 | 帮助手册/制作组 | `main.gd:3308` / `main.gd:3324` |
-| HUD 构建/刷新（血蓝条、技能冷却、小队、黎明抉择按钮、交互提示） | 布局 `main.gd:1110 on_started()`；每帧刷新 `main.gd:1579 update_hud()`；救援/城门/撤离/封印/宝箱提示 main.gd:1664-1696 |
-| 底部道具栏（1/2/3 槽） | 绘制 `main.gd:1706 draw_hud_item_bar()`；使用规则 `main.gd:1756 apply_item_slot()` + `Catalog.slot_operable` |
-| 背包界面总入口（Tab） | `main.gd:2477 show_inventory()` → 魔境转 `rogue_inventory.gd:52 draw()`、远征转 `extraction_inventory.gd:42 draw()` |
+| HUD 构建/刷新（血蓝条、技能冷却、小队、黎明抉择按钮、交互提示） | 布局 `main.gd:1110 on_started()`；每帧刷新 `main.gd:1588 update_hud()`；救援/城门/撤离/封印/宝箱提示 main.gd:1664-1696 |
+| 底部道具栏（1/2/3 槽） | 绘制 `main.gd:1706 draw_hud_item_bar()`；使用规则 `main.gd:1765 apply_item_slot()` + `Catalog.slot_operable` |
+| 背包界面总入口（Tab） | `main.gd:2486 show_inventory()` → 魔境转 `rogue_inventory.gd:52 draw()`、远征转 `extraction_inventory.gd:42 draw()` |
 | 魔境扩展的表现入口（abcbaaf 新增） | 房间面板 `main.gd:3556 rogue_room_panel()`、事件三选一 `main.gd:3521 rogue_event_panel()`、每日种子页 `main.gd:3593 show_rogue_seed_page()`、成长树 `main.gd:3664 show_growth_tree()` |
-| 拖拽子系统（拿起/落点预览/金框红框/R 旋转） | `main.gd:1994 start_drag()`、`main.gd:2009 release_drag()`、预演 `main.gd:2274 drag_target_rect()`（合法性真正判定在 `session.gd:1865 resolve_drop`）、旋转 `main.gd:1544 rotate_selected()` |
-| 双击装备/Ctrl 智能点击/一键收纳 | `main.gd:1869 double_click_equip()` / `main.gd:1890,1909 ctrl_click_item()/ctrl_click_worn()` / `main.gd:2950 auto_store_loot()` |
-| F 键兜底链（倒地自救→拾取→搜索→急救针） | `main.gd:1437-1464`；搜索窗 `main.gd:1519 open_search()` |
+| 拖拽子系统（拿起/落点预览/金框红框/R 旋转） | `main.gd:2003 start_drag()`、`main.gd:2009 release_drag()`、预演 `main.gd:2283 drag_target_rect()`（合法性真正判定在 `session.gd:1865 resolve_drop`）、旋转 `main.gd:1553 rotate_selected()` |
+| 双击装备/Ctrl 智能点击/一键收纳 | `main.gd:1869 double_click_equip()` / `main.gd:1890,1909 ctrl_click_item()/ctrl_click_worn()` / `main.gd:2959 auto_store_loot()` |
+| F 键兜底链（倒地自救→拾取→搜索→急救针） | `main.gd:1437-1464`；搜索窗 `main.gd:1528 open_search()` |
 | 伤害红屏/提示 toast/结算页 | `main.gd:3171 flash_damage_feedback()` / `main.gd:3234 notify()` / `main.gd:3079 on_finished()`（奖励入库+隐藏角色招募 main.gd:3083-3109） |
 | 哥特按钮/格子控件（图标随 R 旋转） | `scripts/gothic_button.gd`（slot 绘制 gothic_button.gd:68-98，旋转 80-87） |
 | 物品图标解析（图集裁切） | `scripts/ui_art.gd:14 icon()`；16 基础图标表 `KINDS` ui_art.gd:5 |
@@ -263,11 +263,12 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 功能 | 文件:锚点 |
 |---|---|
-| 特效编排总控（事件→贴图特效/伤害数字/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:147；剑雨布局 `blade_layout()` combat_visuals.gd:501；与服务端判定共形 `patch_local_rect` combat_visuals.gd:469；敌方弹幕可读性常量 combat_visuals.gd:300-318、绘制 `draw_enemy_bolt()` combat_visuals.gd:361） |
-| 刀光/突刺/蓄力/大招贴图（固定轨迹：一次捕获挂点） | `scripts/stylized_vfx.gd`（emit 捕获 stylized_vfx.gd:56；仅蓄力跟随 stylized_vfx.gd:164） |
+| 特效编排总控（事件→贴图特效/伤害数字/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:148；剑雨布局 `blade_layout()` combat_visuals.gd:501；与服务端判定共形 `patch_local_rect` combat_visuals.gd:475；敌方弹幕可读性常量 combat_visuals.gd:300-318、绘制 `draw_enemy_bolt()` combat_visuals.gd:363） |
+| 刀光/突刺/蓄力/连招/大招（固定轨迹：一次捕获挂点） | `scripts/stylized_vfx.gd:51 emit()`、`stylized_vfx.gd:96 event()`、`stylized_vfx.gd:205 advance()`；仅蓄力跟随，释放和延迟残影保持原挂点 |
+| 69 把具体武器的元素、配色与三段编排 | `scripts/weapon_vfx.gd:34 profile()`、`weapon_vfx.gd:40 stroke()`、`weapon_vfx.gd:99 draw()`；21 把远征/临时武器保留原画，48 把闯关武器以几何形状分别表现；闯关弹体 `combat_visuals.gd:661 draw_run_projectile()`；确认角色派生 `rogue_build.gd:927 hero_effect()` |
 | CPU 粒子（1400 上限/21 武器材质物理/双通道渲染） | `scripts/combat_particles.gd`（WEAPON_STYLES combat_particles.gd:7；材质参数 spawn combat_particles.gd:42） |
 | 粒子批量渲染（MultiMesh 光晕 + 三角数组几何） | `scripts/particle_glow_batch.gd` + `scripts/particle_geometry_batch.gd` |
-| **34 张 ImageGen 特效索引**（21 武器/法术/角色专属 PNG） | `scripts/vfx_library.gd`（texture vfx_library.gd:53；朝向修正 LEFT_FACING_WEAPONS vfx_library.gd:37；配色 WEAPON_COLORS vfx_library.gd:6） |
+| **34 张 ImageGen 特效索引**（21 武器/法术/角色专属 PNG） | `scripts/vfx_library.gd`（texture vfx_library.gd:53；朝向修正 LEFT_FACING_WEAPONS vfx_library.gd:37；实际配色由 weapon_vfx.gd:34 profile() 解析） |
 | 特效显现动效（UV 揭示：sweep/rise/radial） | `scripts/effect_motion.gd` |
 | 招式语义→视觉族/材质 | `scripts/effect_semantics.gd` |
 | Shader 能量形态层（form 0-9） | `scripts/energy_bursts.gd` + `resources/energy_burst.gdshader` |
@@ -296,7 +297,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### N. 营地与家园
 
-**链路**：`main.gd:698 ensure_camp()` 创建 `camp_screen.gd`（唯一实例化点，信号驱动）→ 其内部组装 `camp_site.gd`（3D 地图）+ `home_screen.gd` + `home_map.gd` + `camp_activities.gd` + `fishing_meter.gd`。营地站点点击 → `main.gd:748 on_camp_station()` 分发（warehouse/market→经济页、forge→锻炉、launch→出发、rogue→魔境报名…）。
+**链路**：`main.gd:704 ensure_camp()` 创建 `camp_screen.gd`（唯一实例化点，信号驱动）→ 其内部组装 `camp_site.gd`（3D 地图）+ `home_screen.gd` + `home_map.gd` + `camp_activities.gd` + `fishing_meter.gd`。营地站点点击 → `main.gd:754 on_camp_station()` 分发（warehouse/market→经济页、forge→锻炉、launch→出发、rogue→魔境报名…）。
 
 | 功能 | 文件:锚点 |
 |---|---|
@@ -315,7 +316,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 仓库/交易行界面（分类/搜索/批量/禁售标记） | `scripts/economy_screen.gd`（数据操作回调 `bank_carried_items()` profile.gd:241 / `withdraw_item()` profile.gd:257 / `sell_items()` profile.gd:267；禁售标记 economy_screen.gd:132；估价 `catalog.gd:394 market_value`） |
-| 锻炉 UI（七属性加点/出战预览/天赋升级） | `main.gd:833 show_camp_forge()` |
+| 锻炉 UI（七属性加点/出战预览/天赋升级） | `main.gd:839 show_camp_forge()` |
 | **七属性规则**（成长曲线/补正 grades） | `scripts/attributes.gd`（KEYS/GRADES attributes.gd:5-11；`growth` attributes.gd:34；派生 `hp_bonus` attributes.gd:41 / `max_mana` :44 / `resistance` :47 / `discovery` :50 / `scaling` :53，共 :41-57） |
 
 ### P. 联机、账号与服务器
@@ -346,7 +347,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | particle_glow_batch.gdshader | MultiMesh 粒子双圆光晕 | particle_glow_batch.gd:3 |
 | scene_asset.gdshader | 场景道具着色（叶片染色/空置灰化） | scene_assets.gd:4 |
 | storm_bolt.gdshader / storm_sky.gdshader | 营地闪电带/雷暴天幕 | camp_site.gd:18 / camp_site.gd:17 |
-| stylized_texture.gdshader | 刀光贴图直通着色 | stylized_vfx.gd:33 |
+| stylized_texture.gdshader | 刀光贴图直通着色 | stylized_vfx.gd:37 |
 | boss_projectile_shell.gdshader | Boss 弹幕外壳（飞行体可读性/朝向） | scripts/boss_damage_visual.gd:11 |
 | shaders/hero_hair_motion.gdshader | 发梢位移（仅离线烘帧工具用，非运行时） | tools/bake_hero_walk_v4.gd、tools/preview_hero_hair.gd |
 
@@ -366,7 +367,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 调理智/气味/威胁度/刷怪 | session.gd:2624-2632、2688-2696、3247-3319 | tests/ecology.gd |
 | 改掉落（宝箱/敌人/据点/骑士） | session.gd:1232 chest_loot / 1310 enemy_loot / 3324 resolve_site_defeat / 3713 knight_reward | tests/systems.gd；BALANCE.md |
 | 加新野外怪物 | enemy_frames.gd:4-8 四表 + ecology.gd:5-19 六表 + ecology.gd update() 新分支 + assets/enemies/ 4×3 图集（脚底 210px）+ 悬浮怪名单 enemy_body.gd:44 | tests/enemies.gd、ecology.gd；ENEMY-UPDATE.md |
-| 加营地设施 | camp_site.gd:936-960 站点表 + 建模函数 + camp_screen.gd:343 分组 + main.gd:748 on_camp_station 分支 | tests/camp*.gd；HOMESTEAD.md |
+| 加营地设施 | camp_site.gd:936-960 站点表 + 建模函数 + camp_screen.gd:343 分组 + main.gd:754 on_camp_station 分支 | tests/camp*.gd；HOMESTEAD.md |
 | 改家园数值（作物/鱼/料理/价格） | homestead.gd:3-17 + buy/fish_key；图标 home_art.gd | tests/homestead.gd |
 | 改七属性曲线 | attributes.gd（⚠️ `clean(value, budget := 623)` attributes.gd:16 的预算要与 `point_budget` 同步） | tests/attributes.gd |
 | 改结算奖励/XP | session.gd:3591 settle()；入库 main.gd:3079 | tests/systems.gd |
@@ -398,21 +399,21 @@ project.godot:18  主场景 = scenes/boot.tscn
 | **新增野战武器**（远征） | ① catalog.gd:138 WEAPONS ② catalog.gd:189 WEAPON_ICONS ③ weapon_arts.gd:6 MOVES ④ 特殊法术在 session.gd release_strike :2998/update_bullets :3480 加分支 ⑤ ⚠️ 若 WEAPONS.size() 变化，同步 `STARTER_BASE`（catalog.gd:167） | tests/systems.gd（STARTER_BASE 断言）、combat.gd |
 | 新增装备/背包品质 | catalog.gd:174 GEAR / :201 BAG_TIERS + 品质数组 catalog.gd:182-188 + session.gd:1218 CACHE_QUALITY_WEIGHTS | tests/systems.gd |
 | 新增普通物品/藏品 | catalog.gd:17 ITEMS + 藏品分组表 :86-112（⚠️ `NEW_COLLECTIBLES` 只能追加，影响存档序号） | tests/collectibles.gd；COLLECTIBLES.md |
-| 改拖拽/旋转/双击装备手感 | main.gd:1994（start_drag）/1544（rotate_selected）/1869（double_click_equip）（合法性判定在 session.gd:1865） | tests/ui.gd |
+| 改拖拽/旋转/双击装备手感 | main.gd:2003（start_drag）/1544（rotate_selected）/1869（double_click_equip）（合法性判定在 session.gd:1865） | tests/ui.gd |
 | 加物品图标 | ui_art.gd `icon()`（⚠️ KINDS 顺序=图集网格位置）+ assets/ui/reliquary-transparent.png 或独立 SVG | tests/ui.gd 截图 |
 
 ### 表现/音频类
 
 | 需求 | 主要文件 | 配套 |
 |---|---|---|
-| 加新武器特效 | assets/combat/imagegen/weapon_%02d_release.png + vfx_library.gd（配色/朝向）+ combat_particles.gd:7 材质 | tests/standalone_vfx.gd、weapon_effect_direction.gd、all_weapon_mounts.gd |
-| 改刀光/蓄力表现 | stylized_vfx.gd（⚠️ 固定轨迹契约） | tests/weapon_stroke_stability.gd |
+| 加新武器特效 | weapon_vfx.gd 的 CAMPAIGN/ROGUE 配置与几何；远征原画 assets/combat/imagegen/weapon_%02d_release.png + vfx_library.gd 朝向 | tests/weapon_vfx_identity.gd、weapon_vfx_battle.gd、standalone_vfx.gd、all_weapon_mounts.gd |
+| 改刀光/蓄力/连段表现 | stylized_vfx.gd + weapon_vfx.gd（⚠️ 固定轨迹契约；combo_route 随具体动作发送，hero_combo 在权威端确认时发送） | tests/weapon_stroke_stability.gd、weapon_vfx_identity.gd、weapon_vfx_battle.gd |
 | 加音效 | assets/audio/<kind>-<i>.wav + sound.gd:5-17 VARIANTS/LEVELS | tools/prepare_library_audio.py；tests/audio.gd |
 | 加曲目 | assets/audio/music/<cue>.ogg + music-manifest.json + music.gd:41 set_world 选择逻辑 | tests/music.gd、python tests/scene_music_assets.py |
 | 改大招 CG/台词 | ultimate_cinematic.gd:5-26 + assets/combat/ultimate-cg.png | tests/ultimate.gd |
 | 改语音 | assets/audio/voices/voice-manifest.json + hero_voice.gd | tools/prepare_free_voices.py；tests/voice_assets.py |
 | 改角色动画/体型 | assets/combat/attack-clean-%d.png、movement-%d.png + character_metrics.gd:10-53 地标 | tests/character_scale.gd、movement.gd |
-| 改 HUD 布局/文案 | main.gd:1127（布局）+ main.gd:1579（update_hud 刷新） | tests/ui.gd |
+| 改 HUD 布局/文案 | main.gd:1127（布局）+ main.gd:1588（update_hud 刷新） | tests/ui.gd |
 | 改按钮/格子视觉 | gothic_button.gd `_draw` | — |
 | 改血雾/能量/闪电等 Shader | 对应 .gdshader（§4.Q 表） | 各 *_visual.gd 测试 |
 
@@ -544,7 +545,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 3. **藏品序号只追加不插入**：`catalog.gd:106 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
 5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:357 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:695 `weapon_effect_socket` 挂点契约**，且释放类特效"一次捕获、原地淡出"（stylized_vfx.gd:56-62）——否则 `tests/weapon_stroke_stability.gd` 失败。
+6. **特效必须走 battlefield.gd:695 `weapon_effect_socket` 挂点契约**，且释放类特效"一次捕获、原地淡出"（stylized_vfx.gd:51-74）——否则 `tests/weapon_stroke_stability.gd` 失败。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
 8. **穿上的战利品永不写存档**（"穿或带走，不能 both"，session.gd:307 注释）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持此契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。
@@ -628,7 +629,7 @@ git status --porcelain
 | 2026-10-05 | b034286 | 初版：按功能域建立全项目文件地图（§3–§11） |
 | 2026-10-05 | 见同批提交 | 全量锚点审计（476 个锚点，见 §12.7）并修正 11 处错标 / 漂移；新增本§12 维护规范；README 加入口指引 |
 | 2026-10-05 | 见同批提交 | 跟随 `abcbaaf`（肉鸽扩展全量接线 + 攻击前摇，179 文件/+17267 行）全量重锚：机械修正 47 处 + 8 章节人工复核（修正 100+ 处漂移/错标）；新增 attack_telegraph、肉鸽七子系统（图谱/事件/诅咒/每日/成长/房间/变体）、房间 UI 与每日/成长页等条目；装入 `tools/verify_anchors.py`；结构数字更新为 102 脚本 / 2.95 万行 |
-| | | |
+| 2026-10-06 | 见同批提交 | §4 特效域、§5 改动入口：69 把具体武器与三段攻击、四类派生和确认角色连招；新增 weapon_vfx.gd 与三项验证/预览脚本；更新锚点、VFX-REWORK.md 与 TEST-REPORT.md |
 
 ### 12.7 最近一次全量审计（2026-10-05，基准 abcbaaf）
 
@@ -640,3 +641,7 @@ git status --porcelain
 ### 2026-10-06 本地恢复与同步
 
 肉鸽地图已接入 50 张 ComfyUI 精确三倍图，ground-manifest.json 保存专用房间背景和实测碰撞轮廓；tools/install_rogue_final_maps.py 优先选择三倍图，tools/audit_rogue_final_maps.py 与 tests/roguelike_smooth_maps.gd 验证选图及尺寸。scripts/main.gd 增加面板关闭与重新打开操作，tests/rogue_panel_close.gd 验证关闭行为。相关代码变动后的行号需重新校验。
+
+### 2026-10-06 武器与连段特效
+
+具体武器配色与几何在 weapon_vfx.gd 中统一定义；Catalog.visual_weapon_index 仍负责图标与旧原画兼容，不能用于合并闯关特效身份。派生事件必须携带 combo_route；hero_combo 仅在权威 hero_effect 确认时广播。预览为 build/weapon-vfx-48.png 与 build/weapon-vfx-combos.png，试玩为 build/CrimsonTide-WeaponVFX.exe。

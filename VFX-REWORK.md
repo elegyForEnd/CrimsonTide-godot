@@ -134,3 +134,17 @@ combat_particles.gd 是 Godot 中自行实现的 CPU 粒子模拟与批量绘制
 验证：effect_semantics.gd 1365 检查、roguelike_minion_vfx.gd 643 检查、roguelike_vfx.gd 99 检查、boss_effect_staging.gd 247 检查均通过；五个楼层小兵实际渲染截图检查。原小兵测试固定向右放玩家会被第三/四层新增柱子遮挡，改为选择无遮挡的邻近方向，不修改游戏寻路/AI。
 
 追加验证：boss_damage_geometry.gd 38942 检查通过，GPU mismatches=0；Windows release 导出成功，通过 Godot console --main-pack 加载导出的 EXE，运行 effect_semantics.gd 1365 检查通过。外部测试脚本退出时报告测试资源未完全释放；未将此声明为零资源泄漏的长期性能验证。
+
+## 2026-10-06 具体武器与连段编排
+
+本节取代上文“同一张主效果用于所有阶段”的旧表现约定。根因是 Catalog.visual_weapon_index() 把 48 把闯关武器压缩为基础类别，finisher 也重定向到 release，特殊派生的 route 则未随战斗事件传给表现层。
+
+新增 scripts/weapon_vfx.gd：21 把远征/临时武器保留原始高清 PNG，增加分段长度、时长、反斩和终结回声；48 把闯关武器按实际编号拥有独立配色、元素、几何轮廓与细节。血棘双刃是双刃迹，冰剑是晶片刃链，雷剑是锯齿电弧，断潮是宽潮刃，石槌/巨锤是破碎震荡；枪、弓、镜轨双铳和法杖分别使用枪焰、弓弦/羽箭、双线弹道及对应星芒、焰冠、冰针、雷束、月牙、棱镜、涡旋和祈愿符文。图标映射保持原用途，运行时特效不再把它当作完整武器身份。
+
+三段攻击分别采用短起手、反向接斩与宽幅终结，改变轮廓、长度、宽度、寿命与层数。武器蓄力跟随实际杖头/刃尖，出手立即清除；每把武器的命中碎屑与飞行弹体沿用自身元素。去除法杖重复的通用蓄力光球和释放粒子，控制泛白与视觉噪声。几何保持独立的屏幕朝向，不继承原 PNG 的左右校正。
+
+rogue_actions.gd 将 combo_route 随普攻/战技广播；四类派生分别是追击尾迹、折返双弧、升空晶痕和落地冲击。rogue_build.gd 在 hero_effect() 确认激活后发出 hero_combo，四名角色使用赤刃、霜花、羽刃、冥魂形状；未命中、取消、未满足锻造条件不会提前播放角色确认效果。数据沿用可靠 combat RPC，不更改伤害、范围判定、消耗与冷却。
+
+效果仍受 96 条特效、192 条碎屑及原粒子上限约束；地图切换清空；释放时一次捕获挂点，延迟回声不追随恢复动作。零覆盖度的刃迹不提交空多边形。原始 PNG、长宽比及既有大招素材均保留，没有生成新的位图素材。
+
+预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png、build/weapon-vfx-battle-*.png。运行 tests/weapon_vfx_preview.gd 可重新生成对照图；tests/weapon_vfx_identity.gd 做真实 GPU 像素差异检查，tests/weapon_vfx_battle.gd 覆盖实际战斗事件、挂点和角色确认派生。试玩：build/CrimsonTide-WeaponVFX.exe（单文件内嵌 PCK）。

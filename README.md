@@ -1,3 +1,5 @@
+武器特效已按具体武器重编排：48 把闯关武器拥有独立元素与轮廓，21 把远征/临时武器保留原创高清美术并区分三段攻击；四类派生与角色确认连招有专属表现。试玩 `build/CrimsonTide-WeaponVFX.exe`，预览与验证见 [特效说明](VFX-REWORK.md)。
+
 场景配乐已补齐：新增 23 首 Suno 纯器乐，覆盖五层闯关、五名守层 Boss 与家园、王城、远征首领等场景；现共 32 首本地曲目。新版试玩 `dist/CrimsonTide-Music-v1.exe`，曲目与验证见 [背景音乐说明](MUSIC.md)。
 
 Boss 招式与独立高清特效重做见 [BOSS-REWORK.md](BOSS-REWORK.md)。

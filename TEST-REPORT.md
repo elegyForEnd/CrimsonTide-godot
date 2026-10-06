@@ -198,3 +198,11 @@
 验证：smooth_maps 1115、geometry 986、routes 5220、seven_rooms 11797，均为 0 failures；素材审计确认 50 张尺寸与 SHA256。实际主场景截图验证地图加载。
 
 Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重建；通过 --main-pack 加载成品资源后运行 smooth_maps，1115 checks / 0 failures，确认全部 50 张 3 倍图可加载且保持原始导入尺寸。
+
+## 2026-10-06 具体武器与连段特效
+
+- 69 把具体武器统一身份编排；闯关 48 把武器不再合并到基础类别特效。三段攻击、四类派生、角色确认连招与飞行弹体使用对应形状/元素，取消重复的通用法杖光球。
+- 相关检查共 5332 项通过：weapon_vfx_identity 535（真实 GPU：48 武器像素唯一、69 武器三段差异、四类派生、角色连招、蓄力跟随/取消、闪避与清理上限）、weapon_vfx_battle 45（实际主场景事件/挂点/确认派生）、standalone_vfx 119、weapon_stroke_stability 200、all_weapon_mounts 2672、weapon_contact_particles 654、combat_particles 384、rogue_build_system 440、combat 78、spells 106、roguelike_vfx 99，均为 0 failures。
+- 编辑器导入和 Windows 导出成功；build/CrimsonTide-WeaponVFX.exe 为单文件内嵌 PCK（1,919,875,912 字节）。导出包再次运行 standalone_vfx 119、weapon_vfx_identity 535、weapon_vfx_battle 45，均为 0 failures，确认新编排与几何存在于成品中。
+- 预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png；9 张实际主场景截图 build/weapon-vfx-battle-*.png 已检查。没有更改伤害、命中范围、法力消耗与冷却。
+- 已知基线问题：weapon_effect_direction 122 项中 6 项失败，均为旧 14 号断潮巨刃原 PNG 的朝左/朝上半平面像素占比。已从 git HEAD 恢复七个原始脚本到隔离的 build/weapon-vfx-baseline，再运行同一测试，得到完全相同的 6 项失败；不是本次新增回归。新版的实际挂点检查和具体武器像素检查通过。

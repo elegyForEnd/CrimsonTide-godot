@@ -935,6 +935,7 @@ static func hero_effect(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> voi
 		["黑翼断庭","夜鸦返罪","羽幕定裁","夜鸦断罪终式"],
 		["冥火牵星","葬月回镰","幽羽点名","冥庭剑雨终式"]]
 	p.build_combo_label=names[int(p.hero)][index]; p.build_combo_time=1.8
+	s.broadcast_combat({"kind":"hero_combo","p":p.p,"aim":p.aim,"id":p.id,"hero":int(p.hero),"weapon_index":int(p.weapon),"hero_route":index,"height":float(p.get("height",0))})
 	var power: float=float(ctx.get("unit",unit(s,p,index==3)))
 	match int(p.hero):
 		0:

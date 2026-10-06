@@ -72,4 +72,4 @@ static func weapon_key(index: int, phase: String = "release") -> String:
 	return "weapon_%02d_%s" % [Catalog.visual_weapon_index(index),phase]
 
 static func weapon_color(index: int) -> Color:
-	return WEAPON_COLORS[Catalog.visual_weapon_index(index)]
+	return preload("res://scripts/weapon_vfx.gd").profile(index).color
