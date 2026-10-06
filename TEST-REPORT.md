@@ -2,6 +2,32 @@
 
 环境：Windows，项目内 Godot 4.7.2 stable，OpenGL Compatibility，NVIDIA RTX 3080 Ti。
 
+## 2026-10-06 营地行囊面板 + 15×15 网格仓库 + 装备持久化
+
+按 `CAMP-BACKPACK-WAREHOUSE-HANDOFF.md` 规格落地（该交接文件已在本轮完成后删除）。四块改动：
+
+- **仓库变真网格**：`data.warehouse` 从扁平数组改成 15×15 容器（`Catalog.WAREHOUSE_GRID`），格满时**手动存入整件拒绝**（`Profile.bank_item()` 快照回滚），**结算自动入库则溢出到 `warehouse_spill`**（绝不吞掉已获得的战利品）。旧档自动升级：`apply_data()` 把旧数组直接交给 `sanitize_warehouse()` 逐件 row-major 落格，落不下的进溢出区。溢出项与网格项共用一套索引空间，`withdraw_item`/`sell_items`/`product_count`/`spend_product` 都已改为走这套。
+- **装备持久化**：`profile.data.loadout`（主手/护甲×3/饰品×2/快捷栏×3）随存档保存，`storage_from_config()` 读回、`make_player()` 用存盘主手武器而非临时武器。**撤离保留穿着**（`saved_loadout()` 写回，`loot` 不再重复计装备价值，也不再拆下来入库）；**阵亡照旧散落并写回空 loadout**。旧档无 `loadout` 键时按空处理。
+- **营地 Tab 行囊（`camp_pack.gd` + `camp_storage.gd`）**：同屏三栏——左穿戴栏（6 槽 + 快捷 3 + 当前背包 + 背包柜）、中随身背包/次元口袋、右 15×15 仓库，全方向拖拽互转。营地 `session.running==false` 时 `perform()` 是空操作，因此营地编辑集中在 `camp_storage.gd`，并且**只复用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`），每次接受改动**即时 `save_profile()`**。背包可以脱下来变成可存可卖的普通物品（内容先腾进口袋/仓库，装不下就拒绝）。对局与营地共用一套格子渲染 `item_tile.gd`。新背板 `assets/ui/camp-pack-vault-v1.png` 是用旧面板素材拼的**占位图**（`tools/make_camp_pack_backdrop.gd`），待正式美术替换。
+- **整备台改付费买断**：三件出战装备价格 180/420/300（`Catalog.GEAR_PRICES`），换装按差价结算（换贵扣钱、换便宜退钱）、旧件销毁、钱不够不改动并弹**屏幕居中偏上**提示（`notice_popup()`）；`data.gear=-1` = 未装备；新增号从无装备开始。营地 F 键不再直达整备台（只保留拾取地上产物）。交易行保持独立窗口但列表换成**同一套 15×15 网格 + 溢出暂存行**，点格多选、二次确认出售。
+
+**回归（全部 headless）**：`tests/systems` **10812 检查 0 失败**；`tests/economy` 139、`tests/camp_storage` 51、`tests/camp_pack` 21、`tests/camp_flow` 32、`tests/economy_ui` 0 失败、`tests/inventory_panels` 14（本轮新增，补上对局面板在无窗口下的接线覆盖）、`tests/homestead` 62、`tests/camp_activities` 89、`tests/homestead_ui` 53、`tests/collectibles` 451、`tests/attributes` 204、`tests/hidden_ending` 100、`tests/combat_envelope` 89、`tests/rogue_profile_migration` 115、`tests/rogue_wiring` 122 均 0 失败。路牌 `verify_anchors` **505 锚点全过（OK 384 / DRIFT 0 / WRONG 0）**。
+
+**未跑/不适用**：`tests/ui.gd`、`tests/extraction_inventory.gd` 属开窗截图测试，headless 下必然挂起（本项目一贯约定：画面测试去掉 `--headless` 手动跑），本轮未在真窗口下出图。
+
+**已知与本轮无关的失败**：`tests/balance` 6 项失败（`Attack delivery scales once for species 4`、Boss 30 秒出招 10 < 11），在**恢复旧装备基线（`gear:0`）下同样 6 项失败**，与仓库/装备改动无关，属既有基线问题，未在本轮处理。
+
+**测试环境注**：本轮工作区沙箱不允许进程写 `assets/`、`tests/` 等既有子目录，且拦 `user://`（AppData）。无头测试改为 `$env:APPDATA=<工作区>\.testappdata` 后再跑（`.testappdata/` 已进 `.gitignore`），实测存档往返正常、与全放开访问结果一致；`tests/systems.gd` 里写在 `res://tests/` 的临时存档一并改到 `user://`（顺带不再往仓库里丢临时文件）。
+
+## 2026-10-06 种植/钓鱼产物改为格子掉落物并入背包
+
+- **产物即掉落物**：六类收获物（晨光麦 / 赤霞萝卜 / 月露草 / 银鳞鲫 / 月纹鲈 / 金冠锦鲤）在 `catalog.gd` 注册为 1×1、可堆叠（≤6）真实物品，价值沿用旧售价，图标复用 `home_art.gd` 现有图集（无缺失、无需占位图）。`home.sell()` 退役，出售改走营地交易行（读仓库实例）。
+- **自动入包 + 溢出落地**：收获（`homestead.gd` tend 分支）与钓获（`catch_fish`）改调 `profile.receive_product()`——先塞远征背包 `bags[0]`，再塞次元口袋 `pocket`；装不下的量记入 `take_overflow()`，由 `camp_activities.gd` 在动画收尾 `finish()` 时 `spill_overflow()` 落地为 Sprite3D 掉落物（billboard，落在产出点附近）。走近按 **F 优先拾取脚下掉落物**，无掉落时 F 回落到料理台；`camp_screen.gd` marker 与操作指南同步更新 F 的新用途提示。
+- **烹饪/交易看真实实例**：`profile.product_count()` 按实例 `count` 累加（背包+口袋+仓库，修掉了“一叠 6 件被当 1”的计数 bug），`cook()` 与厨房面板食材进度、`spend_product()` 均真扣实例。旧 `home.stock` 计数由 `profile.migrate_home_stock()` 在 `apply_data()` 末尾一次性迁进仓库。
+- **死亡清空随身产物**为既有对局结算逻辑（口袋安全保全、阵亡丢背包）的自然结果，无需额外隔离代码。
+- **回归**：`tests/homestead` 62、`tests/camp_activities` 89、`tests/homestead_ui` 53、`tests/camp_flow` 25、`tests/economy` 84 检查均 0 失败；`tests/systems` 全量 **10812 检查 0 失败**。`verify_anchors` 443 锚点全部通过。
+- **测试环境注**：headless 运行需向 Godot `user://`（AppData）写读存档，普通工作区沙箱会拦此目录导致 save/load 假失败；本次在放开文件系统访问下实测存档往返与产物持久化一致。
+
 ## 2026-09-23 区域数值、Boss 机动与五分钟探索日
 
 - 区域难度统一控制怪物生命、伤害、追击速度、掉落概率和装备品质；覆盖全部 17 类敌人的实际伤害路径。高难清剿增加补给，大型精英保证掉落。详见 `BALANCE.md`。
