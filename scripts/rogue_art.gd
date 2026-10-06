@@ -60,12 +60,18 @@ func minion_animation(floor_index: int, variant: int, frame: int) -> Dictionary:
 	var key := "minion-%d-%d" % [floor_index,variant]
 	return animation_sheet(key,"res://assets/rogue/animations/"+key+".png",4,3)[clampi(frame,0,11)]
 
-func boss_animation(floor_index: int, frame: int) -> Dictionary:
-	var hd_key := "boss-hd-%d" % floor_index
+## `body_index` is the guardian identity (an ``Art.ROGUE`` index) when the caller
+## knows it; `fallback_index` keeps the pre-pool behaviour for callers that only
+## track the floor. Generated identities 5..7 ship their own packed sheets, so a
+## pooled guardian no longer borrows the floor's body.
+func boss_animation(body_index: int, frame: int, fallback_index: int = -1) -> Dictionary:
+	var index := body_index
+	if fallback_index>=0 and not packed_sheets.has("boss-hd-%d.png" % index): index=fallback_index
+	var hd_key := "boss-hd-%d" % index
 	if frame<8 and packed_sheets.has(hd_key+".png"):
 		return animation_sheet(hd_key,"res://assets/rogue/animations/"+hd_key+".png",4,7)[frame]
 	if frame>=8:
-		hd_key="boss-hd-%d-skill-%d" % [floor_index,(frame-8)/8]
+		hd_key="boss-hd-%d-skill-%d" % [index,(frame-8)/8]
 		if packed_sheets.has(hd_key+".png"):
 			var pose: Dictionary=animation_sheet(hd_key,"res://assets/rogue/animations/"+hd_key+".png",4,2)[(frame-8)%8]
 			# Each independently generated clip uses its neutral anticipation pose as
@@ -73,9 +79,9 @@ func boss_animation(floor_index: int, frame: int) -> Dictionary:
 			var neutral: Array=packed_sheets[hd_key+".png"].frames[0].content
 			pose.scale_ratio=float(pose.texture.get_height())/float(neutral[3])
 			return pose
-	var key := "boss-%d" % floor_index
+	var key := "boss-%d" % index
 	if frame<8: return animation_sheet(key,"res://assets/rogue/animations/"+key+".png",4,2)[clampi(frame,0,7)]
-	key="boss-skills-%d" % floor_index
+	key="boss-skills-%d" % index
 	return animation_sheet(key,"res://assets/rogue/animations/"+key+".png",4,5)[clampi(frame-8,0,19)]
 
 func _init() -> void:

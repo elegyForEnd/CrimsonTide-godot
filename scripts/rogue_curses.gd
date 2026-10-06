@@ -84,6 +84,19 @@ static func count(p: Dictionary) -> int:
 		total+=1
 	return total
 
+## A3（B3-2）· 只读查询：身上"最近获得的一条真诅咒"的 id（列表尾部，未知 id 跳过）。
+## 与 remove_last() 的目标逐字一致，所以锻炉的赎罪行可以据此报价"这一条会被清除"。
+## 无诅咒 → ""。无副作用、无 RNG。
+static func last_id(p: Dictionary) -> String:
+	var raw = p.get("rogue_curses", null)
+	if not (raw is Array): return ""
+	var list: Array = raw
+	for i in range(list.size()-1, -1, -1):
+		var id := str(list[i])
+		if find(id).is_empty(): continue
+		return id
+	return ""
+
 ## 纯函数：把任意 id 列表（含重复、含未知 id）合成一张受上限约束的修正表。
 ## 契约要求"诅咒叠加后数值不越界"，因此每个键都必须过 CAPS。
 static func aggregate(id_list: Array) -> Dictionary:
@@ -145,6 +158,35 @@ static func apply(s, p: Dictionary, curse: String) -> bool:
 	if s!=null:
 		s.raid["curse_serial"]=int(s.raid.get("curse_serial", 0))+1
 	return true
+
+## A3（B3-2）· 解咒：把一条诅咒从 p 身上摘掉（p["rogue_curses"] 是本人的状态，随快照整表替换）。
+## **绝不触碰 raid["curse_serial"]**：那个键是"已施加次数"的追加计数器，只增不减——移除一条
+## 再重新获得同一条时序号更大，一次性提示/去重因此仍然成立（移除 ≠ 重置序号）。
+## 未知 id / 不在身上 → false 且零变化（调用方据此不收费）。
+static func remove(p: Dictionary, curse: String) -> bool:
+	if find(curse).is_empty(): return false
+	var raw = p.get("rogue_curses", null)
+	if not (raw is Array): return false
+	var list: Array = raw
+	for i in list.size():
+		if str(list[i]) != curse: continue
+		list.remove_at(i)
+		return true
+	return false
+
+## A3（B3-2）· 摘掉"最后追加的那一条真诅咒"（列表尾部＝最近获得，见 apply() 的 append 语义）。
+## 未知 id 一律跳过、不删（否则"付费解咒"会拿垃圾 id 冒充成果）；返回被移除的 id，没有则 ""。
+## 同样不动 curse_serial。
+static func remove_last(p: Dictionary) -> String:
+	var raw = p.get("rogue_curses", null)
+	if not (raw is Array): return ""
+	var list: Array = raw
+	for i in range(list.size()-1, -1, -1):
+		var id := str(list[i])
+		if find(id).is_empty(): continue
+		list.remove_at(i)
+		return id
+	return ""
 
 ## 诅咒房的实际入口：施加诅咒 + 立刻发放对称回报，返回 {applied, curse, boon}。
 static func apply_pair(s, p: Dictionary, curse: String) -> Dictionary:

@@ -69,7 +69,7 @@ func draw(app, p: Dictionary) -> void:
 	text(root,"行  囊",Vector2(108,50),Vector2(210,54),34,GOLD)
 	text(root,"第 %d 层 · %s" % [s.raid.floor,s.roguelike.FLOORS[int(s.raid.floor)-1]],Vector2(318,65),Vector2(455,34),17,MUTED)
 	var gold_icon: TextureRect=host.rogue_icon(root,host.rogue_field.art.item_icons[10],Vector2(1034,60),Vector2(34,34))
-	gold_icon.tooltip_text="魔晶：游商处购买本局装备与祝福"
+	gold_icon.tooltip_text="魔晶：游商处购买本局武器、装备与游商服务"
 	gold_icon.mouse_filter=Control.MOUSE_FILTER_PASS
 	text(root,str(p.rogue_gold),Vector2(1080,62),Vector2(82,34),22,GOLD)
 	var reroll_icon: TextureRect=host.rogue_icon(root,host.rogue_field.art.item_icons[8],Vector2(1173,60),Vector2(34,34))
@@ -98,7 +98,10 @@ func draw(app, p: Dictionary) -> void:
 	host.button(root,"构筑",Vector2(927,150),Vector2(160,46),func(): selected_tab="build"; host.show_inventory(),selected_tab=="build",22)
 	text(root,"%d 件" % p.rogue_stash.size(),Vector2(1187,161),Vector2(116,30),16,MUTED).horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	if selected_tab=="reserve": draw_reserve(p)
-	else: draw_boons(p)
+	# T1-b (2026-06)：祝福一页隐藏。行囊只有「物品 / 构筑」两个页签，生产路径永远不会把
+	# `selected_tab` 设成 "boons"（只有测试会手工注入），所以这里把原先的 `else: draw_boons(p)`
+	# 收窄为显式分支：页签名列表、索引顺序、默认选中页（"reserve"）与其它页签渲染全部不变。
+	elif selected_tab=="boons": draw_boons(p)
 	var supply := socket(root,Vector2(751,624),Vector2(58,58),{"kind":"medicine"})
 	bind_item(supply,{"kind":"medicine"},"supply",0,false)
 	text(root,"%d%%" % p.flask,Vector2(807,641),Vector2(55,25),15,GOLD)
@@ -118,6 +121,9 @@ func draw(app, p: Dictionary) -> void:
 	text(root,"TAB / ESC  返回战场",Vector2(1060,866),Vector2(290,26),14,GOLD).horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	update_live(p)
 
+## T1-b (2026-06)：这一页**不是玩家可见内容** —— 行囊的两个页签是「物品 / 构筑」，没有任何按钮
+## 会把 `selected_tab` 设成 "boons"；且 `roguelike.BOONS` 池当前零发放点，`p.rogue_boons` 恒为空。
+## 保留渲染器只为旧玩法记录与 `tests/rogue_inventory.gd` 的显式注入，等有了真实发放点再挂页签。
 func draw_boons(p: Dictionary) -> void:
 	var s=host.session
 	for i in 4:
@@ -256,7 +262,7 @@ func show_menu(item: Dictionary, source: String, index: int, starter: bool) -> v
 	var at: Vector2=host.mouse_point()
 	at.x=clampf(at.x,78,1066)
 	at.y=clampf(at.y,76,578)
-	var box: Panel=card(at,Vector2(290,238))
+	var box: Panel=card(at,Vector2(290,262))
 	host.overlay.remove_child(box)
 	menu.add_child(box)
 	box.mouse_filter=Control.MOUSE_FILTER_STOP
@@ -272,7 +278,47 @@ func show_menu(item: Dictionary, source: String, index: int, starter: bool) -> v
 		host.button(box,"取消",Vector2(14,156),Vector2(262,43),close_menu,false,16)
 	,false,16)
 	discard.disabled=starter or p.status!="active" or source=="supply"
-	host.button(box,"取消",Vector2(14,170),Vector2(262,43),close_menu,false,16)
+	# E1 (2026-10) · 魔晶回收。这是 `rogue_sell` 的**行囊入口**：满 12 格时的自救通道，
+	# 与商店面板里的回收区（`main.gd` 的 `_build_rogue_sell_block()`）是多入口同一动作。
+	# 服务端 `sell_action()`（`roguelike.gd:996`）的门是
+	# `status=="active" && s.running && !raid.ended` → `payload.revision==raid.revision`
+	# → `raid.phase=="rogue_shop"` → `version==p.rogue_inventory_revision`
+	# → `source=="reserve"` → 序号合法 → 是装备 → 该 instance_id 未被回收过。
+	# 所以这里：`revision` 取点击那一刻的 raid.revision 活值、`version` 取点击那一刻的
+	# `p.rogue_inventory_revision` 活值（与 `:252` 冻结的那份不同 —— 那个是给既有动作用的，
+	# 回收这条走服务端新契约，两处各自独立）。回收价直接问服务端的真实函数
+	# `sell_price(s,item)`，客户端不复制公式。
+	var sell_price: int=int(host.session.roguelike.sell_price(host.session,item)) if not item.is_empty() else 0
+	var sellable: bool=source=="reserve" and not starter and not item.is_empty() and sell_price>0
+	var sell: Button=host.button(box,"回收此物品…",Vector2(14,170),Vector2(262,43),func():
+		# 与「丢弃」同一套内联二次确认写法：右键误触绝不会直接卖掉装备。
+		if not sellable: return
+		for child in box.get_children(): child.hide()
+		text(box,"卖回给游商，物品永久离开本局行囊",Vector2(16,14),Vector2(258,32),16,Color("f2c98f"))
+		text(box,"%s  ·  魔晶 +%d" % [Catalog.item_name(item),sell_price],Vector2(16,50),Vector2(258,30),16)
+		host.button(box,"确认回收",Vector2(14,101),Vector2(262,43),func(): sell_item(index),false,16)
+		host.button(box,"取消",Vector2(14,156),Vector2(262,43),close_menu,false,16)
+	,false,16)
+	sell.disabled=not sellable or p.status!="active" or host.session.raid.phase!="rogue_shop"
+	if host.session.raid.phase!="rogue_shop":
+		sell.tooltip_text="只有游商处可以回收装备"
+	elif starter or source!="reserve":
+		sell.tooltip_text="只有备用行囊里的装备可以回收；已装备的物件请先收回行囊"
+	elif not item.is_empty() and sell_price<=0:
+		sell.tooltip_text="游商不收购这一件"
+	else:
+		sell.tooltip_text="卖回给游商换取 %d 魔晶（物品永久离开本局行囊）" % sell_price
+	host.button(box,"取消",Vector2(14,213),Vector2(262,43),close_menu,false,16)
+
+## E1 · 回收的实际发包。只做两件事：读**活值** revision/version，发 `rogue_sell`。
+## `index` 是 `show_menu()` 收下的行囊序号（`draw_reserve()` 传的就是它在 `rogue_stash`
+## 里的真实下标），不重新推导。
+func sell_item(index: int) -> void:
+	close_menu()
+	if index<0: return
+	var p: Dictionary=host.session.players[host.session.my_id()]
+	host.session.action("rogue_sell",{"revision":int(host.session.raid.revision),"version":int(p.rogue_inventory_revision),"source":"reserve","index":index})
+	host.show_inventory()
 
 func manage(source: String, index: int, verb: String, version: int) -> void:
 	close_menu()

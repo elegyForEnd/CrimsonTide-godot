@@ -536,7 +536,10 @@ func defeated(s, e: Dictionary) -> void:
 	s.broadcast_audio("rogue-%d-fall" % int(e.rogue_skin),e)
 	s.message.emit(e.boss_name+"已击败")
 	# Keep an animated death silhouette, with no remaining damage.
-	s.raid["rogue_corpses"]=[{"p":e.p,"floor":e.rogue_skin,"time":1.2,"total":1.2,"facing":e.facing}]
+	# 尸体也带上身份：新守层者（bell/earth/abyss）的身体立绘按身份取帧；缺少 boss_art 的
+	# 旧档/旧流程回落到 floor。不新增 raid 键，只在既有条目里加字段。
+	s.raid["rogue_corpses"]=[{"p":e.p,"floor":e.rogue_skin,"boss_art":int(e.get("boss_art",e.rogue_skin)),
+		"art_key":str(e.get("art_key","")),"time":1.2,"total":1.2,"facing":e.facing}]
 	for other in s.enemies:
 		if other.get("rogue_summoned",false): other.hp=0.0
 	effects.clear()

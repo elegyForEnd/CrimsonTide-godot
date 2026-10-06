@@ -1,0 +1,90 @@
+[
+  {
+    "key": "hero-0-jump-v1",
+    "hero": 0,
+    "columns": 3,
+    "rows": 2,
+    "final_file": "hero-0-jump-v1.png",
+    "cell": 128,
+    "poses": [
+      "launch",
+      "rising",
+      "apex",
+      "falling",
+      "landing",
+      "standing"
+    ],
+    "size": [
+      384,
+      256
+    ],
+    "tool": "tools/generate_rogue_build_art.py",
+    "sha256": "78d66e6a177d4d25055005e8f17b8c935b06600e2651401f8e4dae998eeb63dc"
+  },
+  {
+    "key": "hero-1-jump-v1",
+    "hero": 1,
+    "columns": 3,
+    "rows": 2,
+    "final_file": "hero-1-jump-v1.png",
+    "cell": 128,
+    "poses": [
+      "launch",
+      "rising",
+      "apex",
+      "falling",
+      "landing",
+      "standing"
+    ],
+    "size": [
+      384,
+      256
+    ],
+    "tool": "tools/generate_rogue_build_art.py",
+    "sha256": "c31a834a041180da94a7e6211d8856b4459069233469a49b20b5609b75a58672"
+  },
+  {
+    "key": "hero-2-jump-v1",
+    "hero": 2,
+    "columns": 3,
+    "rows": 2,
+    "final_file": "hero-2-jump-v1.png",
+    "cell": 128,
+    "poses": [
+      "launch",
+      "rising",
+      "apex",
+      "falling",
+      "landing",
+      "standing"
+    ],
+    "size": [
+      384,
+      256
+    ],
+    "tool": "tools/generate_rogue_build_art.py",
+    "sha256": "d156add1a24251aea06fa7ec6c58da49c6ba2ef3575fe53a48b26a4c0090182c"
+  },
+  {
+    "key": "hero-3-jump-v1",
+    "hero": 3,
+    "columns": 3,
+    "rows": 2,
+    "final_file": "hero-3-jump-v1.png",
+    "cell": 128,
+    "poses": [
+      "launch",
+      "rising",
+      "apex",
+      "falling",
+      "landing",
+      "standing"
+    ],
+    "size": [
+      384,
+      256
+    ],
+    "tool": "tools/generate_rogue_build_art.py",
+    "sha256": "fee9fc88b198162d0eabbe367593c24ce395102f948edb39f85ea128020300ea"
+  }
+]

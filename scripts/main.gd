@@ -49,6 +49,21 @@ const RogueGraph := preload("res://scripts/rogue_graph.gd")
 # R7b: the dedicated-room view-model (游方锻炉 / 赌徒营帐 / 镜中挑战). Same preload rule
 # as above — no bare class names while the class cache is stale.
 const RogueRoomUi := preload("res://scripts/rogue_room_ui.gd")
+# P1 · 魔境「节点路线图」界面：只读视图，渲染 `s.rogue_graph` / `s.raid.node` /
+# `s.raid.exits` 这些本来就在本地的确定性数据。不新增同步字段、不消耗 `s.rng`、
+# 不写任何玩家状态。同一个 preload 规则（.godot class cache 对新增 Rogue* 模块是陈旧的）。
+const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
+# U1 · 构筑「派生链 / 组合路线」只读预览。渲染 `rogue_build.gd:8-9` 的
+# `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
+# 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
+const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
+# U1 · 构筑内容表（核心 / 铭刻 / 天赋的只读定义）。`main.gd` 以前从不直接读它，
+# 但"核心候选按武器家族过滤"这条规则（`rogue_build_ui.gd:117-118`）需要 `data.cores`，
+# 而写死 12 个 id 会随内容表漂移，所以按同一个 preload 规则引进来。
+const RogueContent := preload("res://scripts/rogue_content.gd")
+# U1 任务3 · 装备属性差。`Equipment.value()/definition()` 是魔境装备数值的唯一尺子
+# （`rogue_reward_ui.gd:4` 也是这个 preload），商店的"与当前装备差异"必须用同一把。
+const Equipment := preload("res://scripts/rogue_equipment.gd")
 var profile := Profile.new()
 var online_service: OnlineService
 var p2p: TideP2P
@@ -59,6 +74,50 @@ var sound: TideSound
 var rogue_field: Control
 var rogue_panel: Control
 var rogue_signature := ""
+# T2 (2026-06) · 魔境 HUD 增量刷新。改造前 `update_rogue_hud()` 是"签名一变就整棵重建"：
+# 复合签名里含 `raid.revision`，而 revision 在战斗/拾取/开箱时都会变，所以约 0.1s 一次的
+# HUD tick 经常把 商店面板 / 服务房面板 / 三选一 / 事件面板整棵 `queue_free` 再 `new` 一遍
+# （每个 Label 还要重新测量字体）。
+#
+# 现在：`rogue_panel` 变成**常驻**控件树，只有"面板种类"或"结构类字段"变化才重建；
+# 数值类字段（魔晶、刷新卡、禁用态、坐标、文案）只在已有控件上写属性。
+#   * `_rogue_hud_kind`   —— 当前树是哪一种（reward/event/room/shop/default）。
+#   * `_rogue_hud_layout` —— 结构类指纹（面板种类 + 房间种类 + 事件 id/选项数/报价戳 + 货架数…）。
+#   * `_rogue_hud_nodes`  —— 增量刷新用的控件引用表（`"key"` 或 `[index,"part"]`）。
+#   * `_rogue_hud_revision` —— **按钮回调实时读取**的 revision（见下方"revision 竞态"注释）。
+# 完整指纹（结构 + 数值）沿用原来的 `rogue_signature` 做"整段无事可做"的短路。
+const ROGUE_HUD_REWARD := "reward"
+const ROGUE_HUD_EVENT := "event"
+const ROGUE_HUD_ROOM := "room"
+const ROGUE_HUD_SHOP := "shop"
+const ROGUE_HUD_DEFAULT := "default"
+var _rogue_hud_kind := ""
+var _rogue_hud_layout := ""
+var _rogue_hud_nodes: Dictionary = {}
+var _rogue_hud_revision := 0
+var _rogue_hud_offer_buttons: Array = []
+# The **action** of each 服务房 row (it can change without the row count changing), refreshed in
+# place on every tick. The revision is deliberately *not* kept here as well: a callback that has
+# two revision sources can ship the stale one (this file originally shipped the frozen payload's
+# revision and a real test caught it). Every reused callback reads `_rogue_hud_revision` alone.
+var _rogue_hud_row_actions: Array = []
+# E1 (2026-10) · 商店面板里的「魔晶回收」区。`rogue_sell` 的 `index` 必须指向**建树时**那一件
+# 行囊物品，所以序号和控件一样按同一顺序收集（结构类字段，进 `_rogue_hud_layout` 指纹）；
+# 价格/禁用态是数值，走 `_refresh_rogue_sell_block()` 值级刷新。
+# 上限 8 件：一行两列，两行落在 y 732..788，既不出商店窗口下沿（704）太远，
+# 也不碰左下 HUD 簇（y 776 起）与右下操作提示（x 1170 起）。
+const _ROGUE_SELL_SLOTS := 8
+var _rogue_hud_sell_buttons: Array = []
+var _rogue_hud_sell_indices: Array = []
+var _rogue_hud_sell_names: Array = []
+var _rogue_hud_sell_empty: Label
+# R7c: the raid revision whose 游商 / 服务房 panel is on screen, or -1 when neither is shown.
+# `update_rogue_hud` refreshes it on every HUD tick, so `_unhandled_input` can route ESC
+# without recomputing the panel's layout conditions.
+var _rogue_panel_open_revision := -1
+# The revision ESC already asked to leave: a second ESC falls back to the pause menu instead
+# of being swallowed forever when the server refuses the action.
+var _rogue_leave_attempted := -1
 var rogue_inventory = preload("res://scripts/rogue_inventory.gd").new()
 var extraction_inventory = preload("res://scripts/extraction_inventory.gd").new()
 var rogue_pending_cost := -1
@@ -74,6 +133,23 @@ var rogue_event_buttons: Array = []
 var rogue_room_buttons: Array = []
 var rogue_growth_buttons: Dictionary = {}
 var field: Battlefield
+# P1 · 肉鸽地图界面（`scripts/rogue_map_screen.gd`）。与战役地图共用 `field.map_open`
+# 这一个开关，但**不共用 page.visible**：战役把 `page` 整页藏起来，肉鸽则把这张
+# 覆盖式路线图盖在 HUD 之上，`page.visible` 保持原样（战役行为因此逐字不变）。
+var rogue_map_screen: Control
+# U1 · 构筑页的派生链预览（`scripts/rogue_build_preview.gd`）。与地图界面一样是 `root` 下的
+# 常驻兄弟节点：**不是** `overlay` 的子节点，所以 `clear(overlay)`（每次开关行囊）不会把它
+# 一起释放。它只读、`mouse_filter=IGNORE` 不吞事件（唯一的例外是面板自己的「关闭 ×」按钮，
+# 见 `rogue_build_preview.gd:_build_close_button()`）。
+# U1-b（实机修复）：可见性不再只看"行囊打开 + 魔境进行中"，还要求**当前是构筑页签**且玩家没有
+# 手动收起（`_rogue_build_preview_hidden`）——它讲的是构筑派生链，画在「物品」页上只会整块盖住
+# 行囊左侧的物品栏。
+var rogue_build_preview: Control
+# U1-b（2026-06 实机修复）· 玩家按了预览面板上的「关闭 ×」或按 V 收起了它。
+# 这是**本行囊会话**级别的开关：行囊一关（`close_bag()`）或换页（`new_page()`）就复位成"展开"，
+# 所以下一次打开行囊会按默认规则重新显示；同一次行囊会话里按 V 可以随时翻回来。
+# 它只是界面状态：不进快照、不新增同步字段、不碰 `s.rng`。
+var _rogue_build_preview_hidden := false
 var canvas: CanvasLayer
 var root: Control
 var page: Control
@@ -194,6 +270,24 @@ func _ready() -> void:
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	root.add_child(overlay)
+	# P1 · the roguelike node map. It is a sibling of `page`/`overlay` (so it can cover
+	# the HUD without being wiped by `clear(page)`), invisible until [M] asks for it, and
+	# it only ever reads: no action names, no session writes, no rng.
+	rogue_map_screen=RogueMapScreen.new()
+	rogue_map_screen.session=session
+	rogue_map_screen.visible=false
+	root.add_child(rogue_map_screen)
+	# U1 · 构筑页的派生链预览。同样的处理：`root` 的兄弟节点（不被 `clear(overlay)` 释放），
+	# 默认隐藏，`_process()` 每帧按"行囊打开 + 在魔境里 + 当前是构筑页签 + 玩家没有手动收起"
+	# 决定显隐；它自己不写会话状态，除了面板自己那个 60x26 的「关闭 ×」按钮之外不吃鼠标事件。
+	rogue_build_preview=RogueBuildPreview.new()
+	rogue_build_preview.session=session
+	rogue_build_preview.visible=false
+	# U1-b · 面板上的「关闭 ×」。这里用**字符串**形式连接，因为 `rogue_build_preview` 的静态类型
+	# 是 `Control`（见上面的声明），`Control` 上没有 `closed` 成员；信号名两边是同一条字面量
+	# （`rogue_build_preview.gd` 的 `signal closed`），改名时必须一起改。
+	rogue_build_preview.connect("closed",func(): _rogue_build_preview_hidden=true)
+	root.add_child(rogue_build_preview)
 	toast=label(root,"",Vector2(230,700),19,GOLD,Vector2(980,34))
 	toast.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	toast.z_index=50
@@ -689,8 +783,32 @@ func new_page(name_value: String) -> void:
 	toast_time=0
 	field.visible=name_value=="game" and not session.roguelike.active(session)
 	rogue_field.visible=name_value=="game" and session.roguelike.active(session)
+	# P1 · Leaving the game page drops the map exactly like the campaign one: `map_open`
+	# goes back to false with the page. (The campaign never leaves it true either — every
+	# `new_page()` is preceded by `toggle_map()` or a `map_open=false` write.)
+	field.map_open=false
+	if rogue_map_screen and is_instance_valid(rogue_map_screen):
+		rogue_map_screen.visible=false
 	rogue_signature=""
 	rogue_panel=null
+	_rogue_hud_kind=""
+	_rogue_hud_layout=""
+	_rogue_hud_nodes={}
+	_rogue_hud_offer_buttons=[]
+	_rogue_hud_row_actions=[]
+	# E1 · 回收区的按钮引用也必须跟着常驻树一起作废：`clear(page)` 已经把它们 queue_free 了，
+	# 留着一串悬空引用会让下一次 `_refresh_rogue_sell_block()` 读到已释放的 Button。
+	# `_rogue_hud_sell_empty` 指向的 Label 同样在 page 下，一并置空。
+	_rogue_hud_sell_buttons=[]
+	_rogue_hud_sell_indices=[]
+	_rogue_hud_sell_names=[]
+	_rogue_hud_sell_empty=null
+	_rogue_hud_revision=0
+	_rogue_panel_open_revision=-1
+	_rogue_leave_attempted=-1
+	# U1-b · 换页同样复位预览的"手动收起"（`new_page()` 是唯一一条不经过 `close_bag()` 就把
+	# `inventory_open` 置 false 的路径，就是本函数上面那一行）。
+	_rogue_build_preview_hidden=false
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
 
@@ -1156,6 +1274,14 @@ func on_started() -> void:
 	hud.team.add_theme_constant_override("line_spacing",10)
 	button(page,"行囊 · 构筑  TAB" if session.roguelike.active(session) else "背包  TAB",Vector2(1175,310),Vector2(234,39),toggle_bag)
 	if not session.roguelike.active(session): button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
+	else:
+		# P1 · 肉鸽的 HUD 地图入口。`行囊 · 构筑` 占满了这一行的右半边（1175..1409），所以
+		# 这一枚与原来的战役「地图  M」**同坐标同尺寸**，只把它那一格从 `菜单` 左边让出来：
+		# 行囊 1175..1409(y310..349) 收在其上方 11px，菜单 1298..1409(y360..398) 在其右侧，
+		# 右栏的肉鸽信息（深渊变数 y58 / 诅咒 y124..212 / 灰烬 y218 / 路线 y244..284 /
+		# 种子 y286..306）全部止于 y≈306；肉鸽常驻面板最右一块是游商 `rect(335,174,1050,530)`，
+		# 右边界 x=1385、下边界 y=704，与这一格（1175..1286 × 360..398）不相交。
+		button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
 	button(page,"菜单",Vector2(1298,360),Vector2(111,38),pause_menu)
 	hud.notice=label(page,"",Vector2(375,624),22,GOLD,Vector2(690,40))
 	hud.notice.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -1229,7 +1355,10 @@ func _process(dt: float) -> void:
 	toast_time-=dt
 	toast.visible=toast_time>0 and not inventory_open
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty(): toast.hide()
+	# U1 · 离开游戏页 / 战斗未开始时，预览必须立刻收起来：下面第 1318 行的早退会跳过
+	# 正常路径上的显隐赋值，否则它会留在标题页上。
 	if page_name!="game" or not session.running:
+		if rogue_build_preview and is_instance_valid(rogue_build_preview): rogue_build_preview.visible=false
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
 	var blocked: bool=inventory_open or modal or field.map_open or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
@@ -1252,6 +1381,13 @@ func _process(dt: float) -> void:
 			if signature!=bag_signature:
 				show_inventory()
 	if inventory_open and not session.roguelike.active(session): extraction_inventory.update_hover()
+	# U1 · 派生链预览只在"行囊开着 + 确实在魔境里 + **当前是构筑页签** + 玩家没有手动收起"时出现。
+	# 每帧只写一个 `visible`：面板自己的 `layout()` 是纯函数，`_process()` 仅在可见时
+	# `queue_redraw()`。页签这一维是 U1-b 的实机修复点：面板讲的是构筑派生链，画在「物品」页上
+	# 只会整块盖住行囊左侧（页签状态就在 `rogue_inventory.selected_tab`，`rogue_inventory.gd:16`）。
+	if rogue_build_preview and is_instance_valid(rogue_build_preview):
+		var preview_open: bool=inventory_open and page_name=="game" and session.roguelike.active(session) and str(rogue_inventory.selected_tab)=="build" and not session.players.get(session.my_id(),{}).is_empty() and not _rogue_build_preview_hidden
+		rogue_build_preview.visible=preview_open
 	# The grabbed item follows the cursor on every frame, not only on a rebuild.
 	sync_drag()
 
@@ -1389,10 +1525,32 @@ func _unhandled_input(event: InputEvent) -> void:
 			toggle_map()
 		elif inventory_open:
 			close_bag()
+		elif page_name=="game" and session.roguelike.active(session) and _rogue_panel_open_revision>=0 and _rogue_leave_attempted!=_rogue_panel_open_revision:
+			# R7c: 游商 / 赌徒 / 锻炉 / 镜像 panels ship no close button of their own, so the
+			# first ESC leaves the panel; a second one (or a refused action) still reaches the
+			# pause menu. `maxi` sends the freshest revision we know, so a HUD value that is up
+			# to one tick (0.1s) old cannot make the server drop the request.
+			_rogue_leave_attempted=_rogue_panel_open_revision
+			session.action("rogue_leave",{"revision":maxi(_rogue_panel_open_revision,int(session.raid.revision))})
 		elif page_name=="game":
 			pause_menu()
 		return
 	if page_name!="game" or modal:
+		return
+	# --- U1 · 构筑页的三个开关键（Q 核心 / R 补正 / T 铭刻）-----------------
+	# 位置很关键：它在下面「三选一状态早退」(1498) 与「bag 早退」(1507) **之前**，所以行囊
+	# 开着时这些键不会被吞掉；又在地图早退 (1513) 之后，地图开着时不会误触。
+	# 三个键都只走 `session.action("rogue_build", ...)`，**不新增任何动作串**，动作串与
+	# payload 形状和 `rogue_build_ui.gd:29 command()` 逐个字段相同（见 `_rogue_build_hotkey()`）。
+	if event is InputEventKey and event.pressed and not event.echo and _rogue_build_hotkey(event):
+		get_viewport().set_input_as_handled()
+		return
+	# U1-b（2026-06 实机修复）· V：派生链预览的显隐开关。位置与上面三个构筑热键同一口径
+	# （`_rogue_build_hotkey` 之后、三选一/行囊早退之前）：行囊关着时它立刻退出，地图开着时也
+	# 退出，所以游戏内 V 依旧什么都不绑定。V 未被占用的依据见 `_rogue_build_hotkey()` 上方
+	# 那段键位冲突核实（那份清单就是全工程的权威口径）。
+	if event is InputEventKey and event.pressed and not event.echo and _rogue_preview_toggle(event):
+		get_viewport().set_input_as_handled()
 		return
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty():
 		if event.is_action_pressed("bag"): toggle_bag()
@@ -1804,6 +1962,8 @@ func toggle_bag() -> void:
 func close_bag() -> void:
 	if inventory_open:
 		sound.play("ui-close")
+	# U1-b · 行囊会话到此结束：预览的"手动收起"复位，下一次开行囊按默认规则重新显示。
+	_rogue_build_preview_hidden=false
 	inventory_open=false
 	_loot_index=-1
 	selected=-1
@@ -1831,8 +1991,22 @@ func detach_drag_nodes() -> void:
 			node.get_parent().remove_child(node)
 
 func toggle_map() -> void:
-	if session.roguelike.active(session): return
 	field.map_open=not field.map_open
+	if session.roguelike.active(session):
+		# P1 · 肉鸽的节点路线图。它和战役地图共用 `field.map_open` 这一个开关（输入屏蔽、
+		# `_process` 的 `blocked` 都读它），但**不共用一个开关的后果**：这里不碰 `page.visible`
+		# —— 肉鸽地图是 `root` 下的一层覆盖绘制，而战役地图是"整页换掉"。
+		# 打开之前先把会冲突的面板收起来：行囊（TAB）互斥；三选一在等输入时 [M] 不开图。
+		if field.map_open:
+			if inventory_open:
+				close_bag()
+			elif not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty():
+				field.map_open=false
+		if rogue_map_screen and is_instance_valid(rogue_map_screen):
+			rogue_map_screen.visible=field.map_open
+		if field.map_open: toast_time=0; toast.visible=false
+		sound.play("ui-open" if field.map_open else "ui-close")
+		return
 	page.visible=not field.map_open
 	if field.map_open: toast_time=0; toast.visible=false
 	sound.play("ui-open" if field.map_open else "ui-close")
@@ -3282,7 +3456,14 @@ func close_modal() -> void:
 func pause_menu() -> void:
 	var at := modal_box("守夜通讯",Vector2(630,460))
 	label(overlay,"本局时间继续流逝，请先移动到安全处。",at+Vector2(35,100),18,MUTED)
-	button(overlay,"继续探索",at+Vector2(35,174),Vector2(560,56),close_modal,true)
+	# P1 · 肉鸽的「地图」入口。战役的 HUD 上本来就有 `地图  M` 按钮（见 `on_started`），
+	# 肉鸽那一栏被 `行囊 · 构筑` 占满，所以补进菜单。回调里先 `close_modal()` 再开图：
+	# 模态框画在 `overlay` 上，不关掉的话路线图会被它压在下面。
+	if session.roguelike.active(session):
+		button(overlay,"路线图  M",at+Vector2(35,174),Vector2(270,52),func(): close_modal(); toggle_map())
+		button(overlay,"继续探索",at+Vector2(325,174),Vector2(270,56),close_modal,true)
+	else:
+		button(overlay,"继续探索",at+Vector2(35,174),Vector2(560,56),close_modal,true)
 	button(overlay,"守夜手册",at+Vector2(35,249),Vector2(270,52),show_help)
 	button(overlay,"设置",at+Vector2(325,249),Vector2(270,52),show_settings)
 	button(overlay,"放弃本局并离开",at+Vector2(35,325),Vector2(560,52),confirm_leave)
@@ -3466,125 +3647,754 @@ func update_rogue_hud(p: Dictionary) -> void:
 	# R7b: the three dedicated rooms repaint from their own signature — the room kind,
 	# the raid revision and the local resources that decide whether an offer is clickable.
 	var room_kind := str(session.raid.room)
-	if RogueRoomUi.handled(room_kind):
+	# R7c: ESC must know whether an exit-less 服务房 panel (赌徒 / 锻炉 / 镜像) is on screen.
+	# The three-choice and 幽暗异事 panels keep their old ESC behaviour, so they are excluded
+	# here; 游商 is deliberately excluded too: leaving the shop is irreversible, so ESC keeps
+	# pausing there and only the panel's 「离开商店」 button may leave. The flag is refreshed on
+	# every HUD tick, not only on a rebuild.
+	# R7d（实机修复）→ R7e（2026-06 · 实机修复）：这条判定必须与 `_rogue_hud_kind_of()` 用**同一个**
+	# 显示门。R7d 用的是相位门（`phase!="rogue_exit"`），但 `rogue_exit` 有两个来源——玩家主动离店，
+	# **以及** `finish_rewards()` 在他开箱领完奖励后的自动收尾——相位门会把后者也当成"面板没了"，
+	# 于是这里判定面板不在屏幕上、ESC 直接去弹暂停菜单，而玩家的服务面板其实还在（用户要求它留着）。
+	# R7e 改问"玩家有没有主动离店"（`raid.room_left`，见 `RogueRoomUi.panel_open()`）：`main.gd`
+	# 的**三个**调用点（`leave_panel_open`、房间签名进指纹、`_rogue_hud_kind_of()`）
+	# 仍然共用同一个函数，所以"一边以为面板在、另一边以为不在"的缝不会重新出现。
+	var leave_panel_open: bool=selection.is_empty() and not RogueUi.event_active(session.raid) and RogueRoomUi.panel_open(room_kind,_rogue_raid_for_panel())
+	_rogue_panel_open_revision=revision if leave_panel_open else -1
+	if _rogue_panel_open_revision<0: _rogue_leave_attempted=-1
+	var kind := _rogue_hud_kind_of(selection,room_kind)
+	# `layout` is the structural half: only a change here may rebuild the tree. `signature` is
+	# the complete fingerprint (structure + values) and keeps the old "nothing changed at all"
+	# short-circuit that a rebuild-only signature used to provide.
+	var layout := kind
+	match kind:
+		ROGUE_HUD_REWARD:
+			# The reward panel's payload freezes `selection.id` **and** `.version`, so both are
+			# structural: a version bump has to rebuild it (a reused button would ship the old
+			# version and the claim would be refused as stale).
+			layout+=":"+str(selection.get("id",""))+":"+str(selection.get("version",""))
+		ROGUE_HUD_EVENT:
+			# Unlike the 服务房 / 游商 trees, the event button builds its payload from
+			# `RogueUi.event_payload(session.raid,index)` — and `RogueEvents.matches_revision()`
+			# requires that revision to equal the *pending offer's* stamp, not merely the live
+			# raid revision. The stamp therefore belongs to the structure: a re-stamped offer
+			# rebuilds the panel (exactly the pre-T2 cadence for this one panel) so a click can
+			# never ship a revision the event handler will drop.
+			var event_options_count: int=RogueUi.event_options(session,p,session.raid).size()
+			layout+=":%s:%d:%d" % [RogueUi.event_id(session.raid),event_options_count,int(RogueUi.pending_event(session.raid).get("revision",-1))]
+		ROGUE_HUD_ROOM:
+			# Row count decides how many recycled buttons exist; the row *text* is refreshed in
+			# place. Unlike the old whole-panel signature a revision bump alone rebuilds nothing.
+			layout+=":%s:%d" % [room_kind,RogueRoomUi.rows(room_kind,session.raid,RogueRoomUi.context_of(session,p)).size()]
+		ROGUE_HUD_SHOP:
+			# E1: 回收区的**行数与每一行是谁**都是结构 —— 行数变了要重建按钮，
+			# 而每行烘焙的 `index` 只有在"行囊内容与顺序"没变时才对得上，
+			# 所以 `_rogue_hud_sell_signature()`（前 8 件装备的 instance_id/名字/品质）
+			# 进指纹：卖掉一件、买到一件、换装都会重建一次，数值（回收价/魔晶禁用态）
+			# 照旧走 `_refresh_rogue_sell_block()` 值级刷新。
+			layout+=":%s:%s:%d:%s" % [browsing_shop,session.raid.phase,p.get("rogue_shop_offers",[]).size(),_rogue_hud_sell_signature(p)]
+	# Values that only ever need a property write, never a new control.
+	signature+="/v:%d:%d:%d:%d:%s" % [revision,p.rogue_gold,p.rogue_rerolls,session.raid.get("reward_claims",[]).size(),p.get("status","")]
+	# R7d → R7e：只有面板真的在上面时才把房间签名并进指纹。否则默认树会因为房间签名
+	# （含魔晶 / 锻造点）而每次数值 tick 都重建一次，增量刷新的第一条不变量（结构变化才重建）
+	# 就破了。R7d 这里的门是相位，R7e 与 `leave_panel_open` / `_rogue_hud_kind_of()` 一样换成
+	# "有没有主动离店"：开箱领完奖励（phase 已是 rogue_exit）时面板还在，所以房间签名照旧要进指纹
+	# （否则面板上的报价/禁用态会停在开箱前那一帧）。
+	if RogueRoomUi.panel_open(room_kind,_rogue_raid_for_panel()):
 		signature+="/room:"+RogueRoomUi.signature(room_kind,session.raid,RogueRoomUi.context_of(session,p))
-	if signature==rogue_signature: return
+	# T2: the live revision every reused button callback reads at click time. The value is
+	# refreshed on **every** tick, including the early-return path, so a button can never ship a
+	# revision older than the snapshot the HUD last painted (see `_rogue_hud_revision`).
+	_rogue_hud_revision=revision
+	if signature==rogue_signature and kind==_rogue_hud_kind: return
 	rogue_signature=signature
-	if is_instance_valid(rogue_panel):
+	if is_instance_valid(rogue_panel) and (kind!=_rogue_hud_kind or layout!=_rogue_hud_layout):
 		page.remove_child(rogue_panel)
 		rogue_panel.queue_free()
-	rogue_panel=Control.new()
-	rogue_panel.size=Vector2(1440,900)
-	rogue_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	page.add_child(rogue_panel)
-	if not selection.is_empty():
-		var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
-		rogue_panel.add_child(reward_ui)
-		reward_ui.build(self,selection)
-		return
-	if RogueUi.event_active(session.raid):
-		rogue_event_panel(p,revision)
-		return
-	if RogueRoomUi.handled(room_kind):
-		rogue_room_panel(p,revision,room_kind)
-		return
-	label(rogue_panel,"魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls],Vector2(1030,92),18,GOLD,Vector2(380,35))
-	if session.raid.phase=="rogue_reward":
-		label(rogue_panel,"E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑",Vector2(380,130),20,GOLD,Vector2(900,40))
-	if session.raid.phase=="rogue_shop" and browsing_shop:
-		rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
-		label(rogue_panel,"游商 · 可购买多件" if session.raid.phase=="rogue_shop" else "区域通关 · 选择一项奖励",Vector2(360,187),22,GOLD)
-		for i in p.get("rogue_shop_offers",[]).size():
-			var offer: Dictionary=p.rogue_shop_offers[i]
-			var index: int=i
-			var x: int=360+(i%3)*330
-			var y: int=floori(i/3.0)*230
-			rogue_icon(rogue_panel,rogue_field.art.offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
-			var title := label(rogue_panel,offer.name,Vector2(x+73,230+y),17,INK,Vector2(240,52))
-			title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-			var details := label(rogue_panel,offer.desc,Vector2(x,289+y),14,MUTED,Vector2(300,111))
-			details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-			var b := button(rogue_panel,"已售出" if offer.get("sold",false) else ("%d 魔晶 · 购买" % offer.price if offer.price>0 else "领取"),Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":index,"revision":revision}))
-			b.disabled=offer.get("sold",false) or p.rogue_gold<int(offer.price) or (offer.has("flask_refill") and p.flask>50)
-		var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":revision}))
+		rogue_panel=null
+	if not is_instance_valid(rogue_panel):
+		_rogue_hud_kind=kind
+		_rogue_hud_layout=layout
+		_rogue_hud_nodes={}
+		_rogue_hud_offer_buttons=[]
+		rogue_panel=Control.new()
+		rogue_panel.name="RogueHudRoot"
+		rogue_panel.size=Vector2(1440,900)
+		rogue_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		page.add_child(rogue_panel)
+		match kind:
+			ROGUE_HUD_REWARD:
+				var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
+				rogue_panel.add_child(reward_ui)
+				reward_ui.build(self,selection)
+			ROGUE_HUD_EVENT: _build_rogue_event_panel()
+			ROGUE_HUD_ROOM: _build_rogue_room_panel(room_kind)
+			ROGUE_HUD_SHOP: _build_rogue_shop_panel(browsing_shop)
+			_: _build_rogue_default_panel()
+	# Reused tree: write the current values into the existing controls.
+	match kind:
+		ROGUE_HUD_EVENT: _rogue_hud_refresh_event(p)
+		ROGUE_HUD_ROOM: _rogue_hud_refresh_room(p,room_kind)
+		ROGUE_HUD_SHOP: _rogue_hud_refresh_shop(p,browsing_shop)
+		ROGUE_HUD_DEFAULT: _rogue_hud_refresh_default(p,browsing_shop)
+
+
+## Which persistent tree `update_rogue_hud()` should keep on screen. This mirrors the old
+## dispatch order exactly: 三选一 -> 幽暗异事 -> 服务房 -> 游商/默认。
+## R7e (2026-06 · 实机修复)：服务房的显示门改问"玩家**主动**离店了吗"（`RogueRoomUi.panel_open()`
+## 读 `raid.room_left`），不再看相位。行为差别只有一处、也正是用户要的那一处：
+##   * 开箱 / 领完奖励 → `finish_rewards()` 把 phase 推到 `rogue_exit` → 面板**继续显示**（还能锻造 /
+##     赌博 / 打镜像）；
+##   * 点「离开此间」或按 ESC → `rogue_leave` 置 `room_left=true` → 面板收起、退回默认树
+##     （那棵树在 `rogue_exit` 下本来就只显示"向右到分叉"的指路行）。
+## 三个房间（锻炉 / 赌徒 / 镜像）共用 `RogueRoomUi.handled()` 这一个分支，所以这一处即全部修复。
+## 状态位属于**结构级**：它的变化会改变这里的返回种类（ROOM <-> DEFAULT），于是落进
+## `_rogue_hud_layout`，T2 的第一条不变量（结构变化才重建）既没被绕过也没被打破 —— 面板该消失时
+## 种类变了会重建，该重建时布局指纹也变了。
+func _rogue_hud_kind_of(selection: Dictionary, room_kind: String) -> String:
+	if not selection.is_empty(): return ROGUE_HUD_REWARD
+	if RogueUi.event_active(session.raid): return ROGUE_HUD_EVENT
+	if RogueRoomUi.panel_open(room_kind,_rogue_raid_for_panel()): return ROGUE_HUD_ROOM
+	if session.raid.phase=="rogue_shop" and _rogue_hud_browsing_shop(): return ROGUE_HUD_SHOP
+	return ROGUE_HUD_DEFAULT
+
+
+## `RogueRoomUi.panel_open()` 要读 `raid.room_left`，所以它需要**整个 raid 字典**（快照元素 11），
+## 不是相位字符串。这一个取值口把"快照可能还没到 / 形状不对"挡住：拿不到字典就返回空字典，
+## 于是 `room_left()` 退化读成 `false`＝"没离店"，面板按服务房显示 —— 与 `RogueRoomUi.room_left()`
+## 里那条退化规则同向，绝不让 UI 层因为缺字段而抛错或把面板锁死。
+func _rogue_raid_for_panel() -> Dictionary:
+	var raid: Variant=session.raid
+	if raid is Dictionary: return raid
+	return {}
+
+
+func _rogue_hud_browsing_shop() -> bool:
+	var me: Dictionary=session.players.get(session.my_id(),{})
+	if me.is_empty(): return false
+	return me.p.x<session.ruins.fork_start-80
+
+
+func _rogue_hud_me() -> Dictionary:
+	return session.players.get(session.my_id(),{})
+
+
+## E1 · 回收区的结构指纹：只取**前 8 件装备**（与 `_ROGUE_SELL_SLOTS` 同一窗口、同一个
+## `while` 顺序），这样"换一件、卖一件"都会让 `_rogue_hud_layout` 变化并重建一次按钮，
+## 而回收价、禁用态这类纯数值不进指纹（它们每 tick 值级刷新）。
+func _rogue_hud_sell_signature(p: Dictionary) -> String:
+	var stash: Array=p.get("rogue_stash",[])
+	var parts: Array=[]
+	var index := 0
+	while index<stash.size() and parts.size()<_ROGUE_SELL_SLOTS:
+		var item: Dictionary=stash[index] if stash[index] is Dictionary else {}
+		if not item.is_empty() and Catalog.is_equipment(str(item.get("kind",""))):
+			parts.append("%s/%s/%d" % [str(item.get("instance_id","")),Catalog.item_name(item),int(item.get("tier",0))])
+		index+=1
+	return "|".join(parts)
+
+
+# --- U1 · 构筑页的键盘直连（核心 / 补正 / 铭刻）---------------------------------
+# 这三件事以前只能鼠标点：核心在 `rogue_build_ui.gd:124`（锻造页每行一个「选择核心」按钮）、
+# 补正在 `:133`（「+3 补正分支（任选一项）」那一排）、铭刻在 `:138`（24 个铭刻按钮）。
+# 本函数**不新增动作串、不改服务端**：每个键走的就是上面那些按钮的同一个动作串
+# （`rogue_build`）+ 同一个 payload 形状（`verb`/`id`/`index`/`version`），
+# 与 `rogue_build_ui.gd:29-30` 的 `command()` 逐字段一致，所以服务端 `Build.management()`
+# （`rogue_build.gd:831`）看到的东西完全相同。
+#
+# 键位冲突核实（全工程 `KEY_*` 的唯一两个来源就是 `setup_inputs()` 的动作表与
+# `_unhandled_input`/`battlefield.gd` 的裸键判断）：
+#   * 已占用的 physical keycode：W/A/S/D、E、F（loot+heal）、H、R（reload）、Q（skill）、
+#     SPACE、C、SHIFT、TAB、M、ESCAPE、CTRL，外加裸键 1/2/3（道具栏）与 Y/N/U（黎明抉择）。
+#   * 因此剩下的字母里挑 **Q / R / T** 三个"在行囊/构筑界面里有意义的"键：
+#       - `T` 在 main.gd 里**完全没有绑定**（只有 camp_screen.gd 的营地界面用了它，
+#         而营地不是 `page_name=="game"`，本函数根本不会被调用）；
+#       - `Q` / `R` 确实是 `skill` / `reload` 两个动作的绑定键，但下面第一件事就是
+#         `if not inventory_open: return false` —— 行囊关着时本函数立刻退出，游戏内
+#         Q/R 的行为逐字不变；行囊开着时 `:1550` 的 `reload→rotate_selected` 与
+#         `skill` 本来就被 return 挡住，所以不存在抢键。
+#   * 本函数的调用点在地图早退（`field.map_open`）之后、三选一早退之前，
+#     所以：地图开着时不响应，三选一/游商面板开着时**仍然**响应（那时按 TAB 也在切换行囊）。
+func _rogue_build_hotkey(event: InputEvent) -> bool:
+	if not inventory_open: return false
+	if not session.roguelike.active(session): return false
+	# 物理键判断，与 `setup_inputs()`（`:539`）的绑定口径一致；`keycode` 只在 `physical_keycode`
+	# 为空时兜底，写法与 `:1502` / `:1532` 的既有裸键判断逐字同款。
+	var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+	if code not in [KEY_Q,KEY_R,KEY_T]: return false
+	var p: Dictionary=_rogue_hud_me()
+	if p.is_empty(): return false
+	# `session.RogueBuild` 在 `main.gd:1751/3166` 已经是既有的读法；这里只是少敲几次，
+	# 类型推断仍是 Variant，行为完全一样。
+	var build=session.RogueBuild
+	# 与 `rogue_build_ui.gd` 面板上的按钮**同一条**前置：`Build.safe()`（`rogue_build.gd:828`）
+	# 同时管着 `status=="active"`、房态、浮空/喝药/施法/闪避中不可改配置。禁用的按钮按下
+	# 也不会发请求，所以这里必须先退，否则会出现"面板上是灰的、按键盘却发了请求"。
+	if not build.safe(session,p): return false
+	# `version` 取**点击时的活值**（`p.rogue_inventory_revision`），与 `rogue_build_ui.gd:30`
+	# 一模一样 —— 不冻结建树时的快照。这和 T2 的 `_rogue_hud_revision` 是同一类修正：
+	# 服务端 `management()` 第一行就要求 `version == p.rogue_inventory_revision`。
+	var version := int(p.rogue_inventory_revision)
+	var bound := int(build.forge_level(p))
+	if code==KEY_R:
+		# 补正：`rogue_build_ui.gd:127-133` 的候选表原样复刻（稳锋 + 武器已有补正的四个属性键）。
+		if bound<3: return false
+		var options: Array=["steady"]
+		for key in ["strength","dexterity","intelligence","arcane"]:
+			if str(Catalog.weapon(int(p.weapon)).get("scaling",{}).get(key,"-")) not in ["-","S"]: options.append(key)
+		var at := options.find(str(p.get("build_temper","")))
+		var next_key := str(options[(at+1)%options.size()] if at>=0 else options[0])
+		session.action("rogue_build",{"verb":"temper","id":next_key,"index":-1,"version":version})
+		notify("补正 → %s" % next_key)
+		return true
+	if code==KEY_Q:
+		# 核心：候选 = 与手持武器同家族（`rogue_build_ui.gd:117-118` 的同一个过滤条件）。
+		if bound<2: return false
+		var family := Catalog.weapon_family(int(p.weapon))
+		var ids: Array=[]
+		for def in RogueContent.data.cores:
+			if int(def.family)==family: ids.append(str(def.id))
+		if ids.is_empty(): return false
+		var current := str(p.get("build_core",""))
+		var pick := str(ids[0])
+		if current!="":
+			var index := ids.find(current)
+			if index>=0 and ids.size()>1: pick=str(ids[(index+1)%ids.size()])
+			elif index<0: pick=str(ids[0])
+			else: return false
+		session.action("rogue_build",{"verb":"core","id":pick,"index":-1,"version":version})
+		notify("核心 → %s" % str(RogueContent.entry(pick).get("name",pick)))
+		return true
+	# 铭刻：24 枚顺序轮换。按钮上那种"已刻过就禁用"的状态由本地预判（`:138` 的
+	# `Build.engraving(player,i+1)` = `equipped.weapon.rogue_id == i`），
+	# 魔晶与"有没有手持武器"两条硬门槛交给服务端（`rogue_build.gd:867`）判定，
+	# 失败会走 `notify()` 的中文提示，不静默。
+	if p.equipped.weapon.is_empty() or int(p.rogue_gold)<35: return false
+	var picked := (int(p.equipped.weapon.get("rogue_id",-1))+1)%24
+	session.action("rogue_build",{"verb":"engrave","id":"","index":picked,"version":version})
+	return true
+
+
+# --- U1-b · 派生链预览的开关（V）与面板上的「关闭 ×」是同一件事的两条入口 --------
+# 状态只有一个：`_rogue_build_preview_hidden`。面板上的按钮走信号把它置 true
+# （上面 `rogue_build_preview.connect("closed", …)` 那一处），这里按键把它翻回来，
+# 两条入口共用同一份状态，不会各记一份。
+func _rogue_preview_toggle(event: InputEvent) -> bool:
+	if not inventory_open: return false
+	if not session.roguelike.active(session): return false
+	if field.map_open: return false
+	# 物理键判断，与 `_rogue_build_hotkey()` / `setup_inputs()`（`:539`）同款口径。
+	var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+	if code!=KEY_V: return false
+	_rogue_build_preview_hidden=not _rogue_build_preview_hidden
+	# 展开时如果人正停在「物品」页签，顺手切到「构筑」页：面板只画构筑派生链，`_process()` 的
+	# 可见性也要求 `selected_tab=="build"`，不切过去的话按 V 会"看起来没反应"。
+	# 这一对人 `selected_tab` / `show_inventory()` 的写法与 `rogue_inventory.gd:97-98` 的
+	# 页签按钮逐字同款（就是"点了构筑页签"）。
+	if not _rogue_build_preview_hidden and str(rogue_inventory.selected_tab)!="build":
+		rogue_inventory.selected_tab="build"
+		show_inventory()
+	return true
+
+
+func _build_rogue_shop_panel(browsing_shop: bool) -> void:
+	rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
+	label(rogue_panel,"游商 · 可购买多件",Vector2(360,187),22,GOLD)
+	label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	# The buttons read `_rogue_hud_revision` at click time; the index is baked into a mutable
+	# cell so a reused button still ships the row it was drawn for.
+	#
+	# E2 (2026-10) · 货架第 4 格（index 3）现在是**服务位**（`roguelike.gd:874` 的
+	# `["weapon","weapon","gear","service","gear"]`），行数据带 `service/service_kind/icon_id`。
+	# 这一格**不需要新控件**：`rogue_take` 在服务端会把 `service==true` 的行转进
+	# `service_action()`（`roguelike.gd:1278`），所以同一个购买按钮照旧可用；图标也**不**改
+	# `rogue_art.gd`（那文件不在本批次的所有权内），而是优先用服务端已经给好的 `icon_id`
+	# 去问 RogueArt 的通用图标接口（见 `_rogue_hud_offer_icon()`）。
+	var indices: Array=[]
+	for i in 6:
+		indices.append(i)
+		var x: int=360+(i%3)*330
+		var y: int=floori(i/3.0)*230
+		var offer: Dictionary=_rogue_hud_shop_offer(i)
+		var icon: TextureRect=rogue_icon(rogue_panel,_rogue_hud_offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
+		var title := label(rogue_panel,"",Vector2(x+73,230+y),17,INK,Vector2(240,52))
+		title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var details := label(rogue_panel,"",Vector2(x,289+y),14,MUTED,Vector2(300,111))
+		details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var row_index := i
+		var b := button(rogue_panel,"",Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":int(indices[row_index]),"revision":_rogue_hud_revision}))
+		_rogue_hud_offer_buttons.append(b)
+		_rogue_hud_nodes[[i,"icon"]]=icon
+		_rogue_hud_nodes[[i,"title"]]=title
+		_rogue_hud_nodes[[i,"desc"]]=details
+	var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["reroll"]=reroll
+	# R7c: the 游商 window had no exit of its own — walking off the fork was the only way
+	# out. The button sits in the header row between the title text (ends near x=540) and
+	# 使用刷新卡 (x=1110), so it covers neither an offer cell nor the refresh button.
+	button(rogue_panel,"离开商店",Vector2(600,180),Vector2(235,42),func(): session.action("rogue_leave",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["prepare"]=label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
+	_rogue_hud_nodes["indices"]=indices
+	# E1 (2026-10) · 魔晶回收。`rogue_sell` 的行囊入口由行囊面板（`rogue_inventory.gd`）
+	# 承担不属于本批次，这里只补上**商店内的回收区**：仅商店阶段可见，右侧 12 件行囊一屏排开。
+	_build_rogue_sell_block()
+	_rogue_hud_refresh_shop(_rogue_hud_me(),browsing_shop)
+
+
+func _rogue_hud_shop_offer(i: int) -> Dictionary:
+	var offers: Array=_rogue_hud_me().get("rogue_shop_offers",[])
+	if i<0 or i>=offers.size(): return {}
+	return offers[i]
+
+
+func _rogue_hud_refresh_shop(p: Dictionary, browsing_shop: bool) -> void:
+	var offers: Array=p.get("rogue_shop_offers",[])
+	var indices: Array=_rogue_hud_nodes.get("indices",[])
+	var buttons: Array=_rogue_hud_offer_buttons
+	for i in mini(6,mini(offers.size(),buttons.size())):
+		var offer: Dictionary=offers[i] if offers[i] is Dictionary else {}
+		var x: int=360+(i%3)*330
+		var y: int=floori(i/3.0)*230
+		if i<indices.size(): indices[i]=i
+		var icon: TextureRect=_rogue_hud_nodes.get([i,"icon"])
+		if is_instance_valid(icon):
+			icon.texture=_rogue_hud_offer_icon(offer)
+			icon.position=Vector2(x,228+y)
+		var title: Label=_rogue_hud_nodes.get([i,"title"])
+		if is_instance_valid(title):
+			title.text=str(offer.get("name",""))
+			title.position=Vector2(x+73,230+y)
+		var details: Label=_rogue_hud_nodes.get([i,"desc"])
+		if is_instance_valid(details):
+			# U1 任务3 · 数值类文案（含"换上去伤害 x → y"的对比行）一律走值级刷新，
+			# 绝不因此重建面板：行数/控件数都没变，`_rogue_hud_nodes[[i,"desc"]]` 原地复用。
+			details.text=_rogue_hud_offer_details(p,offer)
+			details.position=Vector2(x,289+y)
+		var b: Button=buttons[i]
+		if is_instance_valid(b):
+			var price := int(offer.get("price",0))
+			# E2 · 铭刻类服务位需要"再选一件行囊里的武器"作为 `payload.target`
+			# （`roguelike.gd:1100-1106`）。商店货架没有二级选择器，而把行囊列表搬进这个
+			# 300x47 的按钮里会把面板挤爆，所以第一版**明确禁用**这一格并给出 tooltip，
+			# 其余七种服务照常可买（`rogue_take` → `service_action` 已就绪）。
+			var engraving_service: bool=bool(offer.get("service",false)) and str(offer.get("service_kind",""))=="engraving"
+			b.text="已售出" if offer.get("sold",false) else ("%d 魔晶 · 购买" % price if price>0 else "领取")
+			if engraving_service and not bool(offer.get("sold",false)): b.text="铭刻 · 暂不可购买"
+			b.position=Vector2(x,414+y)
+			b.disabled=bool(offer.get("sold",false)) or p.rogue_gold<price or (offer.has("flask_refill") and p.flask>50) or engraving_service
+			b.tooltip_text="铭刻服务需要先指定行囊中的一件武器；请打开行囊（Tab）在构筑页「武器锻造」里刻在你手持的武器上（35 魔晶）" if engraving_service else ""
+	var reroll: Button=_rogue_hud_nodes.get("reroll")
+	if is_instance_valid(reroll): reroll.disabled=p.rogue_rerolls<=0
+	var prepare: Label=_rogue_hud_nodes.get("prepare")
+	if is_instance_valid(prepare): prepare.visible=session.raid.phase=="rogue_prepare"
+	_refresh_rogue_sell_block(p)
+
+
+# --- E1 · 魔晶回收（`rogue_sell`）------------------------------------------------
+# 动作串与 payload 完全按冻结的接口：`{"revision":<raid.revision 活值>,
+# "version":<p.rogue_inventory_revision 活值>,"source":"reserve","index":<行囊序号>}`。
+# `roguelike.gd:1235` 的 `payload.revision == raid.revision` 与 `:997` 的 version 双重门
+# 都要求活值，所以这里一个都不冻结：revision 走 `_rogue_hud_revision`（T2 的唯一可信来源），
+# version 走点击那一刻的 `p.rogue_inventory_revision`（与 `rogue_build_ui.gd:30` 同款）。
+# 行囊序号在**建树时**烘焙进 `_rogue_hud_sell_indices`，与货架的 `indices` 用法一致。
+func _build_rogue_sell_block() -> void:
+	_rogue_hud_sell_buttons=[]
+	_rogue_hud_sell_indices=[]
+	_rogue_hud_sell_names=[]
+	# 逐项核对过的邻近控件（本区 = 标题 (360,712) + 两列两行按钮，行 y=732/764、高 24，
+	# 列 x=360 / 664、宽 296；最右 960，最下 788）：
+	#   * 商店窗口本体 `rect(rogue_panel,(335,174),(1050,530))`：y 到 704 为止，本区从 712 起；
+	#   * 右下角操作提示（`main.gd:1262-1265` 建，y 754/776/798/820，x 1170..1411）
+	#     → x 方向差 210px，从不交叠；
+	#   * 左下 HUD 簇（`main.gd:1243-1255` 建，血条框 y 776..888、x 15..555）
+	#     → 本区最右列从 x 664 起，x 方向差 109px；最左列在 x 360..555 与它有 x 交叠，
+	#       但本区最下 788 里落在该 x 区间的行是 y 732..756（第一行），仍在 776 之上；
+	#   * `hud.prompt`（肉鸽下 `main.gd:1276` 挪到 (335,739) 770x48，右缘 1105）
+	#     → 与第一行 y 732..756 有交叠，但 prompt 只在有交互目标时才有文字，
+	#       而且本区是 `_build_rogue_shop_panel()` 末尾才建的（画在最上层）。
+	_rogue_hud_nodes["sell_title"]=label(rogue_panel,"魔晶回收 · 行囊装备（只在游商处可卖）",Vector2(360,712),15,GOLD,Vector2(680,22))
+	_rogue_hud_sell_empty=label(rogue_panel,"行囊里没有可回收的装备",Vector2(360,740),13,MUTED,Vector2(660,20))
+	_rogue_hud_nodes["sell_empty"]=_rogue_hud_sell_empty
+	var stash: Array=_rogue_hud_me().get("rogue_stash",[])
+	var placed := 0
+	var index := 0
+	while index<stash.size() and placed<_ROGUE_SELL_SLOTS:
+		var item: Dictionary=stash[index] if stash[index] is Dictionary else {}
+		if not item.is_empty() and Catalog.is_equipment(str(item.get("kind",""))):
+			var column: int=placed%2
+			var row: int=floori(placed/2.0)
+			var at := Vector2(360+column*304,732+row*32)
+			var name_label := label(rogue_panel,"",at+Vector2(0,5),13,INK,Vector2(190,20))
+			var index_now := index
+			var sell := button(rogue_panel,"",at+Vector2(196,1),Vector2(100,24),func(): _rogue_sell_item(index_now))
+			_rogue_hud_sell_buttons.append(sell)
+			_rogue_hud_sell_indices.append(index)
+			_rogue_hud_sell_names.append(name_label)
+			placed+=1
+		index+=1
+
+
+func _refresh_rogue_sell_block(p: Dictionary) -> void:
+	var phase_ok: bool=session.raid.phase=="rogue_shop"
+	var stash: Array=p.get("rogue_stash",[])
+	for i in _rogue_hud_sell_buttons.size():
+		var b: Button=_rogue_hud_sell_buttons[i]
+		if not is_instance_valid(b): continue
+		var index: int=int(_rogue_hud_sell_indices[i]) if i<_rogue_hud_sell_indices.size() else -1
+		var item: Dictionary=stash[index] if index>=0 and index<stash.size() and stash[index] is Dictionary else {}
+		var price := int(session.roguelike.sell_price(session,item)) if not item.is_empty() else 0
+		b.visible=true
+		b.text=("回收 %d" % price) if price>0 else "不可回收"
+		b.disabled=(not phase_ok) or price<=0 or p.status!="active"
+		b.tooltip_text="把 %s 卖回给游商，换取 %d 魔晶（物品会永久离开本局行囊）" % [Catalog.item_name(item),price] if price>0 else "游商不收购这一件"
+		var name_label: Label=_rogue_hud_sell_names[i] if i<_rogue_hud_sell_names.size() else null
+		if is_instance_valid(name_label):
+			name_label.text=Catalog.item_name(item) if not item.is_empty() else ""
+			name_label.visible=true
+	var title: Label=_rogue_hud_nodes.get("sell_title")
+	if is_instance_valid(title): title.visible=true
+	var empty: Label=_rogue_hud_sell_empty
+	if is_instance_valid(empty): empty.visible=_rogue_hud_sell_buttons.is_empty()
+
+
+## 回收按钮的回调体。只做两件事：读**活值** revision/version，发 `rogue_sell`。
+func _rogue_sell_item(index: int) -> void:
+	if index<0: return
+	var p: Dictionary=_rogue_hud_me()
+	if p.is_empty(): return
+	session.action("rogue_sell",{"revision":_rogue_hud_revision,"version":int(p.rogue_inventory_revision),"source":"reserve","index":index})
+
+
+# --- U1 任务3 · 商店货架的「与当前装备的差异」 -----------------------------------
+# 伤害口径**不自己造**：`session.weapon_damage()`（`session.gd:526`）是唯一入口，
+# 预览方式与 `rogue_reward_ui.gd:187-189` 的三选一对比逐字同款（复制玩家字典 →
+# 换上候选武器 → 再问一次），所以商店与三选一读的是同一套公式，不可能算错一套。
+func _rogue_hud_offer_details(p: Dictionary, offer: Dictionary) -> String:
+	var desc := str(offer.get("desc",""))
+	if offer.is_empty() or bool(offer.get("service",false)): return desc
+	var compare := _rogue_hud_weapon_compare(p,offer)
+	if compare=="": compare=_rogue_hud_gear_compare(p,offer)
+	if compare=="": return desc
+	return desc+"\n"+compare
+
+
+## U1 任务3（装备部分）· 与**当前同部位**装备的属性差。数值口径沿用 `Equipment.value()` +
+## `Catalog.gear_slot()`（三选一面板 `rogue_reward_ui.gd:88-99` 就是这两把尺子），
+## 与武器那条"伤害 x → y"同一个位置、同一种写法。
+func _rogue_hud_gear_compare(p: Dictionary, offer: Dictionary) -> String:
+	var item: Variant=offer.get("item",null)
+	if not item is Dictionary or (item as Dictionary).is_empty(): return ""
+	var gear: Dictionary=item
+	if str(gear.get("kind",""))!="gear": return ""
+	var slot := Catalog.gear_slot(gear)
+	var worn: Dictionary={}
+	var list: Variant=p.get("equipped",{}).get("gear",[])
+	if list is Array and slot>=0 and slot<(list as Array).size():
+		if (list as Array)[slot] is Dictionary: worn=(list as Array)[slot]
+	var slot_name := Catalog.gear_slot_name(gear)
+	var parts: Array=[]
+	for stat in ["hp","mana","damage","defense","speed","rate","crit"]:
+		var delta := float(Equipment.value(gear,stat))-float(Equipment.value(worn,stat)) if not worn.is_empty() else float(Equipment.value(gear,stat))
+		if is_zero_approx(delta): continue
+		var percent: bool=stat in ["damage","defense","rate","crit"]
+		var label: String={"hp":"生命","mana":"法力","damage":"攻击","defense":"减伤","speed":"移速","rate":"攻速","crit":"暴击"}[stat]
+		parts.append("%s %s%d%s" % [label,"+" if delta>0 else "-",roundi(absf(delta)*100.0) if percent else roundi(absf(delta)),"%" if percent else ""])
+	if parts.is_empty(): return "与本部位已装备的 %s 相比：无属性变化" % (str(worn.get("name","")) if not worn.is_empty() else slot_name)
+	return "对上 %s：%s" % [slot_name," · ".join(parts)]
+
+
+## 只对"能换成手持武器"的货（`offer.item.kind=="weapon"`）出对比。
+func _rogue_hud_weapon_compare(p: Dictionary, offer: Dictionary) -> String:
+	var item: Variant=offer.get("item",null)
+	if not item is Dictionary or (item as Dictionary).is_empty(): return ""
+	var gear: Dictionary=item
+	if str(gear.get("kind",""))!="weapon": return ""
+	var has_weapon: bool=not p.get("equipped",{}).get("weapon",{}).is_empty()
+	var current := "初始武器" if not has_weapon else ""
+	# 深拷贝是刻意的、也是必须的：`weapon_damage()` 会沿 `p.equipped`/`p.build_*` 往下读，
+	# 这份副本只用来"问一次数"，绝不会被写回玩家字典（`rogue_reward_ui.gd:187` 同款）。
+	var after: Dictionary=p.duplicate(true)
+	after["equipped"]["weapon"]=gear
+	after["weapon"]=int(gear.get("weapon",0))
+	var now := float(session.weapon_damage(p))
+	var next := float(session.weapon_damage(after))
+	var arrow := "换上去伤害 %.1f → %.1f（%+.1f）" % [now,next,next-now]
+	if current!="": arrow+=" · 当前为"+current
+	return arrow
+
+
+## E2 · 服务位图标。`RogueArt.offer_icon()`（`rogue_art.gd:136`，不在本批次所有权内）没有
+## service 分支：服务行的 `name/desc/price/sold/icon_id` 里既没有 `item`、也没有
+## `talent_id`/`flask_refill`/`attribute_points`，直调它会掉进最后那条
+## `item_icons[10]` 的兜底（`rogue_art.gd:149`），也就是每一格服务都长一样。
+## 服务端已经把要用的图集格写在 `icon_id` 上（`roguelike.gd:920` 通用 `I016`、
+## `:929` 铭刻按符文换到 `I001..I024`），铭刻行还另带同值的 `build_id`（`:928`）。
+## 这两个键正好就是 `RogueArt.offer_icon()` 认的两个入口（`:139` 走 talent_id、
+## `:140-142` 走 item.build_id → `RogueBuildArt.item_icon()` → `icon(id)`），
+## 所以这里把服务行**包装成它本来就认的形状**再问同一接口：不猜格子，也不改 `rogue_art.gd`。
+func _rogue_hud_offer_icon(offer: Dictionary) -> Texture2D:
+	if bool(offer.get("service",false)):
+		var cell := str(offer.get("icon_id",offer.get("build_id","")))
+		if cell!="":
+			# 带"最近使用过的铭刻符文"行会返回它自己的 `build_id`，与 `icon_id` 同值；
+			# 两条路径都走 `RogueBuildArt.icon()`，谁先命中都指向同一个图集格。
+			var wrapped := {"item":{"build_id":cell},"icon_id":cell}
+			if cell.begins_with("I"): wrapped["talent_id"]=cell
+			var texture: Texture2D=rogue_field.art.offer_icon(wrapped)
+			if texture!=null: return texture
+	return rogue_field.art.offer_icon(offer)
+
+
+
+func _build_rogue_default_panel() -> void:
+	_rogue_hud_nodes["gold"]=label(rogue_panel,"",Vector2(1030,92),18,GOLD,Vector2(380,35))
+	_rogue_hud_nodes["reward_hint"]=label(rogue_panel,"E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑",Vector2(380,130),20,GOLD,Vector2(900,40))
+	_rogue_hud_nodes["exit_hint"]=label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	# The 游商 block is a lazy sub-panel of the default tree: it exists only when the shop is
+	# on screen and is appended **after** the hints, exactly the order the old builder used.
+	_rogue_hud_nodes["shop_block"]=rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
+	var shop_title := label(rogue_panel,"区域通关 · 选择一项奖励",Vector2(360,187),22,GOLD)
+	_rogue_hud_nodes["shop_title"]=shop_title
+	var indices: Array=[]
+	for i in 6:
+		indices.append(i)
+		var x: int=360+(i%3)*330
+		var y: int=floori(i/3.0)*230
+		var offer: Dictionary=_rogue_hud_shop_offer(i)
+		var icon: TextureRect=rogue_icon(rogue_panel,rogue_field.art.offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
+		var title := label(rogue_panel,"",Vector2(x+73,230+y),17,INK,Vector2(240,52))
+		title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var details := label(rogue_panel,"",Vector2(x,289+y),14,MUTED,Vector2(300,111))
+		details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var row_index := i
+		var b := button(rogue_panel,"",Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":int(indices[row_index]),"revision":_rogue_hud_revision}))
+		_rogue_hud_offer_buttons.append(b)
+		_rogue_hud_nodes[[i,"icon"]]=icon
+		_rogue_hud_nodes[[i,"title"]]=title
+		_rogue_hud_nodes[[i,"desc"]]=details
+	var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["reroll"]=reroll
+	# R7c: the 游商 window had no exit of its own — walking off the fork was the only way
+	# out. The button sits in the header row between the title text (ends near x=540) and
+	# 使用刷新卡 (x=1110), so it covers neither an offer cell nor the refresh button.
+	#
+	# 幽灵按钮修复（2026-10）：这个按钮以前**没有**登记进 `_rogue_hud_nodes`，而默认树的显隐
+	# 只认登记过的 key（见 `_rogue_hud_refresh_default()` 里的 `for key in _rogue_hud_nodes.keys()`），
+	# 所以它在默认树的**任何**相位（含战斗）都保持 visible —— 点下去会被
+	# `roguelike.gd:1212` 的相位门拒掉（无害），但暗场景里会留下一个几乎看不见、却能点的按钮。
+	# 现在按同面板「使用刷新卡」（默认树 `:4155`、商店面板 `:3910`）的既有约定登记 key，
+	# 并在刷新里按相位写 `visible`：显隐是**值级**的（控件始终存在，只改属性），所以
+	# `_rogue_hud_layout` 指纹不需要、也不应该跟着相位变（否则默认树会每 tick 重建）。
+	var leave_shop := button(rogue_panel,"离开商店",Vector2(600,180),Vector2(235,42),func(): session.action("rogue_leave",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["leave_shop"]=leave_shop
+	_rogue_hud_nodes["prepare"]=label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
+	_rogue_hud_nodes["indices"]=indices
+
+
+func _rogue_hud_refresh_default(p: Dictionary, browsing_shop: bool) -> void:
+	var gold: Label=_rogue_hud_nodes.get("gold")
+	if is_instance_valid(gold): gold.text="魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls]
+	var reward_hint: Label=_rogue_hud_nodes.get("reward_hint")
+	if is_instance_valid(reward_hint): reward_hint.visible=session.raid.phase=="rogue_reward"
+	var exit_hint: Label=_rogue_hud_nodes.get("exit_hint")
+	if is_instance_valid(exit_hint): exit_hint.visible=session.raid.phase in ["rogue_shop","rogue_exit"]
+	# 幽灵按钮修复（2026-10）· 值级显隐：默认树的「离开商店」只在**玩家确实在商店房**时出现。
+	#
+	# 上一版把相位集合抄成与紧邻的通用指路行 `exit_hint`（上一行）逐字相同
+	# （`session.raid.phase in ["rogue_shop","rogue_exit"]`），那是错的：`exit_hint` 的文案
+	# 是「全队向右集合 · 靠近目标路线末端按 E」（`main.gd:4151`），讲的是**任何** `rogue_exit`
+	# 房间的通用指路；而 `rogue_exit` 是几乎每间房清完后的通用相位（战斗 / 宝藏 / 天赋 / 诅咒
+	# 房都会进它），于是这个按钮在几乎每一间房都冒出来，玩家却根本不在商店。指路行该泛用，
+	# 出口按钮不该——两者**不再同进同退**。
+	#
+	# 现在收紧为"房 + 相位"两个条件同时成立：`session.raid.room=="shop"`（`enter()` 里写下的
+	# 房间种类，`main.gd:3649` 的 `room_kind := str(session.raid.room)` 同款读法）**且**
+	# 相位是 `["rogue_shop","rogue_exit"]`。保留 `rogue_exit` 是必需的：玩家在商店房里向右走过
+	# `browsing_shop`（`p.p.x<fork_start-80`，`main.gd:3640`）那条线后 `_rogue_hud_kind_of()`
+	# 不再返回 `ROGUE_HUD_SHOP`、商店面板不再绘制，此时这个默认树按钮就是**唯一**的离店入口
+	# （相位是 `rogue_exit` 时也是同一件事）。没有另造判定：`room` 就是全工程既有的房间字段。
+	#
+	# 显式写 `visible`（而不是只依赖登记进 `_rogue_hud_nodes`）：默认树的通用循环
+	# （下面 `for key in _rogue_hud_nodes.keys()`）**只**处理 `[i,"part"]` 形状的结构 key，
+	# 字符串 key 一律不管；`reroll` / `shop_title` 这些同面板的兄弟控件也都是自己显式写 `visible` 的。
+	# 值级：控件始终存在，这里只改属性，`_rogue_hud_layout` 指纹**不含** `room`，所以换房不重建。
+	var leave_shop_open: bool=session.raid.room=="shop" and session.raid.phase in ["rogue_shop","rogue_exit"]
+	var leave_shop: Button=_rogue_hud_nodes.get("leave_shop")
+	if is_instance_valid(leave_shop): leave_shop.visible=leave_shop_open
+	var show_shop: bool=session.raid.phase=="rogue_shop" and browsing_shop
+	var block: Panel=_rogue_hud_nodes.get("shop_block")
+	if not is_instance_valid(block): return
+	block.visible=show_shop
+	var shop_title: Label=_rogue_hud_nodes.get("shop_title")
+	var prepare: Label=_rogue_hud_nodes.get("prepare")
+	if is_instance_valid(shop_title):
+		# The old expression was `"游商 · 可购买多件" if phase=="rogue_shop" else "区域通关 · 选择一项奖励"`,
+		# evaluated only inside `phase=="rogue_shop" and browsing_shop`, so the else branch was
+		# unreachable. It is preserved here verbatim so a future phase cannot silently change it.
+		shop_title.text="游商 · 可购买多件" if session.raid.phase=="rogue_shop" else "区域通关 · 选择一项奖励"
+		shop_title.visible=show_shop
+	if is_instance_valid(prepare): prepare.visible=show_shop and session.raid.phase=="rogue_prepare"
+	for node in _rogue_hud_offer_buttons: node.visible=show_shop
+	for key in _rogue_hud_nodes.keys():
+		if key is Array and (key as Array).size()==2:
+			var node: CanvasItem=_rogue_hud_nodes[key]
+			if is_instance_valid(node): node.visible=show_shop
+	var reroll: Button=_rogue_hud_nodes.get("reroll")
+	if is_instance_valid(reroll):
+		reroll.visible=show_shop
 		reroll.disabled=p.rogue_rerolls<=0
-		if session.raid.phase=="rogue_prepare": label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
-	if session.raid.phase in ["rogue_shop","rogue_exit"]:
-		label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	if not show_shop: return
+	_rogue_hud_refresh_shop(p,browsing_shop)
 
 
-## R7: the 幽暗异事 room. The offer lives in raid-wide `pending_event` (written by
-## `RogueEvents.roll_offer()`), so every Watcher sees the same choices and only an
-## active Watcher may pick one. The click ships `raid.revision`, which
-## `roguelike.choose()` (roguelike.gd:681) compares before touching state — a stale
-## button from an earlier room is dropped instead of replaying.
-func rogue_event_panel(p: Dictionary, revision: int) -> void:
+func _build_rogue_room_panel(kind: String) -> void:
+	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
+	label(rogue_panel,RogueRoomUi.title(kind),Vector2(360,189),22,GOLD)
+	# R7c: 赌徒 / 锻炉 / 镜像 share this panel and none of them had a close button. It sits in
+	# the header row, right of the title box (360..1060) and above the body line (y 226).
+	button(rogue_panel,"离开此间",Vector2(1145,182),Vector2(235,42),func(): session.action("rogue_leave",{"revision":_rogue_hud_revision}))
+	var body := label(rogue_panel,"",Vector2(360,226),15,MUTED,Vector2(1000,42))
+	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	var stats := label(rogue_panel,"",Vector2(360,270),15,GOLD,Vector2(1000,24))
+	_rogue_hud_nodes["body"]=body
+	_rogue_hud_nodes["stats"]=stats
+	# T2 note: `rogue_room_buttons` / `rogue_event_buttons` are kept as **live aliases** of the
+	# row buttons, exactly as the pre-T2 builder filled them (rows only, never the 「离开此间」
+	# header button). `tests/rogue_ui.gd`, `tests/rogue_ui_visual.gd` and
+	# `tests/rogue_room_ui_visual.gd` count these arrays, so dropping them would silently delete
+	# five visual-layer assertions' worth of coverage even though `rogue_room_ui.gd` is disjoint.
+	rogue_room_buttons=[]
+	# The row callbacks resolve their action live from this slot; it must be reset **before** the
+	# first button is wired or a click on a fresh tree reads an empty array.
+	_rogue_hud_row_actions=[]
+	var rows: Array=RogueRoomUi.rows(kind,session.raid,RogueRoomUi.context_of(session,_rogue_hud_me()))
+	for i in rows.size():
+		var y := 304+i*92
+		rect(rogue_panel,Vector2(360,y),Vector2(1000,84),Color(0.06,0.045,0.10,0.92))
+		var name_label := label(rogue_panel,"",Vector2(378,y+8),17,GOLD,Vector2(700,26))
+		var desc := label(rogue_panel,"",Vector2(378,y+36),13,MUTED,Vector2(752,42))
+		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		_rogue_hud_row_actions.append(str(rows[i].action))
+		var row_slot := i
+		var take := button(rogue_panel,"",Vector2(1150,y+20),Vector2(190,46),func(): session.action(str(_rogue_hud_row_actions[row_slot]),{"index":row_slot,"revision":_rogue_hud_revision}))
+		take.name="RogueRoomOption%d" % i
+		_rogue_hud_offer_buttons.append(take)
+		rogue_room_buttons.append(take)
+		_rogue_hud_nodes[[i,"name"]]=name_label
+		_rogue_hud_nodes[[i,"desc"]]=desc
+		_rogue_hud_nodes[[i,"row"]]=take
+	_rogue_hud_nodes["fallback"]=label(rogue_panel,"这件房契没有可用的服务，向右离开即可。",Vector2(378,308),16,Color("c38b98"),Vector2(940,30))
+	_rogue_hud_nodes["hint"]=label(rogue_panel,"",Vector2(360,690),16,GOLD,Vector2(1000,26))
+	_rogue_hud_nodes["waiting"]=label(rogue_panel,"你当前无法交易 · 等待队友",Vector2(360,716),15,Color("c38b98"),Vector2(1000,24))
+	_rogue_hud_refresh_room(_rogue_hud_me(),kind)
+
+
+func _rogue_hud_refresh_room(p: Dictionary, kind: String) -> void:
+	var ctx := RogueRoomUi.context_of(session,p)
+	var rows: Array=RogueRoomUi.rows(kind,session.raid,ctx)
+	var body: Label=_rogue_hud_nodes.get("body")
+	if is_instance_valid(body): body.text=RogueRoomUi.body(kind,ctx)
+	var stats: Label=_rogue_hud_nodes.get("stats")
+	if is_instance_valid(stats): stats.text="魔晶 %d · 锻造 +%d · 本局灰烬 %d" % [p.rogue_gold,int(p.get("build_forge_level",0)),int(p.get("rogue_ash_run",0))]
+	var buttons: Array=_rogue_hud_offer_buttons
+	for i in mini(rows.size(),buttons.size()):
+		var row: Dictionary=rows[i]
+		var y := 304+i*92
+		if i<_rogue_hud_row_actions.size(): _rogue_hud_row_actions[i]=str(row.action)
+		var name_label: Label=_rogue_hud_nodes.get([i,"name"])
+		if is_instance_valid(name_label):
+			name_label.text=str(row.name)
+			name_label.position=Vector2(378,y+8)
+		var desc: Label=_rogue_hud_nodes.get([i,"desc"])
+		if is_instance_valid(desc):
+			var desc_text := str(row.desc)
+			if str(row.reason)!="": desc_text+="（"+str(row.reason)+"）"
+			desc.text=desc_text
+			desc.position=Vector2(378,y+36)
+		var take: Button=buttons[i]
+		if is_instance_valid(take):
+			var cost := int(row.cost)
+			take.text=("%d 魔晶" % cost) if cost>0 else "确认"
+			take.position=Vector2(1150,y+20)
+			take.tooltip_text=str(row.reason) if str(row.reason)!="" else "无门槛"
+			take.disabled=not bool(row.enabled) or p.status!="active"
+	var fallback: Label=_rogue_hud_nodes.get("fallback")
+	if is_instance_valid(fallback):
+		fallback.visible=rows.is_empty()
+		fallback.text="这件房契没有可用的服务，向右离开即可。"
+	var hint: Label=_rogue_hud_nodes.get("hint")
+	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase))
+	if is_instance_valid(hint):
+		hint.text=hint_line
+		hint.visible=hint_line!=""
+	var waiting: Label=_rogue_hud_nodes.get("waiting")
+	if is_instance_valid(waiting): waiting.visible=p.status!="active"
+
+
+func _build_rogue_event_panel() -> void:
 	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
 	label(rogue_panel,"幽暗异事",Vector2(360,189),22,GOLD)
-	label(rogue_panel,RogueUi.event_title(session.raid),Vector2(360,226),20,INK,Vector2(1000,34))
-	var body := label(rogue_panel,RogueUi.event_body(session.raid),Vector2(360,264),15,MUTED,Vector2(1000,44))
+	var title := label(rogue_panel,"",Vector2(360,226),20,INK,Vector2(1000,34))
+	var body := label(rogue_panel,"",Vector2(360,264),15,MUTED,Vector2(1000,44))
 	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	rogue_event_buttons=[]
-	var options := RogueUi.event_options(session,p,session.raid)
+	_rogue_hud_nodes["title"]=title
+	_rogue_hud_nodes["body"]=body
+	# The event click payload is **not** captured: `RogueUi.event_payload(session.raid,index)`
+	# derives `revision` from the live snapshot at click time, so a reused button can never ship
+	# a stale revision. Only the option index is baked in — and the layout key carries the option
+	# count, so a different roster rebuilds the tree instead of reusing these buttons.
+	var options: Array=RogueUi.event_options(session,_rogue_hud_me(),session.raid)
 	for i in options.size():
-		var option: Dictionary=options[i]
-		var index: int=int(option.get("index",-1))
 		var y := 326+i*100
 		rect(rogue_panel,Vector2(360,y),Vector2(1000,92),Color(0.06,0.045,0.10,0.92))
-		label(rogue_panel,str(option.get("name","")),Vector2(378,y+10),18,GOLD,Vector2(700,28))
+		var name_label := label(rogue_panel,"",Vector2(378,y+10),18,GOLD,Vector2(700,28))
+		var desc := label(rogue_panel,"",Vector2(378,y+42),14,MUTED,Vector2(752,40))
+		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var option_index := i
+		var pick := button(rogue_panel,"选择",Vector2(1150,y+22),Vector2(190,48),func(): session.action(RogueUi.ACTION_EVENT,RogueUi.event_payload(session.raid,option_index)))
+		pick.name="RogueEventOption%d" % i
+		_rogue_hud_offer_buttons.append(pick)
+		_rogue_hud_nodes[[i,"name"]]=name_label
+		_rogue_hud_nodes[[i,"desc"]]=desc
+	_rogue_hud_nodes["fallback"]=label(rogue_panel,"事件数据缺失，等待房主重新抽取。",Vector2(378,330),16,Color("c38b98"),Vector2(940,30))
+	_rogue_hud_nodes["waiting"]=label(rogue_panel,"你当前无法抉择 · 等待队友",Vector2(360,700),16,Color("c38b98"),Vector2(1000,26))
+	_rogue_hud_refresh_event(_rogue_hud_me())
+
+
+func _rogue_hud_refresh_event(p: Dictionary) -> void:
+	var title: Label=_rogue_hud_nodes.get("title")
+	if is_instance_valid(title): title.text=RogueUi.event_title(session.raid)
+	var body: Label=_rogue_hud_nodes.get("body")
+	if is_instance_valid(body): body.text=RogueUi.event_body(session.raid)
+	var options: Array=RogueUi.event_options(session,p,session.raid)
+	var buttons: Array=_rogue_hud_offer_buttons
+	for i in mini(options.size(),buttons.size()):
+		var option: Dictionary=options[i]
+		var y := 326+i*100
+		var name_label: Label=_rogue_hud_nodes.get([i,"name"])
+		if is_instance_valid(name_label):
+			name_label.text=str(option.get("name",""))
+			name_label.position=Vector2(378,y+10)
 		var require_line := RogueUi.require_text(option)
 		var desc_text := str(option.get("desc",""))
 		if require_line != "": desc_text+="（"+require_line+"）"
-		var desc := label(rogue_panel,desc_text,Vector2(378,y+42),14,MUTED,Vector2(752,40))
-		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		var pick := button(rogue_panel,"选择",Vector2(1150,y+22),Vector2(190,48),func(): session.action(RogueUi.ACTION_EVENT,RogueUi.event_payload(session.raid,index)))
-		pick.name="RogueEventOption%d" % i
-		pick.tooltip_text=require_line if require_line!="" else "无门槛"
-		pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
-		rogue_event_buttons.append(pick)
-	if options.is_empty():
-		label(rogue_panel,"事件数据缺失，等待房主重新抽取。",Vector2(378,330),16,Color("c38b98"),Vector2(940,30))
-	if p.status!="active":
-		label(rogue_panel,"你当前无法抉择 · 等待队友",Vector2(360,700),16,Color("c38b98"),Vector2(1000,26))
-
-
-## R7b: 游方锻炉 / 赌徒营帐 / 镜中挑战. `roguelike.open_room()` writes the pending quote
-## and `refresh_dedicated()` re-quotes after every deal, so this panel only renders what the
-## revision guard will actually accept. Clicking ships the frozen action name together with
-## `raid.revision`: a stale button left over from an earlier room is dropped by
-## `roguelike.choose()` instead of replaying the purchase.
-func rogue_room_panel(p: Dictionary, revision: int, kind: String) -> void:
-	var ctx := RogueRoomUi.context_of(session,p)
-	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
-	label(rogue_panel,RogueRoomUi.title(kind),Vector2(360,189),22,GOLD)
-	var body := label(rogue_panel,RogueRoomUi.body(kind,ctx),Vector2(360,226),15,MUTED,Vector2(1000,42))
-	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	label(rogue_panel,"魔晶 %d · 锻造 +%d · 本局灰烬 %d" % [p.rogue_gold,int(p.get("build_forge_level",0)),int(p.get("rogue_ash_run",0))],Vector2(360,270),15,GOLD,Vector2(1000,24))
-	rogue_room_buttons=[]
-	var rows := RogueRoomUi.rows(kind,session.raid,ctx)
-	for i in rows.size():
-		var row: Dictionary=rows[i]
-		var y := 304+i*92
-		rect(rogue_panel,Vector2(360,y),Vector2(1000,84),Color(0.06,0.045,0.10,0.92))
-		label(rogue_panel,str(row.name),Vector2(378,y+8),17,GOLD,Vector2(700,26))
-		var desc_text := str(row.desc)
-		if str(row.reason)!="": desc_text+="（"+str(row.reason)+"）"
-		var desc := label(rogue_panel,desc_text,Vector2(378,y+36),13,MUTED,Vector2(752,42))
-		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		var row_action := str(row.action)
-		var row_payload: Dictionary=(row.payload as Dictionary).duplicate(true)
-		var cost := int(row.cost)
-		var take := button(rogue_panel,("%d 魔晶" % cost) if cost>0 else "确认",Vector2(1150,y+20),Vector2(190,46),func(): session.action(row_action,row_payload))
-		take.name="RogueRoomOption%d" % i
-		take.tooltip_text=str(row.reason) if str(row.reason)!="" else "无门槛"
-		take.disabled=not bool(row.enabled) or p.status!="active"
-		rogue_room_buttons.append(take)
-	if rows.is_empty():
-		label(rogue_panel,"这件房契没有可用的服务，向右离开即可。",Vector2(378,308),16,Color("c38b98"),Vector2(940,30))
-	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase))
-	if hint_line!="": label(rogue_panel,hint_line,Vector2(360,690),16,GOLD,Vector2(1000,26))
-	if p.status!="active":
-		label(rogue_panel,"你当前无法交易 · 等待队友",Vector2(360,716),15,Color("c38b98"),Vector2(1000,24))
+		var desc: Label=_rogue_hud_nodes.get([i,"desc"])
+		if is_instance_valid(desc):
+			desc.text=desc_text
+			desc.position=Vector2(378,y+42)
+		var pick: Button=buttons[i]
+		if is_instance_valid(pick):
+			pick.tooltip_text=require_line if require_line!="" else "无门槛"
+			pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
+	var fallback: Label=_rogue_hud_nodes.get("fallback")
+	if is_instance_valid(fallback): fallback.visible=options.is_empty()
+	var waiting: Label=_rogue_hud_nodes.get("waiting")
+	if is_instance_valid(waiting): waiting.visible=p.status!="active"
+	# Same live alias as the room panel: the event panel's buttons *are* its row buttons. It is
+	# re-published on **every** refresh, not only at build time, because rebuilding another panel
+	# swaps `_rogue_hud_offer_buttons` for a fresh array and an alias taken once would keep
+	# pointing at the old one (`tests/rogue_ui.gd` counts this array).
+	rogue_event_buttons=_rogue_hud_offer_buttons
 
 
 ## R7: 种子 / 每日挑战 page. Daily runs are seeded from the **UTC** date and the

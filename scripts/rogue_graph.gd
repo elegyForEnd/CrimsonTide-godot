@@ -126,6 +126,30 @@ static func build(seed_value: int, floor: int) -> Dictionary:
 		var slot: Array = middle_slots[rng.randi_range(0, middle_slots.size() - 1)]
 		kinds_by_depth[int(slot[0]) - 1][int(slot[1])] = str(SUPPLY_KINDS[rng.randi_range(0, SUPPLY_KINDS.size() - 1)])
 
+	# 保底：整局**至少出现一次**镜中挑战。mirror 的深度下限是 5、又受"每层至多一次"限制，
+	# 只能靠深度 ≥5 的中间槽随机命中，实测单局(x5 层)出现率仅 71.8%（400 局统计；对照
+	# gamble 85.3% / curse 91.0% / event 93.3% / forge 93.5%）。这里由 seed_value 派生一个
+	# "指定层"（纯整数运算、不消耗 s.rng、两端各自重算结果相同），在该层填一个空位；
+	# 位置固定不消耗随机，因此同种子同图、且既有随机流一位不动。
+	var mirror_layer := _mirror_floor_for(int(seed_value))
+	if floor_index == mirror_layer:
+		var has_mirror := false
+		for d in range(2, depths):
+			for kind in kinds_by_depth[d - 1]:
+				if str(kind) == "mirror":
+					has_mirror = true
+		if not has_mirror:
+			var mirror_slot: Array = _mirror_slot(depths, sizes, kinds_by_depth)
+			if not mirror_slot.is_empty():
+				kinds_by_depth[int(mirror_slot[0]) - 1][int(mirror_slot[1])] = "mirror"
+				# 刚把唯一的补给顶掉时就地补一个（不与 mirror 同槽），保持"每层至少一个补给"。
+				if not _depth_has_supply(kinds_by_depth, depths):
+					for other in middle_slots:
+						if int(other[0]) == int(mirror_slot[0]) and int(other[1]) == int(mirror_slot[1]):
+							continue
+						kinds_by_depth[int(other[0]) - 1][int(other[1])] = str(SUPPLY_KINDS[0])
+						break
+
 	# 建节点，再一次性接边（layer d → layer d+1 全连）。
 	var nodes := {}
 	var order: Array = []
@@ -210,6 +234,38 @@ static func from_route(route: Array, floor_index: int = 1) -> Dictionary:
 		"order": order,
 		"nodes": nodes,
 	}
+
+## 一局之内指定哪一层保底镜中挑战（落在第 1~3 层，短局也吃得到）。
+## 纯整数派生：不消耗任何随机序列，房主与客户端各自重算必得同值。
+static func _mirror_floor_for(seed_value: int) -> int:
+	return int((int(seed_value) * 40503 + 17) & 0x7FFFFFFF) % 3 + 1
+
+
+## 指定层里放 mirror 的槽位：只取"深度 ≥ mirror 下限、且不是 pre-boss 层"的中间槽，
+## 优先挑当前不是补给的槽（免得接着还要回补补给）；取最深的一个 —— 位置固定、不消耗随机。
+static func _mirror_slot(depths: int, sizes: Array, kinds_by_depth: Array) -> Array:
+	var min_depth := int(NEW_KIND_MIN_DEPTH["mirror"])
+	var preferred: Array = []
+	var fallback: Array = []
+	for d in range(maxi(2, min_depth), depths - 1):
+		for i in sizes[d - 1]:
+			fallback.append([d, i])
+			if not (str(kinds_by_depth[d - 1][i]) in SUPPLY_KINDS):
+				preferred.append([d, i])
+	var pool: Array = preferred if not preferred.is_empty() else fallback
+	if pool.is_empty():
+		return []
+	return pool[pool.size() - 1]
+
+
+## 这一层是否还有补给房（`shop` / `treasure`）。
+static func _depth_has_supply(kinds_by_depth: Array, depths: int) -> bool:
+	for d in range(2, depths):
+		for kind in kinds_by_depth[d - 1]:
+			if str(kind) in SUPPLY_KINDS:
+				return true
+	return false
+
 
 static func _pick_kind(rng: RandomNumberGenerator, depth: int, used_new: Dictionary, talent_used: int) -> String:
 	var candidates: Array = []

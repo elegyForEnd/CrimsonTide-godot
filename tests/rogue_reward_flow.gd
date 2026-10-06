@@ -1,8 +1,11 @@
 extends RefCounted
 ## Test driver for the actual world interaction sequence, with explicit landing time.
 static func pick(s, p: Dictionary) -> void:
-	if not s.raid.reward_chest.opened:
-		p.p=s.raid.reward_chest.p
+	# 非战斗房（灵契圣坛等）也会进 `rogue_reward`，那时 `reward_chest` 里既没有 `opened` 也没有 `p`；
+	# 直接访问会抛运行期错误并让 `pick()` 提前返回（外面看起来只是"没捡到东西"）。统一安全取值。
+	var chest: Dictionary=s.raid.get("reward_chest",{})
+	if not bool(chest.get("opened",false)) and chest.has("p"):
+		p.p=chest.p
 		s.perform(p.id,"rogue_loot")
 	s.elapsed+=2
 	for packet in s.raid.reward_drops:

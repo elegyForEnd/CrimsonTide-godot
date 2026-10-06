@@ -64,7 +64,7 @@
 - `assets/rogue/build/atlas-manifest.json`：252个独立素材区域，13张图集。
 - `assets/rogue/build/jump-manifest.json`：四角色、24姿态的固定比例和落脚点。
 - `assets/rogue/build/generation-record.json`、`jump-generation-record.json`：built-in image_gen的最终提示词、原始文件来源与实际引用文件。
-- `tools/build_rogue_content.py`：从设计表编译目录；`index_rogue_build_art.py`、`index_rogue_jump_art.py`只读取透明度/边界并生成索引，不修改PNG。
+- `tools/build_rogue_content.py`：从设计表编译目录；`tools/generate_rogue_build_art.py` 一键重建图集/图标/跳跃帧与上述 manifest（`index_rogue_build_art.py`、`index_rogue_jump_art.py` 只读取透明度/边界并生成索引，不修改PNG）。
 
 所有最终素材已保存在项目中，并在奖励、行囊、商店、图鉴、核心/铭刻选择及战斗武器显示处接入。已补充导出过滤器中的JSON资源，导出不会依赖用户个人生成目录。
 

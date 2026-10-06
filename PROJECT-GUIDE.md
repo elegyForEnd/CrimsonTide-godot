@@ -178,7 +178,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 闯关战场渲染（相机/角色/敌人血条/预警弧/出口） | `scripts/rogue_field.gd`（相机死区 rogue_field.gd:16，`_draw` rogue_field.gd:157） |
 | 闯关美术装载（HD 图集裁切/图标） | `scripts/rogue_art.gd`（图集清单 rogue_art.gd:81）+ 背景 `rogue_backdrop.gd` |
 | 敌方特效层（不产生伤害） | `scripts/rogue_enemy_vfx.gd` + 守层者专属 `scripts/rogue_boss_effects.gd` |
-| 跳跃姿态帧 | `scripts/rogue_jump_frames.gd`（数据 `assets/rogue/build/jump-manifest.json`，**需先跑 `tools/index_rogue_jump_art.py` 生成**：`build/` 被 .gitignore 忽略，仓库里没有这个文件） |
+| 跳跃姿态帧 | `scripts/rogue_jump_frames.gd`（数据 `assets/rogue/build/jump-manifest.json`，**已入库**；需要重建时跑 `tools/generate_rogue_build_art.py` 一键生成） |
 
 ### F. 构筑系统（252 项：48 武器/72 装备/96 天赋/24 铭刻/12 核心）
 
@@ -188,7 +188,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 构筑规则引擎（属性合成/伤害倍率/天赋激活/锻造/铭刻/连招/跳跃/血瓶） | `scripts/rogue_build.gd`（1011 行）：连招表 `CM_ROUTES/HC_ROUTES` rogue_build.gd:8-9；综合属性 `stat` rogue_build.gd:81；**伤害倍率 `hit_multiplier` rogue_build.gd:259**；命中触发 `hit_event` rogue_build.gd:341；连招识别 `action_event` rogue_build.gd:544；天赋合法性 `legal_talents` rogue_build.gd:746；管理入口（加点/锻造/铭刻）`management` rogue_build.gd:798；成长发放 `award` rogue_build.gd:847；经验 `add_experience` rogue_build.gd:969 |
 | 闯关装备/铭刻定义与品质缩放 | `scripts/rogue_equipment.gd`（`value` 缩放 rogue_equipment.gd:21；被动效果实际在 rogue_build.gd 内联） |
 | 构筑管理页（Tab→构筑：天赋/加点/锻造/连招手册/图鉴） | `scripts/rogue_build_ui.gd`（五子页 rogue_build_ui.gd:37-176） |
-| 252 项图标 | `scripts/rogue_build_art.gd`（索引 `assets/rogue/build/atlas-manifest.json`，**需先跑 `tools/index_rogue_build_art.py` 生成**：`build/` 被 .gitignore 忽略，缺失时图标解析为 null） |
+| 252 项图标 | `scripts/rogue_build_art.gd`（索引 `assets/rogue/build/atlas-manifest.json`，**已入库**；`tools/generate_rogue_build_art.py` 一键重建，缺失时图标解析为 null） |
 | 闯关行囊界面 | `scripts/rogue_inventory.gd` + 格子控件 `scripts/rogue_inventory_socket.gd` |
 | 三选一奖励弹窗 | `scripts/rogue_reward_ui.gd`（交互协议对应 roguelike.gd:439 `selection_action`） |
 
@@ -473,7 +473,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 **清单文件（可溯源链）**：`assets/audio/library-manifest.json`（114 条音效 cue）、`assets/audio/voices/voice-manifest.json`（4 名角色 × 11 类语音槽）、`assets/audio/music/music-manifest.json`（32 曲目 SHA-256）、`assets/bosses/motion-atlas.json`、`assets/rogue/regions/ground-manifest.json`——对应 Python 校验测试见 §7。
 
-⚠️ `assets/rogue/build/` 下的 `atlas-manifest.json`、`jump-manifest.json` 是**生成物**：`.gitignore` 第 2 行 `build/` 把整个目录排除了，干净检出里没有它们；跑 `tools/index_rogue_build_art.py` / `tools/index_rogue_jump_art.py` 才会生成（缺了图标与跳跃帧会解析为 null）。
+⚠️ `assets/rogue/build/` 下的 `atlas-manifest.json`、`jump-manifest.json` 与图集 PNG 是**生成物但已入库**（`.gitignore` 对该目录开了例外，保证全新 clone 也能直接编译与显示图标）；重建只需跑 `tools/generate_rogue_build_art.py`（缺文件时 `main.gd` 的编译期 preload 会失败，图标与跳跃帧也会解析为 null）。
 
 **assets/ 子目录速览**：`animation-generated/`（AI 角色动画帧）、`audio/`（音效+music/+voices/+bosses/）、`bosses/`（图集+imagegen/）、`combat/`（角色精灵/攻击帧/idle/ranged-imagegen/feiyue-3d/generated-attacks/imagegen 特效）、`enemies/`（每怪一张 4×3 图集）、`home/`、`icons/`（SVG）、`rogue/`（闯关全部素材）、`ui/`、`vendor/`（KayKit/Quaternius CC0 模型）、`video/`、`world/`（地面瓦片+atlas.jpg）。
 

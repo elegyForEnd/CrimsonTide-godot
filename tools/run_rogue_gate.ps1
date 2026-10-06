@@ -2,9 +2,11 @@
 #
 # Why this exists (and why tools/verify_rogue_build.ps1 is NOT the gate):
 #   * verify_rogue_build.ps1 throws on ANY "ERROR:" line, so it can never pass in
-#     this tree (tests/rogue_build_rules.gd dies on its first check because
-#     assets/rogue/build/ only holds 7-byte "{}" placeholder manifests, and
-#     tests/rogue_build_pack.gd reports "Missing exported icon W001").
+#     this tree (several unrelated pre-existing reds keep an ERROR line in the log).
+#     The rogue build-asset blocker is gone since assets/rogue/build/ became a
+#     generated artifact (tools/generate_rogue_build_art.py): rogue_build_rules now
+#     runs to completion and IS judged below; rogue_build_pack exits 0 but prints no
+#     "N checks, M failures" line, so it stays exempt (unjudgeable by this parser).
 #   * Mid-flight snapshots are actively misleading: several writers land in the
 #     same tree, and one test was measured at 1831/558 then 11832/0 within
 #     20 minutes. The gate therefore (a) prints which files were written in the
@@ -51,40 +53,47 @@ New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 
 # --- baseline: failures is the gate; checks is informational (new assertions move it) ---
 $baseline = [ordered]@{
-    'rogue_graph'              = @{ checks = 83608; failures = 0 }
-    'rogue_variants'           = @{ checks = 495;   failures = 0 }
+    'rogue_graph'              = @{ checks = 83780; failures = 0 }
+    'rogue_variants'           = @{ checks = 507;   failures = 0 }
     'rogue_curses'             = @{ checks = 218;   failures = 0 }
     'rogue_events'             = @{ checks = 484;   failures = 0 }
-    'rogue_wiring'             = @{ checks = 123;   failures = 0 }
+    'rogue_wiring'             = @{ checks = 122;   failures = 0 }
     'rogue_growth'             = @{ checks = 6886;  failures = 0 }
-    'rogue_rooms'              = @{ checks = 1299;  failures = 0 }
+    'rogue_rooms'              = @{ checks = 1318;  failures = 0 }
     'rogue_daily'              = @{ checks = 132;   failures = 0 }
     'rogue_profile_migration'  = @{ checks = 113;   failures = 0 }
     'rogue_build_growth'       = @{ checks = 4066;  failures = 0 }
     'rogue_build_system'       = @{ checks = 440;   failures = 0 }
     'roguelike_seven_rooms'    = @{ checks = 11832; failures = 0 }
-    'rogue_build_progression'  = @{ checks = 818;   failures = 0 }
+    'rogue_build_progression'  = @{ checks = 727;   failures = 0 }
     'systems'                  = @{ checks = 10812; failures = 0 }
     'expedition'               = @{ checks = 79;    failures = 0 }
     'combat'                   = @{ checks = 78;    failures = 0 }
     'enemy_body'               = @{ checks = 379;   failures = 0 }
     'boss_tactics'             = @{ checks = 186;   failures = 1 }   # known pre-existing red
-    'roguelike_routes'         = @{ checks = 5220;  failures = 2 }   # known red, under review
+    'roguelike_routes'         = @{ checks = 5234;  failures = 0 }   # R5+: walk planned on the map grid + replayed through move()
     'rogue_boss_phase2'        = @{ checks = 406;   failures = 0 }
-    'rogue_ui'                 = @{ checks = 160;   failures = 0 }
+    'rogue_ui'                 = @{ checks = 163;   failures = 0 }
     'rogue_hooks_session'      = @{ checks = 44;    failures = 0 }   # W1a: variant/curse hooks in session.gd
     'rogue_hooks_ecology'      = @{ checks = 40;    failures = 0 }   # W1c: same hook for ecology.gd bolts
+    'rogue_hooks_roguelike'    = @{ checks = 85;    failures = 0 }   # W1b: economy/room hooks + click-path deltas
+    'rogue_room_ui'            = @{ checks = 32;    failures = 0 }   # R7b: forge/gamble/mirror view model
+    'roguelike_bosses'         = @{ checks = 1462;  failures = 0 }   # R14: 7-move tables + 8-identity geometry audit
+    'rogue_boss_pool'          = @{ checks = 2313;  failures = 0 }   # R14: boss pool determinism
+    'rogue_boss_bodies'        = @{ checks = 389;   failures = 0 }   # new boss body frames
+    'final_e2e_roguelike'      = @{ checks = 120;   failures = 0 }   # end-to-end playthrough
+    'rogue_build_rules'        = @{ checks = 565;   failures = 0 }   # no longer exempt: assets/rogue/build is generated
+    'rogue_equipment'          = @{ checks = 35;    failures = 0 }   # rewritten against the real gear()/engraving() passives
 }
 
 # --- exemptions: never judged, only reported ---
 $exempt = [ordered]@{
-    'rogue_build_rules'   = 'aborts on check 1 (assets/rogue/build manifests are 7-byte {} placeholders) and never reaches quit(); effective coverage = 0'
-    'rogue_build_pack'    = 'Missing exported icon W001 - generated rogue icons are not committed'
+    'rogue_build_pack'    = 'no "<n> checks, <n> failures" summary line: it prints a success line and exits 0, so this gate''s summary-based verdict cannot judge it (kept exempt, exit code verified by hand)'
     'roguelike_network'   = 'needs "-- --server --four"; alone it logs 1 stage0 ERROR (multi-process noise)'
     'rogue_build_network' = 'same multi-process noise as roguelike_network'
 }
 
-$visualTests = @{ 'rogue_ui_visual' = $true }
+$visualTests = @{ 'rogue_ui_visual' = $true; 'rogue_room_ui_visual' = $true }
 
 $tests = @($baseline.Keys) + @($exempt.Keys)
 if ($IncludeVisual) { $tests = $tests + @($visualTests.Keys) }

@@ -160,8 +160,56 @@ ROGUE BOSS POOL 2305 checks / 0 failures    (exit=0, stderr 0 行, 无 --quit-af
 
 ## 7. 风险 / 未覆盖
 
-1. **身体立绘回落**（见 §4.3）是本轮最大可见缺口，需要产品取舍。
+1. **身体立绘回落已修复**：立绘轮把 `enemy_body` 改成按 `boss_art` 取帧（新身份 5..7 自带图集），
+   尸体侧也在 §9 补齐；残留风险只剩“旧档/旧尸体不带 `boss_art` 时按楼层回落”，那是刻意的兼容行为。
 2. 新身份的**数值手感**未做人肉评估：7 招的伤害系数沿用同一套 `damage` 公式（`20+floor*4` 的 `build_base_damage` 回落），只调各招倍率即可微调。
 3. 新身份的**音效**是楼层回落（借用该层原守层者的录音）——这是「零新录音」的既定策略，`sound.gd` 会在真有 `rogue-{id}-{slot}-{charge,release}.wav` 时自动优先使用，无需改码。
 4. 池抽取只依赖 `seed_value`：**同一种子的两局会抽到同一组守层者**（设计上正确：种子可复现），但注意官方「每日挑战」用的是固定种子，因此每天的守层者组合是确定的。
 5. 未跑窗口可视化用例（`rogue_boss_choreography_visual.gd` / `roguelike_hd_visual.gd`）——需要真实窗口，留给全量门禁。
+
+---
+
+## 8. 回归修复：池真正生效后 `roguelike_bosses` 的 2 条失败
+
+**现象**（W1b 把 `setup_boss(...,s)` 接上、池生效后）：`roguelike_bosses` = **466 checks / 2 failures**
+```
+Damage geometry includes advertised danger area
+Standing inside released danger actually takes damage: 4/3 噬月深潜
+```
+
+**根因**：旧断言用 `damage_fx.shape` **反推**一个“看起来应该在危险区内”的点
+（`ring` 取 `p + RIGHT*(inner+radius)*0.5`、`line/lane` 取 `p + aim*radius*0.5`、`cone` 取 `p + direction*40`、其余取 `p`）。
+这套启发式是按“楼层=身份”的旧假设写的；池生效后第 4 层抽到 `abyss`，其招式用了**内圈有空洞**的环形/缺口环几何，中心点落在空洞里 → `contains()` 为假。
+第二条失败是同一原因的下游：把玩家放到 `contact.p`（中心）后 tick 不掉血。
+
+**修法（原文 → 新写法 → 理由）**：
+
+| 原文 | 新写法 | 理由 |
+| --- | --- | --- |
+| `var point: Vector2=damage_fx.p` + 三条 shape 启发式 | `first_inside(combat,damage_fx)`：给一组候选点（中心、12 个方向的环带中点、线段中点、轴向 40~80px），**由 `combat.contains()` 判定**取第一个确实在区内的点；找不到才失败，并把 `shape/inner/radius/aim` 与**全部候选点**打进失败信息 | 取点必须由几何自己判定，不能靠形状反推；环形/缺口环天生中心安全 |
+| `p.p=contact.p`（+ 三条启发式） | 同样用 `first_inside(combat,contact)` | 同上；并把 `linked/cover/inside/status/age/damage` 诊断打进失败信息 |
+| — | 合成探针额外清掉 `velocity`/`rotate`/`pull`/`push` | 这些会让 fx 在 tick 内**先移动危险带或把玩家拽走**，使断言测到位移而不是伤害通道（那些行为另有专门用例覆盖） |
+| — | **新增“池生效时的独立验收”**：用 `boss_pool` 反查“把该身份放在某层的 (seed,floor)”，再用真实 `setup_boss` 生成守层者，对 **8 个身份 × 7 招**逐条断言“区内有点可达 / 远处在区外 / 无判定几何键 / 实弹 `hit_radius==18.0` / 释放有实体” | 不再依赖“某层恰好是某身份”的偶然性；以后池的分配算法或接线变动都打不断这条断言。“固定身份”的逐层真实流程原样保留 |
+
+**结果**：`ROGUE BOSSES` **1462 checks / 0 failures**（exit=0、stderr 0 行）。
+
+---
+
+## 9. 收尾：尸体立绘按身份
+
+**问题**：身体立绘已按身份取帧（`enemy_body.gd:24` 传 `e.get("boss_art",e.rogue_skin)`），但**尸体**仍按楼层（`rogue_field.gd` 用 `corpse.floor`），所以抽到 `bell`/`earth`/`abyss` 的守层者死后尸体是**该层原守层者**的身体，颜色对不上。
+
+**改动**（两处，沿用既有键名，**不新增 raid 键**）：
+
+1. `scripts/rogue_combat.gd` `defeated()` 写尸体条目时带上身份：
+   `{"p","floor","boss_art":int(e.get("boss_art",e.rogue_skin)),"art_key":str(e.get("art_key","")),"time","total","facing"}`
+   —— `boss_art` 缺省回落 `rogue_skin`（=楼层），因此**旧档/旧流程不带该键时值等于楼层，行为与扩容前逐位一致**。
+2. `scripts/rogue_field.gd` 画尸体时优先身份、缺帧回落楼层：
+   `art.boss_animation(int(corpse.get("boss_art",corpse.floor)),11,int(corpse.floor))`
+   —— 与存活时的取帧规则一致；`boss_animation` 的 `fallback_index` 保证新身份缺帧时仍回落该层图集。
+
+**验证**：`tests/rogue_boss_pool.gd` 新增 **8 条**尸体断言（尸体带身份/`art_key`/楼层、渲染优先身份、无 `boss_art` 的旧尸体回落楼层、以及 `rogue_art.boss_animation` 对旧尸体与新身份尸体各自取到 `boss-hd-<floor>` / `boss-hd-<identity>` 图集）→
+**`ROGUE BOSS POOL` 2313 checks / 0 failures**（原 2305 + 8，exit=0、stderr 0 行）。
+配套：`rogue_boss_bodies` 389/0、`enemy_body` 379/0、`roguelike_bosses` 1462/0、`rogue_combat.gd` / `rogue_field.gd` `--check-only` exit=0。
+
+**未做的可选项**：一张“新身份守层者尸体”的真实窗口截图——尸体绘制就是该 `boss_animation` 调用的直接结果，其输入（`corpse.boss_art` → 身份图集）已对全部 8 个身份断言到图集文件名一级；出图需要新建一套窗口 staging 工具，本轮未做。

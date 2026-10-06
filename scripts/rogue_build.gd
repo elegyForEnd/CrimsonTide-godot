@@ -17,7 +17,13 @@ static func reset(s, p: Dictionary) -> void:
 		"build_shield":0.0,"build_shield_time":0.0,"build_shields":{},"build_last_hurt":-10.0,"build_stationary":0.0,"build_souvenirs":0,"build_floor_souvenirs":0,
 		"height":0.0,"height_velocity":0.0,"jump_cd":0.0,"air_attacks":0,"air_art":false,"air_dodge":false,
 		"flask":100.0,"flask_cd":0.0,"flask_time":0.0,"flask_committed":false,"soul_lamp":true,"lamp_time":0.0,
-		"flask_refills":0,"flask_combat_awards":0,"flask_elite_award":false,"build_vitality_healed":0,"flask_shop_floor":0,"build_respec_floor":0,"rogue_rerolls":3},true)
+		"flask_refills":0,"flask_combat_awards":0,"flask_elite_award":false,"build_vitality_healed":0,"flask_shop_floor":0,"build_respec_floor":0},true)
+	# `rogue_rerolls` is *caller-owned config*, not run state: `session.gd` already
+	# stored the purchased card count there and `roguelike.gd` added the growth
+	# tree's `start_rerolls` on top of it. Merging a literal `3` with overwrite=true
+	# used to wipe both, which is why bought cards never reached the run. Only hand
+	# out the legacy default when the caller never set the key at all.
+	if not p.has("rogue_rerolls"): p["rogue_rerolls"]=3
 	s.refresh_max_hp(p)
 	p.hp=p.max_hp
 	p.mana=p.max_mana
@@ -91,6 +97,18 @@ static func stat(s, p: Dictionary, name: String) -> float:
 		"rate": return minf(.4,buff(p,"haste",s.elapsed))
 	return 0.0
 
+## A2 · 读取"当前层变数 + 该玩家诅咒"的合成数值表。唯一实现仍是 `session.rogue_mods(p)`
+## （`roguelike.mod_of()` 只是它的转发），这里给出 Build 层需要的入口，避免各处自己拼一张表。
+## A1 起 `rogue_mods()` 还多合并了**局外成长树**（`RogueGrowth.run_mods`），所以本入口
+## 同时也是成长树效果键的读取点：`enemy_hp`/`enemy_damage`（成长侧，只影响数值）、
+## `xp_gain`、`heal_scale` 等。
+## 非魔境 / 无 `rogue_mods` 的桩会话一律返回 0.0，所以战场与战役路径逐位不变；
+## 本函数是纯读，**不消耗 `s.rng`**（`rogue_mods` 本身也保证不消耗）。
+static func hook_mod(s, p: Dictionary, key: String) -> float:
+	if s==null or p==null or p.is_empty(): return 0.0
+	if not s.has_method("rogue_mods"): return 0.0
+	return float(s.rogue_mods(p).get(key,0.0))
+
 static func hp_multiplier(p: Dictionary) -> float:
 	return .9 if rank(p,48)>0 or rank(p,80)>0 else 1.0
 
@@ -134,7 +152,11 @@ static func context(s, p: Dictionary, kind: String) -> Dictionary:
 static func heal(s, source: Dictionary, target: Dictionary, ratio: float, passive: bool = true) -> float:
 	if target.status!="active" or target.hp>=target.max_hp: return 0.0
 	var amp: float=(.1 if gear(target,47) else 0)+(.1 if rank(target,96)>0 else 0)
-	var wanted := minf(target.max_hp-target.hp,target.max_hp*ratio*(1.0+minf(.3,amp)))
+	# A2 (R9 hook 6): CU06「干涸」/ CU10「碎盾」的 `heal_scale`（CAPS 锁在 [-0.60,0]，负=治疗变差）
+	# 乘进这一笔治疗量。治量是攻击性资源，所以它必须真的落到数值上，而不是只写在诅咒描述里。
+	# 无该键时 1.0：`wanted` 逐位不变。下界 0 只是防御（任何来源都不该把治疗变成倒扣）。
+	var curse_heal := maxf(0.0,1.0+hook_mod(s,target,"heal_scale"))
+	var wanted := minf(target.max_hp-target.hp,target.max_hp*ratio*(1.0+minf(.3,amp))*curse_heal)
 	var recent: Array=target.get("build_heals",[]).filter(func(h): return s.elapsed-float(h.time)<5.0)
 	var total := 0.0
 	var own := 0.0
@@ -606,6 +628,12 @@ static func reload_event(s, p: Dictionary) -> void:
 	if rank(p,23)>0 and ready(s,p,"T023",6): p.build_counts["reload_refunds"]=2
 	p.build_buffs.erase("reload_haste")
 
+## A2 (R9 hook 7): CU07「破瓶」的血瓶容量。基础容量 100，`flask_max`（CAPS 锁在 [-50,0]）
+## 直接削容量，下限 25（正好是"喝一口"的代价，容量再低就永远喝不动了）。
+## 所有"补到上限"的入口都必须过这里，否则诅咒只是一句文案。
+static func flask_cap(s, p: Dictionary) -> float:
+	return clampf(100.0+hook_mod(s,p,"flask_max"),25.0,100.0)
+
 static func drink(s, p: Dictionary) -> bool:
 	if p.status!="active" or p.hp>=p.max_hp or p.flask<25 or p.flask_cd>0 or p.flask_time>0 or p.height>0 or p.pending_strike or p.cast_time>0 or p.dodge_time>0: return false
 	p.flask_time=.75
@@ -632,6 +660,11 @@ static func jump(s, p: Dictionary) -> bool:
 static func tick(s, p: Dictionary, dt: float) -> void:
 	for key in ["jump_cd","flask_cd","build_hero_cd","build_combo_time","build_shield_time"]: p[key]=maxf(0,float(p.get(key,0))-dt)
 	p["build_landing_time"]=maxf(0,float(p.get("build_landing_time",0))-dt)
+	# A2 (R9 hook 7): 容量被 CU07「破瓶」削掉后，**当前**血量值也必须跟着降下来，
+	# 否则楼层补给 / 事件补给会先把瓶子灌到 100 再被削回去。这里是唯一的逐帧兜底点，
+	# 覆盖 `rogue_events.gd:172` 那种直接把 flask 写满的通道。身上没有诅咒时一次都不读，
+	# 所以无诅咒路径逐位不变。
+	if not p.get("rogue_curses",[]).is_empty(): p.flask=minf(p.flask,flask_cap(s,p))
 	for key in p.get("build_shields",{}).keys():
 		p.build_shields[key].time-=dt
 		if p.build_shields[key].time<=0 or p.build_shields[key].amount<=0: p.build_shields.erase(key)
@@ -863,14 +896,16 @@ static func award(s, p: Dictionary) -> void:
 	if (floor_index==1 and area==3) or (floor_index in [2,3,4] and area in [2,4]) or (floor_index==5 and area==3): p.build_forge_points+=1
 	if s.raid.room in ["combat","elite"]:
 		if p.flask_combat_awards<2:
-			p.flask_combat_awards+=1; p.flask=minf(100,p.flask+10); p.flask_refills+=10
+			p.flask_combat_awards+=1; p.flask=minf(flask_cap(s,p),p.flask+10); p.flask_refills+=10
 		if s.raid.room=="elite" and not p.flask_elite_award:
-			p.flask_elite_award=true; p.flask=minf(100,p.flask+5); p.flask_refills+=5
+			p.flask_elite_award=true; p.flask=minf(flask_cap(s,p),p.flask+5); p.flask_refills+=5
 	p.rogue_inventory_revision+=1
 
-static func floor_enter(p: Dictionary) -> void:
+## `s` 是可选参数：仅用于 A2 的 `flask_max`（CU07「破瓶」）容量钳制。旧调用方
+## （tests 的裸会话）不传 `s` 时容量恒为 100，行为与接线前逐位相同。
+static func floor_enter(p: Dictionary, s = null) -> void:
 	p.build_chest_attribute_drops=0
-	p.flask=minf(100,p.flask+50)
+	p.flask=minf(flask_cap(s,p),p.flask+50)
 	p.mana=minf(p.max_mana,p.mana+p.max_mana*.5)
 	p.flask_refills=0
 	p.flask_combat_awards=0; p.flask_elite_award=false
@@ -905,9 +940,18 @@ static func enemy_budget(s, e: Dictionary) -> void:
 	var elite: bool=e.get("build_elite",false)
 	var front: bool=e.get("role","front") in ["front","melee","ambush"]
 	var base: float=[2600,4600,7200,10200,13800][floor_index] if boss else [150,260,420,620,900][floor_index] if front else [120,210,330,490,710][floor_index]
-	e.hp=base*(1+(count-1)*(.85 if boss else .75 if elite else .65))*(1.8 if elite else 1.0)*float(s.raid.get("build_enemy_hp",1))
+	# A1 · 成长树 `monster_slaying`（enemy_hp，≤ -20%）与 `iron_constitution`（enemy_damage，≤ -15%）
+	# 在这里落地。**必须与 `raid.build_enemy_hp/build_enemy_damage` 分开乘**：
+	# 那两个键是反向 rubber-banding（`departure()` 用玩家当前强度反推，clamp 到 [1,2.4]/[1,1.35]），
+	# 而成长树是玩家**永久**投入。若把成长折进 rubber-band 的输入，`pow(damage,0.8)` 会把
+	# 「变强」同时变成「怪更肉」，形成越买越难的负反馈（见报告 §3 的复核）。
+	# 分开乘 = rubber-band 只看当场的构筑/装备强度，成长树永远是玩家净赚。
+	# 成长树为 0 时两个 hook 都是 0.0，乘数恒为 1.0，出厂数值逐位不变。
+	var growth_enemy_hp := 1.0+clampf(hook_mod(s,e,"enemy_hp"),-0.95,0.0)
+	var growth_enemy_damage := 1.0+clampf(hook_mod(s,e,"enemy_damage"),-0.95,0.0)
+	e.hp=base*(1+(count-1)*(.85 if boss else .75 if elite else .65))*(1.8 if elite else 1.0)*float(s.raid.get("build_enemy_hp",1))*growth_enemy_hp
 	e.max_hp=e.hp
-	e["build_damage_scale"]=float(s.raid.get("build_enemy_damage",1))
+	e["build_damage_scale"]=float(s.raid.get("build_enemy_damage",1))*growth_enemy_damage
 	e["build_base_damage"]=[24,30,37,45,54][floor_index]
 
 static func departure(s) -> void:
@@ -927,7 +971,10 @@ static func departure(s) -> void:
 static func hero_effect(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> void:
 	var index := int(ctx.get("hero_route",-1))
 	if index<0 or ctx.get("hero_done",false) or p.build_hero_cd>0 or forge_level(p)<3: return
-	ctx["hero_done"]=true; p.build_hero_cd=8.0
+	ctx["hero_done"]=true
+	# A2 (R9 hook 8): CU09「迟滞」的技能冷却 +25%。这里与 `rogue_actions.gd` 的 `p.art_cd`
+	# 是同一份诅咒的两处消费点（连招技 / 武器技）；无诅咒时乘数恒为 1.0。
+	p.build_hero_cd=8.0*(1.0+maxf(0.0,hook_mod(s,p,"cooldown")))
 	var high: bool=forge_level(p)>=5
 	var names: Array=[
 		["红莲追影","升月归庭","赤羽落星","红莲月华接续"],
@@ -986,6 +1033,25 @@ static func enemy_experience(s, e: Dictionary) -> void:
 	if e.hp>0 or e.get("build_xp_awarded",false) or e.get("rogue_summoned",false) or e.get("boss_construct",false) or e.get("build_no_rewards",false): return
 	var amount := int(e.get("build_xp_reward",0))
 	if amount<=0: return
+	# A1 · 成长树 `scholar`（xp_gain，≤ +50%）与变数 `famine`/`starlight` 的同一个键，都在
+	# **获得经验的那一刻**落地，而且**只在这里落地一次**：`e.build_xp_reward` 是刷怪时写入的
+	# **基础值**（`roguelike.gd:383` 的 boss 分支与 `roguelike.gd:450` 的杂兵分支不再预乘），它是"这只怪值多少经验"的声明，也是随敌人
+	# 进快照的字段，但它本身不是入账；真正决定 `build_xp_total`/等级/属性点的入口就是下面的
+	# `add_experience()`。
+	# 2026-06 修复：此前刷怪侧与这里**各乘了一次同一份** `(1+xp_gain)`，正增益被平方放大
+	# （+40% 实际 ×1.96），而负增益（`famine` -20%）因为旧代码这里的 `maxf(0.0,·)` 只有刷怪侧
+	# 生效过一次。两处合一后正负增益都严格线性一次；`maxf(0.0,·)` 必须一并移除，否则删掉预乘
+	# 会把「饥荒」的 -20% 悄悄变成 0%。`amount` 仍有 `maxi(1,·)` 兜底，XP 永远不会变负或归零。
+	# `xp_gain` 与 `gold` 一样是**全队**加成：它不是诅咒键，`session.rogue_mods()` 里只有成长树
+	# 与变数会产出它，所以与队伍里是谁打死怪无关。
+	# 键为 0 时乘数恒为 1.0（`is_equal_approx` 守卫），出厂的 `build_xp` 逐位不变（无 profile
+	# 通道即旧行为）。
+	var holder: Dictionary = {}
+	for ally in s.players.values():
+		holder = ally
+		break
+	var xp_scale := 1.0+hook_mod(s,holder,"xp_gain")
+	if not is_equal_approx(xp_scale,1.0): amount=maxi(1,int(round(float(amount)*xp_scale)))
 	e["build_xp_awarded"]=true
 	for ally in s.players.values():
 		if ally.connected and ally.status in ["active","down"]: add_experience(s,ally,amount)
@@ -1010,6 +1076,11 @@ static func commit_flask(s, p: Dictionary) -> void:
 	if p.status!="active" or p.hp<=0 or p.flask_committed or p.flask<25: return
 	p.flask_committed=true; p.flask=maxf(0,p.flask-25)
 	var amp: float=(.15 if gear(p,22) and s.players.size()==1 else 0)+r(p,92,[.05,.08,.12])*(1 if s.players.size()==1 else 0)+(.1 if gear(p,47) else 0)+(.1 if rank(p,96)>0 else 0)
-	p.hp=minf(p.max_hp,p.hp+p.max_hp*.3*(1+minf(.3,amp)))
+	# A2 (R9 hook 6b): 血瓶这一笔是魔境里最大的一笔治疗（30% 上限生命），它**不走** `heal()`，
+	# 所以必须在这里单独吃 `heal_scale`（CU06「干涸」/ CU10「碎盾」），否则"治疗效果 -30%"
+	# 对最主要的治疗来源完全无效。无诅咒时乘数恒为 1.0，`tests/rogue_build_system.gd` 与
+	# `tests/rogue_build_rules.gd` 的 `hp==20+max_hp*0.3` 逐位不变。
+	var curse_heal := maxf(0.0,1.0+hook_mod(s,p,"heal_scale"))
+	p.hp=minf(p.max_hp,p.hp+p.max_hp*.3*(1+minf(.3,amp))*curse_heal)
 	s.broadcast_audio("heal",p)
 	p.rogue_inventory_revision+=1

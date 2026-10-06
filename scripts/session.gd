@@ -434,6 +434,8 @@ const RogueBuild = preload("res://scripts/rogue_build.gd")
 const RogueActions = preload("res://scripts/rogue_actions.gd")
 const RogueVariants = preload("res://scripts/rogue_variants.gd")
 const RogueCurses = preload("res://scripts/rogue_curses.gd")
+# A1: the meta growth tree (profile.data.growth) is the third source of `rogue_mods()`.
+const RogueGrowth = preload("res://scripts/rogue_growth.gd")
 
 func rogue_equipment_stat(p: Dictionary, stat: String) -> float:
 	return RogueEquipment.total(p,stat) if roguelike.active(self) else 0.0
@@ -469,11 +471,22 @@ func weapon_scaling(p: Dictionary, index: int = -1) -> float:
 func rogue_damage_pool(p: Dictionary) -> float:
 	return minf(1.2,float(p.get("rogue_damage",0))+Homestead.bonus(p,"damage")+p.talents[1]*.08+rogue_equipment_stat(p,"damage")+RogueBuild.stat(self,p,"damage"))
 
-## 魔境数值钩子的**唯一**集中入口：把「当前层的深渊变数」（全队共享）与
-## 「该玩家身上的诅咒」（个人）合成一张数值表，供受击/输出/移速/弹幕读取。
+## 魔境数值钩子的**唯一**集中入口：把「当前层的深渊变数」（全队共享）、
+## 「该玩家身上的诅咒」（个人）与「局外永久成长树」（账号级）合成一张数值表，
+## 供受击/输出/移速/弹幕/经济读取。
 ## 铁律：不消耗 s.rng、不重置种子；绝不产出任何命中判定几何键——弹幕只允许
 ## 改表现层 `bullet_visual` 与速度，命中半径永远沿用默认的 18.0。
 ## 非魔境模式返回空表（调用方换算恒等）。
+## A1（成长树接线）：第三个来源是 `RogueGrowth.run_mods(profile_data())`——成长树有 14 个
+## 节点，其中 11 个（`iron_constitution`/`monster_slaying`/`hunt_instinct`/`warden_plate`/
+## `deep_pockets`/`scavenger`/`field_medic`/`swift_boots`/`scholar`/`midas_hand`/`hunter_luck`）
+## 的效果键在别处本来就有消费点，但从来没人把成长树读进这张表，所以「买了不生效」。
+## 合并是**加法**（与诅咒同义）：`move_speed` 是加性点数（诅咒 CU02 = -18，成长 = +12/级），
+## `shop_price`/`chest_drop`/`heal_scale`/`gold` 是比例增量（诅咒 CU04 = +0.35，成长 = -0.05/级）。
+## 成长表的符号约定与诅咒**相反**（正数＝对玩家有利），GDScript 加法天然正确处理。
+## 两个来源的键集不相交（成长只产 canonical 键，诅咒只产 `EFFECT_KEYS`），
+## 唯一交叠的 `move_speed`/`shop_price`/`chest_drop`/`heal_scale` 正是设计上要同池相加的。
+## 无 profile 通道时 `run_mods({})` 全零，`4 玩家数` 与接线前逐位一致。
 func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	var mods: Dictionary = {}
 	if not roguelike.active(self):
@@ -483,6 +496,11 @@ func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	if variant_id != "":
 		ids.append(variant_id)
 	mods = RogueVariants.modifiers_of(ids)
+	# 成长树：账号级，与 p 无关（换人不换树）。先并入，再让诅咒叠在它上面。
+	# 只算一次表，循环里不再重复算（`rogue_mods()` 在移速路径上每帧每人一次）。
+	var growth: Dictionary = RogueGrowth.run_mods(profile_data())
+	for key in growth:
+		mods[key] = float(mods.get(key,0.0)) + float(growth[key])
 	if not p.is_empty():
 		var curse: Dictionary=RogueCurses.stat_delta(p)
 		for key in curse.keys():
@@ -544,8 +562,10 @@ func recover_mana(p: Dictionary, dt: float) -> void:
 	var recovering := maxf(0.0,dt-waiting)
 	var casting_attack: bool = p.swing_time>0 and float(Catalog.weapon(int(p.weapon)).get("mana_cost",0.0))>0
 	if not casting_attack and p.cast_time<=0 and not pending_ultimates.has(int(p.id)):
-		var bonus := 1.5 if roguelike.active(self) and RogueEquipment.has(p,"clear_mind") and p.hp>=p.max_hp*0.8 else 1.0
-		p.mana=minf(p.max_mana,p.mana+recovering*p.max_mana*0.06*bonus)
+		# 装备被动不在这一条路径上：本分支是搜打撤/战役（魔境在 recover_mana 顶部已经 return）。
+		# E004「HP≥80% 回蓝 +25%」的唯一实现处是 RogueBuild.stat(...,"regen")，此处曾用一个
+		# 永远为假的 roguelike.active(self) 条件把它写成 bonus=1.0，属死代码，已删除。
+		p.mana=minf(p.max_mana,p.mana+recovering*p.max_mana*0.06)
 
 func incoming_damage(p: Dictionary, damage: float) -> float:
 	if roguelike.active(self):
@@ -558,8 +578,10 @@ func incoming_damage(p: Dictionary, damage: float) -> float:
 		var taken := float(mods.get("player_damage_taken",0.0))
 		if taken!=0.0: received*=1.0+taken
 		return maxf(0.0,received)
-	var bonus := 0.75 if roguelike.active(self) and RogueEquipment.has(p,"last_stand") and p.hp<p.max_hp*0.35 else 1.0
-	return maxf(0.0,damage)*(1.0-stat_defense(p))*(1.0-minf(0.4,float(p.get("rogue_defense",0))))*bonus
+	# 同上：本分支只服务搜打撤/战役（魔境在上面已经 return）。E002「HP<35% 条件减伤 +15%」
+	# 的唯一实现处是 RogueBuild.conditional_defense；这里曾用永远为假的 roguelike.active(self)
+	# 写成 bonus=1.0，属死代码，已删除。
+	return maxf(0.0,damage)*(1.0-stat_defense(p))*(1.0-minf(0.4,float(p.get("rogue_defense",0))))
 
 func equipment_damage(p: Dictionary) -> float:
 	if roguelike.active(self): return rogue_equipment_stat(p,"damage")
@@ -1681,6 +1703,10 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				p["attack_buffer"]=0.0
 				p.combo_timeout=0.0
 				p.skill=18.0
+				# A2 (R9 hook 8): CU09「迟滞」的 `cooldown` 同样作用在奥义冷却上（与武器技的
+				# `p.art_cd`、连招技的 `p.build_hero_cd` 是同一份诅咒的三个消费点）。
+				# 非魔境路径不读该键，保持 18.0 原值。
+				if roguelike.active(self): p.skill*=1.0+maxf(0.0,RogueBuild.hook_mod(self,p,"cooldown"))
 				if roguelike.active(self):
 					RogueBuild.action_event(self,p,"U")
 					p["build_skill_context"]=RogueBuild.context(self,p,"skill")
@@ -2943,13 +2969,14 @@ func release_weapon_art(p: Dictionary) -> bool:
 		if int(p.id)==my_id(): message.emit("蓝量不足：%s需要 %d 蓝量。" % [move.name,move.mana])
 		return false
 	p.art_cd=float(move.cooldown)
+	# T1-c (2026-06 死代码清理)：这里原本还重复了一份「roguelike 技能冷却公式」，但函数开头
+	# （:2963）已经 `if roguelike.active(self): return RogueActions.start_art(self,p)`，所以下面的
+	# `if roguelike.active(self):` 分支**永远不可达**（`p.art_cd` 的重复赋值、`build_art_base`、
+	# `air_art`、`action_event("S")`、`context("art")` 全部在内）。可到达的那一份在
+	# `scripts/rogue_actions.gd:21-24`（且已带上 CU09「迟滞」的 `cooldown` 钩子）—— 今后改技能冷却、
+	# `build_art_base`、`air_art` 或动作事件请改那边，不要在这里再补一份拷贝。
+	# 删掉后本函数的非 roguelike 路径逐字不变：`build_ctx` 仍为 `{}`（与原先不可达块执行时一致）。
 	var build_ctx: Dictionary={}
-	if roguelike.active(self):
-		p.art_cd=maxf(3,float(move.cooldown)*(1.0-RogueBuild.stat(self,p,"art_cdr"))*(1.15 if RogueBuild.rank(p,64)>0 else 1.0))
-		p["build_art_base"]=p.art_cd
-		if p.height>0: p.air_art=true
-		RogueBuild.action_event(self,p,"S")
-		build_ctx=RogueBuild.context(self,p,"art")
 	p.cast_time=0.35
 	p.attack=maxf(p.attack,0.35)
 	p.channel=0.0
@@ -3458,11 +3485,10 @@ func hurt(p: Dictionary, damage: float, source: Dictionary = {}, height_tag: Str
 	var received := incoming_damage(p,damage)
 	if roguelike.active(self): received=RogueBuild.incoming(self,p,received,source,damage_tag,element)
 	if roguelike.active(self): p.build_inputs=[]
-	if roguelike.active(self) and RogueEquipment.has(p,"mana_guard"):
-		var absorbed := minf(float(p.mana),received*0.30)
-		p.mana-=absorbed
-		received-=absorbed
-		if absorbed>0: p.mana_delay=MANA_REGEN_DELAY
+	# E003「星纱法袍 / 法力吸收 20%」已经由上面这一行的 RogueBuild.incoming() 施加
+	# （rogue_build.gd 里 `absorb_ratio := .20 if gear(p,3)`，并且按设计是「先耗法力再耗临时盾」）。
+	# 这里曾再挂一个 RogueEquipment.has(p,"mana_guard") 的 30% 吸收：它长期是死代码（没有任何
+	# 条目带 passive 字段），一旦有人给条目补上该字段就会**重复扣蓝**。已删除，避免双重结算。
 	p.hp-=received
 	p.invuln=0.3
 	p.channel=0

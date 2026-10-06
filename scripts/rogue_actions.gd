@@ -16,7 +16,9 @@ static func start_art(s, p: Dictionary) -> bool:
 	var family := Catalog.weapon_family(int(p.weapon))
 	var cost := Build.mana_cost(s,p,float(move.mana),"art")
 	if not s.spend_mana(p,cost): return false
-	p.art_cd=maxf(3,float(move.cooldown)*(1.0-Build.stat(s,p,"art_cdr"))*(1.15 if Build.rank(p,64)>0 else 1.0))
+	# A2 (R9 hook 8): CU09「迟滞」的 `cooldown`（CAPS 锁在 [0,0.60]，正=冷却更久）乘进技能冷却。
+	# 无诅咒时乘数恒为 1.0，数值与接线前逐位相同。
+	p.art_cd=maxf(3,float(move.cooldown)*(1.0-Build.stat(s,p,"art_cdr"))*(1.15 if Build.rank(p,64)>0 else 1.0)*(1.0+maxf(0.0,Build.hook_mod(s,p,"cooldown"))))
 	p["build_art_base"]=p.art_cd
 	Build.action_event(s,p,"S")
 	var ctx := Build.context(s,p,"art")
