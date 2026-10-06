@@ -186,6 +186,18 @@ static func power(profile_data: Dictionary) -> Dictionary:
 		"start_rerolls": int(mods.get("start_rerolls", 0)),
 	}
 
+## A1 · 只读；把成长树的**局内**数值效果合成成一张钩子表，键 = `canonical_keys()`，
+## 语义与 `scripts/rogue_variants.gd` 的 canonical 键**逐键同义**（乘性键是"加法合成的增量"、
+## `move_speed` 是浮点加法、`loot_tier`/`start_coins`/`start_rerolls` 是整数加法），
+## 因此可以直接被 `session.rogue_mods()` 与 `RogueBuild.hook_mod()` 当成第三个来源合并。
+## 已按 `BOUNDS` clamp；`power()` 一个字节都没动（它仍是那 4 个键的冻结形状）。
+## `ash_bonus` 只影响局外结算，不在局内消费点上，但仍然在表里（`effects()` 的定义）。
+## 消费点统一读这张表：`session.rogue_mods()` 合并它、`RogueBuild.hook_mod()` 转发它，
+## 单键查询写作 `run_mods(pd).get(key,0.0)`。2026-06 清理：这里曾有一个 `bonus(pd,key)`
+## 包装，全工程零调用者，已删除——不要再加回同义的"便利"包装，那只会制造第二条读取路径。
+static func run_mods(profile_data: Dictionary) -> Dictionary:
+	return effects(profile_data)
+
 ## 能否买下一级（未知 id、已满级、前置未满足、灰烬不足 → false）。
 static func can_buy(profile_data: Dictionary, id: String) -> bool:
 	return can_buy_reason(profile_data, id) == ""

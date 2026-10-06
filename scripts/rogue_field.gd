@@ -190,7 +190,8 @@ func _draw() -> void:
 	for fx in session.roguelike.combat.effects: draw_spell(fx)
 	for corpse in session.raid.get("rogue_corpses",[]):
 		if corpse.time<=0: continue
-		var texture: Texture2D=art.boss_animation(corpse.floor,11).texture
+		# 与存活时的取帧规则一致：身体立绘优先按身份（boss_art），缺帧时回落到楼层。
+		var texture: Texture2D=art.boss_animation(int(corpse.get("boss_art",corpse.floor)),11,int(corpse.floor)).texture
 		var h := 255.0
 		var w: float=h*texture.get_width()/texture.get_height()
 		draw_set_transform(corpse.p-camera_offset(),0,Vector2(corpse.facing,1))
@@ -237,7 +238,11 @@ func _draw() -> void:
 			else:
 				draw_texture_rect(pose.texture,pose.rect,false,Color.WHITE if actor.status=="active" else Color("a77d8e"))
 			draw_set_transform(-camera_offset())
-			if actor.status=="active" and int(actor.weapon)>=600 and (Catalog.weapon_family(actor.weapon)!=0 or Idle.active(actor)):
+			# [2026-06 禁用] 这段"新武器手持贴图叠加绘制"会把 weapons-*-v1.png 图集里的
+			# 青色尖刺剪影画到角色手上，与旧立绘自带的武器美术冲突。用户要求保留旧立绘、
+			# 不再显示该叠加。用 `false and` 短路守卫整块绘制（可逆：去掉 `false and ` 即恢复）。
+			# 块内变量均只在本块使用，块外逻辑（楼层标记等）不受影响。
+			if false and actor.status=="active" and int(actor.weapon)>=600 and (Catalog.weapon_family(actor.weapon)!=0 or Idle.active(actor)):
 				var weapon_texture: Texture2D=preload("res://scripts/rogue_build_art.gd").item_icon(actor.equipped.weapon)
 				if weapon_texture!=null:
 					var length := 54.0 if Catalog.weapon_family(actor.weapon)==2 else 42.0
@@ -307,7 +312,14 @@ func _draw() -> void:
 		draw_rect(Rect2(365,115,710,15),Color("251827"))
 		draw_rect(Rect2(365,115,710*clampf(boss.hp/boss.max_hp,0,1),15),tone)
 		var label: String=boss.boss_name+(" · 狂暴" if boss.boss_enraged else "")
-		if boss.attack_time>0: label+=" · "+str(boss.get("move_name",session.roguelike.combat.MOVES[int(boss.rogue_skin)][int(boss.boss_skill)].name))
+		if boss.attack_time>0:
+			# The move table is keyed by guardian identity, not by floor, so a pooled
+			# guardian must read its own row.
+			var moves: Array=session.roguelike.combat.moves_of(boss)
+			var skill := int(boss.boss_skill)
+			var move_name := str(boss.get("move_name",""))
+			if move_name=="" and skill>=0 and skill<moves.size(): move_name=str(moves[skill].name)
+			if move_name!="": label+=" · "+move_name
 		draw_string(get_theme_default_font(),Vector2(365,153),label,HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color.WHITE)
 
 func draw_spell(_fx: Dictionary) -> void:

@@ -21,7 +21,7 @@ func pose(e: Dictionary, clock: float, rogue: bool) -> Dictionary:
 			var half := 4 if big else 2
 			var step: int=mini(half-1,int(passed/maxf(.01,windup)*half)) if passed<windup else half+mini(half-1,int((passed-windup)/maxf(.01,e.attack_total-windup)*half))
 			index=(8+int(e.boss_skill)*8 if big else 8+int(e.get("minion_skill",0))*4)+step
-		var frame: Dictionary=rogue_art.boss_animation(int(e.rogue_skin),index) if big else rogue_art.minion_animation(int(e.rogue_skin),int(e.get("rogue_variant",0)),index)
+		var frame: Dictionary=rogue_art.boss_animation(int(e.get("boss_art",e.rogue_skin)),index,int(e.rogue_skin)) if big else rogue_art.minion_animation(int(e.rogue_skin),int(e.get("rogue_variant",0)),index)
 		var texture: Texture2D=frame.texture
 		var h := height*float(frame.get("scale_ratio",1))
 		var w := h*texture.get_width()/texture.get_height()

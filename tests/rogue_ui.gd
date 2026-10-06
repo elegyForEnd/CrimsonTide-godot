@@ -71,8 +71,14 @@ func model_checks() -> void:
 
 	# 事件房视图
 	check(not Model.event_active({}), "no pending event means the panel stays closed")
-	var pending := {"pending_event":{"id":"EV01","revision":9,"offer":[{"index":0,"name":"A","desc":"B"},{"index":1,"name":"C","desc":"D"}]}}
+	var pending := {"room":"event","revision":9,"pending_event":{"id":"EV01","revision":9,"offer":[{"index":0,"name":"A","desc":"B"},{"index":1,"name":"C","desc":"D"}]}}
 	check(Model.event_active(pending), "a pending event opens the panel")
+	# 新语义（原文只判 "pending 非空"）：还必须"确实站在事件房"且报价 revision 与当前 revision 一致，
+	# 否则上一个房间残留的报价会把整局后续所有房间的面板顶掉（main.gd 在 event_active 处直接 return）。
+	var leftover := {"room":"forge","revision":9,"pending_event":{"id":"EV01","revision":9,"offer":[{"index":0,"name":"A","desc":"B"}]}}
+	check(not Model.event_active(leftover), "an offer left over in another room must not hijack the panel")
+	var stale := {"room":"event","revision":12,"pending_event":{"id":"EV01","revision":9,"offer":[{"index":0,"name":"A","desc":"B"}]}}
+	check(not Model.event_active(stale), "an offer stamped with an older revision keeps the panel closed")
 	check(Model.event_title(pending)=="EV01" or Model.event_title(pending)!="", "the panel has a title")
 	var orphan := Model.event_options(null,{},{"pending_event":{"offer":[{"index":0,"name":"A","desc":"B"}]}})
 	check(orphan.size()==1, "an offer without a table id still renders its options")
@@ -223,6 +229,13 @@ func app_checks() -> void:
 	check(app.hud.rogue_seed.text.contains("分享种子") and app.hud.rogue_seed.text.contains(share), "the HUD shows the shared seed")
 
 	# ---- 幽暗异事 面板 --------------------------------------------------------------
+	# 新语义：面板要求"确实站在事件房(room=='event')"且报价 revision 与 raid.revision 一致。
+	# 上一段为 HUD 把 room 设成了 curse —— 先确认这种残留报价不会接管面板，再真正走进事件房。
+	app.session.raid["room"]="curse"
+	Events.roll_offer(app.session)
+	app.update_rogue_hud(p)
+	check(app.find_child("RogueEventOption0",true,false)==null, "an offer left over in another room must not open the event panel")
+	app.session.raid["room"]="event"
 	var offer: Dictionary=Events.roll_offer(app.session)
 	check(not offer.is_empty(), "an event offer can be rolled")
 	app.update_rogue_hud(p)

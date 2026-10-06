@@ -135,6 +135,13 @@ func forge() -> void:
 	for i in Content.data.engravings.size():
 		var n: int=i
 		var def: Dictionary=Content.data.engravings[i]
+		# 铭刻：`command("engrave","",n)` 的第三个实参 `n` 进的是 **`index`**，服务端
+		# `Build.management()` 的 `"engrave"` 分支读的正是 `payload.get("index",-1)`
+		# （`rogue_build.gd:866`：`var n := int(payload.get("index",-1))`，随后
+		# `p.equipped.weapon.rogue_id=n`）。链条：本按钮 → `command()`（本文件 :29）
+		# → `host.session.action("rogue_build",{verb,id,index,version})`
+		# → `roguelike.choose()` → `Build.management()` → `"engrave"`。
+		# `id` 必须留空：铭刻的符文序号走 `index`，不走 `id`。
 		var b := button(body,str(def.name)+(" ✓" if Build.engraving(player,i+1) else ""),Vector2((i%6)*211,825+floori(i/6.0)*57),Vector2(195,46),func(): command("engrave","",n),not safe or player.equipped.weapon.is_empty() or player.rogue_gold<35 or Build.engraving(player,i+1))
 		b.icon=Art.icon(str(def.id)); b.expand_icon=true; b.add_theme_constant_override("icon_max_width",32)
 		b.tooltip_text=Content.player_text(str(def.text))
@@ -145,11 +152,18 @@ func combos() -> void:
 	text(body,"短按衔接动作，每次按键只计入一段。重武器允许更长衔接间隔。战技与奥义需要实际蓝量和冷却就绪。",Vector2(10,52),Vector2(1230,53),18,MUTED)
 	var route: int=[1,2,0,3].find(Catalog.weapon_family(int(player.weapon)))
 	for i in 4:
-		var unlocked: bool=Build.forge_level(player)>=([0,1,3,3][i] if route==0 else [0,1,0,3][i])
+		# P3 · 解锁门槛与名字都跟 `rogue_build.gd` 的**权威表**对齐：
+		#   * 门槛 = `:609` 的 `[0,1,3,3] if family==1 else [0,1,0,3]`（本文件原来把
+		#     "折返派生 ADS（实际 +3）"写成了"需要 +1"，文案与真实门槛不符）；
+		#   * 名字 = `:612` 的 `["闪避追击","折返派生","升空 / 跃击","落地连段"]`（本文件原来把
+		#     第 2、3 段写反了）。两份实现必须逐字一致，否则玩家照着 UI 练招会被误导。
+		var family := Catalog.weapon_family(int(player.weapon))
+		var gate: int=[0,1,3,3][i] if family==1 else [0,1,0,3][i]
+		var unlocked: bool=Build.forge_level(player)>=gate
 		var box := row(Vector2(0,128+i*76),Vector2(1255,67))
-		text(box,["闪避追击","战技衔接","空中派生","折返派生"][i],Vector2(20,12),Vector2(270,35),22,GOLD)
+		text(box,["闪避追击","折返派生","升空 / 跃击","落地连段"][i],Vector2(20,12),Vector2(270,35),22,GOLD)
 		text(box," → ".join(Build.CM_ROUTES[route][i].split("")),Vector2(310,13),Vector2(730,34),24)
-		text(box,"已解锁" if unlocked else "需要 +1" if i==1 else "需要 +3",Vector2(1080,15),Vector2(165,30),17,GOLD if unlocked else MUTED)
+		text(box,"已解锁" if unlocked else "需要 +%d" % gate,Vector2(1080,15),Vector2(165,30),17,GOLD if unlocked else MUTED)
 	text(body,Catalog.HEROES[player.hero].name+" · 角色派生",Vector2(10,475),Vector2(1200,38),26,GOLD)
 	for i in 4:
 		var box := row(Vector2(0,529+i*76),Vector2(1255,67))

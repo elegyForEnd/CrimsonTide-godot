@@ -2,6 +2,8 @@ extends Control
 ## Typography uses the actual painted inset bounds, measured from the v2 art.
 const ALTAR = preload("res://assets/ui/rewards/treasure-altar-v2.png")
 const Equipment = preload("res://scripts/rogue_equipment.gd")
+# B3-2(P2) 圣坛付费刷新：单价与上限只从 `Rooms` 读，UI 不自己算，也不写任何常量副本。
+const Rooms = preload("res://scripts/rogue_rooms.gd")
 const PAPER := Color("eee2cb")
 const MUTED := Color("aaa9b6")
 const GOLD := Color("dfbd79")
@@ -16,6 +18,8 @@ var portraits: Array[TextureRect]=[]
 var take: Button
 var share: Button
 var caption: Label
+var notice: Label
+var notice_plate: ColorRect
 
 func text(parent: Control, value: String, box: Rect2, font_size: int, color: Color = PAPER, centered: bool = false, serif: bool = false) -> Label:
 	var node := Label.new()
@@ -128,6 +132,21 @@ func build(owner, data: Dictionary) -> void:
 	text(stage,heading_title,Rect2(530,75,476,47),36,PAPER,true,true)
 	caption=text(stage,"%s秘藏 · 选中卡牌后领取或分享" % QUALITY_NAMES[tier],Rect2(490,127,556,27),19,MUTED,true)
 	if selection.get("category","") in ["talent","core"]: caption.text="选中天赋收藏 · Tab进入构筑配置"
+	# Refusals and the full-reserve warning live here; see `_refresh_notice()`.
+	# The plate keeps the line readable over the painted frame, which the notice crosses.
+	notice_plate=ColorRect.new()
+	notice_plate.color=Color(0.07,0.025,0.03,0.8)
+	notice_plate.position=Vector2(330,159)
+	notice_plate.size=Vector2(876,42)
+	notice_plate.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	notice_plate.name="RewardNoticePlate"
+	notice_plate.visible=false
+	stage.add_child(notice_plate)
+	notice=text(stage,"",Rect2(330,163,876,34),20,Color("ff9b7a"),true)
+	notice.name="RewardNotice"
+	notice.visible=false
+	_refresh_notice()
+	set_process(true)
 	for i in selection.offers.size():
 		var index: int=i
 		var offer: Dictionary=selection.offers[i]
@@ -186,13 +205,35 @@ func build(owner, data: Dictionary) -> void:
 	var cards: int=host.session.players[host.session.my_id()].rogue_rerolls
 	var reroll := action_button(stage,"刷新 · %d 张" % cards,Rect2(119,898,270,48),func(): host.session.action("rogue_selection_reroll",payload))
 	reroll.disabled=cards<=0
+	# B3-2(P2) 魔晶付费刷新：与上面那张「刷新卡」并存，互不占用（服务端 `selection_action()`
+	# 里两条分支各自独立）。payload 与刷新卡完全同款：只送 id + version，客户端不预测结果、
+	# 不改服务端状态。可行性只问服务端的只读预判接口 `Rooms.paid_reroll_check()`：
+	# reason ∈ ok/gold/exhausted/category，`ok==false` 一律进禁用态并把原始 message 挂到
+	# tooltip；同一 reason 也在这里换成短标签，免得 304px 的按钮被整句挤掉。
+	# 只读：本文件不写 `paid_rerolls`，计数完全由服务端在成功时 +1（成功会 version+1，
+	# `update_rogue_hud()` 的 REWARD layout 带 version，因此按钮状态会随面板重建自动刷新）。
+	var state: Dictionary=Rooms.paid_reroll_state(selection)
+	var gold: int=int(host.session.players[host.session.my_id()].get("rogue_gold",0))
+	var check: Dictionary=Rooms.paid_reroll_check(selection,gold)
+	var short: String={"gold":"魔晶不足","exhausted":"刷新次数已用尽","category":"此类奖励不适用"}.get(str(check.get("reason","")),"不可用")
+	var paid := action_button(stage,"魔晶刷新（%d）· 剩 %d 次" % [int(state.get("cost",0)),int(state.get("left",0))],Rect2(600,736,304,40),func(): host.session.action("rogue_selection_paid_reroll",payload))
+	paid.name="RewardPaidReroll"
+	paid.tooltip_text=str(check.get("message","")) if not bool(check.get("ok",false)) else "花 %d 魔晶更换这一屏候选（本次报价还剩 %d 次）" % [int(state.get("cost",0)),int(state.get("left",0))]
+	paid.disabled=not bool(check.get("ok",false))
+	if paid.disabled: paid.text="魔晶刷新 · %s" % short
 	take=action_button(stage,"收藏天赋" if selection.get("category","") in ["talent","core"] else "领取奖励",Rect2(468,898,270,48),func(): submit("rogue_selection_take"))
 	share=action_button(stage,"跳过本轮" if selection.get("category","") in ["talent","core"] else "丢给队友",Rect2(803,898,270,48),func():
 		if selection.get("category","") in ["talent","core"]: host.session.action("rogue_selection_bank",payload)
 		else: submit("rogue_selection_drop")
 	)
-	var back := action_button(stage,"放回秘藏",Rect2(1147,898,270,48),func(): host.session.action("rogue_selection_return",payload))
-	back.disabled=selection.get("personal",false)
+	# A personal offer refuses "放回秘藏", which used to leave a full reserve with no visible way
+	# out. That slot now carries an explicit escape hatch instead, so the room can always advance.
+	var personal: bool=selection.get("personal",false)
+	var back := action_button(stage,"放弃本次 · 不领取" if personal else "放回秘藏",Rect2(1147,898,270,48),func():
+		if personal: host.session.action("rogue_selection_abandon",{"id":selection.id,"version":selection.version,"index":selected})
+		else: host.session.action("rogue_selection_return",payload)
+	)
+	back.name="RewardAbandon"
 	take.disabled=true
 	share.disabled=selection.get("category","") not in ["talent","core"]
 	var burst := CPUParticles2D.new()
@@ -216,3 +257,24 @@ func build(owner, data: Dictionary) -> void:
 	var opening := create_tween().set_parallel(true)
 	opening.tween_property(holder,"scale",Vector2.ONE,0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	opening.tween_property(holder,"modulate:a",1.0,0.2)
+
+## The panel is not rebuilt when a claim is refused (the rebuild signature only tracks the
+## selection id/version), so the reason is read live. It is read from the session rather than
+## from the `selection` we were built with, because a client's snapshot replaces `players`
+## wholesale and the old dictionary would never carry the refusal.
+func _refresh_notice() -> void:
+	if notice==null or host==null: return
+	var me: Dictionary=host.session.players.get(host.session.my_id(),{})
+	var live: Dictionary=me.get("rogue_selection",{})
+	var message := str(live.get("error",""))
+	if message.is_empty():
+		var stash: Array=me.get("rogue_stash",[])
+		if stash.size()>=12:
+			# Warn before the click, not after: a full reserve refuses every equipment claim.
+			message="备用行囊已满 12 件 · 领取装备会被拒绝：先在行囊（Tab）里丢弃，或按「放弃本次」跳过"
+	notice.text=message
+	notice.visible=not message.is_empty()
+	if notice_plate!=null: notice_plate.visible=notice.visible
+
+func _process(_delta: float) -> void:
+	_refresh_notice()

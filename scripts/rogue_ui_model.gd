@@ -74,6 +74,16 @@ static func curses_lines(p: Dictionary) -> PackedStringArray:
 	out.append("诅咒 %d / %d · 受创 ×%.2f" % [rows.size(), int(RogueCurses.MAX_CURSES), scale])
 	for row in rows:
 		out.append("· %s · %s" % [str(row.name), str(row.desc)])
+	# A2 (R9 hook 9) · CU08「迷雾」：`vision` 在魔境渲染侧**没有**接入点 —— `rogue_field.gd`
+	# 的世界绘制只有平移（`draw_set_transform(-camera_offset())`），没有缩放/遮罩层，
+	# 真接线要重做整套世界→屏幕变换。因此这一条是**显式降级**：只把惩罚呈现在 HUD 的
+	# 诅咒区里（`main.gd` 每帧读 `RogueUi.curses_text(p)`），而不是伪造一个永远没人的分支。
+	# 没有迷雾诅咒时（key 为 0）连一行都不加：`tests/rogue_ui.gd` 的
+	# `curses_lines({"rogue_curses":["CU01","CU02"]}).size()==3` 与
+	# `curses_text({"rogue_curses":[]})=="诅咒 · 无"` 都保持原样。
+	var vision := float(RogueCurses.stat_delta(p).get("vision", 0.0))
+	if vision<0.0:
+		out.append("· 视野 -%d%%（迷雾压低了目视距离）" % int(round(-vision*100.0)))
 	return out
 
 
@@ -120,8 +130,18 @@ static func pending_event(raid: Dictionary) -> Dictionary:
 	return raid["pending_event"] as Dictionary
 
 
+## 事件面板是否该接管当前房间。必须同时满足三条：现在就在事件房、报价还在、
+## 且报价的 revision 与当前 revision 一致（`RogueEvents.roll_offer()` 与
+## `roguelike.refresh_dedicated()` 都按当前 revision 盖章）。
+## 只判"pending 非空"会让上一个房间残留的报价把后续**所有**房间的面板顶掉：
+## main.gd 的派发在 `event_active()` 处直接 return，锻炉/赌徒/镜像房的按钮全点不到（bug sweep 实录）。
 static func event_active(raid: Dictionary) -> bool:
-	return not pending_event(raid).is_empty()
+	var pending := pending_event(raid)
+	if pending.is_empty():
+		return false
+	if str(raid.get("room", "")) != "event":
+		return false
+	return int(pending.get("revision", -1)) == int(raid.get("revision", 0))
 
 
 static func event_id(raid: Dictionary) -> String:

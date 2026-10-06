@@ -1,6 +1,8 @@
 extends SceneTree
 var checks := 0
 var failures := 0
+## Set as the very last statement of `_body()`; see `run()` below.
+var completed := false
 func _initialize() -> void: call_deferred("run")
 func check(ok: bool, reason: String) -> void:
 	checks+=1
@@ -12,7 +14,15 @@ func capture(tag: String) -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png("res://build/rogue-inventory-"+tag+".png")
+## Same safety net as `tests/roguelike.gd`: a runtime error aborts `_body()`, and without this
+## wrapper the SceneTree keeps spinning forever (the old TIMEOUT symptom) instead of going red.
 func run() -> void:
+	await _body()
+	check(completed,"the run reached the end of the body (a SCRIPT ERROR aborts `_body()` and skips the rest)")
+	print("ROGUE INVENTORY %d checks / %d failures" % [checks,failures])
+	quit(1 if failures else 0)
+
+func _body() -> void:
 	var app: Node=load("res://scenes/main.tscn").instantiate()
 	app.profile.path="user://test-rogue-inventory.json"
 	root.add_child(app)
@@ -138,5 +148,4 @@ func run() -> void:
 	check(p.rogue_medicine==0,"Supply menu discards one medicine")
 	app.queue_free()
 	await process_frame
-	print("ROGUE INVENTORY %d checks / %d failures" % [checks,failures])
-	quit(1 if failures else 0)
+	completed=true

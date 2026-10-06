@@ -19,6 +19,10 @@ extends RefCounted
 ## 4. **深度下限必须与 `scripts/rogue_graph.gd` 的 `NEW_KIND_MIN_DEPTH` 一致**
 ##    （`curse`:3 `event`:3 `forge`:3 `gamble`:4 `mirror`:5；tests/rogue_rooms.gd 有交叉断言）。
 
+# B3-2：诅咒的只读查询（条数 / 最近一条）来自诅咒数据层，本模块不复制那张表。
+# 预加载而非裸类名：与 roguelike.gd 的写法一致，避免依赖 .godot 类缓存。
+const Curses = preload("res://scripts/rogue_curses.gd")
+
 ## 本模块负责的房间类型（boss 与其它房间不在这里）。
 const KINDS := ["forge", "gamble", "mirror"]
 ## 出现深度下限；语义与 `RogueGraph.NEW_KIND_MIN_DEPTH` 的对应项逐字相同，改动必须两边同步。
@@ -35,6 +39,34 @@ const FORGE_BUNDLE_SIZE := 3
 const FORGE_BUNDLE_DISCOUNT := 15
 const FORGE_DIRECT_BASE := 90
 const FORGE_DIRECT_PER_FLOOR := 25
+
+# B3-2（A3「赎罪」途径）· 锻炉的第五项服务：清除一条诅咒。
+## 价格 = CURSE_CLEAR_BASE + CURSE_CLEAR_PER_FLOOR × max(1, floor)（与其它锻炉报价同款随层递增）。
+## 120 / 45 这两个数的理由（不是随手取的）：
+##   * 全表最大的"魔晶"诅咒回报是 CU10 的 150（TABLE 里 gold boon ∈ {90,110,120,130,150}），
+##     而最低价的解咒（1 层 165）已经**高于**任何一条诅咒当场给的魔晶——拿诅咒换来的钱
+##     永远买不回一条解药，"诅咒＝真代价"因此不被本服务抵消成白嫖。
+##   * 它同时是锻炉最贵的服务：直接锻打 90+25×floor（5 层 215）＜解咒 165..345，
+##     所以解咒始终是"要不要为这一条代价赎身"的高档决策，而不是顺手买的东西。
+const CURSE_CLEAR_BASE := 120
+const CURSE_CLEAR_PER_FLOOR := 45
+
+# B3-2（P2「魔晶付费刷新」）· 圣坛天赋 / 奖励三选一的逃生门（数据层的价目与上限）。
+## 固定价，不随层数变。理由：刷新服务解决的是"这三张牌的方向不对口"，而这件事在任何一层
+## 都同样可能发生；价随层数上涨只会让前两层（钱包本来最薄、构筑最需要对齐的时候）买不起。
+## 60 = 开局魔晶全额（`roguelike.reset()` 给 60），所以它不可能变成早期免费通道；又低于
+## 最便宜的商品牌价（65+floor×10 ≥ 75），也低于解咒 165，不会跟任何既有服务抢同一价格带。
+const PAID_REROLL_COST := 60
+## 同一份选择（一次 `p.rogue_selection`）最多用魔晶刷 2 次。
+## 取值理由：一份报价只有 3 张候选，1 次付费刷新已经换了整整一屏；第 2 次兜住"第一次也霉"的
+## 情况。给到第 3 次就等于花魔晶"刷到对口径为止"，那正好把这个设计要保留的代价（方向不对口
+## 要么吃下、要么用稀缺的刷新卡）抹掉。上限绑在 selection 实例上，刷新卡换牌**不重置**它，
+## 因此"卡片 + 魔晶"无法串成无界连刷（单次选择的付费刷新总数恒 ≤ 2）。
+const PAID_REROLL_MAX := 2
+## 允许付费刷新的奖励类别。与 `roguelike.reward_offers()` 真正会重新抽牌的类别一一对应；
+## 其余类别（例如固定单张的属性灵晶 category="attribute"）必须明确拒绝——若放行，
+## `reward_offers()` 会落到装备分支，花魔晶反而把属性灵晶换成装备（吞掉既有奖励）。
+const PAID_REROLL_CATEGORIES := ["talent", "core", "boon", "gear", "weapon", "starter"]
 
 # ---------------------------------------------------------------- 赌徒
 ## 三种赌法。`multiplier` 是「赢时到手的倍数（含本金）」，tier 赌法用阶位而非倍数。
@@ -62,8 +94,9 @@ const MIRROR_REWARD_ASH_PER_FLOOR := 5
 const MIRROR_REWARD_ASH_CAP := 60
 const MIRROR_REWARD_GEAR := 1
 
-## 增量字典允许的键（冻结）。正数=进账，负数=支出。
-const DELTA_KEYS := ["gold", "forge_points", "forge_level", "bind", "weapon_tier", "ash", "gear_reward"]
+## 增量字典允许的键（冻结；B3-2 追加 `curse_clear`，见 §A3）。
+## 正数=进账，负数=支出；`bind` 是布尔，`curse_clear` 是「解咒条数/目标 id」（见 apply_room_delta）。
+const DELTA_KEYS := ["gold", "forge_points", "forge_level", "bind", "weapon_tier", "ash", "gear_reward", "curse_clear"]
 
 # ============================================================================
 # 通用：房间级查询与 context 拼装
@@ -101,6 +134,10 @@ static func context_of(s, p: Dictionary) -> Dictionary:
 		"ash_run": maxi(0, _int(data.get("rogue_ash_run", 0), 0)),
 		"mirror_used": bool(data.get("rogue_mirror_used", false)),
 		"mirror_active": bool(_dict(raid.get("mirror_state", {})).get("active", false)),
+		# B3-2（A3）：本人身上的诅咒。`count()` 只数表里真实存在的 id，未知垃圾 id 不计；
+		# `curse_last` 是"最近获得的一条"（p["rogue_curses"] 尾部），锻炉的赎罪行按它报价。
+		"curse_count": Curses.count(data),
+		"curse_last": Curses.last_id(data),
 	}
 
 ## HUD / 测试用的房间说明。未知房间 → {}。
@@ -159,7 +196,19 @@ static func forge_direct_price(floor_index: int) -> int:
 static func forge_level_cap(floor_index: int) -> int:
 	return mini(FORGE_MAX_LEVEL, maxi(1, floor_index))
 
-## 四个服务。每项都带 `cost` / `delta` / `available`，UI 直接照抄即可。
+## B3-2（A3）· 赎罪价（随楼层单调递增）。公式见 CURSE_CLEAR_BASE 的注释。
+static func curse_clear_price(floor_index: int) -> int:
+	return CURSE_CLEAR_BASE + CURSE_CLEAR_PER_FLOOR*maxi(1, floor_index)
+
+## B3-2（A3）· 只读：当前这场报价里"赎罪行"的下标；没有这一行返回 -1。
+## 行只在本人**确实有真诅咒**时存在（`curse_count>0`），所以其余玩家的锻炉报价仍是冻结的 4 项。
+static func curse_clear_index(ctx: Dictionary) -> int:
+	var context: Dictionary = ctx if ctx is Dictionary else {}
+	if maxi(0, _int(context.get("curse_count", 0), 0))<=0: return -1
+	return 4
+
+## 四个基础服务（+ 有诅咒时的第五项「赎罪」）。每项都带 `cost` / `delta` / `available`，
+## UI 直接照抄即可；追加项**永远排在最后**，因此既有 4 项的下标 0..3 不会移动。
 static func forge_offers(ctx: Dictionary) -> Array:
 	var floor_index := maxi(1, _int(ctx.get("floor", 1), 1))
 	var gold := maxi(0, _int(ctx.get("gold", 0), 0))
@@ -189,6 +238,20 @@ static func forge_offers(ctx: Dictionary) -> Array:
 		"desc": "把已有的锻造等级重新绑定到当前武器上（免费）。",
 		"cost": 0, "delta": {"bind": true}, "available": true,
 	})
+	# B3-2（A3）· 赎罪途径：只有身上**确实有真诅咒**时才追加这一行（无诅咒 → 报价仍是 4 项，
+	# 与冻结的既有断言逐位一致）。价格随层数递增；清除目标＝最近获得的那一条（列表尾部）。
+	var curse_count := maxi(0, _int(ctx.get("curse_count", 0), 0))
+	if curse_count>0:
+		var price := curse_clear_price(floor_index)
+		var target := str(ctx.get("curse_last", ""))
+		var row: Dictionary = Curses.find(target)
+		offers.append({
+			"id": "forge_absolve", "name": "赎罪仪式 · 清除一条诅咒",
+			"desc": "花 %d 魔晶清除最近获得的诅咒「%s」（%s）；身上还剩 %d 条。" % [
+				price, str(row.get("name", target)), str(row.get("desc", "")), curse_count],
+			"cost": price, "delta": {"curse_clear": 1}, "available": gold>=price,
+			"curse_id": target,
+		})
 	return offers
 
 ## 结算一个铁匠铺选项。用 0 次随机。
@@ -381,6 +444,57 @@ static func mirror_from_roll(value: float, ctx: Dictionary) -> Dictionary:
 		},
 		"used": true,
 	}
+
+# ============================================================================
+# B3-2（P2）· 圣坛天赋 / 奖励三选一：用魔晶付费刷新
+# ============================================================================
+# 设计约束（读代码前先读这五条）：
+# 1. **计数在 selection 里，不在 raid 里**：`p["rogue_selection"]["paid_rerolls"]`。
+#    selection 是玩家字典的一部分（随快照 data[0] 整表下发），所以不新增任何 raid 键、
+#    不新增快照顶层字段；旧快照里没有这个键时按 0 处理（`paid_reroll_state()`），安全退化。
+# 2. **上限绑在 selection 实例上**：换一份 `p.rogue_selection`（下一个奖励）才重置计数；
+#    「刷新卡刷新」只改 offers/version，**不重置**它，所以卡片+魔晶串不成无界连刷。
+# 3. **只读、纯函数**：本节的函数不改任何状态；扣费与换牌由 `roguelike.selection_action()`
+#    在守卫通过后一次性完成（失败路径零变化：不扣魔晶、不换牌、不推进计数）。
+# 4. **类别白名单**：只有 `reward_offers()` 真会重新抽牌的类别可刷（PAID_REROLL_CATEGORIES）。
+#    其余（如固定单张的属性灵晶）明确拒绝——放行会被 reward_offers 换成装备＝吞掉既有奖励。
+# 5. **不消耗任何新随机源**：刷新复用既有的 `reward_offers()`（即刷新卡那条路径），
+#    因此同种子同输入仍然逐位可复现。
+
+## 只读快照：这份选择已经用魔晶刷了几次 / 还能刷几次 / 单价多少。
+static func paid_reroll_state(selection: Dictionary) -> Dictionary:
+	var used := maxi(0, _int(_dict(selection).get("paid_rerolls", 0), 0))
+	return {"used": used, "max": PAID_REROLL_MAX, "left": maxi(0, PAID_REROLL_MAX-used), "cost": PAID_REROLL_COST}
+
+## 纯函数守卫：这次付费刷新能不能做，不能做就把**为什么**写清楚（供 UI 与错误回执直接照抄）。
+## 返回 {"ok", "reason", "message", "cost", "used", "max", "left"}；reason ∈ ok/gold/exhausted/category。
+static func paid_reroll_check(selection: Dictionary, gold: int) -> Dictionary:
+	var sel: Dictionary = _dict(selection)
+	var state := paid_reroll_state(sel)
+	state["reason"] = "ok"
+	state["message"] = ""
+	var category := str(sel.get("category", "gear"))
+	if int(state["left"])<=0:
+		state["ok"]=false
+		state["reason"]="exhausted"
+		state["message"]="本次报价已用魔晶刷新 %d 次（上限 %d）：再用刷新卡换牌，或直接选一张。" % [
+			int(state["used"]), PAID_REROLL_MAX]
+		return state
+	if category not in PAID_REROLL_CATEGORIES:
+		state["ok"]=false
+		state["reason"]="category"
+		state["message"]="这类奖励不支持魔晶刷新（%s）" % category
+		return state
+	if maxi(0, int(gold))<PAID_REROLL_COST:
+		state["ok"]=false
+		state["reason"]="gold"
+		state["message"]="魔晶不足：魔晶刷新需要 %d，当前 %d（本次报价还剩 %d 次）。" % [
+			PAID_REROLL_COST, maxi(0, int(gold)), int(state["left"])]
+		return state
+	state["ok"]=true
+	state["message"]="花 %d 魔晶更换这一屏候选（本次报价第 %d / %d 次）。" % [
+		PAID_REROLL_COST, int(state["used"])+1, PAID_REROLL_MAX]
+	return state
 
 # ============================================================================
 # 内部安全转换（缺字段 / 类型错一律降级，不崩）

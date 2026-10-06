@@ -4,6 +4,76 @@ var failures := 0
 func check(ok: bool, reason: String) -> void:
 	checks+=1
 	if not ok: failures+=1; push_error(reason)
+
+const GRID := 6.0
+const BODY_RADIUS := 15.0
+const BODY_MARGIN := BODY_RADIUS+5.0
+
+# Reachability is planned on the map grid instead of walking a hand-picked polyline:
+# a fixed waypoint rots as soon as the region artwork moves (the old
+# `(width*.88, ground_y(.425))` waypoint ended up inside the diagonal scenery wedge).
+func bfs_path(map, radius: float, start: Vector2, goal: Vector2, step: float) -> Array:
+	var cols: int=int(ceil(map.width/step))
+	var rows: int=int(ceil(map.extent.y/step))
+	var came := PackedInt32Array()
+	came.resize(cols*rows)
+	came.fill(-1)
+	var s := Vector2i(int(start.x/step),int(start.y/step))
+	if map.blocked(Vector2(s.x*step,s.y*step),radius): return []
+	var goal_cell := Vector2i(int(goal.x/step),int(goal.y/step))
+	came[s.y*cols+s.x]=s.y*cols+s.x
+	var queue: Array[Vector2i]=[s]
+	var head := 0
+	var found := -1
+	while head<queue.size():
+		var cur: Vector2i=queue[head]
+		head+=1
+		if cur.distance_to(Vector2(goal_cell))<=2.0: found=cur.y*cols+cur.x; break
+		for d in [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]:
+			var n: Vector2i=cur+d
+			if n.x<0 or n.y<0 or n.x>=cols or n.y>=rows: continue
+			var index: int=n.y*cols+n.x
+			if came[index]!=-1: continue
+			if map.blocked(Vector2(n.x*step,n.y*step),radius): continue
+			came[index]=cur.y*cols+cur.x
+			queue.append(n)
+	if found==-1: return []
+	var cell := Vector2i(found%cols,int(found/cols))
+	var path: Array=[]
+	while true:
+		path.push_front(Vector2(cell.x*step,cell.y*step))
+		var parent: int=came[cell.y*cols+cell.x]
+		var previous := Vector2i(parent%cols,int(parent/cols))
+		if previous==cell: break
+		cell=previous
+	return path
+
+func max_passable_radius(map, start: Vector2, goal: Vector2, step: float) -> float:
+	if not bfs_path(map,90.0,start,goal,step).is_empty(): return 90.0
+	var low := 0.0
+	var high := 90.0
+	for i in 11:
+		var mid := (low+high)*.5
+		if bfs_path(map,mid,start,goal,step).is_empty(): high=mid
+		else: low=mid
+	return low
+
+func replay_path(map, radius: float, path: Array) -> Dictionary:
+	var at: Vector2=path[0]
+	var stalled := false
+	for i in range(1,path.size()):
+		var waypoint: Vector2=path[i]
+		var guard := 0
+		while at.distance_to(waypoint)>.5:
+			guard+=1
+			if guard>400: stalled=true; break
+			var delta := waypoint-at
+			var next: Vector2=map.move(at,delta.normalized()*minf(delta.length(),4.0),radius)
+			if next.distance_to(at)<.01: stalled=true; break
+			at=next
+		if stalled: break
+	return {"at":at,"stalled":stalled}
+
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var s := TideSession.new()
@@ -79,24 +149,35 @@ func run() -> void:
 			# A continuous central lane guarantees every encounter and exit is reachable.
 			for x in range(330,2781,12): check(map.inside_floor(Vector2(x,map.lane_center(x))),"Ground corridor remains connected before obstacle avoidance")
 		check(silhouettes.size()==5,"All five areas have distinct silhouettes")
+	# R5+ (walkability): the route is planned on the map grid and then replayed
+	# through the real `map.move()`, instead of walking one hand-picked polyline.
+	# The old `(width*.88, ground_y(.425))` waypoint now sits inside the diagonal
+	# scenery wedge between the two branches, so the straight leg into it was
+	# rejected by collision and the walker stalled there — a stale test route, not
+	# a blocked branch (measured bottleneck radius is 28.6px compact / 35.6px long
+	# against a 15px player body, and the doors themselves are clear).
 	for long_room in [false,true]:
 		var map=preload("res://scripts/rogue_map.gd").new()
 		map.generate(1742)
 		map.configure(0,2,long_room)
+		var fork := Vector2(map.fork_start,map.lane_center(map.fork_start))
 		for index in 2:
-			var start := Vector2(map.fork_start,map.lane_center(map.fork_start))
 			var destination: Vector2=map.exit_position(index)
-			var at := start
-			# The diagonal path bends around the scenery wedge; walking a
-			# straight shortcut across that wedge should remain blocked.
-			var route: Array[Vector2]=[destination]
+			check(not map.blocked(destination,BODY_MARGIN),"Doorway has clear collision space in long and compact rooms")
+			# A body radius plus 5px of margin must fit along the whole branch.
+			check(max_passable_radius(map,fork,destination,GRID)>=BODY_MARGIN,"Branch corridor is wider than the player body")
+			var path: Array=bfs_path(map,BODY_MARGIN,fork,destination,GRID)
+			check(not path.is_empty(),"A continuous walk exists from the fork to each branch")
+			if path.is_empty(): continue
+			var walk: Dictionary=replay_path(map,BODY_MARGIN,path)
+			check(not walk.stalled and walk.at.distance_to(destination)<15.0,"Player can walk continuously along each branch in long and compact rooms")
 			if index==1:
-				route.push_front(Vector2(map.width*.88,map.ground_y(.425)))
-			for waypoint in route:
-				var leg_start := at
-				for step in 100:
-					at=map.move(at,(waypoint-leg_start)/100.0,20)
-			check(at.distance_to(destination)<1,"Player can walk continuously along each branch in long and compact rooms")
+				# The scenic wedge still forces the player to bend around it rather
+				# than cutting straight across from the fork to the upper door.
+				var cut := false
+				for sample in 200:
+					if map.blocked(fork.lerp(destination,float(sample+1)/200.0),BODY_MARGIN): cut=true; break
+				check(cut,"Straight diagonal shortcut across the scenery wedge stays blocked")
 	s.queue_free()
 	await process_frame
 	print("ROGUE ROUTES ",checks," checks / ",failures," failures")

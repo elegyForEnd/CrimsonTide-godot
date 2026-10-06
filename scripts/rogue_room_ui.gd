@@ -28,9 +28,51 @@ const ACTION_FORGE := "rogue_forge"
 const ACTION_GAMBLE := "rogue_gamble"
 const ACTION_MIRROR := "rogue_mirror"
 
+## R7d (2026-06 · 实机修复) · `PHASE_EXIT` 曾在这里，R7e 删除：显示门不再看相位，见 `panel_open()`。
+## （删除前全仓核实过没有第二个读者：`grep PHASE_EXIT` 只命中本文件这一处声明。）
+
 ## The rooms this panel owns. Everything else keeps its existing UI.
 static func handled(kind: String) -> bool:
 	return kind in RogueRooms.KINDS
+
+
+## R7e (2026-06 · 实机修复) · "本间服务房有没有被玩家**主动**离店"这个状态位的唯一读取口。
+##
+## 位置与默认值：`s.raid["room_left"]`，`roguelike.gd` 的 `reset()` 里默认 `false`，
+## `enter()` 里"进房即清"。`raid` 字典整体是快照元素 11，接收端只校验顶层 `size ∈ [12,13]`，
+## 所以这是 raid **内部**加键、不触碰快照顶层形状。
+##
+## 旧对端快照退化（契约要求）：缺键 / 形状不是 bool / key 不是 String 一律读成 `false`
+## ＝"没离店"。这个方向是刻意选的——退化时面板仍按服务房显示（也就是 R7d 之前"只看房间种类"
+## 的可见行为），`rogue_leave` 也照常可用，最坏结果是"离店后面板多留一帧到对端升级"，而不是
+## "面板打不开、玩家被卡在服务房里"。绝不直接下标取键。
+static func room_left(raid) -> bool:
+	if not (raid is Dictionary): return false
+	var flag: Variant=(raid as Dictionary).get("room_left",false)
+	if flag is bool: return bool(flag)
+	return false
+
+
+## R7e (2026-06 · 实机修复) · 面板的**显示门**：房间种类属于本模块，**且**玩家还没主动离店。
+##
+## 为什么不再看相位：`phase=="rogue_exit"` **不是**"玩家主动走了"的同义词。三个专属房
+## （锻炉 / 赌徒 / 镜像）的相位轨迹（逐行核过 `roguelike.gd`）：
+##   * 进房：`enter()` 走 `SAFE_ROOMS` 分支 → `clear_room()` 把 phase 钉在 `rogue_reward`；
+##   * 开箱 / 领完奖励：`finish_rewards()`（`roguelike.gd:1382`，终态在 `:1397`）**也**把服务房
+##     推到 `rogue_exit` —— 这不是玩家主动离店，按用户明确要求面板必须**继续显示**，他还要接着
+##     锻造 / 赌博 / 打镜像（三个动作串本来就不看相位，只要求 `raid.room` 是那间房）；
+##   * 主动离店：点「离开此间」或按 ESC → `rogue_leave` 置 `raid.room_left=true`
+##     （`roguelike.gd:1269`）—— 这才是面板该收起的唯一信号，收起来之后 ESC 才回到暂停菜单。
+##
+## 为什么不新增第三参、也不留一个没人读的 `phase` 形参：留一个不用来判定的形参会诱导下一个
+## 维护者"顺手"把它用回相位门，而多一个形参又要在每个调用点上重新核实一遍。所以显示门只吃
+## `raid`——它名字里连 "phase" 都没有，读者改不回相位判断，也读不到过期的相位字符串。
+##
+## `handled()` 的签名与返回值一个字都不能动（`tests/rogue_room_ui.gd:42-43` 直接调它），
+## 状态位维度因此单独放在这个新函数里，由 `main.gd` 的派发处调用。
+static func panel_open(kind: String, raid) -> bool:
+	if not handled(kind): return false
+	return not room_left(raid)
 
 
 static func action_for(kind: String) -> String:
@@ -146,7 +188,9 @@ static func unavailable_reason(kind: String, offer: Dictionary, ctx: Dictionary)
 		return "魔晶不足（需 %d）" % cost
 	match str(offer.get("method", "")):
 		"tier": return "阶位已到边界（%d~%d）" % [RogueRooms.GAMBLE_TIER_FLOOR, RogueRooms.GAMBLE_TIER_CEIL]
-		"ash": return "本局灰烬不足（需 %d）" % cost
+		# BUG-SWEEP: the ash wager carries its requirement in `stake`, not in `cost`
+		# (its gold cost is 0), so quoting `cost` printed "需 0".
+		"ash": return "本局灰烬不足（需 %d）" % maxi(0, int(offer.get("stake", cost)))
 	if str(offer.get("id", "")) == "forge_direct":
 		return "本层锻造等级已达上限"
 	return "当前不可用"

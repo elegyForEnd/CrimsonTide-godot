@@ -1,0 +1,457 @@
+{
+  "selected": 50,
+  "preserved": 7,
+  "generated": 43,
+  "assets": [
+    {
+      "key": "f1-a6",
+      "texture": "f1-a6-smooth-night-v2-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "bfdf01be103c4ddb483bebe01c61996b207cdb8694391716b190bce2d31bed88"
+    },
+    {
+      "key": "f1-a7",
+      "texture": "f1-a7-smooth-night-v2-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "7dcbeaa45b50e30eac5f8b6da12e29bb864e5c99defb78d54c619b9aab005133"
+    },
+    {
+      "key": "f1-shop",
+      "texture": "f1-shop-smooth-night-v2-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "56b153a55f5d2aec89d393d49de21b9eae140fb6e0092463993bbd70122759c9"
+    },
+    {
+      "key": "f1-talent",
+      "texture": "f1-talent-smooth-night-v2-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "a4c6108980392766120c55c69a6f729c8ea3e602d56471612cb762982352f778"
+    },
+    {
+      "key": "f1-treasure",
+      "texture": "f1-treasure-smooth-night-v2-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "6f921306b51bdfb20d7ba18fb3e3796157a5fa8cd07cdb3eb739c9190ae22bc4"
+    },
+    {
+      "key": "f1-curse",
+      "texture": "f1-curse-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "d7e9c23c0231349ab69576b345a7ab88ffe654d4d5e6308a97746fcbc36768c8"
+    },
+    {
+      "key": "f1-event",
+      "texture": "f1-event-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "69e8fd2e06eaa411c6be402272ed1bfc4ccc1ddb1668e0d7e3550d8fd21e6965"
+    },
+    {
+      "key": "f1-forge",
+      "texture": "f1-forge-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "655417f34cd8702e741309442a1b6ebafbd2c2a9e8791d097aa8984f99318762"
+    },
+    {
+      "key": "f1-gamble",
+      "texture": "f1-gamble-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "38ccc2ad75d61b92c6231dfddd2454e88615bca264f86e3da81b481c2a9cd288"
+    },
+    {
+      "key": "f1-mirror",
+      "texture": "f1-mirror-flat-night-v7-3x.png",
+      "size": [
+        6516,
+        2172
+      ],
+      "sha256": "979631327f4bf18d2848bfb6d5ece722fbb1ab5a1692b53aabf033d0e7fb6621"
+    },
+    {
+      "key": "f2-a6",
+      "texture": "f2-a6-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "7018827843a9b6f29bca24dd604ac056c6cc3ba7247edbcfc51dfe0b752725a4"
+    },
+    {
+      "key": "f2-a7",
+      "texture": "f2-a7-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "1ace7fb53c27023c6b3cf90663b3c65adeb31bc8413d06fa74f06e4ab51eec83"
+    },
+    {
+      "key": "f2-shop",
+      "texture": "f2-shop-smooth-night-v2-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "a53ee5e43f5a82b332e109fe2e5ec6496f58b095ff5ec303c4ffa45ba8718431"
+    },
+    {
+      "key": "f2-talent",
+      "texture": "f2-talent-smooth-night-v2-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "ee55a9cf9bee2607e1912531ee6487be2b00842ff8937e1045b885e664dba2c7"
+    },
+    {
+      "key": "f2-treasure",
+      "texture": "f2-treasure-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "912b3397ce0697424fe02bca9c1b292c0bebf16eb4bffdc96d4690f9afc46109"
+    },
+    {
+      "key": "f2-curse",
+      "texture": "f2-curse-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "02158ccedbe53a0fc48c1b20720dc8b16cb33018c3f9d980750baab1daff80b5"
+    },
+    {
+      "key": "f2-event",
+      "texture": "f2-event-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "8c752bc71f6c95b55d6f16689f83998d14f1a6223f7009a94a3b10baa95a7551"
+    },
+    {
+      "key": "f2-forge",
+      "texture": "f2-forge-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "412a9f616ad10fdecd513069ae68857fcb1a9412ac0df7ea40ed12e7557eccee"
+    },
+    {
+      "key": "f2-gamble",
+      "texture": "f2-gamble-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "51c828991d9083d778ad2d85381c12aa9eafc0264058f077e4a7c8739705b728"
+    },
+    {
+      "key": "f2-mirror",
+      "texture": "f2-mirror-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "2012eed051c8cbea17c4dda8878bdf9a23881428f9585d860d83f33fc4d2f858"
+    },
+    {
+      "key": "f3-a6",
+      "texture": "f3-a6-flat-night-v7-3x.png",
+      "size": [
+        6471,
+        2187
+      ],
+      "sha256": "d96f7339f5bc2d1cedd774d2fe786cb523e25505f9462763c5ad6173bbfd2b22"
+    },
+    {
+      "key": "f3-a7",
+      "texture": "f3-a7-flat-night-v7-3x.png",
+      "size": [
+        6516,
+        2172
+      ],
+      "sha256": "6cf62a9621d3e9b28e818e7b97fb710eb754fd94d98a8279839700b4c781a3db"
+    },
+    {
+      "key": "f3-shop",
+      "texture": "f3-shop-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "5ffece928e214de913374ef917f9b890da8f4845125bc16fb5be5e494ecfe65d"
+    },
+    {
+      "key": "f3-talent",
+      "texture": "f3-talent-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "4d3aa2422b6a8f04ae99c60bfad28e610518711737fceb8b133c3a2f25cee78b"
+    },
+    {
+      "key": "f3-treasure",
+      "texture": "f3-treasure-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "681b5b0cef5acaf50e626a7a2bf6f4390579430fcd5b464321fda6cf16754b07"
+    },
+    {
+      "key": "f3-curse",
+      "texture": "f3-curse-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "8e0603d815e6dc2a0f36eeb861efc5b1dfa6567659ff278c7be6e8ed307be66f"
+    },
+    {
+      "key": "f3-event",
+      "texture": "f3-event-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "b6cecf5b8ef99436a34894ce9c647fe2c7fe703e924e217e032cfbfe0258d1ce"
+    },
+    {
+      "key": "f3-forge",
+      "texture": "f3-forge-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "8d06f5b6a7d3b0369de11905fa15c3e22d7c5e01d6758708f9e91faf8a413e82"
+    },
+    {
+      "key": "f3-gamble",
+      "texture": "f3-gamble-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "33ca3213fb649780e10064ed5327af6ffda2666ebe40a82f1d2b0e86bf17d3ca"
+    },
+    {
+      "key": "f3-mirror",
+      "texture": "f3-mirror-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "9c6bbda17d5670fafe87945c6f4afec9ef141c01289245c6c5777585169e224a"
+    },
+    {
+      "key": "f4-a6",
+      "texture": "f4-a6-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "b181889f4d9f3a2aaa7f20e66e8701d7f0a96ca086b0fb57a8b3ccc351714b5e"
+    },
+    {
+      "key": "f4-a7",
+      "texture": "f4-a7-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "9c5c424ed2953248aa0dd800487353dc60dde7ed5800304515fb796dbd7434a7"
+    },
+    {
+      "key": "f4-shop",
+      "texture": "f4-shop-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "60d581756563593dc95e95a83b95862441953d98ced69767a4e3c1275a75d698"
+    },
+    {
+      "key": "f4-talent",
+      "texture": "f4-talent-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "05ab476e17c1d97cdd380905236a5dda3a579c790497d0e6a495cda0e81c5036"
+    },
+    {
+      "key": "f4-treasure",
+      "texture": "f4-treasure-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "009e34e6ab916735af4fbc6d545a1d7d24bbe49f3c2458d9076562091d9830fe"
+    },
+    {
+      "key": "f4-curse",
+      "texture": "f4-curse-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "cebd220cb2e6766322a1a061f9e17d7c167d7ead9da1d4f43a2ca2752aea4c2e"
+    },
+    {
+      "key": "f4-event",
+      "texture": "f4-event-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "e2e38e6bbb3d6c545b9d20fa39218f859a8aee52b6207d4949d6c27cec9ab218"
+    },
+    {
+      "key": "f4-forge",
+      "texture": "f4-forge-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "81735ee242c99bea94aef188c0fb1101c3baa5cc8aa437586065d637455c6616"
+    },
+    {
+      "key": "f4-gamble",
+      "texture": "f4-gamble-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "659f00a1f8eadd7f93be72838b1b3b8744797c0e336a970456821cb066133e31"
+    },
+    {
+      "key": "f4-mirror",
+      "texture": "f4-mirror-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "944c037f9e480740471da02bba42f06e42e2a7f507c370f9b5120c1482fd2bdd"
+    },
+    {
+      "key": "f5-a6",
+      "texture": "f5-a6-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "8ff514653199bbd8bce29a09c9eb6b24f040c1eb9e31a0db7404895cbe8161ad"
+    },
+    {
+      "key": "f5-a7",
+      "texture": "f5-a7-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "f84e1d861d25da6464765fd32b5b888ad3d848453ce41c302bdc99579ef3ca7b"
+    },
+    {
+      "key": "f5-shop",
+      "texture": "f5-shop-flat-night-v7-3x.png",
+      "size": [
+        6516,
+        2172
+      ],
+      "sha256": "5283eaeb9423d75eb6c8c9c63daadf30ca180f4b181be91189ac7366712545ff"
+    },
+    {
+      "key": "f5-talent",
+      "texture": "f5-talent-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "e08eb4d46d004ffd182141d3da73b774f77181cbcc0f24803d7cc7f168d11d65"
+    },
+    {
+      "key": "f5-treasure",
+      "texture": "f5-treasure-flat-night-v7-3x.png",
+      "size": [
+        6507,
+        2175
+      ],
+      "sha256": "f886178b4962fa2f7b7ef1451f8319e4aa040d37d63512ac2abee1ff9bd9c159"
+    },
+    {
+      "key": "f5-curse",
+      "texture": "f5-curse-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "da656f15d0d0b8962531bc889251908db31f90477915be1371b340cd8e936f31"
+    },
+    {
+      "key": "f5-event",
+      "texture": "f5-event-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "8f8ab42f9d0fd680b978d47a88d9436de5fec154ec776163ba8a781e56bba4d6"
+    },
+    {
+      "key": "f5-forge",
+      "texture": "f5-forge-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "5fe5ddffedef3b37dc78262511997be58cc09526fd91f05cca697b493b1e8b4e"
+    },
+    {
+      "key": "f5-gamble",
+      "texture": "f5-gamble-flat-night-v7-3x.png",
+      "size": [
+        6513,
+        2172
+      ],
+      "sha256": "b34188858674f62474631a08afee61ac26a035a6c7b206c44c96baf587471f5b"
+    },
+    {
+      "key": "f5-mirror",
+      "texture": "f5-mirror-flat-night-v7-3x.png",
+      "size": [
+        6510,
+        2175
+      ],
+      "sha256": "1525755964404eb15d487ed76806d4efe0be03bc4a7fbf523f2dbbb4ce917d04"
+    }
+  ]
+}
