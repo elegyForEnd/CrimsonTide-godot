@@ -1006,21 +1006,21 @@ func run() -> void:
 	k.pocket.items.clear()
 	check(Catalog.add_item(k.pocket,"crystal"),"a stack sits in the pocket")
 	var stacked := index_of(k.pocket,"crystal")
-	k.pocket.items[stacked]["count"]=6
+	k.pocket.items[stacked]["count"]=5
 	var room := {"p":k.p,"key":"container","items":[],"grid":Vector2i(4,4),"searched":0,"open":false,"class":1,"bonus":false,"next":1}
 	kit_session.world_drops.append(room)
 	check(kit_session.move_between(k,"pocket","loot:"+str(kit_session.container_count()-1),stacked,Vector2i(0,0),false),"a stack can be handed to a chest")
-	check(int(Catalog.container_items(room)[0].get("count",1))==6,"the whole stack arrives in the chest")
+	check(int(Catalog.container_items(room)[0].get("count",1))==5,"the whole stack arrives in the chest")
 	check(index_of(k.pocket,"crystal")<0,"the moved stack left the pocket")
 	# A chest with room for one more unit must not swallow the rest of the pile.
-	var tight := {"p":k.p,"key":"container","items":[{"kind":"crystal","x":0,"y":0,"rot":false,"count":5}],"grid":Vector2i(1,1),"searched":1,"open":false,"class":1,"bonus":false,"next":2}
+	var tight := {"p":k.p,"key":"container","items":[{"kind":"crystal","x":0,"y":0,"rot":false,"count":3}],"grid":Vector2i(1,1),"searched":1,"open":false,"class":1,"bonus":false,"next":2}
 	kit_session.world_drops.append(tight)
 	check(Catalog.add_item(k.pocket,"crystal"),"a fresh stack for a partial transfer")
 	var fresh := index_of(k.pocket,"crystal")
-	k.pocket.items[fresh]["count"]=6
+	k.pocket.items[fresh]["count"]=5
 	check(kit_session.move_between(k,"pocket","loot:"+str(kit_session.container_count()-1),fresh,Vector2i(0,0),false),"a stack hands over only what fits")
-	check(int(Catalog.container_items(tight)[0].count)==6,"the chest stack tops out at six")
-	check(int(k.pocket.items[index_of(k.pocket,"crystal")].count)==5,"the units that did not fit stay behind")
+	check(int(Catalog.container_items(tight)[0].count)==5,"the chest stack tops out at five")
+	check(int(k.pocket.items[index_of(k.pocket,"crystal")].count)==3,"the units that did not fit stay behind")
 	check(not Catalog.can_hold({"items":[],"grid":Vector2i(1,1),"searched":0},"relic"),"a 1x1 loot container cannot take a 2x2 relic")
 	check(Catalog.can_hold({"items":[],"grid":Vector2i(5,5),"searched":0},"relic"),"the 5x5 cathedral chest has room for a relic")
 	# A backpack found in the field is worn through the session action.

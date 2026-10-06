@@ -181,7 +181,7 @@ var drop_region := Rect2()
 var drop_art := ""
 const FROST_ALPHA := 0.30
 var drag_last_point := Vector2(-1,-1)
-var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false,"carry":0}
+var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false,"carry":0,"kind":"","blank":{}}
 var _loot_index := -1
 # Click bookkeeping: a press that never moves is a select, two of them in quick
 # succession on the same item are an equip shortcut.
@@ -1631,18 +1631,26 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.button_index==MOUSE_BUTTON_RIGHT:
-		# Right click lifts one unit out of a pile, and keeps lifting while it stays in
-		# the same pile. Nothing is taken off the source until the left click lands.
-		if event.pressed: right_press(mouse_point())
+		# The right button is the stack hand: pressing it lifts the whole pile into the
+		# hand, each left click sets **one** unit down on the cell under the cursor, and
+		# letting go hands whatever is left to `carry_finish()`. The left button keeps
+		# its own meaning — a drag moves the whole pile as one piece — which is exactly
+		# why the two gestures deliberately do not share a button.
+		if int(drag.get("carry",0))>0:
+			if not event.pressed:
+				carry_finish(mouse_point())
+		elif event.pressed:
+			start_whole_carry(mouse_point())
 		get_viewport().set_input_as_handled()
 		return
 	if event.button_index!=MOUSE_BUTTON_LEFT:
 		return
 	if event.pressed:
 		var point := mouse_point()
-		# A left click while the right-click hand is holding units puts them down.
+		# A left click while the right-button hand is holding units sets exactly **one**
+		# of them down, on the cell under the cursor.
 		if int(drag.get("carry",0))>0:
-			carry_release(point)
+			carry_place_one(point)
 			get_viewport().set_input_as_handled()
 			return
 		# A click on the item bar selects the socket [E] will act on. It is checked
@@ -2330,67 +2338,122 @@ func stop_drag() -> void:
 		drag_ring.visible=false
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
-## A right click in a bag grid: lift one unit out of a pile, or add one more unit to
-## the pile already in hand. Rotating moved to the middle button so this gesture could
-## exist at all (see `_input`).
-func right_press(point: Vector2) -> void:
-	var carrying := int(drag.get("carry",0))
+## The right button going down on a grid: lift the whole pile — or the single piece — into
+## the hand. **Nothing leaves the source yet**: the hand only takes a unit off the pile
+## once a left click has really seated it, which is what makes every exit that is not a
+## successful placement a free cancel.
+##
+## A piece whose ceiling is 1 is simply a pile of one, so this gesture covers gear as
+## well as stacks; the only difference is whether a count badge gets drawn.
+func start_whole_carry(point: Vector2) -> void:
 	var hit := grid_at(point)
-	var slot := str(hit.slot) if not hit.is_empty() else ""
-	var index := index_at(slot,Vector2i(hit.cell)) if not slot.is_empty() else -1
-	if carrying>0:
-		# Only the pile it came from adds units: right-clicking a second stack while
-		# holding units would have to decide which pile gives them up.
-		if slot==str(drag.slot) and index==int(drag.source):
-			var source := drag_source_item(slot,index)
-			drag["carry"]=mini(carrying+1,int(source.get("count",1)))
-			show_inventory()
+	if hit.is_empty():
 		return
+	var slot := str(hit.slot)
+	var index := index_at(slot,Vector2i(hit.cell))
 	if index<0:
 		return
 	var entry := drag_source_item(slot,index)
-	if entry.is_empty() or not Catalog.stacks(str(entry.kind)) or int(entry.get("count",1))<=1:
+	if entry.is_empty() or not Catalog.ITEMS.has(str(entry.kind)):
 		return
-	start_carry(slot,index,entry)
-
-## Lifts `units` of a pile into the hand. **Nothing leaves the source yet**, which is
-## what makes every exit that is not a successful drop a free cancel.
-func start_carry(slot: String, index: int, entry: Dictionary) -> void:
 	drag.active=true
 	drag.slot=slot
 	drag.source=index
 	drag["rot"]=bool(entry.get("rot",false))
-	drag["carry"]=1
+	drag["kind"]=str(entry.kind)
+	drag["blank"]=Catalog.clean_slot_entry(entry)
+	drag["carry"]=maxi(int(entry.get("count",1)),1)
 	drag_last_point=Vector2(-1,-1)
 	press_point=mouse_point()
 	press_moved=true
 	show_inventory()
 
-## Puts the hand's units down. A container takes them, the camp floor takes them, and
-## anywhere else inside the panel is a cancel: the pieces never left the source, so
-## "nothing happened" is the honest outcome.
-func carry_release(point: Vector2) -> void:
+## One left click of the right-button hand: set **one** unit down on the cell under the
+## cursor. The aimed cell is answered first and exactly; only when it refuses does the
+## unit fall back to the nearest hole, so a click never silently scatters a pile.
+##
+## The source is trimmed by one unit only once the placement really landed, so a refused
+## click costs nothing at all. When the hand empties, the gesture ends by itself.
+func carry_place_one(point: Vector2) -> void:
+	var units := int(drag.get("carry",0))
+	if units<=0:
+		return
+	var pile := held_item()
+	if pile.is_empty():
+		stop_drag()
+		show_inventory()
+		return
 	var slot := str(drag.slot)
 	var index := int(drag.source)
+	var spent := func() -> void:
+		drag["carry"]=int(drag.get("carry",0))-1
+		if int(drag.get("carry",0))<=0:
+			stop_drag()
+			selected=-1
+		show_inventory()
+	if drag_outside(point):
+		# Outside the panel is the discard region. It takes one unit, like every other
+		# click of this hand, so a mis-click cannot tip the whole pile onto the floor.
+		carry_drop_units(slot,index,1)
+		spent.call()
+		return
+	var hit := grid_at(point)
+	var to := str(hit.slot) if not hit.is_empty() else ""
+	var cell := Vector2i(hit.cell) if not hit.is_empty() else Vector2i(-1,-1)
+	if not carry_would_place(to,cell):
+		say("这里放不下。")
+		notice_popup("%s 在这里放不下。" % Catalog.item_name(pile))
+		return
+	carry_seat(slot,index,to,cell,1,bool(drag.rot))
+	spent.call()
+
+## The right button coming up: whatever is left in the hand is handed over now — into the
+## container under the cursor first, then back into the one it came from, and only then
+## onto the floor. Nothing is ever left floating in the air.
+func carry_finish(point: Vector2) -> void:
 	var units := int(drag.get("carry",0))
 	var pile := held_item()
-	var outside := drag_outside(point)
-	var moved := false
-	if units>0 and not pile.is_empty():
-		var hit := {} if outside else grid_at(point)
-		if not hit.is_empty():
-			moved=carry_into_container(str(hit.slot),Vector2i(hit.cell),slot,index,units,bool(drag.rot))
-		elif outside:
-			moved=carry_to_ground(slot,index,units)
+	var slot := str(drag.slot)
+	var index := int(drag.source)
+	if units<=0 or pile.is_empty():
+		stop_drag()
+		selected=-1
+		show_inventory()
+		return
+	if drag_outside(point):
+		carry_drop_units(slot,index,units)
+		stop_drag()
+		selected=-1
+		say("放下 %s ×%d。" % [Catalog.item_name(pile),units])
+		show_inventory()
+		return
+	var hit := grid_at(point)
+	var to := str(hit.slot) if not hit.is_empty() else ""
+	var cell := Vector2i(hit.cell) if not hit.is_empty() else Vector2i(-1,-1)
+	var done := carry_hand_over(slot,index,to,cell,units,bool(drag.rot))
 	stop_drag()
 	selected=-1
-	if moved:
-		say("放下 %s ×%d。" % [Catalog.item_name(pile),units])
-	elif outside:
-		say("这里放不下。")
+	if done>0:
+		say("放下 %s ×%d。" % [Catalog.item_name(pile),done])
 	else:
 		say("已放回原处。")
 	show_inventory()
+
+## The dry run a single aimed unit needs before the hand commits to it: "would one unit of
+## what I am holding land in `to`, on `cell`?" Asked on a throwaway copy, so asking
+## changes nothing — the same discipline as `container_would_receive()`.
+func carry_would_place(to: String, cell: Vector2i) -> bool:
+	if to.is_empty() or int(drag.get("carry",0))<=0:
+		return false
+	var kind := str(drag.get("kind",""))
+	var blank: Dictionary=drag.get("blank",{})
+	if kind.is_empty() or blank.is_empty():
+		return false
+	var container: Dictionary=carry_container_of(to)
+	if container.is_empty():
+		return false
+	var trial: Dictionary=container.duplicate(true)
+	return int(Catalog.place_units_in(trial,kind,1,cell,blank,bool(drag.rot)).placed)>0
 
 ## Esc while the hand is full: put the units back. Nothing was taken, so there is
 ## nothing to undo — the panel already shows the truth.
@@ -2400,48 +2463,69 @@ func cancel_carry() -> void:
 	say("已放回原处。")
 	show_inventory()
 
-## The container half of a carry. The camp's vault is the save file and has its own
-## pair of movers in `camp_storage.gd`; everything else goes through the session's pile
-## mover, which is the same one a drag uses.
-func carry_into_container(to: String, cell: Vector2i, from: String, index: int, units: int, rot: bool) -> bool:
+## The container a slot name means, in whichever mode the panel is in.
+func carry_container_of(slot: String) -> Dictionary:
+	if slot.is_empty():
+		return {}
 	if camp_pack_open:
 		var player: Dictionary=camp_player()
 		if player.is_empty():
-			return false
-		var ok := false
-		if to==CampStorage.VAULT:
-			ok=CampStorage.vault_units_in(profile,session,player,from,index,units,rot)
-		elif from==CampStorage.VAULT:
-			ok=CampStorage.vault_units_out(profile,session,player,index,units,to,cell)
-		else:
-			ok=session.move_units(player,from,to,index,units,cell,rot)
-		if ok:
-			CampStorage.persist(profile,session,player)
-		return ok
-	if to!="backpack" and to!="pocket":
-		return false
-	session.action("carry_drop",{"from":from,"to":to,"index":index,"units":units,"x":cell.x,"y":cell.y,"rot":rot})
-	return true
+			return {}
+		return profile.vault() if slot==CampStorage.VAULT else player.get(slot,{})
+	return session.players.get(session.my_id(),{}).get(slot,{})
 
-## The ground half of a carry: the handful lies where the player put it, in the camp or
-## in a raid alike.
-func carry_to_ground(from: String, index: int, units: int) -> bool:
+## Lifts `units` off the pile the hand is working from. Only the camp lifts here: a raid's
+## storage is authoritative state, so there the units come off inside `Session.perform()`
+## when the action lands, never from the panel.
+func carry_take(slot: String, index: int, units: int) -> Dictionary:
+	if not camp_pack_open:
+		return {}
+	var player: Dictionary=camp_player()
+	if player.is_empty():
+		return {}
+	var taken: Dictionary = CampStorage.vault_take_some(profile,index,units) if slot==CampStorage.VAULT else session.take_some(player,slot,index,units)
+	if not taken.is_empty():
+		CampStorage.persist(profile,session,player)
+	return taken
+
+## Seats `units` at the aimed cell. The camp's vault is the save file and has its own movers
+## in `camp_storage.gd`; a raid goes through the action bus exactly like a drag does, so the
+## authoritative session applies the move rather than the panel.
+func carry_seat(slot: String, index: int, to: String, cell: Vector2i, units: int, rot: bool) -> void:
 	if camp_pack_open:
 		var player: Dictionary=camp_player()
 		if player.is_empty():
-			return false
-		var handful: Dictionary = {}
-		if from==CampStorage.VAULT:
-			handful=CampStorage.vault_take_units(profile,index,units)
-		else:
-			handful=session.take_units(player,from,index,units)
-		if handful.is_empty():
-			return false
-		camp_drop_on_floor(handful)
+			return
+		CampStorage.camp_carry_units(profile,session,player,slot,index,to,units,cell,rot)
 		CampStorage.persist(profile,session,player)
-		return true
-	session.action("carry_ground",{"from":from,"index":index,"units":units})
-	return true
+		return
+	session.action("carry_unit",{"from":slot,"index":index,"to":to,"units":units,"x":cell.x,"y":cell.y,"rot":rot})
+
+## Hands the rest of the hand over when the right button comes up. Returns how many units
+## left the hand — into `to`, back into the container they came from, or onto the floor.
+func carry_hand_over(slot: String, index: int, to: String, cell: Vector2i, units: int, rot: bool) -> int:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return 0
+		var out: Dictionary=CampStorage.camp_carry_finish(profile,session,player,slot,index,to,units,cell,rot)
+		CampStorage.persist(profile,session,player)
+		return int(out.get("moved",0))
+	# Releasing over the container the pile came from is a no-op by construction: an
+	# unseated unit never left it. Saying so is the honest answer.
+	var moved := 0 if (to.is_empty() or to==slot) else units
+	session.action("carry_finish",{"from":slot,"index":index,"to":to,"units":units,"x":cell.x,"y":cell.y,"rot":rot})
+	return moved
+
+## Puts `units` from the hand on the floor: the camp has a real (memory-only) floor, and a
+## raid hands the job to the authoritative session through the action bus.
+func carry_drop_units(slot: String, index: int, units: int) -> void:
+	if camp_pack_open:
+		var handful := carry_take(slot,index,units)
+		if not handful.is_empty():
+			camp_drop_on_floor(handful)
+		return
+	session.action("carry_ground",{"from":slot,"index":index,"units":units})
 
 func pick_item(slot: String, index: int) -> void:
 	if slot=="loot":
@@ -3257,8 +3341,19 @@ func slot_source(value: String) -> int:
 func held_item() -> Dictionary:
 	if not drag.active:
 		return {}
-	var entry := drag_source_item(str(drag.slot),int(drag.source))
 	var units := int(drag.get("carry",0))
+	# The right-button hand records what it lifted instead of re-reading the source: it
+	# takes units off that pile as each click lands, so the source can shrink to nothing
+	# while the hand still holds part of it.
+	var blank: Dictionary=drag.get("blank",{})
+	if units>0 and not blank.is_empty():
+		var carried: Dictionary=blank.duplicate(true)
+		if not carried.has("kind"):
+			carried["kind"]=str(drag.get("kind",""))
+		if Catalog.stacks(str(carried.get("kind",""))):
+			carried["count"]=units
+		return carried
+	var entry := drag_source_item(str(drag.slot),int(drag.source))
 	if units>0 and not entry.is_empty() and Catalog.stacks(str(entry.kind)):
 		var pile: Dictionary=entry.duplicate(true)
 		pile["count"]=mini(units,int(entry.get("count",1)))

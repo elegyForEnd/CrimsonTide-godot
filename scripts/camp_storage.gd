@@ -196,6 +196,13 @@ static func _keep_order(items: Array, per_cell: bool) -> Array:
 ## merges same-kind piles and is all-or-nothing, which is exactly what "put three of
 ## these in" means; the source pile is trimmed only after the vault took them.
 static func vault_units_in(profile, session, p: Dictionary, from: String, index: int, units: int, rot: bool = false) -> bool:
+	# Banking a vault pile back into the vault is not a move, and treating it as one
+	# used to destroy units: `bank_item()` merges the lifted units into that very pile
+	# (it is the first same-kind pile with room) and the trim below then overwrites the
+	# merged count. Refusing is the only honest answer — "back where it came from" is a
+	# no-op, so nothing has to happen.
+	if from==VAULT:
+		return false
 	var list: Array=Catalog.container_items(container_of(profile,p,from))
 	if index<0 or index>=list.size(): return false
 	var kind := str(list[index].kind)
@@ -257,6 +264,85 @@ static func vault_take_units(profile, index: int, units: int) -> Dictionary:
 
 
 
+
+## Lifts `units` (capped at what the pile holds) off a vault pile and hands them back as
+## their own entry, trimming the vault in place. Accepts a non-stackable piece too,
+## which `vault_take_units()` refuses because its only caller splits stacks.
+##
+## Goes through `warehouse_item()` / `warehouse_remove()` so one index space covers the
+## grid *and* the spill shelf: the panel hands back whichever index it drew, and a pile
+## parked in the spill must be liftable exactly like a grid pile.
+static func vault_take_some(profile, index: int, units: int) -> Dictionary:
+	var entry: Dictionary=profile.warehouse_item(index)
+	if entry.is_empty(): return {}
+	if not Catalog.stacks(str(entry.kind)): units=1
+	var have := int(entry.get("count",1))
+	units=mini(units,have)
+	if units<=0: return {}
+	var pile: Dictionary=entry.duplicate(true)
+	pile["count"]=units
+	if units>=have:
+		profile.warehouse_remove(index)
+	else:
+		entry["count"]=have-units
+	return pile
+
+## The vault half of `Session.place_units()`: puts `units` of `kind` into the 15x15
+## warehouse, aimed at `cell`, and asks the aimed cell first. Same order as the carried
+## containers — the aimed cell, then the nearest hole, then any same-kind pile with room
+## — and the same refusal to repack the grid, so the cell the hand aimed at is still
+## where the player left it when the gesture ends.
+##
+## Returns {"placed":units_that_fit,"cell":first_cell_used(-1,-1 when nothing fit)}.
+static func vault_place_units(profile, session, kind: String, units: int, cell: Vector2i, blank: Dictionary, rot: bool = false) -> Dictionary:
+	var result := {"placed":0,"cell":Vector2i(-1,-1)}
+	if profile==null or units<=0: return result
+	var vault: Dictionary=profile.vault()
+	if vault.is_empty(): return result
+	# Same landing rule as a carried container: `Catalog.place_units_in()`.
+	return Catalog.place_units_in(vault,kind,units,cell,blank,rot)
+
+## One left click of the right-button hand in the camp, where the vault and the carried
+## containers live in two different places behind one panel. Places what fits into `to` and
+## lifts off the source **only** the units that really landed, so a refused click costs
+## nothing. Returns {"placed":n,"cell":Vector2i(-1,-1 when nothing landed)}.
+static func camp_carry_units(profile, session, p: Dictionary, from: String, index: int, to: String, units: int, cell: Vector2i, rot: bool = false) -> Dictionary:
+	var out := {"placed":0,"cell":Vector2i(-1,-1)}
+	var source: Array=items_of(profile,p,from)
+	if index<0 or index>=source.size(): return out
+	if not source[index] is Dictionary: return out
+	var kind := str(source[index].kind)
+	var blank: Dictionary=Catalog.clean_slot_entry(source[index])
+	if blank.is_empty(): return out
+	var wanted := mini(units,int(source[index].get("count",1)))
+	if wanted<=0 or to.is_empty(): return out
+	var placed := 0
+	if to==VAULT:
+		placed=int(vault_place_units(profile,session,kind,wanted,cell,blank,rot).placed)
+	else:
+		placed=int(session.place_units(p,to,kind,wanted,cell,blank,rot).placed)
+	out["placed"]=placed
+	if placed>0:
+		if from==VAULT: vault_take_some(profile,index,placed)
+		else: session.take_some(p,from,index,placed)
+	return out
+
+## The right button coming up in the camp: seat as much of the hand as the aimed container
+## will take, and leave the rest where it is. The source is only trimmed by the units that
+## already landed, so an unseated unit never left its pile — "put it back" is free and
+## identical to doing nothing, and the camp floor is only ever reached by an explicit
+## discard. Returns {"moved":n} where n counts the units that really changed container.
+static func camp_carry_finish(profile, session, p: Dictionary, from: String, index: int, to: String, units: int, cell: Vector2i, rot: bool = false) -> Dictionary:
+	var out := {"moved":0}
+	var source: Array=items_of(profile,p,from)
+	if index<0 or index>=source.size(): return out
+	if not source[index] is Dictionary: return out
+	var blank: Dictionary=Catalog.clean_slot_entry(source[index])
+	if blank.is_empty(): return out
+	var wanted := mini(units,int(source[index].get("count",1)))
+	if wanted<=0 or to.is_empty() or to==from: return out
+	out["moved"]=int(camp_carry_units(profile,session,p,from,index,to,wanted,cell,rot).placed)
+	return out
 
 ## Bag or pocket into the vault. All or nothing: `bank_item()` refuses a full grid
 ## rather than half-seating a stack, and it is also the one place the lifetime loot

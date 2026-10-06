@@ -152,6 +152,16 @@ func sanitize_storage() -> void:
 	if result.is_empty():
 		result.append(Catalog.clean_container({"key":data.bag_key,"items":[]},Catalog.tier(data.bag_key).grid))
 	data.bags=result
+	# A carried pile can predate a ceiling change just as a vault pile can (the shared six
+	# became three for medicine and ammo, five for everything else). Splitting here, with
+	# the vault's spill as the sink, fixes the save file once instead of letting every raid
+	# re-decide what to do with an overfull pile — and it never trims a unit away.
+	var carried_over: Array=[]
+	Catalog.split_over_limit(data.pocket,carried_over)
+	for bag in data.bags:
+		Catalog.split_over_limit(bag,carried_over)
+	for extra in carried_over:
+		spill_item(extra,int(extra.get("count",1)))
 
 # Contracts §4: `ashes` is the meta currency and `growth` maps a tree node id to
 # its level. Neither may ever reach the tree code as a hand-edited value: a
@@ -330,7 +340,7 @@ func warehouse_value() -> int:
 func warehouse_units_of(item: Dictionary) -> int:
 	var kind := str(item.get("kind",""))
 	if not Catalog.ITEMS.has(kind): return 0
-	return clampi(int(item.get("count",1)),1,Catalog.max_stack(kind)) if Catalog.stacks(kind) else 1
+	return Catalog.units_of_item(item) if Catalog.stacks(kind) else 1
 
 # Adds the value of one newly banked item to the lifetime tally, once per instance.
 # The `valued` stamp rides on the item through every container and the save file, so
@@ -369,7 +379,13 @@ func warehouse_deposit(item: Dictionary) -> int:
 	if blank.is_empty(): return 0
 	blank["valued"]=bool(item.get("valued",false))
 	if Catalog.stacks(kind):
-		var units := clampi(int(item.get("count",1)),1,Catalog.max_stack(kind))
+		# The count is deliberately *not* clamped to the ceiling here. Clamping it
+		# used to swallow the surplus while still returning 0, so an over-limit pile
+		# silently lost units — and `bank_item()` skipped its rollback because it reads
+		# that 0 as "everything went in". A pile taller than today's ceiling spills
+		# into a second pile of the same kind instead: `place_vault_unit()` keeps
+		# growing while there is room and then starts a fresh one.
+		var units := maxi(int(item.get("count",1)),1)
 		while units>0:
 			if not place_vault_unit(kind,blank): break
 			units-=1
@@ -436,6 +452,12 @@ func sanitize_warehouse() -> void:
 				var rest: Dictionary=item.duplicate(true)
 				rest["count"]=left
 				spill.append(rest)
+	# A ceiling can be lowered between releases (it already has been: one shared 6
+	# became 3 for medicine/ammo and 5 for everything else). Anything now sitting
+	# above its ceiling is split into more piles of the same kind; only what the grid
+	# genuinely cannot hold joins the spill. A pile is never silently trimmed.
+	var over: Array = []
+	Catalog.split_over_limit(data["warehouse"],over)
 	var raw_spill = data.get("warehouse_spill",[])
 	var clean_spill: Array = []
 	if raw_spill is Array:
@@ -443,6 +465,7 @@ func sanitize_warehouse() -> void:
 			var item := Catalog.clean_slot_entry(entry)
 			if not item.is_empty(): clean_spill.append(item)
 	for item in spill: clean_spill.append(item)
+	for extra in over: clean_spill.append(extra)
 	data["warehouse_spill"]=clean_spill
 	if not data.get("trade_history",[]) is Array: data["trade_history"]=[]
 
@@ -562,9 +585,9 @@ func product_count(kind: String) -> int:
 	for container in [data.bags[0], data.pocket]:
 		for item in Catalog.container_items(container):
 			if str(item.get("kind",""))==kind:
-				total+=clampi(int(item.get("count",1)),1,Catalog.max_stack(kind))
+				total+=Catalog.units_of_item(item)
 	for item in warehouse_items():
-		if str(item.get("kind",""))==kind: total+=clampi(int(item.get("count",1)),1,Catalog.max_stack(kind))
+		if str(item.get("kind",""))==kind: total+=Catalog.units_of_item(item)
 	return total
 
 # Spend `units` of a product, one instance at a time (a stack of six counts as
@@ -578,7 +601,7 @@ func spend_product(kind: String, units: int) -> bool:
 		for i in range(list.size()-1,-1,-1):
 			if left<=0: break
 			if str(list[i].get("kind",""))!=kind: continue
-			var held := clampi(int(list[i].get("count",1)),1,Catalog.max_stack(kind))
+			var held := Catalog.units_of_item(list[i])
 			if held<=left:
 				left-=held
 				list.remove_at(i)
@@ -589,7 +612,7 @@ func spend_product(kind: String, units: int) -> bool:
 	while left>0 and i>=0:
 		var entry := warehouse_item(i)
 		if str(entry.get("kind",""))==kind:
-			var held := clampi(int(entry.get("count",1)),1,Catalog.max_stack(kind))
+			var held := Catalog.units_of_item(entry)
 			if held<=left:
 				left-=held
 				warehouse_remove(i)
@@ -635,7 +658,7 @@ func sell_product(kind: String, units: int) -> Dictionary:
 		for j in range(list.size()-1,-1,-1):
 			if left<=0: break
 			if str(list[j].get("kind",""))!=kind or bool(list[j].get("provision",false)): continue
-			var held := clampi(int(list[j].get("count",1)),1,Catalog.max_stack(kind))
+			var held := Catalog.units_of_item(list[j])
 			if held<=left:
 				left-=held
 				sold+=held

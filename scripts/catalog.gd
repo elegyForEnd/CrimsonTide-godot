@@ -435,7 +435,8 @@ static func item_value(item: Dictionary) -> int:
 
 static func market_value(item: Dictionary) -> int:
 	if item.get("provision",false): return 0
-	var quantity := clampi(int(item.get("count",1)),1,max_stack(str(item.get("kind",""))))
+	# Priced by what the pile really holds, not by its ceiling: see `units_of_item()`.
+	var quantity := units_of_item(item)
 	return item_value(item)*quantity
 
 static func market_total(items: Array) -> int:
@@ -636,6 +637,10 @@ static func clean_slot_entry(entry) -> Dictionary:
 # The kind-specific fields a saved item carries, clamped to the live tables.
 static func clamp_entry(item: Dictionary) -> Dictionary:
 	var kind := str(item.get("kind",""))
+	# Bound a pile's stored count here, at the one gate every saved entry passes through.
+	# Only present keys are touched, so equipment entries gain nothing.
+	if item.has("count"):
+		item["count"]=clampi(int(item["count"]),1,STACK_ENTRY_CAP)
 	if kind=="weapon":
 		item["weapon"]=clampi(int(item.get("weapon",0)),0,WEAPONS.size()-1)
 		item["tier"]=tier_of(int(item.get("tier",0)))
@@ -719,13 +724,39 @@ static func prefers_pocket(kind: String) -> bool:
 static func chest_grid(class_index: int) -> Vector2i:
 	return Vector2i(5,5) if class_index>=2 else Vector2i(4,4)
 
-const STACK_KINDS := ["crystal","scrap","medicine","ammo","charm","wheat","carrot","herb","silver","moon","gold","bait","wheat_seed","carrot_seed","herb_seed"]
-
-static func stacks(kind: String) -> bool:
-	return kind in STACK_KINDS
+# How many units of one kind fit in a single pile. This table is the single source
+# of truth: a kind that is absent is a plain object whose ceiling is 1, which is
+# exactly what "not stackable" means. `stacks()` is derived from it, so the ceiling
+# and the question "does this kind stack" can never drift apart.
+#
+# Field medicine and ammo boxes are the deliberately tightest piles: they are the
+# things a raid is supposed to run out of, so the player has to come back for them.
+const STACK_LIMITS := {
+	"medicine":3, "ammo":3,
+	"crystal":5, "scrap":5, "charm":5, "bait":5,
+	"wheat":5, "carrot":5, "herb":5, "silver":5, "moon":5, "gold":5,
+	"wheat_seed":5, "carrot_seed":5, "herb_seed":5,
+}
 
 static func max_stack(kind: String) -> int:
-	return 6 if stacks(kind) else 1
+	return int(STACK_LIMITS.get(kind,1))
+
+# A hard bound on any single pile's count, applied when an entry is cleaned. It exists so
+# a hand-edited save cannot ask the splitter to seat a million units at once. The ceiling
+# table above is what governs how piles are *built*; this cap is many times every ceiling,
+# so it only ever bites a count that was never a real pile.
+const STACK_ENTRY_CAP := 99
+
+# The units a pile really holds. The ceiling never applies to reading: clamping the read
+# would under-count a pile that predates a ceiling change, and the units it hid could never
+# be sold or cooked again. `clean_slot_entry()` is what keeps a stored count sane.
+static func units_of_item(item: Dictionary) -> int:
+	return maxi(1,int(item.get("count",1)))
+
+# A stackable kind shows a count badge; a ceiling of 1 never does. Derived from
+# `STACK_LIMITS`, so adding a row there makes a kind stackable everywhere at once.
+static func stacks(kind: String) -> bool:
+	return max_stack(kind)>1
 
 # Places one unit of loot in the first free cell of a row-major layout. Stackable
 # kinds grow their counter in place, which keeps a searched chest readable.
@@ -737,6 +768,205 @@ static func place_loot(container: Dictionary, kind: String) -> bool:
 				item["count"]=int(item.get("count",1))+1
 				return true
 	return place_item(container,{"kind":kind,"rot":false,"count":1})
+
+# --- aiming one unit at one cell ---------------------------------------------
+# The right-button hand sets a single unit down at a time, on the cell the player
+# aimed at. That is a different question from the one `resolve_drop()` answers:
+# a whole-drag landing is allowed to look for a nearby hole so the drag always
+# ends somewhere, while a single aimed unit has to say "here, or not at all" and
+# let the caller decide whether to fall back.
+
+# Whether `item`'s footprint already covers `cell`.
+static func covers(item: Dictionary, cell: Vector2i) -> bool:
+	var s := item_size(item)
+	return cell.x>=int(item.x) and cell.x<int(item.x)+s.x and cell.y>=int(item.y) and cell.y<int(item.y)+s.y
+
+# Index of the pile sitting on `cell` that would take one more unit of `kind`, or -1.
+static func stack_at(items: Array, kind: String, cell: Vector2i) -> int:
+	for i in items.size():
+		var item = items[i]
+		if not item is Dictionary: continue
+		if str(item.get("kind",""))!=kind: continue
+		if int(item.get("count",1))>=max_stack(kind): continue
+		if not covers(item,cell): continue
+		return i
+	return -1
+
+# Puts exactly one unit of `kind` **at `cell`** and nowhere else: it grows the pile
+# already standing on that cell when that pile is the same kind with room, and
+# otherwise starts a new one-unit pile whose footprint still contains that cell.
+# `blank` carries the fields that are not about quantity (provision, valued, a
+# backpack's key), because a fresh pile has to keep them.
+#
+# Returns the cell the unit landed on, or (-1,-1) when that cell cannot take it.
+static func add_unit_at(container: Dictionary, kind: String, cell: Vector2i, blank: Dictionary, rot: bool = false) -> Vector2i:
+	if not ITEMS.has(kind):
+		return Vector2i(-1,-1)
+	var items: Array=container_items(container)
+	if stacks(kind):
+		var pile := stack_at(items,kind,cell)
+		if pile>=0:
+			items[pile]["count"]=int(items[pile].get("count",1))+1
+			return cell
+	var one: Dictionary=blank.duplicate(true)
+	one["kind"]=kind
+	one["count"]=1
+	one["rot"]=rot
+	var dims := item_size(one)
+	var grid := container_grid(container)
+	# The aimed cell has to be *inside* the new footprint, so a 2x2 piece aimed at
+	# its bottom-right corner is still allowed to land: walk the corners around the
+	# cell rather than insisting the cell is the top-left one.
+	for oy in range(-(dims.y-1),1):
+		for ox in range(-(dims.x-1),1):
+			var at := Vector2i(cell.x+ox,cell.y+oy)
+			if not can_place(items,one,at,-1,grid): continue
+			one["x"]=at.x
+			one["y"]=at.y
+			items.append(one)
+			return at
+	return Vector2i(-1,-1)
+
+# Where an entry actually lands when placed at a cell: the cell itself when it fits,
+# otherwise the nearest free cell, and (-1,-1) only when nothing is free. This is the
+# pure core of `Session.resolve_drop()`, shared with the per-unit placement below so a
+# whole drag and a single aimed unit agree on what "nearby" means.
+static func nearest_fit(items: Array, grid: Vector2i, entry: Dictionary, at: Vector2i, skip: int = -1) -> Vector2i:
+	if can_place(items,entry,at,skip,grid):
+		return at
+	var origin := at
+	if at.x>=grid.x:
+		origin=Vector2i(grid.x-1,at.y)
+	if origin.y>=grid.y:
+		origin=Vector2i(origin.x,grid.y-1)
+	origin=Vector2i(maxi(0,origin.x),maxi(0,origin.y))
+	var best := Vector2i(-1,-1)
+	var best_distance := 1.0e12
+	for y in grid.y:
+		for x in grid.x:
+			var cell := Vector2i(x,y)
+			if not can_place(items,entry,cell,skip,grid):
+				continue
+			var distance := Vector2(cell-origin).length()
+			if distance<best_distance:
+				best_distance=distance
+				best=cell
+	return best
+
+# Puts `units` of `kind` into one container, aimed at `cell`.
+#
+# The aimed cell is asked first and answered exactly: a same-kind pile with room
+# standing on that cell grows, an empty cell starts a new pile there. Only when the aim
+# cannot take the unit does the search widen — same-kind piles with room first, then the nearest free cell — which is what makes one left-click of the right-button hand
+# land somewhere sensible instead of doing nothing.
+#
+# Deliberately **no** `compact_arrivals()`: repacking the grid straight after an aimed
+# unit would move the very cell the player just aimed at. That is the promise behind the
+# hand's "locked" cell — what it placed stays put until the gesture ends.
+#
+# Returns {"placed":units_that_fit,"cell":first_cell_used(-1,-1 when nothing fit)}.
+static func place_units_in(container: Dictionary, kind: String, units: int, cell: Vector2i, blank: Dictionary, rot: bool = false) -> Dictionary:
+	var result := {"placed":0,"cell":Vector2i(-1,-1)}
+	if container.is_empty() or units<=0 or not ITEMS.has(kind):
+		return result
+	var items: Array=container_items(container)
+	var grid: Vector2i=container_grid(container)
+	var one: Dictionary=blank.duplicate(true)
+	one["kind"]=kind
+	one["count"]=1
+	one["rot"]=rot
+	var left := units
+	# 1) The cell the player aimed at, answered strictly.
+	var aimed := add_unit_at(container,kind,cell,blank,rot)
+	if aimed.x>=0:
+		result["cell"]=aimed
+		result["placed"]=1
+		left-=1
+	# 2) Any same-kind pile that still has room, nearest to the aim first: a stackable
+	# unit fills a pile up before it starts another one, which is what "top it up" means.
+	while left>0:
+		var best := -1
+		var best_distance := 1.0e12
+		for i in items.size():
+			if not items[i] is Dictionary: continue
+			if str(items[i].get("kind",""))!=kind: continue
+			if int(items[i].get("count",1))>=max_stack(kind): continue
+			var distance := Vector2(Vector2i(int(items[i].x),int(items[i].y))-cell).length()
+			if distance<best_distance:
+				best_distance=distance
+				best=i
+		if best<0: break
+		if int(result.placed)==0: result["cell"]=Vector2i(int(items[best].x),int(items[best].y))
+		items[best]["count"]=int(items[best].get("count",1))+1
+		result["placed"]=int(result.placed)+1
+		left-=1
+	# 3) The nearest free cell, for whatever is left: the only step that grows the layout,
+	# so it comes last.
+	while left>0:
+		var at := nearest_fit(items,grid,one,cell)
+		if at.x<0: break
+		var landed := add_unit_at(container,kind,at,blank,rot)
+		if landed.x<0: break
+		if int(result.placed)==0: result["cell"]=landed
+		result["placed"]=int(result.placed)+1
+		left-=1
+	if int(result.placed)>0:
+		container["next"]=maxi(int(container.get("next",1)),1)+1
+	return result
+
+# Splits every pile that sits above its ceiling into extra piles of the same kind,
+# so lowering a ceiling can never destroy what a save already holds.
+#
+# Loss-proof by construction: the pile is trimmed to its ceiling, the units that fit are
+# rehoused inside the grid, and every unit that does not fit is appended to `into_spill`
+# (as a clean one-kind entry) so the caller can park it somewhere real. Nothing is ever
+# destroyed, and nothing is ever counted twice. Splitting respects
+# provenance: a camp-issued pile only ever grows into camp-issued piles.
+#
+# Returns how many units went to `into_spill`.
+static func split_over_limit(container: Dictionary, into_spill: Array = []) -> int:
+	var items: Array=container_items(container)
+	var over: Array=[]
+	for item in items:
+		if not item is Dictionary: continue
+		var kind := str(item.get("kind",""))
+		if kind.is_empty(): continue
+		var have := int(item.get("count",1))
+		var limit := max_stack(kind)
+		if have>limit: over.append(item)
+	var spilled := 0
+	for item in over:
+		var kind := str(item.get("kind",""))
+		var blank: Dictionary=item.duplicate(true)
+		var extra := int(item.get("count",1))-max_stack(kind)
+		var placed := 0
+		while placed<extra:
+			var grown := false
+			for existing in items:
+				if existing==item or not existing is Dictionary: continue
+				if str(existing.get("kind",""))!=kind: continue
+				if bool(existing.get("provision",false))!=bool(blank.get("provision",false)): continue
+				if int(existing.get("count",1))>=max_stack(kind): continue
+				existing["count"]=int(existing.get("count",1))+1
+				grown=true
+				break
+			if not grown:
+				var one: Dictionary=blank.duplicate(true)
+				one.erase("valued")
+				one["count"]=1
+				if not place_item(container,one):
+					break
+			placed+=1
+		# Trimmed to its ceiling either way: what could not be rehoused inside the grid is
+		# handed to the caller in `into_spill`, which is a real place for it. The units are
+		# moved, never duplicated and never destroyed.
+		item["count"]=max_stack(kind)
+		if placed<extra:
+			var rest: Dictionary=blank.duplicate(true)
+			rest["count"]=extra-placed
+			into_spill.append(rest)
+			spilled+=extra-placed
+	return spilled
 
 # Places an already-built item entry, keeping every field it carries: without
 # this a re-tidy would quietly strip a weapon's quality, its weapon index or a

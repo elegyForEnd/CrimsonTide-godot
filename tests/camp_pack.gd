@@ -152,42 +152,55 @@ func run() -> void:
 	reset_kit(app)
 	app.show_camp_pack(false)
 
-	# The right-click hand: lift a unit, lift another, put them down in the vault.
+	# The right-button hand: holding it lifts the **whole** pile, and each left click sets
+	# exactly one unit down on the cell under the cursor. The source is trimmed only as
+	# units really land, which is what keeps a refusal free and the pile unlosable.
 	reset_kit(app)
 	p["backpack"]=Catalog.make_bag("green")
 	p.backpack["gw"]=5
 	p.backpack["gh"]=5
-	Catalog.add_item(p.backpack,"ammo")
+	Catalog.add_item(p.backpack,"crystal")
 	p.backpack.items[0]["count"]=5
 	app.show_camp_pack(false)
-	app.right_press(cell_point(app,"backpack",Vector2i(0,0)))
+	app.start_whole_carry(cell_point(app,"backpack",Vector2i(0,0)))
 	await process_frame
-	check(int(app.drag.get("carry",0))==1,"a right click lifts one unit out of a pile")
-	check(int(app.held_item().get("count",1))==1,"and the hand holds exactly one")
-	app.right_press(cell_point(app,"backpack",Vector2i(0,0)))
-	await process_frame
-	check(int(app.drag.get("carry",0))==2,"a second right click lifts another")
+	check(int(app.drag.get("carry",0))==5,"holding the right button lifts the whole pile")
+	check(int(app.held_item().get("count",1))==5,"and the hand shows all five")
 	check(int(p.backpack.items[0].get("count",1))==5,"while the pile in the bag is still whole")
-	app.carry_release(cell_point(app,"warehouse",Vector2i(3,3)))
+	app.carry_place_one(cell_point(app,"warehouse",Vector2i(3,3)))
 	await process_frame
-	check(int(app.drag.get("carry",0))==0,"putting them down empties the hand")
-	check(int(p.backpack.items[0].get("count",1))==3,"three units are left in the bag")
-	check(app.profile.warehouse_count()==1 and int(app.profile.vault_items()[0].get("count",1))==2,"and the two in hand are in the vault")
-	# A cancel puts them back: nothing was ever taken off the source.
-	app.right_press(cell_point(app,"backpack",Vector2i(0,0)))
+	check(int(app.drag.get("carry",0))==4,"one left click sets exactly one unit down")
+	check(int(p.backpack.items[0].get("count",1))==4,"and takes exactly one off the source pile")
+	app.carry_place_one(cell_point(app,"warehouse",Vector2i(3,3)))
 	await process_frame
-	app.right_press(cell_point(app,"backpack",Vector2i(0,0)))
+	check(app.profile.warehouse_count()==1 and int(app.profile.vault_items()[0].get("count",1))==2,"a second click on the same cell stacks next to the first")
+	app.carry_finish(cell_point(app,"warehouse",Vector2i(3,3)))
 	await process_frame
-	check(int(app.drag.get("carry",0))==2,"two units are in hand again")
+	check(int(app.drag.get("carry",0))==0,"letting the right button up ends the gesture")
+	check(app.profile.warehouse_count()==1 and int(app.profile.vault_items()[0].get("count",1))==5,"and the rest of the pile lands where the cursor was")
+	check(p.backpack.items.is_empty(),"so the bag pile is gone rather than duplicated")
+	# A cancel gives back whatever is still in the hand. Units that already landed stay
+	# landed — they were taken as each click was seated, so there is nothing to undo and
+	# nothing to lose.
+	Catalog.add_item(p.backpack,"crystal")
+	p.backpack.items[0]["count"]=4
+	app.show_camp_pack(false)
+	app.start_whole_carry(cell_point(app,"backpack",Vector2i(0,0)))
+	await process_frame
+	check(int(app.drag.get("carry",0))==4,"a pile can be lifted again")
+	app.carry_place_one(cell_point(app,"warehouse",Vector2i(8,8)))
+	await process_frame
+	check(int(p.backpack.items[0].get("count",1))==3,"one unit really left the pile")
 	app.cancel_carry()
 	await process_frame
-	check(int(p.backpack.items[0].get("count",1))==3 and app.profile.warehouse_count()==1,"cancelling leaves every pile exactly as it was")
-	# A right click on a single item lifts nothing: the gesture is for piles.
+	check(int(p.backpack.items[0].get("count",1))==3,"cancelling leaves the units that already landed alone")
+	check(app.profile.warehouse_count()==2,"and the vault keeps the pile that was set down")
+	# A right click on empty space lifts nothing.
 	reset_kit(app)
 	app.show_camp_pack(false)
 	p["equipped"]["weapon"]={"kind":"weapon","weapon":3,"tier":4}
 	app.show_camp_pack(false)
-	app.right_press(cell_point(app,"warehouse",Vector2i(0,0)))
+	app.start_whole_carry(cell_point(app,"warehouse",Vector2i(0,0)))
 	await process_frame
 	check(int(app.drag.get("carry",0))==0,"a right click on empty space lifts nothing")
 	reset_kit(app)

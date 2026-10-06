@@ -1782,6 +1782,14 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 			# Part of a pile into another carried container: the right-click hand's
 			# landing. The camp's vault has its own pair in `camp_storage.gd`.
 			move_units(p,str(payload.get("from","backpack")),str(payload.get("to","backpack")),int(payload.get("index",-1)),int(payload.get("units",1)),Vector2i(int(payload.get("x",0)),int(payload.get("y",0))),bool(payload.get("rot",false)))
+		"carry_unit":
+			# One left click of the right-button hand: a single aimed unit into another
+			# carried container, the source trimmed only by what actually landed.
+			carry_unit(p,str(payload.get("from","backpack")),int(payload.get("index",-1)),str(payload.get("to","backpack")),int(payload.get("units",1)),Vector2i(int(payload.get("x",0)),int(payload.get("y",0))),bool(payload.get("rot",false)))
+		"carry_finish":
+			# The right button coming up: whatever is left in the hand, into the aimed
+			# container first, then back where it came from, then onto the ground.
+			carry_finish_units(p,str(payload.get("from","backpack")),int(payload.get("index",-1)),str(payload.get("to","")),int(payload.get("units",1)),Vector2i(int(payload.get("x",0)),int(payload.get("y",0))),bool(payload.get("rot",false)))
 		"carry_ground":
 			# Part of a pile dropped on the ground.
 			var handful := take_units(p,str(payload.get("from","backpack")),int(payload.get("index",-1)),int(payload.get("units",1)))
@@ -1984,31 +1992,101 @@ func take_units(p: Dictionary, slot: String, index: int, units: int) -> Dictiona
 		list[index]["count"]=have-units
 	return pile
 
+## Lifts `units` (capped at what the pile holds) off a carried pile and hands them back
+## as their own entry, trimming the source in place. Unlike `take_units()` this also
+## accepts a non-stackable piece — a single item is just a pile whose ceiling is 1 —
+## because the right-button hand carries whole pieces as well as stacks.
+func take_some(p: Dictionary, slot: String, index: int, units: int) -> Dictionary:
+	if slot!="backpack" and slot!="pocket":
+		return {}
+	var list: Array=Catalog.container_items(p.get(slot,{}))
+	if index<0 or index>=list.size():
+		return {}
+	if not list[index] is Dictionary:
+		return {}
+	if not Catalog.stacks(str(list[index].kind)):
+		units=1
+	var have := int(list[index].get("count",1))
+	units=mini(units,have)
+	if units<=0:
+		return {}
+	var pile: Dictionary=list[index].duplicate(true)
+	pile["count"]=units
+	if units>=have:
+		list.remove_at(index)
+	else:
+		list[index]["count"]=have-units
+	return pile
+
+## Puts `units` of `kind` into a carried container, aimed at `cell`.
+##
+## The aimed cell is asked first and answered exactly: a same-kind pile with room
+## standing on that cell grows, an empty cell starts a new pile there. Only when the
+## aim cannot take the unit does the search widen — nearest free cell first, then any
+## same-kind pile with room — which is what makes one left-click of the right-button
+## hand land somewhere sensible instead of doing nothing.
+##
+## Deliberately **no** `compact_arrivals()`: repacking the grid straight after an aimed
+## unit would move the very cell the player just aimed at. That is the whole promise of
+## the hand's "locked" cell — what it placed stays put until the gesture ends.
+##
+## Returns {"placed":units_that_fit,"cell":first_cell_used(-1,-1 when nothing fit)}.
+func place_units(p: Dictionary, slot: String, kind: String, units: int, cell: Vector2i, blank: Dictionary, rot: bool) -> Dictionary:
+	var result := {"placed":0,"cell":Vector2i(-1,-1)}
+	if (slot!="backpack" and slot!="pocket") or units<=0:
+		return result
+	var container: Dictionary=p.get(slot,{})
+	if container.is_empty() or not Catalog.can_hold(container,kind):
+		return result
+	# The landing rule itself is `Catalog.place_units_in()`: a carried container and
+	# the camp's vault have to drop a single aimed unit in exactly the same way.
+	return Catalog.place_units_in(container,kind,units,cell,blank,rot)
+
+## One left click of the right-button hand in a raid: `units` of a pile into `to`, aimed at
+## `spot`. The source is trimmed only by the units that really landed, so a refused click is
+## a free no-op instead of a lost unit. Returns how many units moved.
+func carry_unit(p: Dictionary, from: String, index: int, to: String, units: int, spot: Vector2i, rot: bool) -> int:
+	var list: Array=Catalog.container_items(p.get(from,{}))
+	if index<0 or index>=list.size(): return 0
+	if not list[index] is Dictionary: return 0
+	var kind := str(list[index].kind)
+	var blank: Dictionary=Catalog.clean_slot_entry(list[index])
+	if blank.is_empty(): return 0
+	var wanted := mini(units,int(list[index].get("count",1)))
+	if wanted<=0: return 0
+	var placed := int(place_units(p,to,kind,wanted,spot,blank,rot).placed)
+	if placed>0:
+		take_some(p,from,index,placed)
+	return placed
+
+## The right button coming up in a raid: seat as much of the hand as the aimed container
+## will take, and leave the rest exactly where it is. Because the source is only trimmed by
+## the units that already landed, an unseated unit never left its pile — so "put it back" is
+## free, identical to doing nothing, and no unit can be destroyed here. Returns how many
+## units really moved to a different container (0 = the pile is back where it started).
+func carry_finish_units(p: Dictionary, from: String, index: int, to: String, units: int, spot: Vector2i, rot: bool) -> int:
+	var list: Array=Catalog.container_items(p.get(from,{}))
+	if index<0 or index>=list.size(): return 0
+	if not list[index] is Dictionary: return 0
+	var kind := str(list[index].kind)
+	var blank: Dictionary=Catalog.clean_slot_entry(list[index])
+	if blank.is_empty(): return 0
+	var wanted := mini(units,int(list[index].get("count",1)))
+	if wanted<=0: return 0
+	if to.is_empty() or to==from:
+		return 0
+	var placed := int(place_units(p,to,kind,wanted,spot,blank,rot).placed)
+	if placed>0:
+		take_some(p,from,index,placed)
+	return placed
+
 # Where an item actually lands when dropped at a cell. The cursor is only a
 # pointer: the item goes to the cell under it when that fits, otherwise to the
 # nearest free cell, and only gives up when nothing is free. The drag preview
-# calls this too, so the shown slot is always the slot that gets used.
+# calls this too, so the shown slot is always the slot that gets used. The search
+# itself lives in `Catalog.nearest_fit()` so the single-unit placement shares it.
 func resolve_drop(items: Array, grid: Vector2i, entry: Dictionary, at: Vector2i, skip: int = -1) -> Vector2i:
-	if Catalog.can_place(items,entry,at,skip,grid):
-		return at
-	var origin := at
-	if at.x>=grid.x:
-		origin=Vector2i(grid.x-1,at.y)
-	if origin.y>=grid.y:
-		origin=Vector2i(origin.x,grid.y-1)
-	origin=Vector2i(maxi(0,origin.x),maxi(0,origin.y))
-	var best := Vector2i(-1,-1)
-	var best_distance := 1.0e12
-	for y in grid.y:
-		for x in grid.x:
-			var cell := Vector2i(x,y)
-			if not Catalog.can_place(items,entry,cell,skip,grid):
-				continue
-			var distance := Vector2(cell-origin).length()
-			if distance<best_distance:
-				best_distance=distance
-				best=cell
-	return best
+	return Catalog.nearest_fit(items,grid,entry,at,skip)
 
 # --- using and equipping what is in the backpack ----------------------------
 # Rotating keeps the item where it is when the turned footprint still fits, and

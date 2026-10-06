@@ -128,7 +128,11 @@ func legacy_vault() -> void:
 	loaded.path=profile.path
 	loaded.load_profile()
 	check(loaded.data.warehouse is Dictionary and int(loaded.data.warehouse.gw)==15,"A pre-grid save upgrades to a 15x15 container")
-	check(loaded.warehouse_count()==3,"Every valid entry survives the upgrade")
+	var scrap_units := 0
+	for item in loaded.warehouse_items():
+		if str(item.get("kind",""))=="scrap": scrap_units+=int(item.get("count",1))
+	check(loaded.warehouse_count()==4,"Every valid entry survives the upgrade, with the six-scrap pile split to the ceiling")
+	check(scrap_units==6,"and the split moved the units instead of destroying them")
 	check(loaded.data.loot_value==0,"Old vault contents are not counted as new loot")
 	for item in loaded.warehouse_items():
 		var size := Catalog.item_size(item)
@@ -138,7 +142,7 @@ func legacy_vault() -> void:
 	var again := Profile.new()
 	again.path=profile.path
 	again.load_profile()
-	check(again.warehouse_count()==3,"A migrated save survives a second round trip")
+	check(again.warehouse_count()==4,"A migrated save survives a second round trip")
 	again.apply_data({"version":1})
 	check(again.warehouse_count()==0,"Older account saves cannot inherit another account's vault")
 

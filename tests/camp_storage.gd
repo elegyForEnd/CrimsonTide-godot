@@ -108,9 +108,9 @@ func equip_and_unequip() -> void:
 # --- the item bar -------------------------------------------------------------
 func item_bar() -> void:
 	reset_storage()
-	Catalog.add_item(p.backpack,"ammo")
+	Catalog.add_item(p.backpack,"crystal")
 	check(onto("backpack",0,"slot1"),"A carried item can be parked in the quick bar")
-	check(session.item_slot(p,1).kind=="ammo","and it is in the socket that was aimed at")
+	check(session.item_slot(p,1).kind=="crystal","and it is in the socket that was aimed at")
 	check(int(profile.data.loadout.slots[1].get("count",1))>=1 and not profile.data.loadout.slots[1].is_empty(),"and the save file holds the bar")
 	check(drop("slot:1",0,"backpack",Vector2i(0,0)),"and taken back out")
 	check(session.item_slot(p,1).is_empty() and p.backpack.items.size()==1,"with the socket left empty")
@@ -188,21 +188,21 @@ func pile_units() -> void:
 	p.backpack=Catalog.make_bag("green")
 	p.backpack["gw"]=5
 	p.backpack["gh"]=5
-	Catalog.add_item(p.backpack,"ammo")
-	p.backpack.items[0]["count"]=6
-	check(Catalog.container_count(p.backpack,"ammo")==1,"a pile of six sits in the bag")
+	Catalog.add_item(p.backpack,"crystal")
+	p.backpack.items[0]["count"]=5
+	check(Catalog.container_count(p.backpack,"crystal")==1,"a pile of five sits in the bag")
 	# The whole pile goes to the vault on a plain drag.
 	check(drop("backpack",0,"warehouse",Vector2i(2,2)),"a plain drag takes the whole pile to the vault")
-	check(Catalog.container_count(p.backpack,"ammo")==0,"leaving nothing behind in the bag")
-	check(profile.warehouse_count()==1 and int(profile.vault_items()[0].get("count",1))==6,"and the vault holds all six in one pile")
+	check(Catalog.container_count(p.backpack,"crystal")==0,"leaving nothing behind in the bag")
+	check(profile.warehouse_count()==1 and int(profile.vault_items()[0].get("count",1))==5,"and the vault holds all five in one pile")
 	# Part of a pile back out: three units, aimed at a cell.
 	check(CampStorage.vault_units_out(profile,session,p,0,3,"backpack",Vector2i(0,0)),"three units come back out of the vault")
-	check(int(profile.vault_items()[0].get("count",1))==3,"the vault pile is trimmed in place, not moved")
-	check(Catalog.container_count(p.backpack,"ammo")==1 and int(p.backpack.items[0].get("count",1))==3,"and three units are in the bag")
+	check(int(profile.vault_items()[0].get("count",1))==2,"the vault pile is trimmed in place, not moved")
+	check(Catalog.container_count(p.backpack,"crystal")==1 and int(p.backpack.items[0].get("count",1))==3,"and three units are in the bag")
 	# And part of a pile in: two units.
 	check(CampStorage.vault_units_in(profile,session,p,"backpack",0,2),"two units go back in")
 	check(int(p.backpack.items[0].get("count",1))==1,"leaving one unit in the bag")
-	check(int(profile.vault_items()[0].get("count",1))==5,"and five in the vault's pile")
+	check(int(profile.vault_items()[0].get("count",1))==4,"and four in the vault's pile")
 	# A pile the destination cannot take changes nothing at all.
 	var vault: Dictionary=profile.data.warehouse
 	for y in Catalog.WAREHOUSE_GRID.y:
@@ -213,23 +213,23 @@ func pile_units() -> void:
 	# Taking a handful to the ground hands back its own entry.
 	var handful: Dictionary=CampStorage.vault_take_units(profile,0,2)
 	check(not handful.is_empty() and int(handful.get("count",1))==2,"a handful can be taken out of a vault pile")
-	check(int(profile.vault_items()[0].get("count",1))==3,"trimming the vault pile for it")
+	check(int(profile.vault_items()[0].get("count",1))==2,"trimming the vault pile for it")
 	# Session-side movers for the carried containers.
 	reset_storage()
 	p.backpack=Catalog.make_bag("green")
 	p.backpack["gw"]=5
 	p.backpack["gh"]=5
-	Catalog.add_item(p.backpack,"ammo")
+	Catalog.add_item(p.backpack,"crystal")
 	p.backpack.items[0]["count"]=4
 	check(session.move_units(p,"backpack","pocket",0,2,Vector2i(0,0),false),"the same hand moves part of a pile bag to pocket")
 	check(int(p.backpack.items[0].get("count",1))==2,"splitting the source pile")
-	check(Catalog.container_count(p.pocket,"ammo")==1 and int(p.pocket.items[0].get("count",1))==2,"and seating two units in the pocket")
+	check(Catalog.container_count(p.pocket,"crystal")==1 and int(p.pocket.items[0].get("count",1))==2,"and seating two units in the pocket")
 	check(session.move_units(p,"backpack","pocket",0,9,Vector2i(0,0),false),"asking for more than the pile holds is clamped")
-	check(Catalog.container_count(p.backpack,"ammo")==0,"taking the rest of the pile")
+	check(Catalog.container_count(p.backpack,"crystal")==0,"taking the rest of the pile")
 	var taken: Dictionary=session.take_units(p,"pocket",0,1)
 	var left := 0
 	for item in p.pocket.items:
-		if str(item.kind)=="ammo": left+=int(item.get("count",1))
+		if str(item.kind)=="crystal": left+=int(item.get("count",1))
 	check(int(taken.get("count",1))==1 and left==3,"a handful can be taken off a carried pile")
 
 # --- spare packs --------------------------------------------------------------
