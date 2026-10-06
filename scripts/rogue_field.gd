@@ -109,6 +109,7 @@ func glow(at: Vector2, tone: Color, radius: float) -> void:
 	draw_circle(at,radius*0.3,Color(tone,0.7))
 
 func icon(texture: Texture2D, at: Vector2, dimensions: Vector2) -> void:
+	if texture==null: return
 	draw_texture_rect(texture,Rect2(at-dimensions/2,dimensions),false)
 
 func route_label_style() -> StyleBoxFlat:

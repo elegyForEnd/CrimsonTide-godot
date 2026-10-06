@@ -56,6 +56,19 @@ func report(message: String, rebuild: bool = true) -> void:
 	camp.site.refresh_crops(home.state())
 	camp.home_changed.emit()
 
+## One sale from the shop's "出售" page: hands the request to the storage layer,
+## which deletes the sold instances from the containers that really hold them, then
+## answers with the line the status bar shows. The rebuild `report()` triggers is
+## what re-reads `product_count()` into "持有 ×N", keeping the label honest.
+func sell_report(kind: String, units: int) -> String:
+	var entry: Dictionary = Rules.CROPS.get(kind,Rules.FISH.get(kind,{}))
+	var result: Dictionary = camp.profile.sell_product(kind,units)
+	var sold := int(result.sold)
+	if sold<=0: return "没有可出售的%s。" % entry.name
+	var message := "已售出 %s ×%d，获得 %d ◈。" % [entry.name,sold,int(result.coins)]
+	if int(result.missing)>0: message += " 库存不足，仍有 %d 份未售出。" % int(result.missing)
+	return message
+
 func card(parent: Node, key: String, title: String, hint: String, tall: bool = false) -> VBoxContainer:
 	# The composed backdrop carries the design; items have no repeated outer frames.
 	var content := VBoxContainer.new()
@@ -83,9 +96,14 @@ func build_shop(parent: Node) -> void:
 		for key in Rules.CROPS.keys()+Rules.FISH.keys():
 			var item: String = key
 			var entry: Dictionary = Rules.CROPS.get(key,Rules.FISH.get(key,{}))
-			var content := card(grid,item,entry.name,"出售一份获得 %d 金币。作物和鱼也可留作厨房食材，不占用远征背包。" % entry.sell)
-			text(content,"× %d" % home.state().stock[key],14,MUTED)
-			button(content,"出售  +%d ◈" % entry.sell,func(): report(home.sell(item))).disabled = home.state().stock[key]<=0
+			var carried: int = camp.profile.product_count(item)
+			var content := card(grid,item,entry.name,"售价 %d ◈/份。出售会真的删掉库存实体：先扣仓库格子里的那一格（整堆卖光就腾空格子，只卖部分就当场改数量），再扣口袋与背包。" % entry.sell)
+			text(content,"持有 ×%d" % carried,14,MUTED)
+			var row := HBoxContainer.new()
+			row.add_theme_constant_override("separation",8)
+			content.add_child(row)
+			button(row,"卖 1",func(): report(sell_report(item,1))).disabled = carried<=0
+			button(row,"全部出售",func(): report(sell_report(item,carried))).disabled = carried<=0
 		return
 	for key in Rules.CROPS:
 		var crop: String = key
@@ -121,10 +139,10 @@ func build_kitchen(parent: Node) -> void:
 			var part := VBoxContainer.new()
 			ingredients.add_child(part)
 			item_picture(part,ingredient,40)
-			var amount := text(part,"%d / %d" % [home.state().stock[ingredient],entry.needs[ingredient]],14,MUTED)
+			var amount := text(part,"%d / %d" % [camp.profile.product_count(ingredient),entry.needs[ingredient]],14,MUTED)
 			amount.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			part.tooltip_text = Rules.CROPS.get(ingredient,Rules.FISH.get(ingredient,{})).name
-			if home.state().stock[ingredient]<entry.needs[ingredient]: can_cook = false
+			if camp.profile.product_count(ingredient)<entry.needs[ingredient]: can_cook = false
 		var stock := text(content,"库存 %d" % home.state().meals[key],14,MUTED)
 		stock.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		button(content,"烹饪",func(): report(home.cook(meal))).disabled = not can_cook

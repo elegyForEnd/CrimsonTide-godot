@@ -61,6 +61,14 @@ var rogue_panel: Control
 var rogue_signature := ""
 var rogue_inventory = preload("res://scripts/rogue_inventory.gd").new()
 var extraction_inventory = preload("res://scripts/extraction_inventory.gd").new()
+# The camp bag panel: the raid panel plus the 15x15 vault. It is drawn on the same
+# overlay and served by the same drag controller (`_input`, `release_drag`,
+# `held_item`), which is what lets loot be dragged straight between the two halves.
+var camp_pack = preload("res://scripts/camp_pack.gd").new()
+var camp_pack_open := false
+# Camp edits happen against the live player dictionary and are written to the save
+# file as they are made: the camp has no session authority to settle them later.
+const CampStorage := preload("res://scripts/camp_storage.gd")
 var rogue_pending_cost := -1
 var rogue_cards := 0
 var rogue_weapon := -1
@@ -90,8 +98,14 @@ var rotated := false
 var drag_ghost: Control
 var drag_ring: Control
 var drag_caption: Label
+## The frosted sheet shown while a drag is outside the open panel, and the panel
+## geometry that decides where "outside" is. Panels fill both in while they draw.
+var drag_frost: Control
+var drop_region := Rect2()
+var drop_art := ""
+const FROST_ALPHA := 0.30
 var drag_last_point := Vector2(-1,-1)
-var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false}
+var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false,"carry":0}
 var _loot_index := -1
 # Click bookkeeping: a press that never moves is a select, two of them in quick
 # succession on the same item are an equip shortcut.
@@ -103,6 +117,10 @@ var last_click_ms := 0
 # Drop sockets for the worn kit: "weapon", "gear0..2" and the equipped backpack
 # "bag". A drag released over a matching socket equips the held item.
 var equip_zones: Dictionary = {}
+# The camp panel's spare-bag sockets. They are drag sources only — nothing is worn in
+# the cabinet — so they live apart from `equip_zones`, which `zone_at()` treats as
+# places where a held item may land.
+var cabinet_zones: Dictionary = {}
 # The item bar: three sockets drawn under the worn kit and again along the bottom
 # of the screen once the backpack is shut. The selection is the socket [F] acts
 # on, and the panel strip is remembered separately so the bottom copy can be drawn
@@ -253,6 +271,22 @@ func _ready() -> void:
 	if "--preview-ground" in OS.get_cmdline_user_args():
 		session.solo(config())
 		go_camp()
+	# The camp bag panel with a stocked vault, for screenshots and for poking at the
+	# layout without playing a raid first.
+	if "--preview-camp-pack" in OS.get_cmdline_user_args():
+		session.solo(config())
+		go_camp()
+		var preview_bag: Dictionary=session.players.get(session.my_id(),{})
+		if not preview_bag.is_empty():
+			for i in 12:
+				Catalog.add_item(preview_bag.backpack,["scrap","medicine","relic","charm"][i%4])
+			Catalog.add_item(preview_bag.pocket,"amulet")
+			Catalog.place_item(preview_bag.backpack,Catalog.make_equipment("weapon",2,4))
+			for i in 14:
+				profile.bank_item({"kind":["scrap","relic","wheat","ammo","crystal"][i%5]})
+			profile.bank_item(Catalog.make_equipment("gear",0,3))
+			profile.bank_item(Catalog.make_equipment("weapon",5,5))
+			show_camp_pack(false)
 	if "--preview-game" in OS.get_cmdline_user_args():
 		session.solo(config())
 		session.launch(false,1729)
@@ -684,6 +718,11 @@ func new_page(name_value: String) -> void:
 	clear(overlay)
 	modal=false
 	inventory_open=false
+	# A new page wipes the overlay, so any camp panel it was showing is gone with it;
+	# the flag and the camp's input lock have to follow, or the camp would stay frozen.
+	camp_pack_open=false
+	if camp and not camp.is_queued_for_deletion():
+		camp.input_blocked=false
 	page_name=name_value
 	sound.set_scene(name_value)
 	toast_time=0
@@ -693,6 +732,31 @@ func new_page(name_value: String) -> void:
 	rogue_panel=null
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
+
+## A ground item picked up in the camp goes into the character's carried backpack — the
+## very containers a raid loots into — and the pocket when the bag has no room. A flat
+## refusal (and the piece stays on the floor) when neither can take it.
+func camp_accept_ground_item(entry: Dictionary) -> bool:
+	var p: Dictionary=camp_player()
+	if p.is_empty():
+		return false
+	if session.container_receive(p,"backpack",entry):
+		CampStorage.persist(profile,session,p)
+		say("已收进背包："+Catalog.item_name(entry)+"。")
+		return true
+	if session.container_receive(p,"pocket",entry):
+		CampStorage.persist(profile,session,p)
+		say("背包放不下，已收进次元口袋："+Catalog.item_name(entry)+"。")
+		return true
+	say("背包和次元口袋都放满了，先腾出空间再拾取。")
+	return false
+
+## Drops one item entry on the camp floor. The pack panel calls this when a drag is
+## released outside it; the floor keeps the newest 60 and F picks them back up.
+func camp_drop_on_floor(entry: Dictionary) -> void:
+	if camp==null or camp.activities==null:
+		return
+	camp.activities.drop_entry(entry,Vector2(randf_range(-42,42),randf_range(-30,30)))
 
 ## Builds the camp once, then only ever toggles it.
 func ensure_camp() -> Control:
@@ -710,6 +774,21 @@ func ensure_camp() -> Control:
 		if not session.running and not session.players.is_empty(): session.configure(config())
 		camp.update_static())
 	camp.codex_requested.connect(show_help)
+	camp.pack_requested.connect(toggle_camp_pack)
+	# The camp floor hands a picked-up item to the same containers a raid loots into.
+	if camp.activities:
+		camp.activities.item_receiver=func(entry: Dictionary) -> bool:
+			return camp_accept_ground_item(entry)
+	# ...and it is also where storage that cannot hold a piece puts it.
+	CampStorage.spill_sink=func(item: Dictionary) -> void:
+		camp_drop_on_floor(item)
+	camp.dismiss_requested.connect(func():
+		# Close whatever camp panel owns the screen; the camp itself only leaves on
+		# the "离开" button.
+		if camp_pack_open:
+			close_bag()
+		elif modal:
+			close_modal())
 	camp.exit_requested.connect(func():
 		if page_name=="ground":
 			leave_to_title())
@@ -748,7 +827,9 @@ func go_camp() -> void:
 func on_camp_station(id: String) -> void:
 	match id:
 		"warehouse":
-			show_economy(false)
+			# The vault is no longer a card list in its own window: it is the right
+			# half of the bag panel, which the station button opens focused on it.
+			show_camp_pack(true)
 		"market":
 			show_economy(true)
 		"table":
@@ -815,11 +896,16 @@ func buy_camp_supply() -> void:
 
 func show_economy(market: bool = false) -> void:
 	if session.running: return
-	modal_box("晨钟交易行" if market else "守夜人仓库",Vector2(1320,820))
+	# The vault's own window retired: standing in front of the vault is the bag panel
+	# with its right half focused, which is where dragging, deposit and withdrawal
+	# live. The exchange below is the market and nothing else.
+	if not market:
+		show_camp_pack(true)
+		return
+	modal_box("晨钟交易行",Vector2(1320,820))
 	var screen := preload("res://scripts/economy_screen.gd").new()
 	screen.name="EconomyScreen"
 	screen.host=self
-	screen.market=market
 	overlay.add_child(screen)
 
 func economy_changed() -> void:
@@ -829,6 +915,123 @@ func economy_changed() -> void:
 	economy_syncing=false
 	if camp: camp.update_static()
 
+
+# --- the camp bag panel (TAB) --------------------------------------------------
+# The camp is local: no session authority is running, and `session.perform()` ignores
+# every action while a raid is not under way. So the panel edits the live player
+# dictionary through `camp_storage.gd`, which writes the save file after each accepted
+# change — the same "edit and it is already saved" rule the produce helpers follow.
+func show_camp_pack(focus_vault: bool = false) -> void:
+	if modal or session.running: return
+	if camp_player().is_empty(): return
+	camp_pack_open=true
+	camp_pack.focus_vault=focus_vault
+	inventory_open=true
+	selected=-1
+	selected_slot="backpack"
+	drag.active=false
+	# The camp must stop walking and stop eating keys while the panel owns the screen,
+	# but it is not an overlay `modal`: the panel itself is drawn by `show_inventory()`.
+	if camp: camp.input_blocked=true
+	sound.play("ui-open")
+	show_inventory()
+
+func toggle_camp_pack() -> void:
+	if inventory_open and camp_pack_open:
+		close_bag()
+	else:
+		show_camp_pack(false)
+
+func camp_player() -> Dictionary:
+	return session.players.get(session.my_id(),{})
+
+## Everything a camp edit can change, as one string: the panel is redrawn when it
+## differs from the picture on screen. The vault lives in the save file and the rest
+## in the player dictionary, so both halves are in the signature.
+##
+## `hash()` rather than `str()`: the string form of a 15x15 vault plus the carried
+## containers cost **1.0ms on every frame** of the camp (measured), while hashing the
+## same state costs 0.009ms. That comparison runs every frame, so it has to be cheap.
+func camp_signature(player: Dictionary) -> String:
+	return "%d-%d-%d-%d" % [hash(player.get("backpack",{})),hash(player.get("pocket",{})),hash(player.get("equipped",{})),hash(profile.data.get("warehouse",{}))]
+
+## Runs one camp edit and reports a refusal, which is always the same sentence: the
+## vault grid is full, or the piece has no socket of that kind.
+func camp_apply(ok: bool) -> void:
+	if not ok: say("放不下，或者这里不能放。")
+	show_inventory()
+
+func camp_unequip(type: String, index: int = 0) -> void:
+	if not camp_pack_open: return
+	camp_apply(CampStorage.stow_worn(profile,session,camp_player(),type,index))
+
+func camp_take_slot(index: int) -> void:
+	if not camp_pack_open: return
+	camp_apply(CampStorage.stow_socket(profile,session,camp_player(),"slot%d" % index))
+
+func camp_unwear_bag() -> void:
+	if not camp_pack_open: return
+	camp_apply(CampStorage.unwear_bag(profile,session,camp_player(),true))
+
+func camp_bank_all() -> void:
+	if not camp_pack_open: return
+	var outcome: Dictionary=CampStorage.bank_all(profile,session,camp_player())
+	if int(outcome.get("spilled",0))>0:
+		say("仓库网格已满，%d 件暂存溢出区（仍可出售）。" % int(outcome.spilled))
+	else:
+		say("已入库 %d 件。" % int(outcome.get("stored",0)))
+	show_inventory()
+
+## Row-major tidy of the vault: what "整理" means, and the same packing a searched
+## chest gets.
+func camp_tidy() -> void:
+	if not camp_pack_open: return
+	Catalog.tidy(profile.data.get("warehouse",{}))
+	profile.save_profile()
+	say("仓库已整理。")
+	show_inventory()
+
+
+# The整备台 counter: three pieces of standing issue gear, one worn at a time. Buying
+# settles the difference between the two price tags (a dearer piece is paid for, a
+# cheaper one refunds) and the piece coming off is destroyed — it was never an item,
+# only the standing issue. The money rule itself lives in `profile.buy_gear()`.
+func buy_camp_gear(index: int) -> void:
+	if session.running: return
+	var outcome: Dictionary=profile.buy_gear(index)
+	if not bool(outcome.get("ok",false)):
+		# A refusal has to be impossible to miss: the price tag sits in the middle of
+		# the screen, so the answer appears just above it rather than in the toast band
+		# at the bottom.
+		if int(outcome.get("price",0))>0:
+			notice_popup("银币不足：%s 需要 %d ◈，还差 %d ◈。" % [str(outcome.get("name","装备")),int(outcome.get("price",0)),maxi(0,int(outcome.get("short",0)))])
+		else:
+			notice_popup(str(outcome.get("reason","无法更换装备。")))
+		return
+	var paid := int(outcome.get("paid",0))
+	var refunded := int(outcome.get("refunded",0))
+	say("已装备 %s。" % str(outcome.get("name","装备")) if paid+refunded==0 else ("已装备 %s，支付 %d ◈。" % [str(outcome.get("name","装备")),paid] if paid>0 else "已装备 %s，退回 %d ◈。" % [str(outcome.get("name","装备")),refunded]))
+	ready_local=false
+	session.configure(config())
+	if camp: camp.update_static()
+	show_camp()
+
+# A centred notice near the top of the screen, for answers the player must not miss
+# while their eyes are on the middle of a panel. Fades itself out.
+func notice_popup(message: String) -> void:
+	if overlay.has_node("CampNotice"): overlay.get_node("CampNotice").queue_free()
+	var panel := rect(overlay,Vector2(420,104),Vector2(600,84),Color("1d1016"),Color("c05a6a"))
+	panel.name="CampNotice"
+	panel.z_index=60
+	panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	var body := label(panel,message,Vector2(18,16),21,Color("f2d6d9"),Vector2(564,52))
+	body.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	body.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	var tween := create_tween()
+	tween.tween_interval(1.8)
+	tween.tween_property(panel,"modulate:a",0.0,0.5)
+	tween.tween_callback(panel.queue_free)
 
 func show_camp_forge() -> void:
 	if session.running: return
@@ -917,7 +1120,7 @@ func select_title_entry(target: GothicButton) -> void:
 
 func config() -> Dictionary:
 	var payload := profile.storage_payload()
-	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key}
+	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key,"loadout":payload.loadout}
 
 func show_network() -> void:
 	new_page("network")
@@ -1019,25 +1222,27 @@ func show_camp() -> void:
 		b.selected=profile.data.hero==i
 		b.accent=h.color
 		b.add_theme_font_size_override("font_size",22)
-	label(page,"出战装备",Vector2(583,160),27,INK,Vector2(250,45))
-	label(page,"LOADOUT",Vector2(583,207),10,GOLD)
+	label(page,"整备台 · 出战装备",Vector2(583,160),27,INK,Vector2(300,45))
+	label(page,"ISSUE GEAR   /   一件只能装备一件，换装按差价结算",Vector2(583,207),10,GOLD,Vector2(384,20))
 	for i in 3:
 		var gear: Dictionary=Catalog.GEAR[i]
 		var x := 582+i*126
-		var b := button(page,"",Vector2(x,247),Vector2(113,104),func():
-			profile.data.gear=i
-			profile.save_profile()
-			ready_local=false
-			session.configure(config())
-		) as GothicButton
-		b.selected=profile.data.gear==i
+		var owned: bool=profile.data.gear==i
+		var b := button(page,"",Vector2(x,247),Vector2(113,104),func(): buy_camp_gear(i)) as GothicButton
+		b.selected=owned
 		var icon: String = Catalog.GEAR_ICONS[i]
 		item_icon(page,icon,Vector2(x+31,251),Vector2(52,52))
-		label(page,gear.name,Vector2(x,310),15,INK if profile.data.gear==i else MUTED,Vector2(113,31)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	label(page,Catalog.GEAR[profile.data.gear].desc,Vector2(584,356),15,GOLD)
-	label(page,"开局只有角色的临时武器；局内捡到的武器装备后才能换用",Vector2(584,380),12,MUTED,Vector2(384,20))
-	label(page,"背包本身就是一件装备：双击或 Ctrl+左键换装，紫色及以上占 2×2",Vector2(584,398),12,MUTED,Vector2(384,20))
-	ornament(page,Vector2(578,406),Vector2(384,12))
+		label(page,gear.name,Vector2(x,310),15,INK if owned else MUTED,Vector2(113,31)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		# The price tag is the swap price, not the sticker price: what the counter
+		# would take (or hand back) right now.
+		var delta := Catalog.gear_price(i)-Catalog.gear_price(int(profile.data.gear))
+		var tag := "已装备" if owned else ("%d ◈" % delta if delta>=0 else "退 %d ◈" % -delta)
+		label(page,tag,Vector2(x,282),14,GOLD if owned else (Color("98bcae") if delta<0 else Color("c9a06a")),Vector2(113,26)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	var fitted := Catalog.gear_of(int(profile.data.gear))
+	label(page,"未装备任何出战装备" if fitted.is_empty() else str(fitted.desc),Vector2(584,356),15,GOLD,Vector2(384,20))
+	label(page,"走到整备台按 E，或直接在这里买；旧装备换上即销毁，退款按差价。",Vector2(584,378),12,MUTED,Vector2(384,20))
+	label(page,"行囊里捡到的武器装备后可以带进下一局，Tab 打开远征行囊整理。",Vector2(584,396),12,MUTED,Vector2(384,20))
+	ornament(page,Vector2(578,404),Vector2(384,12))
 	label(page,"灵契天赋",Vector2(583,431),27,INK,Vector2(250,45))
 	button(page,"角色属性 · %d 点" % profile.attribute_points(),Vector2(784,431),Vector2(184,43),show_camp_forge)
 	for i in 3:
@@ -1085,7 +1290,7 @@ func show_camp() -> void:
 	label(page,"每天 5 分钟 · 第 3 分钟缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
 	ornament(page,Vector2(62,814),Vector2(1314,10))
 	button(page,"← 返回营地",Vector2(60,839),Vector2(183,43),go_camp)
-	button(page,"仓库",Vector2(255,839),Vector2(140,43),func(): show_economy(false))
+	button(page,"行囊",Vector2(255,839),Vector2(140,43),func(): show_camp_pack(false))
 	button(page,"交易行",Vector2(405,839),Vector2(140,43),func(): show_economy(true))
 	button(page,"守夜手册",Vector2(555,839),Vector2(165,43),show_help)
 	label(page,"活着带回来的，才属于你。",Vector2(738,849),16,Color("a797a3"),Vector2(280,35))
@@ -1229,6 +1434,19 @@ func _process(dt: float) -> void:
 	toast_time-=dt
 	toast.visible=toast_time>0 and not inventory_open
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty(): toast.hide()
+	# The grabbed item follows the cursor on every frame, and the camp bag panel is
+	# served by the same controller even though no raid is running. The preview has
+	# to be synced before the raid-only early return below, or a camp drag would
+	# freeze wherever the press started instead of tracking the pointer.
+	if camp_pack_open:
+		var camper: Dictionary=camp_player()
+		# The panel is drawn on demand, and with no raid running the refresh further
+		# down can never run: a camp edit made by *any* code path is picked up here,
+		# so a panel that forgot to repaint itself cannot keep showing a stale picture.
+		if not camper.is_empty() and camp_signature(camper)!=bag_signature:
+			show_inventory()
+		else:
+			sync_drag()
 	if page_name!="game" or not session.running:
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
@@ -1265,17 +1483,32 @@ func _input(event: InputEvent) -> void:
 	if session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
-	if not inventory_open or modal or page_name!="game":
+	# The camp bag panel shares this controller, so its page counts as an inventory
+	# screen too.
+	if not inventory_open or modal or page_name not in ["game","ground"]:
+		return
+	if event.button_index==MOUSE_BUTTON_MIDDLE:
+		# The mouse shortcut for the same R rotation. It used to be the **right**
+		# button, which is now the "lift one unit out of a pile" gesture in every bag
+		# grid; `R` still rotates, so the keyboard path never changed.
+		if event.pressed: rotate_selected()
+		get_viewport().set_input_as_handled()
 		return
 	if event.button_index==MOUSE_BUTTON_RIGHT:
-		# Right click is the mouse shortcut for the same R rotation.
-		if event.pressed: rotate_selected()
+		# Right click lifts one unit out of a pile, and keeps lifting while it stays in
+		# the same pile. Nothing is taken off the source until the left click lands.
+		if event.pressed: right_press(mouse_point())
 		get_viewport().set_input_as_handled()
 		return
 	if event.button_index!=MOUSE_BUTTON_LEFT:
 		return
 	if event.pressed:
 		var point := mouse_point()
+		# A left click while the right-click hand is holding units puts them down.
+		if int(drag.get("carry",0))>0:
+			carry_release(point)
+			get_viewport().set_input_as_handled()
+			return
 		# A click on the item bar selects the socket [E] will act on. It is checked
 		# before the grids because the strip is not a grid: a socket holds exactly
 		# one item, however many cells that item would need in a backpack. The hit
@@ -1287,13 +1520,55 @@ func _input(event: InputEvent) -> void:
 			select_item_slot(bar_slot)
 			get_viewport().set_input_as_handled()
 			return
-		# Ctrl+left is checked before anything else: the same click means "do the
-		# obvious thing with this" instead of starting a drag, both on carried loot
-		# and on something already worn.
+		# The equipment sockets are not a grid, so they need their own hit test before
+		# the grid lookup below (which returns early on an empty grid and used to hide
+		# every socket from every gesture except the panel's own "卸" button). A second
+		# tap takes the piece off; a single press is a *drag* in the camp, where a worn
+		# piece can be carried to the bag, the vault or another socket.
+		var worn_here := worn_zone_at(point)
+		if not worn_here.is_empty() and not worn_here.begins_with("slot"):
+			var worn_now := Time.get_ticks_msec()
+			var quick_worn := last_click_slot==("worn:"+worn_here) and worn_now-last_click_ms<450
+			last_click_ms=0
+			if quick_worn or ctrl_held():
+				take_off_worn(worn_here)
+				get_viewport().set_input_as_handled()
+				return
+			last_click_slot="worn:"+worn_here
+			last_click_index=-1
+			last_click_ms=worn_now
+			press_point=point
+			press_moved=false
+			# Every worn socket is a drag source, the pack on the back included: taking
+			# it off is how a bigger pack gets swapped or sold.
+			start_drag(worn_here,0,false)
+			get_viewport().set_input_as_handled()
+			return
+		# Ctrl+left on anything else means "do the obvious thing with this".
 		if ctrl_held():
 			var worn := worn_zone_at(point)
 			if not worn.is_empty():
 				ctrl_click_worn(worn)
+				get_viewport().set_input_as_handled()
+				return
+		# The camp panel's spare-bag tiles are drag sources too, but they are sockets
+		# rather than a grid, so they get their own hit test before the grids.
+		if camp_pack_open:
+			var cab := cabinet_zone_at(point)
+			if cab>=0:
+				var cab_now := Time.get_ticks_msec()
+				var quick_cab := last_click_slot=="cab" and cab==last_click_index and cab_now-last_click_ms<450
+				last_click_ms=0
+				if quick_cab or ctrl_held():
+					camp_apply(CampStorage.wear_spare(profile,session,camp_player(),cab))
+					get_viewport().set_input_as_handled()
+					return
+				last_click_slot="cab"
+				last_click_index=cab
+				last_click_ms=cab_now
+				press_point=point
+				press_moved=false
+				start_drag("cab",cab,false)
 				get_viewport().set_input_as_handled()
 				return
 		var hit := grid_at(point)
@@ -1324,7 +1599,7 @@ func _input(event: InputEvent) -> void:
 				ctrl_click_worn(worn_zone)
 				get_viewport().set_input_as_handled()
 				return
-		if quick and slot in ["backpack","pocket"]:
+		if quick and slot in ["backpack","pocket","warehouse"]:
 			if double_click_equip(slot,index):
 				get_viewport().set_input_as_handled()
 				return
@@ -1342,6 +1617,8 @@ func _input(event: InputEvent) -> void:
 			var shown: Array=session.visible_items(session.container_at(_loot_index))
 			if index<shown.size():
 				rot=bool(shown[index].get("rot",false))
+		elif camp_pack_open:
+			rot=bool(CampStorage.item_at(profile,camp_player(),slot,index).get("rot",false))
 		else:
 			rot=bool(session.players[session.my_id()][slot].items[index].get("rot",false))
 		press_point=point
@@ -1373,6 +1650,8 @@ func index_at(slot: String, cell: Vector2i) -> int:
 			if Rect2i(Vector2i(int(shown[i].x),int(shown[i].y)),dims).has_point(cell):
 				return i
 		return -1
+	if camp_pack_open:
+		return CampStorage.index_at(profile,camp_player(),slot,cell)
 	var list: Array=session.players[session.my_id()][slot].items
 	for i in list.size():
 		var at := Vector2i(int(list[i].x),int(list[i].y))
@@ -1383,6 +1662,11 @@ func index_at(slot: String, cell: Vector2i) -> int:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+		# Esc first puts the units in hand back where they came from: cancelling a
+		# carry must not also close the panel under the player's cursor.
+		if int(drag.get("carry",0))>0:
+			cancel_carry()
+			return
 		if modal:
 			close_modal()
 		elif field.map_open:
@@ -1547,6 +1831,16 @@ func rotate_selected() -> void:
 		# the drag writes exactly this back, so a turned item stays turned.
 		drag.rot=not bool(drag.rot)
 		show_inventory()
+		return
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if selected>=0 and player.is_empty()==false:
+			var state := {"slot":selected_slot,"index":selected,"rot":false}
+			rotated=not bool(CampStorage.item_at(profile,player,selected_slot,selected).get("rot",false))
+			if not CampStorage.rotate(profile,session,player,state):
+				say("这件物品转不过来。")
+				rotated=not rotated
+			show_inventory()
 		return
 	if selected<0 or selected_slot not in ["backpack","pocket"]:
 		return
@@ -1789,6 +2083,10 @@ func toggle_bag() -> void:
 		return
 	if inventory_open:
 		close_bag()
+	elif page_name=="ground":
+		# The camp's own TAB signal normally gets here; this keeps the shared key
+		# binding honest if the panel is opened from anywhere else in the camp.
+		show_camp_pack(false)
 	else:
 		sound.play("ui-open")
 		inventory_open=true
@@ -1805,16 +2103,26 @@ func close_bag() -> void:
 	if inventory_open:
 		sound.play("ui-close")
 	inventory_open=false
+	camp_pack_open=false
 	_loot_index=-1
 	selected=-1
 	stop_drag()
 	grids.clear()
 	equip_zones.clear()
+	cabinet_zones.clear()
 	slot_zone_rects.clear()
 	_slot_origin=Vector2(10000,10000)
 	panel_rects.clear()
+	# The panel being rebuilt is the one that registers where "outside it" is; until it
+	# does, a release has no panel to be outside of.
+	drop_region=Rect2()
+	drop_art=""
+	set_frost(false)
 	detach_drag_nodes()
 	clear(overlay)
+	# Hand the camp its controls back, unless an overlay panel is still up.
+	if camp and not modal:
+		camp.input_blocked=false
 	if drag_ghost and is_instance_valid(drag_ghost):
 		drag_ghost.queue_free()
 	if drag_ring and is_instance_valid(drag_ring):
@@ -1826,7 +2134,7 @@ func close_bag() -> void:
 # Unparents the live drag nodes without freeing them, so clear(overlay) during a
 # rebuild cannot queue_free the icon the player is holding.
 func detach_drag_nodes() -> void:
-	for node in [drag_ghost,drag_ring]:
+	for node in [drag_ghost,drag_ring,drag_frost]:
 		if node and is_instance_valid(node) and node.get_parent()!=null:
 			node.get_parent().remove_child(node)
 
@@ -1839,11 +2147,127 @@ func toggle_map() -> void:
 
 func stop_drag() -> void:
 	drag.active=false
+	# The hand's units live in `drag` too, so ending a drag always empties it: a
+	# carried pile that outlived its gesture would follow the cursor for ever.
+	drag["carry"]=0
 	if drag_ghost and is_instance_valid(drag_ghost):
 		drag_ghost.visible=false
 	if drag_ring and is_instance_valid(drag_ring):
 		drag_ring.visible=false
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+
+## A right click in a bag grid: lift one unit out of a pile, or add one more unit to
+## the pile already in hand. Rotating moved to the middle button so this gesture could
+## exist at all (see `_input`).
+func right_press(point: Vector2) -> void:
+	var carrying := int(drag.get("carry",0))
+	var hit := grid_at(point)
+	var slot := str(hit.slot) if not hit.is_empty() else ""
+	var index := index_at(slot,Vector2i(hit.cell)) if not slot.is_empty() else -1
+	if carrying>0:
+		# Only the pile it came from adds units: right-clicking a second stack while
+		# holding units would have to decide which pile gives them up.
+		if slot==str(drag.slot) and index==int(drag.source):
+			var source := drag_source_item(slot,index)
+			drag["carry"]=mini(carrying+1,int(source.get("count",1)))
+			show_inventory()
+		return
+	if index<0:
+		return
+	var entry := drag_source_item(slot,index)
+	if entry.is_empty() or not Catalog.stacks(str(entry.kind)) or int(entry.get("count",1))<=1:
+		return
+	start_carry(slot,index,entry)
+
+## Lifts `units` of a pile into the hand. **Nothing leaves the source yet**, which is
+## what makes every exit that is not a successful drop a free cancel.
+func start_carry(slot: String, index: int, entry: Dictionary) -> void:
+	drag.active=true
+	drag.slot=slot
+	drag.source=index
+	drag["rot"]=bool(entry.get("rot",false))
+	drag["carry"]=1
+	drag_last_point=Vector2(-1,-1)
+	press_point=mouse_point()
+	press_moved=true
+	show_inventory()
+
+## Puts the hand's units down. A container takes them, the camp floor takes them, and
+## anywhere else inside the panel is a cancel: the pieces never left the source, so
+## "nothing happened" is the honest outcome.
+func carry_release(point: Vector2) -> void:
+	var slot := str(drag.slot)
+	var index := int(drag.source)
+	var units := int(drag.get("carry",0))
+	var pile := held_item()
+	var outside := drag_outside(point)
+	var moved := false
+	if units>0 and not pile.is_empty():
+		var hit := {} if outside else grid_at(point)
+		if not hit.is_empty():
+			moved=carry_into_container(str(hit.slot),Vector2i(hit.cell),slot,index,units,bool(drag.rot))
+		elif outside:
+			moved=carry_to_ground(slot,index,units)
+	stop_drag()
+	selected=-1
+	if moved:
+		say("放下 %s ×%d。" % [Catalog.item_name(pile),units])
+	elif outside:
+		say("这里放不下。")
+	else:
+		say("已放回原处。")
+	show_inventory()
+
+## Esc while the hand is full: put the units back. Nothing was taken, so there is
+## nothing to undo — the panel already shows the truth.
+func cancel_carry() -> void:
+	stop_drag()
+	selected=-1
+	say("已放回原处。")
+	show_inventory()
+
+## The container half of a carry. The camp's vault is the save file and has its own
+## pair of movers in `camp_storage.gd`; everything else goes through the session's pile
+## mover, which is the same one a drag uses.
+func carry_into_container(to: String, cell: Vector2i, from: String, index: int, units: int, rot: bool) -> bool:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return false
+		var ok := false
+		if to==CampStorage.VAULT:
+			ok=CampStorage.vault_units_in(profile,session,player,from,index,units,rot)
+		elif from==CampStorage.VAULT:
+			ok=CampStorage.vault_units_out(profile,session,player,index,units,to,cell)
+		else:
+			ok=session.move_units(player,from,to,index,units,cell,rot)
+		if ok:
+			CampStorage.persist(profile,session,player)
+		return ok
+	if to!="backpack" and to!="pocket":
+		return false
+	session.action("carry_drop",{"from":from,"to":to,"index":index,"units":units,"x":cell.x,"y":cell.y,"rot":rot})
+	return true
+
+## The ground half of a carry: the handful lies where the player put it, in the camp or
+## in a raid alike.
+func carry_to_ground(from: String, index: int, units: int) -> bool:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return false
+		var handful: Dictionary = {}
+		if from==CampStorage.VAULT:
+			handful=CampStorage.vault_take_units(profile,index,units)
+		else:
+			handful=session.take_units(player,from,index,units)
+		if handful.is_empty():
+			return false
+		camp_drop_on_floor(handful)
+		CampStorage.persist(profile,session,player)
+		return true
+	session.action("carry_ground",{"from":from,"index":index,"units":units})
+	return true
 
 func pick_item(slot: String, index: int) -> void:
 	if slot=="loot":
@@ -1855,7 +2279,24 @@ func pick_item(slot: String, index: int) -> void:
 		rotated=bool(shown[index].get("rot",false))
 		show_inventory()
 		return
-	var list: Array=session.players[session.my_id()][slot].items
+	# The camp panel has a fourth grid the session knows nothing about: the vault
+	# lives in the save file, so its index space comes from `camp_storage`. Without
+	# this branch the click reached `session.players[...]["warehouse"]` and threw.
+	if camp_pack_open:
+		var camp_item: Dictionary=CampStorage.item_at(profile,camp_player(),slot,index)
+		if camp_item.is_empty():
+			return
+		selected=index
+		selected_slot=slot
+		rotated=bool(camp_item.get("rot",false))
+		show_inventory()
+		return
+	# A worn socket and the spare-bag cabinet are not containers: there is no grid to
+	# select in, and indexing the player dictionary with "weapon" used to throw.
+	var me: Dictionary=session.players.get(session.my_id(),{})
+	if not me.has(slot):
+		return
+	var list: Array=me[slot].items
 	if index<0 or index>=list.size():
 		return
 	selected=index
@@ -1864,10 +2305,24 @@ func pick_item(slot: String, index: int) -> void:
 	show_inventory()
 
 # Two quick taps on a backpack item wear it on the spot: weapons and gear go to
-# their kit slot, a loose backpack becomes the equipped pack. Anything else
-# returns false so the second tap degrades into an ordinary drag start.
+# their kit slot, a loose backpack becomes the equipped pack, and a consumable
+# parks one unit in the first free socket of the bar. Anything else (scrap, a relic,
+# a crystal) is treasure with no verb, so the second tap degrades into an ordinary
+# drag start instead of inventing an action for it.
 func double_click_equip(slot: String, index: int) -> bool:
 	var p: Dictionary=session.players.get(session.my_id(),{})
+	if camp_pack_open:
+		# In the camp the same gesture is a storage verb, not a battle one: see
+		# `camp_storage.gd quick_equip()` — a non-wearable goes to the backpack and
+		# the item bar is never filled by a double-click.
+		var changed: bool=CampStorage.quick_equip(profile,session,camp_player(),slot,index)
+		# The camp panel is drawn on demand and the frame loop never refreshes it, so
+		# the edit has to repaint here. Without this the panel kept showing the old
+		# picture — the item looked stuck in the vault while it had already been worn.
+		if changed:
+			selected=-1
+			show_inventory()
+		return changed
 	if p.is_empty() or slot not in ["backpack","pocket"]:
 		return false
 	var list: Array=Catalog.container_items(p[slot])
@@ -1878,17 +2333,36 @@ func double_click_equip(slot: String, index: int) -> bool:
 		session.action("equip_bag",{"slot":slot,"index":index})
 	elif Catalog.is_wearable(kind):
 		session.action("equip",{"slot":slot,"index":index})
+	elif kind=="medicine" or kind=="ammo":
+		# A consumable has a verb the double-click can mean: park one unit in the
+		# first free socket of the bar. Anything else (scrap, a relic, a crystal) is
+		# treasure with nothing to do, so the second tap degrades into a drag start
+		# rather than inventing an action for it.
+		var free := free_item_slot(p)
+		if free<0:
+			say("快捷道具栏已满，先腾出一格。")
+			return false
+		session.action("slot_put",{"slot":free,"from":slot,"index":index})
 	else:
 		return false
 	selected=-1
 	show_inventory()
 	return true
 
+## The first empty socket of the item bar, or -1 when all three are taken.
+func free_item_slot(p: Dictionary) -> int:
+	for i in session.ITEM_SLOT_COUNT:
+		if session.item_slot(p,i).is_empty():
+			return i
+	return -1
+
 # Ctrl+left on a carried item does what the item is for: a consumable is used, a
 # wearable is worn. A relic, a crate of scrap or a stack of ammo has no verb, so
 # the click falls through to the plain selection the way it always did.
 func ctrl_click_item(slot: String, index: int) -> bool:
 	var p: Dictionary=session.players.get(session.my_id(),{})
+	if camp_pack_open:
+		return double_click_equip(slot,index)
 	if p.is_empty() or slot not in ["backpack","pocket"]:
 		return false
 	var list: Array=Catalog.container_items(p[slot])
@@ -1902,24 +2376,50 @@ func ctrl_click_item(slot: String, index: int) -> bool:
 		return true
 	return false
 
-# Ctrl+left on something already worn takes it off. The backpack is tried first
-# because that is where loot belongs; when it has no room the pocket is asked to
-# tidy itself once, and when even that fails the click does nothing at all rather
-# than throwing the item on the ground.
+# Ctrl+left on something already worn is the same take-off the double tap performs.
 func ctrl_click_worn(zone: String) -> void:
+	take_off_worn(zone)
+
+## Which worn socket holds what, as the session's (type, index) pair.
+func zone_type(zone: String) -> String:
+	if zone=="weapon": return "weapon"
+	if zone.begins_with("gear"): return "gear"
+	if zone.begins_with("charm"): return "charm"
+	return ""
+
+func zone_index(zone: String) -> int:
+	if zone.begins_with("gear"): return zone.substr(4).to_int()
+	if zone.begins_with("charm"): return zone.substr(5).to_int()
+	return 0
+
+## Taking a piece off the body, for every gesture that means it: a second tap on the
+## socket, Ctrl+left, F, and the panel's "卸" button. The camp seats it in the carried
+## backpack and then the vault. A raid — and every other mode — accepts only the
+## backpack, and the pocket only for gold and above, and otherwise refuses and says
+## why instead of dropping the piece (README「稀有度与自动收纳判定」).
+func take_off_worn(zone: String) -> void:
+	if zone=="bag":
+		if camp_pack_open:
+			camp_apply(CampStorage.unwear_bag(profile,session,camp_player(),true))
+		elif not session.players.get(session.my_id(),{}).is_empty():
+			session.action("unwear_bag")
+			selected=-1
+			show_inventory()
+		return
+	if camp_pack_open:
+		camp_apply(CampStorage.stow_socket(profile,session,camp_player(),zone))
+		return
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty():
 		return
-	if zone=="bag":
-		session.action("unwear_bag")
-	elif zone=="weapon":
-		session.action("unequip_stow",{"type":"weapon","index":0})
-	elif zone.begins_with("gear"):
-		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
-	elif zone.begins_with("charm"):
-		session.action("unequip_stow",{"type":"charm","index":zone.substr(5).to_int()})
-	else:
+	var type := zone_type(zone)
+	if type.is_empty():
 		return
+	var at := zone_index(zone)
+	if not session.take_off_fits(p,type,at):
+		notice_popup("背包放不下 %s，先腾出一格再卸下。" % Catalog.item_name(session.worn_entry(p,type,at)))
+		return
+	session.action("unequip_stow",{"type":type,"index":at})
 	selected=-1
 	show_inventory()
 
@@ -1976,16 +2476,9 @@ func quick_inventory_at(point: Vector2) -> bool:
 			show_inventory()
 		return true
 	var zone := worn_zone_at(point)
-	if zone=="weapon":
-		session.action("unequip_stow",{"type":"weapon","index":0})
-	elif zone.begins_with("gear"):
-		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
-	elif zone.begins_with("charm"):
-		session.action("unequip_stow",{"type":"charm","index":zone.substr(5).to_int()})
-	else:
+	if zone.is_empty() or (zone_type(zone).is_empty() and zone!="bag"):
 		return false
-	selected=-1
-	show_inventory()
+	take_off_worn(zone)
 	return true
 
 # --- mouse dragging --------------------------------------------------------
@@ -2014,6 +2507,46 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 	var rot: bool=bool(drag.rot)
 	var point: Vector2=mouse_point() if not at.is_finite() else at
 	var held := held_item()
+	# The camp panel shares this controller but not the authority: a raid drop is an
+	# action the host performs, a camp drop is a local edit written straight to the
+	# save file.
+	if camp_pack_open:
+		camp_release_drag(point,{"slot":source_slot,"index":source_index,"rot":rot})
+		return
+	# A worn piece in hand: the equipment bar is a drag source now, not just a row of
+	# buttons. A socket takes it by swapping, a carried container takes it outright,
+	# and letting go anywhere else is a miss — worn kit is never thrown on the ground.
+	var worn_type := zone_type(source_slot)
+	if not worn_type.is_empty():
+		if held.is_empty():
+			stop_drag()
+			show_inventory()
+			return
+		var worn_windex := zone_index(source_slot)
+		var zone_under := zone_at(point,held)
+		var grid_under := grid_at(point)
+		stop_drag()
+		selected=-1
+		if not zone_under.is_empty():
+			session.action("worn_equip",{"wtype":worn_type,"windex":worn_windex,"zone":str(zone_under.zone)})
+		elif not grid_under.is_empty():
+			# A searched chest is a container like any other: `move_worn_to()` reads
+			# "loot:<search reference>" as "into the chest the window is showing".
+			var worn_to := str(grid_under.slot)
+			if worn_to=="loot":
+				worn_to="loot:%d" % _loot_index
+			if worn_to=="backpack" or worn_to=="pocket" or worn_to.begins_with("loot:"):
+				session.action("worn_drop",{"wtype":worn_type,"windex":worn_windex,"to":worn_to,"x":int(grid_under.cell.x),"y":int(grid_under.cell.y),"rot":rot})
+			elif drag_outside(point):
+				session.action("worn_to_world",{"wtype":worn_type,"windex":worn_windex})
+			else:
+				notice_popup("放在背包、口袋、搜刮箱或装备位上。")
+		elif drag_outside(point):
+			session.action("worn_to_world",{"wtype":worn_type,"windex":worn_windex})
+		else:
+			notice_popup("放在背包、口袋、搜刮箱或装备位上。")
+		show_inventory()
+		return
 	# A drop onto a socket goes through the socket's own action, whatever kind of
 	# item is in hand: the item bar takes everything.
 	if not held.is_empty() and not str(drag.slot).begins_with("slot:"):
@@ -2045,6 +2578,12 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 		var target := drag_target_rect(hit,str(held.get("kind","")))
 		valid=int(Vector2i(target.get("cell",Vector2i(-1,-1))).x)>=0
 	if not valid:
+		# Inside the panel is the work area: a release on empty panel changes nothing,
+		# so an item is never lost by letting go a little wide of a grid. Leaving the
+		# panel is what means "on the ground".
+		if not drag_outside(point):
+			show_inventory()
+			return
 		if source_slot=="loot":
 			session.action("loot_drop",{"index":source_index})
 		elif source_slot.begins_with("slot:"):
@@ -2054,7 +2593,12 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 	elif source_slot.begins_with("slot:"):
 		session.action("slot_take",{"slot":slot_source(source_slot)})
 	else:
-		session.action("bag_drop",{"from":source_slot,"to":slot,"index":source_index,"x":spot.x,"y":spot.y,"rot":rot})
+		# A searched chest is a container like any other: the mover reads
+		# "loot:<search reference>" as "into the chest the window is showing", and the
+		# grid alone only names the window.
+		var to := slot
+		if to=="loot": to="loot:%d" % _loot_index
+		session.action("bag_drop",{"from":source_slot,"to":to,"index":source_index,"x":spot.x,"y":spot.y,"rot":rot})
 	selected=-1
 	show_inventory()
 
@@ -2075,6 +2619,56 @@ func grid_at(point: Vector2) -> Dictionary:
 			continue
 		return {"slot":key,"cell":Vector2i(col,row)}
 	return {}
+
+# One released drag in the camp. There is no ground to throw things on, so a drop
+# that lands nowhere is simply a miss: the item stays where it was and the panel says
+# so. A socket is asked first (the bar takes anything, the worn sockets only their own
+# kind), then the grid under the cursor.
+func camp_release_drag(point: Vector2, drag_state: Dictionary) -> void:
+	var held := held_item()
+	var target: Dictionary = {}
+	if not held.is_empty():
+		var zone := zone_at(point,held)
+		if not zone.is_empty():
+			target={"zone":str(zone.zone)}
+	if target.is_empty():
+		var hit := grid_at(point)
+		if not hit.is_empty():
+			target={"slot":str(hit.slot),"cell":Vector2i(hit.cell)}
+	stop_drag()
+	selected=-1
+	if target.is_empty():
+		# Inside the panel is the work area: letting go on empty panel does nothing.
+		# Only a release outside everything the panel owns puts the piece on the floor.
+		if drag_outside(point):
+			# The pack on the back is a container: taking it off rehouses what it holds
+			# into the issue pack and floors the rest, pack included.
+			if str(drag_state.get("slot",""))=="bag":
+				CampStorage.unwear_bag(profile,session,camp_player(),false)
+				say("背包已放到地上，装不下的东西也散在旁边。按 F 拾回。")
+				show_inventory()
+				return
+			var floored := held_item()
+			if not floored.is_empty():
+				camp_drop_on_floor(floored)
+				say("已丢在营地地上：" + Catalog.item_name(floored) + "。走到旁边按 F 拾回。")
+		else:
+			say("这里放不下，回到背包或仓库格子上再松手。")
+		show_inventory()
+		return
+	var changed: bool=CampStorage.drop(profile,session,camp_player(),drag_state,target)
+	if not changed:
+		say("放不下，或者这里不能放。")
+	show_inventory()
+
+# Which spare-bag socket, if any, sits under a point. The cabinet is a drag source
+# only, so this is not part of `zone_at()`.
+func cabinet_zone_at(point: Vector2) -> int:
+	for index in cabinet_zones:
+		var area: Rect2=cabinet_zones[index]
+		if area.has_point(point):
+			return int(index)
+	return -1
 
 # Which equipment socket, if any, sits under a point and accepts the held item.
 # Preview and drop share this, so the glowing socket is always the socket that
@@ -2142,6 +2736,62 @@ func build_drag_nodes() -> void:
 		drag_ring=object_ring(GOLD)
 		drag_ring.visible=false
 		overlay.add_child(drag_ring)
+	if drag_frost==null or not is_instance_valid(drag_frost):
+		drag_frost=TextureRect.new()
+		drag_frost.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		drag_frost.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		drag_frost.modulate=Color(1,1,1,FROST_ALPHA)
+		drag_frost.visible=false
+		overlay.add_child(drag_frost)
+	update_frost_art()
+
+## The frosted sheet that says "you have left the panel" while a drag is in the drop
+## zone: the panel's own backdrop, blurred once and cached, shown at `FROST_ALPHA`.
+## Blurring is two bilinear resizes (down to a twelfth and back), which is a box blur
+## at this size and costs nothing after the first build.
+static var frost_cache: Dictionary = {}
+
+func frost_texture(path: String) -> Texture2D:
+	if frost_cache.has(path):
+		return frost_cache[path]
+	var source: Texture2D=load(path) if ResourceLoader.exists(path) else null
+	if source==null:
+		return null
+	var image: Image=source.get_image()
+	if image==null:
+		return null
+	var wide := maxi(1,image.get_width()/12)
+	var tall := maxi(1,image.get_height()/12)
+	image.resize(wide,tall,Image.INTERPOLATE_BILINEAR)
+	image.resize(source.get_width(),source.get_height(),Image.INTERPOLATE_BILINEAR)
+	var made := ImageTexture.create_from_image(image)
+	frost_cache[path]=made
+	return made
+
+## Points the sheet at the open panel's own art, at the panel's own size. Called
+## whenever a panel rebuilds, because the raid panel switches between two widths.
+func update_frost_art() -> void:
+	if drag_frost==null or not is_instance_valid(drag_frost):
+		return
+	drag_frost.position=drop_region.position
+	drag_frost.size=drop_region.size
+	drag_frost.texture=frost_texture(drop_art) if not drop_art.is_empty() else null
+
+## True when the cursor has left the panel the drag started in. Outside it a released
+## item goes on the ground; inside it, only a real grid or socket takes it and letting
+## go on empty panel is simply nothing. Panels register the whole backdrop they own,
+## frame included, so the frosted sheet and "where dropping loses the item" agree.
+func drag_outside(point: Vector2) -> bool:
+	if drop_region.size.x<=0.0 or drop_region.size.y<=0.0:
+		return true
+	return not drop_region.has_point(point)
+
+func set_frost(on: bool) -> void:
+	if drag_frost==null or not is_instance_valid(drag_frost):
+		return
+	if on and drag_frost.texture==null:
+		update_frost_art()
+	drag_frost.visible=on and drag_frost.texture!=null
 
 func show_drag_item(held: Dictionary) -> void:
 	build_drag_nodes()
@@ -2172,6 +2822,7 @@ func sync_drag() -> void:
 			drag_ghost.visible=false
 		if drag_ring and is_instance_valid(drag_ring):
 			drag_ring.visible=false
+		set_frost(false)
 		return
 	var held := held_item()
 	if held.is_empty():
@@ -2195,13 +2846,25 @@ func sync_drag() -> void:
 		drag_ring.area=zone_rect
 		drag_ring.tone=accent
 		drag_ring.blocked=false
+		set_frost(false)
 		return
-	if str(drag.slot).begins_with("slot:"):
-		# Away from a socket, the held item will be dropped on the ground.
+	var outside := drag_outside(point)
+	set_frost(outside)
+	if outside:
+		# Outside the panel entirely: the frosted sheet says the panel is no longer
+		# the target, and letting go puts the item on the ground.
 		drag_ring.area=Rect2(point-cell_size/2,cell_size)
 		drag_ring.tone=Color("c96a74")
 		drag_ring.blocked=false
 		drag_caption.text="松开丢弃到地面"
+		return
+	if str(drag.slot).begins_with("slot:"):
+		# Still inside the panel: an item lifted out of the bar only goes back on a
+		# socket, and letting go anywhere else on the panel changes nothing.
+		drag_ring.area=Rect2(point-cell_size/2,cell_size)
+		drag_ring.tone=Color("c96a74")
+		drag_ring.blocked=false
+		drag_caption.text="放到格子上，或拖出面板丢弃"
 		return
 	var hit := grid_at(point)
 	var target := drag_target_rect(hit,kind)
@@ -2220,7 +2883,7 @@ func sync_drag() -> void:
 			drag_ring.area=Rect2(Vector2(entry.origin)+Vector2(int(target.cursor.x)*step,int(target.cursor.y)*step),Vector2(entry.cell,entry.cell))
 			drag_ring.tone=Color("c96a74")
 			drag_ring.blocked=false
-			drag_caption.text="松开丢弃到地面"
+			drag_caption.text="这里放不下，拖出面板丢弃"
 		else:
 			drag_ring.area=Rect2(Vector2(entry.origin)+Vector2(cell.x*step,cell.y*step),Vector2(dims.x*step-float(entry.gap),dims.y*step-float(entry.gap)))
 			drag_ring.tone=accent if exact else Color("c9a06a")
@@ -2229,7 +2892,7 @@ func sync_drag() -> void:
 		drag_ring.area=Rect2(point-cell_size/2,cell_size)
 		drag_ring.tone=Color("c96a74")
 		drag_ring.blocked=false
-		drag_caption.text="松开丢弃到地面"
+		drag_caption.text="这里放不下，拖出面板丢弃"
 
 func move_drag_ghost(point: Vector2, cell_size: Vector2) -> void:
 	var lift := Vector2.ONE*minf(cell_size.x,cell_size.y)*0.10
@@ -2256,28 +2919,62 @@ func move_drag_ghost(point: Vector2, cell_size: Vector2) -> void:
 func reparent_drag_nodes() -> void:
 	if drag_ghost==null or not is_instance_valid(drag_ghost):
 		return
-	var holder: Node=drag_ghost.get_parent()
-	if holder!=overlay:
-		if holder!=null:
-			holder.remove_child(drag_ghost)
-		overlay.add_child(drag_ghost)
-	if drag_ring==null or not is_instance_valid(drag_ring):
-		return
-	holder=drag_ring.get_parent()
-	if holder!=overlay:
-		if holder!=null:
-			holder.remove_child(drag_ring)
-		overlay.add_child(drag_ring)
+	# Painting order is the order they are raised in: the frosted plate goes over the
+	# panel, the outline over that, and the lifted icon on top of everything.
+	for node in [drag_frost,drag_ring,drag_ghost]:
+		if node==null or not is_instance_valid(node):
+			continue
+		var holder: Node=node.get_parent()
+		if holder!=overlay:
+			if holder!=null:
+				holder.remove_child(node)
+			overlay.add_child(node)
+		overlay.move_child(node,overlay.get_child_count()-1)
 
 # Where the item under the cursor would land, asked of the same resolver the
 # session uses. cell is (-1,-1) when the container cannot take the item at all.
+#
+# **Memoised**: a resolver pass over the 15x15 vault costs ~18ms on a full vault
+# (measured) and this is asked once per frame while a drag hovers a grid. The answer
+# only depends on the container, the aimed cell, the item and the state behind it, so
+# those four make the key and a hit skips the whole search.
+var preview_key := ""
+var preview_answer: Dictionary = {}
+
 func drag_target_rect(hit: Dictionary, kind: String) -> Dictionary:
 	if hit.is_empty():
+		preview_key=""
 		return {}
 	var slot := str(hit.slot)
 	var cursor: Vector2i=Vector2i(hit.cell)
 	var probe := {"kind":kind,"rot":bool(drag.rot)}
+	var key := "%s|%d,%d|%s|%s|%s|%d" % [slot,cursor.x,cursor.y,kind,str(bool(drag.rot)),drag_fingerprint(),int(drag.source)]
+	if key==preview_key:
+		return preview_answer
+	var answer := drag_resolve(slot,cursor,probe)
+	preview_key=key
+	preview_answer=answer
+	return answer
+
+## What the cached preview has to notice changing: the state the resolver reads. The
+## camp's own signature already covers the carried containers and the vault, and the
+## raid's containers are small enough that the slot and the drag alone are enough.
+func drag_fingerprint() -> String:
+	if camp_pack_open:
+		return camp_signature(camp_player())
+	return "%d/%d" % [int(session.players.get(session.my_id(),{}).get("backpack",{}).get("next",0)),_loot_index]
+
+## The uncached half of `drag_target_rect()`.
+func drag_resolve(slot: String, cursor: Vector2i, probe: Dictionary) -> Dictionary:
+	var kind := str(probe.get("kind",""))
 	var landing := Vector2i(-1,-1)
+	if camp_pack_open:
+		# The vault lives in the save file and the carried grids in the player
+		# dictionary; `camp_storage` is the one place that knows which is which, so
+		# the legality preview asks it rather than guessing here.
+		var player: Dictionary=camp_player()
+		landing=session.resolve_drop(CampStorage.items_of(profile,player,slot),CampStorage.grid_of(profile,player,slot),probe,cursor,-1)
+		return {"slot":slot,"cell":landing,"cursor":cursor,"exact":landing==cursor}
 	if slot=="loot":
 		var target: Dictionary=session.container_at(_loot_index)
 		if not target.is_empty():
@@ -2302,11 +2999,27 @@ func mouse_point() -> Vector2:
 func drag_slot_rect() -> Rect2:
 	var slot := str(drag.slot)
 	var index: int=int(drag.source)
+	if camp_pack_open:
+		if slot=="cab":
+			return cabinet_zones.get(index,Rect2())
+		var zone: Dictionary=grids.get(slot,{})
+		if zone.is_empty():
+			# A worn socket is not a grid: the outline is the socket's own box.
+			return equip_zones.get(slot,Rect2())
+		var held: Dictionary=CampStorage.item_at(profile,camp_player(),slot,index)
+		if held.is_empty():
+			return Rect2()
+		var zone_step: float=float(zone.cell)+float(zone.gap)
+		var zone_dims := Catalog.item_size(held)
+		return Rect2(Vector2(zone.origin)+Vector2(int(held.x)*zone_step,int(held.y)*zone_step),Vector2(zone_dims.x*zone_step-float(zone.gap),zone_dims.y*zone_step-float(zone.gap)))
 	if slot.begins_with("slot:"):
 		var at := slot_source(slot)
 		if at<0 or at>=slot_zone_rects.size():
 			return Rect2()
 		return slot_zone_rects[at]
+	if not zone_type(slot).is_empty():
+		# A worn socket is not a grid: the outline is the socket's own box.
+		return equip_zones.get(slot,Rect2())
 	if slot=="loot":
 		var entry: Dictionary=grids.get("loot",{})
 		if entry.is_empty():
@@ -2363,36 +3076,78 @@ func draw_diagonal(a: Vector2, b: Vector2, color: Color) -> void:
 func slot_source(value: String) -> int:
 	return value.substr(5).to_int() if value.begins_with("slot:") else -1
 
+## What the hand is holding. A normal drag holds the whole entry; the right-click hand
+## (`drag.carry`) holds **N units of a pile** — a view built from the source, because
+## nothing is taken off it until the left click lands. That is what makes cancelling
+## cost nothing at all.
 func held_item() -> Dictionary:
 	if not drag.active:
 		return {}
-	var slot := str(drag.slot)
-	var index: int=int(drag.source)
+	var entry := drag_source_item(str(drag.slot),int(drag.source))
+	var units := int(drag.get("carry",0))
+	if units>0 and not entry.is_empty() and Catalog.stacks(str(entry.kind)):
+		var pile: Dictionary=entry.duplicate(true)
+		pile["count"]=mini(units,int(entry.get("count",1)))
+		return pile
+	return entry
+
+## The entry sitting at a drag source, ignoring the carry view.
+func drag_source_item(slot: String, index: int) -> Dictionary:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return {}
+		if slot=="cab":
+			return CampStorage.cabinet_entry(session,player,index)
+		# A worn socket is a source like any other: it holds exactly one piece.
+		if CampStorage.is_socket(slot):
+			return CampStorage.socket_entry(session,player,slot)
+		return CampStorage.item_at(profile,player,slot,index)
 	if slot=="loot":
 		var container: Dictionary=session.container_at(_loot_index)
 		var visible: Array=session.visible_items(container)
 		if index<0 or index>=visible.size():
 			return {}
 		return visible[index]
-	if slot.begins_with("slot:"):
-		return session.item_slot(session.players.get(session.my_id(),{}),slot_source(slot))
+	if str(slot).begins_with("slot:"):
+		return session.item_slot(session.players.get(session.my_id(),{}),slot_source(str(slot)))
+	# A worn socket is a source too, so the hand has to resolve one.
+	var worn_source := zone_type(slot)
+	if not worn_source.is_empty():
+		return session.worn_entry(session.players.get(session.my_id(),{}),worn_source,zone_index(slot))
+	if slot=="bag":
+		return session.bag_as_item(str(session.players.get(session.my_id(),{}).get("backpack",{}).get("key",Catalog.DEFAULT_BAG_KEY)))
 	var list: Array=session.players[session.my_id()][slot].items
 	if index<0 or index>=list.size():
 		return {}
 	return list[index]
 
 func held_size(held: Dictionary) -> Vector2:
+	# Called from `sync_drag()` and from the panel rebuilds; an empty hand (a stale
+	# slot, an item that just left) must be measured as nothing rather than read for
+	# a "kind" that is not there.
+	if held.is_empty():
+		return Vector2.ZERO
 	if drag.slot=="loot":
 		var loot_size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
 		var entry: Dictionary=grids.get("loot",{"cell":LOOT_CELL,"gap":LOOT_GAP})
 		var step: float=float(entry.cell)+float(entry.gap)
 		return Vector2(loot_size.x*step-float(entry.gap),loot_size.y*step-float(entry.gap))
+	# The camp panel draws every grid at its own cell size, so the lifted art is
+	# measured from the registration the layout just made.
+	if camp_pack_open:
+		var camp_size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
+		var zone: Dictionary=grids.get(str(drag.slot),{})
+		if zone.is_empty():
+			return Vector2(58,58)	# lifted out of a socket: one fixed scale
+		var zone_step: float=float(zone.cell)+float(zone.gap)
+		return Vector2(camp_size.x*zone_step-float(zone.gap),camp_size.y*zone_step-float(zone.gap))
 	var cell: float=bag_cell if drag.slot=="backpack" else pocket_cell
 	var gap: float=bag_gap if drag.slot=="backpack" else pocket_gap
 	var size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
-	# An item lifted out of the bar is drawn at the scale of the row it came from,
-	# so the art in the hand is the same size as the art left behind.
-	if str(drag.slot).begins_with("slot:"):
+	# An item lifted out of the bar or off the body is drawn at the socket row's own
+	# scale, so the art in the hand matches the art left behind.
+	if str(drag.slot).begins_with("slot:") or not zone_type(str(drag.slot)).is_empty():
 		cell=SLOT_CELL
 		gap=3.0
 	return Vector2(size.x*(cell+gap)-gap,size.y*(cell+gap)-gap)
@@ -2478,6 +3233,29 @@ func show_inventory() -> void:
 	# A deferred rebuild can land after the bag was closed; drawing then would put
 	# the panels back on a screen the player already dismissed.
 	if not inventory_open or modal:
+		return
+	if camp_pack_open:
+		detach_drag_nodes()
+		clear(overlay)
+		grids.clear()
+		equip_zones.clear()
+		cabinet_zones.clear()
+		slot_zone_rects.clear()
+		panel_rects.clear()
+		var camper: Dictionary=camp_player()
+		if camper.is_empty():
+			return
+		bag_signature=camp_signature(camper)
+		camp_pack.draw(self,camper)
+		# The held item has to stay above the panels, exactly as in a raid.
+		if drag.active:
+			build_drag_nodes()
+			reparent_drag_nodes()
+			var camp_held := held_item()
+			if not camp_held.is_empty():
+				show_drag_item(camp_held)
+				move_drag_ghost(mouse_point(),held_size(camp_held))
+			sync_drag()
 		return
 	if session.roguelike.active(session):
 		stop_drag()
@@ -2993,6 +3771,11 @@ func equip_slot(slot: String, index: int) -> void:
 	selected=-1
 	call_deferred("show_inventory")
 
+## The panel's "卸" button. It keeps the older bargain on purpose: the piece comes
+## off and `stow_equipment()` finds it a home, dropping it on the ground as itself
+## when there is none. The gesture take-offs (double tap / Ctrl+left / F) are the
+## strict ones and refuse instead — the two are different on purpose, see README
+## 「稀有度与自动收纳判定」.
 func unequip_slot(type: String, index: int = 0) -> void:
 	session.action("unequip",{"type":type,"index":index})
 	call_deferred("show_inventory")
@@ -3093,8 +3876,14 @@ func on_finished() -> void:
 		if reward.has("bags"):
 			profile.data.bags=reward.bags
 			profile.data.bag_key=str(reward.bags[0].get("key",Catalog.DEFAULT_BAG_KEY))
+		# Worn kit follows the same rule as the backpack: walking out keeps it on the
+		# Watcher (it is a loadout now, not loot), dying leaves it in the ruins. The
+		# report carries the already-validated dictionary, so death simply writes an
+		# empty one back.
+		if reward.has("loadout"):
+			profile.data.loadout=reward.loadout
 		profile.sanitize_storage()
-		profile.bank_carried_items(reward.get("equipment_loot",[]))
+		profile.bank_carried_items()
 		# Reaching the hidden ending is what recruits 墓煜, and the flag is
 		# written straight into the save file so she stays pickable afterwards.
 		if reward.get("hidden",false):
@@ -3144,7 +3933,7 @@ func on_finished() -> void:
 			var shown: String="  ".join(PackedStringArray(worn.slice(0,2)))
 			if worn.size()>2:
 				shown+=" 等 %d 件" % worn.size()
-			label(page,"身上装备 %s · %s" % [shown,"已存入仓库" if r.escaped else "已散落在废墟"],Vector2(770,y+50),12,MUTED,Vector2(540,22))
+			label(page,"身上装备 %s · %s" % [shown,"撤离后继续穿着" if r.escaped else "已散落在废墟"],Vector2(770,y+50),12,MUTED,Vector2(540,22))
 		i+=1
 	label(page,"当前等级  Lv.%02d     ·     城邦银币  %d     ·     历史最佳  %d" % [profile.level(),profile.data.coins,profile.data.best],Vector2(83,741),19,MUTED)
 	button(page,"返回标题",Vector2(80,804),Vector2(205,57),leave_to_title)

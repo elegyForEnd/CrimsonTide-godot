@@ -1,12 +1,30 @@
 extends RefCounted
 ## The game adds world height separately; all poses share one grounded pivot/scale.
-static var manifest: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/rogue/build/jump-manifest.json"))
+## assets/rogue/build/ is a git-ignored generated folder, so a clean checkout has
+## no jump sheet; callers fall back to the walking pose instead of crashing.
+const JUMP_MANIFEST := "res://assets/rogue/build/jump-manifest.json"
+static var manifest: Dictionary={}
+static var manifest_read := false
 var frames: Dictionary={}
+
+static func jump_specs() -> Dictionary:
+	if not manifest_read:
+		manifest_read=true
+		if FileAccess.file_exists(JUMP_MANIFEST):
+			var parsed: Variant=JSON.parse_string(FileAccess.get_file_as_string(JUMP_MANIFEST))
+			if parsed is Dictionary: manifest=parsed
+	return manifest
 
 func poses(hero: int, standing_height: float) -> Array:
 	if frames.has(hero): return frames[hero]
-	var spec: Dictionary=manifest[str(hero)]
+	var spec: Dictionary=jump_specs().get(str(hero),{})
+	if spec.is_empty() or not spec.has("file") or not spec.has("frames"):
+		frames[hero]=[]
+		return []
 	var sheet: Texture2D=load(str(spec.file))
+	if sheet==null:
+		frames[hero]=[]
+		return []
 	var scale := standing_height/maxf(1,float(spec.standing_height))
 	var result: Array=[]
 	for entry in spec.frames:
@@ -20,4 +38,6 @@ func poses(hero: int, standing_height: float) -> Array:
 
 func frame(hero: int, standing_height: float, velocity: float, height: float, landing_time: float) -> Dictionary:
 	var index := 4 if landing_time>.09 else 5 if landing_time>0 else 0 if height<18 and velocity>300 else 1 if velocity>110 else 2 if velocity>=-110 else 3
-	return poses(hero,standing_height)[index]
+	var list := poses(hero,standing_height)
+	if list.is_empty(): return {}
+	return list[clampi(index,0,list.size()-1)]

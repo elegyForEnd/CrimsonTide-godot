@@ -33,7 +33,10 @@ func run() -> void:
 	var s := TideSession.new()
 	root.add_child(s)
 	s.set_physics_process(false)
-	s.solo({"hero":0,"attributes":{"vigor":20,"mind":20,"endurance":20,"strength":30,"arcane":30}})
+	# The camp issue gear has to be bought, so a spawn config names the piece it wants;
+	# this test is about the attributes, and wears the armour that used to be the
+	# default so its arithmetic keeps testing what it was written for.
+	s.solo({"hero":0,"gear":0,"attributes":{"vigor":20,"mind":20,"endurance":20,"strength":30,"arcane":30}})
 	s.launch(false,1729)
 	s.map_id="city"
 	s.ruins=RoyalCity.new()

@@ -77,15 +77,15 @@ func run() -> void:
 	activity.farm(0)
 	home.state().plots[0].planted = home.now()-1000
 	step(1.6)
-	check(home.state().stock.wheat==0 and home.state().plots[0].crop=="wheat","Maturing during watering cannot silently turn a water animation into harvesting")
+	check(profile.product_count("wheat")==0 and home.state().plots[0].crop=="wheat","Maturing during watering cannot silently turn a water animation into harvesting")
 	home.state().plots[0].planted = home.now()-1000
 	screen.site.refresh_crops(home.state())
 	activity.farm(0)
 	step(0.55)
-	check(activity.action=="harvest" and home.state().stock.wheat==0,"Harvest remains pending during picking animation")
+	check(activity.action=="harvest" and profile.product_count("wheat")==0,"Harvest remains pending during picking animation")
 	await shoot("harvesting")
 	step(0.8)
-	check(home.state().stock.wheat==3 and home.state().plots[0].crop=="","Completed picking yields exactly three and clears plants")
+	check(profile.product_count("wheat")==3 and home.state().plots[0].crop=="","Completed picking yields exactly three and clears plants")
 	screen.site.hero_at = screen.site.SPAWN
 	activity.farm(1)
 	check(not activity.busy(),"Remote plot cannot be operated from another part of map")
@@ -117,16 +117,16 @@ func run() -> void:
 	check(screen.site.hero_activity=="reel" and activity.caught.position.y>0.3,"New reel frames and fish jump animate in scene")
 	await shoot("reeling")
 	step(0.7)
-	check(not activity.busy() and home.state().stock.silver+home.state().stock.moon+home.state().stock.gold==1,"Successful reel grants one catch after animation completes")
+	check(not activity.busy() and profile.product_count("silver")+profile.product_count("moon")+profile.product_count("gold")==1,"Successful reel grants one catch after animation completes")
 	activity.reel()
-	check(home.state().stock.silver+home.state().stock.moon+home.state().stock.gold==1,"Duplicate reel cannot duplicate fish")
+	check(profile.product_count("silver")+profile.product_count("moon")+profile.product_count("gold")==1,"Duplicate reel cannot duplicate fish")
 	home.state().last_cast = 0
 	activity.cast()
 	step(0.9)
 	step(activity.wait_time+0.1)
 	step(6.1)
 	step(1.2)
-	check(home.state().stock.silver+home.state().stock.moon+home.state().stock.gold==1,"Ignoring bite times out without an automatic successful catch")
+	check(profile.product_count("silver")+profile.product_count("moon")+profile.product_count("gold")==1,"Ignoring bite times out without an automatic successful catch")
 	home.state().last_cast = 0
 	activity.cast()
 	screen.set_active(false)
@@ -139,6 +139,54 @@ func run() -> void:
 	screen.home_ui.open("home_shop")
 	check(screen.home_ui.visible,"Seed and tackle shop remains a menu")
 	screen.home_ui.close()
+	# --- items the player drops on the camp floor -----------------------------
+	# The bag panel drops whatever is dragged out of it; F picks it back up into the
+	# character's carried backpack. The floor keeps records, not just art, and it keeps
+	# only the newest 60.
+	var floor_before: int=activity.drops.size()
+	activity.drop_entry(Catalog.make_equipment("weapon",3,4),Vector2(0,0))
+	check(activity.drops.size()==floor_before+1,"a dropped item lands on the camp floor")
+	var floor: Dictionary=activity.drops[activity.drops.size()-1]
+	check(floor.has("entry") and floor.has("node"),"as a record plus its own node")
+	check(str(floor.entry.kind)=="weapon" and int(floor.entry.tier)==4,"keeping the piece's whole identity")
+	check(floor.at is Vector2,"and where it lies")
+	screen.site.hero_at=Vector2(floor.at)
+	check(activity.has_drop_near(screen.site.hero_at),"the floor knows F is standing on it")
+	var received: Array = []
+	activity.item_receiver=func(entry: Dictionary) -> bool:
+		received.append(entry)
+		return true
+	check(activity.pick_up_nearby(),"F picks a floored item up")
+	check(received.size()==1 and str(received[0].kind)=="weapon","and hands it to the bag route with its identity")
+	check(activity.drops.size()==floor_before,"leaving the floor empty of that piece")
+	# A refusal (no room) keeps the piece exactly where it lies.
+	activity.drop_entry(Catalog.make_equipment("gear",1,3),Vector2(0,0))
+	var held_count: int=activity.drops.size()
+	activity.item_receiver=func(entry: Dictionary) -> bool:
+		return false
+	screen.site.hero_at=Vector2(activity.drops[held_count-1].at)
+	check(not activity.pick_up_nearby(),"a refused pickup reports failure")
+	check(activity.drops.size()==held_count,"and the piece stays on the floor")
+	activity.item_receiver=Callable()
+	# The floor keeps the newest 60 items; the oldest simply goes away.
+	for i in 70:
+		activity.drop_entry(Catalog.make_equipment("gear",i%3,3),Vector2(0,0))
+	var items := 0
+	for drop in activity.drops:
+		if drop.has("entry"): items+=1
+	check(items<=activity.GROUND_ITEM_CAP,"the floor keeps at most the cap in items")
+	# Leaving the camp parks the loot as data only; coming back rebuilds it from that.
+	activity.stash_drops()
+	var nodes := 0
+	for drop in activity.drops:
+		if drop.has("node"): nodes+=1
+	check(nodes==0,"leaving the camp frees every drop node")
+	check(activity.drops.size()>0,"while keeping the records")
+	activity.restore_drops()
+	nodes=0
+	for drop in activity.drops:
+		if drop.has("node"): nodes+=1
+	check(nodes==activity.drops.size(),"and coming back rebuilds them from the data")
 	screen.queue_free()
 	session.queue_free()
 	await process_frame

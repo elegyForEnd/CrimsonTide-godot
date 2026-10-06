@@ -108,14 +108,24 @@ func run() -> void:
 			var seeds: int = home.state().seeds.wheat
 			check(press_named(screen.home_ui,"购买  12 ◈"),"Image card purchase is interactive")
 			check(profile.data.coins==coins-12 and home.state().seeds.wheat==seeds+1,"Card purchase commits currency and seed")
-			check(press_named(screen.home_ui,"出售"),"Sell tab opens harvest cards")
-			home.state().stock.wheat = 1
+			check(press_named(screen.home_ui,"出售"),"Sell tab opens harvest holdings cards")
+			profile.receive_product("wheat",2)
+			profile.bank_item({"kind":"wheat","count":6})
 			screen.home_ui.build()
-			check(press_named(screen.home_ui,"出售  +9 ◈") and home.state().stock.wheat==0,"Harvest image card sells one item")
+			check(screen.home_ui.shop_mode=="sell" and profile.product_count("wheat")>=8,"Holdings tab stays active and counts carried produce after rebuild")
+			# Selling from the shop deletes the real instance: the vault pile is drained
+			# first, and its stack's count is trimmed in place.
+			var coins_before: int = profile.data.coins
+			check(press_named(screen.home_ui,"卖 1"),"Sell-one button is live on the holdings card")
+			check(profile.warehouse_count()==1 and int(profile.vault_items()[0].count)==5,"The sold copy left the vault entity, not just the label")
+			check(profile.data.coins==coins_before+9 and profile.product_count("wheat")==7,"Sale pays the unit price and the holding label follows storage")
+			check(press_named(screen.home_ui,"全部出售"),"Sell-all button is live")
+			check(profile.product_count("wheat")==0 and profile.warehouse_count()==0,"Sell-all empties vault cells and carried stacks")
+			check(not press_named(screen.home_ui,"卖 1"),"An empty holding cannot be sold")
 		else:
-			home.state().stock.wheat = 3
+			profile.receive_product("wheat",3)
 			screen.home_ui.build()
-			check(press_named(screen.home_ui,"烹饪") and home.state().meals.bread==1,"Cooking card consumes recipe ingredients")
+			check(press_named(screen.home_ui,"烹饪") and home.state().meals.bread==1,"Cooking card consumes recipe ingredient instances")
 			check(press_named(screen.home_ui,"携带") and home.state().prepared=="bread","Meal card prepares expedition meal")
 			await shoot("kitchen-prepared")
 			check(press_named(screen.home_ui,"卸下餐食") and home.state().prepared=="","Meal can be unprepared")

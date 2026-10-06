@@ -535,17 +535,52 @@ func run() -> void:
 	check(session.kit_weapon(p).is_empty(),"the weapon socket is empty again")
 	check(Catalog.container_count(p.backpack,"weapon")==1,"the taken-off weapon reached the backpack")
 	check(p.pocket.items.is_empty(),"the backpack had room, so the pocket was left alone")
-	# Now the bag has no room: the pocket takes it after its own tidy.
+	# Now the bag has no room. The blade is PURPLE, and the rarity rule says the
+	# pocket is not "room" for purple and below: the take-off has to refuse and
+	# leave the blade on the player rather than quietly banking it safely.
 	check(session.equip_item(p,"backpack",index_of(p.backpack,"weapon")),"the blade is worn a second time")
 	p.backpack.items.clear()
 	for i in 9:
 		Catalog.add_item(p.backpack,"crystal")
 	check(Catalog.container_free(p.backpack)==0,"the backpack is packed solid")
 	check(Catalog.container_free(p.pocket)>0,"the pocket still has room")
-	check(session.unequip_stow(p,"weapon"),"the take-off falls back to the pocket")
-	check(Catalog.container_count(p.pocket,"weapon")==1,"the weapon landed in the pocket")
+	check(session.unequip_stow(p,"weapon")==false,"a purple weapon is refused the pocket, so the take-off fails")
+	check(Catalog.container_count(p.pocket,"weapon")==0,"the pocket was not used for a purple piece")
+	check(not session.kit_weapon(p).is_empty(),"and the purple weapon stays on the player")
 	check(session.container_units(p.backpack)==9,"the full backpack was not disturbed")
-	# With neither container able to take it, the item stays on the player.
+	# Gold is the other side of the same rule: the pocket IS room for gold and above,
+	# so the very same packed backpack does not stop a gold piece coming off.
+	p.backpack.items.clear()
+	p.backpack.items.append(Catalog.make_equipment("weapon",4,4))
+	check(session.equip_item(p,"backpack",0),"a gold blade is worn for the pocket test")
+	check(Catalog.high_quality(session.kit_weapon(p)),"and it really counts as high quality")
+	p.backpack.items.clear()
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	check(session.unequip_stow(p,"weapon"),"a gold weapon still takes the pocket")
+	check(Catalog.container_count(p.pocket,"weapon")==1,"and it landed in the pocket")
+	check(session.container_units(p.backpack)==9,"leaving the full backpack alone")
+	p.pocket.items.clear()
+	# A *swap* is different: the piece knocked off the body has to go somewhere, so it
+	# falls to the ground as itself — one loose item the world draws with its own icon
+	# and F picks up in a press — rather than being wrapped in a searchable 掉落包.
+	session.world_drops.clear()
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	check(session.stow_equipment(p,Catalog.make_equipment("gear",2,3))==false,"a purple piece with nowhere to go is dropped")
+	check(session.world_drops.size()==1,"exactly one drop appeared")
+	var ground: Dictionary=session.world_drops[0]
+	check(session.container_units(ground)==1 and bool(ground.get("loose",false)),"it is one loose item, not a container")
+	check(bool(ground.get("dropped",false)),"marked as a ground drop, so it draws as itself")
+	check(str(ground.items[0].kind)=="gear" and int(ground.items[0].gear)==2,"and the piece kept its identity")
+	p.backpack.items.clear()
+	check(session.pick_up_ground(p),"F picks the dropped piece back up")
+	check(Catalog.container_count(p.backpack,"gear")==1,"and it is in the bag again")
+	check(session.world_drops.is_empty(),"the drop is gone")
+	# With neither container able to take it — and no seat in the pocket for a purple
+	# piece — the item stays on the player.
 	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
 	p.backpack.items.clear()
 	p.backpack.items.append(Catalog.make_equipment("gear",1,3))
@@ -557,8 +592,91 @@ func run() -> void:
 	for i in 4:
 		Catalog.add_item(p.pocket,"relic")
 	check(Catalog.container_free(p.backpack)==0 and Catalog.container_free(p.pocket)==0,"both containers are solid")
-	check(session.unequip_stow(p,"gear",1)==false,"the take-off is refused when nothing can hold the item")
+	check(session.unequip_stow(p,"gear",1)==false,"the gesture take-off is refused when nothing can hold the item")
+	check(session.world_drops.is_empty(),"and a refused gesture drops nothing on the ground")
 	check(not session.kit_gear(p)[1].is_empty(),"the refused item stays worn")
+	# The panel's own "卸" button keeps its older bargain on purpose: the piece comes
+	# off, and with nowhere to go it lies on the ground as itself.
+	session.world_drops.clear()
+	check(session.unequip_item(p,"gear",1),"the panel's take-off still comes off")
+	check(session.kit_gear(p)[1].is_empty(),"leaving the body socket empty")
+	check(session.world_drops.size()==1,"and the piece landed on the ground")
+	check(session.container_units(session.world_drops[0])==1 and bool(session.world_drops[0].get("loose",false)),"as one loose item, not a searchable bag")
+	check(str(session.world_drops[0].items[0].kind)=="gear","with its identity intact")
+	# --- the equipment bar is a drag source too ---------------------------------
+	# A worn piece can be carried to the item bar, to another socket, or into a bag.
+	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	p["equipped"]=session.empty_equipment()
+	p["slots"]=session.empty_item_slots()
+	session.world_drops.clear()
+	session.set_worn_slot(p,"gear",0,Catalog.make_equipment("gear",0,3))
+	check(not session.kit_gear(p)[0].is_empty(),"armour is worn for the socket drag")
+	check(session.swap_sockets(p,"gear0","slot1"),"worn armour can be dragged into the quick bar")
+	check(session.item_slot(p,1).kind=="gear","and it really reached the bar socket")
+	check(session.kit_gear(p)[0].is_empty(),"with the body socket left empty")
+	check(session.swap_sockets(p,"gear0","slot1")==false,"an empty worn socket is not a source")
+	session.set_item_slot(p,1,{})
+	session.set_worn_slot(p,"gear",0,Catalog.make_equipment("gear",0,3))
+	check(session.swap_sockets(p,"gear0","weapon")==false,"armour cannot be dragged into the weapon socket")
+	check(not session.kit_gear(p)[0].is_empty(),"and it stays where it was")
+	session.set_worn_slot(p,"gear",1,Catalog.make_equipment("gear",1,4))
+	check(session.swap_sockets(p,"gear0","gear1")==false,"armour does not fit the sight socket either")
+	# Two sockets that share a kind do change places: the charm pair.
+	session.set_worn_slot(p,"charm",0,{"kind":"charm","tier":3})
+	session.set_worn_slot(p,"charm",1,{"kind":"charm","tier":4})
+	check(session.swap_sockets(p,"charm0","charm1"),"two worn charm sockets change places")
+	check(int(session.kit_charms(p)[1].get("tier",-1))==3 and int(session.kit_charms(p)[0].get("tier",-1))==4,"and each charm is in the other's socket")
+	check(session.move_worn_to(p,"gear",0,"backpack",Vector2i(1,1),false),"a worn piece can be carried into the backpack")
+	check(Catalog.container_count(p.backpack,"gear")==1,"the piece is in the bag")
+	check(session.kit_gear(p)[0].is_empty(),"and it has left the body")
+	# A packed bag refuses the drag without half-undressing the player.
+	p.backpack.items.clear()
+	for i in 9:
+		Catalog.add_item(p.backpack,"crystal")
+	session.set_worn_slot(p,"gear",2,Catalog.make_equipment("gear",2,4))
+	check(session.move_worn_to(p,"gear",2,"backpack",Vector2i(0,0),false)==false,"a packed bag refuses the drag")
+	check(not session.kit_gear(p)[2].is_empty(),"and the piece stays worn")
+	# --- turning a piece that no longer fits rearranges instead of refusing -------
+	# A completely full grid is where the old code refused. Whatever the layout turns
+	# out to be, a rotation must land and must not lose a single unit on either side.
+	p.backpack=Catalog.make_bag("white")
+	p.backpack["gw"]=3
+	p.backpack["gh"]=3
+	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
+	p["slots"]=session.empty_item_slots()
+	session.world_drops.clear()
+	p.backpack.items=[]
+	var filled := 0
+	while Catalog.place_item(p.backpack,{"kind":"ammo","count":1,"rot":false}):
+		filled+=1
+	check(filled>0,"pieces fill the carried bag for the rotation test")
+	var units_total := func() -> int:
+		var total := 0
+		for item in Catalog.container_items(p.backpack): total+=int(item.get("count",1))
+		for item in Catalog.container_items(p.pocket): total+=int(item.get("count",1))
+		for i in session.ITEM_SLOT_COUNT:
+			var slot_item := session.item_slot(p,i)
+			if not slot_item.is_empty(): total+=int(slot_item.get("count",1))
+		for pile in session.world_drops:
+			for item in pile.get("items",[]): total+=int(item.get("count",1))
+		return total
+	var before_units: int=units_total.call()
+	var spun := 0
+	for i in Catalog.container_items(p.backpack).size():
+		if session.rotate_item(p,"backpack",i):
+			spun+=1
+	check(spun>0,"a full grid still turns its pieces")
+	check(units_total.call()==before_units,"and no rotation loses a single unit")
+	check(Catalog.container_items(p.backpack).size()>0,"the pieces stay in the grid while it can hold them")
+	# The core repack: the focus is seated first, and what truly cannot fit comes back
+	# as spill rather than being dropped.
+	var box := Catalog.make_container([],Vector2i(2,1))
+	var spill: Array=Catalog.tidy_around(box,{"kind":"scrap","count":1,"x":0,"y":0,"rot":false})
+	check(spill.is_empty() and Catalog.container_items(box).size()==1,"the focus is seated first in a grid with room")
+	var one_cell := Catalog.make_container([],Vector2i(1,1))
+	var tight_spill: Array=Catalog.tidy_around(one_cell,{"kind":"scrap","count":1,"x":0,"y":0,"rot":false})
+	check(tight_spill.size()==1 and Catalog.container_items(one_cell).is_empty(),"a focus that cannot fit is handed back, never swallowed")
 	p.backpack=Catalog.make_bag("green")
 	# --- a blood crystal is a tally, not a carried item ---------------------
 	session.world_drops.clear()
@@ -671,7 +789,10 @@ func run() -> void:
 	check(session.results[1].pocket.items.size()==1,"even a failed dawn battle keeps the pocket")
 	# --- save file round trip ----------------------------------------------
 	var save := Profile.new()
-	save.path="res://tests/_tmp-profile.json"
+	# Written to user:// like every other test: a save file inside the repository
+	# tree leaves an untracked artefact behind and is refused outright by a
+	# workspace-confined run.
+	save.path="user://systems-profile.json"
 	save.data.coins=987
 	save.data.talents=[2,3,1]
 	save.data.bag_key="blue"

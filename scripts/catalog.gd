@@ -82,6 +82,24 @@ const ITEMS = {
 	,"bloodmoon_nightwomb":{"name":"赤月终焉王胎", "size":Vector2i(3,3), "value":1080, "color":Color("eb7588"), "tier":5, "desc":"终焉赤月尚未诞生的王胎。它在三日血潮尽头等待一位新的弑神者。3×3 格红色传世珍宝。"}
 	,"abyssal_motherheart":{"name":"无光海母之心", "size":Vector2i(3,3), "value":1260, "color":Color("d982a0"), "tier":5, "desc":"吞月渊蛇腹中沉眠的海母之心。带走它的人，也将带走海底最后的黑夜。3×3 格红色传世珍宝。"}
 	,"eternal_night_thronecore":{"name":"永夜王座核心", "size":Vector2i(3,3), "value":1150, "color":Color("e8a0a0"), "tier":5, "desc":"晨曦王城王座深处的赤色核心。它不是王权的象征，而是王权活着的原因。3×3 格红色传世珍宝。"}
+	# Homestead produce: crops and fish are ordinary 1x1 stackable loot now, so a
+	# harvest or a catch enters the carried backpack (and the safe pocket when it
+	# is full) the same way a scrap does. The value mirrors the old sell price.
+	,"wheat":{"name":"晨光麦", "size":Vector2i(1,1), "value":9, "color":Color("e8c678"), "desc":"湖畔菜园收获的麦穗，可入交易行出售或下厨。"}
+	,"carrot":{"name":"赤霞萝卜", "size":Vector2i(1,1), "value":14, "color":Color("e99856"), "desc":"湖畔菜园收获的萝卜，可入交易行出售或下厨。"}
+	,"herb":{"name":"月露草", "size":Vector2i(1,1), "value":21, "color":Color("94d8bf"), "desc":"湖畔菜园收获的月露草药，可入交易行出售或下厨。"}
+	,"silver":{"name":"银鳞鲫", "size":Vector2i(1,1), "value":16, "color":Color("c0cbd6"), "desc":"月湾栈桥钓上的银鳞鲫，可入交易行出售或下厨。"}
+	,"moon":{"name":"月纹鲈", "size":Vector2i(1,1), "value":32, "color":Color("cdd6f2"), "desc":"月湾栈桥钓上的月纹鲈，可入交易行出售或下厨。"}
+	,"gold":{"name":"金冠锦鲤", "size":Vector2i(1,1), "value":65, "color":Color("e8c25a"), "desc":"月湾栈桥钓上的金冠锦鲤，可入交易行出售或下厨。"}
+	# Shop goods. The home trade post sells seeds and bait, and what it sells is a
+	# real grid-occupying entity like every other good: bought units land in the
+	# vault, get planted or cast one at a time, and can be handed back to the
+	# exchange. Their resale value sits below the shop price on purpose, so buying
+	# from the post and instantly dumping there is a loss rather than a money pump.
+	,"wheat_seed":{"name":"晨光麦种", "size":Vector2i(1,1), "value":6, "color":Color("d8b96a"), "desc":"家园商店购入的麦种。每份可播种一块田畦。"}
+	,"carrot_seed":{"name":"赤霞萝卜种", "size":Vector2i(1,1), "value":9, "color":Color("d4823f"), "desc":"家园商店购入的萝卜种。每份可播种一块田畦。"}
+	,"herb_seed":{"name":"月露草种", "size":Vector2i(1,1), "value":13, "color":Color("7fbfa4"), "desc":"家园商店购入的月露草种。每份可播种一块田畦。"}
+	,"bait":{"name":"鱼饵", "size":Vector2i(1,1), "value":2, "color":Color("b9a48f"), "desc":"家园商店购入的钓饵。每次抛竿消耗一份，收竿失败不返还。"}
 }
 const BIOME_COLLECTIBLES := [
 	["wind_chime","rabbit_bell","oath_banner"],
@@ -176,6 +194,24 @@ const GEAR = [
 	{"name":"血月瞄具", "desc":"武器伤害 +15%", "hp":0.0,"damage":0.15,"speed":0.0},
 	{"name":"渡鸦轻靴", "desc":"移动速度 +20", "hp":0.0,"damage":0.0,"speed":20.0}
 ]
+# The camp issue gear is bought, not picked: one piece is worn at a time and the
+# three are unordered in kind (armour / sight / boots), so the price list — not the
+# index order — decides what an upgrade costs. EXCHANGING settles the difference:
+# a dearer piece is paid for, a cheaper one refunds, and the piece left behind is
+# destroyed. `Profile.data.gear` is -1 while nothing is worn.
+const GEAR_PRICES := [180,420,300]
+
+# Safe read of the camp issue gear: -1 (nothing bought yet) and any hand-edited
+# index answer with an empty dictionary instead of crashing the stat maths.
+static func gear_of(index: int) -> Dictionary:
+	if index<0 or index>=GEAR.size():
+		return {}
+	return GEAR[index]
+
+static func gear_price(index: int) -> int:
+	if index<0 or index>=GEAR_PRICES.size():
+		return 0
+	return GEAR_PRICES[index]
 # In-run loot uses the same six qualities as the backpacks. A weapon only pays
 # out while the player is actually holding that weapon; the three gear slots
 # (armour / sight / boots) always pay out.
@@ -190,13 +226,19 @@ const WEAPON_ICONS := ["rifle","sword","heavy","staff","staff_meteor","staff_nee
 const GEAR_ICONS := ["armor","sight","boots"]
 # Keys that must survive a JSON save round trip. Items other than the six loot
 # kinds stay inert; without this list a reload would drop stack counts, backpack
-# quality and every weapon/gear field.
-const SAVED_ITEM_KEYS := ["count","quality","provision","weapon","gear","tier"]
+# quality and every weapon/gear field. `valued` is the "already counted towards the
+# lifetime loot total" stamp: it travels with the instance so banking the same piece
+# twice (withdraw, then store again) can never pay the tally twice.
+const SAVED_ITEM_KEYS := ["count","quality","provision","weapon","gear","tier","valued"]
 
 # The dimensional pocket is a permanent 4x4 container: it is written into the
 # save file and its contents never drop, no matter how the expedition ends.
 const POCKET_GRID := Vector2i(4,4)
 const POCKET_NAME := "次元口袋"
+# The camp vault is a real grid container too, so a deposit can be refused instead
+# of the list growing without bound. 15x15 = 225 cells.
+const WAREHOUSE_GRID := Vector2i(15,15)
+const WAREHOUSE_NAME := "守夜人仓库"
 # Backpack quality decides the size of the extra, droppable storage grid.
 const BAG_TIERS = [
 	{"key":"white", "name":"破损背包", "quality":"白色", "grid":Vector2i(3,3), "color":Color("cfc6bb")},
@@ -561,14 +603,7 @@ static func clean_container(container: Dictionary, grid: Vector2i) -> Dictionary
 		for key in SAVED_ITEM_KEYS:
 			if entry.has(key):
 				item[key]=entry[key]
-		if kind=="weapon":
-			item["weapon"]=clampi(int(entry.get("weapon",0)),0,WEAPONS.size()-1)
-			item["tier"]=tier_of(int(entry.get("tier",0)))
-		elif kind=="gear":
-			item["gear"]=clampi(int(entry.get("gear",0)),0,GEAR.size()-1)
-			item["tier"]=tier_of(int(entry.get("tier",0)))
-		elif kind=="backpack":
-			item["quality"]=bag_key({"key":entry.get("quality",DEFAULT_BAG_KEY)})
+		clamp_entry(item)
 		if can_place(result,item,Vector2i(item.x,item.y),-1,grid):
 			result.append(item)
 	if container.has("key"):
@@ -581,6 +616,71 @@ static func clean_container(container: Dictionary, grid: Vector2i) -> Dictionary
 	container["gh"]=grid.y
 	container["next"]=maxi(int(container.get("next",1)),1)
 	return container
+
+# One item, validated exactly the way a container's contents are. The saved loadout
+# and the item bar hold entries that have no grid position of their own, so they use
+# this instead of a container round trip — a hand-edited save cannot smuggle an
+# unknown kind or a weapon index past the live tables through either path.
+static func clean_slot_entry(entry) -> Dictionary:
+	if not entry is Dictionary:
+		return {}
+	var kind := str(entry.get("kind",""))
+	if not ITEMS.has(kind):
+		return {}
+	var item := {"kind":kind}
+	for key in SAVED_ITEM_KEYS:
+		if entry.has(key):
+			item[key]=entry[key]
+	return clamp_entry(item)
+
+# The kind-specific fields a saved item carries, clamped to the live tables.
+static func clamp_entry(item: Dictionary) -> Dictionary:
+	var kind := str(item.get("kind",""))
+	if kind=="weapon":
+		item["weapon"]=clampi(int(item.get("weapon",0)),0,WEAPONS.size()-1)
+		item["tier"]=tier_of(int(item.get("tier",0)))
+	elif kind=="gear":
+		item["gear"]=clampi(int(item.get("gear",0)),0,GEAR.size()-1)
+		item["tier"]=tier_of(int(item.get("tier",0)))
+	elif kind=="backpack":
+		item["quality"]=bag_key({"key":item.get("quality",DEFAULT_BAG_KEY)})
+	return item
+
+# The worn kit as it is stored in the save file: one weapon, three gear pieces, two
+# charms and the three quick sockets. The shape matches `TideSession.empty_equipment()`
+# plus `empty_item_slots()`, so the save file and the live player dictionary can be
+# copied between without a translation layer.
+static func empty_loadout() -> Dictionary:
+	return {"weapon":{},"gear":[{},{},{}],"charm":[{},{}],"slots":[{},{},{}]}
+
+# A saved loadout, validated: an unknown kind, a weapon in the armour slot or a
+# hand-edited index is dropped rather than worn. Shared by the profile (on load and
+# save) and by the session (when a raid is configured), so both agree on the shape.
+static func clean_loadout(raw) -> Dictionary:
+	var clean := empty_loadout()
+	if not raw is Dictionary:
+		return clean
+	var weapon := clean_slot_entry(raw.get("weapon",{}))
+	if not weapon.is_empty() and str(weapon.get("kind",""))=="weapon":
+		clean["weapon"]=weapon
+	clean["gear"]=clean_slot_list(raw.get("gear",[]),3,"gear")
+	clean["charm"]=clean_slot_list(raw.get("charm",[]),2,"charm")
+	# The item bar takes any item at all, so its sockets are only checked against
+	# the catalog.
+	clean["slots"]=clean_slot_list(raw.get("slots",[]),3,"")
+	return clean
+
+# A fixed-length list of validated sockets: a missing or malformed entry leaves the
+# socket empty. `kind` is the only item kind the socket accepts ("" = anything).
+static func clean_slot_list(raw, size: int, kind: String) -> Array:
+	var source: Array = raw if raw is Array else []
+	var list: Array = []
+	for i in size:
+		var entry: Dictionary=clean_slot_entry(source[i]) if i<source.size() else {}
+		if not kind.is_empty() and not entry.is_empty() and str(entry.get("kind",""))!=kind:
+			entry={}
+		list.append(entry)
+	return list
 
 static func add_item(container: Dictionary, kind: String) -> bool:
 	var list: Array = container.get("items",[])
@@ -619,7 +719,7 @@ static func prefers_pocket(kind: String) -> bool:
 static func chest_grid(class_index: int) -> Vector2i:
 	return Vector2i(5,5) if class_index>=2 else Vector2i(4,4)
 
-const STACK_KINDS := ["crystal","scrap","medicine","ammo","charm"]
+const STACK_KINDS := ["crystal","scrap","medicine","ammo","charm","wheat","carrot","herb","silver","moon","gold","bait","wheat_seed","carrot_seed","herb_seed"]
 
 static func stacks(kind: String) -> bool:
 	return kind in STACK_KINDS
@@ -674,6 +774,31 @@ static func tidy(container: Dictionary) -> void:
 			place_loot(container,entry)
 		else:
 			place_item(container,entry)
+
+## Repacks a container with one piece **seated first**: the item the player asked to
+## turn gets the freed grid before anything else, so a rotation can never be the thing
+## that loses its seat. Everything else is laid back down the way `tidy()` does it, and
+## the entries that no longer fit are returned in the order they lost their seats — the
+## caller decides where they go (the vault, the bar, the ground) or rolls the whole
+## thing back. Nothing is ever dropped on the floor by this function itself.
+static func tidy_around(container: Dictionary, focus: Dictionary) -> Array:
+	var rest: Array = []
+	for item in container_items(container):
+		var kind := str(item.kind)
+		if stacks(kind):
+			for i in int(item.get("count",1)):
+				rest.append(kind)
+		else:
+			rest.append(item.duplicate())
+	container["items"]=[]
+	var spill: Array = []
+	if not place_item(container,focus):
+		spill.append(focus)
+	for entry in rest:
+		var seated := place_loot(container,entry) if entry is String else place_item(container,entry)
+		if not seated:
+			spill.append({"kind":entry,"count":1} if entry is String else entry)
+	return spill
 
 static func can_hold(container: Dictionary, kind: String) -> bool:
 	if not ITEMS.has(kind):

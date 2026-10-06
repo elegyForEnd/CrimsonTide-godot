@@ -146,7 +146,7 @@ func equipment(item: Dictionary, slot: String, at: Vector2, starter: bool, index
 func update_live(p: Dictionary) -> void:
 	if not is_instance_valid(health): return
 	var s=host.session
-	var speed: float=Homestead.bonus(p,"speed")+Catalog.HEROES[p.hero].speed+p.talents[2]*9+Catalog.GEAR[p.gear].speed+s.equipment_speed(p)+float(p.rogue_speed)
+	var speed: float=Homestead.bonus(p,"speed")+Catalog.HEROES[p.hero].speed+p.talents[2]*9+float(Catalog.gear_of(int(p.gear)).get("speed",0.0))+s.equipment_speed(p)+float(p.rogue_speed)
 	speed*=1.0-float(p.get("rogue_slow",0))
 	var values: Array=["%.1f" % s.weapon_damage(p),"%.2f s" % (Catalog.weapon(p.weapon).rate*s.equipment_rate(p)),"%.0f" % speed,str(int(p.max_hp)),"%d / %d" % [p.mana,p.max_mana],"%.1f%%" % ((1.0-s.incoming_damage(p,1.0))*100)]
 	for i in stat_values.size(): stat_values[i].text=values[i]

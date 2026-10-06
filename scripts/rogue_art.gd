@@ -1,7 +1,11 @@
 extends RefCounted
 
 const BuildArt = preload("res://scripts/rogue_build_art.gd")
-var flask_icon: Texture2D=preload("res://assets/rogue/build/blood-flask-v1.png")
+## The painted flask lives in the git-ignored generated folder, so a clean
+## checkout must not preload it: preloading a missing file is a parse error for
+## this script and for everything that depends on it.
+const FLASK_ICON := "res://assets/rogue/build/blood-flask-v1.png"
+var flask_icon: Texture2D=null
 var monsters: Texture2D
 var items: Texture2D
 var props: Texture2D
@@ -92,6 +96,10 @@ func _init() -> void:
 	monster_frames=slice_sheet(monsters,4,5,"monsters")
 	for entry in slice_sheet(items,4,4,"items"): item_icons.append(entry.texture)
 	for entry in slice_sheet(props,4,3,"props"): prop_icons.append(entry.texture)
+	# The generated flask is absent on a clean checkout; the inherited heal cell
+	# (item_icons[9], the same mapping offer_icon uses) keeps it readable.
+	if ResourceLoader.exists(FLASK_ICON): flask_icon=load(FLASK_ICON)
+	if flask_icon==null and item_icons.size()>9: flask_icon=item_icons[9]
 
 func slice_sheet(texture: Texture2D, columns: int, rows: int, key: String) -> Array:
 	var source := texture.get_image()

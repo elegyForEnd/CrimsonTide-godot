@@ -20,6 +20,13 @@ func run() -> void:
 	for kind in 4:
 		session.enemies.clear()
 		session.bullets.clear()
+		# Every round needs its arena free again: the launch scattered ambient
+		# residents, and the previous round marked the habitat as held. `spawn_enemy()`
+		# refuses a held habitat by returning nothing, which used to leave this test
+		# crashing on an empty `enemies` list instead of testing enemy attacks.
+		for site in session.ruins.sites:
+			site["engaged"]=false
+			site["cleared"]=false
 		p.hp=p.max_hp
 		p.invuln=0.0
 		session.spawn_enemy(Vector2(1800,1100),kind)

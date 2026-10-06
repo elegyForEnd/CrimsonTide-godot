@@ -2,8 +2,13 @@ extends Node3D
 ## Actions live in the world. Inventory commits only when an action completes.
 const Rules = preload("res://scripts/homestead.gd")
 const Art = preload("res://scripts/home_art.gd")
+const ItemArt = preload("res://scripts/ui_art.gd")
 var camp: Control
 var home
+## Where a picked-up floor item goes. `main.gd` sets it to its own route into the
+## character's carried backpack, so the camp floor behaves exactly like picking loot up
+## in a raid; a return of false means "no room", and the piece stays on the floor.
+var item_receiver: Callable = Callable()
 var selected_crop := "wheat"
 var action := ""
 var elapsed := 0.0
@@ -18,6 +23,7 @@ var quality := 0.0
 var rng := RandomNumberGenerator.new()
 var tools_root := Node3D.new()
 var effects_root := Node3D.new()
+var drops_root := Node3D.new()
 var tool: Node3D
 var rod_tip := Vector3.ZERO
 var bobber: MeshInstance3D
@@ -30,6 +36,10 @@ var rings: Array = []
 var catch_roll := 0.0
 var outcome := ""
 var outcome_age := 0.0
+# Surplus produce that had no room in the bag or pocket, lying on the ground for
+# the player to pick up by hand with F. Each entry is a Sprite3D plus how many
+# units it still carries, so a half-empty stack stays on the floor.
+var drops: Array = []
 
 func _ready() -> void:
 	rng.randomize()
@@ -37,6 +47,8 @@ func _ready() -> void:
 	effects_root.name = "ActivityEffects"
 	add_child(tools_root)
 	add_child(effects_root)
+	add_child(drops_root)
+	drops_root.name = "ActivityDrops"
 	add_child(highlight)
 	var mat := paint(Color("a9db96"),true)
 	for edge in [Vector3(2.12,0.025,0.04),Vector3(2.12,0.025,0.04),Vector3(0.04,0.025,1.98),Vector3(0.04,0.025,1.98)]:
@@ -235,10 +247,136 @@ func cancel() -> void:
 func finish(message: String) -> void:
 	outcome = message
 	outcome_age = 2.5
+	spill_overflow()
 	cancel()
 	camp.site.refresh_crops(home.state())
 	camp.say(message)
 	camp.home_changed.emit()
+
+# Anything the harvest or catch left behind because both containers were full gets
+# its own billboard on the ground, within reach of F at the spot that produced it.
+func spill_overflow() -> void:
+	var surplus: Dictionary = home.take_overflow()
+	if surplus.is_empty(): return
+	var units := int(surplus.units)
+	var kind := str(surplus.kind)
+	while units>0:
+		var batch := mini(6,units)
+		drop_item(kind,batch,Vector2(rng.randf_range(-42,42),rng.randf_range(-30,30)))
+		units-=batch
+
+func drop_item(kind: String, units: int, offset: Vector2) -> void:
+	var at: Vector2 = camp.site.safe_position(origin+offset)
+	var node := drop_node(Art.icon(kind),at)
+	drops.append({"node":node,"kind":kind,"units":units,"at":at})
+
+## What the camp floor keeps of the newest dropped items: past that the oldest simply
+## goes away. The data is tiny, but every drop is also a Sprite3D in the tree, and a
+## camp that slows down for loot nobody picked up is worse than one that forgets it.
+const GROUND_ITEM_CAP := 60
+
+## An item on the camp floor, dropped by the player out of the bag panel. The record
+## carries the whole entry, so a tier-5 sword on the ground is still a tier-5 sword
+## when it is picked back up.
+func drop_entry(entry: Dictionary, offset: Vector2) -> void:
+	var at: Vector2 = camp.site.safe_position(origin+offset)
+	var node := drop_node(ItemArt.icon(Catalog.item_icon(entry)),at)
+	drops.append({"node":node,"entry":entry.duplicate(true),"at":at})
+	trim_drops()
+
+## Keeps the newest `GROUND_ITEM_CAP` dropped items; produce is left alone (it arrives
+## from harvesting and thins out on its own as the player picks it up).
+func trim_drops() -> void:
+	var kept: Array = []
+	var items := 0
+	for i in range(drops.size()-1,-1,-1):
+		var drop: Dictionary=drops[i]
+		if drop.has("entry"):
+			items+=1
+			if items>GROUND_ITEM_CAP:
+				free_drop_node(drop)
+				continue
+		kept.push_front(drop)
+	drops=kept
+
+## One Sprite3D for one drop: the shared shape of both kinds of floor loot.
+func drop_node(icon: Texture2D, at: Vector2) -> Sprite3D:
+	var node := Sprite3D.new()
+	if icon is AtlasTexture:
+		node.texture=icon.atlas
+		node.region_enabled=true
+		node.region_rect=icon.region
+	else:
+		node.texture=icon
+	node.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	node.pixel_size = 0.0035
+	node.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	node.no_depth_test = false
+	node.position = camp.site.point(at,camp.site.ground_height(at)+22)
+	drops_root.add_child(node)
+	return node
+
+func free_drop_node(drop: Dictionary) -> void:
+	var node = drop.get("node")
+	if node and is_instance_valid(node): node.queue_free()
+	drop.erase("node")
+
+## Leaving the camp parks the floor loot as **data only**: the nodes are freed and
+## rebuilt on the way back, so a raid never pays for loot lying in a camp it cannot
+## see. The records stay in memory, which is exactly the "closing the game loses it,
+## the raid does not" bargain the camp floor is kept under.
+func stash_drops() -> void:
+	for drop in drops: free_drop_node(drop)
+	drops_root.visible=false
+
+func restore_drops() -> void:
+	drops_root.visible=true
+	for drop in drops:
+		if drop.has("node"): continue
+		var at: Vector2=drop.get("at",origin)
+		if drop.has("entry"):
+			drop["node"]=drop_node(ItemArt.icon(Catalog.item_icon(drop.entry)),at)
+		else:
+			drop["node"]=drop_node(Art.icon(str(drop.get("kind",""))),at)
+
+func has_drop_near(at: Vector2, within: float = 120.0) -> bool:
+	for drop in drops:
+		if at.distance_to(drop.at)<within: return true
+	return false
+
+func nearest_drop(at: Vector2, within: float = 120.0) -> int:
+	var best := -1
+	var distance := within
+	for i in drops.size():
+		var d: float = at.distance_to(drops[i].at)
+		if d<distance:
+			distance = d
+			best = i
+	return best
+
+# F at a ground stack: pull it back through the same container routing the harvest
+# used, so a picked-up fish joins the bag then the pocket. Refuses when there is
+# still no room, leaving the stack exactly where it is.
+func pick_up_nearby() -> bool:
+	var i := nearest_drop(camp.site.hero_at)
+	if i<0: return false
+	var drop: Dictionary = drops[i]
+	# A dropped item asks the panel's owner (the character's backpack, the same
+	# containers a raid uses); a refusal keeps it on the floor.
+	if drop.has("entry"):
+		if not item_receiver.is_valid(): return false
+		if not bool(item_receiver.call(drop.entry)): return false
+		camp.say("拾取 %s。" % Catalog.item_name(drop.entry))
+		free_drop_node(drop)
+		drops.remove_at(i)
+		return true
+	if home.profile.receive_product(str(drop.kind),int(drop.units))>0:
+		camp.say("背包和次元口袋都满了，先腾出空间再拾取。")
+		return false
+	camp.say("拾取 %s ×%d。" % [Rules.CROPS.get(str(drop.kind),Rules.FISH.get(str(drop.kind),{})).name,int(drop.units)])
+	free_drop_node(drop)
+	drops.remove_at(i)
+	return true
 
 func particle(at: Vector3, velocity: Vector3, color: Color, life: float = 0.6) -> void:
 	var node := ball(effects_root,0.035,at,color)
