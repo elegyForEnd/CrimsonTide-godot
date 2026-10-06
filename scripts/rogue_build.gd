@@ -52,6 +52,17 @@ static func forge_level(p: Dictionary) -> int:
 	var item: Dictionary=p.equipped.get("weapon",{})
 	return int(p.get("build_forge_level",0)) if not item.is_empty() and str(item.get("instance_id",""))==str(p.get("build_forge_bound","")) else 0
 
+static func visual_state(p: Dictionary) -> Dictionary:
+	var level := clampi(forge_level(p),0,5)
+	var item: Dictionary=p.equipped.get("weapon",{})
+	var quality := clampi(int(item.get("tier",0)),0,5)
+	var core_id := str(p.get("build_core",""))
+	var def := Content.entry(core_id)
+	var valid: bool=level>=2 and core_id.begins_with("WC") and not def.is_empty() and int(def.get("family",-1))==Catalog.weapon_family(int(p.weapon))
+	return {"forge":level,"quality":quality,"quality_factor":Content.QUALITY[quality],
+		"core":core_id if valid else "","core_rank":(2 if level>=4 else 1) if valid else 0,
+		"temper":str(p.get("build_temper","")) if level>=3 else ""}
+
 static func core(p: Dictionary, n: int) -> int:
 	if forge_level(p)<2 or str(p.get("build_core",""))!="WC%03d" % n: return 0
 	return 2 if forge_level(p)>=4 else 1
@@ -125,11 +136,23 @@ static func unit(s, p: Dictionary, hero: bool = false) -> float:
 static func context(s, p: Dictionary, kind: String) -> Dictionary:
 	p.build_serial=int(p.get("build_serial",0))+1
 	var result := {"root":"%s:%d" % [p.id,p.build_serial],"kind":kind,"depth":0,"seen":{},"counted":false,"family":Catalog.weapon_family(int(p.weapon)),"weapon":weapon_id(p),"combo":int(p.combo),"height":float(p.get("height",0)),"unit":unit(s,p,kind=="skill"),"cost":float(p.get("build_last_cost",0)),"refunded":0.0,"first":true,"route":int(p.get("build_next_route",-1)),"hero_route":int(p.get("build_next_hero",-1)),"art_bonus":buff(p,"relay",s.elapsed)+(.2 if buff(p,"rotation",s.elapsed)>0 else 0)}
+	result["vfx"]=visual_state(p) # Snapshot before a projectile outlives this equipment.
 
 	for input in p.build_inputs:
 		if input.get("root","")=="" and input.key=={"attack":"A","art":"S","skill":"U"}.get(kind,""): input.root=result.root
 	p.build_next_route=-1; p.build_next_hero=-1
 	return result
+
+static func core_visual(s, p: Dictionary, n: int, at: Vector2, ctx: Dictionary = {}) -> void:
+	var rank := core(p,n)
+	if rank<=0: return
+	var state := visual_state(p)
+	if state.core!="WC%03d" % n: return
+	var shown: Dictionary=ctx.get("core_visuals",{}) if ctx.has("root") else {}
+	if shown.has(n): return
+	shown[n]=true
+	if ctx.has("root"): ctx["core_visuals"]=shown
+	s.broadcast_combat({"kind":"weapon_core","p":at,"aim":p.aim,"id":p.id,"weapon_index":int(p.weapon),"core_id":n,"core_rank":rank,"vfx":state})
 
 static func heal(s, source: Dictionary, target: Dictionary, ratio: float, passive: bool = true) -> float:
 	if target.status!="active" or target.hp>=target.max_hp: return 0.0
@@ -396,7 +419,8 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 		if marked and rank(p,24)>0 and ready(s,p,"T024",3):
 			consume(e,p.id,"mark",1)
 			for target in nearby(s,p,e,180): proc(s,p,target,.2,power)
-			if core(p,9)>0 and ready(s,p,"WC009-mark",4): mana(s,p,core(p,9))
+			if core(p,9)>0 and ready(s,p,"WC009-mark",4):
+				mana(s,p,core(p,9)); core_visual(s,p,9,p.p,ctx)
 		elif marked: consume(e,p.id,"mark",1)
 		if shock>=5 and rank(p,48)>0 and ready(s,p,"T048",4):
 			consume(e,p.id,"shock",5); proc(s,p,e,.35,power)
@@ -407,13 +431,18 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 			if rank(p,47)>0 and ready(s,p,"T047",4): add_status(s,p,e,"shock",int(r(p,47,[1,2])),power)
 			if first and gear(p,63) and ready(s,p,"E063",4): proc(s,p,e,.15,power)
 			if first and family in [1,2] and rank(p,78)>0 and ready(s,p,"T078",4): proc(s,p,e,r(p,78,[.16,.24]),power)
-		if third and core(p,2)>0 and ready(s,p,"WC002",2): add_status(s,p,e,"bleed",core(p,2),power)
+		if third and core(p,2)>0 and ready(s,p,"WC002",2):
+			add_status(s,p,e,"bleed",core(p,2),power); core_visual(s,p,2,e.p,ctx)
 		if first and int(ctx.get("route",-1))==0 and family==1: p.p=s.ruins.move(p.p,p.aim*35)
-		if first and int(ctx.get("route",-1))==1 and core(p,1)>0: p.p=s.ruins.move(p.p,p.aim*(45 if core(p,1)==1 else 60))
+		if first and int(ctx.get("route",-1))==1 and core(p,1)>0:
+			p.p=s.ruins.move(p.p,p.aim*(45 if core(p,1)==1 else 60)); core_visual(s,p,1,p.p,ctx)
 		if float(ctx.get("height",0))>0:
-			if core(p,4)>0: add_poise(s,p,e,10 if core(p,4)==1 else 16,power)
-			if core(p,6)>0: add_status(s,p,e,"shock",core(p,6),power)
-			if core(p,8)>0 and ready(s,p,"WC008",5): add_status(s,p,e,"mark",1,power)
+			if core(p,4)>0:
+				add_poise(s,p,e,10 if core(p,4)==1 else 16,power); core_visual(s,p,4,e.p,ctx)
+			if core(p,6)>0:
+				add_status(s,p,e,"shock",core(p,6),power); core_visual(s,p,6,e.p,ctx)
+			if core(p,8)>0 and ready(s,p,"WC008",5):
+				add_status(s,p,e,"mark",1,power); core_visual(s,p,8,e.p,ctx)
 			if core(p,2)>0 and blood==5 and ready(s,p,"WC002-air",6): consume(e,p.id,"bleed",2); proc(s,p,e,.10 if core(p,2)==1 else .16,power)
 		if family==2:
 			var poise := (50 if w==20 else 35)+r(p,10,[6,10,14])+(25 if rank(p,16)>0 else 0)+(12 if gear(p,31) else 0)+(10 if engraving(p,9) else 0)
@@ -456,7 +485,9 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 	if art:
 		add_poise(s,p,e,20,power)
 		if first:
+			var refunded_before := float(ctx.refunded)
 			refund(s,p,ctx,r(p,59,[.08,.12,.16])+(.1 if engraving(p,13) else 0)+(buff(p,"combo_refund",s.elapsed)))
+			if core(p,9)>0 and float(ctx.refunded)>refunded_before and buff(p,"combo_refund",s.elapsed)>0: core_visual(s,p,9,p.p,ctx)
 			if rank(p,62)>0 and ready(s,p,"T062",6): proc(s,p,e,r(p,62,[.16,.24]),power)
 			if gear(p,48) and ready(s,p,"E048",5): mana(s,p,2)
 			for ally in s.players.values():
@@ -469,8 +500,10 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 				var ally := lowest(s,p,220,true)
 				if not ally.is_empty(): shield(s,ally,.03,3)
 			if w==48 and ready(s,p,"W048",8): heal(s,p,p,.02)
-			if core(p,5)>0 and ready(s,p,"WC005",8): shield(s,p,.03 if core(p,5)==1 else .05,3); grant(p,"art_strike",.06 if core(p,5)==1 else .10,3,s.elapsed)
-			if core(p,11)>0 and float(ctx.height)>0 and ready(s,p,"WC011",6): add_status(s,p,e,"frost",core(p,11),power)
+			if core(p,5)>0 and ready(s,p,"WC005",8):
+				shield(s,p,.03 if core(p,5)==1 else .05,3); grant(p,"art_strike",.06 if core(p,5)==1 else .10,3,s.elapsed); core_visual(s,p,5,p.p,ctx)
+			if core(p,11)>0 and float(ctx.height)>0 and ready(s,p,"WC011",6):
+				add_status(s,p,e,"frost",core(p,11),power); core_visual(s,p,11,e.p,ctx)
 			if rank(p,32)>0 and fire>=3 and ready(s,p,"T032",6): field(p,e.p,3,90,.08,power)
 		if blood==5 and rank(p,6)>0 and ready(s,p,"T006",4): consume(e,p.id,"bleed",3); proc(s,p,e,r(p,6,[.30,.40]),power)
 
@@ -510,7 +543,8 @@ static func perfect(s, p: Dictionary) -> void:
 	grant(p,"perfect_strike",(.18 if gear(p,70) else 0),2,s.elapsed)
 	if rank(p,76)>0 and ready(s,p,"T076",4): mana(s,p,r(p,76,[2,3,4]))
 	if rank(p,77)>0 and ready(s,p,"T077",5): shield(s,p,r(p,77,[.04,.06]),3,"T077")
-	if core(p,3)>0 and ready(s,p,"WC003",5): mana(s,p,core(p,3))
+	if core(p,3)>0 and ready(s,p,"WC003",5):
+		mana(s,p,core(p,3)); core_visual(s,p,3,p.p)
 	if rank(p,80)>0: grant(p,"haste",.25,3,s.elapsed); grant(p,"perfect_haste",1,3,s.elapsed)
 	p.build_combo_label="完美闪避"
 	p.build_combo_time=1.2
@@ -569,7 +603,8 @@ static func action_event(s, p: Dictionary, token: String) -> void:
 		grant(p,"dodge_strike",bonus,2,now)
 		if gear(p,18): grant(p,"speed",18,2,now)
 		if gear(p,60) and ready(s,p,"E060",4): field(p,p.p,2,50,.04,unit(s,p),2)
-		if core(p,7)>0: grant(p,"reload_haste",.05 if core(p,7)==1 else .08,5,now)
+		if core(p,7)>0:
+			grant(p,"reload_haste",.05 if core(p,7)==1 else .08,5,now); core_visual(s,p,7,p.p)
 	if token=="S":
 		grant(p,"art_window",1,3,now)
 		if gear(p,17) and ready(s,p,"E017",6): grant(p,"mirror_echo",1,3,now)
@@ -663,8 +698,10 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 			p.height=0.0; p.height_velocity=0.0
 			p.attack=maxf(p.attack,.25 if Catalog.weapon_family(int(p.weapon))==2 and p.air_attacks>0 else .12)
 			p.build_landing_time=.18
-			if core(p,3)>0: grant(p,"landing_strike",.08 if core(p,3)==1 else .12,2,s.elapsed)
-			if core(p,10)>0 and p.air_attacks>0: grant(p,"landing_cost",.08 if core(p,10)==1 else .12,2,s.elapsed)
+			if core(p,3)>0:
+				grant(p,"landing_strike",.08 if core(p,3)==1 else .12,2,s.elapsed); core_visual(s,p,3,p.p)
+			if core(p,10)>0 and p.air_attacks>0:
+				grant(p,"landing_cost",.08 if core(p,10)==1 else .12,2,s.elapsed); core_visual(s,p,10,p.p)
 	var move: Vector2=s.inputs.get(p.id,{}).get("move",Vector2.ZERO)
 	if move.normalized().dot(p.aim)<-.6: p["build_back_time"]=s.elapsed
 	p.build_stationary=float(p.get("build_stationary",0))+dt if move.length()<.1 and p.dodge_time<=0 else 0.0
@@ -966,7 +1003,9 @@ static func hero_effect(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> voi
 				add_status(s,p,e,"mark",1,power)
 				var mark: Dictionary=e.get("build_status",{}).get(str(p.id),{}).get("mark",{})
 				if not mark.is_empty(): mark.time=5.0 if high else 4.0
-	if core(p,12)>0: extend_summons(p,.5 if core(p,12)==1 else 1)
+	if core(p,12)>0:
+		extend_summons(p,.5 if core(p,12)==1 else 1)
+		if not p.build_summons.is_empty(): core_visual(s,p,12,p.p,ctx)
 
 static func xp_needed(level: int) -> int:
 	return 40+15*(maxi(1,level)-1)

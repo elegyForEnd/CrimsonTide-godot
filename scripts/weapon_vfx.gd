@@ -35,7 +35,7 @@ static func profile(index: int) -> Dictionary:
 	var run_weapon := index>=600 and index<648
 	var row: Array=ROGUE[index-600] if run_weapon else CAMPAIGN[clampi(index,0,20)]
 	return {"weapon":index,"motif":str(row[0]),"color":Color(row[1]),"detail":int(row[2]),
-		"style":str(STYLES[row[0]]),"procedural":run_weapon,"family":Catalog.weapon_family(index)}
+		"style":str(STYLES[row[0]]),"run":run_weapon,"procedural":run_weapon and not preload("res://scripts/weapon_image_art.gd").available(index),"family":Catalog.weapon_family(index)}
 
 static func stroke(combo: int, family: int, detail: int) -> Dictionary:
 	var stage := clampi(combo,0,2)
@@ -112,12 +112,22 @@ static func draw(target: CanvasItem, fx: Dictionary, glow: bool) -> void:
 	if kind=="charge":
 		color.a=smoothstep(0,.15,t)*(1.0-smoothstep(.85,1,t))*.60
 		sigil(target,r*(.85-.25*t),t,color,motif,detail,glow)
+		var art := preload("res://scripts/weapon_image_art.gd").texture(int(identity.weapon),0)
+		if art:
+			var size := Vector2.ONE*r*1.6
+			target.draw_texture_rect(art,Rect2(-size*.5,size),false,Color(1,1,1,color.a*(.08 if glow else .38)))
 		return
 	if kind=="impact":
 		gem(target,Vector2.ZERO,r*.72,0,Color(color.lerp(Color.WHITE,.7),fade),glow)
 		gem(target,Vector2.ZERO,r*.42,PI*.5,Color(color,fade*.55),glow)
 		if motif in ["frost","storm","mirror"]:
 			for i in 3: gem(target,Vector2.from_angle(i*TAU/3)*r*t,r*.22,i*TAU/3,color,glow)
+		return
+	if kind=="core":
+		var art := preload("res://scripts/weapon_image_art.gd").core_texture(int(fx.get("core_id",0)))
+		if art:
+			var size := Vector2.ONE*r*2
+			target.draw_texture_rect(art,Rect2(-size*.5,size),false,Color(1,1,1,fade*(.12 if glow else .86)))
 		return
 	if kind in ["beam","chain"]:
 		var points := PackedVector2Array()
@@ -129,7 +139,11 @@ static func draw(target: CanvasItem, fx: Dictionary, glow: bool) -> void:
 			for side in [-1,1]:
 				line(target,PackedVector2Array([Vector2(0,side*9),Vector2(r*.4,side*5),Vector2(r,0)]),Color(color,color.a*.35),1,glow)
 		gem(target,Vector2(r*birth,0),14,0,color,glow)
+		var focus := preload("res://scripts/weapon_image_art.gd").texture(int(identity.weapon),2)
+		if focus: target.draw_texture_rect(focus,Rect2(Vector2(r*birth-28,-28),Vector2(56,56)),false,Color(1,1,1,fade*(.12 if glow else .8)))
 		return
+	if preload("res://scripts/weapon_image_art.gd").available(int(identity.weapon)) and kind not in ["route","hero_combo"]:
+		return # The painted asset owns the silhouette; simulation supplies only sparks.
 	if kind=="detonation":
 		var grow := .65+t*.5
 		cast_shape(target,identity,r*grow,birth,color,glow)
@@ -151,6 +165,14 @@ static func draw(target: CanvasItem, fx: Dictionary, glow: bool) -> void:
 			for side in [-1,1]: ribbon(target,r*(.5+t*.5),side*.15,side*1.1,r*.06,birth,color,glow,.35)
 		return
 	if kind=="hero_combo":
+		var art := preload("res://scripts/weapon_image_art.gd").hero_texture(int(fx.hero),detail)
+		if art:
+			var size := art.get_size()*minf(r*2/art.get_width(),r*2/art.get_height())
+			var higher: bool=int(fx.get("upgrade",{}).get("forge",0))>=5
+			target.draw_texture_rect(art,Rect2(-size*.5,size),false,Color(1,1,1,fade*(.14 if glow and higher else .09 if glow else .92)))
+			if detail==3:
+				var ending := preload("res://scripts/weapon_image_art.gd").overlay(int(identity.weapon),2)
+				if ending: target.draw_texture_rect(ending,Rect2(-size*.45,size*.9),false,Color(color,fade*(.08 if glow else .42)))
 		match motif:
 			"blood":
 				for i in 2: ribbon(target,r*(.65+i*.22),-1.4+i*.25,2.8,r*.13,birth,color,glow)

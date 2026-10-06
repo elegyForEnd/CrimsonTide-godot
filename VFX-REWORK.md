@@ -148,3 +148,9 @@ rogue_actions.gd 将 combo_route 随普攻/战技广播；四类派生分别是�
 效果仍受 96 条特效、192 条碎屑及原粒子上限约束；地图切换清空；释放时一次捕获挂点，延迟回声不追随恢复动作。零覆盖度的刃迹不提交空多边形。原始 PNG、长宽比及既有大招素材均保留，没有生成新的位图素材。
 
 预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png、build/weapon-vfx-battle-*.png。运行 tests/weapon_vfx_preview.gd 可重新生成对照图；tests/weapon_vfx_identity.gd 做真实 GPU 像素差异检查，tests/weapon_vfx_battle.gd 覆盖实际战斗事件、挂点和角色确认派生。试玩：build/CrimsonTide-WeaponVFX.exe（单文件内嵌 PCK）。
+
+## 2026-10-06 图片素材与实际强化（替代上述程序主轮廓方案）
+
+主轮廓现使用内置 ImageGen 生成的 74 张独立透明方图，完整素材与强化口径见 WEAPON-IMAGE-VFX.md。绯红剑三段各自一张，其他武器以专属主图配合类别接斩/终结图层、动画揭示、固定挂点与少量粒子；52 个不同武器名称共用到 69 把具体武器，48 把闯关武器各自保持独立主图。长图不参与运行时。
+
+锻造只轻微提高刃缘光，命中范围和伤害规则保持现有逻辑；+2/+4 核心图在机制实际执行时播放，+3/+5 角色连招按权威确认。弹丸、爆炸、连锁与命中冻结出手时的品质/强化状态。预览 build/weapon-image-upgrades.png，试玩 build/CrimsonTide-WeaponImageVFX.exe。

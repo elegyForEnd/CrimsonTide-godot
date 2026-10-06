@@ -16,7 +16,7 @@ func run() -> void:
 		var texture: Texture2D=Library.texture(key)
 		check(texture!=null and not texture is AtlasTexture,"Weapon %d uses an individual texture" % index)
 		check(texture.get_width()>=1024 and texture.get_height()>=1024,"Weapon %d retains native HD resolution" % index)
-		check(texture.resource_path.begins_with(Library.IMAGE_BASE),"Weapon %d uses final ImageGen artwork" % index)
+		check(texture.resource_path.begins_with(Library.IMAGE_BASE) or texture.resource_path.begins_with(Library.ImageArt.BASE),"Weapon %d uses original square ImageGen artwork" % index)
 		paths[texture.resource_path]=true
 		fx.reset()
 		fx.event({"kind":"strike","p":Vector2.ZERO,"weapon":Catalog.weapon_family(index),"weapon_index":index,"combo":2,"reach":100.0,"pattern":Catalog.weapon(index).get("pattern","")},0)

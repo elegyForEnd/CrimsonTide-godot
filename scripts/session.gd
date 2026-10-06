@@ -2944,6 +2944,7 @@ func release_weapon_art(p: Dictionary) -> bool:
 		return false
 	p.art_cd=float(move.cooldown)
 	var build_ctx: Dictionary={}
+	build_ctx["vfx"]=weapon_visual_state(p)
 	if roguelike.active(self):
 		p.art_cd=maxf(3,float(move.cooldown)*(1.0-RogueBuild.stat(self,p,"art_cdr"))*(1.15 if RogueBuild.rank(p,64)>0 else 1.0))
 		p["build_art_base"]=p.art_cd
@@ -3002,6 +3003,7 @@ func release_strike(p: Dictionary) -> void:
 	var direction: Vector2=p.strike_aim
 	var damage: float=weapon_damage(p)
 	var build_ctx: Dictionary=p.get("build_strike_context",{}) if roguelike.active(self) else {}
+	if not build_ctx.has("vfx"): build_ctx["vfx"]=weapon_visual_state(p)
 	if family==1 and p.combo==2:
 		damage*=1.2 if roguelike.active(self) and RogueBuild.weapon_id(p)==4 else 1.0 if roguelike.active(self) and RogueBuild.weapon_id(p)==12 else 1.4
 	var spell := str(w.get("spell","star"))
@@ -3096,7 +3098,9 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 	e.p=ruins.move(e.p,direction*knock)
 	if players.has(owner):
 		players[owner].hitstop=0.045 if knock<40 else 0.085
-	broadcast_combat({"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id})
+	var impact_data := {"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id}
+	if build_context.has("vfx"): impact_data["vfx"]=build_context.vfx
+	broadcast_combat(impact_data)
 
 func broadcast_audio(cue: String, p: Dictionary, variant: int = -1) -> void:
 	broadcast_combat({"kind":"audio","cue":cue,"p":p.p,"id":p.get("id",0),"variant":variant})
@@ -3107,9 +3111,17 @@ func broadcast_combat(data: Dictionary) -> void:
 	if not source.is_empty():
 		if not data.has("weapon_index"): data["weapon_index"]=int(source.weapon)
 		if not data.has("hero"): data["hero"]=int(source.hero)
+		if not data.has("vfx"):
+			data["vfx"]=weapon_visual_state(source)
 	combat_event.emit(data)
 	if online and authority():
 		remote_combat.rpc(data)
+
+func weapon_visual_state(p: Dictionary) -> Dictionary:
+	if roguelike.active(self): return RogueBuild.visual_state(p)
+	var tier := clampi(int(p.equipped.get("weapon",{}).get("tier",0)),0,5)
+	if Catalog.is_starter(int(p.weapon)): tier=0
+	return {"forge":0,"quality":tier,"quality_factor":1.0+Catalog.WEAPON_DAMAGE_BONUS[tier],"core":"","core_rank":0,"temper":""}
 
 @rpc("authority","call_remote","reliable")
 func remote_combat(data: Dictionary) -> void:
@@ -3558,7 +3570,9 @@ func spell_burst(b: Dictionary, at: Vector2) -> void:
 		build_hits+=1
 		if spell=="vortex" and e.hp>0 and not e.get("rogue_guardian",false):
 			e.p=ruins.move(e.p,pull*(35 if roguelike.active(self) else 42))
-	broadcast_combat({"kind":"spell_burst","p":at,"spell":spell,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))})
+	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
+	if b.get("build_context",{}).has("vfx"): burst_data["vfx"]=b.build_context.vfx
+	broadcast_combat(burst_data)
 
 func spell_chain(b: Dictionary, first: Dictionary) -> void:
 	var visited: Array=[first.id]
@@ -3573,7 +3587,9 @@ func spell_chain(b: Dictionary, first: Dictionary) -> void:
 				best=distance
 		if nearest.is_empty():
 			break
-		broadcast_combat({"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain","id":int(b.owner),"weapon_index":int(b.get("weapon_index",6))})
+		var arc_data := {"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain","id":int(b.owner),"weapon_index":int(b.get("weapon_index",6))}
+		if b.get("build_context",{}).has("vfx"): arc_data["vfx"]=b.build_context.vfx
+		broadcast_combat(arc_data)
 		var direction: Vector2=(nearest.p-from.p).normalized()
 		damage_enemy(nearest,float(b.damage)*([.45,.30][hop] if roguelike.active(self) else pow(.68,hop+1)),int(b.owner),direction,8.0,3,int(b.get("weapon_index",-1)),b.get("build_context",{}))
 		visited.append(nearest.id)

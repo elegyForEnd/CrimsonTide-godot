@@ -37,7 +37,7 @@ static func start_art(s, p: Dictionary) -> bool:
 	p.swing_total=p.cast_time
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=false
-	s.broadcast_combat({"kind":"windup","p":p.p,"aim":p.aim,"weapon":family,"weapon_index":p.weapon,"windup":windup,"id":p.id,"combo":2})
+	s.broadcast_combat({"kind":"windup","p":p.p,"aim":p.aim,"weapon":family,"weapon_index":p.weapon,"windup":windup,"id":p.id,"combo":2,"vfx":ctx.get("vfx",{})})
 	for key in ["hammer_cost","rotation","relay"]: p.build_buffs.erase(key)
 	return true
 
@@ -96,7 +96,7 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 	var damage: float=float(pending.damage)*share
 	var spell: String=move.get("spell","star")
 	var reach: float=move.reach
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height,"combo_route":int(ctx.get("route",-1))})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
 	if kind=="volley":
 		var count: int=int(move.get("count",3))
 		var pellets: Dictionary={}
@@ -108,8 +108,8 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 			projectile(s,p,aim.rotated((i-(count-1)*.5)*.12),damage*weight,reach,spell,ctx,pierce,decay,pellets)
 		return
 	var center: Vector2=aim_point(s,p,aim,reach) if kind=="burst" else p.p
-	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"id":p.id,"weapon_index":p.weapon})
-	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell,"id":p.id,"weapon_index":p.weapon})
+	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
+	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell,"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
 	var index := 0
 	for e in ordered_targets(s,p.p):
 		if index>=(3 if family in [2,3] else 5): break
@@ -138,7 +138,7 @@ static func normal(s, p: Dictionary) -> void:
 	if ctx.is_empty(): ctx=Build.context(s,p,"attack")
 	var damage: float=s.weapon_damage(p)
 	if family==1 and p.combo==2: damage*=1.2 if n==4 else 1.0 if n==12 else 1.4
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"weapon_index":p.weapon,"spell":w.get("spell","star"),"pattern":w.get("pattern",""),"reach":float(w.reach),"id":p.id,"combo":p.combo,"height":p.height,"combo_route":int(ctx.get("route",-1))})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":direction,"weapon":family,"weapon_index":p.weapon,"spell":w.get("spell","star"),"pattern":w.get("pattern",""),"reach":float(w.reach),"id":p.id,"combo":p.combo,"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
 	if family in [1,2]:
 		var index := 0
 		for e in ordered_targets(s,p.p):
@@ -163,7 +163,7 @@ static func normal(s, p: Dictionary) -> void:
 				var delta: Vector2=e.p-p.p
 				if e.hp>0 and s.enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),s.elapsed,true,"beam",30.0,-.1,float(p.height)) and s.ruins.clear_line(p.p,e.p):
 					s.damage_enemy(e,damage*[1.0,.65,.45,.30][index],p.id,direction,w.knock,3,p.weapon,ctx); index+=1
-			s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell,"id":p.id,"weapon_index":p.weapon,"height":p.height})
+			s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell,"id":p.id,"weapon_index":p.weapon,"height":p.height,"vfx":ctx.get("vfx",{})})
 		else:
 			var count := 5 if spell=="scatter" else 1
 			var pellets: Dictionary={}

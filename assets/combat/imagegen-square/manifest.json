@@ -1,0 +1,1930 @@
+{
+  "generator": "built-in ImageGen",
+  "original_rgba": true,
+  "assets": {
+    "weapon_600_release": {
+      "file": "weapon_600_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-286fd8f5-3fe4-4ce6-923f-d2029d3435a4.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            75,
+            180,
+            1196,
+            1093
+          ]
+        }
+      ],
+      "sha256": "25fd4fee3f1281eb09ec8d8e181833046cc3367ab0e54f9c9621fbb8996215b6",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_600_release.txt"
+    },
+    "weapon_600_return": {
+      "file": "weapon_600_return.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-27261d58-6b0b-4015-8cd3-9b3ca46a0008.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            163,
+            123,
+            1206,
+            1134
+          ]
+        }
+      ],
+      "sha256": "b0d63e2dad520d9d80fe8582565e21b216d4865471627f00f896098f050d4633",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_600_return.txt"
+    },
+    "weapon_600_finisher": {
+      "file": "weapon_600_finisher.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-2933d8ad-ecef-421c-8042-b07802c4bfae.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            98,
+            206,
+            1215,
+            1045
+          ]
+        }
+      ],
+      "sha256": "eaa4417be14b4edea89f7709e1015282a03709f66b8a3c734b916e29c7d3bb35",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_600_finisher.txt"
+    },
+    "weapon_601_release": {
+      "file": "weapon_601_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-7ec7c766-1d12-429a-9f20-638364b045ec.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            67,
+            358,
+            1216,
+            884
+          ]
+        }
+      ],
+      "sha256": "c985e56352724ed86ddc63c90293f03bd60ec957e3df03f2345e368cf47e56b4",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_601_release.txt"
+    },
+    "weapon_606_release": {
+      "file": "weapon_606_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-7b5b98cd-987e-4ff7-939a-f310a1f70306.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            80,
+            231,
+            1234,
+            1005
+          ]
+        }
+      ],
+      "sha256": "ae2c369a34b90814a558540fbb1b0d2c50215c5d505145b5434046de53038369",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_606_release.txt"
+    },
+    "weapon_607_release": {
+      "file": "weapon_607_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-02a9c19c-f819-496b-a67f-43acf792bdca.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            87,
+            251,
+            1200,
+            1001
+          ]
+        }
+      ],
+      "sha256": "c654282aa29fe7665cf267b1eab304697c21bd1f60a59e47a600408bd6574489",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_607_release.txt"
+    },
+    "weapon_602_release": {
+      "file": "weapon_602_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-9127dae4-d0b4-485c-844c-2de3626e0de6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            137,
+            194,
+            1231,
+            1047
+          ]
+        }
+      ],
+      "sha256": "f409ec094bbb537697b9a6cba6247cc403b0d1f0c84e93c1736b7945a65d375a",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_602_release.txt"
+    },
+    "weapon_610_release": {
+      "file": "weapon_610_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-0f65a2bf-9f02-4527-a7f0-429c01d95cae.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            127,
+            157,
+            1218,
+            1071
+          ]
+        }
+      ],
+      "sha256": "a4dce6ac7e63c6e62bcedf1c3457347bae35b0da4cb33437c4468f457f80fb88",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_610_release.txt"
+    },
+    "weapon_603_release": {
+      "file": "weapon_603_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-1d6b4ddf-f9f2-499b-8a17-95534d2fda5b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            47,
+            248,
+            1238,
+            1019
+          ]
+        }
+      ],
+      "sha256": "0c6307df3d19cddee9ad19adf1e69c69f1618033054ddb59e356a0eecae50c03",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_603_release.txt"
+    },
+    "weapon_611_release": {
+      "file": "weapon_611_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-0669585f-bc31-4db7-9e2f-c2bab52466ef.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            99,
+            261,
+            1208,
+            980
+          ]
+        }
+      ],
+      "sha256": "b361b7d38e21a79acfe9f202d5ebada38fad56df7c456f25d944d4a0990b9040",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_611_release.txt"
+    },
+    "weapon_604_release": {
+      "file": "weapon_604_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-4d34c26f-7507-4a77-908e-75ae241ce11c.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            48,
+            236,
+            1212,
+            1017
+          ]
+        }
+      ],
+      "sha256": "5805b2dc88c720001bf6163a8cf0209cc1210aeab9948df9c6471c6a439d87ef",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_604_release.txt"
+    },
+    "weapon_612_release": {
+      "file": "weapon_612_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-c0eca3b3-c7d9-4303-9756-556ca38ab21a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            79,
+            180,
+            1202,
+            1058
+          ]
+        }
+      ],
+      "sha256": "2935311e383d61ae0bf3d6eb9c9dcafd4cfea1cb5f5ddfb146c1d030b6d1dec8",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_612_release.txt"
+    },
+    "weapon_605_release": {
+      "file": "weapon_605_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-710104e0-777b-4195-9cba-2b222db01cc5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            70,
+            324,
+            1218,
+            947
+          ]
+        }
+      ],
+      "sha256": "5ca9cb60a43a4b471b0ba02ea15c3078f92a3397187b2d7332ba5b10ad3c9177",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_605_release.txt"
+    },
+    "weapon_613_release": {
+      "file": "weapon_613_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-75e51d9b-7425-4e95-bd79-b79524c8b17a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            99,
+            211,
+            1190,
+            1022
+          ]
+        }
+      ],
+      "sha256": "e529423417f1e5c352a282959173051df35e34651584662dde229ac8f96c90c8",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_613_release.txt"
+    },
+    "weapon_609_release": {
+      "file": "weapon_609_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-60a1659e-3c1a-4ea9-b585-001f860650d7.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            85,
+            221,
+            1194,
+            1026
+          ]
+        }
+      ],
+      "sha256": "3c698ea101cef56fdad637316846a27a59b326ab18796e884d3a0ef5bd17ff56",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_609_release.txt"
+    },
+    "weapon_614_release": {
+      "file": "weapon_614_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-9a08ac54-fe8f-4961-a913-5ccf2f7d3ec2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            106,
+            215,
+            1176,
+            978
+          ]
+        }
+      ],
+      "sha256": "d7a68037e49015389fd986844f112041bf2a117f387249fd2bad7680c2dc681b",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_614_release.txt"
+    },
+    "weapon_608_release": {
+      "file": "weapon_608_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-8fa1429d-ee67-47c4-99b9-e15350833d20.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            62,
+            266,
+            1234,
+            1032
+          ]
+        }
+      ],
+      "sha256": "ab7c12b6da0fb284aae11c13622edb37e0e1a64ad78313cba978d9fc46125e45",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_608_release.txt"
+    },
+    "weapon_615_release": {
+      "file": "weapon_615_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-004f1e8e-f95c-4d48-9f95-355c6388a661.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            42,
+            186,
+            1238,
+            1078
+          ]
+        }
+      ],
+      "sha256": "d93c766d90ae4cf50e7f58588065d222b928249bd9acd6028754826e7732cd8a",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_615_release.txt"
+    },
+    "weapon_616_release": {
+      "file": "weapon_616_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-d861b7be-a2e8-493b-9070-ac1d0a1e5aab.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            88,
+            186,
+            1213,
+            1091
+          ]
+        }
+      ],
+      "sha256": "a60c02850fceba1a077abe68915acbf2d7a910e53a1c3b9bffa130e3832be989",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_616_release.txt"
+    },
+    "weapon_617_release": {
+      "file": "weapon_617_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-bbacbc31-45a7-4dfd-9285-4da6e57c0a03.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            69,
+            146,
+            1228,
+            1102
+          ]
+        }
+      ],
+      "sha256": "2f096d32a77d07e20b1b1661d06a2d34aab69d10970627119ca34ca6dbc4f2dd",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_617_release.txt"
+    },
+    "weapon_618_release": {
+      "file": "weapon_618_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-db8d4a3b-35a6-42b3-8438-f2372fb3d181.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            78,
+            196,
+            1220,
+            1042
+          ]
+        }
+      ],
+      "sha256": "5d2c70a64d0a52f25381b62a2ae59e1cc55431f7ce3a858ebd899890ea882ce4",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_618_release.txt"
+    },
+    "weapon_619_release": {
+      "file": "weapon_619_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-3e2bf46b-e6e6-4ed6-bbff-5d3dc75c7a62.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            82,
+            180,
+            1198,
+            1079
+          ]
+        }
+      ],
+      "sha256": "f22dc6249b5e91afcfb6bb60239d1a4d4a99965109a96b414f77922c3be6d2e1",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_619_release.txt"
+    },
+    "weapon_620_release": {
+      "file": "weapon_620_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-a39c8093-7c70-4055-b87f-c1d4ba85a031.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            61,
+            167,
+            1227,
+            1060
+          ]
+        }
+      ],
+      "sha256": "139d7dc7975ee70088379d308c96adf088c4062261bc5bae8d04c21c5cf9af15",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_620_release.txt"
+    },
+    "weapon_621_release": {
+      "file": "weapon_621_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-47dec053-32be-4f8c-a7c0-bbb948af1b8d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            70,
+            273,
+            1228,
+            983
+          ]
+        }
+      ],
+      "sha256": "9cb076555428f1d125e956598edc8d112e1cf352f6419f1d9a299da344f61661",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_621_release.txt"
+    },
+    "weapon_622_release": {
+      "file": "weapon_622_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-ce4a3e7e-9310-45ba-b36f-45b747fe8e6b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            100,
+            225,
+            1199,
+            1057
+          ]
+        }
+      ],
+      "sha256": "000f4587b5aeeaec457d184cdaae12186d51bb2aac5c222fb5b8f2fe7db1dd03",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_622_release.txt"
+    },
+    "weapon_623_release": {
+      "file": "weapon_623_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-b66a67ec-3655-4a02-a153-bd24fb5c4aca.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            76,
+            238,
+            1225,
+            1020
+          ]
+        }
+      ],
+      "sha256": "a925ed9057233c33bb4286f8dc66330e86642fa3cd322a7a3524021fec22eed5",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_623_release.txt"
+    },
+    "weapon_624_release": {
+      "file": "weapon_624_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-4aef0699-a6c4-4283-b5fe-1d6ee7f2d39d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            133,
+            313,
+            1176,
+            926
+          ]
+        }
+      ],
+      "sha256": "f77a79dde905238001c1f9ec45cf0097acc678dbfa25b0706e60f6eb263f8e92",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_624_release.txt"
+    },
+    "weapon_625_release": {
+      "file": "weapon_625_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-ef8f5e24-3da4-403b-bff5-0948e99e2bdc.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            82,
+            339,
+            1206,
+            913
+          ]
+        }
+      ],
+      "sha256": "781912ae64f2bfddcaadf41bd54aff6f4039193e2155502443c8d7d5ef6eb10a",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_625_release.txt"
+    },
+    "weapon_626_release": {
+      "file": "weapon_626_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-5ab458fd-04ed-4e84-a59a-ba405df4fe89.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            73,
+            371,
+            1210,
+            895
+          ]
+        }
+      ],
+      "sha256": "be7e2d1a41024af98ad1c88cd4cb84d7a6259a01f5e9b140271a5e3d39d4e62a",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_626_release.txt"
+    },
+    "weapon_627_release": {
+      "file": "weapon_627_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-1dcc6c1c-bce0-4a1b-9435-8ebb30e30921.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            88,
+            245,
+            1212,
+            982
+          ]
+        }
+      ],
+      "sha256": "1146b27e2ca2be6d8d6ba161740144fc4cb10dec6dcbefb380ce4c9323d860a5",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_627_release.txt"
+    },
+    "weapon_628_release": {
+      "file": "weapon_628_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-3293bc7f-b1d9-49ad-8f59-845208fe45ac.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            79,
+            398,
+            1220,
+            911
+          ]
+        }
+      ],
+      "sha256": "456062c650f7dd550d800c30630ec100a1c62aa84a5741696edacbebfbe09881",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_628_release.txt"
+    },
+    "weapon_629_release": {
+      "file": "weapon_629_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-727e71c8-66f3-4ea7-b758-c000de9eb903.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            49,
+            267,
+            1233,
+            1013
+          ]
+        }
+      ],
+      "sha256": "8a83443be0accdfa6772081dba760adcb5d287df149145fc791931b27ef0624c",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_629_release.txt"
+    },
+    "weapon_630_release": {
+      "file": "weapon_630_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-91115681-8e33-47f0-9023-3dd4e6898693.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            73,
+            333,
+            1195,
+            947
+          ]
+        }
+      ],
+      "sha256": "0df2c3e3aa375ea3d3fca0869161c242974c3d31862201f2f0807c173ebb481e",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_630_release.txt"
+    },
+    "weapon_631_release": {
+      "file": "weapon_631_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-e050619b-06d2-4b3e-b88f-a4da4e7c9631.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            73,
+            243,
+            1205,
+            1029
+          ]
+        }
+      ],
+      "sha256": "08a0b908bcbf6ce0becaf4d2076328120057966dc774cbda42486eb73fca0118",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_631_release.txt"
+    },
+    "weapon_632_release": {
+      "file": "weapon_632_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-27688733-8816-4b71-8754-59bfa26abd42.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            63,
+            235,
+            1232,
+            1005
+          ]
+        }
+      ],
+      "sha256": "392eeef2515bde45fbd3ea7a7004739468cb578c7817643d782b8e4281a3af1d",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_632_release.txt"
+    },
+    "weapon_633_release": {
+      "file": "weapon_633_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-b9f32581-8d3b-4aef-a731-dce5db95a79f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            23,
+            305,
+            1242,
+            933
+          ]
+        }
+      ],
+      "sha256": "5cbf85459aaf11dfb7bae65f507d46bb33ed710a929adabb8978efa8220c891d",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_633_release.txt"
+    },
+    "weapon_634_release": {
+      "file": "weapon_634_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-c38d57c1-b42f-4167-afc5-4e986ed7d158.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            36,
+            349,
+            1224,
+            900
+          ]
+        }
+      ],
+      "sha256": "9801accb1bcec2cfbd1cb112333cbc3d0c058ae61a2028d3089654b12a5dc02c",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_634_release.txt"
+    },
+    "weapon_635_release": {
+      "file": "weapon_635_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-92dd01c8-49e5-48c2-a322-db5f26f7a9a8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            97,
+            260,
+            1187,
+            996
+          ]
+        }
+      ],
+      "sha256": "4c9bd96ce53850908f908f392e7625aee7aa3e08e158c502746b1a33e924120e",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_635_release.txt"
+    },
+    "weapon_636_release": {
+      "file": "weapon_636_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-ad2c7ec6-abc3-4eea-a39a-870f3cbb05d6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            61,
+            330,
+            1229,
+            951
+          ]
+        }
+      ],
+      "sha256": "0412a5de26d713d9089d249f89fc76de2a67b5f6a54355e39f6b91c8afd42a6e",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_636_release.txt"
+    },
+    "weapon_637_release": {
+      "file": "weapon_637_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-1468e551-63d0-43c4-a4f3-14bad1d49623.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            84,
+            259,
+            1188,
+            964
+          ]
+        }
+      ],
+      "sha256": "2eba1392c3e25d56fbd61d73d2661db8b0c4a0e0ffb276f343f065226e8f4a13",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_637_release.txt"
+    },
+    "weapon_638_release": {
+      "file": "weapon_638_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-0bad3b42-caa7-4f5a-98e3-c01d046b2e75.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            76,
+            360,
+            1187,
+            918
+          ]
+        }
+      ],
+      "sha256": "79fc1e8232df4425415f4ac92dd1323028c844798552915ea6597eecdb1a8811",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_638_release.txt"
+    },
+    "weapon_639_release": {
+      "file": "weapon_639_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-ad14963d-6bce-4294-bc86-16edede161a6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            52,
+            207,
+            1203,
+            1028
+          ]
+        }
+      ],
+      "sha256": "88f407f483dcd33c543ab37a43d81e2c343894e8f436a3560c52297ff42150ed",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_639_release.txt"
+    },
+    "weapon_640_release": {
+      "file": "weapon_640_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-8e7f7758-5361-409a-b601-5d7a011da7ca.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            178,
+            191,
+            1188,
+            1061
+          ]
+        }
+      ],
+      "sha256": "4ce74cebbe2f24302eb51c10d538e058b23e38baf78370cdea9f9c28490a2aee",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_640_release.txt"
+    },
+    "weapon_641_release": {
+      "file": "weapon_641_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-19c5c78f-8628-464b-8abf-47e152f4cca6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            91,
+            333,
+            1201,
+            899
+          ]
+        }
+      ],
+      "sha256": "5427bab3080b2d66286c410557931d6ece963fe45e2afa546314622f65164c24",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_641_release.txt"
+    },
+    "weapon_642_release": {
+      "file": "weapon_642_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-a9997236-3017-4506-91d7-f385d199fbe6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            65,
+            163,
+            1224,
+            916
+          ]
+        }
+      ],
+      "sha256": "9d36c1fb4c12ec973175defe2625adf300413e1908f940ccd2b29e93961a856b",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_642_release.txt"
+    },
+    "weapon_643_release": {
+      "file": "weapon_643_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-6a43589a-5ce5-47c1-8ed3-b546516f5684.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            53,
+            221,
+            1235,
+            1019
+          ]
+        }
+      ],
+      "sha256": "43719aa7225e01e066c5251a483e3b0c4718511e73b48c2783c7b0f6d729a838",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_643_release.txt"
+    },
+    "weapon_644_release": {
+      "file": "weapon_644_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-13ed63e6-f694-401f-99a6-777a520b30ab.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            70,
+            328,
+            1235,
+            906
+          ]
+        }
+      ],
+      "sha256": "8267cbe48e1e3953585b244fae4b9bdc64e371c85fc80dd7c000619325b1586f",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_644_release.txt"
+    },
+    "weapon_645_release": {
+      "file": "weapon_645_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-f2e9e9b7-70ef-495b-bf20-65ea5fe96cb5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            112,
+            276,
+            1222,
+            1009
+          ]
+        }
+      ],
+      "sha256": "ba0fe40d04971ab299c475bcb1d2fc99f7ddc504b468c102026cd3e80e88f2ba",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_645_release.txt"
+    },
+    "weapon_646_release": {
+      "file": "weapon_646_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-a458f61d-4564-4644-aad8-8cbfb31ba0d9.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            40,
+            313,
+            1221,
+            916
+          ]
+        }
+      ],
+      "sha256": "1c6399b8cb12ad4659f8c455a7f8dcb0009c1b604658bda7e8a0f18df39041fe",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_646_release.txt"
+    },
+    "weapon_647_release": {
+      "file": "weapon_647_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-326a9c61-0107-4d9f-a409-3ccf3feda8ef.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            77,
+            210,
+            1187,
+            1042
+          ]
+        }
+      ],
+      "sha256": "27a980f9fc0eda860ec6584fae1b64573a79a82316fc7553e98476a8e3d41573",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_647_release.txt"
+    },
+    "weapon_17_release": {
+      "file": "weapon_17_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-94da3f70-eb85-49bb-8bed-c2622fc2a3bd.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            96,
+            158,
+            1221,
+            1091
+          ]
+        }
+      ],
+      "sha256": "18eb3bba4ef67e99bc10dcdec3e85cf30218871f79e3690e624fb5a8070200db",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_17_release.txt"
+    },
+    "weapon_18_release": {
+      "file": "weapon_18_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-6a5becc8-a6ed-4636-909c-e4f803734539.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            120,
+            298,
+            1179,
+            997
+          ]
+        }
+      ],
+      "sha256": "10d04f6f4b47172ad6c13a52b0fbadaca09262fab666335fc9d70e844e2008cb",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_18_release.txt"
+    },
+    "weapon_19_release": {
+      "file": "weapon_19_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-5f876508-31d3-4cf9-baa1-0b3e6625fe60.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            109,
+            200,
+            1220,
+            1080
+          ]
+        }
+      ],
+      "sha256": "6730e233c3863f2f898e3061a61deb5b5cc63aebd14b503006485cce53602caf",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_19_release.txt"
+    },
+    "weapon_20_release": {
+      "file": "weapon_20_release.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-0ca8d170-5ed7-45b9-8ffc-c8df027cca99.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            102,
+            174,
+            1209,
+            1073
+          ]
+        }
+      ],
+      "sha256": "292a8e933928f7a2e818d03a791390370efc1217a846ac64e2c332707393d3bb",
+      "prompt": "assets/combat/imagegen-square/prompts/weapon_20_release.txt"
+    },
+    "combo_1_return": {
+      "file": "combo_1_return.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-302bfe6e-2db0-4bba-91f5-c0acb81a2a2d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            198,
+            65,
+            1108,
+            1211
+          ]
+        }
+      ],
+      "sha256": "f898c1f916873f25147d6b7c91bf5b85e212e25e001ed1176a77f472e8b11bdc",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_1_return.txt"
+    },
+    "combo_1_finisher": {
+      "file": "combo_1_finisher.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-9d652371-a8e1-4d55-a1e7-4d4f4297a5a3.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            48,
+            136,
+            1237,
+            1121
+          ]
+        }
+      ],
+      "sha256": "a68fe39172662b0144a18e408210dc6b2b8329a4fbe6e53a634c8a537a43e4ab",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_1_finisher.txt"
+    },
+    "combo_2_return": {
+      "file": "combo_2_return.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-8434642d-a042-413f-afe4-4c6176bc2520.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            152,
+            150,
+            1182,
+            1127
+          ]
+        }
+      ],
+      "sha256": "01b8f1d0b3481412b0564c11e1b98fbd4a262681de35cca961d4703ec3014456",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_2_return.txt"
+    },
+    "combo_2_finisher": {
+      "file": "combo_2_finisher.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-e4d9e6d2-a960-4019-9a49-cebe9f94899d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            81,
+            156,
+            1179,
+            1074
+          ]
+        }
+      ],
+      "sha256": "287ef1645466265b1dc5128f4c0db9fe63ed35598ec80a1c164bbebf3c3358e5",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_2_finisher.txt"
+    },
+    "combo_0_return": {
+      "file": "combo_0_return.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-9a027af1-3a38-4f8b-bedd-8d6003c3d986.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            107,
+            367,
+            1158,
+            914
+          ]
+        }
+      ],
+      "sha256": "46158698111dd38eb17198f07ed20949ae366eca8b58ca54284ebfe1dabe6000",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_0_return.txt"
+    },
+    "combo_0_finisher": {
+      "file": "combo_0_finisher.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-23445404-1958-4bbe-a346-a5ecea057f73.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            140,
+            244,
+            1181,
+            1015
+          ]
+        }
+      ],
+      "sha256": "b197c3db1f2f88c9937e84beb5d21008acfca8bba2a67acfd194b71724a62845",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_0_finisher.txt"
+    },
+    "combo_3_return": {
+      "file": "combo_3_return.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-1fb6593a-fe05-4d5d-8d6f-21aaf20e3ba0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            102,
+            181,
+            1205,
+            1015
+          ]
+        }
+      ],
+      "sha256": "3347f8e320a7e3a69f4af0449fc99ae2b85cf1c94c4009c9a9525ad5e49d26c6",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_3_return.txt"
+    },
+    "combo_3_finisher": {
+      "file": "combo_3_finisher.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-33df5761-2aa1-402d-8f49-2a31e792ac30.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            143,
+            173,
+            1213,
+            1129
+          ]
+        }
+      ],
+      "sha256": "d1c303654266cab66d80dc71a64438545c00c22280bd90555b968fd4c4aa7524",
+      "prompt": "assets/combat/imagegen-square/prompts/combo_3_finisher.txt"
+    },
+    "core_01": {
+      "file": "core_01.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-045ffb4e-40ae-4ede-82f6-59b92f40676f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            103,
+            380,
+            1214,
+            876
+          ]
+        }
+      ],
+      "sha256": "85df7604892320f71b7541b10d53dee167cd5d73dd8fc4c3d787416c622e59f5",
+      "prompt": "assets/combat/imagegen-square/prompts/core_01.txt"
+    },
+    "core_02": {
+      "file": "core_02.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-76529958-6e9d-4e89-b8c2-b9faeb45b374.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            150,
+            140,
+            1098,
+            1040
+          ]
+        }
+      ],
+      "sha256": "9eee238d7663188848eee2b59717f6716463ea2e4a187be49eb5c6ba39fca0d2",
+      "prompt": "assets/combat/imagegen-square/prompts/core_02.txt"
+    },
+    "core_03": {
+      "file": "core_03.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-1f787e8c-65b8-4762-a5b1-17112ee7a3d4.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            49,
+            397,
+            1206,
+            886
+          ]
+        }
+      ],
+      "sha256": "6fa26e4566c2a27663b2dccad6cddc240b0ee755c8721ddeeafb8d3a67d25462",
+      "prompt": "assets/combat/imagegen-square/prompts/core_03.txt"
+    },
+    "core_04": {
+      "file": "core_04.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-d858dda3-d06a-4f31-ae9b-869d10eb97ef.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            48,
+            132,
+            1212,
+            984
+          ]
+        }
+      ],
+      "sha256": "5b9c5d3318cc75e3d9755899c9b90665843d281c074b6c2198342db885233794",
+      "prompt": "assets/combat/imagegen-square/prompts/core_04.txt"
+    },
+    "core_05": {
+      "file": "core_05.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-c4c648be-0ec0-4080-8e59-80e9767b7979.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            252,
+            162,
+            1079,
+            1087
+          ]
+        }
+      ],
+      "sha256": "452c5867385e2f6dabb6f9dae8a165371ac9d555e809ed2cb690e51df32d1709",
+      "prompt": "assets/combat/imagegen-square/prompts/core_05.txt"
+    },
+    "core_06": {
+      "file": "core_06.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-f5182760-a086-4186-b58a-4c310c151482.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            102,
+            95,
+            1188,
+            1132
+          ]
+        }
+      ],
+      "sha256": "05da8665b6cecb3c15d5e9f84fa0d0e5c0e2f75387a662330192b2dea597e188",
+      "prompt": "assets/combat/imagegen-square/prompts/core_06.txt"
+    },
+    "core_07": {
+      "file": "core_07.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-5fecf32f-675a-4d47-906b-879b241cf2f2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            75,
+            210,
+            1193,
+            1028
+          ]
+        }
+      ],
+      "sha256": "5d8d4d4206da428c92779f534396eeec9567b5943649c266444149eca1b96bd8",
+      "prompt": "assets/combat/imagegen-square/prompts/core_07.txt"
+    },
+    "core_08": {
+      "file": "core_08.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-e715591c-bb93-4e87-bc45-5cf5a51f3759.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            78,
+            301,
+            1205,
+            971
+          ]
+        }
+      ],
+      "sha256": "5cd952fb07c4ea69812b46c01eecd61cbdeec339f6ef9579df624f91b91a9c65",
+      "prompt": "assets/combat/imagegen-square/prompts/core_08.txt"
+    },
+    "core_09": {
+      "file": "core_09.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-b819c185-069f-48a6-9982-a0787a1e735d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            312,
+            180,
+            1073,
+            1003
+          ]
+        }
+      ],
+      "sha256": "c2cc30e7ef8f99262c577413ec5347b955b30bfd250109e6a9a23070de4be278",
+      "prompt": "assets/combat/imagegen-square/prompts/core_09.txt"
+    },
+    "core_10": {
+      "file": "core_10.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-68e3a857-d30b-4fa9-b1a7-74d424e3a905.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            167,
+            30,
+            1098,
+            1139
+          ]
+        }
+      ],
+      "sha256": "faec376d8a44305830a1cc519a48f6235bdecb549370bd6888f06cd391a9acc9",
+      "prompt": "assets/combat/imagegen-square/prompts/core_10.txt"
+    },
+    "core_11": {
+      "file": "core_11.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-dbf0e59c-bdcf-4530-b143-7f50121389df.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            132,
+            51,
+            1191,
+            1215
+          ]
+        }
+      ],
+      "sha256": "ce5ed6e5da97ebf65fd97b8bbc1d5d68aea51193ba2da3cbdad8ef0007a98821",
+      "prompt": "assets/combat/imagegen-square/prompts/core_11.txt"
+    },
+    "core_12": {
+      "file": "core_12.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1108d-c380-7061-9bd3-775318221742\\exec-871e6d16-36a5-48a9-ba8d-9e6bbfff107a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": [
+        {
+          "region": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "ink": [
+            184,
+            246,
+            1074,
+            1007
+          ]
+        }
+      ],
+      "sha256": "8c36bd4a94ab7134e4409a4ae6837553da5a05c106b541d8d6822e7b3d62c6b4",
+      "prompt": "assets/combat/imagegen-square/prompts/core_12.txt"
+    }
+  }
+}

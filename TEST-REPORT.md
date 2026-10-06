@@ -206,3 +206,12 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 编辑器导入和 Windows 导出成功；build/CrimsonTide-WeaponVFX.exe 为单文件内嵌 PCK（1,919,875,912 字节）。导出包再次运行 standalone_vfx 119、weapon_vfx_identity 535、weapon_vfx_battle 45，均为 0 failures，确认新编排与几何存在于成品中。
 - 预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png；9 张实际主场景截图 build/weapon-vfx-battle-*.png 已检查。没有更改伤害、命中范围、法力消耗与冷却。
 - 已知基线问题：weapon_effect_direction 122 项中 6 项失败，均为旧 14 号断潮巨刃原 PNG 的朝左/朝上半平面像素占比。已从 git HEAD 恢复七个原始脚本到隔离的 build/weapon-vfx-baseline，再运行同一测试，得到完全相同的 6 项失败；不是本次新增回归。新版的实际挂点检查和具体武器像素检查通过。
+
+## 2026-10-06 武器 ImageGen 方图与真实强化
+
+- 完成 74 张内置 ImageGen 生成的原始透明方图：52 个武器主图、绯红剑额外两段、8 张类别连段图层、12 张实际核心触发图。48 把闯关武器各自保持独立主图，同名远征/闯关武器共享对应画面；运行时不使用被否决的 1:3 长图。原始 RGBA、SHA256 和完整提示词存于 assets/combat/imagegen-square。
+- 强化/品质在出手时冻结；+2/+4 核心档位、+3/+5 角色连招依据现有规则。核心只在真实机制执行后播图，旧弹丸换装后仍保留出手状态。修补飞行弹丸从快照读取强化光强；不更改命中范围、伤害倍率、冷却或解锁规则。
+- 13 组相关回归共 6100 检查，0 failures：weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553（真实 GPU；含强化光强不扩范围和十二核心两档像素差异）、weapon_vfx_battle 45、standalone_vfx 119、weapon_stroke_stability 200、all_weapon_mounts 2672、rogue_build_system 440、combat 78、spells 106、roguelike_vfx 99、weapon_contact_particles 654、combat_particles 384。
+- tools/audit_weapon_square_art.py：74 个原始 RGBA、0 failures；Godot 编辑器导入成功。最初加载检查失败是新增素材尚未完成导入，导入后通过。48 武器对照、八组三段对照、+0/+2/+3/+4/+5 实际核心触发对照及九张主场景截图已生成并检查代表性武器画面。
+- build/CrimsonTide-WeaponImageVFX.exe Windows 单文件导出成功（2,003,072,008 字节，内嵌 PCK，包含当前工作区资源）。成品中再次运行 weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553、weapon_vfx_battle 45、standalone_vfx 119，共 1467 检查、0 failures。
+- 更新 PROJECT-GUIDE.md §2/§4.K/§5/§8/§10/§11/§12.6，以及 README.md、VFX-REWORK.md、WEAPON-IMAGE-VFX.md。路牌审计 441 个锚点：OK 344 / DRIFT 0 / WRONG 0 / HINT 97。

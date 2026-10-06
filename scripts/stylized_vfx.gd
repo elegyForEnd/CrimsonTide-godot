@@ -15,6 +15,7 @@ const WeaponVfx = preload("res://scripts/weapon_vfx.gd")
 var current_identity: Dictionary={}
 var current_stage := 0
 var current_route := -1
+var current_upgrade: Dictionary={}
 var impact_marks: Dictionary={}
 var current_texture := ""
 var current_hero := 0
@@ -42,6 +43,7 @@ func reset() -> void:
 	current_identity={}
 	current_stage=0
 	current_route=-1
+	current_upgrade={}
 	impact_marks.clear()
 	shards.clear()
 	particles.reset()
@@ -49,14 +51,14 @@ func reset() -> void:
 	if light: light.queue_redraw()
 
 func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
-		life: float, reverse: float = 1.0, delay: float = 0.0, priority: int = 1) -> void:
+		life: float, reverse: float = 1.0, delay: float = 0.0, priority: int = 1) -> bool:
 	if effects.size()>=MAX_EFFECTS:
 		var victim := -1
 		for i in effects.size():
 			if int(effects[i].priority)<=priority:
 				victim=i
 				break
-		if victim<0: return
+		if victim<0: return false
 		effects.remove_at(victim)
 	var effect := {"kind":kind,"p":at,"aim":aim.normalized() if aim.length_squared()>.01 else Vector2.RIGHT,
 		"color":color,"radius":radius,"life":maxf(.05,life),"age":-delay,"reverse":reverse,"priority":priority,"hero":current_hero,"source":current_source,"texture":current_texture if current_texture!="" else "hero_%d_%s" % [current_hero,"slash" if kind=="echo" else "sigil" if kind=="ring" else "dash" if kind=="lance" else kind]}
@@ -64,6 +66,7 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 		effect["identity"]=current_identity.duplicate()
 		effect["stage"]=current_stage
 		effect["route"]=current_route
+		effect["upgrade"]=current_upgrade.duplicate()
 	if kind!="charge" and uses_weapon_socket(effect) and socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
 		var socket: Dictionary=socket_provider.call(current_source)
 		if not socket.is_empty():
@@ -72,6 +75,7 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 			effect["socket_local"]=get_global_transform().affine_inverse()*socket.get("stroke_tip",socket.tip)
 			effect["socket_aim"]=socket.aim
 	effects.append(effect)
+	return true
 
 func uses_weapon_socket(effect: Dictionary) -> bool:
 	var kind: String=effect.kind
@@ -105,8 +109,9 @@ func event(data: Dictionary, hero: int = 0) -> void:
 	current_identity=WeaponVfx.profile(exact_weapon)
 	current_stage=clampi(int(data.get("combo",0)),0,2)
 	current_route=int(data.get("combo_route",-1))
+	current_upgrade=data.get("vfx",{}).duplicate()
 	var color: Color=current_identity.color
-	current_texture=Library.weapon_key(exact_weapon,"finisher" if int(data.get("combo",0))==2 else "release")
+	current_texture=Library.weapon_key(exact_weapon,"finisher" if current_stage==2 else "return" if current_stage==1 else "release")
 	var weapon := int(data.get("weapon",0))
 	var reach := clampf(float(data.get("reach",150 if weapon==2 else 112)),48,650)
 	var reverse := -1.0 if int(data.get("combo",0))%2==1 else 1.0
@@ -171,9 +176,14 @@ func event(data: Dictionary, hero: int = 0) -> void:
 			current_identity.detail=clampi(int(data.get("hero_route",0)),0,3)
 			emit("hero_combo",anchor,aim,hero_color,72+int(data.get("hero_route",0))*14,.36,1,0,2)
 			particles.burst(weapon_emitter,aim,hero_color,["petal","ice","feather","soul"][current_hero],8,.7,.7)
+		"weapon_core":
+			if emit("core",anchor,aim,color,44 if int(data.get("core_rank",1))==1 else 52,.32,1,0,2):
+				effects.back()["core_id"]=int(data.get("core_id",0))
+				effects.back()["core_rank"]=int(data.get("core_rank",1))
 		"spell_burst", "spell_beam", "spell_arc":
-			if not current_identity.procedural: return
+			if not current_identity.run: return
 			var form := "detonation" if data.kind=="spell_burst" else "beam" if data.kind=="spell_beam" else "chain"
+			current_texture=Library.weapon_key(exact_weapon,"finisher" if form=="detonation" else "release")
 			var length := 110.0 if form=="detonation" else float(data.get("reach",200))
 			if form=="chain":
 				var delta: Vector2=data.get("target",at)-at
@@ -243,9 +253,13 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 		var angle: float=fx.aim.angle()
 		var mirror := Vector2(Library.facing_scale(fx.texture),float(fx.reverse))
 		var identity: Dictionary=fx.get("identity",{})
-		var native: bool=not identity.is_empty() and ((identity.procedural and kind not in ["dash","ring","sigil"]) or kind in ["charge","impact","route","hero_combo"])
+		if not identity.is_empty() and int(fx.get("stage",0))==1 and preload("res://scripts/weapon_image_art.gd").distinct_stage(int(identity.weapon),1):
+			mirror.y=1 # A separately painted counter-cut already carries its own direction.
+		var native: bool=not identity.is_empty() and ((identity.procedural and kind not in ["dash","ring","sigil"]) or kind in ["charge","impact","route","hero_combo","core","beam","chain"])
 		if native: mirror.x=1.0
 		match kind:
+			"core":
+				if int(fx.get("core_id",0)) in [4,5,9,10,11,12]: angle=0
 			"slash", "echo":
 				angle+=float(fx.reverse)*lerpf(-.28,.36,1.0-pow(1.0-t,3.0))
 			"spin": angle+=t*TAU*float(fx.reverse)
@@ -300,7 +314,12 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 		if native:
 			target.draw_set_transform(Vector2.ZERO)
 			continue
-		var opacity := fade*(.08 if additive else .92)
+		var upgrade: Dictionary=fx.get("upgrade",{})
+		var forge := clampi(int(upgrade.get("forge",0)),0,5)
+		var quality := clampi(int(upgrade.get("quality",0)),0,5)
+		# Forging changes attack power, not hit reach. Increase edge light subtly;
+		# actual unlocks have separate authoritative events and their own artwork.
+		var opacity := fade*(.045+forge*.006+quality*.003 if additive else .86+forge*.012)
 		if kind=="echo": opacity*=.22
 		if kind=="impact": opacity*=.55
 		# Keep ImageGen's painted white edge and dark interior intact.
@@ -309,6 +328,10 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 		if skin_colors.has(int(fx.hero)): color=Color(fx.color).lerp(Color.WHITE,.7)
 		color.a=opacity
 		Motion.draw(target,Library.texture(fx.texture),Rect2(-extent*.5,extent),birth,str(profile.form),color,Library.facing_scale(fx.texture)<0)
+		var extra := preload("res://scripts/weapon_image_art.gd").overlay(int(identity.get("weapon",-1)),int(fx.get("stage",0))) if not identity.is_empty() else null
+		if extra and kind in ["slash","spin","lance","muzzle","cast","eruption","vortex"]:
+			var extra_size := extra.get_size()*minf(extent.x/extra.get_width(),extent.y/extra.get_height())
+			Motion.draw(target,extra,Rect2(-extra_size*.5,extra_size),birth,"sweep" if kind in ["slash","spin"] else "forward",Color(fx.color,opacity*(.14 if additive else .48)))
 		target.draw_set_transform(Vector2.ZERO)
 	if not additive: return
 	for s in shards:

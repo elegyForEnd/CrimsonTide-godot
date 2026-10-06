@@ -5,8 +5,9 @@ const FORMS=["center","sweep","rise","center","rise","forward","sweep","sweep","
 const BIRTH=[.025,.045,.085,.070,.095,.028,.042,.070,.060,.040,.105,.090,.050,.075,.095,.100,.040,.050,.085,.090,.085]
 static func profile(key: String, kind: String) -> Dictionary:
 	var index := Library.source_weapon(key)
-	var form := str(FORMS[index]) if index>=0 else "center"
-	var birth := float(BIRTH[index]) if index>=0 else .075
+	var visual := Catalog.visual_weapon_index(index) if index>=0 else -1
+	var form := str(FORMS[visual]) if visual>=0 else "center"
+	var birth := float(BIRTH[visual]) if visual>=0 else .075
 	if kind in ["slash","echo","spin"]: form="sweep" if kind!="spin" else "radial"
 	if kind in ["charge","vortex","blessing"]: form="radial"; birth=.10
 	if kind in ["eruption","soul","judgment"]: form="rise"; birth=.11

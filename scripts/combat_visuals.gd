@@ -668,7 +668,15 @@ func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> 
 	target.draw_set_transform_matrix(world.affine_inverse()*Transform2D(direction.angle(),world*at))
 	var r := 21.0 if int(identity.family)==0 else 29.0
 	var color := Color(identity.color,.8)
-	if int(identity.family)==0: WeaponVfx.projectile_shape(target,identity,r,1.0,color,glow)
+	var art := preload("res://scripts/weapon_image_art.gd").texture(int(bullet.weapon_index),0)
+	if art:
+		var extent := Vector2.ONE*r*2.8
+		var upgrade: Dictionary=bullet.get("build_context",{}).get("vfx",{})
+		var forge := clampi(int(upgrade.get("forge",0)),0,5)
+		var quality := clampi(int(upgrade.get("quality",0)),0,5)
+		var opacity := .12+forge*.008+quality*.004 if glow else .9+forge*.012
+		target.draw_texture_rect(art,Rect2(-extent*.5,extent),false,Color(1,1,1,opacity))
+	elif int(identity.family)==0: WeaponVfx.projectile_shape(target,identity,r,1.0,color,glow)
 	else: WeaponVfx.cast_shape(target,identity,r,1.0,color,glow)
 	WeaponVfx.line(target,PackedVector2Array([Vector2(-r*1.5,0),Vector2.ZERO]),Color(color,.20),1.2,glow)
 	target.draw_set_transform(Vector2.ZERO)

@@ -45,6 +45,25 @@ func run() -> void:
 		check(stages.size()==3,"Weapon %d has three visually different combo stages" % weapon)
 	check(identities.size()==48,"48 authored run weapon identities")
 	check(images.size()==48,"All 48 run weapons render differently")
+	# Upgrade art must change rendered light without changing attack geometry.
+	var upgrade_pixels := {}
+	var upgrade_radius := 0.0
+	for forge in [0,2,3,4,5]:
+		fx.reset()
+		fx.event({"kind":"strike","p":Vector2(150,150),"aim":Vector2.RIGHT,"id":1,"weapon":1,"weapon_index":600,"combo":0,"reach":70,"vfx":{"forge":forge,"quality":0}},0)
+		if forge==0: upgrade_radius=float(fx.effects[0].radius)
+		check(is_equal_approx(float(fx.effects[0].radius),upgrade_radius),"Forging preserves the attack's presentation reach")
+		fx.advance(.065)
+		upgrade_pixels[hash(await pixels(viewport,fx))]=true
+	check(upgrade_pixels.size()==5,"Actual forge levels change GPU edge light")
+	for core_id in range(1,13):
+		var tiers := {}
+		for rank in [1,2]:
+			fx.reset()
+			fx.event({"kind":"weapon_core","p":Vector2(150,150),"aim":Vector2.RIGHT,"id":1,"weapon_index":600,"core_id":core_id,"core_rank":rank},0)
+			fx.advance(.065)
+			tiers[hash(await pixels(viewport,fx))]=true
+		check(tiers.size()==2,"Core %d has two visibly different unlocked tiers" % core_id)
 	for weapon in 21:
 		var stages := {}
 		for combo in 3:
