@@ -47,11 +47,9 @@ func generate(value: int) -> void:
 func uv_point(at: Array) -> Vector2:
 	return Vector2(float(at[0])*width,ground_y(float(at[1])))
 
-## Contracts §7.2 ①: every dedicated room maps onto a region key that really exists in
-## `assets/rogue/regions/ground-manifest.json`. The five new rooms borrow the safe-room
-## artwork of their nearest equivalent; anything unmapped would silently become a combat lane.
+## Each dedicated room has its own artwork and measured ground profile in the manifest.
 const SPECIAL_REGIONS := {"shop":"shop","treasure":"treasure","talent":"talent",
-	"curse":"treasure","event":"talent","forge":"shop","gamble":"treasure","mirror":"talent"}
+	"curse":"curse","event":"event","forge":"forge","gamble":"gamble","mirror":"mirror"}
 
 static func region_key(floor_index: int, area: int, room: String = "") -> String:
 	if SPECIAL_REGIONS.has(room):
@@ -60,6 +58,9 @@ static func region_key(floor_index: int, area: int, room: String = "") -> String
 	return "f%d-a%d" % [floor_index+1,artwork_area]
 
 static func texture_path(key: String) -> String:
+	var manifest: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/rogue/regions/ground-manifest.json"))
+	var selected: String=str(manifest.get(key,{}).get("texture",""))
+	if not selected.is_empty(): return "res://assets/rogue/regions/"+selected
 	var suffix := "-original-wide-3x.png"
 	if key.ends_with("-a6") or key.ends_with("-a7"): suffix="-seven-night-v1.png"
 	elif not "-a" in key: suffix="-safe-night-v1.png"
@@ -107,7 +108,8 @@ func configure(floor_index: int, area: int, long_room: bool, room: String = "") 
 		var bounds := ground_limits(x)
 		var y: float=bounds.x+radius.y+35 if (i+layout)%2==0 else bounds.y-radius.y-35
 		var at := Vector2(x,y)
-		if footprint_on_ground(at,radius+Vector2(2,2)):
+		# Keep a continuous central movement lane even in the retained compact artwork.
+		if footprint_on_ground(at,radius+Vector2(2,2)) and absf(at.y-lane_center(x))>=radius.y+44.0:
 			obstacles.append({"p":at,"radius":radius,"icon":floor_index*2+(i%2)})
 	if floor_index==1:
 		for i in 3:

@@ -1,90 +1,34 @@
 [
   {
-    "key": "hero-0-jump-v1",
     "hero": 0,
-    "columns": 3,
-    "rows": 2,
-    "final_file": "hero-0-jump-v1.png",
-    "cell": 128,
-    "poses": [
-      "launch",
-      "rising",
-      "apex",
-      "falling",
-      "landing",
-      "standing"
-    ],
-    "size": [
-      384,
-      256
-    ],
-    "tool": "tools/generate_rogue_build_art.py",
-    "sha256": "78d66e6a177d4d25055005e8f17b8c935b06600e2651401f8e4dae998eeb63dc"
+    "file": "hero-0-jump-v1.png",
+    "prompt": "Use case: identity-preserve. Asset type: production six-frame transparent jump sprite animation atlas for a Godot dark fantasy game. The provided image is a CHARACTER IDENTITY AND ART STYLE REFERENCE, not an edit target. Generate a NEW sprite sheet showing the exact same 绯月 character as in the provided movement sheet: same face, hair color and style, accessories, costume, boots, proportions and painterly anime game rendering. Preserve the existing chibi proportions and large head exactly. Six full-body poses of one complete JUMP action, in EXACTLY three equal columns by two equal rows on a landscape 3:2 canvas. Order left to right then top to bottom: 1. takeoff anticipation, both feet planted and knees bent, torso upright; 2. rising, feet leaving the ground, one knee lifted; 3. airborne apex, BOTH KNEES TUCKED under upright torso, balanced arms, head above hips, NOT lying down; 4. descending, legs opening downward and hair trailing upward; 5. landing contact, both feet grounded, deep but upright knee bend and balanced arms; 6. landing recovery, straightening into ready stance. All six face three-quarter RIGHT, consistent camera, no turnarounds. Entire body, hair and boots must fit each cell with 12 percent empty alpha padding. Keep same anatomy and head size across every frame. Align bottom of grounded feet near 88 percent of each cell; airborne poses retain this same cell anchor with raised knees; do not draw the character displaced high in the cell to represent world height because the game supplies that height. Hands empty, no weapon, so the game can attach the selected sword, rifle or staff. No motion blur, no speed lines, no light streaks, no ground plane, no cast shadow, no decorative effect. True transparent alpha background, no labels, no text, no grid lines, no watermarks. Six clean standalone sprites only, do not duplicate the walking or rolling poses from the reference.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a109d8-3170-7441-a3a7-e3e73d2cf6eb\\exec-e3f2c482-ed7c-4082-a67e-dde66f78037c.png",
+    "tool": "built-in image_gen",
+    "reference": "res://assets/combat/movement-0.png"
   },
   {
-    "key": "hero-1-jump-v1",
     "hero": 1,
-    "columns": 3,
-    "rows": 2,
-    "final_file": "hero-1-jump-v1.png",
-    "cell": 128,
-    "poses": [
-      "launch",
-      "rising",
-      "apex",
-      "falling",
-      "landing",
-      "standing"
-    ],
-    "size": [
-      384,
-      256
-    ],
-    "tool": "tools/generate_rogue_build_art.py",
-    "sha256": "c31a834a041180da94a7e6211d8856b4459069233469a49b20b5609b75a58672"
+    "file": "hero-1-jump-v1.png",
+    "prompt": "Use case: identity-preserve. Asset type: production six-frame transparent jump sprite animation atlas for a Godot dark fantasy game. The provided image is a CHARACTER IDENTITY AND ART STYLE REFERENCE, not an edit target. Generate a NEW sprite sheet showing the exact same 雪璃 character as in the provided movement sheet: same face, hair color and style, accessories, costume, boots, proportions and painterly anime game rendering. Preserve the existing chibi proportions and large head exactly. Six full-body poses of one complete JUMP action, in EXACTLY three equal columns by two equal rows on a landscape 3:2 canvas. Order left to right then top to bottom: 1. takeoff anticipation, both feet planted and knees bent, torso upright; 2. rising, feet leaving the ground, one knee lifted; 3. airborne apex, BOTH KNEES TUCKED under upright torso, balanced arms, head above hips, NOT lying down; 4. descending, legs opening downward and hair trailing upward; 5. landing contact, both feet grounded, deep but upright knee bend and balanced arms; 6. landing recovery, straightening into ready stance. All six face three-quarter RIGHT, consistent camera, no turnarounds. Entire body, hair and boots must fit each cell with 12 percent empty alpha padding. Keep same anatomy and head size across every frame. Align bottom of grounded feet near 88 percent of each cell; airborne poses retain this same cell anchor with raised knees; do not draw the character displaced high in the cell to represent world height because the game supplies that height. Hands empty, no weapon, so the game can attach the selected sword, rifle or staff. No motion blur, no speed lines, no light streaks, no ground plane, no cast shadow, no decorative effect. True transparent alpha background, no labels, no text, no grid lines, no watermarks. Six clean standalone sprites only, do not duplicate the walking or rolling poses from the reference.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a109d8-3170-7441-a3a7-e3e73d2cf6eb\\exec-746fefec-3832-470f-a877-3dd2f9405f7d.png",
+    "tool": "built-in image_gen",
+    "reference": "res://assets/combat/movement-1.png"
   },
   {
-    "key": "hero-2-jump-v1",
     "hero": 2,
-    "columns": 3,
-    "rows": 2,
-    "final_file": "hero-2-jump-v1.png",
-    "cell": 128,
-    "poses": [
-      "launch",
-      "rising",
-      "apex",
-      "falling",
-      "landing",
-      "standing"
-    ],
-    "size": [
-      384,
-      256
-    ],
-    "tool": "tools/generate_rogue_build_art.py",
-    "sha256": "d156add1a24251aea06fa7ec6c58da49c6ba2ef3575fe53a48b26a4c0090182c"
+    "file": "hero-2-jump-v1.png",
+    "prompt": "Use case: identity-preserve. Asset type: production six-frame transparent jump sprite animation atlas for a Godot dark fantasy game. The provided image is a CHARACTER IDENTITY AND ART STYLE REFERENCE, not an edit target. Generate a NEW sprite sheet showing the exact same 鸦羽 character as in the provided movement sheet: same face, hair color and style, accessories, costume, boots, proportions and painterly anime game rendering. Preserve the existing chibi proportions and large head exactly. Six full-body poses of one complete JUMP action, in EXACTLY three equal columns by two equal rows on a landscape 3:2 canvas. Order left to right then top to bottom: 1. takeoff anticipation, both feet planted and knees bent, torso upright; 2. rising, feet leaving the ground, one knee lifted; 3. airborne apex, BOTH KNEES TUCKED under upright torso, balanced arms, head above hips, NOT lying down; 4. descending, legs opening downward and hair trailing upward; 5. landing contact, both feet grounded, deep but upright knee bend and balanced arms; 6. landing recovery, straightening into ready stance. All six face three-quarter RIGHT, consistent camera, no turnarounds. Entire body, hair and boots must fit each cell with 12 percent empty alpha padding. Keep same anatomy and head size across every frame. Align bottom of grounded feet near 88 percent of each cell; airborne poses retain this same cell anchor with raised knees; do not draw the character displaced high in the cell to represent world height because the game supplies that height. Hands empty, no weapon, so the game can attach the selected sword, rifle or staff. No motion blur, no speed lines, no light streaks, no ground plane, no cast shadow, no decorative effect. True transparent alpha background, no labels, no text, no grid lines, no watermarks. Six clean standalone sprites only, do not duplicate the walking or rolling poses from the reference.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a109d8-3170-7441-a3a7-e3e73d2cf6eb\\exec-671708f9-db26-48da-a7d3-95feb23c54b7.png",
+    "tool": "built-in image_gen",
+    "reference": "res://assets/combat/movement-2.png"
   },
   {
-    "key": "hero-3-jump-v1",
     "hero": 3,
-    "columns": 3,
-    "rows": 2,
-    "final_file": "hero-3-jump-v1.png",
-    "cell": 128,
-    "poses": [
-      "launch",
-      "rising",
-      "apex",
-      "falling",
-      "landing",
-      "standing"
-    ],
-    "size": [
-      384,
-      256
-    ],
-    "tool": "tools/generate_rogue_build_art.py",
-    "sha256": "fee9fc88b198162d0eabbe367593c24ce395102f948edb39f85ea128020300ea"
+    "file": "hero-3-jump-v1.png",
+    "prompt": "Use case: identity-preserve. Asset type: production six-frame transparent jump sprite animation atlas for a Godot dark fantasy game. The provided image is a CHARACTER IDENTITY AND ART STYLE REFERENCE, not an edit target. Generate a NEW sprite sheet showing the exact same 墓煜 character as in the provided movement sheet: same face, hair color and style, accessories, costume, boots, proportions and painterly anime game rendering. Preserve her existing taller anime proportions, white hair, burgundy black necromancer dress and open floating spellbook. Six full-body poses of one complete JUMP action, in EXACTLY three equal columns by two equal rows on a landscape 3:2 canvas. Order left to right then top to bottom: 1. takeoff anticipation, both feet planted and knees bent, torso upright; 2. rising, feet leaving the ground, one knee lifted; 3. airborne apex, BOTH KNEES TUCKED under upright torso, balanced arms, head above hips, NOT lying down; 4. descending, legs opening downward and hair trailing upward; 5. landing contact, both feet grounded, deep but upright knee bend and balanced arms; 6. landing recovery, straightening into ready stance. All six face three-quarter RIGHT, consistent camera, no turnarounds. Entire body, hair and boots must fit each cell with 12 percent empty alpha padding. Keep same anatomy and head size across every frame. Align bottom of grounded feet near 88 percent of each cell; airborne poses retain this same cell anchor with raised knees; do not draw the character displaced high in the cell to represent world height because the game supplies that height. Keep her small open floating spellbook in each frame. No motion blur, no speed lines, no light streaks, no ground plane, no cast shadow, no decorative effect. True transparent alpha background, no labels, no text, no grid lines, no watermarks. Six clean standalone sprites only, do not duplicate the walking or rolling poses from the reference.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a109d8-3170-7441-a3a7-e3e73d2cf6eb\\exec-404009e2-6bc6-432f-a64e-9b80f4c8fca4.png",
+    "tool": "built-in image_gen",
+    "reference": "res://assets/combat/movement-3.png"
   }
 ]

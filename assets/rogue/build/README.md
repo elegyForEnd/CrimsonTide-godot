@@ -1,4 +1,4 @@
-# assets/rogue/build —— 肉鸽构筑素材（生成物，可一键重建）
+# assets/rogue/build —— 肉鸽构筑素材（原始高清图集 + 运行时清单）
 
 本目录是**生成物**，但已通过 `.gitignore` 例外（`!/assets/rogue/build/`）纳入版本控制：
 干净 clone 拿到这里的内容就能让 `main.gd` 编译通过、252 个构筑图标与英雄跳跃帧全部可解析。
@@ -66,3 +66,11 @@ F:\python\python.exe tools\generate_rogue_build_art.py
 * `export_presets.cfg:10` 的 `include_filter` 目前只列了两个 manifest，没列图集 PNG；
   打包导出时若图集未被引用可能被剔除（`tests/rogue_build_pack.gd` 支持直接对导出的
   EXE/PCK 运行）。需要发布构建时请在该过滤串里补 `assets/rogue/build/*.png`。
+
+## 2026-10-07 合并说明（origin/master b6fa3a3）
+
+* 本目录的 PNG 已换成 origin/master 上的**原始高清绘制图集**（约 58 MB，未走 git-lfs），
+  取代了此前本地生成器画出的占位级图集。
+* tlas-manifest.json / jump-manifest.json / alidation.json 已用两个索引器按新图重新生成：
+  `python tools/index_rogue_build_art.py` 与 `python tools/index_rogue_jump_art.py`。
+* 	ools/generate_rogue_build_art.py 是**占位图生成器**，会覆盖上面的高清 PNG；除刻意回到占位美术外，不要运行它。

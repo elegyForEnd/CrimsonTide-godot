@@ -1,0 +1,270 @@
+{
+  "tool": "built-in image_gen",
+  "reference_images": false,
+  "base_prompt": "Create a 3:1 panoramic background for an illustrated gothic fantasy RPG, 2172x724. Pure text generation, no image reference.\nScene: SCENE_SPEC\nART DIRECTION: painterly semi-realistic game illustration with elegant soft shapes and restrained detail. Matte surfaces. Broad uninterrupted material planes carry delicate painted colour variation. Leave the surface relief almost invisible. The visual emphasis is silhouette, atmosphere and soft moonlight, rather than microtexture.\nCRITICAL MATERIALS: the road is FLUSH worn limestone paving, the surface reads as a SINGLE SMOOTH PLANE. Small to medium irregular paving units are suggested ONLY by faint thin low-contrast hairline seams, NO thickness at edges, NO bevels, NO raised rims, NO dark outlines, NO individual highlighted tile edges. Fine shallow irregular cracks, subtle broad tonal patches, no tessellated rows or repeated arcs. Road is dry matte, never glossy or wet. Tree trunks have long smooth continuous tapered forms with a few faint longitudinal strokes, absolutely no chunky raised bark plates. Rock faces are broad smooth continuous stone planes with subtle mineral washes, no collections of rounded lumps. Foliage grouped into soft painterly masses, no tightly edged individual shiny leaves. Ruins use flat fitted masonry whose joints have minimal contrast. Do not apply a bumpy high-frequency texture over the scene.\nCOMPOSITION: elevated oblique side view, broad horizontal walkable road from left to right occupying y=.52-.80. Unobstructed and evenly wide along whole panorama. At x=.79, one short gentle right-upper branch heads to right edge y=.32-.46, while main road continues straight right at y=.59-.80. Exactly two exits; no steps, no raised ramp, no arch doorway blocking road. All ruin props behind upper road edge, foreground framing below y=.86.\nLIGHT: dark desaturated blue-grey moonlight, distant scenery noticeably hazy with low edge contrast, foreground gently blurred. Sparse tiny amber lanterns, soft diffuse light with no sharp grazing highlights on tile seams. Road legible but quiet. No people, monsters, UI, letters, logo, watermark. Preserve refined painted atmosphere, do not simplify into flat vector or large polygon blocks.",
+  "wide_combat_replacements": {
+    "y=.52-.80": "y=.44-.84",
+    "y=.59-.80": "y=.48-.84",
+    "y=.32-.46": "y=.23-.42"
+  },
+  "assets": [
+    {
+      "key": "f3-a7",
+      "path": "assets/rogue/regions/f3-a7-flat-night-v7.png",
+      "scene": "a quiet moonlit ruined cloister, purple-leaved old trees at sides, a few subdued violet crystals, misty blue-grey lake and indistinct gothic silhouettes far behind.",
+      "wide_combat": false
+    },
+    {
+      "key": "f1-curse",
+      "path": "assets/rogue/regions/f1-curse-flat-night-v7.png",
+      "scene": "幽光菌林: ancient dark forest, tall smooth old trunks, mossy gothic ruins, sparse softly blue mushrooms, misty lake and indistinct ruined aqueduct in distance. Muted dark green foliage, desaturated moonlight. Tall worn cursed stone monument with very faint wine-red markings, torn dark ribbons and unlit incense stands, behind road.",
+      "wide_combat": false
+    },
+    {
+      "key": "f1-event",
+      "path": "assets/rogue/regions/f1-event-flat-night-v7.png",
+      "scene": "幽光菌林: ancient dark forest, tall smooth old trunks, mossy gothic ruins, sparse softly blue mushrooms, misty lake and indistinct ruined aqueduct in distance. Muted dark green foliage, desaturated moonlight. Small abandoned traveller shelter behind road, old writing desk with unopened scroll, tied cloth bundle and a dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f1-forge",
+      "path": "assets/rogue/regions/f1-forge-flat-night-v7.png",
+      "scene": "幽光菌林: ancient dark forest, tall smooth old trunks, mossy gothic ruins, sparse softly blue mushrooms, misty lake and indistinct ruined aqueduct in distance. Muted dark green foliage, desaturated moonlight. Compact sheltered smithy behind road, iron anvil, wooden hammer and tongs rack and a small banked forge with dim amber embers.",
+      "wide_combat": false
+    },
+    {
+      "key": "f1-gamble",
+      "path": "assets/rogue/regions/f1-gamble-flat-night-v7.png",
+      "scene": "幽光菌林: ancient dark forest, tall smooth old trunks, mossy gothic ruins, sparse softly blue mushrooms, misty lake and indistinct ruined aqueduct in distance. Muted dark green foliage, desaturated moonlight. Faded plum canvas pavilion behind road, unoccupied wooden gaming table and benches, tiny dice and coin pouches, one dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f1-mirror",
+      "path": "assets/rogue/regions/f1-mirror-flat-night-v7.png",
+      "scene": "幽光菌林: ancient dark forest, tall smooth old trunks, mossy gothic ruins, sparse softly blue mushrooms, misty lake and indistinct ruined aqueduct in distance. Muted dark green foliage, desaturated moonlight. Tall antique silver-framed physical standing mirror behind road, reflecting muted moonlight, broken gothic gazebo pillars around it. No portal.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-a6",
+      "path": "assets/rogue/regions/f2-a6-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Combat court with broken pointed arch windows and low ruined balustrade behind road, empty avenue.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-a7",
+      "path": "assets/rogue/regions/f2-a7-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Combat court with a ruined gothic watchtower and a distant aqueduct, empty avenue.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-treasure",
+      "path": "assets/rogue/regions/f2-treasure-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Old ruined vault alcove holding a CLOSED iron-banded treasure chest, a few worn wooden crates and one dim lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-curse",
+      "path": "assets/rogue/regions/f2-curse-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Tall worn cursed stone monument with very faint wine-red markings, torn dark ribbons and unlit incense stands, behind road.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-event",
+      "path": "assets/rogue/regions/f2-event-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Small abandoned traveller shelter behind road, old writing desk with unopened scroll, tied cloth bundle and a dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-forge",
+      "path": "assets/rogue/regions/f2-forge-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Compact sheltered smithy behind road, iron anvil, wooden hammer and tongs rack and a small banked forge with dim amber embers.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-gamble",
+      "path": "assets/rogue/regions/f2-gamble-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Faded plum canvas pavilion behind road, unoccupied wooden gaming table and benches, tiny dice and coin pouches, one dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f2-mirror",
+      "path": "assets/rogue/regions/f2-mirror-flat-night-v7.png",
+      "scene": "魔焰铸炉: moonlit gothic furnace district, old brick foundry silhouettes far behind and distant dark lake, restrained charcoal stone and dark burgundy leaves, tiny muted amber embers in a few furnaces. Blue-grey dominant, never bright orange lava landscape. Tall antique silver-framed physical standing mirror behind road, reflecting muted moonlight, broken gothic gazebo pillars around it. No portal.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-a6",
+      "path": "assets/rogue/regions/f3-a6-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Combat court with broken pointed arch windows and low ruined balustrade behind road, empty avenue.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-shop",
+      "path": "assets/rogue/regions/f3-shop-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Travelling merchant's weathered covered wagon, compact shelves of bottles and crates, faded awning and one dim warm lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-talent",
+      "path": "assets/rogue/regions/f3-talent-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Slender covenant altar and tall worn rune stone in an old gothic alcove behind upper road edge, two small extinguished incense bowls. No bright magic.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-treasure",
+      "path": "assets/rogue/regions/f3-treasure-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Old ruined vault alcove holding a CLOSED iron-banded treasure chest, a few worn wooden crates and one dim lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-curse",
+      "path": "assets/rogue/regions/f3-curse-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Tall worn cursed stone monument with very faint wine-red markings, torn dark ribbons and unlit incense stands, behind road.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-event",
+      "path": "assets/rogue/regions/f3-event-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Small abandoned traveller shelter behind road, old writing desk with unopened scroll, tied cloth bundle and a dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-forge",
+      "path": "assets/rogue/regions/f3-forge-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Compact sheltered smithy behind road, iron anvil, wooden hammer and tongs rack and a small banked forge with dim amber embers.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-gamble",
+      "path": "assets/rogue/regions/f3-gamble-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Faded plum canvas pavilion behind road, unoccupied wooden gaming table and benches, tiny dice and coin pouches, one dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f3-mirror",
+      "path": "assets/rogue/regions/f3-mirror-flat-night-v7.png",
+      "scene": "星晶幻境: moonlit gothic ruins, purple-leaved old trees, sparse subtly violet crystal clusters, blue-grey lake and distant indistinct gothic silhouettes. Tall antique silver-framed physical standing mirror behind road, reflecting muted moonlight, broken gothic gazebo pillars around it. No portal.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-a6",
+      "path": "assets/rogue/regions/f4-a6-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Combat court with broken pointed arch windows and low ruined balustrade behind road, empty avenue.",
+      "wide_combat": true
+    },
+    {
+      "key": "f4-a7",
+      "path": "assets/rogue/regions/f4-a7-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Combat court with a ruined gothic watchtower and a distant aqueduct, empty avenue.",
+      "wide_combat": true
+    },
+    {
+      "key": "f4-shop",
+      "path": "assets/rogue/regions/f4-shop-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Travelling merchant's weathered covered wagon, compact shelves of bottles and crates, faded awning and one dim warm lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-talent",
+      "path": "assets/rogue/regions/f4-talent-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Slender covenant altar and tall worn rune stone in an old gothic alcove behind upper road edge, two small extinguished incense bowls. No bright magic.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-treasure",
+      "path": "assets/rogue/regions/f4-treasure-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Old ruined vault alcove holding a CLOSED iron-banded treasure chest, a few worn wooden crates and one dim lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-curse",
+      "path": "assets/rogue/regions/f4-curse-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Tall worn cursed stone monument with very faint wine-red markings, torn dark ribbons and unlit incense stands, behind road.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-event",
+      "path": "assets/rogue/regions/f4-event-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Small abandoned traveller shelter behind road, old writing desk with unopened scroll, tied cloth bundle and a dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-forge",
+      "path": "assets/rogue/regions/f4-forge-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Compact sheltered smithy behind road, iron anvil, wooden hammer and tongs rack and a small banked forge with dim amber embers.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-gamble",
+      "path": "assets/rogue/regions/f4-gamble-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Faded plum canvas pavilion behind road, unoccupied wooden gaming table and benches, tiny dice and coin pouches, one dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f4-mirror",
+      "path": "assets/rogue/regions/f4-mirror-flat-night-v7.png",
+      "scene": "风暴空港: solid broad stone dock, distant large wooden fantasy airship suspended in hazy blue storm clouds, gothic harbour silhouettes, dark cypress trees and very sparse dim warm lanterns. Weathered rope moorings only at borders. Tall antique silver-framed physical standing mirror behind road, reflecting muted moonlight, broken gothic gazebo pillars around it. No portal.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-a6",
+      "path": "assets/rogue/regions/f5-a6-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Combat court with broken pointed arch windows and low ruined balustrade behind road, empty avenue.",
+      "wide_combat": true
+    },
+    {
+      "key": "f5-a7",
+      "path": "assets/rogue/regions/f5-a7-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Combat court with a ruined gothic watchtower and a distant aqueduct, empty avenue.",
+      "wide_combat": true
+    },
+    {
+      "key": "f5-shop",
+      "path": "assets/rogue/regions/f5-shop-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Travelling merchant's weathered covered wagon, compact shelves of bottles and crates, faded awning and one dim warm lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-talent",
+      "path": "assets/rogue/regions/f5-talent-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Slender covenant altar and tall worn rune stone in an old gothic alcove behind upper road edge, two small extinguished incense bowls. No bright magic.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-treasure",
+      "path": "assets/rogue/regions/f5-treasure-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Old ruined vault alcove holding a CLOSED iron-banded treasure chest, a few worn wooden crates and one dim lamp, entirely behind upper road edge.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-curse",
+      "path": "assets/rogue/regions/f5-curse-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Tall worn cursed stone monument with very faint wine-red markings, torn dark ribbons and unlit incense stands, behind road.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-event",
+      "path": "assets/rogue/regions/f5-event-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Small abandoned traveller shelter behind road, old writing desk with unopened scroll, tied cloth bundle and a dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-forge",
+      "path": "assets/rogue/regions/f5-forge-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Compact sheltered smithy behind road, iron anvil, wooden hammer and tongs rack and a small banked forge with dim amber embers.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-gamble",
+      "path": "assets/rogue/regions/f5-gamble-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Faded plum canvas pavilion behind road, unoccupied wooden gaming table and benches, tiny dice and coin pouches, one dim warm lamp.",
+      "wide_combat": false
+    },
+    {
+      "key": "f5-mirror",
+      "path": "assets/rogue/regions/f5-mirror-flat-night-v7.png",
+      "scene": "黑曜魔宫: moonlit obsidian gothic palace gardens, black stone architecture and distant indistinct pointed towers around dark lake, burgundy-leaved trees, subdued crimson drapes and sparse warm lanterns. Tall antique silver-framed physical standing mirror behind road, reflecting muted moonlight, broken gothic gazebo pillars around it. No portal.",
+      "wide_combat": false
+    }
+  ]
+}

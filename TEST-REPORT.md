@@ -179,3 +179,22 @@
 - 已验证：在项目内双击可正常出窗口；复制到 `%TEMP%` 下的空目录后单独运行同样正常，确认不依赖源码目录或旁边的 pck；运行后写入 `%APPDATA%/Godot/app_userdata/血潮守望 · Crimson Tide/profile.json`，存档可用。
 - 已验证脚本保护：exe 内以 `.gdc` 字节码存放，全文检索不到 `scripts/main.gd` 中的明文语句（如“背包空间不足：先腾空当前背包内的物资。”）。
 - 已知未解：`--capture` 截图路径（`RenderingServer.frame_post_draw`）在本机窗口模式下会一直挂起不退出，这是储物改版前就存在的问题，与本次导出无关，未修。
+
+## 2026-10-06 新关卡夜景材质与道路验收
+
+- 内置 ImageGen 按纯文字生成 43 张 flat-night-v7 地图；保留 7 张此前指定保留图，原 a1-a5 的 25 张背景与地面数据保持不变。
+- 50 张新增地图均已选入 ground-manifest.json，五层的诅咒、事件、工坊、赌徒、镜像各有独立背景；50 个图面边界叠图已逐张检查。
+- tests/roguelike_smooth_maps.gd：1065 项 / 0 失败；tests/roguelike_geometry.gd：986 项 / 0 失败；tests/roguelike_routes.gd：5220 项 / 0 失败；tests/roguelike_seven_rooms.gd：11797 项 / 0 失败（合计 19068 项）。
+- 保留战斗主路中央连续通道，避免窄图边缘装饰物占住中线；分叉回归按清单曲线行走，替换过时的固定 UV 路标。
+- 四/五层后续战斗图加宽；已完成图不重新生成。素材审计：tools/audit_rogue_final_maps.py，50/50 通过。
+- 实机预览：build/final-map-audit/gameplay-*.png；边界叠图与日志同目录；提示词与选图 SHA-256：output/rogue-final-night/。
+- 导出 dist/CrimsonTide-Rogue-Night.exe，排除旧 final-night-v5/v6、safe/seven-night-v1 等未选用版本；内嵌 PCK。
+- 打包后再由控制台引擎加载 exe 内嵌资源包执行同一地图测试：1065 项 / 0 失败，确认 50 张选定地图、专用房间映射及道路数据实际存在于导出包。
+
+### 2026-10-06 ComfyUI 3 倍图接入
+
+50 张最终地图切换为 VOSR2 放大图，长宽均为原图精确 3 倍；75 组归一化碰撞轮廓与出口未变。原 a1–a5 图保留。工具优先选择 3 倍图，Windows 导出排除同名原分辨率图。
+
+验证：smooth_maps 1115、geometry 986、routes 5220、seven_rooms 11797，均为 0 failures；素材审计确认 50 张尺寸与 SHA256。实际主场景截图验证地图加载。
+
+Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重建；通过 --main-pack 加载成品资源后运行 smooth_maps，1115 checks / 0 failures，确认全部 50 张 3 倍图可加载且保持原始导入尺寸。

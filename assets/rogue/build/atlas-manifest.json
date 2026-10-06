@@ -4,3781 +4,3781 @@
     "W001": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        12,
-        26,
-        131,
-        125
+        14,
+        27,
+        300,
+        369
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W002": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        176,
-        26,
-        127,
-        125
+        314,
+        23,
+        313,
+        383
       ],
       "cell": [
-        160,
+        314,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W003": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        343,
-        55,
-        111,
-        96
+        627,
+        11,
+        307,
+        397
       ],
       "cell": [
-        320,
+        627,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W004": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        503,
-        20,
-        126,
-        131
+        968,
+        26,
+        257,
+        386
       ],
       "cell": [
-        480,
+        940,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W005": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        12,
-        186,
-        131,
-        127
+        18,
+        428,
+        296,
+        408
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        418,
+        314,
+        418
       ]
     },
     "W006": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        176,
-        186,
-        127,
-        127
+        314,
+        426,
+        313,
+        410
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        314,
+        418,
+        313,
+        418
       ]
     },
     "W007": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        343,
-        215,
-        111,
-        98
+        627,
+        426,
+        313,
+        410
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        627,
+        418,
+        313,
+        418
       ]
     },
     "W008": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        503,
-        180,
-        126,
-        133
+        940,
+        424,
+        307,
+        412
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        940,
+        418,
+        314,
+        418
       ]
     },
     "W009": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        12,
-        346,
-        131,
-        129
+        21,
+        836,
+        293,
+        385
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        836,
+        314,
+        418
       ]
     },
     "W010": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        176,
-        346,
-        127,
-        129
+        314,
+        836,
+        313,
+        404
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        314,
+        836,
+        313,
+        418
       ]
     },
     "W011": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        343,
-        375,
-        111,
-        100
+        627,
+        836,
+        313,
+        409
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        627,
+        836,
+        313,
+        418
       ]
     },
     "W012": {
       "file": "res://assets/rogue/build/weapons-light-v1.png",
       "region": [
-        503,
-        340,
-        126,
-        135
+        962,
+        836,
+        274,
+        399
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        940,
+        836,
+        314,
+        418
       ]
     },
     "W013": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        3,
-        24,
-        142,
-        134
+        21,
+        15,
+        293,
+        396
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W014": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        172,
-        19,
-        129,
-        135
+        314,
+        7,
+        313,
+        408
       ],
       "cell": [
-        160,
+        314,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W015": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        332,
-        18,
-        134,
-        136
+        627,
+        7,
+        313,
+        407
       ],
       "cell": [
-        320,
+        627,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W016": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        482,
-        26,
-        149,
-        134
+        940,
+        10,
+        309,
+        408
       ],
       "cell": [
-        480,
+        940,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W017": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        3,
-        184,
-        142,
-        134
+        17,
+        433,
+        297,
+        403
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        418,
+        314,
+        418
       ]
     },
     "W018": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        172,
-        179,
-        129,
-        135
+        314,
+        448,
+        313,
+        388
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        314,
+        418,
+        313,
+        418
       ]
     },
     "W019": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        332,
-        178,
-        134,
-        136
+        627,
+        426,
+        313,
+        409
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        627,
+        418,
+        313,
+        418
       ]
     },
     "W020": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        482,
-        186,
-        149,
-        134
+        940,
+        423,
+        311,
+        413
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        940,
+        418,
+        314,
+        418
       ]
     },
     "W021": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        3,
-        344,
-        142,
-        134
+        35,
+        844,
+        279,
+        395
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        836,
+        314,
+        418
       ]
     },
     "W022": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        172,
-        339,
-        129,
-        136
+        314,
+        836,
+        313,
+        386
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        314,
+        836,
+        313,
+        418
       ]
     },
     "W023": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        332,
-        338,
-        134,
-        137
+        627,
+        839,
+        313,
+        401
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        627,
+        836,
+        313,
+        418
       ]
     },
     "W024": {
       "file": "res://assets/rogue/build/weapons-heavy-v1.png",
       "region": [
-        482,
-        346,
-        149,
-        134
+        940,
+        836,
+        300,
+        406
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        940,
+        836,
+        314,
+        418
       ]
     },
     "W025": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        17,
-        47,
-        124,
-        97
+        21,
+        26,
+        293,
+        391
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W026": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        193,
-        26,
-        108,
-        118
+        314,
+        7,
+        302,
+        411
       ],
       "cell": [
-        160,
+        314,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W027": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        358,
-        60,
-        98,
-        84
+        635,
+        32,
+        305,
+        369
       ],
       "cell": [
-        320,
+        627,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W028": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        506,
-        29,
-        96,
-        115
+        940,
+        33,
+        288,
+        373
       ],
       "cell": [
-        480,
+        940,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W029": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        17,
-        207,
-        124,
-        100
+        31,
+        418,
+        283,
+        418
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        418,
+        314,
+        418
       ]
     },
     "W030": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        193,
-        186,
-        108,
-        121
+        314,
+        418,
+        313,
+        418
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        314,
+        418,
+        313,
+        418
       ]
     },
     "W031": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        358,
-        220,
-        98,
-        87
+        627,
+        434,
+        313,
+        402
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        627,
+        418,
+        313,
+        418
       ]
     },
     "W032": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        506,
-        189,
-        96,
-        118
+        940,
+        433,
+        299,
+        401
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        940,
+        418,
+        314,
+        418
       ]
     },
     "W033": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
         17,
-        367,
-        124,
-        102
+        836,
+        297,
+        394
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        836,
+        314,
+        418
       ]
     },
     "W034": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        193,
-        346,
-        108,
-        123
+        314,
+        836,
+        313,
+        393
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        314,
+        836,
+        313,
+        418
       ]
     },
     "W035": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        358,
-        380,
-        98,
-        89
+        627,
+        836,
+        313,
+        388
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        627,
+        836,
+        313,
+        418
       ]
     },
     "W036": {
       "file": "res://assets/rogue/build/weapons-ranged-v1.png",
       "region": [
-        506,
-        349,
-        96,
-        120
+        940,
+        848,
+        301,
+        384
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        940,
+        836,
+        314,
+        418
       ]
     },
     "W037": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        27,
-        25,
-        108,
-        119
+        19,
+        39,
+        295,
+        379
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W038": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        197,
-        31,
-        89,
-        113
+        314,
+        23,
+        309,
+        392
       ],
       "cell": [
-        160,
+        314,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W039": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        350,
-        24,
-        113,
-        120
+        632,
+        44,
+        307,
+        370
       ],
       "cell": [
-        320,
+        627,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "W040": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        510,
-        19,
-        104,
-        125
+        948,
+        10,
+        300,
+        406
       ],
       "cell": [
-        480,
+        940,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "W041": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        27,
-        185,
-        108,
-        122
+        19,
+        427,
+        295,
+        409
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        418,
+        314,
+        418
       ]
     },
     "W042": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        197,
-        191,
-        89,
-        116
+        315,
+        424,
+        306,
+        412
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        314,
+        418,
+        313,
+        418
       ]
     },
     "W043": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        350,
-        184,
-        113,
-        123
+        637,
+        427,
+        303,
+        409
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        627,
+        418,
+        313,
+        418
       ]
     },
     "W044": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        510,
-        179,
-        104,
-        128
+        940,
+        419,
+        306,
+        417
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        940,
+        418,
+        314,
+        418
       ]
     },
     "W045": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        27,
-        345,
-        108,
-        124
+        7,
+        836,
+        300,
+        399
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        836,
+        314,
+        418
       ]
     },
     "W046": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        197,
-        351,
-        89,
-        118
+        314,
+        836,
+        313,
+        395
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        314,
+        836,
+        313,
+        418
       ]
     },
     "W047": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        350,
-        344,
-        113,
-        125
+        627,
+        836,
+        313,
+        398
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        627,
+        836,
+        313,
+        418
       ]
     },
     "W048": {
       "file": "res://assets/rogue/build/weapons-staff-v1.png",
       "region": [
-        510,
-        339,
-        104,
-        130
+        948,
+        836,
+        304,
+        403
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        940,
+        836,
+        314,
+        418
       ]
     },
     "E001": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        40,
-        43,
-        80,
-        108
+        20,
+        3,
+        224,
+        253
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E002": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        196,
-        43,
-        88,
-        108
+        283,
+        12,
+        209,
+        242
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E003": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        347,
-        39,
-        106,
-        112
+        512,
+        9,
+        256,
+        243
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E004": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        519,
-        36,
-        82,
-        115
+        777,
+        5,
+        236,
+        249
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E005": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        40,
-        203,
-        80,
-        110
+        8,
+        257,
+        243,
+        255
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "E006": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        196,
-        203,
-        88,
-        110
+        273,
+        257,
+        235,
+        255
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "E007": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        359,
-        196,
-        82,
-        117
+        529,
+        256,
+        224,
+        255
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "E008": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        507,
-        199,
-        106,
-        114
+        777,
+        256,
+        238,
+        256
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "E009": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        39,
-        356,
-        82,
-        119
+        10,
+        512,
+        246,
+        255
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "E010": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        196,
-        363,
-        88,
-        112
+        272,
+        512,
+        240,
+        256
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "E011": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        360,
-        363,
-        80,
-        112
+        528,
+        515,
+        232,
+        251
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "E012": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        519,
-        356,
-        82,
-        119
+        777,
+        512,
+        236,
+        254
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "E013": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        27,
-        519,
-        106,
-        114
+        6,
+        769,
+        248,
+        255
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "E014": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        187,
-        519,
-        106,
-        114
+        260,
+        768,
+        252,
+        256
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "E015": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        360,
         523,
-        80,
-        110
+        768,
+        242,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "E016": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        516,
-        523,
-        88,
-        110
+        778,
+        768,
+        236,
+        256
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "E017": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        40,
-        683,
-        80,
-        108
+        5,
+        1025,
+        250,
+        250
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "E018": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        200,
-        683,
-        80,
-        108
+        260,
+        1025,
+        252,
+        255
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "E019": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        347,
-        679,
-        106,
-        112
+        520,
+        1025,
+        246,
+        255
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "E020": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        519,
-        676,
-        82,
-        115
+        773,
+        1028,
+        242,
+        252
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "E021": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        27,
-        839,
-        106,
-        114
+        6,
+        1280,
+        250,
+        254
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "E022": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        196,
-        843,
-        88,
-        110
+        275,
+        1280,
+        222,
+        251
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "E023": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        359,
-        836,
-        82,
-        117
+        512,
+        1280,
+        255,
+        251
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "E024": {
       "file": "res://assets/rogue/build/gear-armor-v1.png",
       "region": [
-        519,
-        836,
-        82,
-        117
+        772,
+        1280,
+        245,
+        254
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "E025": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        45,
-        41,
-        70,
-        110
+        24,
+        4,
+        211,
+        252
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E026": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        200,
-        31,
-        80,
-        120
+        270,
+        0,
+        223,
+        256
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E027": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        365,
-        41,
-        70,
-        110
+        518,
+        21,
+        247,
+        235
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E028": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        525,
-        41,
-        70,
-        110
+        790,
+        1,
+        205,
+        255
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E029": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        45,
-        201,
-        70,
-        112
+        8,
+        256,
+        247,
+        256
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "E030": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        196,
-        194,
-        88,
-        119
+        268,
+        256,
+        237,
+        256
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "E031": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        365,
-        201,
-        70,
-        112
+        539,
+        256,
+        194,
+        256
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "E032": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        518,
-        218,
-        84,
-        95
+        787,
+        256,
+        210,
+        256
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "E033": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        36,
-        354,
-        88,
-        121
+        17,
+        512,
+        233,
+        256
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "E034": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        205,
-        361,
-        70,
-        114
+        266,
+        512,
+        233,
+        256
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "E035": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        365,
-        361,
-        70,
-        114
+        541,
+        512,
+        210,
+        256
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "E036": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        520,
-        351,
-        80,
-        124
+        787,
+        512,
+        220,
+        256
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "E037": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        45,
-        521,
-        70,
-        112
+        12,
+        768,
+        237,
+        256
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "E038": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        198,
-        538,
-        84,
-        95
+        274,
+        768,
+        215,
+        256
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "E039": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        365,
-        521,
-        70,
-        112
+        518,
+        768,
+        241,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "E040": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        520,
-        511,
-        80,
-        122
+        780,
+        768,
+        236,
+        256
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "E041": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        40,
-        671,
-        80,
-        120
+        24,
+        1024,
+        219,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "E042": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        205,
-        681,
-        70,
-        110
+        262,
+        1024,
+        239,
+        256
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "E043": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        360,
-        671,
-        80,
-        120
+        525,
+        1024,
+        238,
+        256
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "E044": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        518,
-        698,
-        84,
-        93
+        797,
+        1024,
+        207,
+        256
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "E045": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        45,
-        841,
-        70,
-        112
+        12,
+        1280,
+        244,
+        230
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "E046": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        200,
-        831,
-        80,
-        122
+        256,
+        1280,
+        243,
+        255
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "E047": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        358,
-        858,
-        84,
-        95
+        528,
+        1280,
+        240,
+        222
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "E048": {
       "file": "res://assets/rogue/build/gear-focus-v1.png",
       "region": [
-        520,
-        831,
-        80,
-        122
+        768,
+        1280,
+        251,
+        241
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "E049": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        49,
-        31,
-        87,
-        120
+        18,
+        7,
+        236,
+        230
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E050": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        212,
-        52,
-        75,
-        99
+        269,
+        8,
+        224,
+        248
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E051": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        365,
-        46,
-        78,
-        105
+        520,
+        7,
+        238,
+        229
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E052": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        529,
-        33,
-        81,
-        118
+        772,
+        16,
+        242,
+        227
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "E053": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        49,
-        193,
-        81,
-        120
+        8,
+        257,
+        248,
+        255
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "E054": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        212,
-        212,
-        75,
-        101
+        268,
+        256,
+        230,
+        256
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "E055": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        372,
-        212,
-        75,
-        101
+        515,
+        259,
+        247,
+        253
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "E056": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        532,
-        212,
-        75,
-        101
+        774,
+        256,
+        239,
+        256
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "E057": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        49,
-        351,
-        87,
-        124
+        10,
+        512,
+        246,
+        256
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "E058": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        209,
-        353,
-        81,
-        122
+        262,
+        512,
+        247,
+        256
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "E059": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        372,
-        372,
-        75,
-        103
+        520,
+        512,
+        227,
+        256
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "E060": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        529,
-        351,
-        87,
-        124
+        770,
+        512,
+        243,
+        256
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "E061": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        49,
-        511,
-        87,
-        122
+        8,
+        768,
+        244,
+        256
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "E062": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        205,
-        526,
-        78,
-        107
+        258,
+        768,
+        253,
+        256
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "E063": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        369,
-        513,
-        81,
-        120
+        514,
+        768,
+        231,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "E064": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        529,
-        511,
-        87,
-        122
+        774,
+        768,
+        243,
+        256
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "E065": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        45,
-        686,
-        78,
-        105
+        7,
+        1024,
+        249,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "E066": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        205,
-        686,
-        78,
-        105
+        264,
+        1024,
+        239,
+        256
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "E067": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        372,
-        692,
-        75,
-        99
+        517,
+        1024,
+        248,
+        256
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "E068": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        532,
-        692,
-        75,
-        99
+        771,
+        1024,
+        248,
+        256
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "E069": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        49,
-        831,
-        87,
-        122
+        8,
+        1280,
+        248,
+        230
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "E070": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        209,
-        833,
-        81,
-        120
+        271,
+        1280,
+        238,
+        229
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "E071": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        365,
-        846,
-        78,
-        107
+        522,
+        1280,
+        239,
+        231
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "E072": {
       "file": "res://assets/rogue/build/gear-boots-v1.png",
       "region": [
-        529,
-        831,
-        87,
-        122
+        771,
+        1280,
+        243,
+        229
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "T001": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        19,
-        19,
-        122,
-        122
+        17,
+        17,
+        239,
+        237
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T002": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        179,
-        19,
-        122,
-        122
+        256,
+        17,
+        253,
+        235
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T003": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        339,
-        19,
-        122,
-        122
+        518,
+        23,
+        235,
+        229
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T004": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        499,
-        19,
-        122,
-        122
+        768,
+        20,
+        238,
+        226
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T005": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        19,
-        179,
-        122,
-        122
+        22,
+        266,
+        234,
+        237
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "T006": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        179,
-        179,
-        122,
-        122
+        256,
+        267,
+        248,
+        236
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "T007": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        339,
-        179,
-        122,
-        122
+        515,
+        261,
+        240,
+        251
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "T008": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        499,
-        179,
-        122,
-        122
+        768,
+        260,
+        246,
+        243
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "T009": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
         19,
-        339,
-        122,
-        122
+        517,
+        237,
+        244
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "T010": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        179,
-        339,
-        122,
-        122
+        256,
+        524,
+        256,
+        236
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "T011": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        339,
-        339,
-        122,
-        122
+        514,
+        512,
+        243,
+        256
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "T012": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        499,
-        339,
-        122,
-        122
+        768,
+        515,
+        235,
+        244
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "T013": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
         19,
-        499,
-        122,
-        122
+        772,
+        237,
+        252
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "T014": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        179,
-        499,
-        122,
-        122
+        256,
+        769,
+        253,
+        254
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "T015": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        339,
-        499,
-        122,
-        122
+        512,
+        768,
+        246,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "T016": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        499,
-        499,
-        122,
-        122
+        769,
+        768,
+        238,
+        253
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "T017": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        19,
-        659,
-        122,
-        122
+        25,
+        1024,
+        216,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "T018": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        179,
-        659,
-        122,
-        122
+        268,
+        1040,
+        235,
+        240
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "T019": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        339,
-        659,
-        122,
-        122
+        512,
+        1024,
+        249,
+        248
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "T020": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        499,
-        659,
-        122,
-        122
+        769,
+        1026,
+        237,
+        254
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "T021": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
         19,
-        819,
-        122,
-        122
+        1280,
+        237,
+        237
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "T022": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        179,
-        819,
-        122,
-        122
+        256,
+        1280,
+        250,
+        233
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "T023": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        339,
-        819,
-        122,
-        122
+        514,
+        1288,
+        250,
+        220
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "T024": {
-      "file": "res://assets/rogue/build/talents-1-v1.png",
+      "file": "res://assets/rogue/build/talents-1-v2.png",
       "region": [
-        499,
-        819,
-        122,
-        122
+        768,
+        1280,
+        243,
+        229
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "T025": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        19,
-        19,
-        122,
-        122
+        16,
+        14,
+        209,
+        240
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T026": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        179,
-        19,
-        122,
-        122
+        283,
+        4,
+        211,
+        252
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T027": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        339,
-        19,
-        122,
-        122
+        529,
+        13,
+        227,
+        242
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T028": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        499,
-        19,
-        122,
-        122
+        788,
+        20,
+        208,
+        236
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T029": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        19,
-        179,
-        122,
-        122
+        14,
+        256,
+        242,
+        256
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "T030": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        179,
-        179,
-        122,
-        122
+        256,
+        260,
+        237,
+        252
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "T031": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        339,
-        179,
-        122,
-        122
+        525,
+        263,
+        233,
+        248
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "T032": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        499,
-        179,
-        122,
-        122
+        774,
+        260,
+        245,
+        252
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "T033": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        19,
-        339,
-        122,
-        122
+        8,
+        512,
+        244,
+        256
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "T034": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        179,
-        339,
-        122,
-        122
+        283,
+        512,
+        214,
+        256
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "T035": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        339,
-        339,
-        122,
-        122
+        531,
+        513,
+        225,
+        255
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "T036": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        499,
-        339,
-        122,
-        122
+        784,
+        520,
+        224,
+        248
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "T037": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        19,
-        499,
-        122,
-        122
+        24,
+        768,
+        217,
+        254
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "T038": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        179,
-        499,
-        122,
-        122
+        277,
+        768,
+        213,
+        256
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "T039": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        339,
-        499,
-        122,
-        122
+        520,
+        768,
+        234,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "T040": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        499,
-        499,
-        122,
-        122
+        774,
+        768,
+        236,
+        253
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "T041": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        19,
-        659,
-        122,
-        122
+        18,
+        1024,
+        230,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "T042": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        179,
-        659,
-        122,
-        122
+        271,
+        1024,
+        230,
+        256
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "T043": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        339,
-        659,
-        122,
-        122
+        518,
+        1024,
+        240,
+        256
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "T044": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        499,
-        659,
-        122,
-        122
+        781,
+        1029,
+        231,
+        251
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "T045": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        19,
-        819,
-        122,
-        122
+        17,
+        1280,
+        223,
+        239
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "T046": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        179,
-        819,
-        122,
-        122
+        263,
+        1280,
+        247,
+        239
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "T047": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        339,
-        819,
-        122,
-        122
+        514,
+        1280,
+        240,
+        246
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "T048": {
-      "file": "res://assets/rogue/build/talents-2-v1.png",
+      "file": "res://assets/rogue/build/talents-2-v2.png",
       "region": [
-        499,
-        819,
-        122,
-        122
+        778,
+        1280,
+        239,
+        241
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "T049": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        19,
-        19,
-        122,
-        122
+        25,
+        28,
+        217,
+        218
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T050": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        179,
-        19,
-        122,
-        122
+        284,
+        14,
+        205,
+        237
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T051": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        339,
-        19,
-        122,
-        122
+        539,
+        15,
+        206,
+        229
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T052": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        499,
-        19,
-        122,
-        122
+        776,
+        40,
+        228,
+        205
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T053": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
         19,
-        179,
-        122,
-        122
+        269,
+        227,
+        231
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "T054": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        179,
-        179,
-        122,
-        122
+        271,
+        269,
+        231,
+        232
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "T055": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        339,
-        179,
-        122,
-        122
+        520,
+        264,
+        231,
+        242
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "T056": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        499,
-        179,
-        122,
-        122
+        780,
+        268,
+        232,
+        238
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "T057": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
         19,
-        339,
-        122,
-        122
+        519,
+        237,
+        249
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "T058": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        179,
-        339,
-        122,
-        122
+        270,
+        513,
+        237,
+        246
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "T059": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        339,
-        339,
-        122,
-        122
+        529,
+        512,
+        226,
+        240
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "T060": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        499,
-        339,
-        122,
-        122
+        786,
+        524,
+        225,
+        222
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "T061": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        19,
-        499,
-        122,
-        122
+        27,
+        768,
+        229,
+        256
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "T062": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        179,
-        499,
-        122,
-        122
+        281,
+        772,
+        220,
+        252
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "T063": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        339,
-        499,
-        122,
-        122
+        544,
+        768,
+        203,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "T064": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        499,
-        499,
-        122,
-        122
+        787,
+        773,
+        221,
+        251
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "T065": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
         19,
-        659,
-        122,
-        122
+        1024,
+        219,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "T066": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        179,
-        659,
-        122,
-        122
+        281,
+        1024,
+        216,
+        256
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "T067": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        339,
-        659,
-        122,
-        122
+        527,
+        1024,
+        232,
+        256
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "T068": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        499,
-        659,
-        122,
-        122
+        782,
+        1024,
+        222,
+        256
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "T069": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
         19,
-        819,
-        122,
-        122
+        1280,
+        232,
+        219
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "T070": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        179,
-        819,
-        122,
-        122
+        268,
+        1280,
+        234,
+        219
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "T071": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        339,
-        819,
-        122,
-        122
+        530,
+        1280,
+        227,
+        219
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "T072": {
-      "file": "res://assets/rogue/build/talents-3-v1.png",
+      "file": "res://assets/rogue/build/talents-3-v2.png",
       "region": [
-        499,
-        819,
-        122,
-        122
+        786,
+        1280,
+        224,
+        227
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "T073": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        19,
-        19,
-        122,
-        122
+        22,
+        13,
+        220,
+        230
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T074": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        179,
-        19,
-        122,
-        122
+        273,
+        17,
+        227,
+        228
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T075": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        339,
-        19,
-        122,
-        122
+        521,
+        7,
+        231,
+        236
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T076": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        499,
-        19,
-        122,
-        122
+        781,
+        37,
+        227,
+        204
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "T077": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        19,
-        179,
-        122,
-        122
+        20,
+        266,
+        232,
+        246
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "T078": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        179,
-        179,
-        122,
-        122
+        272,
+        263,
+        229,
+        249
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "T079": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        339,
-        179,
-        122,
-        122
+        529,
+        256,
+        221,
+        256
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "T080": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        499,
-        179,
-        122,
-        122
+        772,
+        256,
+        240,
+        256
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "T081": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        19,
-        339,
-        122,
-        122
+        9,
+        512,
+        232,
+        256
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "T082": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        179,
-        339,
-        122,
-        122
+        268,
+        512,
+        233,
+        256
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "T083": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        339,
-        339,
-        122,
-        122
+        522,
+        512,
+        233,
+        256
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "T084": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        499,
-        339,
-        122,
-        122
+        777,
+        512,
+        233,
+        256
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "T085": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        19,
-        499,
-        122,
-        122
+        12,
+        768,
+        244,
+        256
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "T086": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        179,
-        499,
-        122,
-        122
+        256,
+        768,
+        239,
+        256
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "T087": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        339,
-        499,
-        122,
-        122
+        515,
+        768,
+        246,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "T088": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        499,
-        499,
-        122,
-        122
+        775,
+        768,
+        237,
+        256
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "T089": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        19,
-        659,
-        122,
-        122
+        13,
+        1024,
+        237,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "T090": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        179,
-        659,
-        122,
-        122
+        261,
+        1024,
+        241,
+        256
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "T091": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        339,
-        659,
-        122,
-        122
+        516,
+        1024,
+        248,
+        256
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "T092": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        499,
-        659,
-        122,
-        122
+        778,
+        1024,
+        230,
+        256
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "T093": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        19,
-        819,
-        122,
-        122
+        17,
+        1280,
+        239,
+        213
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "T094": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        179,
-        819,
-        122,
-        122
+        256,
+        1280,
+        250,
+        228
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "T095": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        339,
-        819,
-        122,
-        122
+        518,
+        1280,
+        238,
+        230
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "T096": {
-      "file": "res://assets/rogue/build/talents-4-v1.png",
+      "file": "res://assets/rogue/build/talents-4-v2.png",
       "region": [
-        499,
-        819,
-        122,
-        122
+        768,
+        1280,
+        242,
+        229
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "I001": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        22,
-        22,
-        116,
-        116
+        38,
+        7,
+        218,
+        249
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "I002": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        182,
-        22,
-        116,
-        116
+        256,
+        7,
+        233,
+        249
       ],
       "cell": [
-        160,
+        256,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "I003": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        342,
-        22,
-        116,
-        116
+        512,
+        5,
+        240,
+        251
       ],
       "cell": [
-        320,
+        512,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "I004": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        502,
-        22,
-        116,
-        116
+        781,
+        9,
+        209,
+        247
       ],
       "cell": [
-        480,
+        768,
         0,
-        160,
-        160
+        256,
+        256
       ]
     },
     "I005": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        22,
-        182,
-        116,
-        116
+        25,
+        256,
+        231,
+        256
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        256,
+        256,
+        256
       ]
     },
     "I006": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        182,
-        182,
-        116,
-        116
+        256,
+        256,
+        247,
+        256
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        256,
+        256,
+        256,
+        256
       ]
     },
     "I007": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        342,
-        182,
-        116,
-        116
+        522,
+        256,
+        227,
+        256
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        512,
+        256,
+        256,
+        256
       ]
     },
     "I008": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        502,
-        182,
-        116,
-        116
+        768,
+        256,
+        234,
+        256
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        768,
+        256,
+        256,
+        256
       ]
     },
     "I009": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        22,
-        342,
-        116,
-        116
+        34,
+        512,
+        222,
+        256
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        512,
+        256,
+        256
       ]
     },
     "I010": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        182,
-        342,
-        116,
-        116
+        256,
+        512,
+        248,
+        256
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        256,
+        512,
+        256,
+        256
       ]
     },
     "I011": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        342,
-        342,
-        116,
-        116
+        522,
+        512,
+        227,
+        256
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        512,
+        512,
+        256,
+        256
       ]
     },
     "I012": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        502,
-        342,
-        116,
-        116
+        782,
+        512,
+        224,
+        256
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        768,
+        512,
+        256,
+        256
       ]
     },
     "I013": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
         22,
-        502,
-        116,
-        116
+        768,
+        234,
+        256
       ],
       "cell": [
         0,
-        480,
-        160,
-        160
+        768,
+        256,
+        256
       ]
     },
     "I014": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        182,
-        502,
-        116,
-        116
+        256,
+        768,
+        246,
+        256
       ],
       "cell": [
-        160,
-        480,
-        160,
-        160
+        256,
+        768,
+        256,
+        256
       ]
     },
     "I015": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        342,
-        502,
-        116,
-        116
+        516,
+        768,
+        252,
+        256
       ],
       "cell": [
-        320,
-        480,
-        160,
-        160
+        512,
+        768,
+        256,
+        256
       ]
     },
     "I016": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        502,
-        502,
-        116,
-        116
+        768,
+        768,
+        246,
+        256
       ],
       "cell": [
-        480,
-        480,
-        160,
-        160
+        768,
+        768,
+        256,
+        256
       ]
     },
     "I017": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        22,
-        662,
-        116,
-        116
+        25,
+        1024,
+        231,
+        256
       ],
       "cell": [
         0,
-        640,
-        160,
-        160
+        1024,
+        256,
+        256
       ]
     },
     "I018": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        182,
-        662,
-        116,
-        116
+        256,
+        1024,
+        256,
+        256
       ],
       "cell": [
-        160,
-        640,
-        160,
-        160
+        256,
+        1024,
+        256,
+        256
       ]
     },
     "I019": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        342,
-        662,
-        116,
-        116
+        528,
+        1024,
+        235,
+        256
       ],
       "cell": [
-        320,
-        640,
-        160,
-        160
+        512,
+        1024,
+        256,
+        256
       ]
     },
     "I020": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        502,
-        662,
-        116,
-        116
+        776,
+        1024,
+        228,
+        256
       ],
       "cell": [
-        480,
-        640,
-        160,
-        160
+        768,
+        1024,
+        256,
+        256
       ]
     },
     "I021": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        22,
-        822,
-        116,
-        116
+        23,
+        1280,
+        233,
+        214
       ],
       "cell": [
         0,
-        800,
-        160,
-        160
+        1280,
+        256,
+        256
       ]
     },
     "I022": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        182,
-        822,
-        116,
-        116
+        256,
+        1280,
+        246,
+        216
       ],
       "cell": [
-        160,
-        800,
-        160,
-        160
+        256,
+        1280,
+        256,
+        256
       ]
     },
     "I023": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        342,
-        822,
-        116,
-        116
+        524,
+        1280,
+        227,
+        219
       ],
       "cell": [
-        320,
-        800,
-        160,
-        160
+        512,
+        1280,
+        256,
+        256
       ]
     },
     "I024": {
       "file": "res://assets/rogue/build/engravings-v1.png",
       "region": [
-        502,
-        822,
-        116,
-        116
+        768,
+        1280,
+        243,
+        205
       ],
       "cell": [
-        480,
-        800,
-        160,
-        160
+        768,
+        1280,
+        256,
+        256
       ]
     },
     "WC001": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        21,
-        21,
-        118,
-        118
+        30,
+        64,
+        284,
+        346
       ],
       "cell": [
         0,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "WC002": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        181,
-        21,
-        118,
-        118
+        314,
+        64,
+        313,
+        354
       ],
       "cell": [
-        160,
+        314,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "WC003": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        341,
-        21,
-        118,
-        118
+        627,
+        62,
+        313,
+        344
       ],
       "cell": [
-        320,
+        627,
         0,
-        160,
-        160
+        313,
+        418
       ]
     },
     "WC004": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        501,
-        21,
-        118,
-        118
+        940,
+        68,
+        301,
+        349
       ],
       "cell": [
-        480,
+        940,
         0,
-        160,
-        160
+        314,
+        418
       ]
     },
     "WC005": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        21,
-        181,
-        118,
-        118
+        16,
+        435,
+        298,
+        374
       ],
       "cell": [
         0,
-        160,
-        160,
-        160
+        418,
+        314,
+        418
       ]
     },
     "WC006": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        181,
-        181,
-        118,
-        118
+        314,
+        418,
+        313,
+        418
       ],
       "cell": [
-        160,
-        160,
-        160,
-        160
+        314,
+        418,
+        313,
+        418
       ]
     },
     "WC007": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        341,
-        181,
-        118,
-        118
+        627,
+        448,
+        313,
+        388
       ],
       "cell": [
-        320,
-        160,
-        160,
-        160
+        627,
+        418,
+        313,
+        418
       ]
     },
     "WC008": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        501,
-        181,
-        118,
-        118
+        940,
+        456,
+        305,
+        380
       ],
       "cell": [
-        480,
-        160,
-        160,
-        160
+        940,
+        418,
+        314,
+        418
       ]
     },
     "WC009": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        21,
-        341,
-        118,
-        118
+        14,
+        841,
+        300,
+        359
       ],
       "cell": [
         0,
-        320,
-        160,
-        160
+        836,
+        314,
+        418
       ]
     },
     "WC010": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        181,
-        341,
-        118,
-        118
+        314,
+        836,
+        313,
+        364
       ],
       "cell": [
-        160,
-        320,
-        160,
-        160
+        314,
+        836,
+        313,
+        418
       ]
     },
     "WC011": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        341,
-        341,
-        118,
-        118
+        627,
+        836,
+        313,
+        375
       ],
       "cell": [
-        320,
-        320,
-        160,
-        160
+        627,
+        836,
+        313,
+        418
       ]
     },
     "WC012": {
       "file": "res://assets/rogue/build/weapon-cores-v1.png",
       "region": [
-        501,
-        341,
-        118,
-        118
+        940,
+        836,
+        305,
+        371
       ],
       "cell": [
-        480,
-        320,
-        160,
-        160
+        940,
+        836,
+        314,
+        418
       ]
     }
   }
