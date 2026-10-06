@@ -1,0 +1,702 @@
+[
+  {
+    "texture": "f1-a6-smooth-night-v2.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-a6-smooth-night-v2-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "c7d0d1f3-52bf-4a1b-9422-660a3d2324dd",
+    "sha256": "bfdf01be103c4ddb483bebe01c61996b207cdb8694391716b190bce2d31bed88"
+  },
+  {
+    "texture": "f1-a7-smooth-night-v2.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-a7-smooth-night-v2-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "4c954427-de76-4999-9dce-8cfeda81eb88",
+    "sha256": "7dcbeaa45b50e30eac5f8b6da12e29bb864e5c99defb78d54c619b9aab005133"
+  },
+  {
+    "texture": "f1-shop-smooth-night-v2.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-shop-smooth-night-v2-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "0a12f042-a1c6-4409-9605-7f300428e9e8",
+    "sha256": "56b153a55f5d2aec89d393d49de21b9eae140fb6e0092463993bbd70122759c9"
+  },
+  {
+    "texture": "f1-talent-smooth-night-v2.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-talent-smooth-night-v2-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "37683319-00d7-473e-9754-684a10513307",
+    "sha256": "a4c6108980392766120c55c69a6f729c8ea3e602d56471612cb762982352f778"
+  },
+  {
+    "texture": "f1-treasure-smooth-night-v2.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-treasure-smooth-night-v2-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "433c0c02-9753-4d9f-bd26-2aa2d4a7a12f",
+    "sha256": "6f921306b51bdfb20d7ba18fb3e3796157a5fa8cd07cdb3eb739c9190ae22bc4"
+  },
+  {
+    "texture": "f1-curse-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-curse-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "614eef04-5277-4504-810a-e4fd8a1159ff",
+    "sha256": "d7e9c23c0231349ab69576b345a7ab88ffe654d4d5e6308a97746fcbc36768c8"
+  },
+  {
+    "texture": "f1-event-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-event-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "c7fcfad7-6726-4df5-8e97-462ecad5c405",
+    "sha256": "69e8fd2e06eaa411c6be402272ed1bfc4ccc1ddb1668e0d7e3550d8fd21e6965"
+  },
+  {
+    "texture": "f1-forge-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-forge-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "c7453949-21d9-4895-8a26-ef6be7afb2bc",
+    "sha256": "655417f34cd8702e741309442a1b6ebafbd2c2a9e8791d097aa8984f99318762"
+  },
+  {
+    "texture": "f1-gamble-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-gamble-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "cc782d4a-5fd4-493f-b257-7f4363e92129",
+    "sha256": "38ccc2ad75d61b92c6231dfddd2454e88615bca264f86e3da81b481c2a9cd288"
+  },
+  {
+    "texture": "f1-mirror-flat-night-v7.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f1-mirror-flat-night-v7-3x.png",
+    "size": [
+      6516,
+      2172
+    ],
+    "prompt_id": "47891252-ec63-4cce-837a-b1fea68e006d",
+    "sha256": "979631327f4bf18d2848bfb6d5ece722fbb1ab5a1692b53aabf033d0e7fb6621"
+  },
+  {
+    "texture": "f2-a6-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-a6-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "045d335f-022a-4686-ae6d-0ea61e0adcd7",
+    "sha256": "7018827843a9b6f29bca24dd604ac056c6cc3ba7247edbcfc51dfe0b752725a4"
+  },
+  {
+    "texture": "f2-a7-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-a7-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "b4bc6c43-9acc-4c21-8cfd-d98dd10a7acd",
+    "sha256": "1ace7fb53c27023c6b3cf90663b3c65adeb31bc8413d06fa74f06e4ab51eec83"
+  },
+  {
+    "texture": "f2-shop-smooth-night-v2.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-shop-smooth-night-v2-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "bf55e285-0b5f-49f4-824f-8dce3caad1aa",
+    "sha256": "a53ee5e43f5a82b332e109fe2e5ec6496f58b095ff5ec303c4ffa45ba8718431"
+  },
+  {
+    "texture": "f2-talent-smooth-night-v2.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-talent-smooth-night-v2-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "e44acdff-79ef-4d58-a2aa-e6103940e3f8",
+    "sha256": "ee55a9cf9bee2607e1912531ee6487be2b00842ff8937e1045b885e664dba2c7"
+  },
+  {
+    "texture": "f2-treasure-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-treasure-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "8c886930-a176-40a5-b363-68831404b3da",
+    "sha256": "912b3397ce0697424fe02bca9c1b292c0bebf16eb4bffdc96d4690f9afc46109"
+  },
+  {
+    "texture": "f2-curse-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-curse-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "b2c0da10-f3e3-4454-93bb-bd716882ec56",
+    "sha256": "02158ccedbe53a0fc48c1b20720dc8b16cb33018c3f9d980750baab1daff80b5"
+  },
+  {
+    "texture": "f2-event-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-event-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "63872195-e959-4655-b7e0-1e76d66c2ee9",
+    "sha256": "8c752bc71f6c95b55d6f16689f83998d14f1a6223f7009a94a3b10baa95a7551"
+  },
+  {
+    "texture": "f2-forge-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-forge-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "ff061bef-0e20-4de8-9ee0-1f92ad7182a7",
+    "sha256": "412a9f616ad10fdecd513069ae68857fcb1a9412ac0df7ea40ed12e7557eccee"
+  },
+  {
+    "texture": "f2-gamble-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-gamble-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "68114d63-898a-41d7-b691-44fed9b7b5dd",
+    "sha256": "51c828991d9083d778ad2d85381c12aa9eafc0264058f077e4a7c8739705b728"
+  },
+  {
+    "texture": "f2-mirror-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f2-mirror-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "1dd839e9-b073-40e9-be7e-2af0b635098d",
+    "sha256": "2012eed051c8cbea17c4dda8878bdf9a23881428f9585d860d83f33fc4d2f858"
+  },
+  {
+    "texture": "f3-a6-flat-night-v7.png",
+    "source_size": [
+      2157,
+      729
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-a6-flat-night-v7-3x.png",
+    "size": [
+      6471,
+      2187
+    ],
+    "prompt_id": "1829eb22-2942-4ece-9746-e6c344c5b59f",
+    "sha256": "d96f7339f5bc2d1cedd774d2fe786cb523e25505f9462763c5ad6173bbfd2b22"
+  },
+  {
+    "texture": "f3-a7-flat-night-v7.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-a7-flat-night-v7-3x.png",
+    "size": [
+      6516,
+      2172
+    ],
+    "prompt_id": "b65c1a49-f589-4a10-a77c-61df4c476ecd",
+    "sha256": "6cf62a9621d3e9b28e818e7b97fb710eb754fd94d98a8279839700b4c781a3db"
+  },
+  {
+    "texture": "f3-shop-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-shop-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "c625162c-50b6-4b41-aebf-7a1b57dc57fa",
+    "sha256": "5ffece928e214de913374ef917f9b890da8f4845125bc16fb5be5e494ecfe65d"
+  },
+  {
+    "texture": "f3-talent-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-talent-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "29bcccec-8304-41e2-9cdc-1cabba851beb",
+    "sha256": "4d3aa2422b6a8f04ae99c60bfad28e610518711737fceb8b133c3a2f25cee78b"
+  },
+  {
+    "texture": "f3-treasure-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-treasure-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "005a32c4-dafa-4c46-86a6-ff3e2bc29be3",
+    "sha256": "681b5b0cef5acaf50e626a7a2bf6f4390579430fcd5b464321fda6cf16754b07"
+  },
+  {
+    "texture": "f3-curse-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-curse-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "22385ea5-6eea-4024-b2f6-663749338339",
+    "sha256": "8e0603d815e6dc2a0f36eeb861efc5b1dfa6567659ff278c7be6e8ed307be66f"
+  },
+  {
+    "texture": "f3-event-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-event-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "d08ded7a-a978-44f4-a0a4-01a2ca29fa1a",
+    "sha256": "b6cecf5b8ef99436a34894ce9c647fe2c7fe703e924e217e032cfbfe0258d1ce"
+  },
+  {
+    "texture": "f3-forge-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-forge-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "cd196a81-ae0d-42a3-aeb8-9ffd685bfc30",
+    "sha256": "8d06f5b6a7d3b0369de11905fa15c3e22d7c5e01d6758708f9e91faf8a413e82"
+  },
+  {
+    "texture": "f3-gamble-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-gamble-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "a5918f11-40f1-4f7c-8392-b397530c3a05",
+    "sha256": "33ca3213fb649780e10064ed5327af6ffda2666ebe40a82f1d2b0e86bf17d3ca"
+  },
+  {
+    "texture": "f3-mirror-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f3-mirror-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "98fc8b36-2479-4605-aab0-c84d918cb346",
+    "sha256": "9c6bbda17d5670fafe87945c6f4afec9ef141c01289245c6c5777585169e224a"
+  },
+  {
+    "texture": "f4-a6-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-a6-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "38f3dc2b-f873-48ae-ba6e-8f015562d68d",
+    "sha256": "b181889f4d9f3a2aaa7f20e66e8701d7f0a96ca086b0fb57a8b3ccc351714b5e"
+  },
+  {
+    "texture": "f4-a7-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-a7-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "5c51034b-a3fa-4b0d-9638-f96e1d85520c",
+    "sha256": "9c5c424ed2953248aa0dd800487353dc60dde7ed5800304515fb796dbd7434a7"
+  },
+  {
+    "texture": "f4-shop-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-shop-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "1f22a3c5-39c3-4890-bdbe-64dcb5a0f5bc",
+    "sha256": "60d581756563593dc95e95a83b95862441953d98ced69767a4e3c1275a75d698"
+  },
+  {
+    "texture": "f4-talent-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-talent-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "9a08fa45-3d4f-428b-af63-0c7f7bcc9e83",
+    "sha256": "05ab476e17c1d97cdd380905236a5dda3a579c790497d0e6a495cda0e81c5036"
+  },
+  {
+    "texture": "f4-treasure-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-treasure-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "69cdac3b-22af-4241-a1c6-3b0637855f8f",
+    "sha256": "009e34e6ab916735af4fbc6d545a1d7d24bbe49f3c2458d9076562091d9830fe"
+  },
+  {
+    "texture": "f4-curse-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-curse-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "c485cc92-8535-4d23-aff6-632c54ca2b51",
+    "sha256": "cebd220cb2e6766322a1a061f9e17d7c167d7ead9da1d4f43a2ca2752aea4c2e"
+  },
+  {
+    "texture": "f4-event-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-event-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "8d3ff0e1-e856-47ed-a7bc-f0778a9dbbd5",
+    "sha256": "e2e38e6bbb3d6c545b9d20fa39218f859a8aee52b6207d4949d6c27cec9ab218"
+  },
+  {
+    "texture": "f4-forge-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-forge-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "8d0b7187-831d-4dca-845f-aec8044d1766",
+    "sha256": "81735ee242c99bea94aef188c0fb1101c3baa5cc8aa437586065d637455c6616"
+  },
+  {
+    "texture": "f4-gamble-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-gamble-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "7476feeb-ef90-418c-ad96-a20c2d3c98e4",
+    "sha256": "659f00a1f8eadd7f93be72838b1b3b8744797c0e336a970456821cb066133e31"
+  },
+  {
+    "texture": "f4-mirror-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f4-mirror-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "9409eea1-4981-4c95-91bf-231344e4b700",
+    "sha256": "944c037f9e480740471da02bba42f06e42e2a7f507c370f9b5120c1482fd2bdd"
+  },
+  {
+    "texture": "f5-a6-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-a6-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "afbe29d7-65b5-4bf7-8f00-3c1dc3f92374",
+    "sha256": "8ff514653199bbd8bce29a09c9eb6b24f040c1eb9e31a0db7404895cbe8161ad"
+  },
+  {
+    "texture": "f5-a7-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-a7-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "6d54041d-d511-4d9b-99e1-aae289bade51",
+    "sha256": "f84e1d861d25da6464765fd32b5b888ad3d848453ce41c302bdc99579ef3ca7b"
+  },
+  {
+    "texture": "f5-shop-flat-night-v7.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-shop-flat-night-v7-3x.png",
+    "size": [
+      6516,
+      2172
+    ],
+    "prompt_id": "2ee240d5-7daf-4573-bc23-834f96788724",
+    "sha256": "5283eaeb9423d75eb6c8c9c63daadf30ca180f4b181be91189ac7366712545ff"
+  },
+  {
+    "texture": "f5-talent-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-talent-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "88ecda11-a046-4f0d-9f79-8ed47a6d290d",
+    "sha256": "e08eb4d46d004ffd182141d3da73b774f77181cbcc0f24803d7cc7f168d11d65"
+  },
+  {
+    "texture": "f5-treasure-flat-night-v7.png",
+    "source_size": [
+      2169,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-treasure-flat-night-v7-3x.png",
+    "size": [
+      6507,
+      2175
+    ],
+    "prompt_id": "83cd768d-c95d-4cd2-a6d3-12a1e2585e83",
+    "sha256": "f886178b4962fa2f7b7ef1451f8319e4aa040d37d63512ac2abee1ff9bd9c159"
+  },
+  {
+    "texture": "f5-curse-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-curse-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "88d41187-19bf-44c3-a061-f9f3177ef718",
+    "sha256": "da656f15d0d0b8962531bc889251908db31f90477915be1371b340cd8e936f31"
+  },
+  {
+    "texture": "f5-event-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-event-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "c5825942-4de5-4599-b53a-3649b553c172",
+    "sha256": "8f8ab42f9d0fd680b978d47a88d9436de5fec154ec776163ba8a781e56bba4d6"
+  },
+  {
+    "texture": "f5-forge-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-forge-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "d76acdd2-5723-4122-b86d-7c28cba0fae3",
+    "sha256": "5fe5ddffedef3b37dc78262511997be58cc09526fd91f05cca697b493b1e8b4e"
+  },
+  {
+    "texture": "f5-gamble-flat-night-v7.png",
+    "source_size": [
+      2171,
+      724
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-gamble-flat-night-v7-3x.png",
+    "size": [
+      6513,
+      2172
+    ],
+    "prompt_id": "7fec6a9d-306b-4ae3-a5d9-2ca7c925cc6e",
+    "sha256": "b34188858674f62474631a08afee61ac26a035a6c7b206c44c96baf587471f5b"
+  },
+  {
+    "texture": "f5-mirror-flat-night-v7.png",
+    "source_size": [
+      2170,
+      725
+    ],
+    "output": "D:\\develop\\school\\CrimsonTide-godot\\output\\comfyui-3x\\f5-mirror-flat-night-v7-3x.png",
+    "size": [
+      6510,
+      2175
+    ],
+    "prompt_id": "377baab4-fe85-491f-8a1e-48252ab27c1e",
+    "sha256": "1525755964404eb15d487ed76806d4efe0be03bc4a7fbf523f2dbbb4ce917d04"
+  }
+]

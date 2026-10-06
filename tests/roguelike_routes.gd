@@ -91,7 +91,13 @@ func run() -> void:
 			# straight shortcut across that wedge should remain blocked.
 			var route: Array[Vector2]=[destination]
 			if index==1:
-				route.push_front(Vector2(map.width*.88,map.ground_y(.425)))
+				# Follow the artwork's measured curve; a fixed UV waypoint can lie
+				# outside an otherwise connected path after the artwork changes.
+				route.clear()
+				var branch: Array=map.region.branch
+				for sample in range(5):
+					route.append(map.uv_point([branch[sample][0],(branch[sample][1]+branch[11-sample][1])/2]))
+				route.append(destination)
 			for waypoint in route:
 				var leg_start := at
 				for step in 100:

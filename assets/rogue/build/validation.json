@@ -1,0 +1,119 @@
+[
+  {
+    "file": "weapons-light-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "icons": 12,
+    "fully_transparent_fraction": 0.655
+  },
+  {
+    "file": "weapons-heavy-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "icons": 12,
+    "fully_transparent_fraction": 0.4687
+  },
+  {
+    "file": "weapons-ranged-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "icons": 12,
+    "fully_transparent_fraction": 0.5705
+  },
+  {
+    "file": "weapons-staff-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "icons": 12,
+    "fully_transparent_fraction": 0.5726
+  },
+  {
+    "file": "gear-armor-v1.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.2635
+  },
+  {
+    "file": "gear-focus-v1.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.3797
+  },
+  {
+    "file": "gear-boots-v1.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.3298
+  },
+  {
+    "file": "talents-1-v2.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.3812
+  },
+  {
+    "file": "talents-2-v2.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.3784
+  },
+  {
+    "file": "talents-3-v2.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.4056
+  },
+  {
+    "file": "talents-4-v2.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.319
+  },
+  {
+    "file": "engravings-v1.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "icons": 24,
+    "fully_transparent_fraction": 0.4197
+  },
+  {
+    "file": "weapon-cores-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "icons": 12,
+    "fully_transparent_fraction": 0.3451
+  }
+]

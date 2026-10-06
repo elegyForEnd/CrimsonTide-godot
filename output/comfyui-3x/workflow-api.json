@@ -1,0 +1,93 @@
+{
+  "1": {
+    "inputs": {
+      "filename_prefix": "3x-",
+      "images": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "2": {
+    "inputs": {
+      "image": "f3-shop-safe-night-v1.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载图像"
+    }
+  },
+  "3": {
+    "inputs": {
+      "quality_profile": "speed",
+      "tile_strategy": "auto",
+      "tile_size": 512,
+      "tile_overlap": 32,
+      "vae_tile_size": 1024,
+      "vae_tile_overlap": 32,
+      "image_batch": 1,
+      "frame_batch": 2,
+      "dino_batch": 2,
+      "temporal_cache": false,
+      "cache_threshold": 0.003,
+      "cache_refresh": 4,
+      "memory_policy": "auto",
+      "color_alignment": "wavelet"
+    },
+    "class_type": "TESpeedVOSR2Settings",
+    "_meta": {
+      "title": "TE-Speed VOSR2 Settings"
+    }
+  },
+  "4": {
+    "inputs": {
+      "value": 3
+    },
+    "class_type": "easy int",
+    "_meta": {
+      "title": "整数"
+    }
+  },
+  "11": {
+    "inputs": {
+      "scale": [
+        "4",
+        0
+      ],
+      "seed": 666,
+      "model": [
+        "12",
+        0
+      ],
+      "images": [
+        "2",
+        0
+      ],
+      "settings": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "TESpeedVOSR2Image",
+    "_meta": {
+      "title": "TE-Speed VOSR2 Image"
+    }
+  },
+  "12": {
+    "inputs": {
+      "model_bundle": "VOSR2",
+      "precision": "auto",
+      "memory_policy": "auto",
+      "torch_compile": false,
+      "vae_encode_amp": false
+    },
+    "class_type": "TESpeedVOSR2Loader",
+    "_meta": {
+      "title": "TE-Speed VOSR2 Loader"
+    }
+  }
+}

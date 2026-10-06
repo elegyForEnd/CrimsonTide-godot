@@ -636,3 +636,7 @@ git status --porcelain
 - **结果**：**全部通过**——OK 348 / DRIFT 0 / WRONG 0；另有 84 条 HINT（锚点只写了行号、附近才出现符号名，脚本无法硬校验，建议后续逐步补符号名）。
 - **本轮改动**：跟随 `abcbaaf` 大提交（179 文件 / +17267 行 / 肉鸽扩展全量接线与攻击前摇）重锚：机械修正 47 处行号 + 8 个章节的人工复核（修正 100+ 处漂移与错标）；新增攻击前摇（`scripts/attack_telegraph.gd`）、肉鸽扩展七子系统（图谱/事件/诅咒/每日/成长/房间/变体）、房间 UI 与每日・成长页、Boss 弹幕外壳 shader、`tools/run_all_tests.ps1`/`run_rogue_gate.ps1` 等条目。
 - **结论**：每次 pull 到含代码变更的提交后，先跑一次 `python tools/verify_anchors.py --guide PROJECT-GUIDE.md --root . --summary`；有 DRIFT / WRONG 就按报告改完再交接。
+
+### 2026-10-06 本地恢复与同步
+
+肉鸽地图已接入 50 张 ComfyUI 精确三倍图，ground-manifest.json 保存专用房间背景和实测碰撞轮廓；tools/install_rogue_final_maps.py 优先选择三倍图，tools/audit_rogue_final_maps.py 与 tests/roguelike_smooth_maps.gd 验证选图及尺寸。scripts/main.gd 增加面板关闭与重新打开操作，tests/rogue_panel_close.gd 验证关闭行为。相关代码变动后的行号需重新校验。

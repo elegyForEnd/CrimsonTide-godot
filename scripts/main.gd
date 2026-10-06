@@ -59,6 +59,9 @@ var sound: TideSound
 var rogue_field: Control
 var rogue_panel: Control
 var rogue_signature := ""
+var rogue_panel_context := ""
+var rogue_panel_dismissed := false
+var rogue_panel_open := false
 var rogue_inventory = preload("res://scripts/rogue_inventory.gd").new()
 var extraction_inventory = preload("res://scripts/extraction_inventory.gd").new()
 var rogue_pending_cost := -1
@@ -690,6 +693,9 @@ func new_page(name_value: String) -> void:
 	field.visible=name_value=="game" and not session.roguelike.active(session)
 	rogue_field.visible=name_value=="game" and session.roguelike.active(session)
 	rogue_signature=""
+	rogue_panel_context=""
+	rogue_panel_dismissed=false
+	rogue_panel_open=false
 	rogue_panel=null
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
@@ -1389,8 +1395,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			toggle_map()
 		elif inventory_open:
 			close_bag()
+		elif page_name=="game" and rogue_panel_open:
+			close_rogue_panel()
 		elif page_name=="game":
 			pause_menu()
+		get_viewport().set_input_as_handled()
 		return
 	if page_name!="game" or modal:
 		return
@@ -3466,10 +3475,20 @@ func update_rogue_hud(p: Dictionary) -> void:
 	# R7b: the three dedicated rooms repaint from their own signature — the room kind,
 	# the raid revision and the local resources that decide whether an offer is clickable.
 	var room_kind := str(session.raid.room)
+	# Purchases and rerolls change revision, but must not reopen a dismissed panel.
+	# A new room, event or personal reward gets its own visibility state.
+	var context := "%s:%s:%s:%s:%s:%s" % [session.raid.get("floor",1),session.raid.get("node",""),session.raid.get("area",1),room_kind,RogueUi.event_id(session.raid),selection.get("id",-1)]
+	if context!=rogue_panel_context:
+		rogue_panel_context=context
+		rogue_panel_dismissed=false
+	signature+="/context:%s/hidden:%s" % [context,rogue_panel_dismissed]
 	if RogueRoomUi.handled(room_kind):
 		signature+="/room:"+RogueRoomUi.signature(room_kind,session.raid,RogueRoomUi.context_of(session,p))
 	if signature==rogue_signature: return
 	rogue_signature=signature
+	rogue_panel_open=false
+	rogue_event_buttons=[]
+	rogue_room_buttons=[]
 	if is_instance_valid(rogue_panel):
 		page.remove_child(rogue_panel)
 		rogue_panel.queue_free()
@@ -3477,16 +3496,31 @@ func update_rogue_hud(p: Dictionary) -> void:
 	rogue_panel.size=Vector2(1440,900)
 	rogue_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	page.add_child(rogue_panel)
+	var panel_title := ""
+	if not selection.is_empty(): panel_title="奖励抉择"
+	elif RogueUi.event_active(session.raid): panel_title="幽暗异事"
+	elif RogueRoomUi.handled(room_kind): panel_title=RogueRoomUi.room_name(room_kind)
+	elif session.raid.phase=="rogue_shop" and browsing_shop: panel_title="游商"
+	if panel_title!="" and rogue_panel_dismissed:
+		var reopen := button(rogue_panel,"打开"+panel_title,Vector2(1130,140),Vector2(235,44),open_rogue_panel)
+		reopen.name="RoguePanelReopen"
+		return
+	rogue_panel_open=panel_title!=""
 	if not selection.is_empty():
 		var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
 		rogue_panel.add_child(reward_ui)
 		reward_ui.build(self,selection)
+		# World loot can be put back; personal starting/room rewards must be resolved.
+		rogue_panel_open=not bool(selection.get("personal",false))
+		if rogue_panel_open: rogue_panel_close_button(Vector2(1265,48))
 		return
 	if RogueUi.event_active(session.raid):
 		rogue_event_panel(p,revision)
+		rogue_panel_close_button()
 		return
 	if RogueRoomUi.handled(room_kind):
 		rogue_room_panel(p,revision,room_kind)
+		rogue_panel_close_button()
 		return
 	label(rogue_panel,"魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls],Vector2(1030,92),18,GOLD,Vector2(380,35))
 	if session.raid.phase=="rogue_reward":
@@ -3506,11 +3540,34 @@ func update_rogue_hud(p: Dictionary) -> void:
 			details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 			var b := button(rogue_panel,"已售出" if offer.get("sold",false) else ("%d 魔晶 · 购买" % offer.price if offer.price>0 else "领取"),Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":index,"revision":revision}))
 			b.disabled=offer.get("sold",false) or p.rogue_gold<int(offer.price) or (offer.has("flask_refill") and p.flask>50)
-		var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":revision}))
+		var reroll := button(rogue_panel,"使用刷新卡",Vector2(975,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":revision}))
 		reroll.disabled=p.rogue_rerolls<=0
+		rogue_panel_close_button()
 		if session.raid.phase=="rogue_prepare": label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
 	if session.raid.phase in ["rogue_shop","rogue_exit"]:
 		label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+
+func rogue_panel_close_button(at: Vector2 = Vector2(1230,180)) -> void:
+	var close := button(rogue_panel,"关闭 · Esc",at,Vector2(135,42),close_rogue_panel)
+	close.name="RoguePanelClose"
+
+func close_rogue_panel() -> void:
+	if not rogue_panel_open: return
+	var p: Dictionary=session.players[session.my_id()]
+	var selection: Dictionary=p.get("rogue_selection",{})
+	if not selection.is_empty():
+		session.action("rogue_selection_return",{"id":selection.id,"version":selection.version})
+		return
+	rogue_panel_dismissed=true
+	rogue_signature=""
+	sound.play("ui-close")
+	update_rogue_hud(session.players[session.my_id()])
+
+func open_rogue_panel() -> void:
+	rogue_panel_dismissed=false
+	rogue_signature=""
+	sound.play("ui-open")
+	update_rogue_hud(session.players[session.my_id()])
 
 
 ## R7: the 幽暗异事 room. The offer lives in raid-wide `pending_event` (written by
