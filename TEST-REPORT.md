@@ -250,3 +250,12 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 新增 GPU 检查：同一捕获刀光、同一帧，启用加厚后的亮像素较关闭扩展增加至少 35%；箭/冰针在飞行中有至少 6 像素可见厚度；圆斩保持空心和身体中心。中心检查采用 alpha > 0.08 的可见轮廓，避免极淡辉光像素干扰测量。命中闪光检查同步为半径不超过 40、时间不超过 0.18 秒，继续检查位置、去重和碎片数量。
 - 编辑器导入和 Windows 单文件导出成功：build/CrimsonTide-WeaponMechanics.exe，2,076,241,536 字节。使用引擎 --main-pack 加载 exe 内嵌资源，在空目录运行外部测试脚本；五组共 1162 检查，0 failures（机制 429、GPU 29、身份 553、强化 32、独立特效 119）。
 - 更新并检查 build/weapon-mechanics-comparison.png、build/weapon-mechanics-motion.gif 和代表性主场景截图 build/weapon-vfx-battle-603.png；GIF 由 viewport 帧直接编码。项目路牌 609 个锚点：OK 405 / DRIFT 0 / WRONG 0 / HINT 204。
+
+## 2026-10-07 ImageGen 原图重新制作
+
+- 用户澄清要求重新用 ImageGen 绘制不理想的素材，重新生成14张透明方图：8种动作轨迹（轻刃、双刃、突刺、重刃、轻/重圆斩、仪镰、战戟窄扫）、5种弹体（箭、冰针、子弹、雷弹、月刃）和弓弦出手。保留旧图供对照，现46张原始RGBA通过哈希、透明度、长宽比和圆斩透明中心审计，0 failures。
+- 新图统一为 _v2，weapon_image_art.gd 的 REDRAWN 映射实际攻击及关联施法出手；原始图片直接复制，完整提示词与生成原始路径在 assets/combat/imagegen-mechanics/prompts 和 manifest.json。没有对像素加工。删除上轮 weapon_body 扩边shader，取消横截面拉厚，普通贴图按自然比例显示。
+- 本轮源码9组共4622检查，0 failures：weapon_mechanics 429、weapon_mechanics_visual 30、weapon_vfx_identity 553、weapon_stroke_stability 196、weapon_vfx_battle 41、all_weapon_mounts 2568、weapon_vfx_progression 32、weapon_contact_particles 654、standalone_vfx 119。
+- GPU原图比较不使用扩边或辉光shader：相同绘制尺寸下，旧轻刃原图亮像素140，新原图1675，通过新增的至少50%主体增量检查。实际飞行渲染中长弓箭和短弩箭可见高度6，冰针10；圆斩中心/空心/空中高度及光束相机稳定性通过。前后对照首次捕获中的白块来自预览临时纹理过早释放，已通过持续持有纹理修复；第二次绘制等待字体图集稳定，14组对照已完整检查。
+- build/CrimsonTide-WeaponImageRedraw.exe 导出成功，2,082,811,544字节；引擎从空目录以 --main-pack 加载 exe 内嵌资源，五组1163检查，0 failures（机制429、GPU30、身份553、强化32、独立特效119）。
+- 原图对照 build/weapon-imagegen-redraw.png、招式对照 build/weapon-mechanics-comparison.png、动态 build/weapon-mechanics-motion.gif 与实战截图 build/weapon-vfx-battle-603.png 已更新并检查。项目路牌609锚点：OK405 / DRIFT0 / WRONG0 / HINT204。

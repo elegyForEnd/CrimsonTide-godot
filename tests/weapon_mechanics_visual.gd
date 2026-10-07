@@ -7,6 +7,18 @@ class ProjectileRenderer extends CombatVisuals:
 	func _process(_dt: float) -> void: pass
 	func draw_spells() -> void: pass
 	func _draw() -> void: draw_run_projectile(self,bullet,false)
+class NativeArtRenderer extends Node2D:
+	var role := "motion_slash"
+	var textures: Dictionary={}
+	func _draw() -> void:
+		var assets: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/combat/imagegen-mechanics/manifest.json")).assets
+		var entry: Dictionary=assets[role]
+		if not textures.has(role): textures[role]=load("res://assets/combat/imagegen-mechanics/"+str(entry.file))
+		var art: Texture2D=textures[role]
+		var ink: Array=entry.ink
+		var bounds := Rect2(ink[0],ink[1],ink[2]-ink[0],ink[3]-ink[1])
+		var size := minf(130/bounds.size.x,110/bounds.size.y)
+		draw_texture_rect(art,Rect2(Vector2(210,210)-bounds.get_center()*size,art.get_size()*size),false)
 var checks := 0
 var failures := 0
 func _initialize() -> void: call_deferred("run")
@@ -41,7 +53,9 @@ func run() -> void:
 		var bounds := img.get_used_rect()
 		check(bounds.has_area(),"Actual projectile draws visible pixels")
 		if int(pair[0]) in [625,626,638,644]: check(bounds.size.x>bounds.size.y*3,"Arrow, needle and lance remain narrow in actual flight renderer")
-		if int(pair[0]) in [625,626,638]: check(visible_bounds(img).size.y>=6,"Flying arrows and needles have a readable thick body")
+		if int(pair[0]) in [625,626,638]:
+			print("PROJECTILE NATIVE ",pair[0]," ",visible_bounds(img))
+			check(visible_bounds(img).size.y>=6,"Flying arrows and needles have a readable thick body")
 		if int(pair[0])==640: check(bounds.size.y>bounds.size.x,"Moon blade remains an upright crescent in flight")
 		check(bounds.size.x<100 and bounds.size.y<70,"One projectile never becomes a broad wave")
 	projectile.queue_free(); await process_frame
@@ -63,11 +77,6 @@ func run() -> void:
 	img=await capture(viewport)
 	var bright := bright_pixels(img)
 	check(bright>50,"Slash keeps a strong visible red core through its contact frame")
-	# Same captured attack and frame: only turn off body expansion for comparison.
-	fx.material.set_shader_parameter("stroke_pixels",0.0)
-	var thin: Image=await capture(viewport)
-	check(bright>bright_pixels(thin)*1.35,"Thicker slash has at least 35 percent more bright body pixels than the thin stroke")
-	fx.material.set_shader_parameter("stroke_pixels",1.8)
 	fx.reset()
 	fx.event({"kind":"spell_burst","p":Vector2(110,300),"aim":Vector2.RIGHT,"weapon_index":637,"spell":"meteor","radius":60,"id":1})
 	fx.particles.reset(); fx.shards.clear(); fx.advance(.07)
@@ -81,6 +90,15 @@ func run() -> void:
 	fx.position=Vector2(18,12); fx.queue_redraw(); fx.light.queue_redraw()
 	img=await capture(viewport)
 	check((img.get_used_rect().position-before.position).distance_to(Vector2(18,12))<2,"Both beam endpoints remain in captured world space when camera transform changes")
+	fx.queue_free(); await process_frame
+	# Compare original PNGs under identical bounds, with no expansion or glow shader.
+	var native := NativeArtRenderer.new(); viewport.add_child(native)
+	var old_body: Image=await capture(viewport)
+	native.role="motion_slash_v2"; native.queue_redraw()
+	var new_body: Image=await capture(viewport)
+	print("NATIVE BODY BRIGHT ",bright_pixels(old_body)," -> ",bright_pixels(new_body))
+	check(bright_pixels(new_body)>bright_pixels(old_body)*1.5,"New ImageGen slash itself has at least 50 percent more bright body pixels, without shader dilation")
+	check(preload("res://scripts/weapon_image_art.gd").mechanic_source("motion_slash")=="motion_slash_v2","Actual attacks load the newly generated original")
 	viewport.queue_free(); await process_frame; await process_frame
 	print("WEAPON MECHANICS VISUAL ",checks," checks, ",failures," failures")
 	quit(1 if failures else 0)

@@ -675,8 +675,7 @@ func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> 
 	tint.s=maxf(tint.s,.72)
 	tint.v=1.7
 	tint.a=.48+forge*.008+quality*.004 if glow else 1.0
-	var thickness: float=semantics.projectile_thickness(role)
-	preload("res://scripts/weapon_image_art.gd").stamp_mechanic(target,role,semantics.projectile_size(role,int(bullet.weapon_index)),tint,thickness*1.65 if glow else thickness)
+	preload("res://scripts/weapon_image_art.gd").stamp_mechanic(target,role,semantics.projectile_size(role,int(bullet.weapon_index)),tint)
 	target.draw_set_transform(Vector2.ZERO)
 
 func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) -> void:

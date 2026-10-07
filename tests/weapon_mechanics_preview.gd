@@ -17,12 +17,11 @@ class Board extends Node2D:
 				draw_string(font,at+Vector2(12,104),Catalog.weapon(weapons[row]).name+" · "+["普攻出手",middle,"战技"][col],HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color("bacde3"))
 		for sprite in sprites:
 			draw_set_transform(sprite.p,0)
-			var thickness: float=M.projectile_thickness(sprite.role)*float(sprite.scale)
 			var glow := Color(sprite.color)
 			glow.v=1.7; glow.a=.4
-			Art.stamp_mechanic(self,sprite.role,sprite.size,glow,thickness*1.65)
+			Art.stamp_mechanic(self,sprite.role,sprite.size,glow)
 			var body := Color(sprite.color); body.v=1.7
-			Art.stamp_mechanic(self,sprite.role,sprite.size,body,thickness)
+			Art.stamp_mechanic(self,sprite.role,sprite.size,body)
 		draw_set_transform(Vector2.ZERO)
 func _initialize() -> void: call_deferred("run")
 func run() -> void:

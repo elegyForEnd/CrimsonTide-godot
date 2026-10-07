@@ -291,7 +291,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 特效编排总控（事件→贴图特效/伤害数字/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:148；剑雨布局 `blade_layout()` combat_visuals.gd:501；与服务端判定共形 `patch_local_rect` combat_visuals.gd:475；敌方弹幕可读性常量 combat_visuals.gd:300-318、绘制 `draw_enemy_bolt()` combat_visuals.gd:363） |
 | 刀光/突刺/蓄力/连招/大招 | `scripts/stylized_vfx.gd:55 emit()`、`stylized_vfx.gd:111 event()`、`stylized_vfx.gd:227 advance()`；释放固定在世界坐标，蓄力跟随；圆斩围绕身体并读取实际 height；光束起点捕获为局部坐标 |
 | 69 把武器身份与实际招式选图 | `scripts/weapon_vfx.gd:34 profile()`；`scripts/weapon_mechanics.gd:3 normal_role()` 与 projectile_role()/strike_role()/burst_role() 从实际 family/pattern/spell/attack_kind 选图；飞行弹体 `combat_visuals.gd:661 draw_run_projectile()`；角色确认派生 `rogue_build.gd:1008 hero_effect()` |
-| 按用途制作的 32 张 ImageGen 方图 | `scripts/weapon_image_art.gd:29 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；出手、弹体、光束与爆发分开；旧 74 图保留兼容/核心/来源记录，不能再次拿武器主图当弹丸 |
+| 按用途制作的 ImageGen 方图（14 张新版替换） | `scripts/weapon_image_art.gd:31 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；REDRAWN 映射14张 _v2 原图，主体保持自然比例；出手、弹体、光束与爆发分开；旧图保留来源记录 |
 | 强化/品质快照与核心确认事件 | `scripts/rogue_build.gd:61 visual_state()`、`rogue_build.gd:164 core_visual()`；session.gd 的 weapon_visual_state() 处理远征品质；出手时冻结状态传给弹丸/爆炸/连锁/命中；+2 核心 I、+3 角色连招、+4 核心 II、+5 角色连招增强，详见 WEAPON-IMAGE-VFX.md |
 | CPU 粒子（1400 上限/21 武器材质物理/双通道渲染） | `scripts/combat_particles.gd`（WEAPON_STYLES combat_particles.gd:7；材质参数 spawn combat_particles.gd:42） |
 | 粒子批量渲染（MultiMesh 光晕 + 三角数组几何） | `scripts/particle_glow_batch.gd` + `scripts/particle_geometry_batch.gd` |
@@ -377,8 +377,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | particle_glow_batch.gdshader | MultiMesh 粒子双圆光晕 | particle_glow_batch.gd:3 |
 | scene_asset.gdshader | 场景道具着色（叶片染色/空置灰化） | scene_assets.gd:4 |
 | storm_bolt.gdshader / storm_sky.gdshader | 营地闪电带/雷暴天幕 | camp_site.gd:18 / camp_site.gd:17 |
-| stylized_texture.gdshader | 旧贴图直通着色；武器主体改走 weapon_body.gdshader | resources/stylized_texture.gdshader |
-| weapon_body.gdshader | 屏幕空间加厚刀光主体 1.8 像素，保留原图配色与透明中心 | stylized_vfx.gd:41 |
+| stylized_texture.gdshader | 武器主体直通原图着色；厚度来自14张重新生成的原图，移除旧扩边 shader | stylized_vfx.gd:41 |
 | weapon_edge_glow.gdshader | 饱和色边缘辉光与亮芯（局部透明边缘采样） | stylized_vfx.gd:35 |
 | boss_projectile_shell.gdshader | Boss 弹幕外壳（飞行体可读性/朝向） | scripts/boss_damage_visual.gd:11 |
 | shaders/hero_hair_motion.gdshader | 发梢位移（仅离线烘帧工具用，非运行时） | tools/bake_hero_walk_v4.gd、tools/preview_hero_hair.gd |
@@ -449,7 +448,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|---|
 | 加新武器特效 | assets/combat/imagegen-mechanics 按真实用途生成独立方图与 prompts/manifest.json；weapon_mechanics.gd 按招式/弹体选图；weapon_vfx.gd 管身份配色；不用 1:3 长图 | tests/weapon_square_art.gd、weapon_vfx_identity.gd、weapon_vfx_battle.gd、standalone_vfx.gd、all_weapon_mounts.gd |
 | 改强化与核心的视觉反馈 | rogue_build.gd 的 visual_state()/core_visual() + session.gd 快照传递 + stylized_vfx.gd/weapon_vfx.gd 播放；核心必须在真实机制执行后发事件 | tests/weapon_vfx_progression.gd、weapon_upgrade_visual.gd、weapon_vfx_identity.gd |
-| 改刀光/蓄力/连段表现 | stylized_vfx.gd + weapon_mechanics.gd + weapon_body.gdshader + weapon_edge_glow.gdshader（⚠️ 固定轨迹契约；combo_route 随具体动作发送，hero_combo 在权威端确认时发送；弹体亮芯厚度由 projectile_thickness() 控制） | tests/weapon_mechanics_visual.gd、weapon_stroke_stability.gd、weapon_vfx_identity.gd、weapon_vfx_battle.gd |
+| 改刀光/蓄力/连段表现 | stylized_vfx.gd + weapon_mechanics.gd + weapon_image_art.gd + weapon_edge_glow.gdshader（⚠️ 固定轨迹契约；combo_route 随具体动作发送，hero_combo 在权威端确认时发送；原图重做通过 REDRAWN 选择 _v2，不能用拉厚贴图替代原图重做） | tests/weapon_mechanics_visual.gd、weapon_redraw_preview.gd、weapon_stroke_stability.gd、weapon_vfx_identity.gd、weapon_vfx_battle.gd |
 | 加音效 | assets/audio/<kind>-<i>.wav + sound.gd:5-17 VARIANTS/LEVELS | tools/prepare_library_audio.py；tests/audio.gd |
 | 加曲目 | assets/audio/music/<cue>.ogg + music-manifest.json + music.gd:41 set_world 选择逻辑 | tests/music.gd、python tests/scene_music_assets.py |
 | 改大招 CG/台词 | ultimate_cinematic.gd:5-26 + assets/combat/ultimate-cg.png | tests/ultimate.gd |
@@ -716,6 +715,7 @@ git status --porcelain
 | 2026-10-07 | c0cb076 / 4d0110c / 928bdeb | **交接第一轮：行尾真因 + 两笔提交 + 合并上游肉鸽三提交后全量重锚**：①查明"CRLF 污染"真因是 `.git/config` 里一条 `core.autocrlf=false` 本地覆盖压过了系统默认 `true`（提交里一直是 LF，工作树是 CRLF 检出），删掉该覆盖后 `git diff --stat` 从 9471/6778 塌缩到 **3205/512**——**没有改写任何文件**；②按约定式提交拆两笔（`c0cb076` 营地行囊/仓库网格化、产物实体化与装备持久化 + 测试，49 文件；`4d0110c` 文档，3 文件）；③合并 `origin/master`（b6fa3a3 · ea05a1c · 20ede82）为 `928bdeb`：15 个两边都改的文件里 13 个自动合并，`main.gd` 唯一一处内容冲突是"双方在同一位置各插一段"（我方营地拖拽/预览同步代码 + 上游 U1 注释），**两段全部保留**并把注释里过期的行号 1318 更正为 1578；8 个 `.uid`（Godot 生成单值文件）取上游版本，已用 `git grep` 证明全仓库无第二处引用；④合并后全量重锚：`--fix` 自动修 28 处 + 按实测行号手工修 28 处，**552 锚点 → OK 366 / DRIFT 0 / WRONG 0 / HINT 186**；⑤上游把 `assets/rogue/build/` 从占位文件换成真实生成物，TEST-BASELINE §4 点名的"全新 clone 必然编译失败"这一最脆弱环节消失；⑥新增 §11.36–38（autocrlf 覆盖假象、`.godot` 不可写导致 `--import` 静默失败、新物品缺图标）。**已知红（均非本次引入）**：`tests/balance` 6 项（旧 gear 基线同样复现，见 TEST-REPORT 登记）、`tests/rogue_hooks_roguelike` 1 项（上游把该测试扩了 +488 行却没重登记门禁基线，85→176 checks；我方合并 delta 未触碰 `update_rogue_hud`，那一行仍是上游自己的红） |
 | 2026-10-07 | 2b8a255 / 7467935 | **右键分堆手势 + 按类堆叠上限 + 图标回退**：①**上限改按类配置**：`catalog.gd:734 STACK_LIMITS` 成为单一真源（急救针/弹药匣 3，其余可堆叠物 5，不在表里＝上限 1），`catalog.gd:758 stacks()` 由它派生、不再另立 `STACK_KINDS`；**计数与花费不再把 count 夹到上限**（夹取会让 6 件一叠只算 5 件、尾巴永远卖不掉），防手改存档改用 `catalog.gd:638 clamp_entry()` 的宽上限。②**右键按住＝分堆手势**：按住拿整叠（单件物品就是一个上限 1 的堆叠物，所以对装备同样成立），按住期间**每次左键只在鼠标那一格放 1 个**，松开右键把剩下的交给鼠标所在容器；落座规则抽成 `catalog.gd:868 place_units_in()` 且**刻意不调 `compact_arrivals()`**（刚放下的那格不会被重新打包搬走＝"锁住那一格"）；**源容器只在单位真的落地后才扣**，所以"放回原处"是免费无损的 no-op，只有松手在面板外才丢地上；**左键完全没动**（左键拖动/`Ctrl`+左键/双击照旧整叠）。③**修掉两处真实吞件**：`profile.gd:375 warehouse_deposit()` 的 clampi 截断（超出部分消失且返回 0，连 `bank_item()` 的回滚都跳过）、`camp_storage.gd:198 vault_units_in()` 的 `from==vault` 自吞。④**降上限不毁档**：新增 `catalog.gd:927 split_over_limit()`，仓库溢出进 `warehouse_spill`、背包与口袋在 `profile.gd:136 sanitize_storage()` 里一次性归一。⑤**图标**：`battlefield.gd:86` 原来对非收藏品绕过 `ui_art.gd:19 TideUIArt.icon()` 直接 load 缺失的 svg（每次 10 行报错），改为统一入口 + 给 `*_seed` 一条"用作物图标"的回退 + 最后一跳先问 `ResourceLoader.exists()`，报错降到 0。⑥**测试**：新增 `tests/stack_hand.gd`（64 检查）覆盖上限表、严格落格、落座顺序、拆堆守恒、两条吞件回归与营地面板端到端手势；`systems`/`camp_storage`/`economy`/`camp_pack` 里按旧上限 6 写的断言随之更新（`camp_storage` 的样例数据从 ammo 换成 crystal——弹药上限已是 3），并修正一条把 crystal 写成 ammo 的过期断言。⑦路牌本身：§4.G 新增三条（分堆手势/上限表/拆堆）、§5 三行速查、§6 两行数值、§11.39–42，并修掉已失效的 `STACK_KINDS` 锚点；全量重锚（`--fix` 28 处 + 按实测行号手工 41 处） |
 | 2026-10-07 | 见同批提交 | §2/§4.K/§4.Q/§5/§8/§10：32 张按实际招式重做的 ImageGen 方图，出手/弹体/爆发分离；强化饱和辉光，修正空中圆斩与光束相机漂移，取消远程派生的虚构剑弧/冰晶；新增机制/GPU/动态预览与成品验证 |
+| 2026-10-07 | 见同批提交 | §4.K/§4.Q/§5/§12：内置ImageGen重新生成14张原图，REDRAWN接入_v2；移除主体扩边shader与贴图拉厚，增加原图前后对照，更新最新试玩与GPU验证 |
 
 ### 12.7 最近一次全量审计（2026-10-05，基准 abcbaaf）
 
@@ -743,4 +743,4 @@ git status --porcelain
 
 主表现改为 weapon_mechanics.gd 依据实际 family/pattern/spell 和 attack_kind 选图；32 张原始透明方图与完整提示词在 assets/combat/imagegen-mechanics。圆斩中心和高度、光束宽度/端点、爆发落点/半径来自实际事件。预览 build/weapon-mechanics-comparison.png 与 build/weapon-mechanics-motion.gif，试玩 build/CrimsonTide-WeaponMechanics.exe；详见 WEAPON-MECHANICS-VFX.md。
 
-续接反馈“特效太细”：weapon_body.gdshader 在屏幕空间加厚主体，weapon_edge_glow.gdshader 加强外辉光；weapon_mechanics.gd 的 projectile_thickness() 定义弹体亮芯厚度。增大枪焰、法杖出手与命中闪光，刀光延后淡出。GPU 验证同一刀光的亮像素较关闭加厚时增加至少 35%，同时检查弹体厚度、圆斩空心/中心/高度和光束挂点。
+用户澄清要求使用 ImageGen 重做原图：新生成14张 _v2 素材，由 weapon_image_art.gd 的 REDRAWN 映射接入，46张原始RGBA及提示词留档。移除主体扩边shader和细长贴图横截面拉厚，按自然比例显示。原图对照 build/weapon-imagegen-redraw.png，试玩 build/CrimsonTide-WeaponImageRedraw.exe；GPU 直接比较旧/新原图，验证主体亮像素增加至少50%，同时检查圆斩空心/中心/高度和光束挂点。

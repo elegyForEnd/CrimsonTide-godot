@@ -37,7 +37,7 @@ func _ready() -> void:
 	add_child(light)
 	light.draw.connect(draw_light)
 	var painted := ShaderMaterial.new()
-	painted.shader=preload("res://resources/weapon_body.gdshader")
+	painted.shader=preload("res://resources/stylized_texture.gdshader")
 	material=painted
 
 func reset() -> void:
@@ -404,7 +404,7 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 				fx["socket_local"]=get_global_transform().affine_inverse()*socket.tip
 				fx["socket_aim"]=socket.aim
 		if socket.is_empty() and fx.has("socket_local"): socket={"tip":get_global_transform()*fx.socket_local,"aim":fx.socket_aim}
-		if role=="motion_thrust": bounds=Vector2(r*1.8,12)
+		if role=="motion_thrust": bounds=Vector2(r*1.8,r*.36)
 		elif role in ["muzzle_fire","release_bow"]: bounds=Vector2(r*2,r*1.2)
 		elif role.begins_with("cast_"): bounds=Vector2.ONE*r*1.7
 		if fx.kind=="charge":
@@ -423,7 +423,7 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 				elif int(fx.route)==3: offset=Vector2(-r*.3,r*.55); bounds*=.72
 			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(angle,Vector2(1,float(fx.reverse)),0,socket.tip+offset.rotated(angle)))
 		else: target.draw_set_transform(at,angle,Vector2(1,float(fx.reverse)))
-	ImageArt.stamp_mechanic(target,role,bounds,tint,10.0 if role=="motion_thrust" else 0.0)
+	ImageArt.stamp_mechanic(target,role,bounds,tint)
 	target.draw_set_transform(Vector2.ZERO)
 
 func _draw() -> void:

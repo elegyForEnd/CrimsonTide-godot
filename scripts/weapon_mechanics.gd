@@ -75,22 +75,12 @@ static func body_centered(role: String) -> bool:
 
 static func projectile_size(role: String, index: int = -1) -> Vector2:
 	match role:
-		"projectile_bullet": return Vector2(22,3)
-		"projectile_arrow": return Vector2(32,6) if index in [626,634] else Vector2(46,8)
-		"projectile_needle": return Vector2(48,7)
+		"projectile_bullet": return Vector2(26,7)
+		"projectile_arrow": return Vector2(40,10) if index in [626,634] else Vector2(46,10)
+		"projectile_needle": return Vector2(48,12)
 		"projectile_meteor": return Vector2(64,34)
-		"projectile_moon": return Vector2(26,34)
+		"projectile_moon": return Vector2(28,36)
 		"projectile_feather": return Vector2(30,9)
 		"projectile_eclipse": return Vector2(66,12)
-		"projectile_lightning": return Vector2(30,13)
+		"projectile_lightning": return Vector2(38,18)
 	return Vector2(32,32)
-
-static func projectile_thickness(role: String) -> float:
-	match role:
-		"projectile_bullet": return 5.0
-		"projectile_arrow": return 8.0
-		"projectile_needle": return 10.0
-		"projectile_feather": return 11.0
-		"projectile_eclipse": return 14.0
-		"projectile_lightning": return 16.0
-	return 0.0

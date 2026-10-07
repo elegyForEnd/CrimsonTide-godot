@@ -19,6 +19,8 @@ for role, entry in j['assets'].items():
         width,height=ink[2]-ink[0],ink[3]-ink[1]
         if role in ['projectile_arrow','projectile_bullet','projectile_needle','motion_thrust'] and width/height<8: errors.append(role+': narrow attack has a broad silhouette')
         if role in ['motion_spin','motion_heavy_spin'] and alpha.getpixel((im.width//2,im.height//2))>32: errors.append(role+': swing circle has a filled center')
+        if role in ['projectile_arrow_v2','projectile_bullet_v2','projectile_needle_v2','motion_thrust_v2'] and width/height<3: errors.append(role+': redrawn directional stroke lost its long silhouette')
+        if role in ['motion_spin_v2','motion_heavy_spin_v2'] and alpha.getpixel((im.width//2,im.height//2))>32: errors.append(role+': redrawn swing lost its transparent center')
         print(f'{role}: ink aspect {width/height:.2f}')
 print(f'WEAPON MECHANIC ART {len(j["assets"])} originals, {len(errors)} failures')
 for error in errors: print(error)

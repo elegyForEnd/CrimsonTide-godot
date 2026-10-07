@@ -513,6 +513,230 @@
       ],
       "sha256": "86efaa98cf030eb0aa0894741bf6a0d98394ff014fef2022c3e24b4745866628",
       "prompt": "assets/combat/imagegen-mechanics/prompts/motion_narrow_sweep.txt"
+    },
+    "motion_slash_v2": {
+      "file": "motion_slash_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-584be24a-0333-4c33-880f-8c0d1573649b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        77,
+        83,
+        1228,
+        1152
+      ],
+      "sha256": "457f4574a316859b55019c27581b31affe4074a363496cdecdbbfb5edfe52839",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_slash_v2.txt"
+    },
+    "motion_double_slash_v2": {
+      "file": "motion_double_slash_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-200264bd-e60f-4755-85ca-ac50ce260f73.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        78,
+        97,
+        1178,
+        1170
+      ],
+      "sha256": "9b6a2f9cc3957a314a048cefeb04c963ffaf86e95f9b8f9acd36d3ef8c3b9794",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_double_slash_v2.txt"
+    },
+    "motion_thrust_v2": {
+      "file": "motion_thrust_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-8830ebdc-8a6a-4896-a7fb-b85d6e1784e2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        83,
+        535,
+        1185,
+        743
+      ],
+      "sha256": "9cce862df6f6e1d1d072bd8125e9e950858abe442a2f850e0bc37e5419329f65",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_thrust_v2.txt"
+    },
+    "motion_heavy_slash_v2": {
+      "file": "motion_heavy_slash_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-c5fb31f8-2955-44eb-b4e8-c4e53d2f9526.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        115,
+        57,
+        1233,
+        1210
+      ],
+      "sha256": "2704a17ecc57a869923929d12b1f0fbd5cf54af5191be76e3c6c51dbe8d31801",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_heavy_slash_v2.txt"
+    },
+    "motion_spin_v2": {
+      "file": "motion_spin_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-3c299efe-2328-47d9-8610-33e5bee98638.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        86,
+        109,
+        1167,
+        1164
+      ],
+      "sha256": "d0da43372ab7010a9ea8de1bd33ac6be011877378d30c2cb029ab67171b5134d",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_spin_v2.txt"
+    },
+    "motion_heavy_spin_v2": {
+      "file": "motion_heavy_spin_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-20a246ce-1425-41bb-82ac-10c7cb29207e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        66,
+        96,
+        1195,
+        1170
+      ],
+      "sha256": "cbf7be74ce525ddd079ed19fdfc3a64c17399a56f34ff2389bce7ea8da89fb97",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_heavy_spin_v2.txt"
+    },
+    "motion_scythe_v2": {
+      "file": "motion_scythe_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-677d76f9-1d5d-431d-aa7e-abd7b67ecc47.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        95,
+        106,
+        1244,
+        1137
+      ],
+      "sha256": "8d71d1566b4d727407567a7fcd9afd13b43e7e0a315986a8d173260479637fd4",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_scythe_v2.txt"
+    },
+    "motion_narrow_sweep_v2": {
+      "file": "motion_narrow_sweep_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-8533d4b6-16eb-49aa-ad62-22bd8ebe54c4.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        480,
+        168,
+        1028,
+        1110
+      ],
+      "sha256": "e28b3dbd608213d5fd959358b981da2b70465f62052d0e36a1874aadb2a04797",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_narrow_sweep_v2.txt"
+    },
+    "projectile_moon_v2": {
+      "file": "projectile_moon_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-ceffd121-89aa-453e-834d-e1ca717db96d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        267,
+        138,
+        1039,
+        1116
+      ],
+      "sha256": "5a3eebb3fbd8bc4485e5ba32b3a9175f4bedd2bd2123836036daa0b562b3f384",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/projectile_moon_v2.txt"
+    },
+    "projectile_arrow_v2": {
+      "file": "projectile_arrow_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-98ea1408-9934-4cdf-9493-ae24675413b8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        80,
+        559,
+        1176,
+        736
+      ],
+      "sha256": "bfdad5c469c1df26cd7b478871d865323308ee7216fa2c40815ef3eb5efe2b23",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/projectile_arrow_v2.txt"
+    },
+    "projectile_needle_v2": {
+      "file": "projectile_needle_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-7d2afcaa-4db2-4fad-8bbf-f52d0f1f9a14.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        68,
+        496,
+        1187,
+        800
+      ],
+      "sha256": "704a864f1166b9ec7f73979bc1f5d1fa6b4552d2806052aec168f13a4406d390",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/projectile_needle_v2.txt"
+    },
+    "projectile_bullet_v2": {
+      "file": "projectile_bullet_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-0608c3cf-c0f5-4a7e-b610-7eeec861b21d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        99,
+        505,
+        1144,
+        746
+      ],
+      "sha256": "06d0c869277e9f245abe91acf4be326d186e074e4b65acbe76dba20f56a1d7e3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/projectile_bullet_v2.txt"
+    },
+    "projectile_lightning_v2": {
+      "file": "projectile_lightning_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-3b54532d-7380-48b5-85cb-b74d95a24d42.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        50,
+        464,
+        1206,
+        772
+      ],
+      "sha256": "dd0477379910e5b9d3c463a35f9790e2ee4da1fbdccef7507cf710e04fbfa5cc",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/projectile_lightning_v2.txt"
+    },
+    "release_bow_v2": {
+      "file": "release_bow_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114cc-9994-78d1-aebe-a5d3fe64771b\\exec-62857661-4f00-41df-9c46-87e98d73ac20.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        415,
+        140,
+        997,
+        1104
+      ],
+      "sha256": "557d8fb73b450ba03171270cae881d4ab65768d21383bde08b7964afdea0e47b",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/release_bow_v2.txt"
     }
   }
 }

@@ -1,4 +1,4 @@
-武器特效按实际招式重做，并按“太细、太弱”的反馈加厚刀光与弹体亮芯、加强辉光、扩大枪焰和命中闪光。32 张 ImageGen 透明方图分别表现刀迹、突刺、圆斩、箭/冰针/火羽/陨石、光束和落点爆发。试玩 `build/CrimsonTide-WeaponMechanics.exe`，说明见 [实际武器特效](WEAPON-MECHANICS-VFX.md)。
+武器特效中14张薄弱素材已用内置 ImageGen 重新生成：刀光、突刺、双刃、圆斩、镰刀、战戟，以及箭、冰针、子弹、雷弹、月刃和弓弦出手。新原图本身有厚实亮芯，保持自然比例。最新试玩 `build/CrimsonTide-WeaponImageRedraw.exe`，说明见 [实际武器特效](WEAPON-MECHANICS-VFX.md)，原图前后对照 `build/weapon-imagegen-redraw.png`。
 
 场景配乐已补齐：新增 23 首 Suno 纯器乐，覆盖五层闯关、五名守层 Boss 与家园、王城、远征首领等场景；现共 32 首本地曲目。新版试玩 `dist/CrimsonTide-Music-v1.exe`，曲目与验证见 [背景音乐说明](MUSIC.md)。
 
