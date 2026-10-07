@@ -151,11 +151,12 @@ func run() -> void:
 		check(silhouettes.size()==5,"All five areas have distinct silhouettes")
 	# R5+ (walkability): the route is planned on the map grid and then replayed
 	# through the real `map.move()`, instead of walking one hand-picked polyline.
-	# The old `(width*.88, ground_y(.425))` waypoint now sits inside the diagonal
-	# scenery wedge between the two branches, so the straight leg into it was
-	# rejected by collision and the walker stalled there — a stale test route, not
-	# a blocked branch (measured bottleneck radius is 28.6px compact / 35.6px long
-	# against a 15px player body, and the doors themselves are clear).
+	# The old `(width*.88, ground_y(.425))` waypoint sat inside the blocked wedge
+	# between the two roads, so the straight leg into it was rejected by collision
+	# and the walker stalled there — a stale test route, not a blocked branch.
+	# 2026-10-07: that wedge is gone (`rogue_map.gd` `fork_junction()` merges the
+	# junction ground), so the fork is now one open plaza and the walker no longer
+	# has to find an angle around an invisible corner.
 	for long_room in [false,true]:
 		var map=preload("res://scripts/rogue_map.gd").new()
 		map.generate(1742)
@@ -172,12 +173,27 @@ func run() -> void:
 			var walk: Dictionary=replay_path(map,BODY_MARGIN,path)
 			check(not walk.stalled and walk.at.distance_to(destination)<15.0,"Player can walk continuously along each branch in long and compact rooms")
 			if index==1:
-				# The scenic wedge still forces the player to bend around it rather
-				# than cutting straight across from the fork to the upper door.
+				# 直行路与斜向路之间的地面属于路口广场：从岔口斜着直走上门的整条直线必须畅通。
 				var cut := false
 				for sample in 200:
 					if map.blocked(fork.lerp(destination,float(sample+1)/200.0),BODY_MARGIN): cut=true; break
-				check(cut,"Straight diagonal shortcut across the scenery wedge stays blocked")
+				check(not cut,"The straight diagonal from the fork into the upper door is walkable")
+	# 2026-10-07 · 全地图的分叉口都不许再有隐形墙：从岔口中心到两个门口的整条直线都必须
+	# 直接可走，且要留出 BODY_MARGIN 的余量。旧的 `merge_polygons(floor, branch)` 写法会在
+	# 两条路之间留下一个必须绕行的楔形空地（实测 30%~56% 的直线被挡）。
+	for floor_index in 5:
+		for area in range(1,8):
+			for long_room in [true,false]:
+				var map=preload("res://scripts/rogue_map.gd").new()
+				map.generate(1729+floor_index*100+area)
+				map.configure(floor_index,area,long_room)
+				var fork := Vector2(map.fork_start,map.lane_center(map.fork_start))
+				for index in 2:
+					var destination: Vector2=map.exit_position(index)
+					var clear := true
+					for sample in 200:
+						if map.blocked(fork.lerp(destination,float(sample+1)/201.0),BODY_MARGIN): clear=false; break
+					check(clear,"No air wall between the fork and door %d: f%d a%d %s" % [index,floor_index+1,area,"long" if long_room else "compact"])
 	s.queue_free()
 	await process_frame
 	print("ROGUE ROUTES ",checks," checks / ",failures," failures")
