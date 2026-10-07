@@ -98,7 +98,7 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 	var damage: float=float(pending.damage)*share
 	var spell: String=move.get("spell","star")
 	var reach: float=move.reach
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
 	if kind=="volley":
 		var count: int=int(move.get("count",3))
 		var pellets: Dictionary={}
@@ -110,8 +110,8 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 			projectile(s,p,aim.rotated((i-(count-1)*.5)*.12),damage*weight,reach,spell,ctx,pierce,decay,pellets)
 		return
 	var center: Vector2=aim_point(s,p,aim,reach) if kind=="burst" else p.p
-	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
-	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell,"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
+	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",100)),"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
+	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"height":float(p.height),"spell":spell,"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
 	var index := 0
 	for e in ordered_targets(s,p.p):
 		if index>=(3 if family in [2,3] else 5): break
@@ -165,7 +165,7 @@ static func normal(s, p: Dictionary) -> void:
 				var delta: Vector2=e.p-p.p
 				if e.hp>0 and s.enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),s.elapsed,true,"beam",30.0,-.1,float(p.height)) and s.ruins.clear_line(p.p,e.p):
 					s.damage_enemy(e,damage*[1.0,.65,.45,.30][index],p.id,direction,w.knock,3,p.weapon,ctx); index+=1
-			s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell,"id":p.id,"weapon_index":p.weapon,"height":p.height,"vfx":ctx.get("vfx",{})})
+			s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"width":30.0,"spell":spell,"id":p.id,"weapon_index":p.weapon,"height":p.height,"vfx":ctx.get("vfx",{})})
 		else:
 			var count := 5 if spell=="scatter" else 1
 			var pellets: Dictionary={}

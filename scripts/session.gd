@@ -3440,7 +3440,7 @@ func release_weapon_art(p: Dictionary) -> bool:
 	var reach := float(move.reach)
 	var kind := str(move.kind)
 	var spell := str(move.get("spell",Catalog.weapon(int(p.weapon)).get("spell","star")))
-	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name})
+	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name})
 	if kind=="volley":
 		var count := int(move.get("count",3))
 		var speed := float(Catalog.weapon(int(p.weapon)).get("speed",850.0))
@@ -3456,9 +3456,9 @@ func release_weapon_art(p: Dictionary) -> bool:
 	if kind=="burst":
 		# Keep the impact on the caster's side of walls.
 		center=ruins.move(p.p,aim*reach)
-		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",180)),"id":p.id,"weapon_index":int(p.weapon)})
 	elif kind=="beam":
-		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 	for e in enemies:
 		if e.hp<=0 or not ruins.clear_line(p.p,e.p): continue
 		var delta: Vector2=e.p-p.p
@@ -3508,7 +3508,7 @@ func release_strike(p: Dictionary) -> void:
 				var delta: Vector2=e.p-p.p
 				if e.hp>0 and enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),elapsed,false,"beam",30.0) and ruins.clear_line(p.p,e.p):
 					damage_enemy(e,damage,p.id,direction,w.knock,3,-1,build_ctx)
-			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"width":30.0,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 		else:
 			var count := 5 if spell=="scatter" else 1
 			var pellet_hits: Dictionary = {}
@@ -4048,7 +4048,7 @@ func spell_burst(b: Dictionary, at: Vector2) -> void:
 		build_hits+=1
 		if spell=="vortex" and e.hp>0 and not e.get("rogue_guardian",false):
 			e.p=ruins.move(e.p,pull*(35 if roguelike.active(self) else 42))
-	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
+	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"radius":radius,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
 	if b.get("build_context",{}).has("vfx"): burst_data["vfx"]=b.build_context.vfx
 	broadcast_combat(burst_data)
 

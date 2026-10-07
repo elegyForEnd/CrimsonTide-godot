@@ -35,7 +35,7 @@ static func profile(index: int) -> Dictionary:
 	var run_weapon := index>=600 and index<648
 	var row: Array=ROGUE[index-600] if run_weapon else CAMPAIGN[clampi(index,0,20)]
 	return {"weapon":index,"motif":str(row[0]),"color":Color(row[1]),"detail":int(row[2]),
-		"style":str(STYLES[row[0]]),"run":run_weapon,"procedural":run_weapon and not preload("res://scripts/weapon_image_art.gd").available(index),"family":Catalog.weapon_family(index)}
+		"style":"spark" if index in [605,616,620] else str(STYLES[row[0]]),"run":run_weapon,"procedural":run_weapon and not preload("res://scripts/weapon_image_art.gd").available(index),"family":Catalog.weapon_family(index)}
 
 static func stroke(combo: int, family: int, detail: int) -> Dictionary:
 	var stage := clampi(combo,0,2)

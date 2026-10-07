@@ -241,3 +241,12 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - tools/audit_weapon_square_art.py：74 个原始 RGBA、0 failures；Godot 编辑器导入成功。最初加载检查失败是新增素材尚未完成导入，导入后通过。48 武器对照、八组三段对照、+0/+2/+3/+4/+5 实际核心触发对照及九张主场景截图已生成并检查代表性武器画面。
 - build/CrimsonTide-WeaponImageVFX.exe Windows 单文件导出成功（2,003,072,008 字节，内嵌 PCK，包含当前工作区资源）。成品中再次运行 weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553、weapon_vfx_battle 45、standalone_vfx 119，共 1467 检查、0 failures。
 - 更新 PROJECT-GUIDE.md §2/§4.K/§5/§8/§10/§11/§12.6，以及 README.md、VFX-REWORK.md、WEAPON-IMAGE-VFX.md。路牌审计 441 个锚点：OK 344 / DRIFT 0 / WRONG 0 / HINT 97。
+
+## 2026-10-07 实际武器机制与特效加厚
+
+- 续接完成 32 张按动作、飞行、范围爆发分工的原始 ImageGen 方图；素材审计 32 项，0 failures。修正空中圆斩高度、光束相机稳定性和远程派生多余画面。
+- 按“太细、太弱”的反馈，在运行时加厚刀光主体、突刺与弹体亮芯，加强边缘辉光，增大枪焰/法杖出手/命中闪光，延后刀光淡出。原始图片像素不变，伤害与碰撞规则不变。
+- 本轮源码 9 组共 4621 检查，0 failures：weapon_mechanics 429、weapon_mechanics_visual 29、weapon_vfx_identity 553、weapon_stroke_stability 196、weapon_vfx_battle 41、all_weapon_mounts 2568、weapon_vfx_progression 32、weapon_contact_particles 654、standalone_vfx 119。
+- 新增 GPU 检查：同一捕获刀光、同一帧，启用加厚后的亮像素较关闭扩展增加至少 35%；箭/冰针在飞行中有至少 6 像素可见厚度；圆斩保持空心和身体中心。中心检查采用 alpha > 0.08 的可见轮廓，避免极淡辉光像素干扰测量。命中闪光检查同步为半径不超过 40、时间不超过 0.18 秒，继续检查位置、去重和碎片数量。
+- 编辑器导入和 Windows 单文件导出成功：build/CrimsonTide-WeaponMechanics.exe，2,076,241,536 字节。使用引擎 --main-pack 加载 exe 内嵌资源，在空目录运行外部测试脚本；五组共 1162 检查，0 failures（机制 429、GPU 29、身份 553、强化 32、独立特效 119）。
+- 更新并检查 build/weapon-mechanics-comparison.png、build/weapon-mechanics-motion.gif 和代表性主场景截图 build/weapon-vfx-battle-603.png；GIF 由 viewport 帧直接编码。项目路牌 609 个锚点：OK 405 / DRIFT 0 / WRONG 0 / HINT 204。
