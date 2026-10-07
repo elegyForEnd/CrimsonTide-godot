@@ -1,10 +1,13 @@
 extends SceneTree
 ## 引魂灵体索敌的**可视化预览**（要真窗口，命名 `*_visual`）。
-## 出图：build/rogue-summons-1-idle.png / -2-seek.png / -3-command.png / -4-relock.png
-## 图上额外画了三个半径（游戏里它们是隐形的，这里只为看清规则）：
-##   青色大圈 = 主人的索敌大圈 600   紫色圈 = 灵体自己的低优先自保圈 500   黄圈 = 灵体射程 450
+## 出图：build/rogue-summons-1-idle.png / -2-seek.png / -3-command.png / -4a-cd.png / -4b-relock.png
+## 半径覆盖层由 `SHOW_RANGES` 控制，**默认 false**：正式对局不显示任何判定圈。
+## 打开时：青圈 = 主人大圈 300，紫圈 = 灵体自己的低优先圈 166.7，黄圈 = 灵体射程 150，
 ## 细红线 = 这只灵体当前锁定的目标。
 const Build = preload("res://scripts/rogue_build.gd")
+## 半径覆盖层只在**开发预览**里画，默认关闭：正式对局（搜打撤/魔境）里一个判定圈都不显示。
+## 想让这张图帮你核对半径时把它改成 true 再跑（出图仅开发用，见工作区上一层的 任务.md）。
+const SHOW_RANGES := false
 var app
 var caption: Label
 
@@ -12,6 +15,7 @@ class Ranges extends Node2D:
 	var field
 	func _process(_dt: float) -> void: queue_redraw()
 	func _draw() -> void:
+		if not SHOW_RANGES: return
 		var s=field.session
 		draw_set_transform(-field.camera_offset())
 		var font := ThemeDB.fallback_font
@@ -93,9 +97,9 @@ func run() -> void:
 
 	# ② 主人大圈内出现 3 只怪 → 灵体自己追上去，到位开火
 	var mobs: Array=[]
-	for x in [1160.0,1340.0,1520.0]: mobs.append(dummy(x))
+	for x in [1050.0,1120.0,1190.0]: mobs.append(dummy(x))
 	await create_timer(3.2).timeout
-	await shoot("res://build/rogue-summons-2-seek.png","② 主人大圈(600)内 3 只怪：灵体主动追击、到射程 85% 停下开火")
+	await shoot("res://build/rogue-summons-2-seek.png","② 主人大圈(300)内 3 只怪：灵体主动追击、到射程 85% 停下开火")
 
 	# ③ 主人点名**最远**那只 → 两只灵体一起集火它（证明不是"谁近打谁"）
 	Build.hit_event(app.session,p,mobs[2],10.0,false,Build.context(app.session,p,"attack"))

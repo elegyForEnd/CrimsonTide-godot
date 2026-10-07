@@ -4,7 +4,7 @@ extends SceneTree
 ##      从低优先升上来可立刻抢占；出圈也继续打完）
 ##   ② 主人大圈（600，圆心＝主人）→ ③ 灵体小圈（500，圆心＝灵体，低优先自保）
 ##   → ④ 都没有则回主人身边的待命位（每个灵体一个固定偏移）
-## 并守住设计契约（ROGUE-BUILD-SYSTEM-DESIGN §7.12）：射程 450、最多 2 个实体、
+## 并守住设计契约（ROGUE-BUILD-SYSTEM-DESIGN §7.12）：射程是一半/三分之后的 150、最多 2 个实体、
 ## 总预算 0.16P 按实体比例分配 —— 这几条一个都不许被这次改动动到。
 const Build = preload("res://scripts/rogue_build.gd")
 
@@ -74,12 +74,12 @@ func run() -> void:
 
 	# ② 主人大圈里索敌、追到停靠距离、到位就开火
 	p = launch()
-	var far: Dictionary=dummy(p.p.x+550.0)
+	var far: Dictionary=dummy(p.p.x+250.0)
 	check(s.enemies.size()==1,"② 木桩在场（场上只有它）")
 	Build.summon(s,p,20.0,.06)
 	step(p,0.1,10)
 	var hunter: Dictionary=p.build_summons[0]
-	check(hunter.tier=="seek","② 主人大圈内（550≤600）的怪会被主动索敌（tier=%s）" % hunter.tier)
+	check(hunter.tier=="seek","② 主人大圈内（%.0f≤%.0f）的怪会被主动索敌（tier=%s）" % [hunter.p.distance_to(p.p),Build.SOUL_SEEK,hunter.tier])
 	check(int(hunter.target)==int(far.id),"② 目标就是那只怪")
 	var gap: float=hunter.p.distance_to(far.p)
 	step(p,0.1,40)
@@ -89,8 +89,8 @@ func run() -> void:
 
 	# ①+③ 主人点名谁就集火谁，期间绝不碰别人
 	p = launch()
-	var a: Dictionary=dummy(p.p.x+280.0)
-	var b: Dictionary=dummy(p.p.x+340.0)
+	var a: Dictionary=dummy(p.p.x+160.0)
+	var b: Dictionary=dummy(p.p.x+210.0)
 	Build.summon(s,p,20.0,.06)
 	order(p,b)
 	step(p,0.1,3)
@@ -105,8 +105,8 @@ func run() -> void:
 
 	# ④ 高→高 转火要等 0.5 秒内置 CD；低优先升到高优先可以立刻抢占
 	p = launch()
-	var first: Dictionary=dummy(p.p.x+280.0)
-	var second: Dictionary=dummy(p.p.x+340.0)
+	var first: Dictionary=dummy(p.p.x+160.0)
+	var second: Dictionary=dummy(p.p.x+210.0)
 	Build.summon(s,p,20.0,.06)
 	order(p,first)
 	step(p,0.1,2)
@@ -121,14 +121,14 @@ func run() -> void:
 
 	# ⑤ 主人撤出大圈：已点名的打完 → 灵体自己的小圈清杂 → 都没了回主人身边
 	p = launch()
-	var marked: Dictionary=dummy(p.p.x+320.0,200000.0)
+	var marked: Dictionary=dummy(p.p.x+260.0,200000.0)
 	Build.summon(s,p,60.0,.06)
 	order(p,marked)
 	step(p,0.1,3)
 	var lonely: Dictionary=p.build_summons[0]
 	check(lonely.tier=="command" and int(lonely.target)==int(marked.id),"⑤ 先咬住被点名的怪")
 	p.p = Vector2(p.p.x+1500.0,s.ruins.lane_center(p.p.x+1500.0))
-	var stray: Dictionary=dummy(lonely.p.x+300.0)
+	var stray: Dictionary=dummy(lonely.p.x+140.0)
 	step(p,0.1,5)
 	check(int(lonely.target)==int(marked.id),"⑤ 目标跑出主人 600 大圈也继续打（指令优先于圈）")
 	marked.hp=0.0
@@ -141,9 +141,9 @@ func run() -> void:
 	check(lonely.p.distance_to(Build.soul_idle_point(p,lonely))<distance_before-100.0,"⑤ 而且确实在往主人身边移动")
 
 	# ⑥ 红线：射程 450、按实体比例分配、总预算 0.16P
-	check(is_equal_approx(Build.SOUL_RANGE,450.0) and is_equal_approx(Build.SOUL_SEEK,600.0) and is_equal_approx(Build.SOUL_NEAR,500.0),"⑥ 射程/大圈/小圈三个半径就是拍板的值")
+	check(is_equal_approx(Build.SOUL_RANGE,150.0) and is_equal_approx(Build.SOUL_SEEK,300.0) and is_equal_approx(Build.SOUL_NEAR,166.7),"⑥ 半径 = 二轮拍板值：大圈 300（旧值一半）、射程 150 与小圈 166.7（旧值的 1/3）")
 	p = launch()
-	var post: Dictionary=dummy(p.p.x+300.0)
+	var post: Dictionary=dummy(p.p.x+200.0)
 	Build.summon(s,p,60.0,.06)
 	step(p,0.1,3)
 	var single: float=Build.unit(s,p)*.06
