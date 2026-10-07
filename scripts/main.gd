@@ -57,6 +57,8 @@ const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
 # `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
 # 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
 const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
+# 开发者模式 · 判定框总览（环境变量 CRIMSON_DEV_RANGES 才创建，见 开发者模式启动.cmd / 任务.md）
+const DevRanges := preload("res://scripts/dev_ranges.gd")
 # U1 · 构筑内容表（核心 / 铭刻 / 天赋的只读定义）。`main.gd` 以前从不直接读它，
 # 但"核心候选按武器家族过滤"这条规则（`rogue_build_ui.gd:117-118`）需要 `data.cores`，
 # 而写死 12 个 id 会随内容表漂移，所以按同一个 preload 规则引进来。
@@ -72,6 +74,7 @@ var economy_syncing := false
 var session: TideSession
 var sound: TideSound
 var rogue_field: Control
+var dev_ranges                            # 开发者模式判定框总览（`scripts/dev_ranges.gd`）
 var rogue_panel: Control
 var rogue_signature := ""
 var rogue_panel_context := ""
@@ -279,6 +282,12 @@ func _ready() -> void:
 	rogue_field.session=session
 	rogue_field.visible=false
 	root.add_child(rogue_field)
+	# 开发者模式（环境变量 CRIMSON_DEV_RANGES，见 开发者模式启动.cmd）才创建判定框总览。
+	# 只读覆盖层：正式游玩时这一段根本不执行，`scripts/dev_ranges.gd` 见工作区上一层 任务.md。
+	if DevRanges.enabled():
+		dev_ranges=DevRanges.new()
+		dev_ranges.main=self
+		rogue_field.add_child(dev_ranges)
 	var serif := FontVariation.new()
 	serif.base_font=load("res://assets/NotoSerifSC.ttf")
 	serif.variation_embolden=0.55
