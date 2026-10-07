@@ -13,16 +13,18 @@ const HC_ROUTES := [["AADAS",">SJA","JAS","ASU"],["ADS","JAS","AADS","DASU"],["A
 # —— 这几条一个都不许动。半径与规则（2026-10-07 定，同日二轮按实测缩小）：
 #   ① 主人的指令：主人用普攻/战技/技能打中过的那只怪（T086 冥火指令 / 墓煜 HC 连招终结的
 #      3 秒硬锁优先于它）→ 无距离上限地追，出大圈也继续打，直到它死或主人改指令。
+#      **指令接收是全局的**：灵体哪怕正在很远的地方追别的怪，也会立刻改用主人的新目标往回赶。
 #   ② 主人大圈（`SOUL_SEEK`，圆心＝主人）内最合适的一只 → 追。
 #   ③ 灵体自己的小圈（`SOUL_NEAR`，圆心＝灵体，低优先自保）内最近的一只 → 追。
 #   ④ 都没有 → 回到主人身边的待命位（每个灵体一个固定偏移，两个不叠在一起）。
 # 二轮缩小：用户验收预览后判定「圈太大」——大圈减半（600→300），灵体自己的攻击距离与
-# 索敌距离等比缩到原来的 1/3（450→150、500→166.7），停靠与牵引跟着按同一比例走。
+# 索敌距离等比缩到原来的 1/3（450→150、500→166.7），停靠跟着按同一比例走（380→127.5）。
+# 三轮：**取消牵引距离**（原 `SOUL_LEASH`=300，会让灵体在主人侧后的怪身上来回抖动）——
+# 第②③档也不再限制离主人多远，只有"被地形卡住"才回主人身边。
 const SOUL_RANGE := 150.0      # 攻击判定半径（仍要过 `ruins.clear_line` 视线）
 const SOUL_SEEK := 300.0       # 召唤主为原点的索敌大圈（＝旧值的一半）
 const SOUL_NEAR := 166.7       # 灵体自身为原点的低优先自保圈（＝旧值 500 的 1/3，仍是射程 +16.7）
 const SOUL_KEEP := 127.5       # 追击停靠距离（射程的 85%，贴着 150 会来回抖）
-const SOUL_LEASH := 300.0      # ②③ 时灵体离主人的最大距离；① 不受此限
 const SOUL_LOCK_CD := 0.5      # 高优先→高优先 的转火内置 CD（从低优先升上来可立刻抢占）
 const SOUL_IDLE_RING := 70.0   # 静默待命偏移半径（0 号在左、1 号在右）
 const SOUL_STUCK := 0.6        # 被地形卡住累计多少秒就放弃追击
@@ -385,15 +387,16 @@ static func soul_step(s, p: Dictionary, soul: Dictionary, dt: float) -> void:
 		else:
 			tier=picked
 	soul.target=target_id; soul.tier=tier
-	# 移动：追到射程的 85% 就停下开火；追不到（被地形卡住）先回主人身边，`SOUL_UNREACHABLE` 秒后再试。
+	# 移动：追到射程的 85% 就停下开火。**没有牵引**（2026-10-07 用户拍板取消）：第②③档也一路追到
+	# 停靠距离；追不到（被地形卡住）才回主人身边，`SOUL_UNREACHABLE` 秒后再试。第②档的目标按定义
+	# 在主人 300 大圈内、每帧重选，所以它追出圈就会自然换目标；只有主人点名的第①档能追到天边。
 	var target: Dictionary=enemy_by_id(s,target_id)
 	if not target.is_empty() and now<float(soul.get("blocked_until",-1.0)): target={}
 	var wanted: Vector2=soul_idle_point(p,soul)
 	if not target.is_empty():
 		var gap: float=soul.p.distance_to(target.p)
-		var leash_ok: bool=tier=="command" or soul.p.distance_to(p.p)<=SOUL_LEASH
-		if leash_ok and gap>SOUL_KEEP: wanted=target.p
-		elif leash_ok: wanted=soul.p
+		if gap>SOUL_KEEP: wanted=target.p
+		else: wanted=soul.p
 	var step: Vector2=(wanted-soul.p).limit_length((125.0 if gear(p,71) else 100.0)*dt)
 	var before: Vector2=soul.p
 	soul.p=s.ruins.move(soul.p,step,8)

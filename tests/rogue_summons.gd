@@ -57,6 +57,9 @@ func step(p: Dictionary, dt: float, frames: int) -> void:
 
 ## 主人打一下（普攻命中）——这就是"索敌指令"的入口。
 func order(p: Dictionary, e: Dictionary) -> void:
+	if e.is_empty():
+		check(false,"order() 收到空目标：木桩没生成")
+		return
 	Build.hit_event(s,p,e,10.0,false,Build.context(s,p,"attack"))
 
 func run() -> void:
@@ -139,6 +142,27 @@ func run() -> void:
 	step(p,0.1,25)
 	check(lonely.tier=="idle","⑤ 小圈也没怪 → 回静默待命")
 	check(lonely.p.distance_to(Build.soul_idle_point(p,lonely))<distance_before-100.0,"⑤ 而且确实在往主人身边移动")
+
+	# ⑤b 指令接收是**全局**的：灵体跑到很远的地方追怪时，主人换点名仍然立刻生效（无距离门槛、无牵引）
+	p = launch()
+	var runner: Dictionary=dummy(p.p.x+240.0,200000.0)
+	Build.summon(s,p,60.0,.06)
+	step(p,0.1,10)
+	var roam: Dictionary=p.build_summons[0]
+	check(roam.tier=="seek" and int(roam.target)==int(runner.id),"⑤b 先在主人圈内咬住一只怪")
+	order(p,runner)
+	step(p,0.1,5)
+	# 把主人挪到很远（灵体因此会被留在原地继续追 runner），再放一只新的怪并点名它
+	p.p = Vector2(p.p.x+900.0,s.ruins.lane_center(p.p.x+900.0))
+	step(p,0.1,20)
+	check(roam.p.distance_to(p.p)>300.0,"⑤b 灵体此时已经离主人很远（%.0f，超过大圈 300）" % roam.p.distance_to(p.p))
+	var newcomer: Dictionary=dummy(p.p.x+120.0,200000.0)
+	order(p,newcomer)
+	step(p,0.1,3)
+	check(int(roam.target)==int(newcomer.id) and roam.tier=="command","⑤b 远处的灵体也立刻改打主人新点名的怪（tier=%s target=%d）" % [roam.tier,int(roam.target)])
+	var before: float=roam.p.distance_to(newcomer.p)
+	step(p,0.1,25)
+	check(roam.p.distance_to(newcomer.p)<before-100.0,"⑤b 并且真的从远处往新目标赶（不许有牵引距离拦着）")
 
 	# ⑥ 红线：射程 450、按实体比例分配、总预算 0.16P
 	check(is_equal_approx(Build.SOUL_RANGE,150.0) and is_equal_approx(Build.SOUL_SEEK,300.0) and is_equal_approx(Build.SOUL_NEAR,166.7),"⑥ 半径 = 二轮拍板值：大圈 300（旧值一半）、射程 150 与小圈 166.7（旧值的 1/3）")

@@ -294,9 +294,9 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | 特效编排总控（事件→贴图特效/伤害数字/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:148；剑雨布局 `blade_layout()` combat_visuals.gd:501；与服务端判定共形 `patch_local_rect` combat_visuals.gd:475；敌方弹幕可读性常量 combat_visuals.gd:300-318、绘制 `draw_enemy_bolt()` combat_visuals.gd:363） |
 | 刀光/突刺/蓄力/连招/大招（固定轨迹：一次捕获挂点） | `scripts/stylized_vfx.gd:51 emit()`、`stylized_vfx.gd:96 event()`、`stylized_vfx.gd:215 advance()`；仅蓄力跟随，释放和延迟残影保持原挂点 |
-| 69 把具体武器的元素、配色与三段编排 | `scripts/weapon_vfx.gd:34 profile()`、`weapon_vfx.gd:40 stroke()`、`weapon_vfx.gd:99 draw()`；主轮廓使用独立 ImageGen 方图，同名远征/闯关武器共用主图，48 把闯关武器各自独立；闯关弹体 `combat_visuals.gd:661 draw_run_projectile()`；确认角色派生 `rogue_build.gd:1126 hero_effect()` |
+| 69 把具体武器的元素、配色与三段编排 | `scripts/weapon_vfx.gd:34 profile()`、`weapon_vfx.gd:40 stroke()`、`weapon_vfx.gd:99 draw()`；主轮廓使用独立 ImageGen 方图，同名远征/闯关武器共用主图，48 把闯关武器各自独立；闯关弹体 `combat_visuals.gd:661 draw_run_projectile()`；确认角色派生 `rogue_build.gd:1131 hero_effect()` |
 | 方形武器原画、接斩/终结层、实际核心触发图 | `scripts/weapon_image_art.gd:17 texture()`；74 张原始 RGBA 方图及完整提示词/哈希在 assets/combat/imagegen-square；绯红剑三段各一张，其余武器使用专属主图和类别连段层；审计 tools/audit_weapon_square_art.py、验证 tests/weapon_square_art.gd |
-| 强化/品质快照与核心确认事件 | `scripts/rogue_build.gd:80 visual_state()`、`rogue_build.gd:183 core_visual()`；session.gd 的 weapon_visual_state() 处理远征品质；出手时冻结状态传给弹丸/爆炸/连锁/命中；+2 核心 I、+3 角色连招、+4 核心 II、+5 角色连招增强，详见 WEAPON-IMAGE-VFX.md |
+| 强化/品质快照与核心确认事件 | `scripts/rogue_build.gd:80 visual_state()`、`rogue_build.gd:187 core_visual()`；session.gd 的 weapon_visual_state() 处理远征品质；出手时冻结状态传给弹丸/爆炸/连锁/命中；+2 核心 I、+3 角色连招、+4 核心 II、+5 角色连招增强，详见 WEAPON-IMAGE-VFX.md |
 | CPU 粒子（1400 上限/21 武器材质物理/双通道渲染） | `scripts/combat_particles.gd`（WEAPON_STYLES combat_particles.gd:7；材质参数 spawn combat_particles.gd:42） |
 | 粒子批量渲染（MultiMesh 光晕 + 三角数组几何） | `scripts/particle_glow_batch.gd` + `scripts/particle_geometry_batch.gd` |
 | ImageGen 特效索引（74 张新方图 + 原有角色/公共图） | `scripts/vfx_library.gd:55 texture()` 优先读取 weapon_image_art.gd；旧图作兼容回退；实际配色由 weapon_vfx.gd:34 profile() 解析 |
@@ -387,14 +387,52 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ---
 
-### R. 开发工具与判定框总览（开发者模式）
+### R. 开发者模式
 
-| 功能 | 在哪 |
+**本类包含**（只对开发者可见的东西，正式游玩一律不出现）：
+- **R.1 互动半径表** —— 游戏中每一处"走到多近才能按键"的**唯一真值表**（提示出现 = 一定能按键）。
+- **R.2 判定框总览** —— 用代码级开关把各类范围框叠加画出来的引擎（M0/M1 已落地）。
+**跨类指引**：这里列的每一条都对应 §4.A–§4.Q 里某个系统的判定；**改任何判定半径，先来 R.1 登记，再去对应系统改代码**（两边必须同源）。完整路线图（战斗/搜打撤/肉鸽/营地/UI 五组判定框的清单与里程碑）在工作区上一层 `任务.md`。
+
+#### R.1 互动半径表（提示出现 = 一定能按键）
+
+| 交互 | 提示在哪 | 提示条件 | 判定在哪 | 判定条件 | 状态 |
+|---|---|---|---|---|---|
+| 营地 10 个设施（按 E） | `camp_screen.gd:749` `"[E] %s"` | `station_at()` 命中 | `camp_screen.gd:691 interact()` → `camp_site.gd:1556 station_at()` | 距离 < `stations[].radius` | ✅ 同源（**数据字段** `camp_site.gd:936-960`：250/215/215/205/265/230/200/170/170/170） |
+| 营地设施名牌（地标层） | `camp_screen.gd:739 marker.visible` | 距离 < **650**（字面量） | 同上 | < `station.radius`（最小 170） | ⚠️ **待修**（名牌要在圈外只当"地名"、进圈才出按键样式） |
+| 田畦 播种/浇水/收获 | `camp_screen.gd:750-753` → `camp_activities.gd:132 plot_hint()` | `nearest_plot()` 命中 | `camp_activities.gd:140 interact()`→`farm()`，`:155` 复查 | 距离 ≤ **155** | ✅ 同源（字面量 155 出现 2 次） |
+| 栈桥 抛竿（[E]/[Space]） | `camp_screen.gd:755` | `camp_activities.gd:123 at_pier()` | `camp_activities.gd:186 cast()`、`camp_screen.gd:656` | `at_pier()`：DOCK 内且距 (3460,2390) < **240** | ✅ 同源（同一函数） |
+| 家园 地面拾取（[F]） | `camp_screen.gd:758-765` | `has_drop_near()` ≤ **120** | `camp_screen.gd:677` → `nearest_drop` / `pick_up_nearby()` | 同 120 | ✅ 同源 |
+| 搜打撤 城门（长按 E 1.5s） | `main.gd:2161` | 距 portal < **85** 且 `can_travel()` | `session.gd:3637` | 同 85 + `party_at_gate()` | ✅ 数值一致（两处各写一份 85） |
+| 搜打撤 城门世界标签 | `battlefield.gd:190` `"[E]"` | **相机**距城门 < **1500** | `session.gd:3637` | **玩家**距城门 < 85 | ⚠️ **待修**（远处就写了 [E]） |
+| 搜打撤 撤离点（长按 E 4s） | `main.gd:2164` | 距 exit < **83** | `session.gd:3646` | 同 83 | ✅ 数值一致 |
+| 搜打撤 撤离点世界标签 | `battlefield.gd:202` `"[E] 撤离"` | 相机 < **1500** | `session.gd:3647` | 玩家 < 83 | ⚠️ **待修** |
+| 搜打撤 封印（长按 E 3s） | `main.gd:2168` | 距 shrine < **72** | `session.gd:3651` | 同 72 | ✅ |
+| 搜打撤 救援队友（长按 E 3s） | `main.gd:2157` | 距倒地队友 < **75** | `session.gd:3640` | 同 75 | ✅ |
+| 搜打撤 箱子搜索（[F]/[H]） | `main.gd:2172`（`:2174` 用 **70** 决定显示） | 容器距玩家 < 70 | `main.gd:1985` → `session.gd:960 search_target` | 距离 < **80**（中途离开宽限 `SEARCH_RANGE`=86，`session.gd:85`） | ⚠️ **待修**（70–80 之间"没提示却能按"，反向不一致） |
+| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:220/243` | 相机 < **1500** | `session.gd:962/970/984` | 玩家 < 80 / 70 | ⚠️ **待修** |
+| 魔境 开宝箱（[E]） | `main.gd:2093`、`main.gd:5093`、`rogue_room_ui.gd:229`（**常驻**） | 无距离 | `session.gd:3620` → `roguelike.gd:709 loot_interact()` | 距 chest ≤ **85** | ⚠️ **待修**（常驻提示无距离） |
+| 魔境 掉落拾取（[E]） | 同上常驻 | 无距离 | `roguelike.gd:737` | 距离 < **80** | ⚠️ **待修** |
+| 魔境 分叉选路（按住 E） | `main.gd:4845`、`main.gd:5094`、`rogue_room_ui.gd:230-231`（**常驻**） | 无距离 | `session.gd:3623` | `x > fork_start`（`rogue_map.gd:11`，= 宽 ×0.8）且距 `exit_position(i)` ≤ **64** | ⚠️ **待修** |
+| 魔境 救援队友（长按 E 2.5s） | `main.gd:2138`（只提示倒地者） | 倒地常驻 | `roguelike.gd:1451 rescue()` | 救援者距倒地者 ≤ **75** | ⚠️ **待修**（救援者侧没有任何距离提示） |
+| 收竿 / 魂灯自救 / 倒地自救 | `camp_screen.gd:537`、`main.gd:2138/2145` | 状态机 | 同状态机 | 无距离判定 | ✅ 同源 |
+
+**待修总清单（2026-10-07 审计结论，下一轮按此改）**：
+1. **营地名牌**：650 亮、E 只在 ≤`station.radius` 生效 → 远处只当地名（变暗/不出按键字样），进圈才变"可交互"。
+2. **搜打撤世界标签**（`battlefield.gd:187/190、:196/202、:214/220、:232/243`）：可见条件用的是"相机 1500"，判定用的是"玩家 70–85" → 标签里的 `[E]/[F]` 字样改成按判定半径出，1500 只留给纯地名。
+3. **魔境常驻提示**（`main.gd:2093/4845/5093/5094`、`rogue_room_ui.gd:229-231`）：无距离 → 进入判定距离（85 / 80 / 64）才加"按 E"字样或高亮。
+4. **宝箱 HUD**（`main.gd:2174` 的 70 → 与判定 `session.gd:962` 的 **80** 统一）。
+5. **单真值化**：75/72/83/85/70/155/240/120 这些目前"数值一致但两处各写一份"的字面量，收拢成常量或数据字段（否则改一处必漏另一处）。
+
+#### R.2 判定框总览（开发者模式，M0/M1 已落地）
+
+| 东西 | 在哪 |
 |---|---|
-| **判定框总览（仅开发可见，正式对局不显示、不创建）** | `scripts/dev_ranges.gd`：开关 `dev_ranges.gd:32 enabled()`（读环境变量 `CRIMSON_DEV_RANGES`），画框工具 `ring()`/`label()`/`draw_legend()`，已接入批次 `draw_souls()`/`draw_actors()`；挂载点 `main.gd:282` 起（`rogue_field` 建好后，**只有开发者模式才 new 这个节点**） |
-| 启动脚本 | `开发者模式启动.cmd`（设 `CRIMSON_DEV_RANGES=all` 后 `call 游戏启动.cmd`，复用同一条类缓存守卫链） |
-| 已画出来的框 | 魔境 2D 战场：主人索敌圈 `SOUL_SEEK`、灵体索敌圈/射程/停靠（`SOUL_NEAR/SOUL_RANGE/SOUL_KEEP`）、主人点名目标、角色地形判定 15、怪物半径、灵体→目标连线；F9 收起文字标签 |
-| 还没做（清单 + 代码入口在**工作区上一层 `任务.md`**） | 营地设施交互框（`camp_site.gd:1556 station_at()` 的 `stations[].at+offset+radius`）、肉鸽房型/地面多边形与门对齐、搜打撤 3D 生态区块、UI 热区与 `MOUSE_FILTER_STOP` 覆盖层 |
+| 覆盖层引擎（只读） | `scripts/dev_ranges.gd`：开关 `dev_ranges.gd:32 enabled()`（环境变量 `CRIMSON_DEV_RANGES`），画框工具 `ring()`/`label()`/`draw_legend()`，第一批 `draw_souls()`/`draw_actors()` |
+| 挂载点 | `main.gd:282` 起（`rogue_field` 建好后）——**只有开发者模式才 new 这个节点**，正式模式连节点都不创建 |
+| 启动脚本 | `开发者模式启动.cmd`（设 `CRIMSON_DEV_RANGES=all` 后 `call 游戏启动.cmd`） |
+| 已画出来 | 魔境战场：主人索敌圈 300、灵体索敌圈 166.7 / 射程 150 / 停靠 127.5、主人点名目标、角色地形判定 15、怪物半径、灵体→目标连线；F9 收文字 |
+| 待做批次 | 营地（设施交互圈 + "半径/实时距离"文字，`camp_site.gd:1556` 与 `camp_screen.gd:738 site.project()` 是入口）、肉鸽房型地面多边形、搜打撤 3D、UI 热区——清单见工作区上一层 `任务.md` |
 
 ## 5. 「我要改 X」速查表
 
@@ -661,9 +699,9 @@ python tests/scene_music_assets.py # 曲目清单校验
 45. **面板打开时"下面的东西"要自己挡**（两件事，缺一不可）：①**鼠标**——营地页的 `家园设施` 行、`出发` 按钮、站点标记都画在 overlay **下面**，而面板是普通节点画的、空处没有 Control 接鼠标，点击会穿下去（实测点「主手」会顺带触发同一位置的「晨光菜园」并瞬移角色，点面板右下角会顺带点到「出发」）。修法是面板开头铺一整块 `MOUSE_FILTER_STOP` 的全屏 `shield`（`scripts/camp_pack.gd:47/68`，与 `home_screen.gd` 用全屏 STOP 根节点的做法同源）。②**键盘/世界交互**——`camp_screen.input_blocked` 才是营地自己的冻结开关（走路、E/Q、田块点击都看它），而 `main.gd:1579 _process()` 每帧把它重写成 `modal or camp_pack_open`：**漏掉 `camp_pack_open` 就等于没冻结**（角色会在面板后面走路、还会响应 E）。⚠️ 已知遗留：这条式子也把 `home_ui`/`home_map` 自己设的 `input_blocked` 每帧冲掉（两个页面的**鼠标**由各自的全屏 STOP 根节点挡住，所以玩家看不出来；但 WASD/E/Q 仍会漏到世界里）。要一起收掉就得把这两页也写进这条式子（同时 TAB/ESC 的收尾要补），改动前先问。
 46. **HUD 按钮不能只"回答一句提示"**：`camp_screen.gd:435` 的「出发」按钮只发 `launch_requested` → `main.gd:997 camp_departure()`。它原来只在角色**站在**闸门/传送门时才有动作，否则只 `camp.say()` 一句"走到南侧…再出发"——而面板打开时那句话画在面板底下，玩家只看到"点了没反应"。现在按钮按当前模式直接从任何位置进站（搜打撤 → `on_camp_station("launch")`，魔境 → `on_camp_station("rogue")` 进报名页）；世界里的仪式（走到闸门按 E/Space）原样保留，两条路都进同一批站点函数。
 
-47. **引魂灵体只认「主人的索敌指令」，不自己乱跑**：灵体的每帧决策在 `rogue_build.gd:354 soul_step()`，四级优先：①**主人的指令**（`rogue_build.gd:517 hit_event()`，记指令那行在 :528：主人用普攻/战技/技能打中谁，谁就是指令；T086 冥火指令与墓煜 HC 连招终结的 3 秒硬锁优先于它）——无距离上限地追，怪出大圈、主人后撤也照打，直到它死或主人改指令；②主人大圈 300 内最合适的一只；③灵体自己的小圈 166.7 内最近的一只（低优先自保）；④都没有就回主人身边的待命位（每个灵体有固定槽位偏移，两个不叠在一起）。**转火有 0.5 秒内置 CD**（`SOUL_LOCK_CD`，每个灵体独立）：①→① 的转火要等 CD，②③→① 可以立刻抢占；追击停靠在射程 85%（127.5），被地形卡住 0.6 秒就放弃、`SOUL_UNREACHABLE` 秒后再试（免得在墙前来回抖）。⚠️ **别顺手改伤害**：射程 150、每秒 1 次、最多 2 个实体、总预算 `0.16P×(1+召唤加算池)` 按实体比例分配是设计契约（ROGUE-BUILD-SYSTEM-DESIGN §7.12），本轮只改「索敌与移动」。**半径在二轮按验收反馈缩小**：大圈减半（600→300）、灵体射程与小圈各缩到 1/3（450→150、500→166.7）、停靠与牵引同比（380→127.5、600→300）——想调手感就动 `rogue_build.gd:19-27` 这几个常量。**预览图里那三个圈是测试脚本的开发者覆盖层**（`tests/rogue_summons_visual.gd` 的 `SHOW_RANGES`，默认 false），正式对局不画任何判定圈。回归 `tests/rogue_summons.gd`（无头 27 项；把「记指令 / 追击 / 0.5 秒 CD」三处回退掉会红 9 项）。**写测试的坑**：`spawn_enemy()` 对 radius 25 不通的位置是**静默 return**，随手写个偏移会让两次 spawn 落到同一格、后一次直接不生成（假绿）；木桩一律取 `ruins.lane_center(x)`。
+47. **引魂灵体只认「主人的索敌指令」，不自己乱跑**：灵体的每帧决策在 `rogue_build.gd:354 soul_step()`，四级优先：①**主人的指令**（`rogue_build.gd:522 hit_event()`，记指令那行在 :528：主人用普攻/战技/技能打中谁，谁就是指令；T086 冥火指令与墓煜 HC 连招终结的 3 秒硬锁优先于它）——无距离上限地追，怪出大圈、主人后撤也照打，直到它死或主人改指令；②主人大圈 300 内最合适的一只；③灵体自己的小圈 166.7 内最近的一只（低优先自保）；④都没有就回主人身边的待命位（每个灵体有固定槽位偏移，两个不叠在一起）。**转火有 0.5 秒内置 CD**（`SOUL_LOCK_CD`，每个灵体独立）：①→① 的转火要等 CD，②③→① 可以立刻抢占；追击停靠在射程 85%（127.5），被地形卡住 0.6 秒就放弃、`SOUL_UNREACHABLE` 秒后再试（免得在墙前来回抖）。⚠️ **别顺手改伤害**：射程 150、每秒 1 次、最多 2 个实体、总预算 `0.16P×(1+召唤加算池)` 按实体比例分配是设计契约（ROGUE-BUILD-SYSTEM-DESIGN §7.12），本轮只改「索敌与移动」。**半径在二轮按验收反馈缩小**：大圈减半（600→300）、灵体射程与小圈各缩到 1/3（450→150、500→166.7）、停靠与牵引同比（380→127.5、600→300）——想调手感就动 `rogue_build.gd:19-27` 这几个常量。**预览图里那三个圈是测试脚本的开发者覆盖层**（`tests/rogue_summons_visual.gd` 的 `SHOW_RANGES`，默认 false），正式对局不画任何判定圈。回归 `tests/rogue_summons.gd`（无头 27 项；把「记指令 / 追击 / 0.5 秒 CD」三处回退掉会红 9 项）。**写测试的坑**：`spawn_enemy()` 对 radius 25 不通的位置是**静默 return**，随手写个偏移会让两次 spawn 落到同一格、后一次直接不生成（假绿）；木桩一律取 `ruins.lane_center(x)`。
 
-48. **判定框总览（开发者模式）只能"只读"**：`scripts/dev_ranges.gd` 只在环境变量 `CRIMSON_DEV_RANGES` 有值时由 `main.gd:282` 创建 —— **正式模式连节点都不建**，不要改成"建了再隐藏"。它只读 `session` 与公开常量，框的半径必须引用原系统常量（例如灵体四档直接读 `Build.SOUL_*`），**不许在覆盖层里抄一份副本**，否则改数值后框会撒谎；不吃 `s.rng`、不参与任何命中判定（与第 9 条同源）。加批次＝在 `dev_ranges.gd` 里加一个 `draw_xxx()`，并把工作区上一层 `任务.md` 清单里对应那行勾掉。⚠️ **营地/家园是 3D**（`camp_site.gd` 的 `UNIT/PITCH/CAMERA_DISTANCE` 投影），搜打撤表现层也是 3D 相机（没有 `camera_offset()`），这两组别在 2D 里硬画。
+48. **判定框总览（开发者模式）只能"只读"**：`scripts/dev_ranges.gd` 只在环境变量 `CRIMSON_DEV_RANGES` 有值时由 `main.gd:282` 创建 —— **正式模式连节点都不建**，不要改成"建了再隐藏"。它只读 `session` 与公开常量，框的半径必须引用原系统常量（例如灵体四档直接读 `Build.SOUL_*`），**不许在覆盖层里抄一份副本**，否则改数值后框会撒谎；不吃 `s.rng`、不参与任何命中判定（与第 9 条同源）。加批次＝在 `dev_ranges.gd` 里加一个 `draw_xxx()`，并把工作区上一层 `任务.md` 清单里对应那行勾掉。⚠️ **营地/家园是 3D**（`camp_site.gd` 的 `UNIT/PITCH/CAMERA_DISTANCE` 投影），搜打撤表现层也是 3D 相机（没有 `camera_offset()`），这两组别在 2D 里硬画。**互动半径一律以 §4.R.1 那张表为唯一真值**：提示出现的距离必须等于按下生效的距离，改任何一处先改表再改代码（2026-10-07 审计出 4 类不一致：营地名牌 650、搜打撤世界标签按相机 1500、魔境常驻提示无距离、宝箱提示 70 vs 判定 80）。
 
 ---
 
@@ -753,6 +791,7 @@ git status --porcelain
 | 2026-10-07 | （本轮未提交） | **路牌按当前代码全量刷新 + 补齐两处没登记的实现**：①**未登记文件**——`scripts/rogue_map_screen.gd`（肉鸽路线图 M，纯函数 `layout()` :68 / `draw_map()` :287）与 `scripts/rogue_build_preview.gd`（行囊内 V 的派生链预览，`layout()` :163 / `draw_preview()` :319）此前不在路牌里：§4.E 补路线图行、§4.F 补派生链预览行（含 `main.gd` 的 preload/实例化/显隐/热键接线锚点），§5 补两行速查（并如实写明**两处都没有专属测试**，`layout()` 是纯函数、可直接 headless 断言）。②**结构数字**：`scripts` 105→**112**（3.77 万行）、`tests` 193→**213**（2.36 万行）+6 Python、`tools` 120+→**147**；§7 的 GDScript 用例数同步为 213。③**新增测试约定**（§7）：要真鼠标的用例必须命名 `*_visual`（只有它/`ui`/`hybrid_vfx_preview` 会被 runner 开窗跑；无头下 `warp_mouse` 与 `get_mouse_position` 都不生效），并给出本机实测的既有红清单（`camp_modes` 1 / `rogue_inventory` 10 / `ui` 30 / `rogue_ui` 1 / `rogue_hooks_roguelike` 1 / `roguelike_art` 写盘被拒）与"用 HEAD 版文件复跑对比"的判定法。④§8 补一行"素材预览/烘焙（GD）"代表脚本。⑤§12.7 更新为 2026-10-07 全量审计。全量锚点：**651 个 → OK 431 / DRIFT 0 / WRONG 0 / HINT 220**（退出码 0） |
 | 2026-10-07 | （本轮未提交） | **引魂灵体主动索敌（用户实测「召唤出来的灵体不会自己找怪物打」）**：原来灵体只会朝主人走（100/125 px/s），每 1 秒对"自己 450 内有视线的怪"结算一次，优先 T086 锁定目标、否则取最近 —— 从不追怪、也没有"主人打谁就集火谁"。按用户拍板的规则改成四级索敌：①主人的指令（普攻/战技/技能命中过的怪；T086/HC 的 3 秒硬锁优先）无距离上限追击，出大圈也打完；②主人大圈 300（圆心＝主人）；③灵体自己的低优先圈 166.7（圆心＝灵体）；④回主人身边的待命位（1 号左上、2 号右上，两个不叠）。新增 `SOUL_*` 常量、`soul_step()`/`soul_pick()`/`soul_idle_point()`/`soul_free_slot()`/`enemy_by_id()`，`hit_event()` 里把主人的命中记成 `soul_focus`（跳伤与灵体自身伤害走 `depth>0` 已早退，0 伤害不算）；**转火 0.5 秒内置 CD**（每灵体独立，低优先→高优先可立刻抢占）；追击停靠射程 85%（380）、被地形卡住 0.6 秒放弃 1.5 秒后再试。**伤害数值一处没动**（1 秒/次 / 上限 2 个 / 0.16P 预算 = 契约 §7.12）。**同日二轮**：用户验收预览后判定「圈太大」——大圈 600→300（减半）、灵体射程 450→150 与小圈 500→166.7（各 1/3）、停靠 380→127.5、牵引 600→300；预览脚本加 `SHOW_RANGES`（默认 false，正式对局不画判定圈）；测试几何同步收紧后仍 27/0、破坏三处行为红 10 项。测试：新增 `tests/rogue_summons.gd`（无头 27 项；三处行为回退会红 9 项，已用"备份→破坏→复跑→按 sha 还原"验证敏感性）与 `tests/rogue_summons_visual.gd`（真窗口出图 `build/rogue-summons-1-idle/2-seek/3-command/4a-cd/4b-relock.png`，图上把 600/500/450 三个半径与目标连线画出来，日志同步打印每只灵体的 target/tier/switch 以便核对）。§4.F 新增灵体索敌行、§5/§6 补数值、§11 追加 47；`rogue_build.gd` 前部插入代码后把路牌里该文件的旧行号一并重锚（stat/hit_multiplier/hit_event/action_event/legal_talents/management/award/add_experience/hero_effect/visual_state/core_visual/武器分支表/match 表） |
 | 2026-10-07 | （本轮未提交） | **灵体索敌半径按验收反馈缩小 + 开发者判定框总览（M0/M1）**：①用户看验收图后判定「圈太大」——大圈 600→**300**（减半）、灵体射程 450→**150** 与索敌圈 500→**166.7**（各 1/3）、停靠 380→**127.5**、牵引 600→**300**（常量都在 `rogue_build.gd:19-27`）；测试几何同步收紧后 `tests/rogue_summons.gd` 仍 27/0、破坏三处行为仍红 10 项。②验收图里那三个圈属于 `tests/rogue_summons_visual.gd` 的开发者覆盖层，新增 `SHOW_RANGES`（**默认 false**）——正式对局不画任何判定圈。③按用户要求立项「开发者判定框总览」：新增 `scripts/dev_ranges.gd`（只读覆盖层，`enabled()` 读 `CRIMSON_DEV_RANGES`；画框工具 + 第一批：灵体四档半径、主人点名目标、角色地形判定 15、怪物半径、目标连线，F9 收文字）、挂载点 `main.gd:282`、启动脚本 `开发者模式启动.cmd`；实测有环境变量时覆盖层被创建并出图 `build/dev-ranges-rogue.png`，**没有时 `DEV_RANGES_CREATED=false`（节点根本不创建）**。④完整判定框清单（战斗 A1-A12 / 搜打撤 B1-B5 / 肉鸽 C1-C8 / 营地 D1-D6 / UI E1-E3）、里程碑 M2-M6、验收标准与已知坑写在**工作区上一层** `D:\dsh\Game\任务.md`（刻意不进版本库，跨多轮对话用）。§4 新增 R 节、§5/§9 补行、§11 追加 48 |
+| 2026-10-07 | （本轮未提交） | **取消灵体牵引 + 互动半径审计 + 路牌新增「R. 开发者模式」大类**：①用户拍板**取消牵引距离**（原 `SOUL_LEASH`=300：第②③档追击时离主人超过 300 就往回走，会在主人侧后的怪身上「追一步→回一步」来回抖）——现在第②③档也一路追到停靠 127.5，只有被地形卡住才回主人身边；第②档目标按定义在主人 300 大圈内且每帧重选，出圈自然换目标。**指令接收是全局的**：灵体在远处追别的东西时，主人换点名也立刻生效——新增 4 项断言覆盖（31/0），含"灵体离主人 >300 时仍改打新点名目标并从远处赶回来"。②互动半径审计（子智能体 glm-5.3 只读审计，行号实读核实）：营地 `[E]` 提示本身已与判定同源（`station.radius`），真正不一致的是营地名牌 650、搜打撤世界标签按"相机 1500"、魔境常驻提示无距离、宝箱提示 70 vs 判定 80；全部写进 §4.R.1 的"互动半径表 + 待修总清单"。③路牌按用户拍板的**方案 A** 新增「R. 开发者模式」大类（大类开头写索引与跨类指引），下含 R.1 互动半径表、R.2 判定框总览；**方案 D 的全量重构计划**（大类按模式：营地与家园 / 正式对局(搜打撤+魔境合并) / 表现与音频 / 联机 / 开发者模式）写在工作区上一层 `任务.md`。
 | | | |
 
 ### 12.7 最近一次全量审计（2026-10-07）
