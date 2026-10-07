@@ -91,11 +91,13 @@ const ITEMS = {
 	,"silver":{"name":"银鳞鲫", "size":Vector2i(1,1), "value":16, "color":Color("c0cbd6"), "desc":"月湾栈桥钓上的银鳞鲫，可入交易行出售或下厨。"}
 	,"moon":{"name":"月纹鲈", "size":Vector2i(1,1), "value":32, "color":Color("cdd6f2"), "desc":"月湾栈桥钓上的月纹鲈，可入交易行出售或下厨。"}
 	,"gold":{"name":"金冠锦鲤", "size":Vector2i(1,1), "value":65, "color":Color("e8c25a"), "desc":"月湾栈桥钓上的金冠锦鲤，可入交易行出售或下厨。"}
-	# Shop goods. The home trade post sells seeds and bait, and what it sells is a
-	# real grid-occupying entity like every other good: bought units land in the
-	# vault, get planted or cast one at a time, and can be handed back to the
-	# exchange. Their resale value sits below the shop price on purpose, so buying
-	# from the post and instantly dumping there is a loss rather than a money pump.
+	# Shop goods. The home trade post sells seeds and bait as real grid-occupying
+	# entities like every other good: bought units land in the vault first, spill into
+	# the carried backpack when the vault is full, and whatever neither can hold is
+	# dropped on the camp floor with a notice (never lost, never silently swallowed).
+	# They get planted or cast one at a time and can be handed back to the exchange.
+	# Their resale value sits below the shop price on purpose, so buying from the post
+	# and instantly dumping there is a loss rather than a money pump.
 	,"wheat_seed":{"name":"晨光麦种", "size":Vector2i(1,1), "value":6, "color":Color("d8b96a"), "desc":"家园商店购入的麦种。每份可播种一块田畦。"}
 	,"carrot_seed":{"name":"赤霞萝卜种", "size":Vector2i(1,1), "value":9, "color":Color("d4823f"), "desc":"家园商店购入的萝卜种。每份可播种一块田畦。"}
 	,"herb_seed":{"name":"月露草种", "size":Vector2i(1,1), "value":13, "color":Color("7fbfa4"), "desc":"家园商店购入的月露草种。每份可播种一块田畦。"}

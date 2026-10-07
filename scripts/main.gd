@@ -899,6 +899,7 @@ func ensure_camp() -> Control:
 		camp.update_static())
 	camp.codex_requested.connect(show_help)
 	camp.pack_requested.connect(toggle_camp_pack)
+	camp.notice_requested.connect(notice_popup)
 	# The camp floor hands a picked-up item to the same containers a raid loots into.
 	if camp.activities:
 		camp.activities.item_receiver=func(entry: Dictionary) -> bool:

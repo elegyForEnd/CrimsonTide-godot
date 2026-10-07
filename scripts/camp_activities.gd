@@ -127,13 +127,13 @@ func cycle_seed() -> void:
 	if busy(): return
 	var keys: Array = Rules.CROPS.keys()
 	selected_crop = keys[(keys.find(selected_crop)+1)%keys.size()]
-	camp.say("手持种子：%s ×%d" % [Rules.CROPS[selected_crop].name,home.state().seeds[selected_crop]] if home else "请先进入家园。")
+	camp.say("手持种子：%s ×%d" % [Rules.CROPS[selected_crop].name,home.profile.product_count(selected_crop+"_seed")] if home else "请先进入家园。")
 
 func plot_hint(index: int) -> String:
 	if not home: return ""
 	if index>=home.state().beds: return "尚未开垦 · 去商店扩建"
 	var plot: Dictionary = home.state().plots[index]
-	if str(plot.crop).is_empty(): return "[E] 播种%s ×%d  [Q] 换种子" % [Rules.CROPS[selected_crop].name,home.state().seeds[selected_crop]]
+	if str(plot.crop).is_empty(): return "[E] 播种%s ×%d  [Q] 换种子" % [Rules.CROPS[selected_crop].name,home.profile.product_count(selected_crop+"_seed")]
 	if home.remaining(index)==0: return "[E] 收获%s ×3" % Rules.CROPS[plot.crop].name
 	return "[E] 浇水 · %s %d秒" % [Rules.CROPS[plot.crop].name,home.remaining(index)] if not plot.watered else "已浇水 · %s %d秒成熟" % [Rules.CROPS[plot.crop].name,home.remaining(index)]
 
@@ -157,7 +157,7 @@ func farm(index: int) -> void:
 		return
 	var plot: Dictionary = home.state().plots[index]
 	var kind := "plant" if str(plot.crop).is_empty() else ("harvest" if home.remaining(index)==0 else "water")
-	if kind=="plant" and home.state().seeds[selected_crop]<=0:
+	if kind=="plant" and home.profile.product_count(selected_crop+"_seed")<=0:
 		camp.say("%s种子不足，按 Q 换种子或去商店购买。" % Rules.CROPS[selected_crop].name)
 		return
 	if kind=="water" and plot.watered:

@@ -20,6 +20,8 @@ signal pack_requested
 ## still has to reach these keys even though `input_blocked` freezes the rest, or a
 ## panel would have no way out.
 signal dismiss_requested
+## A top-centre notice for answers the player must not miss (wired to main.notice_popup).
+signal notice_requested(message: String)
 
 const Site = preload("res://scripts/camp_site.gd")
 const HomeSkin = preload("res://scripts/home_ui_skin.gd")
@@ -812,4 +814,4 @@ func home_summary() -> String:
 	var rules := preload("res://scripts/homestead.gd").new(profile)
 	for i in rules.state().beds:
 		if not str(rules.state().plots[i].crop).is_empty() and rules.remaining(i)==0: ripe += 1
-	return "可收获 %d  ·  鱼饵 %d" % [ripe,rules.state().bait]
+	return "可收获 %d  ·  鱼饵 %d" % [ripe,profile.product_count("bait")]
