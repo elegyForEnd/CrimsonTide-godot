@@ -1,7 +1,11 @@
 extends RefCounted
 
 const BuildArt = preload("res://scripts/rogue_build_art.gd")
-var flask_icon: Texture2D=preload("res://assets/rogue/build/blood-flask-v1.png")
+## The painted flask lives in the git-ignored generated folder, so a clean
+## checkout must not preload it: preloading a missing file is a parse error for
+## this script and for everything that depends on it.
+const FLASK_ICON := "res://assets/rogue/build/blood-flask-v1.png"
+var flask_icon: Texture2D=null
 var monsters: Texture2D
 var items: Texture2D
 var props: Texture2D
@@ -60,12 +64,18 @@ func minion_animation(floor_index: int, variant: int, frame: int) -> Dictionary:
 	var key := "minion-%d-%d" % [floor_index,variant]
 	return animation_sheet(key,"res://assets/rogue/animations/"+key+".png",4,3)[clampi(frame,0,11)]
 
-func boss_animation(floor_index: int, frame: int) -> Dictionary:
-	var hd_key := "boss-hd-%d" % floor_index
+## `body_index` is the guardian identity (an ``Art.ROGUE`` index) when the caller
+## knows it; `fallback_index` keeps the pre-pool behaviour for callers that only
+## track the floor. Generated identities 5..7 ship their own packed sheets, so a
+## pooled guardian no longer borrows the floor's body.
+func boss_animation(body_index: int, frame: int, fallback_index: int = -1) -> Dictionary:
+	var index := body_index
+	if fallback_index>=0 and not packed_sheets.has("boss-hd-%d.png" % index): index=fallback_index
+	var hd_key := "boss-hd-%d" % index
 	if frame<8 and packed_sheets.has(hd_key+".png"):
 		return animation_sheet(hd_key,"res://assets/rogue/animations/"+hd_key+".png",4,7)[frame]
 	if frame>=8:
-		hd_key="boss-hd-%d-skill-%d" % [floor_index,(frame-8)/8]
+		hd_key="boss-hd-%d-skill-%d" % [index,(frame-8)/8]
 		if packed_sheets.has(hd_key+".png"):
 			var pose: Dictionary=animation_sheet(hd_key,"res://assets/rogue/animations/"+hd_key+".png",4,2)[(frame-8)%8]
 			# Each independently generated clip uses its neutral anticipation pose as
@@ -73,9 +83,9 @@ func boss_animation(floor_index: int, frame: int) -> Dictionary:
 			var neutral: Array=packed_sheets[hd_key+".png"].frames[0].content
 			pose.scale_ratio=float(pose.texture.get_height())/float(neutral[3])
 			return pose
-	var key := "boss-%d" % floor_index
+	var key := "boss-%d" % index
 	if frame<8: return animation_sheet(key,"res://assets/rogue/animations/"+key+".png",4,2)[clampi(frame,0,7)]
-	key="boss-skills-%d" % floor_index
+	key="boss-skills-%d" % index
 	return animation_sheet(key,"res://assets/rogue/animations/"+key+".png",4,5)[clampi(frame-8,0,19)]
 
 func _init() -> void:
@@ -92,6 +102,10 @@ func _init() -> void:
 	monster_frames=slice_sheet(monsters,4,5,"monsters")
 	for entry in slice_sheet(items,4,4,"items"): item_icons.append(entry.texture)
 	for entry in slice_sheet(props,4,3,"props"): prop_icons.append(entry.texture)
+	# The generated flask is absent on a clean checkout; the inherited heal cell
+	# (item_icons[9], the same mapping offer_icon uses) keeps it readable.
+	if ResourceLoader.exists(FLASK_ICON): flask_icon=load(FLASK_ICON)
+	if flask_icon==null and item_icons.size()>9: flask_icon=item_icons[9]
 
 func slice_sheet(texture: Texture2D, columns: int, rows: int, key: String) -> Array:
 	var source := texture.get_image()

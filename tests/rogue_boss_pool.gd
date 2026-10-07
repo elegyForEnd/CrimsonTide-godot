@@ -7,6 +7,7 @@ extends SceneTree
 const Combat = preload("res://scripts/rogue_combat.gd")
 const Choreo = preload("res://scripts/boss_choreography.gd")
 const Art = preload("res://scripts/boss_effect_art.gd")
+const RogueArt = preload("res://scripts/rogue_art.gd")
 
 var checks := 0
 var failures := 0
@@ -241,6 +242,28 @@ func run() -> void:
 			var client_index: int=Combat.boss_art_for(seed,floor_index)
 			check(int(e.boss_art)==client_index,"client rebuilds the same guardian from (seed, floor)")
 			check(str(e.get("boss_name",""))==Combat.NAMES[client_index],"boss_name is enough to announce the client-side guardian")
+
+	# —— ⑦ 尸体立绘：新身份守层者的尸体必须带身份，旧流程（无 boss_art）回落到楼层 ——
+	var corpse_session := make_session(77)
+	var fallen := make_boss(corpse_session,3)
+	var fallen_art := int(fallen.boss_art)
+	corpse_session.roguelike.combat.defeated(corpse_session,fallen)
+	var corpses: Array=corpse_session.raid.get("rogue_corpses",[])
+	check(corpses.size()==1,"defeat leaves exactly one corpse")
+	if not corpses.is_empty():
+		var corpse: Dictionary=corpses[0]
+		check(int(corpse.get("boss_art",-1))==fallen_art,"the corpse keeps the pooled identity")
+		check(str(corpse.get("art_key",""))==Art.ROGUE[fallen_art],"the corpse keeps its art key")
+		check(int(corpse.get("floor",-1))==3,"the corpse still records its floor")
+		check(int(corpse.get("boss_art",int(corpse.get("floor",-1))))==fallen_art,"the renderer picks the identity first")
+	var legacy_corpse := {"floor":2,"time":1.0,"total":1.2}
+	check(int(legacy_corpse.get("boss_art",int(legacy_corpse.get("floor",-1))))==2,
+		"a corpse without boss_art falls back to its floor")
+	var art=RogueArt.new()
+	check(str(art.boss_animation(int(legacy_corpse.get("boss_art",2)),11,int(legacy_corpse.get("floor",2))).texture.atlas.resource_path).get_file().begins_with("boss-hd-2"),
+		"a legacy corpse still renders the floor body")
+	check(str(art.boss_animation(fallen_art,11,3).texture.atlas.resource_path).get_file().begins_with("boss-hd-%d" % fallen_art),
+		"a pooled corpse renders its identity body")
 
 	print("ROGUE BOSS POOL ",checks," checks / ",failures," failures")
 	quit(1 if failures else 0)

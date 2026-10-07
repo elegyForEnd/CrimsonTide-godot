@@ -3,6 +3,8 @@ extends RefCounted
 const GOLD := Color("cbb087")
 const INK := Color("ede5d8")
 const MUTED := Color("9d9791")
+# The shared cell renderer: the camp panel draws through the same one.
+const ItemTile := preload("res://scripts/item_tile.gd")
 var host
 var tooltip: Panel
 var hover_key := ""
@@ -17,27 +19,9 @@ func text(value: String, at: Vector2, size: Vector2, font_size: int = 17, color:
 	return host.label(host.overlay,value,at,font_size,color,size)
 
 func tile(at: Vector2, size: Vector2, item: Dictionary = {}, tone: Color = GOLD, secure: bool = false) -> Control:
-	var node=preload("res://scripts/extraction_inventory_socket.gd").new()
-	node.position=at
-	node.size=size
-	node.tone=Catalog.item_color(item) if not item.is_empty() else tone
-	if str(item.get("kind",""))=="backpack":
-		node.tone=Catalog.tier(Catalog.bag_key_of_item(item)).color
-	node.occupied=not item.is_empty()
-	node.secure=secure
-	node.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	host.overlay.add_child(node)
-	if not item.is_empty():
-		var icon=host.item_icon(node,Catalog.item_icon(item),Vector2(9,9),size-Vector2(18,18))
-		icon.pivot_offset=icon.size*0.5
-		if bool(item.get("rot",false)):
-			icon.size=Vector2(size.y-18,size.x-18)
-			icon.pivot_offset=icon.size*0.5
-			icon.position=(size-icon.size)*0.5
-			icon.rotation=PI*0.5
-		var count := int(item.get("count",1))
-		if count>1: host.label(node,"×%d" % count,size-Vector2(39,24),13,GOLD,Vector2(36,21))
-	return node
+	# The cell look itself lives in `item_tile.gd`, so the camp panel draws exactly
+	# the same sockets, linings, rotations and stack badges as a raid.
+	return ItemTile.tile(host,at,size,item,tone,secure)
 
 func draw(app, p: Dictionary, container: Dictionary) -> void:
 	host=app
@@ -82,8 +66,13 @@ func draw(app, p: Dictionary, container: Dictionary) -> void:
 	quick_slots(p)
 	text("拖拽整理 · R / 右键旋转 · 双击装备 · Ctrl 快捷操作",Vector2(87,865),Vector2(700,26),14,MUTED)
 	text("TAB / ESC  关闭",Vector2(1160 if search else 750,865),Vector2(190,26),14,GOLD)
-	# Protect the three columns from an accidental drop outside their grids.
+	# Protect the three columns from an accidental drop outside their grids, and tell
+	# the drag system where the panel ends: outside the backdrop a released item is
+	# dropped on the ground, and the frosted sheet says so before the player lets go.
 	host.panel_rects.append(Rect2(65,130,1320 if search else 880,702))
+	host.drop_region=Rect2(36,28,1368 if search else 907,828)
+	host.drop_art="res://assets/ui/extraction-inventory-v2.png"
+	host.update_frost_art()
 	if not search:
 		var edge := TextureRect.new()
 		var trim := AtlasTexture.new()

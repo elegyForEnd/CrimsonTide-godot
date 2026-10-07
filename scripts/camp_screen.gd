@@ -13,6 +13,13 @@ signal station_requested(id: String)
 signal launch_requested
 signal exit_requested
 signal codex_requested
+## TAB: open (or close) the远征行囊 panel. The camp never draws it itself — `main.gd`
+## owns every panel and every save write.
+signal pack_requested
+## TAB/ESC while an overlay owns the screen: close whatever panel is open. The camp
+## still has to reach these keys even though `input_blocked` freezes the rest, or a
+## panel would have no way out.
+signal dismiss_requested
 
 const Site = preload("res://scripts/camp_site.gd")
 const HomeSkin = preload("res://scripts/home_ui_skin.gd")
@@ -180,6 +187,11 @@ func set_context(session_value: TideSession, profile_value: Profile) -> void:
 
 func set_active(value: bool) -> void:
 	if not value and activities: activities.cancel()
+	# Floor loot is parked as data while the camp is not on screen: the nodes go away
+	# and are rebuilt on the way back, so a raid pays nothing for it.
+	if activities:
+		if value: activities.restore_drops()
+		else: activities.stash_drops()
 	if not value and home_ui and home_ui.visible: home_ui.close()
 	if not value and home_map and home_map.visible: home_map.close()
 	visible = value
@@ -390,6 +402,7 @@ func _build_hud() -> void:
 	hud.add_child(navigation)
 	var destinations := [
 		["整备",func(): station_requested.emit("table")],
+		["行囊",func(): pack_requested.emit()],
 		["仓库",func(): station_requested.emit("warehouse")],
 		["交易",func(): station_requested.emit("market")],
 		["地图",func(): home_map.open()],
@@ -407,11 +420,13 @@ func _build_hud() -> void:
 		action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		action.reparent(navigation)
 	var info := HomeSkin.info(hud,self,"家园指南", "WASD 移动 · Shift 疾行 · E 使用设施
-左侧设施名称可直接前往；M 打开地图。
+左侧设施名称可直接前往；M 打开地图；Tab 打开远征行囊。
 菜园：E 播种、浇水与收获，Q 换种子；浇水加速生长，离线继续生长。
 栈桥：E / Space 抛竿，等咬钩后在绿色区域收竿；Esc 收起工具。
 厨房：烹饪后携带一份餐食，成功出征时消耗。
-F 整备 · Tab 手册 · 仓库和交易行保存远征收获。
+F 拾取地上的产物；整备台是付费购买装备的柜台，走到它面前按 E。
+行囊里可以整理随身背包、次元口袋和守夜人仓库（15×15 真网格），
+装备穿着与摆放都会立刻写入存档；仓库里的东西可在交易行出售。\n 菜与鱼是背包物品：自动进背包/口袋，满了掉地上，走近按 F 拾取；出售带去交易行，烹饪消耗背包/口袋/仓库里的收获实例。
 南侧闸门进入搜打撤，东侧传送门进入魔境。出发按钮跟随当前模式，联机需要全队准备。")
 	info.position = Vector2(1354,824)
 	info.size = Vector2(40,40)
@@ -607,7 +622,16 @@ func pointed_station(at: Vector2) -> Dictionary:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not visible or input_blocked:
+	if not visible:
+		return
+	# A panel (the bag, the forge, the exchange) blocks the camp, but TAB and ESC
+	# still belong to it: without that a panel would have no way out.
+	if input_blocked:
+		if event is InputEventKey and event.pressed and not event.echo:
+			var blocked_code: int = event.physical_keycode if event.physical_keycode else event.keycode
+			if blocked_code==KEY_TAB or blocked_code==KEY_ESCAPE:
+				dismiss_requested.emit()
+				get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index==MOUSE_BUTTON_LEFT:
 		var ground: Vector2 = site.unproject(event.position)
@@ -644,9 +668,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_E, KEY_ENTER:
 				interact()
 			KEY_F:
-				station_requested.emit("table")
+				# A ground stack of produce is the only thing F does in the camp. The
+				# prep table used to be its fallback, but the table is a paid counter
+				# now and a movement key must not spend money by accident — walk to
+				# it and press E instead.
+				if activities and activities.has_drop_near(site.hero_at):
+					if activities.pick_up_nearby(): home_changed.emit()
 			KEY_TAB:
-				codex_requested.emit()
+				pack_requested.emit()
 			KEY_M:
 				home_map.open()
 			KEY_ESCAPE:
@@ -722,6 +751,16 @@ func _update_markers() -> void:
 		prompt.text = activities.plot_hint(plot)
 		seed_status.text = str(preload("res://scripts/homestead.gd").CROPS[activities.selected_crop].name)+"  [Q]"
 	elif activities.at_pier(): prompt.text = "[E / Space] 抛竿"
+	# A pile on the ground outshouts everything else nearby — produce or a piece of
+	# loot the player dropped out of the bag panel.
+	if activities.has_drop_near(site.hero_at):
+		var drop_index: int = activities.nearest_drop(site.hero_at)
+		if drop_index>=0:
+			var drop: Dictionary = activities.drops[drop_index]
+			if drop.has("entry"):
+				prompt.text = "[F]  拾取 " + Catalog.item_name(drop.entry)
+			else:
+				prompt.text = "[F] 拾取 %s ×%d" % [str(preload("res://scripts/homestead.gd").CROPS.get(str(drop.kind),preload("res://scripts/homestead.gd").FISH.get(str(drop.kind),{})).name),int(drop.units)]
 
 
 

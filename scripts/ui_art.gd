@@ -1,6 +1,11 @@
 class_name TideUIArt
 extends RefCounted
 
+# Homestead produce lives in its own generated atlas. Referenced by script, not
+# by global class name: in a headless --script run the class-name cache may not
+# be warm yet, and a plain preload always resolves.
+const HomeArt = preload("res://scripts/home_art.gd")
+
 # One shared generated atlas keeps equipment, drag previews and HUD consistent.
 const KINDS := ["armor", "sight", "boots", "medicine", "crystal", "scrap", "relic", "charm", "ammo", "backpack", "rifle", "sword", "heavy", "staff", "heart", "skill"]
 # Kinds whose art is a standalone PNG instead of a cell of the shared reliquary
@@ -14,6 +19,24 @@ static var icons: Dictionary = {}
 static func icon(kind: String) -> Texture2D:
 	if icons.has(kind):
 		return icons[kind]
+	# Homestead produce keeps its own generated atlas. The camp economy, the
+	# carried backpack and the ground drops all draw the same six cells, so route
+	# those kinds to the home art instead of falling through to a missing SVG.
+	if HomeArt.has_icon(kind):
+		var home := HomeArt.icon(kind)
+		if home != null:
+			icons[kind]=home
+			return home
+	# A seed packet has no art of its own: it shows the crop it grows. Without this the
+	# three seeds were the only homestead kinds with no icon at all, and every run asked
+	# the loader for a file that was never drawn.
+	if kind.ends_with("_seed"):
+		var crop := kind.trim_suffix("_seed")
+		if HomeArt.has_icon(crop):
+			var crop_art := HomeArt.icon(crop)
+			if crop_art != null:
+				icons[kind]=crop_art
+				return crop_art
 	if kind in SOLO_SVG:
 		icons[kind]=load("res://assets/icons/"+kind+".svg")
 		return icons[kind]
@@ -32,7 +55,15 @@ static func icon(kind: String) -> Texture2D:
 		return icons[kind]
 	var index := KINDS.find(kind)
 	if index < 0:
-		return load("res://assets/icons/" + kind + ".svg")
+		# The last resort is a bespoke SVG, and whether one exists is asked *before*
+		# loading it: a missing file used to print "Resource file not found" for every kind
+		# the tables do not know, which is noise rather than information. Returning null
+		# lets the caller draw its own fallback.
+		var svg := "res://assets/icons/" + kind + ".svg"
+		if not ResourceLoader.exists(svg):
+			return null
+		icons[kind]=load(svg)
+		return icons[kind]
 	var atlas := AtlasTexture.new()
 	atlas.atlas = load("res://assets/ui/reliquary-transparent.png")
 	var cell := atlas.atlas.get_size() / 4.0

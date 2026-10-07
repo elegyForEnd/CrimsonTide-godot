@@ -83,8 +83,10 @@ func check_legacy(prof: Profile, tag: String) -> void:
 		var bag: Dictionary = bags[0]
 		var bag_items: Array = bag.get("items",[])
 		check(bag_items.is_empty(),"%s bag is empty" % tag)
-	var warehouse: Array = d["warehouse"]
-	check(warehouse.is_empty(),"%s warehouse is empty" % tag)
+	# The vault became a 15x15 grid container: an old flat array is upgraded on load.
+	var warehouse: Dictionary = d["warehouse"]
+	check(warehouse is Dictionary and int(warehouse.get("gw",0))==15 and int(warehouse.get("gh",0))==15,"%s warehouse is a 15x15 container" % tag)
+	check((warehouse.get("items",[]) as Array).is_empty(),"%s warehouse is empty" % tag)
 	var history: Array = d["trade_history"]
 	check(history.is_empty(),"%s trade_history is empty" % tag)
 

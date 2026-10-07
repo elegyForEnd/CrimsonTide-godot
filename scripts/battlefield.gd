@@ -78,7 +78,18 @@ func _ready() -> void:
 	boss_hud.field=self
 	boss_layer.add_child(boss_hud)
 	for kind in Catalog.ITEMS:
-		loot_icons[kind]=TideUIArt.icon(kind) if Catalog.collectible_index(kind)>=0 else load("res://assets/icons/"+Catalog.kind_icon(kind)+".svg")
+		# `TideUIArt.icon()` already knows the shared reliquary atlas, the collectible
+		# sheets, the homestead produce atlas and the bespoke SVGs, in that order. Asking it
+		# directly is what keeps the six crops, the bait and the three seed packets from
+		# looking for an icon file that was never drawn. Only a kind no table knows reaches
+		# the legacy SVG path, and that path asks whether the file is there first.
+		var art: Texture2D=TideUIArt.icon(kind)
+		if art!=null:
+			loot_icons[kind]=art
+		else:
+			var legacy := "res://assets/icons/"+Catalog.kind_icon(kind)+".svg"
+			if ResourceLoader.exists(legacy):
+				loot_icons[kind]=load(legacy)
 	# Field equipment resolves to its own weapon / slot icon, so preload those too,
 	# plus any standalone icon a recruit's issue weapon ships with.
 	for icon in Catalog.WEAPON_ICONS+Catalog.GEAR_ICONS:

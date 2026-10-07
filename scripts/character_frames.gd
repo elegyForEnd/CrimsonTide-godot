@@ -214,7 +214,10 @@ func motion_frame(hero: int, mode: String, phase: float, dodge_time: float) -> D
 	return movement[hero][row][frame]
 
 func jump_frame(hero: int, velocity: float, height: float = 50.0, landing_time: float = 0.0) -> Dictionary:
-	return rogue_jump.frame(hero,walk_height(hero),velocity,height,landing_time)
+	var pose: Dictionary=rogue_jump.frame(hero,walk_height(hero),velocity,height,landing_time)
+	# Without the generated jump sheet the walk cycle keeps the hero visible.
+	if pose.is_empty(): return motion_frame(hero,"run",0.0,0.0)
+	return pose
 
 func has_rendered_hero(hero: int) -> bool:
 	return hero==0 and feiyue_idle.has(0)

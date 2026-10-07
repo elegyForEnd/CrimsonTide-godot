@@ -49,6 +49,21 @@ const RogueGraph := preload("res://scripts/rogue_graph.gd")
 # R7b: the dedicated-room view-model (游方锻炉 / 赌徒营帐 / 镜中挑战). Same preload rule
 # as above — no bare class names while the class cache is stale.
 const RogueRoomUi := preload("res://scripts/rogue_room_ui.gd")
+# P1 · 魔境「节点路线图」界面：只读视图，渲染 `s.rogue_graph` / `s.raid.node` /
+# `s.raid.exits` 这些本来就在本地的确定性数据。不新增同步字段、不消耗 `s.rng`、
+# 不写任何玩家状态。同一个 preload 规则（.godot class cache 对新增 Rogue* 模块是陈旧的）。
+const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
+# U1 · 构筑「派生链 / 组合路线」只读预览。渲染 `rogue_build.gd:8-9` 的
+# `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
+# 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
+const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
+# U1 · 构筑内容表（核心 / 铭刻 / 天赋的只读定义）。`main.gd` 以前从不直接读它，
+# 但"核心候选按武器家族过滤"这条规则（`rogue_build_ui.gd:117-118`）需要 `data.cores`，
+# 而写死 12 个 id 会随内容表漂移，所以按同一个 preload 规则引进来。
+const RogueContent := preload("res://scripts/rogue_content.gd")
+# U1 任务3 · 装备属性差。`Equipment.value()/definition()` 是魔境装备数值的唯一尺子
+# （`rogue_reward_ui.gd:4` 也是这个 preload），商店的"与当前装备差异"必须用同一把。
+const Equipment := preload("res://scripts/rogue_equipment.gd")
 var profile := Profile.new()
 var online_service: OnlineService
 var p2p: TideP2P
@@ -62,8 +77,60 @@ var rogue_signature := ""
 var rogue_panel_context := ""
 var rogue_panel_dismissed := false
 var rogue_panel_open := false
+# T2 (2026-06) · 魔境 HUD 增量刷新。改造前 `update_rogue_hud()` 是"签名一变就整棵重建"：
+# 复合签名里含 `raid.revision`，而 revision 在战斗/拾取/开箱时都会变，所以约 0.1s 一次的
+# HUD tick 经常把 商店面板 / 服务房面板 / 三选一 / 事件面板整棵 `queue_free` 再 `new` 一遍
+# （每个 Label 还要重新测量字体）。
+#
+# 现在：`rogue_panel` 变成**常驻**控件树，只有"面板种类"或"结构类字段"变化才重建；
+# 数值类字段（魔晶、刷新卡、禁用态、坐标、文案）只在已有控件上写属性。
+#   * `_rogue_hud_kind`   —— 当前树是哪一种（reward/event/room/shop/default）。
+#   * `_rogue_hud_layout` —— 结构类指纹（面板种类 + 房间种类 + 事件 id/选项数/报价戳 + 货架数…）。
+#   * `_rogue_hud_nodes`  —— 增量刷新用的控件引用表（`"key"` 或 `[index,"part"]`）。
+#   * `_rogue_hud_revision` —— **按钮回调实时读取**的 revision（见下方"revision 竞态"注释）。
+# 完整指纹（结构 + 数值）沿用原来的 `rogue_signature` 做"整段无事可做"的短路。
+const ROGUE_HUD_REWARD := "reward"
+const ROGUE_HUD_EVENT := "event"
+const ROGUE_HUD_ROOM := "room"
+const ROGUE_HUD_SHOP := "shop"
+const ROGUE_HUD_DEFAULT := "default"
+var _rogue_hud_kind := ""
+var _rogue_hud_layout := ""
+var _rogue_hud_nodes: Dictionary = {}
+var _rogue_hud_revision := 0
+var _rogue_hud_offer_buttons: Array = []
+# The **action** of each 服务房 row (it can change without the row count changing), refreshed in
+# place on every tick. The revision is deliberately *not* kept here as well: a callback that has
+# two revision sources can ship the stale one (this file originally shipped the frozen payload's
+# revision and a real test caught it). Every reused callback reads `_rogue_hud_revision` alone.
+var _rogue_hud_row_actions: Array = []
+# E1 (2026-10) · 商店面板里的「魔晶回收」区。`rogue_sell` 的 `index` 必须指向**建树时**那一件
+# 行囊物品，所以序号和控件一样按同一顺序收集（结构类字段，进 `_rogue_hud_layout` 指纹）；
+# 价格/禁用态是数值，走 `_refresh_rogue_sell_block()` 值级刷新。
+# 上限 8 件：一行两列，两行落在 y 732..788，既不出商店窗口下沿（704）太远，
+# 也不碰左下 HUD 簇（y 776 起）与右下操作提示（x 1170 起）。
+const _ROGUE_SELL_SLOTS := 8
+var _rogue_hud_sell_buttons: Array = []
+var _rogue_hud_sell_indices: Array = []
+var _rogue_hud_sell_names: Array = []
+var _rogue_hud_sell_empty: Label
+# R7c: the raid revision whose 游商 / 服务房 panel is on screen, or -1 when neither is shown.
+# `update_rogue_hud` refreshes it on every HUD tick, so `_unhandled_input` can route ESC
+# without recomputing the panel's layout conditions.
+var _rogue_panel_open_revision := -1
+# The revision ESC already asked to leave: a second ESC falls back to the pause menu instead
+# of being swallowed forever when the server refuses the action.
+var _rogue_leave_attempted := -1
 var rogue_inventory = preload("res://scripts/rogue_inventory.gd").new()
 var extraction_inventory = preload("res://scripts/extraction_inventory.gd").new()
+# The camp bag panel: the raid panel plus the 15x15 vault. It is drawn on the same
+# overlay and served by the same drag controller (`_input`, `release_drag`,
+# `held_item`), which is what lets loot be dragged straight between the two halves.
+var camp_pack = preload("res://scripts/camp_pack.gd").new()
+var camp_pack_open := false
+# Camp edits happen against the live player dictionary and are written to the save
+# file as they are made: the camp has no session authority to settle them later.
+const CampStorage := preload("res://scripts/camp_storage.gd")
 var rogue_pending_cost := -1
 var rogue_cards := 0
 var rogue_weapon := -1
@@ -77,6 +144,23 @@ var rogue_event_buttons: Array = []
 var rogue_room_buttons: Array = []
 var rogue_growth_buttons: Dictionary = {}
 var field: Battlefield
+# P1 · 肉鸽地图界面（`scripts/rogue_map_screen.gd`）。与战役地图共用 `field.map_open`
+# 这一个开关，但**不共用 page.visible**：战役把 `page` 整页藏起来，肉鸽则把这张
+# 覆盖式路线图盖在 HUD 之上，`page.visible` 保持原样（战役行为因此逐字不变）。
+var rogue_map_screen: Control
+# U1 · 构筑页的派生链预览（`scripts/rogue_build_preview.gd`）。与地图界面一样是 `root` 下的
+# 常驻兄弟节点：**不是** `overlay` 的子节点，所以 `clear(overlay)`（每次开关行囊）不会把它
+# 一起释放。它只读、`mouse_filter=IGNORE` 不吞事件（唯一的例外是面板自己的「关闭 ×」按钮，
+# 见 `rogue_build_preview.gd:_build_close_button()`）。
+# U1-b（实机修复）：可见性不再只看"行囊打开 + 魔境进行中"，还要求**当前是构筑页签**且玩家没有
+# 手动收起（`_rogue_build_preview_hidden`）——它讲的是构筑派生链，画在「物品」页上只会整块盖住
+# 行囊左侧的物品栏。
+var rogue_build_preview: Control
+# U1-b（2026-06 实机修复）· 玩家按了预览面板上的「关闭 ×」或按 V 收起了它。
+# 这是**本行囊会话**级别的开关：行囊一关（`close_bag()`）或换页（`new_page()`）就复位成"展开"，
+# 所以下一次打开行囊会按默认规则重新显示；同一次行囊会话里按 V 可以随时翻回来。
+# 它只是界面状态：不进快照、不新增同步字段、不碰 `s.rng`。
+var _rogue_build_preview_hidden := false
 var canvas: CanvasLayer
 var root: Control
 var page: Control
@@ -93,8 +177,14 @@ var rotated := false
 var drag_ghost: Control
 var drag_ring: Control
 var drag_caption: Label
+## The frosted sheet shown while a drag is outside the open panel, and the panel
+## geometry that decides where "outside" is. Panels fill both in while they draw.
+var drag_frost: Control
+var drop_region := Rect2()
+var drop_art := ""
+const FROST_ALPHA := 0.30
 var drag_last_point := Vector2(-1,-1)
-var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false}
+var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false,"carry":0,"kind":"","blank":{}}
 var _loot_index := -1
 # Click bookkeeping: a press that never moves is a select, two of them in quick
 # succession on the same item are an equip shortcut.
@@ -106,6 +196,10 @@ var last_click_ms := 0
 # Drop sockets for the worn kit: "weapon", "gear0..2" and the equipped backpack
 # "bag". A drag released over a matching socket equips the held item.
 var equip_zones: Dictionary = {}
+# The camp panel's spare-bag sockets. They are drag sources only — nothing is worn in
+# the cabinet — so they live apart from `equip_zones`, which `zone_at()` treats as
+# places where a held item may land.
+var cabinet_zones: Dictionary = {}
 # The item bar: three sockets drawn under the worn kit and again along the bottom
 # of the screen once the backpack is shut. The selection is the socket [F] acts
 # on, and the panel strip is remembered separately so the bottom copy can be drawn
@@ -197,6 +291,24 @@ func _ready() -> void:
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	root.add_child(overlay)
+	# P1 · the roguelike node map. It is a sibling of `page`/`overlay` (so it can cover
+	# the HUD without being wiped by `clear(page)`), invisible until [M] asks for it, and
+	# it only ever reads: no action names, no session writes, no rng.
+	rogue_map_screen=RogueMapScreen.new()
+	rogue_map_screen.session=session
+	rogue_map_screen.visible=false
+	root.add_child(rogue_map_screen)
+	# U1 · 构筑页的派生链预览。同样的处理：`root` 的兄弟节点（不被 `clear(overlay)` 释放），
+	# 默认隐藏，`_process()` 每帧按"行囊打开 + 在魔境里 + 当前是构筑页签 + 玩家没有手动收起"
+	# 决定显隐；它自己不写会话状态，除了面板自己那个 60x26 的「关闭 ×」按钮之外不吃鼠标事件。
+	rogue_build_preview=RogueBuildPreview.new()
+	rogue_build_preview.session=session
+	rogue_build_preview.visible=false
+	# U1-b · 面板上的「关闭 ×」。这里用**字符串**形式连接，因为 `rogue_build_preview` 的静态类型
+	# 是 `Control`（见上面的声明），`Control` 上没有 `closed` 成员；信号名两边是同一条字面量
+	# （`rogue_build_preview.gd` 的 `signal closed`），改名时必须一起改。
+	rogue_build_preview.connect("closed",func(): _rogue_build_preview_hidden=true)
+	root.add_child(rogue_build_preview)
 	toast=label(root,"",Vector2(230,700),19,GOLD,Vector2(980,34))
 	toast.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	toast.z_index=50
@@ -256,6 +368,22 @@ func _ready() -> void:
 	if "--preview-ground" in OS.get_cmdline_user_args():
 		session.solo(config())
 		go_camp()
+	# The camp bag panel with a stocked vault, for screenshots and for poking at the
+	# layout without playing a raid first.
+	if "--preview-camp-pack" in OS.get_cmdline_user_args():
+		session.solo(config())
+		go_camp()
+		var preview_bag: Dictionary=session.players.get(session.my_id(),{})
+		if not preview_bag.is_empty():
+			for i in 12:
+				Catalog.add_item(preview_bag.backpack,["scrap","medicine","relic","charm"][i%4])
+			Catalog.add_item(preview_bag.pocket,"amulet")
+			Catalog.place_item(preview_bag.backpack,Catalog.make_equipment("weapon",2,4))
+			for i in 14:
+				profile.bank_item({"kind":["scrap","relic","wheat","ammo","crystal"][i%5]})
+			profile.bank_item(Catalog.make_equipment("gear",0,3))
+			profile.bank_item(Catalog.make_equipment("weapon",5,5))
+			show_camp_pack(false)
 	if "--preview-game" in OS.get_cmdline_user_args():
 		session.solo(config())
 		session.launch(false,1729)
@@ -687,18 +815,72 @@ func new_page(name_value: String) -> void:
 	clear(overlay)
 	modal=false
 	inventory_open=false
+	# A new page wipes the overlay, so any camp panel it was showing is gone with it;
+	# the flag and the camp's input lock have to follow, or the camp would stay frozen.
+	camp_pack_open=false
+	if camp and not camp.is_queued_for_deletion():
+		camp.input_blocked=false
 	page_name=name_value
 	sound.set_scene(name_value)
 	toast_time=0
 	field.visible=name_value=="game" and not session.roguelike.active(session)
 	rogue_field.visible=name_value=="game" and session.roguelike.active(session)
+	# P1 · Leaving the game page drops the map exactly like the campaign one: `map_open`
+	# goes back to false with the page. (The campaign never leaves it true either — every
+	# `new_page()` is preceded by `toggle_map()` or a `map_open=false` write.)
+	field.map_open=false
+	if rogue_map_screen and is_instance_valid(rogue_map_screen):
+		rogue_map_screen.visible=false
 	rogue_signature=""
 	rogue_panel_context=""
 	rogue_panel_dismissed=false
 	rogue_panel_open=false
 	rogue_panel=null
+	_rogue_hud_kind=""
+	_rogue_hud_layout=""
+	_rogue_hud_nodes={}
+	_rogue_hud_offer_buttons=[]
+	_rogue_hud_row_actions=[]
+	# E1 · 回收区的按钮引用也必须跟着常驻树一起作废：`clear(page)` 已经把它们 queue_free 了，
+	# 留着一串悬空引用会让下一次 `_refresh_rogue_sell_block()` 读到已释放的 Button。
+	# `_rogue_hud_sell_empty` 指向的 Label 同样在 page 下，一并置空。
+	_rogue_hud_sell_buttons=[]
+	_rogue_hud_sell_indices=[]
+	_rogue_hud_sell_names=[]
+	_rogue_hud_sell_empty=null
+	_rogue_hud_revision=0
+	_rogue_panel_open_revision=-1
+	_rogue_leave_attempted=-1
+	# U1-b · 换页同样复位预览的"手动收起"（`new_page()` 是唯一一条不经过 `close_bag()` 就把
+	# `inventory_open` 置 false 的路径，就是本函数上面那一行）。
+	_rogue_build_preview_hidden=false
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
+
+## A ground item picked up in the camp goes into the character's carried backpack — the
+## very containers a raid loots into — and the pocket when the bag has no room. A flat
+## refusal (and the piece stays on the floor) when neither can take it.
+func camp_accept_ground_item(entry: Dictionary) -> bool:
+	var p: Dictionary=camp_player()
+	if p.is_empty():
+		return false
+	if session.container_receive(p,"backpack",entry):
+		CampStorage.persist(profile,session,p)
+		say("已收进背包："+Catalog.item_name(entry)+"。")
+		return true
+	if session.container_receive(p,"pocket",entry):
+		CampStorage.persist(profile,session,p)
+		say("背包放不下，已收进次元口袋："+Catalog.item_name(entry)+"。")
+		return true
+	say("背包和次元口袋都放满了，先腾出空间再拾取。")
+	return false
+
+## Drops one item entry on the camp floor. The pack panel calls this when a drag is
+## released outside it; the floor keeps the newest 60 and F picks them back up.
+func camp_drop_on_floor(entry: Dictionary) -> void:
+	if camp==null or camp.activities==null:
+		return
+	camp.activities.drop_entry(entry,Vector2(randf_range(-42,42),randf_range(-30,30)))
 
 ## Builds the camp once, then only ever toggles it.
 func ensure_camp() -> Control:
@@ -716,6 +898,21 @@ func ensure_camp() -> Control:
 		if not session.running and not session.players.is_empty(): session.configure(config())
 		camp.update_static())
 	camp.codex_requested.connect(show_help)
+	camp.pack_requested.connect(toggle_camp_pack)
+	# The camp floor hands a picked-up item to the same containers a raid loots into.
+	if camp.activities:
+		camp.activities.item_receiver=func(entry: Dictionary) -> bool:
+			return camp_accept_ground_item(entry)
+	# ...and it is also where storage that cannot hold a piece puts it.
+	CampStorage.spill_sink=func(item: Dictionary) -> void:
+		camp_drop_on_floor(item)
+	camp.dismiss_requested.connect(func():
+		# Close whatever camp panel owns the screen; the camp itself only leaves on
+		# the "离开" button.
+		if camp_pack_open:
+			close_bag()
+		elif modal:
+			close_modal())
 	camp.exit_requested.connect(func():
 		if page_name=="ground":
 			leave_to_title())
@@ -754,7 +951,9 @@ func go_camp() -> void:
 func on_camp_station(id: String) -> void:
 	match id:
 		"warehouse":
-			show_economy(false)
+			# The vault is no longer a card list in its own window: it is the right
+			# half of the bag panel, which the station button opens focused on it.
+			show_camp_pack(true)
 		"market":
 			show_economy(true)
 		"table":
@@ -821,11 +1020,16 @@ func buy_camp_supply() -> void:
 
 func show_economy(market: bool = false) -> void:
 	if session.running: return
-	modal_box("晨钟交易行" if market else "守夜人仓库",Vector2(1320,820))
+	# The vault's own window retired: standing in front of the vault is the bag panel
+	# with its right half focused, which is where dragging, deposit and withdrawal
+	# live. The exchange below is the market and nothing else.
+	if not market:
+		show_camp_pack(true)
+		return
+	modal_box("晨钟交易行",Vector2(1320,820))
 	var screen := preload("res://scripts/economy_screen.gd").new()
 	screen.name="EconomyScreen"
 	screen.host=self
-	screen.market=market
 	overlay.add_child(screen)
 
 func economy_changed() -> void:
@@ -835,6 +1039,123 @@ func economy_changed() -> void:
 	economy_syncing=false
 	if camp: camp.update_static()
 
+
+# --- the camp bag panel (TAB) --------------------------------------------------
+# The camp is local: no session authority is running, and `session.perform()` ignores
+# every action while a raid is not under way. So the panel edits the live player
+# dictionary through `camp_storage.gd`, which writes the save file after each accepted
+# change — the same "edit and it is already saved" rule the produce helpers follow.
+func show_camp_pack(focus_vault: bool = false) -> void:
+	if modal or session.running: return
+	if camp_player().is_empty(): return
+	camp_pack_open=true
+	camp_pack.focus_vault=focus_vault
+	inventory_open=true
+	selected=-1
+	selected_slot="backpack"
+	drag.active=false
+	# The camp must stop walking and stop eating keys while the panel owns the screen,
+	# but it is not an overlay `modal`: the panel itself is drawn by `show_inventory()`.
+	if camp: camp.input_blocked=true
+	sound.play("ui-open")
+	show_inventory()
+
+func toggle_camp_pack() -> void:
+	if inventory_open and camp_pack_open:
+		close_bag()
+	else:
+		show_camp_pack(false)
+
+func camp_player() -> Dictionary:
+	return session.players.get(session.my_id(),{})
+
+## Everything a camp edit can change, as one string: the panel is redrawn when it
+## differs from the picture on screen. The vault lives in the save file and the rest
+## in the player dictionary, so both halves are in the signature.
+##
+## `hash()` rather than `str()`: the string form of a 15x15 vault plus the carried
+## containers cost **1.0ms on every frame** of the camp (measured), while hashing the
+## same state costs 0.009ms. That comparison runs every frame, so it has to be cheap.
+func camp_signature(player: Dictionary) -> String:
+	return "%d-%d-%d-%d" % [hash(player.get("backpack",{})),hash(player.get("pocket",{})),hash(player.get("equipped",{})),hash(profile.data.get("warehouse",{}))]
+
+## Runs one camp edit and reports a refusal, which is always the same sentence: the
+## vault grid is full, or the piece has no socket of that kind.
+func camp_apply(ok: bool) -> void:
+	if not ok: say("放不下，或者这里不能放。")
+	show_inventory()
+
+func camp_unequip(type: String, index: int = 0) -> void:
+	if not camp_pack_open: return
+	camp_apply(CampStorage.stow_worn(profile,session,camp_player(),type,index))
+
+func camp_take_slot(index: int) -> void:
+	if not camp_pack_open: return
+	camp_apply(CampStorage.stow_socket(profile,session,camp_player(),"slot%d" % index))
+
+func camp_unwear_bag() -> void:
+	if not camp_pack_open: return
+	camp_apply(CampStorage.unwear_bag(profile,session,camp_player(),true))
+
+func camp_bank_all() -> void:
+	if not camp_pack_open: return
+	var outcome: Dictionary=CampStorage.bank_all(profile,session,camp_player())
+	if int(outcome.get("spilled",0))>0:
+		say("仓库网格已满，%d 件暂存溢出区（仍可出售）。" % int(outcome.spilled))
+	else:
+		say("已入库 %d 件。" % int(outcome.get("stored",0)))
+	show_inventory()
+
+## Row-major tidy of the vault: what "整理" means, and the same packing a searched
+## chest gets.
+func camp_tidy() -> void:
+	if not camp_pack_open: return
+	Catalog.tidy(profile.data.get("warehouse",{}))
+	profile.save_profile()
+	say("仓库已整理。")
+	show_inventory()
+
+
+# The整备台 counter: three pieces of standing issue gear, one worn at a time. Buying
+# settles the difference between the two price tags (a dearer piece is paid for, a
+# cheaper one refunds) and the piece coming off is destroyed — it was never an item,
+# only the standing issue. The money rule itself lives in `profile.buy_gear()`.
+func buy_camp_gear(index: int) -> void:
+	if session.running: return
+	var outcome: Dictionary=profile.buy_gear(index)
+	if not bool(outcome.get("ok",false)):
+		# A refusal has to be impossible to miss: the price tag sits in the middle of
+		# the screen, so the answer appears just above it rather than in the toast band
+		# at the bottom.
+		if int(outcome.get("price",0))>0:
+			notice_popup("银币不足：%s 需要 %d ◈，还差 %d ◈。" % [str(outcome.get("name","装备")),int(outcome.get("price",0)),maxi(0,int(outcome.get("short",0)))])
+		else:
+			notice_popup(str(outcome.get("reason","无法更换装备。")))
+		return
+	var paid := int(outcome.get("paid",0))
+	var refunded := int(outcome.get("refunded",0))
+	say("已装备 %s。" % str(outcome.get("name","装备")) if paid+refunded==0 else ("已装备 %s，支付 %d ◈。" % [str(outcome.get("name","装备")),paid] if paid>0 else "已装备 %s，退回 %d ◈。" % [str(outcome.get("name","装备")),refunded]))
+	ready_local=false
+	session.configure(config())
+	if camp: camp.update_static()
+	show_camp()
+
+# A centred notice near the top of the screen, for answers the player must not miss
+# while their eyes are on the middle of a panel. Fades itself out.
+func notice_popup(message: String) -> void:
+	if overlay.has_node("CampNotice"): overlay.get_node("CampNotice").queue_free()
+	var panel := rect(overlay,Vector2(420,104),Vector2(600,84),Color("1d1016"),Color("c05a6a"))
+	panel.name="CampNotice"
+	panel.z_index=60
+	panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	var body := label(panel,message,Vector2(18,16),21,Color("f2d6d9"),Vector2(564,52))
+	body.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	body.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	var tween := create_tween()
+	tween.tween_interval(1.8)
+	tween.tween_property(panel,"modulate:a",0.0,0.5)
+	tween.tween_callback(panel.queue_free)
 
 func show_camp_forge() -> void:
 	if session.running: return
@@ -923,7 +1244,7 @@ func select_title_entry(target: GothicButton) -> void:
 
 func config() -> Dictionary:
 	var payload := profile.storage_payload()
-	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key}
+	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key,"loadout":payload.loadout}
 
 func show_network() -> void:
 	new_page("network")
@@ -1025,25 +1346,27 @@ func show_camp() -> void:
 		b.selected=profile.data.hero==i
 		b.accent=h.color
 		b.add_theme_font_size_override("font_size",22)
-	label(page,"出战装备",Vector2(583,160),27,INK,Vector2(250,45))
-	label(page,"LOADOUT",Vector2(583,207),10,GOLD)
+	label(page,"整备台 · 出战装备",Vector2(583,160),27,INK,Vector2(300,45))
+	label(page,"ISSUE GEAR   /   一件只能装备一件，换装按差价结算",Vector2(583,207),10,GOLD,Vector2(384,20))
 	for i in 3:
 		var gear: Dictionary=Catalog.GEAR[i]
 		var x := 582+i*126
-		var b := button(page,"",Vector2(x,247),Vector2(113,104),func():
-			profile.data.gear=i
-			profile.save_profile()
-			ready_local=false
-			session.configure(config())
-		) as GothicButton
-		b.selected=profile.data.gear==i
+		var owned: bool=profile.data.gear==i
+		var b := button(page,"",Vector2(x,247),Vector2(113,104),func(): buy_camp_gear(i)) as GothicButton
+		b.selected=owned
 		var icon: String = Catalog.GEAR_ICONS[i]
 		item_icon(page,icon,Vector2(x+31,251),Vector2(52,52))
-		label(page,gear.name,Vector2(x,310),15,INK if profile.data.gear==i else MUTED,Vector2(113,31)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	label(page,Catalog.GEAR[profile.data.gear].desc,Vector2(584,356),15,GOLD)
-	label(page,"开局只有角色的临时武器；局内捡到的武器装备后才能换用",Vector2(584,380),12,MUTED,Vector2(384,20))
-	label(page,"背包本身就是一件装备：双击或 Ctrl+左键换装，紫色及以上占 2×2",Vector2(584,398),12,MUTED,Vector2(384,20))
-	ornament(page,Vector2(578,406),Vector2(384,12))
+		label(page,gear.name,Vector2(x,310),15,INK if owned else MUTED,Vector2(113,31)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		# The price tag is the swap price, not the sticker price: what the counter
+		# would take (or hand back) right now.
+		var delta := Catalog.gear_price(i)-Catalog.gear_price(int(profile.data.gear))
+		var tag := "已装备" if owned else ("%d ◈" % delta if delta>=0 else "退 %d ◈" % -delta)
+		label(page,tag,Vector2(x,282),14,GOLD if owned else (Color("98bcae") if delta<0 else Color("c9a06a")),Vector2(113,26)).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	var fitted := Catalog.gear_of(int(profile.data.gear))
+	label(page,"未装备任何出战装备" if fitted.is_empty() else str(fitted.desc),Vector2(584,356),15,GOLD,Vector2(384,20))
+	label(page,"走到整备台按 E，或直接在这里买；旧装备换上即销毁，退款按差价。",Vector2(584,378),12,MUTED,Vector2(384,20))
+	label(page,"行囊里捡到的武器装备后可以带进下一局，Tab 打开远征行囊整理。",Vector2(584,396),12,MUTED,Vector2(384,20))
+	ornament(page,Vector2(578,404),Vector2(384,12))
 	label(page,"灵契天赋",Vector2(583,431),27,INK,Vector2(250,45))
 	button(page,"角色属性 · %d 点" % profile.attribute_points(),Vector2(784,431),Vector2(184,43),show_camp_forge)
 	for i in 3:
@@ -1091,7 +1414,7 @@ func show_camp() -> void:
 	label(page,"每天 5 分钟 · 第 3 分钟缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
 	ornament(page,Vector2(62,814),Vector2(1314,10))
 	button(page,"← 返回营地",Vector2(60,839),Vector2(183,43),go_camp)
-	button(page,"仓库",Vector2(255,839),Vector2(140,43),func(): show_economy(false))
+	button(page,"行囊",Vector2(255,839),Vector2(140,43),func(): show_camp_pack(false))
 	button(page,"交易行",Vector2(405,839),Vector2(140,43),func(): show_economy(true))
 	button(page,"守夜手册",Vector2(555,839),Vector2(165,43),show_help)
 	label(page,"活着带回来的，才属于你。",Vector2(738,849),16,Color("a797a3"),Vector2(280,35))
@@ -1162,6 +1485,14 @@ func on_started() -> void:
 	hud.team.add_theme_constant_override("line_spacing",10)
 	button(page,"行囊 · 构筑  TAB" if session.roguelike.active(session) else "背包  TAB",Vector2(1175,310),Vector2(234,39),toggle_bag)
 	if not session.roguelike.active(session): button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
+	else:
+		# P1 · 肉鸽的 HUD 地图入口。`行囊 · 构筑` 占满了这一行的右半边（1175..1409），所以
+		# 这一枚与原来的战役「地图  M」**同坐标同尺寸**，只把它那一格从 `菜单` 左边让出来：
+		# 行囊 1175..1409(y310..349) 收在其上方 11px，菜单 1298..1409(y360..398) 在其右侧，
+		# 右栏的肉鸽信息（深渊变数 y58 / 诅咒 y124..212 / 灰烬 y218 / 路线 y244..284 /
+		# 种子 y286..306）全部止于 y≈306；肉鸽常驻面板最右一块是游商 `rect(335,174,1050,530)`，
+		# 右边界 x=1385、下边界 y=704，与这一格（1175..1286 × 360..398）不相交。
+		button(page,"地图  M",Vector2(1175,360),Vector2(111,38),toggle_map)
 	button(page,"菜单",Vector2(1298,360),Vector2(111,38),pause_menu)
 	hud.notice=label(page,"",Vector2(375,624),22,GOLD,Vector2(690,40))
 	hud.notice.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -1235,7 +1566,23 @@ func _process(dt: float) -> void:
 	toast_time-=dt
 	toast.visible=toast_time>0 and not inventory_open
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty(): toast.hide()
+	# The grabbed item follows the cursor on every frame, and the camp bag panel is
+	# served by the same controller even though no raid is running. The preview has
+	# to be synced before the raid-only early return below, or a camp drag would
+	# freeze wherever the press started instead of tracking the pointer.
+	if camp_pack_open:
+		var camper: Dictionary=camp_player()
+		# The panel is drawn on demand, and with no raid running the refresh further
+		# down can never run: a camp edit made by *any* code path is picked up here,
+		# so a panel that forgot to repaint itself cannot keep showing a stale picture.
+		if not camper.is_empty() and camp_signature(camper)!=bag_signature:
+			show_inventory()
+		else:
+			sync_drag()
+	# U1 · 离开游戏页 / 战斗未开始时，预览必须立刻收起来：下面第 1578 行的早退会跳过
+	# 正常路径上的显隐赋值，否则它会留在标题页上。
 	if page_name!="game" or not session.running:
+		if rogue_build_preview and is_instance_valid(rogue_build_preview): rogue_build_preview.visible=false
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
 	var blocked: bool=inventory_open or modal or field.map_open or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
@@ -1258,6 +1605,13 @@ func _process(dt: float) -> void:
 			if signature!=bag_signature:
 				show_inventory()
 	if inventory_open and not session.roguelike.active(session): extraction_inventory.update_hover()
+	# U1 · 派生链预览只在"行囊开着 + 确实在魔境里 + **当前是构筑页签** + 玩家没有手动收起"时出现。
+	# 每帧只写一个 `visible`：面板自己的 `layout()` 是纯函数，`_process()` 仅在可见时
+	# `queue_redraw()`。页签这一维是 U1-b 的实机修复点：面板讲的是构筑派生链，画在「物品」页上
+	# 只会整块盖住行囊左侧（页签状态就在 `rogue_inventory.selected_tab`，`rogue_inventory.gd:16`）。
+	if rogue_build_preview and is_instance_valid(rogue_build_preview):
+		var preview_open: bool=inventory_open and page_name=="game" and session.roguelike.active(session) and str(rogue_inventory.selected_tab)=="build" and not session.players.get(session.my_id(),{}).is_empty() and not _rogue_build_preview_hidden
+		rogue_build_preview.visible=preview_open
 	# The grabbed item follows the cursor on every frame, not only on a rebuild.
 	sync_drag()
 
@@ -1271,17 +1625,40 @@ func _input(event: InputEvent) -> void:
 	if session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
-	if not inventory_open or modal or page_name!="game":
+	# The camp bag panel shares this controller, so its page counts as an inventory
+	# screen too.
+	if not inventory_open or modal or page_name not in ["game","ground"]:
+		return
+	if event.button_index==MOUSE_BUTTON_MIDDLE:
+		# The mouse shortcut for the same R rotation. It used to be the **right**
+		# button, which is now the "lift one unit out of a pile" gesture in every bag
+		# grid; `R` still rotates, so the keyboard path never changed.
+		if event.pressed: rotate_selected()
+		get_viewport().set_input_as_handled()
 		return
 	if event.button_index==MOUSE_BUTTON_RIGHT:
-		# Right click is the mouse shortcut for the same R rotation.
-		if event.pressed: rotate_selected()
+		# The right button is the stack hand: pressing it lifts the whole pile into the
+		# hand, each left click sets **one** unit down on the cell under the cursor, and
+		# letting go hands whatever is left to `carry_finish()`. The left button keeps
+		# its own meaning — a drag moves the whole pile as one piece — which is exactly
+		# why the two gestures deliberately do not share a button.
+		if int(drag.get("carry",0))>0:
+			if not event.pressed:
+				carry_finish(mouse_point())
+		elif event.pressed:
+			start_whole_carry(mouse_point())
 		get_viewport().set_input_as_handled()
 		return
 	if event.button_index!=MOUSE_BUTTON_LEFT:
 		return
 	if event.pressed:
 		var point := mouse_point()
+		# A left click while the right-button hand is holding units sets exactly **one**
+		# of them down, on the cell under the cursor.
+		if int(drag.get("carry",0))>0:
+			carry_place_one(point)
+			get_viewport().set_input_as_handled()
+			return
 		# A click on the item bar selects the socket [E] will act on. It is checked
 		# before the grids because the strip is not a grid: a socket holds exactly
 		# one item, however many cells that item would need in a backpack. The hit
@@ -1293,13 +1670,55 @@ func _input(event: InputEvent) -> void:
 			select_item_slot(bar_slot)
 			get_viewport().set_input_as_handled()
 			return
-		# Ctrl+left is checked before anything else: the same click means "do the
-		# obvious thing with this" instead of starting a drag, both on carried loot
-		# and on something already worn.
+		# The equipment sockets are not a grid, so they need their own hit test before
+		# the grid lookup below (which returns early on an empty grid and used to hide
+		# every socket from every gesture except the panel's own "卸" button). A second
+		# tap takes the piece off; a single press is a *drag* in the camp, where a worn
+		# piece can be carried to the bag, the vault or another socket.
+		var worn_here := worn_zone_at(point)
+		if not worn_here.is_empty() and not worn_here.begins_with("slot"):
+			var worn_now := Time.get_ticks_msec()
+			var quick_worn := last_click_slot==("worn:"+worn_here) and worn_now-last_click_ms<450
+			last_click_ms=0
+			if quick_worn or ctrl_held():
+				take_off_worn(worn_here)
+				get_viewport().set_input_as_handled()
+				return
+			last_click_slot="worn:"+worn_here
+			last_click_index=-1
+			last_click_ms=worn_now
+			press_point=point
+			press_moved=false
+			# Every worn socket is a drag source, the pack on the back included: taking
+			# it off is how a bigger pack gets swapped or sold.
+			start_drag(worn_here,0,false)
+			get_viewport().set_input_as_handled()
+			return
+		# Ctrl+left on anything else means "do the obvious thing with this".
 		if ctrl_held():
 			var worn := worn_zone_at(point)
 			if not worn.is_empty():
 				ctrl_click_worn(worn)
+				get_viewport().set_input_as_handled()
+				return
+		# The camp panel's spare-bag tiles are drag sources too, but they are sockets
+		# rather than a grid, so they get their own hit test before the grids.
+		if camp_pack_open:
+			var cab := cabinet_zone_at(point)
+			if cab>=0:
+				var cab_now := Time.get_ticks_msec()
+				var quick_cab := last_click_slot=="cab" and cab==last_click_index and cab_now-last_click_ms<450
+				last_click_ms=0
+				if quick_cab or ctrl_held():
+					camp_apply(CampStorage.wear_spare(profile,session,camp_player(),cab))
+					get_viewport().set_input_as_handled()
+					return
+				last_click_slot="cab"
+				last_click_index=cab
+				last_click_ms=cab_now
+				press_point=point
+				press_moved=false
+				start_drag("cab",cab,false)
 				get_viewport().set_input_as_handled()
 				return
 		var hit := grid_at(point)
@@ -1330,7 +1749,7 @@ func _input(event: InputEvent) -> void:
 				ctrl_click_worn(worn_zone)
 				get_viewport().set_input_as_handled()
 				return
-		if quick and slot in ["backpack","pocket"]:
+		if quick and slot in ["backpack","pocket","warehouse"]:
 			if double_click_equip(slot,index):
 				get_viewport().set_input_as_handled()
 				return
@@ -1348,6 +1767,8 @@ func _input(event: InputEvent) -> void:
 			var shown: Array=session.visible_items(session.container_at(_loot_index))
 			if index<shown.size():
 				rot=bool(shown[index].get("rot",false))
+		elif camp_pack_open:
+			rot=bool(CampStorage.item_at(profile,camp_player(),slot,index).get("rot",false))
 		else:
 			rot=bool(session.players[session.my_id()][slot].items[index].get("rot",false))
 		press_point=point
@@ -1379,6 +1800,8 @@ func index_at(slot: String, cell: Vector2i) -> int:
 			if Rect2i(Vector2i(int(shown[i].x),int(shown[i].y)),dims).has_point(cell):
 				return i
 		return -1
+	if camp_pack_open:
+		return CampStorage.index_at(profile,camp_player(),slot,cell)
 	var list: Array=session.players[session.my_id()][slot].items
 	for i in list.size():
 		var at := Vector2i(int(list[i].x),int(list[i].y))
@@ -1389,6 +1812,11 @@ func index_at(slot: String, cell: Vector2i) -> int:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+		# Esc first puts the units in hand back where they came from: cancelling a
+		# carry must not also close the panel under the player's cursor.
+		if int(drag.get("carry",0))>0:
+			cancel_carry()
+			return
 		if modal:
 			close_modal()
 		elif field.map_open:
@@ -1399,9 +1827,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			close_rogue_panel()
 		elif page_name=="game":
 			pause_menu()
-		get_viewport().set_input_as_handled()
 		return
 	if page_name!="game" or modal:
+		return
+	# --- U1 · 构筑页的三个开关键（Q 核心 / R 补正 / T 铭刻）-----------------
+	# 位置很关键：它在下面「三选一状态早退」(1498) 与「bag 早退」(1507) **之前**，所以行囊
+	# 开着时这些键不会被吞掉；又在地图早退 (1513) 之后，地图开着时不会误触。
+	# 三个键都只走 `session.action("rogue_build", ...)`，**不新增任何动作串**，动作串与
+	# payload 形状和 `rogue_build_ui.gd:29 command()` 逐个字段相同（见 `_rogue_build_hotkey()`）。
+	if event is InputEventKey and event.pressed and not event.echo and _rogue_build_hotkey(event):
+		get_viewport().set_input_as_handled()
+		return
+	# U1-b（2026-06 实机修复）· V：派生链预览的显隐开关。位置与上面三个构筑热键同一口径
+	# （`_rogue_build_hotkey` 之后、三选一/行囊早退之前）：行囊关着时它立刻退出，地图开着时也
+	# 退出，所以游戏内 V 依旧什么都不绑定。V 未被占用的依据见 `_rogue_build_hotkey()` 上方
+	# 那段键位冲突核实（那份清单就是全工程的权威口径）。
+	if event is InputEventKey and event.pressed and not event.echo and _rogue_preview_toggle(event):
+		get_viewport().set_input_as_handled()
 		return
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty():
 		if event.is_action_pressed("bag"): toggle_bag()
@@ -1556,6 +1998,16 @@ func rotate_selected() -> void:
 		# the drag writes exactly this back, so a turned item stays turned.
 		drag.rot=not bool(drag.rot)
 		show_inventory()
+		return
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if selected>=0 and player.is_empty()==false:
+			var state := {"slot":selected_slot,"index":selected,"rot":false}
+			rotated=not bool(CampStorage.item_at(profile,player,selected_slot,selected).get("rot",false))
+			if not CampStorage.rotate(profile,session,player,state):
+				say("这件物品转不过来。")
+				rotated=not rotated
+			show_inventory()
 		return
 	if selected<0 or selected_slot not in ["backpack","pocket"]:
 		return
@@ -1798,6 +2250,10 @@ func toggle_bag() -> void:
 		return
 	if inventory_open:
 		close_bag()
+	elif page_name=="ground":
+		# The camp's own TAB signal normally gets here; this keeps the shared key
+		# binding honest if the panel is opened from anywhere else in the camp.
+		show_camp_pack(false)
 	else:
 		sound.play("ui-open")
 		inventory_open=true
@@ -1813,17 +2269,29 @@ func toggle_bag() -> void:
 func close_bag() -> void:
 	if inventory_open:
 		sound.play("ui-close")
+	# U1-b · 行囊会话到此结束：预览的"手动收起"复位，下一次开行囊按默认规则重新显示。
+	_rogue_build_preview_hidden=false
 	inventory_open=false
+	camp_pack_open=false
 	_loot_index=-1
 	selected=-1
 	stop_drag()
 	grids.clear()
 	equip_zones.clear()
+	cabinet_zones.clear()
 	slot_zone_rects.clear()
 	_slot_origin=Vector2(10000,10000)
 	panel_rects.clear()
+	# The panel being rebuilt is the one that registers where "outside it" is; until it
+	# does, a release has no panel to be outside of.
+	drop_region=Rect2()
+	drop_art=""
+	set_frost(false)
 	detach_drag_nodes()
 	clear(overlay)
+	# Hand the camp its controls back, unless an overlay panel is still up.
+	if camp and not modal:
+		camp.input_blocked=false
 	if drag_ghost and is_instance_valid(drag_ghost):
 		drag_ghost.queue_free()
 	if drag_ring and is_instance_valid(drag_ring):
@@ -1835,24 +2303,230 @@ func close_bag() -> void:
 # Unparents the live drag nodes without freeing them, so clear(overlay) during a
 # rebuild cannot queue_free the icon the player is holding.
 func detach_drag_nodes() -> void:
-	for node in [drag_ghost,drag_ring]:
+	for node in [drag_ghost,drag_ring,drag_frost]:
 		if node and is_instance_valid(node) and node.get_parent()!=null:
 			node.get_parent().remove_child(node)
 
 func toggle_map() -> void:
-	if session.roguelike.active(session): return
 	field.map_open=not field.map_open
+	if session.roguelike.active(session):
+		# P1 · 肉鸽的节点路线图。它和战役地图共用 `field.map_open` 这一个开关（输入屏蔽、
+		# `_process` 的 `blocked` 都读它），但**不共用一个开关的后果**：这里不碰 `page.visible`
+		# —— 肉鸽地图是 `root` 下的一层覆盖绘制，而战役地图是"整页换掉"。
+		# 打开之前先把会冲突的面板收起来：行囊（TAB）互斥；三选一在等输入时 [M] 不开图。
+		if field.map_open:
+			if inventory_open:
+				close_bag()
+			elif not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty():
+				field.map_open=false
+		if rogue_map_screen and is_instance_valid(rogue_map_screen):
+			rogue_map_screen.visible=field.map_open
+		if field.map_open: toast_time=0; toast.visible=false
+		sound.play("ui-open" if field.map_open else "ui-close")
+		return
 	page.visible=not field.map_open
 	if field.map_open: toast_time=0; toast.visible=false
 	sound.play("ui-open" if field.map_open else "ui-close")
 
 func stop_drag() -> void:
 	drag.active=false
+	# The hand's units live in `drag` too, so ending a drag always empties it: a
+	# carried pile that outlived its gesture would follow the cursor for ever.
+	drag["carry"]=0
 	if drag_ghost and is_instance_valid(drag_ghost):
 		drag_ghost.visible=false
 	if drag_ring and is_instance_valid(drag_ring):
 		drag_ring.visible=false
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+
+## The right button going down on a grid: lift the whole pile — or the single piece — into
+## the hand. **Nothing leaves the source yet**: the hand only takes a unit off the pile
+## once a left click has really seated it, which is what makes every exit that is not a
+## successful placement a free cancel.
+##
+## A piece whose ceiling is 1 is simply a pile of one, so this gesture covers gear as
+## well as stacks; the only difference is whether a count badge gets drawn.
+func start_whole_carry(point: Vector2) -> void:
+	var hit := grid_at(point)
+	if hit.is_empty():
+		return
+	var slot := str(hit.slot)
+	var index := index_at(slot,Vector2i(hit.cell))
+	if index<0:
+		return
+	var entry := drag_source_item(slot,index)
+	if entry.is_empty() or not Catalog.ITEMS.has(str(entry.kind)):
+		return
+	drag.active=true
+	drag.slot=slot
+	drag.source=index
+	drag["rot"]=bool(entry.get("rot",false))
+	drag["kind"]=str(entry.kind)
+	drag["blank"]=Catalog.clean_slot_entry(entry)
+	drag["carry"]=maxi(int(entry.get("count",1)),1)
+	drag_last_point=Vector2(-1,-1)
+	press_point=mouse_point()
+	press_moved=true
+	show_inventory()
+
+## One left click of the right-button hand: set **one** unit down on the cell under the
+## cursor. The aimed cell is answered first and exactly; only when it refuses does the
+## unit fall back to the nearest hole, so a click never silently scatters a pile.
+##
+## The source is trimmed by one unit only once the placement really landed, so a refused
+## click costs nothing at all. When the hand empties, the gesture ends by itself.
+func carry_place_one(point: Vector2) -> void:
+	var units := int(drag.get("carry",0))
+	if units<=0:
+		return
+	var pile := held_item()
+	if pile.is_empty():
+		stop_drag()
+		show_inventory()
+		return
+	var slot := str(drag.slot)
+	var index := int(drag.source)
+	var spent := func() -> void:
+		drag["carry"]=int(drag.get("carry",0))-1
+		if int(drag.get("carry",0))<=0:
+			stop_drag()
+			selected=-1
+		show_inventory()
+	if drag_outside(point):
+		# Outside the panel is the discard region. It takes one unit, like every other
+		# click of this hand, so a mis-click cannot tip the whole pile onto the floor.
+		carry_drop_units(slot,index,1)
+		spent.call()
+		return
+	var hit := grid_at(point)
+	var to := str(hit.slot) if not hit.is_empty() else ""
+	var cell := Vector2i(hit.cell) if not hit.is_empty() else Vector2i(-1,-1)
+	if not carry_would_place(to,cell):
+		say("这里放不下。")
+		notice_popup("%s 在这里放不下。" % Catalog.item_name(pile))
+		return
+	carry_seat(slot,index,to,cell,1,bool(drag.rot))
+	spent.call()
+
+## The right button coming up: whatever is left in the hand is handed over now — into the
+## container under the cursor first, then back into the one it came from, and only then
+## onto the floor. Nothing is ever left floating in the air.
+func carry_finish(point: Vector2) -> void:
+	var units := int(drag.get("carry",0))
+	var pile := held_item()
+	var slot := str(drag.slot)
+	var index := int(drag.source)
+	if units<=0 or pile.is_empty():
+		stop_drag()
+		selected=-1
+		show_inventory()
+		return
+	if drag_outside(point):
+		carry_drop_units(slot,index,units)
+		stop_drag()
+		selected=-1
+		say("放下 %s ×%d。" % [Catalog.item_name(pile),units])
+		show_inventory()
+		return
+	var hit := grid_at(point)
+	var to := str(hit.slot) if not hit.is_empty() else ""
+	var cell := Vector2i(hit.cell) if not hit.is_empty() else Vector2i(-1,-1)
+	var done := carry_hand_over(slot,index,to,cell,units,bool(drag.rot))
+	stop_drag()
+	selected=-1
+	if done>0:
+		say("放下 %s ×%d。" % [Catalog.item_name(pile),done])
+	else:
+		say("已放回原处。")
+	show_inventory()
+
+## The dry run a single aimed unit needs before the hand commits to it: "would one unit of
+## what I am holding land in `to`, on `cell`?" Asked on a throwaway copy, so asking
+## changes nothing — the same discipline as `container_would_receive()`.
+func carry_would_place(to: String, cell: Vector2i) -> bool:
+	if to.is_empty() or int(drag.get("carry",0))<=0:
+		return false
+	var kind := str(drag.get("kind",""))
+	var blank: Dictionary=drag.get("blank",{})
+	if kind.is_empty() or blank.is_empty():
+		return false
+	var container: Dictionary=carry_container_of(to)
+	if container.is_empty():
+		return false
+	var trial: Dictionary=container.duplicate(true)
+	return int(Catalog.place_units_in(trial,kind,1,cell,blank,bool(drag.rot)).placed)>0
+
+## Esc while the hand is full: put the units back. Nothing was taken, so there is
+## nothing to undo — the panel already shows the truth.
+func cancel_carry() -> void:
+	stop_drag()
+	selected=-1
+	say("已放回原处。")
+	show_inventory()
+
+## The container a slot name means, in whichever mode the panel is in.
+func carry_container_of(slot: String) -> Dictionary:
+	if slot.is_empty():
+		return {}
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return {}
+		return profile.vault() if slot==CampStorage.VAULT else player.get(slot,{})
+	return session.players.get(session.my_id(),{}).get(slot,{})
+
+## Lifts `units` off the pile the hand is working from. Only the camp lifts here: a raid's
+## storage is authoritative state, so there the units come off inside `Session.perform()`
+## when the action lands, never from the panel.
+func carry_take(slot: String, index: int, units: int) -> Dictionary:
+	if not camp_pack_open:
+		return {}
+	var player: Dictionary=camp_player()
+	if player.is_empty():
+		return {}
+	var taken: Dictionary = CampStorage.vault_take_some(profile,index,units) if slot==CampStorage.VAULT else session.take_some(player,slot,index,units)
+	if not taken.is_empty():
+		CampStorage.persist(profile,session,player)
+	return taken
+
+## Seats `units` at the aimed cell. The camp's vault is the save file and has its own movers
+## in `camp_storage.gd`; a raid goes through the action bus exactly like a drag does, so the
+## authoritative session applies the move rather than the panel.
+func carry_seat(slot: String, index: int, to: String, cell: Vector2i, units: int, rot: bool) -> void:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return
+		CampStorage.camp_carry_units(profile,session,player,slot,index,to,units,cell,rot)
+		CampStorage.persist(profile,session,player)
+		return
+	session.action("carry_unit",{"from":slot,"index":index,"to":to,"units":units,"x":cell.x,"y":cell.y,"rot":rot})
+
+## Hands the rest of the hand over when the right button comes up. Returns how many units
+## left the hand — into `to`, back into the container they came from, or onto the floor.
+func carry_hand_over(slot: String, index: int, to: String, cell: Vector2i, units: int, rot: bool) -> int:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return 0
+		var out: Dictionary=CampStorage.camp_carry_finish(profile,session,player,slot,index,to,units,cell,rot)
+		CampStorage.persist(profile,session,player)
+		return int(out.get("moved",0))
+	# Releasing over the container the pile came from is a no-op by construction: an
+	# unseated unit never left it. Saying so is the honest answer.
+	var moved := 0 if (to.is_empty() or to==slot) else units
+	session.action("carry_finish",{"from":slot,"index":index,"to":to,"units":units,"x":cell.x,"y":cell.y,"rot":rot})
+	return moved
+
+## Puts `units` from the hand on the floor: the camp has a real (memory-only) floor, and a
+## raid hands the job to the authoritative session through the action bus.
+func carry_drop_units(slot: String, index: int, units: int) -> void:
+	if camp_pack_open:
+		var handful := carry_take(slot,index,units)
+		if not handful.is_empty():
+			camp_drop_on_floor(handful)
+		return
+	session.action("carry_ground",{"from":slot,"index":index,"units":units})
 
 func pick_item(slot: String, index: int) -> void:
 	if slot=="loot":
@@ -1864,7 +2538,24 @@ func pick_item(slot: String, index: int) -> void:
 		rotated=bool(shown[index].get("rot",false))
 		show_inventory()
 		return
-	var list: Array=session.players[session.my_id()][slot].items
+	# The camp panel has a fourth grid the session knows nothing about: the vault
+	# lives in the save file, so its index space comes from `camp_storage`. Without
+	# this branch the click reached `session.players[...]["warehouse"]` and threw.
+	if camp_pack_open:
+		var camp_item: Dictionary=CampStorage.item_at(profile,camp_player(),slot,index)
+		if camp_item.is_empty():
+			return
+		selected=index
+		selected_slot=slot
+		rotated=bool(camp_item.get("rot",false))
+		show_inventory()
+		return
+	# A worn socket and the spare-bag cabinet are not containers: there is no grid to
+	# select in, and indexing the player dictionary with "weapon" used to throw.
+	var me: Dictionary=session.players.get(session.my_id(),{})
+	if not me.has(slot):
+		return
+	var list: Array=me[slot].items
 	if index<0 or index>=list.size():
 		return
 	selected=index
@@ -1873,10 +2564,24 @@ func pick_item(slot: String, index: int) -> void:
 	show_inventory()
 
 # Two quick taps on a backpack item wear it on the spot: weapons and gear go to
-# their kit slot, a loose backpack becomes the equipped pack. Anything else
-# returns false so the second tap degrades into an ordinary drag start.
+# their kit slot, a loose backpack becomes the equipped pack, and a consumable
+# parks one unit in the first free socket of the bar. Anything else (scrap, a relic,
+# a crystal) is treasure with no verb, so the second tap degrades into an ordinary
+# drag start instead of inventing an action for it.
 func double_click_equip(slot: String, index: int) -> bool:
 	var p: Dictionary=session.players.get(session.my_id(),{})
+	if camp_pack_open:
+		# In the camp the same gesture is a storage verb, not a battle one: see
+		# `camp_storage.gd quick_equip()` — a non-wearable goes to the backpack and
+		# the item bar is never filled by a double-click.
+		var changed: bool=CampStorage.quick_equip(profile,session,camp_player(),slot,index)
+		# The camp panel is drawn on demand and the frame loop never refreshes it, so
+		# the edit has to repaint here. Without this the panel kept showing the old
+		# picture — the item looked stuck in the vault while it had already been worn.
+		if changed:
+			selected=-1
+			show_inventory()
+		return changed
 	if p.is_empty() or slot not in ["backpack","pocket"]:
 		return false
 	var list: Array=Catalog.container_items(p[slot])
@@ -1887,17 +2592,36 @@ func double_click_equip(slot: String, index: int) -> bool:
 		session.action("equip_bag",{"slot":slot,"index":index})
 	elif Catalog.is_wearable(kind):
 		session.action("equip",{"slot":slot,"index":index})
+	elif kind=="medicine" or kind=="ammo":
+		# A consumable has a verb the double-click can mean: park one unit in the
+		# first free socket of the bar. Anything else (scrap, a relic, a crystal) is
+		# treasure with nothing to do, so the second tap degrades into a drag start
+		# rather than inventing an action for it.
+		var free := free_item_slot(p)
+		if free<0:
+			say("快捷道具栏已满，先腾出一格。")
+			return false
+		session.action("slot_put",{"slot":free,"from":slot,"index":index})
 	else:
 		return false
 	selected=-1
 	show_inventory()
 	return true
 
+## The first empty socket of the item bar, or -1 when all three are taken.
+func free_item_slot(p: Dictionary) -> int:
+	for i in session.ITEM_SLOT_COUNT:
+		if session.item_slot(p,i).is_empty():
+			return i
+	return -1
+
 # Ctrl+left on a carried item does what the item is for: a consumable is used, a
 # wearable is worn. A relic, a crate of scrap or a stack of ammo has no verb, so
 # the click falls through to the plain selection the way it always did.
 func ctrl_click_item(slot: String, index: int) -> bool:
 	var p: Dictionary=session.players.get(session.my_id(),{})
+	if camp_pack_open:
+		return double_click_equip(slot,index)
 	if p.is_empty() or slot not in ["backpack","pocket"]:
 		return false
 	var list: Array=Catalog.container_items(p[slot])
@@ -1911,24 +2635,50 @@ func ctrl_click_item(slot: String, index: int) -> bool:
 		return true
 	return false
 
-# Ctrl+left on something already worn takes it off. The backpack is tried first
-# because that is where loot belongs; when it has no room the pocket is asked to
-# tidy itself once, and when even that fails the click does nothing at all rather
-# than throwing the item on the ground.
+# Ctrl+left on something already worn is the same take-off the double tap performs.
 func ctrl_click_worn(zone: String) -> void:
+	take_off_worn(zone)
+
+## Which worn socket holds what, as the session's (type, index) pair.
+func zone_type(zone: String) -> String:
+	if zone=="weapon": return "weapon"
+	if zone.begins_with("gear"): return "gear"
+	if zone.begins_with("charm"): return "charm"
+	return ""
+
+func zone_index(zone: String) -> int:
+	if zone.begins_with("gear"): return zone.substr(4).to_int()
+	if zone.begins_with("charm"): return zone.substr(5).to_int()
+	return 0
+
+## Taking a piece off the body, for every gesture that means it: a second tap on the
+## socket, Ctrl+left, F, and the panel's "卸" button. The camp seats it in the carried
+## backpack and then the vault. A raid — and every other mode — accepts only the
+## backpack, and the pocket only for gold and above, and otherwise refuses and says
+## why instead of dropping the piece (README「稀有度与自动收纳判定」).
+func take_off_worn(zone: String) -> void:
+	if zone=="bag":
+		if camp_pack_open:
+			camp_apply(CampStorage.unwear_bag(profile,session,camp_player(),true))
+		elif not session.players.get(session.my_id(),{}).is_empty():
+			session.action("unwear_bag")
+			selected=-1
+			show_inventory()
+		return
+	if camp_pack_open:
+		camp_apply(CampStorage.stow_socket(profile,session,camp_player(),zone))
+		return
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if p.is_empty():
 		return
-	if zone=="bag":
-		session.action("unwear_bag")
-	elif zone=="weapon":
-		session.action("unequip_stow",{"type":"weapon","index":0})
-	elif zone.begins_with("gear"):
-		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
-	elif zone.begins_with("charm"):
-		session.action("unequip_stow",{"type":"charm","index":zone.substr(5).to_int()})
-	else:
+	var type := zone_type(zone)
+	if type.is_empty():
 		return
+	var at := zone_index(zone)
+	if not session.take_off_fits(p,type,at):
+		notice_popup("背包放不下 %s，先腾出一格再卸下。" % Catalog.item_name(session.worn_entry(p,type,at)))
+		return
+	session.action("unequip_stow",{"type":type,"index":at})
 	selected=-1
 	show_inventory()
 
@@ -1985,16 +2735,9 @@ func quick_inventory_at(point: Vector2) -> bool:
 			show_inventory()
 		return true
 	var zone := worn_zone_at(point)
-	if zone=="weapon":
-		session.action("unequip_stow",{"type":"weapon","index":0})
-	elif zone.begins_with("gear"):
-		session.action("unequip_stow",{"type":"gear","index":zone.substr(4).to_int()})
-	elif zone.begins_with("charm"):
-		session.action("unequip_stow",{"type":"charm","index":zone.substr(5).to_int()})
-	else:
+	if zone.is_empty() or (zone_type(zone).is_empty() and zone!="bag"):
 		return false
-	selected=-1
-	show_inventory()
+	take_off_worn(zone)
 	return true
 
 # --- mouse dragging --------------------------------------------------------
@@ -2023,6 +2766,46 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 	var rot: bool=bool(drag.rot)
 	var point: Vector2=mouse_point() if not at.is_finite() else at
 	var held := held_item()
+	# The camp panel shares this controller but not the authority: a raid drop is an
+	# action the host performs, a camp drop is a local edit written straight to the
+	# save file.
+	if camp_pack_open:
+		camp_release_drag(point,{"slot":source_slot,"index":source_index,"rot":rot})
+		return
+	# A worn piece in hand: the equipment bar is a drag source now, not just a row of
+	# buttons. A socket takes it by swapping, a carried container takes it outright,
+	# and letting go anywhere else is a miss — worn kit is never thrown on the ground.
+	var worn_type := zone_type(source_slot)
+	if not worn_type.is_empty():
+		if held.is_empty():
+			stop_drag()
+			show_inventory()
+			return
+		var worn_windex := zone_index(source_slot)
+		var zone_under := zone_at(point,held)
+		var grid_under := grid_at(point)
+		stop_drag()
+		selected=-1
+		if not zone_under.is_empty():
+			session.action("worn_equip",{"wtype":worn_type,"windex":worn_windex,"zone":str(zone_under.zone)})
+		elif not grid_under.is_empty():
+			# A searched chest is a container like any other: `move_worn_to()` reads
+			# "loot:<search reference>" as "into the chest the window is showing".
+			var worn_to := str(grid_under.slot)
+			if worn_to=="loot":
+				worn_to="loot:%d" % _loot_index
+			if worn_to=="backpack" or worn_to=="pocket" or worn_to.begins_with("loot:"):
+				session.action("worn_drop",{"wtype":worn_type,"windex":worn_windex,"to":worn_to,"x":int(grid_under.cell.x),"y":int(grid_under.cell.y),"rot":rot})
+			elif drag_outside(point):
+				session.action("worn_to_world",{"wtype":worn_type,"windex":worn_windex})
+			else:
+				notice_popup("放在背包、口袋、搜刮箱或装备位上。")
+		elif drag_outside(point):
+			session.action("worn_to_world",{"wtype":worn_type,"windex":worn_windex})
+		else:
+			notice_popup("放在背包、口袋、搜刮箱或装备位上。")
+		show_inventory()
+		return
 	# A drop onto a socket goes through the socket's own action, whatever kind of
 	# item is in hand: the item bar takes everything.
 	if not held.is_empty() and not str(drag.slot).begins_with("slot:"):
@@ -2054,6 +2837,12 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 		var target := drag_target_rect(hit,str(held.get("kind","")))
 		valid=int(Vector2i(target.get("cell",Vector2i(-1,-1))).x)>=0
 	if not valid:
+		# Inside the panel is the work area: a release on empty panel changes nothing,
+		# so an item is never lost by letting go a little wide of a grid. Leaving the
+		# panel is what means "on the ground".
+		if not drag_outside(point):
+			show_inventory()
+			return
 		if source_slot=="loot":
 			session.action("loot_drop",{"index":source_index})
 		elif source_slot.begins_with("slot:"):
@@ -2063,7 +2852,12 @@ func release_drag(at: Vector2 = Vector2.INF) -> void:
 	elif source_slot.begins_with("slot:"):
 		session.action("slot_take",{"slot":slot_source(source_slot)})
 	else:
-		session.action("bag_drop",{"from":source_slot,"to":slot,"index":source_index,"x":spot.x,"y":spot.y,"rot":rot})
+		# A searched chest is a container like any other: the mover reads
+		# "loot:<search reference>" as "into the chest the window is showing", and the
+		# grid alone only names the window.
+		var to := slot
+		if to=="loot": to="loot:%d" % _loot_index
+		session.action("bag_drop",{"from":source_slot,"to":to,"index":source_index,"x":spot.x,"y":spot.y,"rot":rot})
 	selected=-1
 	show_inventory()
 
@@ -2084,6 +2878,56 @@ func grid_at(point: Vector2) -> Dictionary:
 			continue
 		return {"slot":key,"cell":Vector2i(col,row)}
 	return {}
+
+# One released drag in the camp. There is no ground to throw things on, so a drop
+# that lands nowhere is simply a miss: the item stays where it was and the panel says
+# so. A socket is asked first (the bar takes anything, the worn sockets only their own
+# kind), then the grid under the cursor.
+func camp_release_drag(point: Vector2, drag_state: Dictionary) -> void:
+	var held := held_item()
+	var target: Dictionary = {}
+	if not held.is_empty():
+		var zone := zone_at(point,held)
+		if not zone.is_empty():
+			target={"zone":str(zone.zone)}
+	if target.is_empty():
+		var hit := grid_at(point)
+		if not hit.is_empty():
+			target={"slot":str(hit.slot),"cell":Vector2i(hit.cell)}
+	stop_drag()
+	selected=-1
+	if target.is_empty():
+		# Inside the panel is the work area: letting go on empty panel does nothing.
+		# Only a release outside everything the panel owns puts the piece on the floor.
+		if drag_outside(point):
+			# The pack on the back is a container: taking it off rehouses what it holds
+			# into the issue pack and floors the rest, pack included.
+			if str(drag_state.get("slot",""))=="bag":
+				CampStorage.unwear_bag(profile,session,camp_player(),false)
+				say("背包已放到地上，装不下的东西也散在旁边。按 F 拾回。")
+				show_inventory()
+				return
+			var floored := held_item()
+			if not floored.is_empty():
+				camp_drop_on_floor(floored)
+				say("已丢在营地地上：" + Catalog.item_name(floored) + "。走到旁边按 F 拾回。")
+		else:
+			say("这里放不下，回到背包或仓库格子上再松手。")
+		show_inventory()
+		return
+	var changed: bool=CampStorage.drop(profile,session,camp_player(),drag_state,target)
+	if not changed:
+		say("放不下，或者这里不能放。")
+	show_inventory()
+
+# Which spare-bag socket, if any, sits under a point. The cabinet is a drag source
+# only, so this is not part of `zone_at()`.
+func cabinet_zone_at(point: Vector2) -> int:
+	for index in cabinet_zones:
+		var area: Rect2=cabinet_zones[index]
+		if area.has_point(point):
+			return int(index)
+	return -1
 
 # Which equipment socket, if any, sits under a point and accepts the held item.
 # Preview and drop share this, so the glowing socket is always the socket that
@@ -2151,6 +2995,62 @@ func build_drag_nodes() -> void:
 		drag_ring=object_ring(GOLD)
 		drag_ring.visible=false
 		overlay.add_child(drag_ring)
+	if drag_frost==null or not is_instance_valid(drag_frost):
+		drag_frost=TextureRect.new()
+		drag_frost.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		drag_frost.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		drag_frost.modulate=Color(1,1,1,FROST_ALPHA)
+		drag_frost.visible=false
+		overlay.add_child(drag_frost)
+	update_frost_art()
+
+## The frosted sheet that says "you have left the panel" while a drag is in the drop
+## zone: the panel's own backdrop, blurred once and cached, shown at `FROST_ALPHA`.
+## Blurring is two bilinear resizes (down to a twelfth and back), which is a box blur
+## at this size and costs nothing after the first build.
+static var frost_cache: Dictionary = {}
+
+func frost_texture(path: String) -> Texture2D:
+	if frost_cache.has(path):
+		return frost_cache[path]
+	var source: Texture2D=load(path) if ResourceLoader.exists(path) else null
+	if source==null:
+		return null
+	var image: Image=source.get_image()
+	if image==null:
+		return null
+	var wide := maxi(1,image.get_width()/12)
+	var tall := maxi(1,image.get_height()/12)
+	image.resize(wide,tall,Image.INTERPOLATE_BILINEAR)
+	image.resize(source.get_width(),source.get_height(),Image.INTERPOLATE_BILINEAR)
+	var made := ImageTexture.create_from_image(image)
+	frost_cache[path]=made
+	return made
+
+## Points the sheet at the open panel's own art, at the panel's own size. Called
+## whenever a panel rebuilds, because the raid panel switches between two widths.
+func update_frost_art() -> void:
+	if drag_frost==null or not is_instance_valid(drag_frost):
+		return
+	drag_frost.position=drop_region.position
+	drag_frost.size=drop_region.size
+	drag_frost.texture=frost_texture(drop_art) if not drop_art.is_empty() else null
+
+## True when the cursor has left the panel the drag started in. Outside it a released
+## item goes on the ground; inside it, only a real grid or socket takes it and letting
+## go on empty panel is simply nothing. Panels register the whole backdrop they own,
+## frame included, so the frosted sheet and "where dropping loses the item" agree.
+func drag_outside(point: Vector2) -> bool:
+	if drop_region.size.x<=0.0 or drop_region.size.y<=0.0:
+		return true
+	return not drop_region.has_point(point)
+
+func set_frost(on: bool) -> void:
+	if drag_frost==null or not is_instance_valid(drag_frost):
+		return
+	if on and drag_frost.texture==null:
+		update_frost_art()
+	drag_frost.visible=on and drag_frost.texture!=null
 
 func show_drag_item(held: Dictionary) -> void:
 	build_drag_nodes()
@@ -2181,6 +3081,7 @@ func sync_drag() -> void:
 			drag_ghost.visible=false
 		if drag_ring and is_instance_valid(drag_ring):
 			drag_ring.visible=false
+		set_frost(false)
 		return
 	var held := held_item()
 	if held.is_empty():
@@ -2204,13 +3105,25 @@ func sync_drag() -> void:
 		drag_ring.area=zone_rect
 		drag_ring.tone=accent
 		drag_ring.blocked=false
+		set_frost(false)
 		return
-	if str(drag.slot).begins_with("slot:"):
-		# Away from a socket, the held item will be dropped on the ground.
+	var outside := drag_outside(point)
+	set_frost(outside)
+	if outside:
+		# Outside the panel entirely: the frosted sheet says the panel is no longer
+		# the target, and letting go puts the item on the ground.
 		drag_ring.area=Rect2(point-cell_size/2,cell_size)
 		drag_ring.tone=Color("c96a74")
 		drag_ring.blocked=false
 		drag_caption.text="松开丢弃到地面"
+		return
+	if str(drag.slot).begins_with("slot:"):
+		# Still inside the panel: an item lifted out of the bar only goes back on a
+		# socket, and letting go anywhere else on the panel changes nothing.
+		drag_ring.area=Rect2(point-cell_size/2,cell_size)
+		drag_ring.tone=Color("c96a74")
+		drag_ring.blocked=false
+		drag_caption.text="放到格子上，或拖出面板丢弃"
 		return
 	var hit := grid_at(point)
 	var target := drag_target_rect(hit,kind)
@@ -2229,7 +3142,7 @@ func sync_drag() -> void:
 			drag_ring.area=Rect2(Vector2(entry.origin)+Vector2(int(target.cursor.x)*step,int(target.cursor.y)*step),Vector2(entry.cell,entry.cell))
 			drag_ring.tone=Color("c96a74")
 			drag_ring.blocked=false
-			drag_caption.text="松开丢弃到地面"
+			drag_caption.text="这里放不下，拖出面板丢弃"
 		else:
 			drag_ring.area=Rect2(Vector2(entry.origin)+Vector2(cell.x*step,cell.y*step),Vector2(dims.x*step-float(entry.gap),dims.y*step-float(entry.gap)))
 			drag_ring.tone=accent if exact else Color("c9a06a")
@@ -2238,7 +3151,7 @@ func sync_drag() -> void:
 		drag_ring.area=Rect2(point-cell_size/2,cell_size)
 		drag_ring.tone=Color("c96a74")
 		drag_ring.blocked=false
-		drag_caption.text="松开丢弃到地面"
+		drag_caption.text="这里放不下，拖出面板丢弃"
 
 func move_drag_ghost(point: Vector2, cell_size: Vector2) -> void:
 	var lift := Vector2.ONE*minf(cell_size.x,cell_size.y)*0.10
@@ -2265,28 +3178,62 @@ func move_drag_ghost(point: Vector2, cell_size: Vector2) -> void:
 func reparent_drag_nodes() -> void:
 	if drag_ghost==null or not is_instance_valid(drag_ghost):
 		return
-	var holder: Node=drag_ghost.get_parent()
-	if holder!=overlay:
-		if holder!=null:
-			holder.remove_child(drag_ghost)
-		overlay.add_child(drag_ghost)
-	if drag_ring==null or not is_instance_valid(drag_ring):
-		return
-	holder=drag_ring.get_parent()
-	if holder!=overlay:
-		if holder!=null:
-			holder.remove_child(drag_ring)
-		overlay.add_child(drag_ring)
+	# Painting order is the order they are raised in: the frosted plate goes over the
+	# panel, the outline over that, and the lifted icon on top of everything.
+	for node in [drag_frost,drag_ring,drag_ghost]:
+		if node==null or not is_instance_valid(node):
+			continue
+		var holder: Node=node.get_parent()
+		if holder!=overlay:
+			if holder!=null:
+				holder.remove_child(node)
+			overlay.add_child(node)
+		overlay.move_child(node,overlay.get_child_count()-1)
 
 # Where the item under the cursor would land, asked of the same resolver the
 # session uses. cell is (-1,-1) when the container cannot take the item at all.
+#
+# **Memoised**: a resolver pass over the 15x15 vault costs ~18ms on a full vault
+# (measured) and this is asked once per frame while a drag hovers a grid. The answer
+# only depends on the container, the aimed cell, the item and the state behind it, so
+# those four make the key and a hit skips the whole search.
+var preview_key := ""
+var preview_answer: Dictionary = {}
+
 func drag_target_rect(hit: Dictionary, kind: String) -> Dictionary:
 	if hit.is_empty():
+		preview_key=""
 		return {}
 	var slot := str(hit.slot)
 	var cursor: Vector2i=Vector2i(hit.cell)
 	var probe := {"kind":kind,"rot":bool(drag.rot)}
+	var key := "%s|%d,%d|%s|%s|%s|%d" % [slot,cursor.x,cursor.y,kind,str(bool(drag.rot)),drag_fingerprint(),int(drag.source)]
+	if key==preview_key:
+		return preview_answer
+	var answer := drag_resolve(slot,cursor,probe)
+	preview_key=key
+	preview_answer=answer
+	return answer
+
+## What the cached preview has to notice changing: the state the resolver reads. The
+## camp's own signature already covers the carried containers and the vault, and the
+## raid's containers are small enough that the slot and the drag alone are enough.
+func drag_fingerprint() -> String:
+	if camp_pack_open:
+		return camp_signature(camp_player())
+	return "%d/%d" % [int(session.players.get(session.my_id(),{}).get("backpack",{}).get("next",0)),_loot_index]
+
+## The uncached half of `drag_target_rect()`.
+func drag_resolve(slot: String, cursor: Vector2i, probe: Dictionary) -> Dictionary:
+	var kind := str(probe.get("kind",""))
 	var landing := Vector2i(-1,-1)
+	if camp_pack_open:
+		# The vault lives in the save file and the carried grids in the player
+		# dictionary; `camp_storage` is the one place that knows which is which, so
+		# the legality preview asks it rather than guessing here.
+		var player: Dictionary=camp_player()
+		landing=session.resolve_drop(CampStorage.items_of(profile,player,slot),CampStorage.grid_of(profile,player,slot),probe,cursor,-1)
+		return {"slot":slot,"cell":landing,"cursor":cursor,"exact":landing==cursor}
 	if slot=="loot":
 		var target: Dictionary=session.container_at(_loot_index)
 		if not target.is_empty():
@@ -2311,11 +3258,27 @@ func mouse_point() -> Vector2:
 func drag_slot_rect() -> Rect2:
 	var slot := str(drag.slot)
 	var index: int=int(drag.source)
+	if camp_pack_open:
+		if slot=="cab":
+			return cabinet_zones.get(index,Rect2())
+		var zone: Dictionary=grids.get(slot,{})
+		if zone.is_empty():
+			# A worn socket is not a grid: the outline is the socket's own box.
+			return equip_zones.get(slot,Rect2())
+		var held: Dictionary=CampStorage.item_at(profile,camp_player(),slot,index)
+		if held.is_empty():
+			return Rect2()
+		var zone_step: float=float(zone.cell)+float(zone.gap)
+		var zone_dims := Catalog.item_size(held)
+		return Rect2(Vector2(zone.origin)+Vector2(int(held.x)*zone_step,int(held.y)*zone_step),Vector2(zone_dims.x*zone_step-float(zone.gap),zone_dims.y*zone_step-float(zone.gap)))
 	if slot.begins_with("slot:"):
 		var at := slot_source(slot)
 		if at<0 or at>=slot_zone_rects.size():
 			return Rect2()
 		return slot_zone_rects[at]
+	if not zone_type(slot).is_empty():
+		# A worn socket is not a grid: the outline is the socket's own box.
+		return equip_zones.get(slot,Rect2())
 	if slot=="loot":
 		var entry: Dictionary=grids.get("loot",{})
 		if entry.is_empty():
@@ -2372,36 +3335,89 @@ func draw_diagonal(a: Vector2, b: Vector2, color: Color) -> void:
 func slot_source(value: String) -> int:
 	return value.substr(5).to_int() if value.begins_with("slot:") else -1
 
+## What the hand is holding. A normal drag holds the whole entry; the right-click hand
+## (`drag.carry`) holds **N units of a pile** — a view built from the source, because
+## nothing is taken off it until the left click lands. That is what makes cancelling
+## cost nothing at all.
 func held_item() -> Dictionary:
 	if not drag.active:
 		return {}
-	var slot := str(drag.slot)
-	var index: int=int(drag.source)
+	var units := int(drag.get("carry",0))
+	# The right-button hand records what it lifted instead of re-reading the source: it
+	# takes units off that pile as each click lands, so the source can shrink to nothing
+	# while the hand still holds part of it.
+	var blank: Dictionary=drag.get("blank",{})
+	if units>0 and not blank.is_empty():
+		var carried: Dictionary=blank.duplicate(true)
+		if not carried.has("kind"):
+			carried["kind"]=str(drag.get("kind",""))
+		if Catalog.stacks(str(carried.get("kind",""))):
+			carried["count"]=units
+		return carried
+	var entry := drag_source_item(str(drag.slot),int(drag.source))
+	if units>0 and not entry.is_empty() and Catalog.stacks(str(entry.kind)):
+		var pile: Dictionary=entry.duplicate(true)
+		pile["count"]=mini(units,int(entry.get("count",1)))
+		return pile
+	return entry
+
+## The entry sitting at a drag source, ignoring the carry view.
+func drag_source_item(slot: String, index: int) -> Dictionary:
+	if camp_pack_open:
+		var player: Dictionary=camp_player()
+		if player.is_empty():
+			return {}
+		if slot=="cab":
+			return CampStorage.cabinet_entry(session,player,index)
+		# A worn socket is a source like any other: it holds exactly one piece.
+		if CampStorage.is_socket(slot):
+			return CampStorage.socket_entry(session,player,slot)
+		return CampStorage.item_at(profile,player,slot,index)
 	if slot=="loot":
 		var container: Dictionary=session.container_at(_loot_index)
 		var visible: Array=session.visible_items(container)
 		if index<0 or index>=visible.size():
 			return {}
 		return visible[index]
-	if slot.begins_with("slot:"):
-		return session.item_slot(session.players.get(session.my_id(),{}),slot_source(slot))
+	if str(slot).begins_with("slot:"):
+		return session.item_slot(session.players.get(session.my_id(),{}),slot_source(str(slot)))
+	# A worn socket is a source too, so the hand has to resolve one.
+	var worn_source := zone_type(slot)
+	if not worn_source.is_empty():
+		return session.worn_entry(session.players.get(session.my_id(),{}),worn_source,zone_index(slot))
+	if slot=="bag":
+		return session.bag_as_item(str(session.players.get(session.my_id(),{}).get("backpack",{}).get("key",Catalog.DEFAULT_BAG_KEY)))
 	var list: Array=session.players[session.my_id()][slot].items
 	if index<0 or index>=list.size():
 		return {}
 	return list[index]
 
 func held_size(held: Dictionary) -> Vector2:
+	# Called from `sync_drag()` and from the panel rebuilds; an empty hand (a stale
+	# slot, an item that just left) must be measured as nothing rather than read for
+	# a "kind" that is not there.
+	if held.is_empty():
+		return Vector2.ZERO
 	if drag.slot=="loot":
 		var loot_size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
 		var entry: Dictionary=grids.get("loot",{"cell":LOOT_CELL,"gap":LOOT_GAP})
 		var step: float=float(entry.cell)+float(entry.gap)
 		return Vector2(loot_size.x*step-float(entry.gap),loot_size.y*step-float(entry.gap))
+	# The camp panel draws every grid at its own cell size, so the lifted art is
+	# measured from the registration the layout just made.
+	if camp_pack_open:
+		var camp_size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
+		var zone: Dictionary=grids.get(str(drag.slot),{})
+		if zone.is_empty():
+			return Vector2(58,58)	# lifted out of a socket: one fixed scale
+		var zone_step: float=float(zone.cell)+float(zone.gap)
+		return Vector2(camp_size.x*zone_step-float(zone.gap),camp_size.y*zone_step-float(zone.gap))
 	var cell: float=bag_cell if drag.slot=="backpack" else pocket_cell
 	var gap: float=bag_gap if drag.slot=="backpack" else pocket_gap
 	var size := Catalog.item_size({"kind":held.kind,"rot":bool(drag.rot)})
-	# An item lifted out of the bar is drawn at the scale of the row it came from,
-	# so the art in the hand is the same size as the art left behind.
-	if str(drag.slot).begins_with("slot:"):
+	# An item lifted out of the bar or off the body is drawn at the socket row's own
+	# scale, so the art in the hand matches the art left behind.
+	if str(drag.slot).begins_with("slot:") or not zone_type(str(drag.slot)).is_empty():
 		cell=SLOT_CELL
 		gap=3.0
 	return Vector2(size.x*(cell+gap)-gap,size.y*(cell+gap)-gap)
@@ -2487,6 +3503,29 @@ func show_inventory() -> void:
 	# A deferred rebuild can land after the bag was closed; drawing then would put
 	# the panels back on a screen the player already dismissed.
 	if not inventory_open or modal:
+		return
+	if camp_pack_open:
+		detach_drag_nodes()
+		clear(overlay)
+		grids.clear()
+		equip_zones.clear()
+		cabinet_zones.clear()
+		slot_zone_rects.clear()
+		panel_rects.clear()
+		var camper: Dictionary=camp_player()
+		if camper.is_empty():
+			return
+		bag_signature=camp_signature(camper)
+		camp_pack.draw(self,camper)
+		# The held item has to stay above the panels, exactly as in a raid.
+		if drag.active:
+			build_drag_nodes()
+			reparent_drag_nodes()
+			var camp_held := held_item()
+			if not camp_held.is_empty():
+				show_drag_item(camp_held)
+				move_drag_ghost(mouse_point(),held_size(camp_held))
+			sync_drag()
 		return
 	if session.roguelike.active(session):
 		stop_drag()
@@ -3002,6 +4041,11 @@ func equip_slot(slot: String, index: int) -> void:
 	selected=-1
 	call_deferred("show_inventory")
 
+## The panel's "卸" button. It keeps the older bargain on purpose: the piece comes
+## off and `stow_equipment()` finds it a home, dropping it on the ground as itself
+## when there is none. The gesture take-offs (double tap / Ctrl+left / F) are the
+## strict ones and refuse instead — the two are different on purpose, see README
+## 「稀有度与自动收纳判定」.
 func unequip_slot(type: String, index: int = 0) -> void:
 	session.action("unequip",{"type":type,"index":index})
 	call_deferred("show_inventory")
@@ -3102,8 +4146,14 @@ func on_finished() -> void:
 		if reward.has("bags"):
 			profile.data.bags=reward.bags
 			profile.data.bag_key=str(reward.bags[0].get("key",Catalog.DEFAULT_BAG_KEY))
+		# Worn kit follows the same rule as the backpack: walking out keeps it on the
+		# Watcher (it is a loadout now, not loot), dying leaves it in the ruins. The
+		# report carries the already-validated dictionary, so death simply writes an
+		# empty one back.
+		if reward.has("loadout"):
+			profile.data.loadout=reward.loadout
 		profile.sanitize_storage()
-		profile.bank_carried_items(reward.get("equipment_loot",[]))
+		profile.bank_carried_items()
 		# Reaching the hidden ending is what recruits 墓煜, and the flag is
 		# written straight into the save file so she stays pickable afterwards.
 		if reward.get("hidden",false):
@@ -3153,7 +4203,7 @@ func on_finished() -> void:
 			var shown: String="  ".join(PackedStringArray(worn.slice(0,2)))
 			if worn.size()>2:
 				shown+=" 等 %d 件" % worn.size()
-			label(page,"身上装备 %s · %s" % [shown,"已存入仓库" if r.escaped else "已散落在废墟"],Vector2(770,y+50),12,MUTED,Vector2(540,22))
+			label(page,"身上装备 %s · %s" % [shown,"撤离后继续穿着" if r.escaped else "已散落在废墟"],Vector2(770,y+50),12,MUTED,Vector2(540,22))
 		i+=1
 	label(page,"当前等级  Lv.%02d     ·     城邦银币  %d     ·     历史最佳  %d" % [profile.level(),profile.data.coins,profile.data.best],Vector2(83,741),19,MUTED)
 	button(page,"返回标题",Vector2(80,804),Vector2(205,57),leave_to_title)
@@ -3291,7 +4341,14 @@ func close_modal() -> void:
 func pause_menu() -> void:
 	var at := modal_box("守夜通讯",Vector2(630,460))
 	label(overlay,"本局时间继续流逝，请先移动到安全处。",at+Vector2(35,100),18,MUTED)
-	button(overlay,"继续探索",at+Vector2(35,174),Vector2(560,56),close_modal,true)
+	# P1 · 肉鸽的「地图」入口。战役的 HUD 上本来就有 `地图  M` 按钮（见 `on_started`），
+	# 肉鸽那一栏被 `行囊 · 构筑` 占满，所以补进菜单。回调里先 `close_modal()` 再开图：
+	# 模态框画在 `overlay` 上，不关掉的话路线图会被它压在下面。
+	if session.roguelike.active(session):
+		button(overlay,"路线图  M",at+Vector2(35,174),Vector2(270,52),func(): close_modal(); toggle_map())
+		button(overlay,"继续探索",at+Vector2(325,174),Vector2(270,56),close_modal,true)
+	else:
+		button(overlay,"继续探索",at+Vector2(35,174),Vector2(560,56),close_modal,true)
 	button(overlay,"守夜手册",at+Vector2(35,249),Vector2(270,52),show_help)
 	button(overlay,"设置",at+Vector2(325,249),Vector2(270,52),show_settings)
 	button(overlay,"放弃本局并离开",at+Vector2(35,325),Vector2(560,52),confirm_leave)
@@ -3475,6 +4532,18 @@ func update_rogue_hud(p: Dictionary) -> void:
 	# R7b: the three dedicated rooms repaint from their own signature — the room kind,
 	# the raid revision and the local resources that decide whether an offer is clickable.
 	var room_kind := str(session.raid.room)
+	# R7c: ESC must know whether an exit-less 服务房 panel (赌徒 / 锻炉 / 镜像) is on screen.
+	# The three-choice and 幽暗异事 panels keep their old ESC behaviour, so they are excluded
+	# here; 游商 is deliberately excluded too: leaving the shop is irreversible, so ESC keeps
+	# pausing there and only the panel's 「离开商店」 button may leave. The flag is refreshed on
+	# every HUD tick, not only on a rebuild.
+	# R7d（实机修复）→ R7e（2026-06 · 实机修复）：这条判定必须与 `_rogue_hud_kind_of()` 用**同一个**
+	# 显示门。R7d 用的是相位门（`phase!="rogue_exit"`），但 `rogue_exit` 有两个来源——玩家主动离店，
+	# **以及** `finish_rewards()` 在他开箱领完奖励后的自动收尾——相位门会把后者也当成"面板没了"，
+	# 于是这里判定面板不在屏幕上、ESC 直接去弹暂停菜单，而玩家的服务面板其实还在（用户要求它留着）。
+	# R7e 改问"玩家有没有主动离店"（`raid.room_left`，见 `RogueRoomUi.panel_open()`）：`main.gd`
+	# 的**三个**调用点（`leave_panel_open`、房间签名进指纹、`_rogue_hud_kind_of()`）
+	# 仍然共用同一个函数，所以"一边以为面板在、另一边以为不在"的缝不会重新出现。
 	# Purchases and rerolls change revision, but must not reopen a dismissed panel.
 	# Reward selections temporarily cover the room panel without resetting its dismissal.
 	var context := "%s:%s:%s:%s:%s" % [session.raid.get("floor",1),session.raid.get("node",""),session.raid.get("area",1),room_kind,RogueUi.event_id(session.raid)]
@@ -3482,166 +4551,757 @@ func update_rogue_hud(p: Dictionary) -> void:
 		rogue_panel_context=context
 		rogue_panel_dismissed=false
 	signature+="/context:%s/hidden:%s" % [context,rogue_panel_dismissed]
-	if RogueRoomUi.handled(room_kind):
+	var leave_panel_open: bool=selection.is_empty() and not RogueUi.event_active(session.raid) and RogueRoomUi.panel_open(room_kind,_rogue_raid_for_panel())
+	_rogue_panel_open_revision=revision if leave_panel_open else -1
+	if _rogue_panel_open_revision<0: _rogue_leave_attempted=-1
+	var kind := _rogue_hud_kind_of(selection,room_kind)
+	# `layout` is the structural half: only a change here may rebuild the tree. `signature` is
+	# the complete fingerprint (structure + values) and keeps the old "nothing changed at all"
+	# short-circuit that a rebuild-only signature used to provide.
+	var layout := kind+"/hidden:"+str(rogue_panel_dismissed and selection.is_empty())
+	match kind:
+		ROGUE_HUD_REWARD:
+			# The reward panel's payload freezes `selection.id` **and** `.version`, so both are
+			# structural: a version bump has to rebuild it (a reused button would ship the old
+			# version and the claim would be refused as stale).
+			layout+=":"+str(selection.get("id",""))+":"+str(selection.get("version",""))
+		ROGUE_HUD_EVENT:
+			# Unlike the 服务房 / 游商 trees, the event button builds its payload from
+			# `RogueUi.event_payload(session.raid,index)` — and `RogueEvents.matches_revision()`
+			# requires that revision to equal the *pending offer's* stamp, not merely the live
+			# raid revision. The stamp therefore belongs to the structure: a re-stamped offer
+			# rebuilds the panel (exactly the pre-T2 cadence for this one panel) so a click can
+			# never ship a revision the event handler will drop.
+			var event_options_count: int=RogueUi.event_options(session,p,session.raid).size()
+			layout+=":%s:%d:%d" % [RogueUi.event_id(session.raid),event_options_count,int(RogueUi.pending_event(session.raid).get("revision",-1))]
+		ROGUE_HUD_ROOM:
+			# Row count decides how many recycled buttons exist; the row *text* is refreshed in
+			# place. Unlike the old whole-panel signature a revision bump alone rebuilds nothing.
+			layout+=":%s:%d" % [room_kind,RogueRoomUi.rows(room_kind,session.raid,RogueRoomUi.context_of(session,p)).size()]
+		ROGUE_HUD_SHOP:
+			# E1: 回收区的**行数与每一行是谁**都是结构 —— 行数变了要重建按钮，
+			# 而每行烘焙的 `index` 只有在"行囊内容与顺序"没变时才对得上，
+			# 所以 `_rogue_hud_sell_signature()`（前 8 件装备的 instance_id/名字/品质）
+			# 进指纹：卖掉一件、买到一件、换装都会重建一次，数值（回收价/魔晶禁用态）
+			# 照旧走 `_refresh_rogue_sell_block()` 值级刷新。
+			layout+=":%s:%s:%d:%s" % [browsing_shop,session.raid.phase,p.get("rogue_shop_offers",[]).size(),_rogue_hud_sell_signature(p)]
+	# Values that only ever need a property write, never a new control.
+	signature+="/v:%d:%d:%d:%d:%s" % [revision,p.rogue_gold,p.rogue_rerolls,session.raid.get("reward_claims",[]).size(),p.get("status","")]
+	# R7d → R7e：只有面板真的在上面时才把房间签名并进指纹。否则默认树会因为房间签名
+	# （含魔晶 / 锻造点）而每次数值 tick 都重建一次，增量刷新的第一条不变量（结构变化才重建）
+	# 就破了。R7d 这里的门是相位，R7e 与 `leave_panel_open` / `_rogue_hud_kind_of()` 一样换成
+	# "有没有主动离店"：开箱领完奖励（phase 已是 rogue_exit）时面板还在，所以房间签名照旧要进指纹
+	# （否则面板上的报价/禁用态会停在开箱前那一帧）。
+	if RogueRoomUi.panel_open(room_kind,_rogue_raid_for_panel()):
 		signature+="/room:"+RogueRoomUi.signature(room_kind,session.raid,RogueRoomUi.context_of(session,p))
-	if signature==rogue_signature: return
+	# T2: the live revision every reused button callback reads at click time. The value is
+	# refreshed on **every** tick, including the early-return path, so a button can never ship a
+	# revision older than the snapshot the HUD last painted (see `_rogue_hud_revision`).
+	_rogue_hud_revision=revision
+	if signature==rogue_signature and kind==_rogue_hud_kind: return
 	rogue_signature=signature
-	rogue_panel_open=false
-	rogue_event_buttons=[]
-	rogue_room_buttons=[]
-	if is_instance_valid(rogue_panel):
+	if is_instance_valid(rogue_panel) and (kind!=_rogue_hud_kind or layout!=_rogue_hud_layout):
 		page.remove_child(rogue_panel)
 		rogue_panel.queue_free()
-	rogue_panel=Control.new()
-	rogue_panel.size=Vector2(1440,900)
-	rogue_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	page.add_child(rogue_panel)
-	var panel_title := ""
-	if not selection.is_empty(): panel_title="奖励抉择"
-	elif RogueUi.event_active(session.raid): panel_title="幽暗异事"
-	elif RogueRoomUi.handled(room_kind): panel_title=RogueRoomUi.room_name(room_kind)
-	elif session.raid.phase=="rogue_shop" and browsing_shop: panel_title="游商"
-	if panel_title!="" and rogue_panel_dismissed and selection.is_empty():
-		var reopen := button(rogue_panel,"打开"+panel_title,Vector2(1130,140),Vector2(235,44),open_rogue_panel)
-		reopen.name="RoguePanelReopen"
-		return
-	rogue_panel_open=panel_title!=""
-	if not selection.is_empty():
-		var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
-		rogue_panel.add_child(reward_ui)
-		reward_ui.build(self,selection)
-		# World loot can be put back; personal starting/room rewards must be resolved.
-		rogue_panel_open=not bool(selection.get("personal",false))
-		if rogue_panel_open: rogue_panel_close_button(Vector2(1265,48))
-		return
-	if RogueUi.event_active(session.raid):
-		rogue_event_panel(p,revision)
-		rogue_panel_close_button()
-		return
-	if RogueRoomUi.handled(room_kind):
-		rogue_room_panel(p,revision,room_kind)
-		rogue_panel_close_button()
-		return
-	label(rogue_panel,"魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls],Vector2(1030,92),18,GOLD,Vector2(380,35))
-	if session.raid.phase=="rogue_reward":
-		label(rogue_panel,"E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑",Vector2(380,130),20,GOLD,Vector2(900,40))
-	if session.raid.phase=="rogue_shop" and browsing_shop:
-		rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
-		label(rogue_panel,"游商 · 可购买多件" if session.raid.phase=="rogue_shop" else "区域通关 · 选择一项奖励",Vector2(360,187),22,GOLD)
-		for i in p.get("rogue_shop_offers",[]).size():
-			var offer: Dictionary=p.rogue_shop_offers[i]
-			var index: int=i
-			var x: int=360+(i%3)*330
-			var y: int=floori(i/3.0)*230
-			rogue_icon(rogue_panel,rogue_field.art.offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
-			var title := label(rogue_panel,offer.name,Vector2(x+73,230+y),17,INK,Vector2(240,52))
-			title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-			var details := label(rogue_panel,offer.desc,Vector2(x,289+y),14,MUTED,Vector2(300,111))
-			details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-			var b := button(rogue_panel,"已售出" if offer.get("sold",false) else ("%d 魔晶 · 购买" % offer.price if offer.price>0 else "领取"),Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":index,"revision":revision}))
-			b.disabled=offer.get("sold",false) or p.rogue_gold<int(offer.price) or (offer.has("flask_refill") and p.flask>50)
-		var reroll := button(rogue_panel,"使用刷新卡",Vector2(975,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":revision}))
+		rogue_panel=null
+	if not is_instance_valid(rogue_panel):
+		_rogue_hud_kind=kind
+		_rogue_hud_layout=layout
+		_rogue_hud_nodes={}
+		_rogue_hud_offer_buttons=[]
+		rogue_panel=Control.new()
+		rogue_panel.name="RogueHudRoot"
+		rogue_panel.size=Vector2(1440,900)
+		rogue_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		page.add_child(rogue_panel)
+		var panel_title := ""
+		match kind:
+			ROGUE_HUD_REWARD: panel_title="奖励抉择"
+			ROGUE_HUD_EVENT: panel_title="幽暗异事"
+			ROGUE_HUD_ROOM: panel_title=RogueRoomUi.room_name(room_kind)
+			ROGUE_HUD_SHOP: panel_title="游商"
+		rogue_panel_open=panel_title!="" and not (rogue_panel_dismissed and selection.is_empty())
+		if panel_title!="" and rogue_panel_dismissed and selection.is_empty():
+			var reopen := button(rogue_panel,"打开"+panel_title,Vector2(1130,140),Vector2(235,44),open_rogue_panel)
+			reopen.name="RoguePanelReopen"
+			return
+		if kind==ROGUE_HUD_REWARD:
+			rogue_panel_open=not bool(selection.get("personal",false))
+		if rogue_panel_open: rogue_panel_close_button(Vector2(1265,48) if kind==ROGUE_HUD_REWARD else Vector2(1230,130))
+		match kind:
+			ROGUE_HUD_REWARD:
+				var reward_ui=preload("res://scripts/rogue_reward_ui.gd").new()
+				rogue_panel.add_child(reward_ui)
+				reward_ui.build(self,selection)
+			ROGUE_HUD_EVENT: _build_rogue_event_panel()
+			ROGUE_HUD_ROOM: _build_rogue_room_panel(room_kind)
+			ROGUE_HUD_SHOP: _build_rogue_shop_panel(browsing_shop)
+			_: _build_rogue_default_panel()
+	if rogue_panel_dismissed and selection.is_empty() and kind!=ROGUE_HUD_DEFAULT: return
+	# Reused tree: write the current values into the existing controls.
+	match kind:
+		ROGUE_HUD_EVENT: _rogue_hud_refresh_event(p)
+		ROGUE_HUD_ROOM: _rogue_hud_refresh_room(p,room_kind)
+		ROGUE_HUD_SHOP: _rogue_hud_refresh_shop(p,browsing_shop)
+		ROGUE_HUD_DEFAULT: _rogue_hud_refresh_default(p,browsing_shop)
+
+
+## Which persistent tree `update_rogue_hud()` should keep on screen. This mirrors the old
+## dispatch order exactly: 三选一 -> 幽暗异事 -> 服务房 -> 游商/默认。
+## R7e (2026-06 · 实机修复)：服务房的显示门改问"玩家**主动**离店了吗"（`RogueRoomUi.panel_open()`
+## 读 `raid.room_left`），不再看相位。行为差别只有一处、也正是用户要的那一处：
+##   * 开箱 / 领完奖励 → `finish_rewards()` 把 phase 推到 `rogue_exit` → 面板**继续显示**（还能锻造 /
+##     赌博 / 打镜像）；
+##   * 点「离开此间」或按 ESC → `rogue_leave` 置 `room_left=true` → 面板收起、退回默认树
+##     （那棵树在 `rogue_exit` 下本来就只显示"向右到分叉"的指路行）。
+## 三个房间（锻炉 / 赌徒 / 镜像）共用 `RogueRoomUi.handled()` 这一个分支，所以这一处即全部修复。
+## 状态位属于**结构级**：它的变化会改变这里的返回种类（ROOM <-> DEFAULT），于是落进
+## `_rogue_hud_layout`，T2 的第一条不变量（结构变化才重建）既没被绕过也没被打破 —— 面板该消失时
+## 种类变了会重建，该重建时布局指纹也变了。
+func _rogue_hud_kind_of(selection: Dictionary, room_kind: String) -> String:
+	if not selection.is_empty(): return ROGUE_HUD_REWARD
+	if RogueUi.event_active(session.raid): return ROGUE_HUD_EVENT
+	if RogueRoomUi.panel_open(room_kind,_rogue_raid_for_panel()): return ROGUE_HUD_ROOM
+	if session.raid.phase=="rogue_shop" and _rogue_hud_browsing_shop(): return ROGUE_HUD_SHOP
+	return ROGUE_HUD_DEFAULT
+
+
+## `RogueRoomUi.panel_open()` 要读 `raid.room_left`，所以它需要**整个 raid 字典**（快照元素 11），
+## 不是相位字符串。这一个取值口把"快照可能还没到 / 形状不对"挡住：拿不到字典就返回空字典，
+## 于是 `room_left()` 退化读成 `false`＝"没离店"，面板按服务房显示 —— 与 `RogueRoomUi.room_left()`
+## 里那条退化规则同向，绝不让 UI 层因为缺字段而抛错或把面板锁死。
+func _rogue_raid_for_panel() -> Dictionary:
+	var raid: Variant=session.raid
+	if raid is Dictionary: return raid
+	return {}
+
+
+func _rogue_hud_browsing_shop() -> bool:
+	var me: Dictionary=session.players.get(session.my_id(),{})
+	if me.is_empty(): return false
+	return me.p.x<session.ruins.fork_start-80
+
+
+func _rogue_hud_me() -> Dictionary:
+	return session.players.get(session.my_id(),{})
+
+
+## E1 · 回收区的结构指纹：只取**前 8 件装备**（与 `_ROGUE_SELL_SLOTS` 同一窗口、同一个
+## `while` 顺序），这样"换一件、卖一件"都会让 `_rogue_hud_layout` 变化并重建一次按钮，
+## 而回收价、禁用态这类纯数值不进指纹（它们每 tick 值级刷新）。
+func _rogue_hud_sell_signature(p: Dictionary) -> String:
+	var stash: Array=p.get("rogue_stash",[])
+	var parts: Array=[]
+	var index := 0
+	while index<stash.size() and parts.size()<_ROGUE_SELL_SLOTS:
+		var item: Dictionary=stash[index] if stash[index] is Dictionary else {}
+		if not item.is_empty() and Catalog.is_equipment(str(item.get("kind",""))):
+			parts.append("%s/%s/%d" % [str(item.get("instance_id","")),Catalog.item_name(item),int(item.get("tier",0))])
+		index+=1
+	return "|".join(parts)
+
+
+# --- U1 · 构筑页的键盘直连（核心 / 补正 / 铭刻）---------------------------------
+# 这三件事以前只能鼠标点：核心在 `rogue_build_ui.gd:124`（锻造页每行一个「选择核心」按钮）、
+# 补正在 `:133`（「+3 补正分支（任选一项）」那一排）、铭刻在 `:138`（24 个铭刻按钮）。
+# 本函数**不新增动作串、不改服务端**：每个键走的就是上面那些按钮的同一个动作串
+# （`rogue_build`）+ 同一个 payload 形状（`verb`/`id`/`index`/`version`），
+# 与 `rogue_build_ui.gd:29-30` 的 `command()` 逐字段一致，所以服务端 `Build.management()`
+# （`rogue_build.gd:831`）看到的东西完全相同。
+#
+# 键位冲突核实（全工程 `KEY_*` 的唯一两个来源就是 `setup_inputs()` 的动作表与
+# `_unhandled_input`/`battlefield.gd` 的裸键判断）：
+#   * 已占用的 physical keycode：W/A/S/D、E、F（loot+heal）、H、R（reload）、Q（skill）、
+#     SPACE、C、SHIFT、TAB、M、ESCAPE、CTRL，外加裸键 1/2/3（道具栏）与 Y/N/U（黎明抉择）。
+#   * 因此剩下的字母里挑 **Q / R / T** 三个"在行囊/构筑界面里有意义的"键：
+#       - `T` 在 main.gd 里**完全没有绑定**（只有 camp_screen.gd 的营地界面用了它，
+#         而营地不是 `page_name=="game"`，本函数根本不会被调用）；
+#       - `Q` / `R` 确实是 `skill` / `reload` 两个动作的绑定键，但下面第一件事就是
+#         `if not inventory_open: return false` —— 行囊关着时本函数立刻退出，游戏内
+#         Q/R 的行为逐字不变；行囊开着时 `:1550` 的 `reload→rotate_selected` 与
+#         `skill` 本来就被 return 挡住，所以不存在抢键。
+#   * 本函数的调用点在地图早退（`field.map_open`）之后、三选一早退之前，
+#     所以：地图开着时不响应，三选一/游商面板开着时**仍然**响应（那时按 TAB 也在切换行囊）。
+func _rogue_build_hotkey(event: InputEvent) -> bool:
+	if not inventory_open: return false
+	if not session.roguelike.active(session): return false
+	# 物理键判断，与 `setup_inputs()`（`:539`）的绑定口径一致；`keycode` 只在 `physical_keycode`
+	# 为空时兜底，写法与 `:1502` / `:1532` 的既有裸键判断逐字同款。
+	var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+	if code not in [KEY_Q,KEY_R,KEY_T]: return false
+	var p: Dictionary=_rogue_hud_me()
+	if p.is_empty(): return false
+	# `session.RogueBuild` 在 `main.gd:1751/3166` 已经是既有的读法；这里只是少敲几次，
+	# 类型推断仍是 Variant，行为完全一样。
+	var build=session.RogueBuild
+	# 与 `rogue_build_ui.gd` 面板上的按钮**同一条**前置：`Build.safe()`（`rogue_build.gd:828`）
+	# 同时管着 `status=="active"`、房态、浮空/喝药/施法/闪避中不可改配置。禁用的按钮按下
+	# 也不会发请求，所以这里必须先退，否则会出现"面板上是灰的、按键盘却发了请求"。
+	if not build.safe(session,p): return false
+	# `version` 取**点击时的活值**（`p.rogue_inventory_revision`），与 `rogue_build_ui.gd:30`
+	# 一模一样 —— 不冻结建树时的快照。这和 T2 的 `_rogue_hud_revision` 是同一类修正：
+	# 服务端 `management()` 第一行就要求 `version == p.rogue_inventory_revision`。
+	var version := int(p.rogue_inventory_revision)
+	var bound := int(build.forge_level(p))
+	if code==KEY_R:
+		# 补正：`rogue_build_ui.gd:127-133` 的候选表原样复刻（稳锋 + 武器已有补正的四个属性键）。
+		if bound<3: return false
+		var options: Array=["steady"]
+		for key in ["strength","dexterity","intelligence","arcane"]:
+			if str(Catalog.weapon(int(p.weapon)).get("scaling",{}).get(key,"-")) not in ["-","S"]: options.append(key)
+		var at := options.find(str(p.get("build_temper","")))
+		var next_key := str(options[(at+1)%options.size()] if at>=0 else options[0])
+		session.action("rogue_build",{"verb":"temper","id":next_key,"index":-1,"version":version})
+		notify("补正 → %s" % next_key)
+		return true
+	if code==KEY_Q:
+		# 核心：候选 = 与手持武器同家族（`rogue_build_ui.gd:117-118` 的同一个过滤条件）。
+		if bound<2: return false
+		var family := Catalog.weapon_family(int(p.weapon))
+		var ids: Array=[]
+		for def in RogueContent.data.cores:
+			if int(def.family)==family: ids.append(str(def.id))
+		if ids.is_empty(): return false
+		var current := str(p.get("build_core",""))
+		var pick := str(ids[0])
+		if current!="":
+			var index := ids.find(current)
+			if index>=0 and ids.size()>1: pick=str(ids[(index+1)%ids.size()])
+			elif index<0: pick=str(ids[0])
+			else: return false
+		session.action("rogue_build",{"verb":"core","id":pick,"index":-1,"version":version})
+		notify("核心 → %s" % str(RogueContent.entry(pick).get("name",pick)))
+		return true
+	# 铭刻：24 枚顺序轮换。按钮上那种"已刻过就禁用"的状态由本地预判（`:138` 的
+	# `Build.engraving(player,i+1)` = `equipped.weapon.rogue_id == i`），
+	# 魔晶与"有没有手持武器"两条硬门槛交给服务端（`rogue_build.gd:867`）判定，
+	# 失败会走 `notify()` 的中文提示，不静默。
+	if p.equipped.weapon.is_empty() or int(p.rogue_gold)<35: return false
+	var picked := (int(p.equipped.weapon.get("rogue_id",-1))+1)%24
+	session.action("rogue_build",{"verb":"engrave","id":"","index":picked,"version":version})
+	return true
+
+
+# --- U1-b · 派生链预览的开关（V）与面板上的「关闭 ×」是同一件事的两条入口 --------
+# 状态只有一个：`_rogue_build_preview_hidden`。面板上的按钮走信号把它置 true
+# （上面 `rogue_build_preview.connect("closed", …)` 那一处），这里按键把它翻回来，
+# 两条入口共用同一份状态，不会各记一份。
+func _rogue_preview_toggle(event: InputEvent) -> bool:
+	if not inventory_open: return false
+	if not session.roguelike.active(session): return false
+	if field.map_open: return false
+	# 物理键判断，与 `_rogue_build_hotkey()` / `setup_inputs()`（`:539`）同款口径。
+	var code: int=event.physical_keycode if event.physical_keycode else event.keycode
+	if code!=KEY_V: return false
+	_rogue_build_preview_hidden=not _rogue_build_preview_hidden
+	# 展开时如果人正停在「物品」页签，顺手切到「构筑」页：面板只画构筑派生链，`_process()` 的
+	# 可见性也要求 `selected_tab=="build"`，不切过去的话按 V 会"看起来没反应"。
+	# 这一对人 `selected_tab` / `show_inventory()` 的写法与 `rogue_inventory.gd:97-98` 的
+	# 页签按钮逐字同款（就是"点了构筑页签"）。
+	if not _rogue_build_preview_hidden and str(rogue_inventory.selected_tab)!="build":
+		rogue_inventory.selected_tab="build"
+		show_inventory()
+	return true
+
+
+func _build_rogue_shop_panel(browsing_shop: bool) -> void:
+	rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
+	label(rogue_panel,"游商 · 可购买多件",Vector2(360,187),22,GOLD)
+	label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	# The buttons read `_rogue_hud_revision` at click time; the index is baked into a mutable
+	# cell so a reused button still ships the row it was drawn for.
+	#
+	# E2 (2026-10) · 货架第 4 格（index 3）现在是**服务位**（`roguelike.gd:874` 的
+	# `["weapon","weapon","gear","service","gear"]`），行数据带 `service/service_kind/icon_id`。
+	# 这一格**不需要新控件**：`rogue_take` 在服务端会把 `service==true` 的行转进
+	# `service_action()`（`roguelike.gd:1278`），所以同一个购买按钮照旧可用；图标也**不**改
+	# `rogue_art.gd`（那文件不在本批次的所有权内），而是优先用服务端已经给好的 `icon_id`
+	# 去问 RogueArt 的通用图标接口（见 `_rogue_hud_offer_icon()`）。
+	var indices: Array=[]
+	for i in 6:
+		indices.append(i)
+		var x: int=360+(i%3)*330
+		var y: int=floori(i/3.0)*230
+		var offer: Dictionary=_rogue_hud_shop_offer(i)
+		var icon: TextureRect=rogue_icon(rogue_panel,_rogue_hud_offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
+		var title := label(rogue_panel,"",Vector2(x+73,230+y),17,INK,Vector2(240,52))
+		title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var details := label(rogue_panel,"",Vector2(x,289+y),14,MUTED,Vector2(300,111))
+		details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var row_index := i
+		var b := button(rogue_panel,"",Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":int(indices[row_index]),"revision":_rogue_hud_revision}))
+		_rogue_hud_offer_buttons.append(b)
+		_rogue_hud_nodes[[i,"icon"]]=icon
+		_rogue_hud_nodes[[i,"title"]]=title
+		_rogue_hud_nodes[[i,"desc"]]=details
+	var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["reroll"]=reroll
+	# R7c: the 游商 window had no exit of its own — walking off the fork was the only way
+	# out. The button sits in the header row between the title text (ends near x=540) and
+	# 使用刷新卡 (x=1110), so it covers neither an offer cell nor the refresh button.
+	button(rogue_panel,"离开商店",Vector2(600,180),Vector2(235,42),func(): session.action("rogue_leave",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["prepare"]=label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
+	_rogue_hud_nodes["indices"]=indices
+	# E1 (2026-10) · 魔晶回收。`rogue_sell` 的行囊入口由行囊面板（`rogue_inventory.gd`）
+	# 承担不属于本批次，这里只补上**商店内的回收区**：仅商店阶段可见，右侧 12 件行囊一屏排开。
+	_build_rogue_sell_block()
+	_rogue_hud_refresh_shop(_rogue_hud_me(),browsing_shop)
+
+
+func _rogue_hud_shop_offer(i: int) -> Dictionary:
+	var offers: Array=_rogue_hud_me().get("rogue_shop_offers",[])
+	if i<0 or i>=offers.size(): return {}
+	return offers[i]
+
+
+func _rogue_hud_refresh_shop(p: Dictionary, browsing_shop: bool) -> void:
+	var offers: Array=p.get("rogue_shop_offers",[])
+	var indices: Array=_rogue_hud_nodes.get("indices",[])
+	var buttons: Array=_rogue_hud_offer_buttons
+	for i in mini(6,mini(offers.size(),buttons.size())):
+		var offer: Dictionary=offers[i] if offers[i] is Dictionary else {}
+		var x: int=360+(i%3)*330
+		var y: int=floori(i/3.0)*230
+		if i<indices.size(): indices[i]=i
+		var icon: TextureRect=_rogue_hud_nodes.get([i,"icon"])
+		if is_instance_valid(icon):
+			icon.texture=_rogue_hud_offer_icon(offer)
+			icon.position=Vector2(x,228+y)
+		var title: Label=_rogue_hud_nodes.get([i,"title"])
+		if is_instance_valid(title):
+			title.text=str(offer.get("name",""))
+			title.position=Vector2(x+73,230+y)
+		var details: Label=_rogue_hud_nodes.get([i,"desc"])
+		if is_instance_valid(details):
+			# U1 任务3 · 数值类文案（含"换上去伤害 x → y"的对比行）一律走值级刷新，
+			# 绝不因此重建面板：行数/控件数都没变，`_rogue_hud_nodes[[i,"desc"]]` 原地复用。
+			details.text=_rogue_hud_offer_details(p,offer)
+			details.position=Vector2(x,289+y)
+		var b: Button=buttons[i]
+		if is_instance_valid(b):
+			var price := int(offer.get("price",0))
+			# E2 · 铭刻类服务位需要"再选一件行囊里的武器"作为 `payload.target`
+			# （`roguelike.gd:1100-1106`）。商店货架没有二级选择器，而把行囊列表搬进这个
+			# 300x47 的按钮里会把面板挤爆，所以第一版**明确禁用**这一格并给出 tooltip，
+			# 其余七种服务照常可买（`rogue_take` → `service_action` 已就绪）。
+			var engraving_service: bool=bool(offer.get("service",false)) and str(offer.get("service_kind",""))=="engraving"
+			b.text="已售出" if offer.get("sold",false) else ("%d 魔晶 · 购买" % price if price>0 else "领取")
+			if engraving_service and not bool(offer.get("sold",false)): b.text="铭刻 · 暂不可购买"
+			b.position=Vector2(x,414+y)
+			b.disabled=bool(offer.get("sold",false)) or p.rogue_gold<price or (offer.has("flask_refill") and p.flask>50) or engraving_service
+			b.tooltip_text="铭刻服务需要先指定行囊中的一件武器；请打开行囊（Tab）在构筑页「武器锻造」里刻在你手持的武器上（35 魔晶）" if engraving_service else ""
+	var reroll: Button=_rogue_hud_nodes.get("reroll")
+	if is_instance_valid(reroll): reroll.disabled=p.rogue_rerolls<=0
+	var prepare: Label=_rogue_hud_nodes.get("prepare")
+	if is_instance_valid(prepare): prepare.visible=session.raid.phase=="rogue_prepare"
+	_refresh_rogue_sell_block(p)
+
+
+# --- E1 · 魔晶回收（`rogue_sell`）------------------------------------------------
+# 动作串与 payload 完全按冻结的接口：`{"revision":<raid.revision 活值>,
+# "version":<p.rogue_inventory_revision 活值>,"source":"reserve","index":<行囊序号>}`。
+# `roguelike.gd:1235` 的 `payload.revision == raid.revision` 与 `:997` 的 version 双重门
+# 都要求活值，所以这里一个都不冻结：revision 走 `_rogue_hud_revision`（T2 的唯一可信来源），
+# version 走点击那一刻的 `p.rogue_inventory_revision`（与 `rogue_build_ui.gd:30` 同款）。
+# 行囊序号在**建树时**烘焙进 `_rogue_hud_sell_indices`，与货架的 `indices` 用法一致。
+func _build_rogue_sell_block() -> void:
+	_rogue_hud_sell_buttons=[]
+	_rogue_hud_sell_indices=[]
+	_rogue_hud_sell_names=[]
+	# 逐项核对过的邻近控件（本区 = 标题 (360,712) + 两列两行按钮，行 y=732/764、高 24，
+	# 列 x=360 / 664、宽 296；最右 960，最下 788）：
+	#   * 商店窗口本体 `rect(rogue_panel,(335,174),(1050,530))`：y 到 704 为止，本区从 712 起；
+	#   * 右下角操作提示（`main.gd:1262-1265` 建，y 754/776/798/820，x 1170..1411）
+	#     → x 方向差 210px，从不交叠；
+	#   * 左下 HUD 簇（`main.gd:1243-1255` 建，血条框 y 776..888、x 15..555）
+	#     → 本区最右列从 x 664 起，x 方向差 109px；最左列在 x 360..555 与它有 x 交叠，
+	#       但本区最下 788 里落在该 x 区间的行是 y 732..756（第一行），仍在 776 之上；
+	#   * `hud.prompt`（肉鸽下 `main.gd:1276` 挪到 (335,739) 770x48，右缘 1105）
+	#     → 与第一行 y 732..756 有交叠，但 prompt 只在有交互目标时才有文字，
+	#       而且本区是 `_build_rogue_shop_panel()` 末尾才建的（画在最上层）。
+	_rogue_hud_nodes["sell_title"]=label(rogue_panel,"魔晶回收 · 行囊装备（只在游商处可卖）",Vector2(360,712),15,GOLD,Vector2(680,22))
+	_rogue_hud_sell_empty=label(rogue_panel,"行囊里没有可回收的装备",Vector2(360,740),13,MUTED,Vector2(660,20))
+	_rogue_hud_nodes["sell_empty"]=_rogue_hud_sell_empty
+	var stash: Array=_rogue_hud_me().get("rogue_stash",[])
+	var placed := 0
+	var index := 0
+	while index<stash.size() and placed<_ROGUE_SELL_SLOTS:
+		var item: Dictionary=stash[index] if stash[index] is Dictionary else {}
+		if not item.is_empty() and Catalog.is_equipment(str(item.get("kind",""))):
+			var column: int=placed%2
+			var row: int=floori(placed/2.0)
+			var at := Vector2(360+column*304,732+row*32)
+			var name_label := label(rogue_panel,"",at+Vector2(0,5),13,INK,Vector2(190,20))
+			var index_now := index
+			var sell := button(rogue_panel,"",at+Vector2(196,1),Vector2(100,24),func(): _rogue_sell_item(index_now))
+			_rogue_hud_sell_buttons.append(sell)
+			_rogue_hud_sell_indices.append(index)
+			_rogue_hud_sell_names.append(name_label)
+			placed+=1
+		index+=1
+
+
+func _refresh_rogue_sell_block(p: Dictionary) -> void:
+	var phase_ok: bool=session.raid.phase=="rogue_shop"
+	var stash: Array=p.get("rogue_stash",[])
+	for i in _rogue_hud_sell_buttons.size():
+		var b: Button=_rogue_hud_sell_buttons[i]
+		if not is_instance_valid(b): continue
+		var index: int=int(_rogue_hud_sell_indices[i]) if i<_rogue_hud_sell_indices.size() else -1
+		var item: Dictionary=stash[index] if index>=0 and index<stash.size() and stash[index] is Dictionary else {}
+		var price := int(session.roguelike.sell_price(session,item)) if not item.is_empty() else 0
+		b.visible=true
+		b.text=("回收 %d" % price) if price>0 else "不可回收"
+		b.disabled=(not phase_ok) or price<=0 or p.status!="active"
+		b.tooltip_text="把 %s 卖回给游商，换取 %d 魔晶（物品会永久离开本局行囊）" % [Catalog.item_name(item),price] if price>0 else "游商不收购这一件"
+		var name_label: Label=_rogue_hud_sell_names[i] if i<_rogue_hud_sell_names.size() else null
+		if is_instance_valid(name_label):
+			name_label.text=Catalog.item_name(item) if not item.is_empty() else ""
+			name_label.visible=true
+	var title: Label=_rogue_hud_nodes.get("sell_title")
+	if is_instance_valid(title): title.visible=true
+	var empty: Label=_rogue_hud_sell_empty
+	if is_instance_valid(empty): empty.visible=_rogue_hud_sell_buttons.is_empty()
+
+
+## 回收按钮的回调体。只做两件事：读**活值** revision/version，发 `rogue_sell`。
+func _rogue_sell_item(index: int) -> void:
+	if index<0: return
+	var p: Dictionary=_rogue_hud_me()
+	if p.is_empty(): return
+	session.action("rogue_sell",{"revision":_rogue_hud_revision,"version":int(p.rogue_inventory_revision),"source":"reserve","index":index})
+
+
+# --- U1 任务3 · 商店货架的「与当前装备的差异」 -----------------------------------
+# 伤害口径**不自己造**：`session.weapon_damage()`（`session.gd:526`）是唯一入口，
+# 预览方式与 `rogue_reward_ui.gd:187-189` 的三选一对比逐字同款（复制玩家字典 →
+# 换上候选武器 → 再问一次），所以商店与三选一读的是同一套公式，不可能算错一套。
+func _rogue_hud_offer_details(p: Dictionary, offer: Dictionary) -> String:
+	var desc := str(offer.get("desc",""))
+	if offer.is_empty() or bool(offer.get("service",false)): return desc
+	var compare := _rogue_hud_weapon_compare(p,offer)
+	if compare=="": compare=_rogue_hud_gear_compare(p,offer)
+	if compare=="": return desc
+	return desc+"\n"+compare
+
+
+## U1 任务3（装备部分）· 与**当前同部位**装备的属性差。数值口径沿用 `Equipment.value()` +
+## `Catalog.gear_slot()`（三选一面板 `rogue_reward_ui.gd:88-99` 就是这两把尺子），
+## 与武器那条"伤害 x → y"同一个位置、同一种写法。
+func _rogue_hud_gear_compare(p: Dictionary, offer: Dictionary) -> String:
+	var item: Variant=offer.get("item",null)
+	if not item is Dictionary or (item as Dictionary).is_empty(): return ""
+	var gear: Dictionary=item
+	if str(gear.get("kind",""))!="gear": return ""
+	var slot := Catalog.gear_slot(gear)
+	var worn: Dictionary={}
+	var list: Variant=p.get("equipped",{}).get("gear",[])
+	if list is Array and slot>=0 and slot<(list as Array).size():
+		if (list as Array)[slot] is Dictionary: worn=(list as Array)[slot]
+	var slot_name := Catalog.gear_slot_name(gear)
+	var parts: Array=[]
+	for stat in ["hp","mana","damage","defense","speed","rate","crit"]:
+		var delta := float(Equipment.value(gear,stat))-float(Equipment.value(worn,stat)) if not worn.is_empty() else float(Equipment.value(gear,stat))
+		if is_zero_approx(delta): continue
+		var percent: bool=stat in ["damage","defense","rate","crit"]
+		var label: String={"hp":"生命","mana":"法力","damage":"攻击","defense":"减伤","speed":"移速","rate":"攻速","crit":"暴击"}[stat]
+		parts.append("%s %s%d%s" % [label,"+" if delta>0 else "-",roundi(absf(delta)*100.0) if percent else roundi(absf(delta)),"%" if percent else ""])
+	if parts.is_empty(): return "与本部位已装备的 %s 相比：无属性变化" % (str(worn.get("name","")) if not worn.is_empty() else slot_name)
+	return "对上 %s：%s" % [slot_name," · ".join(parts)]
+
+
+## 只对"能换成手持武器"的货（`offer.item.kind=="weapon"`）出对比。
+func _rogue_hud_weapon_compare(p: Dictionary, offer: Dictionary) -> String:
+	var item: Variant=offer.get("item",null)
+	if not item is Dictionary or (item as Dictionary).is_empty(): return ""
+	var gear: Dictionary=item
+	if str(gear.get("kind",""))!="weapon": return ""
+	var has_weapon: bool=not p.get("equipped",{}).get("weapon",{}).is_empty()
+	var current := "初始武器" if not has_weapon else ""
+	# 深拷贝是刻意的、也是必须的：`weapon_damage()` 会沿 `p.equipped`/`p.build_*` 往下读，
+	# 这份副本只用来"问一次数"，绝不会被写回玩家字典（`rogue_reward_ui.gd:187` 同款）。
+	var after: Dictionary=p.duplicate(true)
+	after["equipped"]["weapon"]=gear
+	after["weapon"]=int(gear.get("weapon",0))
+	var now := float(session.weapon_damage(p))
+	var next := float(session.weapon_damage(after))
+	var arrow := "换上去伤害 %.1f → %.1f（%+.1f）" % [now,next,next-now]
+	if current!="": arrow+=" · 当前为"+current
+	return arrow
+
+
+## E2 · 服务位图标。`RogueArt.offer_icon()`（`rogue_art.gd:136`，不在本批次所有权内）没有
+## service 分支：服务行的 `name/desc/price/sold/icon_id` 里既没有 `item`、也没有
+## `talent_id`/`flask_refill`/`attribute_points`，直调它会掉进最后那条
+## `item_icons[10]` 的兜底（`rogue_art.gd:149`），也就是每一格服务都长一样。
+## 服务端已经把要用的图集格写在 `icon_id` 上（`roguelike.gd:920` 通用 `I016`、
+## `:929` 铭刻按符文换到 `I001..I024`），铭刻行还另带同值的 `build_id`（`:928`）。
+## 这两个键正好就是 `RogueArt.offer_icon()` 认的两个入口（`:139` 走 talent_id、
+## `:140-142` 走 item.build_id → `RogueBuildArt.item_icon()` → `icon(id)`），
+## 所以这里把服务行**包装成它本来就认的形状**再问同一接口：不猜格子，也不改 `rogue_art.gd`。
+func _rogue_hud_offer_icon(offer: Dictionary) -> Texture2D:
+	if bool(offer.get("service",false)):
+		var cell := str(offer.get("icon_id",offer.get("build_id","")))
+		if cell!="":
+			# 带"最近使用过的铭刻符文"行会返回它自己的 `build_id`，与 `icon_id` 同值；
+			# 两条路径都走 `RogueBuildArt.icon()`，谁先命中都指向同一个图集格。
+			var wrapped := {"item":{"build_id":cell},"icon_id":cell}
+			if cell.begins_with("I"): wrapped["talent_id"]=cell
+			var texture: Texture2D=rogue_field.art.offer_icon(wrapped)
+			if texture!=null: return texture
+	return rogue_field.art.offer_icon(offer)
+
+
+
+func _build_rogue_default_panel() -> void:
+	_rogue_hud_nodes["gold"]=label(rogue_panel,"",Vector2(1030,92),18,GOLD,Vector2(380,35))
+	_rogue_hud_nodes["reward_hint"]=label(rogue_panel,"E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑",Vector2(380,130),20,GOLD,Vector2(900,40))
+	_rogue_hud_nodes["exit_hint"]=label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	# The 游商 block is a lazy sub-panel of the default tree: it exists only when the shop is
+	# on screen and is appended **after** the hints, exactly the order the old builder used.
+	_rogue_hud_nodes["shop_block"]=rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
+	var shop_title := label(rogue_panel,"区域通关 · 选择一项奖励",Vector2(360,187),22,GOLD)
+	_rogue_hud_nodes["shop_title"]=shop_title
+	var indices: Array=[]
+	for i in 6:
+		indices.append(i)
+		var x: int=360+(i%3)*330
+		var y: int=floori(i/3.0)*230
+		var offer: Dictionary=_rogue_hud_shop_offer(i)
+		var icon: TextureRect=rogue_icon(rogue_panel,rogue_field.art.offer_icon(offer),Vector2(x,228+y),Vector2(54,54))
+		var title := label(rogue_panel,"",Vector2(x+73,230+y),17,INK,Vector2(240,52))
+		title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var details := label(rogue_panel,"",Vector2(x,289+y),14,MUTED,Vector2(300,111))
+		details.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var row_index := i
+		var b := button(rogue_panel,"",Vector2(x,414+y),Vector2(300,47),func(): session.action("rogue_take",{"index":int(indices[row_index]),"revision":_rogue_hud_revision}))
+		_rogue_hud_offer_buttons.append(b)
+		_rogue_hud_nodes[[i,"icon"]]=icon
+		_rogue_hud_nodes[[i,"title"]]=title
+		_rogue_hud_nodes[[i,"desc"]]=details
+	var reroll := button(rogue_panel,"使用刷新卡",Vector2(1110,180),Vector2(235,42),func(): session.action("rogue_reroll",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["reroll"]=reroll
+	# R7c: the 游商 window had no exit of its own — walking off the fork was the only way
+	# out. The button sits in the header row between the title text (ends near x=540) and
+	# 使用刷新卡 (x=1110), so it covers neither an offer cell nor the refresh button.
+	#
+	# 幽灵按钮修复（2026-10）：这个按钮以前**没有**登记进 `_rogue_hud_nodes`，而默认树的显隐
+	# 只认登记过的 key（见 `_rogue_hud_refresh_default()` 里的 `for key in _rogue_hud_nodes.keys()`），
+	# 所以它在默认树的**任何**相位（含战斗）都保持 visible —— 点下去会被
+	# `roguelike.gd:1212` 的相位门拒掉（无害），但暗场景里会留下一个几乎看不见、却能点的按钮。
+	# 现在按同面板「使用刷新卡」（默认树 `:4155`、商店面板 `:3910`）的既有约定登记 key，
+	# 并在刷新里按相位写 `visible`：显隐是**值级**的（控件始终存在，只改属性），所以
+	# `_rogue_hud_layout` 指纹不需要、也不应该跟着相位变（否则默认树会每 tick 重建）。
+	var leave_shop := button(rogue_panel,"离开商店",Vector2(600,180),Vector2(235,42),func(): session.action("rogue_leave",{"revision":_rogue_hud_revision}))
+	_rogue_hud_nodes["leave_shop"]=leave_shop
+	_rogue_hud_nodes["prepare"]=label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
+	_rogue_hud_nodes["indices"]=indices
+
+
+func _rogue_hud_refresh_default(p: Dictionary, browsing_shop: bool) -> void:
+	var gold: Label=_rogue_hud_nodes.get("gold")
+	if is_instance_valid(gold): gold.text="魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls]
+	var reward_hint: Label=_rogue_hud_nodes.get("reward_hint")
+	if is_instance_valid(reward_hint): reward_hint.visible=session.raid.phase=="rogue_reward"
+	var exit_hint: Label=_rogue_hud_nodes.get("exit_hint")
+	if is_instance_valid(exit_hint): exit_hint.visible=session.raid.phase in ["rogue_shop","rogue_exit"]
+	# 幽灵按钮修复（2026-10）· 值级显隐：默认树的「离开商店」只在**玩家确实在商店房**时出现。
+	#
+	# 上一版把相位集合抄成与紧邻的通用指路行 `exit_hint`（上一行）逐字相同
+	# （`session.raid.phase in ["rogue_shop","rogue_exit"]`），那是错的：`exit_hint` 的文案
+	# 是「全队向右集合 · 靠近目标路线末端按 E」（`main.gd:4151`），讲的是**任何** `rogue_exit`
+	# 房间的通用指路；而 `rogue_exit` 是几乎每间房清完后的通用相位（战斗 / 宝藏 / 天赋 / 诅咒
+	# 房都会进它），于是这个按钮在几乎每一间房都冒出来，玩家却根本不在商店。指路行该泛用，
+	# 出口按钮不该——两者**不再同进同退**。
+	#
+	# 现在收紧为"房 + 相位"两个条件同时成立：`session.raid.room=="shop"`（`enter()` 里写下的
+	# 房间种类，`main.gd:3649` 的 `room_kind := str(session.raid.room)` 同款读法）**且**
+	# 相位是 `["rogue_shop","rogue_exit"]`。保留 `rogue_exit` 是必需的：玩家在商店房里向右走过
+	# `browsing_shop`（`p.p.x<fork_start-80`，`main.gd:3640`）那条线后 `_rogue_hud_kind_of()`
+	# 不再返回 `ROGUE_HUD_SHOP`、商店面板不再绘制，此时这个默认树按钮就是**唯一**的离店入口
+	# （相位是 `rogue_exit` 时也是同一件事）。没有另造判定：`room` 就是全工程既有的房间字段。
+	#
+	# 显式写 `visible`（而不是只依赖登记进 `_rogue_hud_nodes`）：默认树的通用循环
+	# （下面 `for key in _rogue_hud_nodes.keys()`）**只**处理 `[i,"part"]` 形状的结构 key，
+	# 字符串 key 一律不管；`reroll` / `shop_title` 这些同面板的兄弟控件也都是自己显式写 `visible` 的。
+	# 值级：控件始终存在，这里只改属性，`_rogue_hud_layout` 指纹**不含** `room`，所以换房不重建。
+	var leave_shop_open: bool=session.raid.room=="shop" and session.raid.phase in ["rogue_shop","rogue_exit"]
+	var leave_shop: Button=_rogue_hud_nodes.get("leave_shop")
+	if is_instance_valid(leave_shop): leave_shop.visible=leave_shop_open
+	var show_shop: bool=session.raid.phase=="rogue_shop" and browsing_shop
+	var block: Panel=_rogue_hud_nodes.get("shop_block")
+	if not is_instance_valid(block): return
+	block.visible=show_shop
+	var shop_title: Label=_rogue_hud_nodes.get("shop_title")
+	var prepare: Label=_rogue_hud_nodes.get("prepare")
+	if is_instance_valid(shop_title):
+		# The old expression was `"游商 · 可购买多件" if phase=="rogue_shop" else "区域通关 · 选择一项奖励"`,
+		# evaluated only inside `phase=="rogue_shop" and browsing_shop`, so the else branch was
+		# unreachable. It is preserved here verbatim so a future phase cannot silently change it.
+		shop_title.text="游商 · 可购买多件" if session.raid.phase=="rogue_shop" else "区域通关 · 选择一项奖励"
+		shop_title.visible=show_shop
+	if is_instance_valid(prepare): prepare.visible=show_shop and session.raid.phase=="rogue_prepare"
+	for node in _rogue_hud_offer_buttons: node.visible=show_shop
+	for key in _rogue_hud_nodes.keys():
+		if key is Array and (key as Array).size()==2:
+			var node: CanvasItem=_rogue_hud_nodes[key]
+			if is_instance_valid(node): node.visible=show_shop
+	var reroll: Button=_rogue_hud_nodes.get("reroll")
+	if is_instance_valid(reroll):
+		reroll.visible=show_shop
 		reroll.disabled=p.rogue_rerolls<=0
-		rogue_panel_close_button()
-		if session.raid.phase=="rogue_prepare": label(rogue_panel,"等待队友选好开局武器",Vector2(480,400),22,GOLD)
-	if session.raid.phase in ["rogue_shop","rogue_exit"]:
-		label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
-
-func rogue_panel_close_button(at: Vector2 = Vector2(1230,180)) -> void:
-	var close := button(rogue_panel,"关闭 · Esc",at,Vector2(135,42),close_rogue_panel)
-	close.name="RoguePanelClose"
-
-func close_rogue_panel() -> void:
-	if not rogue_panel_open: return
-	var p: Dictionary=session.players[session.my_id()]
-	var selection: Dictionary=p.get("rogue_selection",{})
-	if not selection.is_empty():
-		session.action("rogue_selection_return",{"id":selection.id,"version":selection.version})
-		return
-	rogue_panel_dismissed=true
-	rogue_signature=""
-	sound.play("ui-close")
-	update_rogue_hud(session.players[session.my_id()])
-
-func open_rogue_panel() -> void:
-	rogue_panel_dismissed=false
-	rogue_signature=""
-	sound.play("ui-open")
-	update_rogue_hud(session.players[session.my_id()])
+	if not show_shop: return
+	_rogue_hud_refresh_shop(p,browsing_shop)
 
 
-## R7: the 幽暗异事 room. The offer lives in raid-wide `pending_event` (written by
-## `RogueEvents.roll_offer()`), so every Watcher sees the same choices and only an
-## active Watcher may pick one. The click ships `raid.revision`, which
-## `roguelike.choose()` (roguelike.gd:681) compares before touching state — a stale
-## button from an earlier room is dropped instead of replaying.
-func rogue_event_panel(p: Dictionary, revision: int) -> void:
+func _build_rogue_room_panel(kind: String) -> void:
+	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
+	label(rogue_panel,RogueRoomUi.title(kind),Vector2(360,189),22,GOLD)
+	# R7c: 赌徒 / 锻炉 / 镜像 share this panel and none of them had a close button. It sits in
+	# the header row, right of the title box (360..1060) and above the body line (y 226).
+	button(rogue_panel,"离开此间",Vector2(1145,182),Vector2(235,42),func(): session.action("rogue_leave",{"revision":_rogue_hud_revision}))
+	var body := label(rogue_panel,"",Vector2(360,226),15,MUTED,Vector2(1000,42))
+	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	var stats := label(rogue_panel,"",Vector2(360,270),15,GOLD,Vector2(1000,24))
+	_rogue_hud_nodes["body"]=body
+	_rogue_hud_nodes["stats"]=stats
+	# T2 note: `rogue_room_buttons` / `rogue_event_buttons` are kept as **live aliases** of the
+	# row buttons, exactly as the pre-T2 builder filled them (rows only, never the 「离开此间」
+	# header button). `tests/rogue_ui.gd`, `tests/rogue_ui_visual.gd` and
+	# `tests/rogue_room_ui_visual.gd` count these arrays, so dropping them would silently delete
+	# five visual-layer assertions' worth of coverage even though `rogue_room_ui.gd` is disjoint.
+	rogue_room_buttons=[]
+	# The row callbacks resolve their action live from this slot; it must be reset **before** the
+	# first button is wired or a click on a fresh tree reads an empty array.
+	_rogue_hud_row_actions=[]
+	var rows: Array=RogueRoomUi.rows(kind,session.raid,RogueRoomUi.context_of(session,_rogue_hud_me()))
+	for i in rows.size():
+		var y := 304+i*92
+		rect(rogue_panel,Vector2(360,y),Vector2(1000,84),Color(0.06,0.045,0.10,0.92))
+		var name_label := label(rogue_panel,"",Vector2(378,y+8),17,GOLD,Vector2(700,26))
+		var desc := label(rogue_panel,"",Vector2(378,y+36),13,MUTED,Vector2(752,42))
+		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		_rogue_hud_row_actions.append(str(rows[i].action))
+		var row_slot := i
+		var take := button(rogue_panel,"",Vector2(1150,y+20),Vector2(190,46),func(): session.action(str(_rogue_hud_row_actions[row_slot]),{"index":row_slot,"revision":_rogue_hud_revision}))
+		take.name="RogueRoomOption%d" % i
+		_rogue_hud_offer_buttons.append(take)
+		rogue_room_buttons.append(take)
+		_rogue_hud_nodes[[i,"name"]]=name_label
+		_rogue_hud_nodes[[i,"desc"]]=desc
+		_rogue_hud_nodes[[i,"row"]]=take
+	_rogue_hud_nodes["fallback"]=label(rogue_panel,"这件房契没有可用的服务，向右离开即可。",Vector2(378,308),16,Color("c38b98"),Vector2(940,30))
+	_rogue_hud_nodes["hint"]=label(rogue_panel,"",Vector2(360,690),16,GOLD,Vector2(1000,26))
+	_rogue_hud_nodes["waiting"]=label(rogue_panel,"你当前无法交易 · 等待队友",Vector2(360,716),15,Color("c38b98"),Vector2(1000,24))
+	_rogue_hud_refresh_room(_rogue_hud_me(),kind)
+
+
+func _rogue_hud_refresh_room(p: Dictionary, kind: String) -> void:
+	var ctx := RogueRoomUi.context_of(session,p)
+	var rows: Array=RogueRoomUi.rows(kind,session.raid,ctx)
+	var body: Label=_rogue_hud_nodes.get("body")
+	if is_instance_valid(body): body.text=RogueRoomUi.body(kind,ctx)
+	var stats: Label=_rogue_hud_nodes.get("stats")
+	if is_instance_valid(stats): stats.text="魔晶 %d · 锻造 +%d · 本局灰烬 %d" % [p.rogue_gold,int(p.get("build_forge_level",0)),int(p.get("rogue_ash_run",0))]
+	var buttons: Array=_rogue_hud_offer_buttons
+	for i in mini(rows.size(),buttons.size()):
+		var row: Dictionary=rows[i]
+		var y := 304+i*92
+		if i<_rogue_hud_row_actions.size(): _rogue_hud_row_actions[i]=str(row.action)
+		var name_label: Label=_rogue_hud_nodes.get([i,"name"])
+		if is_instance_valid(name_label):
+			name_label.text=str(row.name)
+			name_label.position=Vector2(378,y+8)
+		var desc: Label=_rogue_hud_nodes.get([i,"desc"])
+		if is_instance_valid(desc):
+			var desc_text := str(row.desc)
+			if str(row.reason)!="": desc_text+="（"+str(row.reason)+"）"
+			desc.text=desc_text
+			desc.position=Vector2(378,y+36)
+		var take: Button=buttons[i]
+		if is_instance_valid(take):
+			var cost := int(row.cost)
+			take.text=("%d 魔晶" % cost) if cost>0 else "确认"
+			take.position=Vector2(1150,y+20)
+			take.tooltip_text=str(row.reason) if str(row.reason)!="" else "无门槛"
+			take.disabled=not bool(row.enabled) or p.status!="active"
+	var fallback: Label=_rogue_hud_nodes.get("fallback")
+	if is_instance_valid(fallback):
+		fallback.visible=rows.is_empty()
+		fallback.text="这件房契没有可用的服务，向右离开即可。"
+	var hint: Label=_rogue_hud_nodes.get("hint")
+	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase))
+	if is_instance_valid(hint):
+		hint.text=hint_line
+		hint.visible=hint_line!=""
+	var waiting: Label=_rogue_hud_nodes.get("waiting")
+	if is_instance_valid(waiting): waiting.visible=p.status!="active"
+
+
+func _build_rogue_event_panel() -> void:
 	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
 	label(rogue_panel,"幽暗异事",Vector2(360,189),22,GOLD)
-	label(rogue_panel,RogueUi.event_title(session.raid),Vector2(360,226),20,INK,Vector2(1000,34))
-	var body := label(rogue_panel,RogueUi.event_body(session.raid),Vector2(360,264),15,MUTED,Vector2(1000,44))
+	var title := label(rogue_panel,"",Vector2(360,226),20,INK,Vector2(1000,34))
+	var body := label(rogue_panel,"",Vector2(360,264),15,MUTED,Vector2(1000,44))
 	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	rogue_event_buttons=[]
-	var options := RogueUi.event_options(session,p,session.raid)
+	_rogue_hud_nodes["title"]=title
+	_rogue_hud_nodes["body"]=body
+	# The event click payload is **not** captured: `RogueUi.event_payload(session.raid,index)`
+	# derives `revision` from the live snapshot at click time, so a reused button can never ship
+	# a stale revision. Only the option index is baked in — and the layout key carries the option
+	# count, so a different roster rebuilds the tree instead of reusing these buttons.
+	var options: Array=RogueUi.event_options(session,_rogue_hud_me(),session.raid)
 	for i in options.size():
-		var option: Dictionary=options[i]
-		var index: int=int(option.get("index",-1))
 		var y := 326+i*100
 		rect(rogue_panel,Vector2(360,y),Vector2(1000,92),Color(0.06,0.045,0.10,0.92))
-		label(rogue_panel,str(option.get("name","")),Vector2(378,y+10),18,GOLD,Vector2(700,28))
+		var name_label := label(rogue_panel,"",Vector2(378,y+10),18,GOLD,Vector2(700,28))
+		var desc := label(rogue_panel,"",Vector2(378,y+42),14,MUTED,Vector2(752,40))
+		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		var option_index := i
+		var pick := button(rogue_panel,"选择",Vector2(1150,y+22),Vector2(190,48),func(): session.action(RogueUi.ACTION_EVENT,RogueUi.event_payload(session.raid,option_index)))
+		pick.name="RogueEventOption%d" % i
+		_rogue_hud_offer_buttons.append(pick)
+		_rogue_hud_nodes[[i,"name"]]=name_label
+		_rogue_hud_nodes[[i,"desc"]]=desc
+	_rogue_hud_nodes["fallback"]=label(rogue_panel,"事件数据缺失，等待房主重新抽取。",Vector2(378,330),16,Color("c38b98"),Vector2(940,30))
+	_rogue_hud_nodes["waiting"]=label(rogue_panel,"你当前无法抉择 · 等待队友",Vector2(360,700),16,Color("c38b98"),Vector2(1000,26))
+	_rogue_hud_refresh_event(_rogue_hud_me())
+
+
+func _rogue_hud_refresh_event(p: Dictionary) -> void:
+	var title: Label=_rogue_hud_nodes.get("title")
+	if is_instance_valid(title): title.text=RogueUi.event_title(session.raid)
+	var body: Label=_rogue_hud_nodes.get("body")
+	if is_instance_valid(body): body.text=RogueUi.event_body(session.raid)
+	var options: Array=RogueUi.event_options(session,p,session.raid)
+	var buttons: Array=_rogue_hud_offer_buttons
+	for i in mini(options.size(),buttons.size()):
+		var option: Dictionary=options[i]
+		var y := 326+i*100
+		var name_label: Label=_rogue_hud_nodes.get([i,"name"])
+		if is_instance_valid(name_label):
+			name_label.text=str(option.get("name",""))
+			name_label.position=Vector2(378,y+10)
 		var require_line := RogueUi.require_text(option)
 		var desc_text := str(option.get("desc",""))
 		if require_line != "": desc_text+="（"+require_line+"）"
-		var desc := label(rogue_panel,desc_text,Vector2(378,y+42),14,MUTED,Vector2(752,40))
-		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		var pick := button(rogue_panel,"选择",Vector2(1150,y+22),Vector2(190,48),func(): session.action(RogueUi.ACTION_EVENT,RogueUi.event_payload(session.raid,index)))
-		pick.name="RogueEventOption%d" % i
-		pick.tooltip_text=require_line if require_line!="" else "无门槛"
-		pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
-		rogue_event_buttons.append(pick)
-	if options.is_empty():
-		label(rogue_panel,"事件数据缺失，等待房主重新抽取。",Vector2(378,330),16,Color("c38b98"),Vector2(940,30))
-	if p.status!="active":
-		label(rogue_panel,"你当前无法抉择 · 等待队友",Vector2(360,700),16,Color("c38b98"),Vector2(1000,26))
-
-
-## R7b: 游方锻炉 / 赌徒营帐 / 镜中挑战. `roguelike.open_room()` writes the pending quote
-## and `refresh_dedicated()` re-quotes after every deal, so this panel only renders what the
-## revision guard will actually accept. Clicking ships the frozen action name together with
-## `raid.revision`: a stale button left over from an earlier room is dropped by
-## `roguelike.choose()` instead of replaying the purchase.
-func rogue_room_panel(p: Dictionary, revision: int, kind: String) -> void:
-	var ctx := RogueRoomUi.context_of(session,p)
-	rect(rogue_panel,Vector2(335,176),Vector2(1050,548),Color(0.035,0.025,0.07,0.96))
-	label(rogue_panel,RogueRoomUi.title(kind),Vector2(360,189),22,GOLD)
-	var body := label(rogue_panel,RogueRoomUi.body(kind,ctx),Vector2(360,226),15,MUTED,Vector2(1000,42))
-	body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	label(rogue_panel,"魔晶 %d · 锻造 +%d · 本局灰烬 %d" % [p.rogue_gold,int(p.get("build_forge_level",0)),int(p.get("rogue_ash_run",0))],Vector2(360,270),15,GOLD,Vector2(1000,24))
-	rogue_room_buttons=[]
-	var rows := RogueRoomUi.rows(kind,session.raid,ctx)
-	for i in rows.size():
-		var row: Dictionary=rows[i]
-		var y := 304+i*92
-		rect(rogue_panel,Vector2(360,y),Vector2(1000,84),Color(0.06,0.045,0.10,0.92))
-		label(rogue_panel,str(row.name),Vector2(378,y+8),17,GOLD,Vector2(700,26))
-		var desc_text := str(row.desc)
-		if str(row.reason)!="": desc_text+="（"+str(row.reason)+"）"
-		var desc := label(rogue_panel,desc_text,Vector2(378,y+36),13,MUTED,Vector2(752,42))
-		desc.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-		var row_action := str(row.action)
-		var row_payload: Dictionary=(row.payload as Dictionary).duplicate(true)
-		var cost := int(row.cost)
-		var take := button(rogue_panel,("%d 魔晶" % cost) if cost>0 else "确认",Vector2(1150,y+20),Vector2(190,46),func(): session.action(row_action,row_payload))
-		take.name="RogueRoomOption%d" % i
-		take.tooltip_text=str(row.reason) if str(row.reason)!="" else "无门槛"
-		take.disabled=not bool(row.enabled) or p.status!="active"
-		rogue_room_buttons.append(take)
-	if rows.is_empty():
-		label(rogue_panel,"这件房契没有可用的服务，向右离开即可。",Vector2(378,308),16,Color("c38b98"),Vector2(940,30))
-	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase))
-	if hint_line!="": label(rogue_panel,hint_line,Vector2(360,690),16,GOLD,Vector2(1000,26))
-	if p.status!="active":
-		label(rogue_panel,"你当前无法交易 · 等待队友",Vector2(360,716),15,Color("c38b98"),Vector2(1000,24))
+		var desc: Label=_rogue_hud_nodes.get([i,"desc"])
+		if is_instance_valid(desc):
+			desc.text=desc_text
+			desc.position=Vector2(378,y+42)
+		var pick: Button=buttons[i]
+		if is_instance_valid(pick):
+			pick.tooltip_text=require_line if require_line!="" else "无门槛"
+			pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
+	var fallback: Label=_rogue_hud_nodes.get("fallback")
+	if is_instance_valid(fallback): fallback.visible=options.is_empty()
+	var waiting: Label=_rogue_hud_nodes.get("waiting")
+	if is_instance_valid(waiting): waiting.visible=p.status!="active"
+	# Same live alias as the room panel: the event panel's buttons *are* its row buttons. It is
+	# re-published on **every** refresh, not only at build time, because rebuilding another panel
+	# swaps `_rogue_hud_offer_buttons` for a fresh array and an alias taken once would keep
+	# pointing at the old one (`tests/rogue_ui.gd` counts this array).
+	rogue_event_buttons=_rogue_hud_offer_buttons
 
 
 ## R7: 种子 / 每日挑战 page. Daily runs are seeded from the **UTC** date and the
@@ -3780,3 +5440,25 @@ func rogue_icon(parent: Node, texture: Texture2D, at: Vector2, dimensions: Vecto
 	node.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	parent.add_child(node)
 	return node
+
+func rogue_panel_close_button(at: Vector2 = Vector2(1230,180)) -> void:
+	var close := button(rogue_panel,"关闭 · Esc",at,Vector2(135,42),close_rogue_panel)
+	close.name="RoguePanelClose"
+
+func close_rogue_panel() -> void:
+	if not rogue_panel_open: return
+	var p: Dictionary=session.players[session.my_id()]
+	var selection: Dictionary=p.get("rogue_selection",{})
+	if not selection.is_empty():
+		session.action("rogue_selection_return",{"id":selection.id,"version":selection.version})
+		return
+	rogue_panel_dismissed=true
+	rogue_signature=""
+	sound.play("ui-close")
+	update_rogue_hud(session.players[session.my_id()])
+
+func open_rogue_panel() -> void:
+	rogue_panel_dismissed=false
+	rogue_signature=""
+	sound.play("ui-open")
+	update_rogue_hud(session.players[session.my_id()])

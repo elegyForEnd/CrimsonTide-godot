@@ -43,7 +43,7 @@ func pose(e: Dictionary, clock: float, rogue: bool) -> Dictionary:
 				var slot := int(e.get("attack_slot",e.get("boss_skill",0)))
 				var clip: int=[0,1,2,3,4,1,2][clampi(slot,0,6)]
 				index=8+clip*8+int(preload("res://scripts/boss_attack_design.gd").beat(e).frame)
-		var frame: Dictionary=rogue_art.boss_animation(art_index,index) if big else rogue_art.minion_animation(int(e.rogue_skin),int(e.get("rogue_variant",0)),index)
+		var frame: Dictionary=rogue_art.boss_animation(art_index,index,int(e.rogue_skin)) if big else rogue_art.minion_animation(int(e.rogue_skin),int(e.get("rogue_variant",0)),index)
 		var texture: Texture2D=frame.texture
 		var h := height*float(frame.get("scale_ratio",1))
 		var w := h*texture.get_width()/texture.get_height()

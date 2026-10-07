@@ -29,7 +29,10 @@ func run() -> void:
 	app.rogue_weapon=1
 	app.start_rogue()
 	check(app.session.running and app.session.roguelike.active(app.session),"camp portal starts rogue")
-	check(app.session.players[1].rogue_rerolls==2 and app.session.players[1].weapon==1,"purchased kit reaches run")
+	# 原文 `players[1].weapon==1`：装备武器后 `p.weapon` 是 Content 域（`WEAPON_BASE+index` = 600+i），
+	# 不再是 Catalog 索引；用稳定的 `build_id` 表达同一意图（配置买的那把真的进了这一局）。
+	# `rogue_rerolls==2` 现在真的成立：`Build.reset()` 不再把调用方配置的刷新卡覆盖成 3。
+	check(app.session.players[1].rogue_rerolls==2 and str(app.session.players[1].equipped.get("weapon",{}).get("build_id",""))=="W001","purchased kit reaches run")
 	check(app.profile.data.coins==100,"confirmed purchases charged once on start")
 	app.session.players[1].status="extracted"
 	app.session.roguelike.settle(app.session)

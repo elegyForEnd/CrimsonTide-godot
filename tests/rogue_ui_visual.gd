@@ -55,6 +55,9 @@ func run() -> void:
 	await capture("rogue-ui-hud")
 
 	# 2. 幽暗异事 事件房面板
+	# 新语义：面板要求 "确实站在事件房(room=='event')" 且报价 revision 与当前 revision 一致；
+	# 上一段为了 HUD 把 room 设成了 curse，所以这里先真正走进事件房，再抽报价。
+	app.session.raid["room"]="event"
 	Events.roll_offer(app.session)
 	app.update_rogue_hud(p)
 	check(app.rogue_event_buttons.size()>0, "the event panel has buttons to draw")

@@ -17,10 +17,22 @@ const MEALS := {
 }
 var profile
 var active_cast := false
+# The units of the most recent harvest or catch that could not fit in either the
+# carried backpack or the safe pocket. The camp reads `take_overflow()` to drop
+# exactly that surplus on the ground; the kitchen never sees it.
+var overflow := 0
+var overflow_key := ""
 
 func _init(owner) -> void:
 	profile = owner
 	profile.data["home"] = clean(profile.data.get("home", {}))
+
+func take_overflow() -> Dictionary:
+	if overflow<=0: return {}
+	var result := {"kind":overflow_key,"units":overflow}
+	overflow = 0
+	overflow_key = ""
+	return result
 
 static func number(value: Variant, low: int, high: int, fallback: int = 0) -> int:
 	if not (value is int or value is float) or not is_finite(float(value)):
@@ -105,31 +117,28 @@ func tend(index: int) -> String:
 	if str(plot.crop).is_empty(): return "选择种子后播种。"
 	if remaining(index)==0:
 		var crop: String = plot.crop
-		if state().stock[crop]>9996: return "仓储已满，请先出售收获。"
-		state().stock[crop] += int(CROPS[crop].yield)
+		var gained := int(CROPS[crop].yield)
+		# Produce is real loot now: it fills the carried backpack, then the safe
+		# pocket; whatever has no room is left for the camp to drop on the ground.
+		var left: int = profile.receive_product(crop,gained)
+		overflow += left
+		if left>0 and overflow_key.is_empty(): overflow_key = crop
 		state().harvests += 1
 		state().plots[index] = {"crop":"","planted":0,"watered":false}
 		commit()
-		return "收获%s ×%d！可以烹饪或出售。" % [CROPS[crop].name,CROPS[crop].yield]
+		return "收获%s ×%d！背包已满的部分掉在地上，按 F 拾取。" % [CROPS[crop].name,gained]
 	if plot.watered: return "已浇水，还需 %d 秒成熟。" % remaining(index)
 	plot.watered = true
 	commit()
 	return "浇水完成，剩余 %d 秒。" % remaining(index)
 
-func sell(key: String) -> String:
-	if not state().stock.has(key) or state().stock[key]<=0: return "没有可出售的收获。"
-	var entry: Dictionary = CROPS.get(key,FISH.get(key,{}))
-	state().stock[key] -= 1
-	profile.data.coins += int(entry.sell)
-	commit()
-	return "出售%s，获得 %d 金币。" % [entry.name,entry.sell]
-
 func cook(key: String) -> String:
 	if not MEALS.has(key): return "食谱不存在。"
 	if state().meals[key]>=9999: return "餐食库存已满。"
 	for ingredient in MEALS[key].needs:
-		if state().stock[ingredient]<MEALS[key].needs[ingredient]: return "食材不足，先种植或钓鱼。"
-	for ingredient in MEALS[key].needs: state().stock[ingredient] -= MEALS[key].needs[ingredient]
+		if profile.product_count(str(ingredient))<int(MEALS[key].needs[ingredient]): return "食材不足，先种植或钓鱼。"
+	for ingredient in MEALS[key].needs:
+		profile.spend_product(str(ingredient),int(MEALS[key].needs[ingredient]))
 	state().meals[key] += 1
 	commit()
 	return "烹饪完成：" + str(MEALS[key].name)
@@ -169,8 +178,11 @@ func catch_fish(quality: float, roll: float) -> String:
 	# Called only by the active cast in the screen; quality comes from timed input.
 	if quality<=0.0: return "鱼挣脱了；下一次在绿色区域内收竿。"
 	var key := fish_key(quality,roll,int(state().rod))
-	state().stock[key] = mini(9999, int(state().stock[key])+1)
-	commit()
+	# A fish is carried loot now, not a counter: fill the bag then the pocket, and
+	# leave the surplus for the camp to drop when both are full.
+	var left: int = profile.receive_product(key,1)
+	overflow += left
+	if left>0 and overflow_key.is_empty(): overflow_key = key
 	return "钓到%s！%s" % [FISH[key].name, "精准收竿，稀有鱼概率提升。" if quality>0.8 else "可出售或用于烹饪。"]
 
 static func meal_id(value: Variant) -> String:

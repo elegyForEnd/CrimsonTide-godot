@@ -1,0 +1,148 @@
+class_name CharacterFrames
+extends RefCounted
+## Atlas regions are clipped independently; padding belongs to the source art.
+var attacks: Array = []
+var movement: Array = []
+var generated := GeneratedAttacks.new()
+var walk_heights: Dictionary = {}
+# The 3D experiment is retained on disk; the game uses the previous sprite art.
+const USE_FEIYUE_3D := false
+var feiyue: GeneratedAttacks
+var feiyue_idle: Dictionary = {}
+
+func _init() -> void:
+	# One atlas pair per hero in the catalog, so recruiting a fourth hero is a
+	# catalog entry plus two PNGs rather than a code change here.
+	for hero in Catalog.HEROES.size():
+		attacks.append(read_sheet("res://assets/combat/attack-clean-%d.png" % hero,CharacterMetrics.ATTACK[hero]))
+		movement.append(read_sheet("res://assets/combat/movement-%d.png" % hero,CharacterMetrics.MOVEMENT[hero]))
+		for row in 3:
+			var replacement := generated.frames("heroes/hero-%d/%s" % [hero,["sword","heavy","staff"][row]])
+			if not replacement.is_empty():
+				match_walk_size(hero,replacement)
+				attacks[hero][row]=replacement
+	if USE_FEIYUE_3D:
+		feiyue=GeneratedAttacks.new("res://assets/combat/feiyue-3d/manifest.json")
+		# Cache the established gameplay height before replacing the walking art.
+		walk_height(0)
+		for row in 3:
+			var action: String=["sword","heavy","staff"][row]
+			var poses := feiyue.frames("heroes/hero-0/"+action)
+			if not poses.is_empty():
+				match_walk_size(0,poses)
+				attacks[0][row]=poses
+			poses=feiyue.frames("heroes/hero-0/"+["walk","run","dodge"][row])
+			if not poses.is_empty():
+				match_walk_size(0,poses)
+				movement[0][row]=poses
+		for weapon in 4:
+			var action: String=["idle","idle_sword","idle_heavy","idle_staff"][weapon]
+			var poses := feiyue.frames("heroes/hero-0/"+action)
+			if not poses.is_empty():
+				match_walk_size(0,poses)
+				feiyue_idle[weapon]=poses
+
+func walk_height(hero: int) -> float:
+	if walk_heights.has(hero): return walk_heights[hero]
+	var height := 0.0
+	for pose in movement[hero][0]:
+		var texture: Texture2D=pose.texture
+		var rect: Rect2=pose.rect
+		var source := texture.get_image()
+		var mark: Vector3=pose.landmark
+		var center: float=mark.x-texture.region.position.x
+		var foot: float=mark.y-texture.region.position.y
+		var run := 0
+		var longest := 0
+		# Ignore faint edge pixels and fragments from neighboring atlas rows.
+		# The main continuous body occupies the central head/torso/foot strip.
+		for y in mini(int(foot),source.get_height()):
+			var occupied := 0
+			for x in range(maxi(0,int(center-mark.z*0.8)),mini(source.get_width(),int(center+mark.z*0.8))):
+				if source.get_pixel(x,y).a>0.5: occupied+=1
+			run=run+1 if occupied>=3 else 0
+			longest=maxi(longest,run)
+		height+=longest*rect.size.y/texture.get_height()
+	walk_heights[hero]=height/float(movement[hero][0].size())
+	return walk_heights[hero]
+
+func match_walk_size(hero: int, poses: Array) -> void:
+	# Opening crown-to-sole height is recorded independently of raised weapons.
+	# Apply one factor to all frames around the ground pivot, never per-pose bounds.
+	var target := walk_height(hero)
+	var factor: float=target/float(poses[0].get("standing_height",90.0))
+	for pose in poses:
+		var rect: Rect2=pose.rect
+		pose.rect=Rect2(CharacterMetrics.FOOT_OFFSET+(rect.position-CharacterMetrics.FOOT_OFFSET)*factor,rect.size*factor)
+		var landmark: Vector3=pose.landmark
+		landmark.z/=factor
+		pose.landmark=landmark
+		pose.standing_height=target
+
+func read_sheet(path: String, landmarks: Array) -> Array:
+	var sheet: Texture2D=load(path)
+	var cell := Vector2i(sheet.get_size()/Vector2(4,3))
+	var source := sheet.get_image()
+	var rows: Array=[]
+	# Generated sheets are not mathematically perfect grids. Locate real empty
+	# gutters so a boot or weapon near the nominal boundary stays in its frame.
+	var ys := [0,find_gutter(source,cell.y,cell.y,true,0,source.get_width()),find_gutter(source,cell.y*2,cell.y,true,0,source.get_width()),source.get_height()]
+	for row in 3:
+		var frames: Array=[]
+		var xs := [0,find_gutter(source,cell.x,cell.x,false,ys[row],ys[row+1]),find_gutter(source,cell.x*2,cell.x,false,ys[row],ys[row+1]),find_gutter(source,cell.x*3,cell.x,false,ys[row],ys[row+1]),source.get_width()]
+		var bounds: Array[Rect2i]=[]
+		for column in 4:
+			var region := Rect2i(xs[column],ys[row],xs[column+1]-xs[column],ys[row+1]-ys[row])
+			bounds.append(region)
+		for column in 4:
+			var texture := AtlasTexture.new()
+			texture.atlas=sheet
+			texture.region=Rect2(bounds[column])
+			texture.filter_clip=true
+			var landmark: Vector3=landmarks[row][column]
+			frames.append({"texture":texture,"rect":CharacterMetrics.layout(texture.region,sheet.get_size(),landmark),"landmark":landmark})
+		rows.append(frames)
+	return rows
+
+func find_gutter(source: Image, expected: int, cell_size: int, horizontal: bool, start: int, end: int) -> int:
+	var radius := int(cell_size*0.22)
+	var best := expected
+	var longest := 0
+	var run := 0
+	for axis in range(expected-radius,expected+radius):
+		var occupied := false
+		for cross_axis in range(start,end):
+			var pixel := source.get_pixel(cross_axis,axis) if horizontal else source.get_pixel(axis,cross_axis)
+			if pixel.a>0.08:
+				occupied=true
+				break
+		run=0 if occupied else run+1
+		if run>longest:
+			longest=run
+			best=axis-run/2
+	return best
+
+func attack_frame(hero: int, weapon: int, frame: int) -> Dictionary:
+	var poses: Array=attacks[hero][clampi(weapon-1,0,2)]
+	return poses[clampi(frame,0,poses.size()-1)]
+
+func has_generated(hero: int, weapon: int) -> bool:
+	return weapon>0 and attacks[hero][clampi(weapon-1,0,2)].size()==8
+
+func motion_frame(hero: int, mode: String, phase: float, dodge_time: float) -> Dictionary:
+	if mode=="idle" and has_rendered_hero(hero):
+		return idle_frame(hero,0,phase*2.0)
+	var row := 2 if mode=="dodge" else 1 if mode=="run" else 0
+	var count: int=movement[hero][row].size()
+	# Phase was authored for four poses: preserve cycle cadence with eight poses.
+	var frame := clampi(int((1.0-dodge_time/TideSession.DODGE_DURATION)*count),0,count-1) if row==2 else posmod(int(phase*count/4.0),count)
+	return movement[hero][row][frame]
+
+func has_rendered_hero(hero: int) -> bool:
+	return hero==0 and feiyue_idle.has(0)
+
+func idle_frame(hero: int, weapon: int, phase: float) -> Dictionary:
+	if has_rendered_hero(hero):
+		var poses: Array=feiyue_idle[clampi(weapon,0,3)]
+		return poses[posmod(int(phase),poses.size())]
+	return attack_frame(hero,maxi(1,weapon),0)

@@ -586,3 +586,32 @@ static func skin_index(floor: int) -> int                         # 返回 rogue
 | class cache 重建（或继续统一 `preload`） | `.godot/` | R18 门禁轮 | v2-15 第 3 条 |
 | 恢复肉鸽构建美术（253 图标/manifest）→ `rogue_build_rules`/`pack` 转绿 | 素材（W5） | R18 前 | C5、`TEST-BASELINE.md` |
 | 每日记录裁剪（保留最近 N 天） | `scripts/rogue_daily.gd` / `profile.gd` | R16 之后 | v3-1 末条 |
+
+### v3-6 / B3-2 / 服务端两项：锻炉「赎罪」解咒（A3）＋ 魔晶付费刷新（P2）（**已生效，客户端按钮待接线**）
+
+**A3 · 锻炉新服务「赎罪仪式 · 清除一条诅咒」（`scripts/rogue_rooms.gd` / `rogue_curses.gd` / `roguelike.gd`）**
+
+- `RogueCurses.remove(p, id) -> bool`、`RogueCurses.remove_last(p) -> String`、`RogueCurses.last_id(p) -> String`（只读）。
+  **三者都不触碰 `raid["curse_serial"]`**：该键是"已施加次数"的追加计数器，只增不减（移除 ≠ 重置序号）。
+- `RogueRooms.DELTA_KEYS` 追加第 8 个键 **`curse_clear`**（值：`true`＝最近一条 / 整数 n＝最近 n 条 / 字符串 id＝指定那条）。
+  `apply_room_delta()` 落地，`paid["curse_clear"]` 回报实际清掉几条；`raid` 键集**不新增**（快照形状不变）。
+- 报价：`RogueRooms.curse_clear_price(floor) = 120 + 45×max(1,floor)`（1 层 165 … 5 层 345，严格递增）。
+  `forge_offers()` 只在 `ctx["curse_count"]>0` 时**追加**第 5 行（无诅咒仍是冻结的 4 项，既有下标 0..3 不动）；
+  行内含 `id="forge_absolve"` / `cost` / `delta={curse_clear:1}` / `available=gold>=cost` / `curse_id`（清除目标＝最近一条）。
+- 动作串沿用既有派发：`rogue_forge` + `{"index":4,"revision":<raid.revision>}`（`choose()` 已有分支，无需改动）。
+  守卫：`raid.room=="forge"`、`payload.revision==raid.revision`、`gold>=cost`；扣费走 `room_action()` 的 `cost` 通道。
+
+**P2 · 奖励/圣坛选择用魔晶付费刷新（`scripts/rogue_rooms.gd` + `roguelike.selection_action()`）**
+
+- 常量：`PAID_REROLL_COST=60`（固定价）、`PAID_REROLL_MAX=2`（**每份 `p.rogue_selection` 实例**上限）、
+  `PAID_REROLL_CATEGORIES=["talent","core","boon","gear","weapon","starter"]`。
+- 动作串 **`rogue_selection_paid_reroll`**，payload `{"id":<selection.id>,"version":<selection.version>}`（与刷新卡同款）。
+  计数写在 `p["rogue_selection"]["paid_rerolls"]`（玩家字典内，**不进 raid、不新增快照顶层字段**；缺键按 0）。
+- 守卫/反馈：`RogueRooms.paid_reroll_check(selection, gold)` → `{ok,reason,message,cost,used,max,left}`，
+  `reason ∈ ok/gold/exhausted/category`；失败时**零状态变化**（不扣魔晶、不换牌、不推进计数），
+  原因同时写进 `selection["error"]` 并发一条 `s.message`。
+- 成功时 `paid_rerolls+1`、`selection.offers=reward_offers(...)`（复用刷新卡那条报价生成路径）、`selection.version+1`；
+  刷新卡路径完全不变，且**不重置** `paid_rerolls`（卡片+魔晶串不成无界连刷）。
+- 待决策：宝箱掉落的非 personal 报价走 `rogue_selection_return` 放回地面后再拾取会得到**新的 selection**，
+  付费刷新计数随之归 0（每次仍花 60 魔晶）。若要跨"放回/重拾"保留计数，需要改 `loot_interact()`（本轮区域外）。
+

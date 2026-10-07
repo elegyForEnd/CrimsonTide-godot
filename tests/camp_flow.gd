@@ -52,6 +52,26 @@ func run() -> void:
 		root.get_texture().get_image().save_png("res://build/camp-forge.png")
 	app.close_modal()
 	check(not app.camp.input_blocked, "closing the forge restores controls")
+	# --- the paid整备台 counter ---------------------------------------------
+	# Three pieces of standing issue gear, one worn at a time; a swap settles the
+	# difference between the two price tags and destroys the piece coming off.
+	app.show_camp()
+	app.profile.data.coins=1000
+	app.profile.data.gear=-1
+	app.buy_camp_gear(0)
+	check(app.profile.data.gear==0 and app.profile.data.coins==820, "the first piece of issue gear costs its full price")
+	check(app.session.players[app.session.my_id()].gear==0, "and reaches the lobby loadout at once")
+	app.buy_camp_gear(1)
+	check(app.profile.data.gear==1 and app.profile.data.coins==580, "a dearer piece settles the price difference")
+	app.buy_camp_gear(2)
+	check(app.profile.data.gear==2 and app.profile.data.coins==700, "a cheaper piece refunds the difference")
+	check(not app.overlay.has_node("CampNotice"), "an accepted swap needs no notice")
+	app.profile.data.coins=100
+	app.buy_camp_gear(1)
+	check(app.profile.data.gear==2 and app.profile.data.coins==100, "a swap that cannot be paid for changes nothing at all")
+	check(app.overlay.has_node("CampNotice"), "and answers with a notice in the middle of the screen")
+	app.profile.data.coins=1000
+	app.show_camp()
 	app.show_camp()
 	app.profile.data.hero=1
 	app.go_camp()
