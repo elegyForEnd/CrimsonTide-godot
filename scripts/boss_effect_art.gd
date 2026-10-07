@@ -9,9 +9,11 @@ const MOTIFS := {"bell":["pendulum","score","fracture","dial"],"thorn":["bramble
 const ROGUE := ["grove","furnace","astral","wing","obsidian","bell","earth","abyss"]
 const LEGACY_ROGUE := 5
 const READABLE := {"bell_pendulum":"bell_clapper","queen_sabres":"royal_sabre","queen_crown":"royal_crown","earth_plate":"rock_wall","hidden_tomb":"gravestone","mirror_frame":"standing_mirror","furnace_kiln":"ground_vent","obsidian_rain":"black_sword","obsidian_echo":"black_sword"}
+const ACTIONS := {"claw_swipe_v2":"dragon-claw-sequence-v2","vine_lash_v2":"thorn-whip-sequence-v2","jaw_snap_v2":"abyss-bite-sequence-v2"}
 static var cache: Dictionary={}
 static var pending: Dictionary={}
 static func asset_path(key: String, motif: String) -> String:
+	if ACTIONS.has(motif): return BASE+"actions/"+str(ACTIONS[motif])+".png"
 	if motif=="electric_bolt": return BASE+"readable/thunder_impact.png"
 	if motif in ["thunder_impact","flame_vent"] or motif in READABLE.values(): return BASE+"readable/"+motif+".png"
 	if READABLE.has(key+"_"+motif): return BASE+"readable/"+str(READABLE[key+"_"+motif])+".png"
@@ -19,7 +21,11 @@ static func asset_path(key: String, motif: String) -> String:
 
 static func warm(key: String) -> void:
 	if not MOTIFS.has(key): return
-	for motif in MOTIFS[key]:
+	var motifs: Array=MOTIFS[key].duplicate()
+	if key=="dragon": motifs.append("claw_swipe_v2")
+	if key=="thorn": motifs.append("vine_lash_v2")
+	if key=="abyss": motifs.append("jaw_snap_v2")
+	for motif in motifs:
 		var path := asset_path(key,str(motif))
 		if cache.has(path) or pending.has(path) or not ResourceLoader.exists(path): continue
 		if ResourceLoader.load_threaded_request(path,"Texture2D")==OK: pending[path]=true

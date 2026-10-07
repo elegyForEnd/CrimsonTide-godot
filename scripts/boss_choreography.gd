@@ -4,6 +4,7 @@ extends RefCounted
 const Art = preload("res://scripts/boss_effect_art.gd")
 const Geometry = preload("res://scripts/boss_geometry.gd")
 const Presentation = preload("res://scripts/boss_presentation.gd")
+const Design = preload("res://scripts/boss_attack_design.gd")
 const MOVES := {
 	"bell":["钟摆葬列","止声错拍","敲钟者","九刻终祷"],
 	"thorn":["荆种追猎","根结囚庭","蛇行藤鞭","猎王播种"],
@@ -54,6 +55,7 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 	# A previous sequence's delayed entities must not survive a new cast.
 	e["choreo_sound_marks"]=[]
 	e["choreo_steps"]=[]
+	e.erase("choreo_motion")
 	e["choreo_serial"]=int(e.get("choreo_serial",0))+1
 	e["choreo_part"]=0
 	e["choreo_elapsed"]=0.0
@@ -61,6 +63,7 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 	e["choreo_cast"]=true
 	e["move_id"]=move
 	e["move_name"]=move
+	e["attack_slot"]=index
 	e["attack_aim"]=aim.normalized() if aim.length_squared()>.01 else Vector2.RIGHT
 	if absf(aim.x)>.05: e.facing=signf(aim.x)
 	var a: Vector2=e.attack_aim
@@ -98,7 +101,10 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 					construct(e,point+side*105,roles[2],"root_knot",3.4)
 					for i in 5: zone(s,e,"circle",point+Vector2.from_angle(i*TAU/5)*115,a,42,1.15,damage*.75,roles[2],0,{"linger":2.0,"slow":.35,"link":"root_knot"})
 				2:
-					for i in 7: zone(s,e,"circle",at+a*(70+i*65)+side*sin(i*1.3)*85,a,48,.7+i*.14,damage*.65,roles[0],0,{"linger":.45})
+					# The vine is wielded by the hunter: draw back, lash, step, reverse lash.
+					zone(s,e,"cone",at,a.rotated(-.18),195,.78,damage*.75,roles[0],0,{"arc":.75})
+					motion(e,at+a*45,.94)
+					zone(s,e,"cone",at+a*45,a.rotated(.18),215,1.32,damage,roles[0],0,{"arc":.85,"sweep_reverse":true})
 				3:
 					for i in 3:
 						construct(e,at+Vector2.from_angle(i*TAU/3)*170,roles[1],"seed_%d"%i,3.7)
@@ -124,7 +130,7 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 			match index:
 				0:
 					zone(s,e,"cone",at,a,175,.65,damage*.7,roles[0])
-					motion(e,at+a*90,.95)
+					motion(e,at+a*90,.88)
 					zone(s,e,"cone",at+a*90,-a,200,1.10,damage*.8,roles[0])
 					zone(s,e,"cone",at+a*90,a,235,2.05,damage*1.1,roles[0])
 				1:
@@ -346,7 +352,7 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 					for i in 3:
 						var pos := at+a*(100+i*85)+side*(70 if i%2 else -70)
 						zone(s,e,"circle",pos,a,48,.85+i*.45,damage*.8,roles[0])
-						motion(e,pos,.85+i*.45)
+						motion(e,pos,.67+i*.45) # Arrive before the landing contact, not after it.
 				4:
 					for i in 6: zone(s,e,"circle",point+side*(i-2.5)*95,a,40,1.45+(i%2)*.38,damage,roles[1])
 					e["choreo_recovery"]=1.6
@@ -457,6 +463,41 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 	marks.sort()
 	if marks.is_empty(): marks.append(.8)
 	e["attack_marks"]=marks.duplicate()
+	# Body animation follows physical contacts or the first casting gesture.
+	# A tower's later tolls and a falling sword are independent of the caster.
+	var records: Array=s.roguelike.combat.effects if e.get("rogue_guardian",false) else s.raid.hazards
+	var body_marks: Array=[]
+	var body_aims: Array=[]
+	for h in records:
+		if h.get("source",-1)!=e.id or h.get("choreo_serial",-1)!=e.choreo_serial or h.get("preview_only",false): continue
+		if str(h.get("delivery","")) in Design.PHYSICAL:
+			var hit_at := float(h.get("windup",h.get("total",.8)))
+			body_marks.append(hit_at)
+			body_aims.append(h.aim)
+			if h.shape=="cone" or (h.shape=="lane" and str(h.get("link",""))==""):
+				var anchor: Vector2=at
+				var bind_after := 0.0
+				for action in e.choreo_steps:
+					if action.op=="motion" and float(action.at)<hit_at:
+						anchor=action.to; bind_after=float(action.at)
+				h["actor_offset"]=h.p-anchor
+				h["bind_after"]=bind_after
+				if h.shape=="lane":
+					for action in e.choreo_steps:
+						if action.op=="motion" and not action.get("warp",false) and is_equal_approx(float(action.at),hit_at):
+							# The whole dash distance is not a giant stationary weapon.
+							# Live contact follows the actor with the remaining real reach.
+							h["dash_warning_reach"]=h.radius
+							h.radius=maxf(40.0,float(h.radius)-anchor.distance_to(action.to))
+	if body_marks.is_empty():
+		# Repeated throws have real repeated arm/wing motion. A distant construct's
+		# shots and delayed ground detonations do not restart the caster animation.
+		for action in e.choreo_steps:
+			if action.op=="projectile" and str(action.get("link",""))=="" and action.p.distance_to(at)<50 and float(action.at) not in body_marks:
+				body_marks.append(float(action.at)); body_aims.append(action.aim)
+		if body_marks.is_empty(): body_marks=[marks[0]]; body_aims=[a]
+	e["body_marks"]=body_marks
+	e["body_aims"]=body_aims
 	e["windup"]=marks[0]
 	e["boss_windup"]=marks[0]
 	e["boss_released"]=false
@@ -467,7 +508,7 @@ static func start(s, e: Dictionary, move: String, aim: Vector2, point: Vector2) 
 	e["attack_time"]=e.attack_total
 	e["cd"]=e.attack_total+.45
 	if e.get("rogue_guardian",false):
-		s.broadcast_combat({"kind":"rogue-boss-charge","p":at,"id":e.id,"floor":e.rogue_skin,"duration":marks[0],"move":move})
+		s.broadcast_combat({"kind":"rogue-boss-charge","p":at,"id":e.id,"floor":e.rogue_skin,"art_key":art_key,"aim":a,"duration":marks[0],"move":move})
 		s.broadcast_audio(s.roguelike.combat.cue(e,int(e.get("boss_skill",0)),"charge"),e)
 	else: Presentation.send(s,e,"charge",{"total":marks[0],"vfx_role":roles[3]})
 	return true
@@ -478,9 +519,12 @@ static func zone(s, e: Dictionary, shape: String, at: Vector2, aim: Vector2, rad
 		if e.has(flag): metadata[flag]=e[flag]
 	e.choreo_part+=1
 	metadata.merge(extra,true)
+	var intent := metadata.duplicate()
+	intent.merge({"shape":shape,"p":at,"inner":inner},true)
+	metadata.merge(Design.contact(choreo_key(e),int(e.get("attack_slot",0)),intent,e.p),false)
 	if not e.choreo_marks.has(delay): e.choreo_marks.append(delay)
 	if e.get("rogue_guardian",false):
-		s.roguelike.combat.zone(e,shape,at,radius,delay,float(extra.get("linger",.28)),damage,aim,inner,at+aim*radius)
+		s.roguelike.combat.zone(e,shape,at,radius,delay,float(metadata.get("linger",.28)),damage,aim,inner,at+aim*radius)
 		var fx: Dictionary=s.roguelike.combat.effects.back()
 		fx.merge(metadata,true)
 	else:
@@ -549,6 +593,7 @@ static func advance(s, dt: float) -> void:
 		if e.hp<=0 or float(e.get("stagger",0))>0:
 			e.choreo_active=false
 			e.choreo_steps=[]
+			e.erase("choreo_motion")
 			e.attack_time=0.0
 			cancel(s,e.id)
 			continue
@@ -591,6 +636,11 @@ static func advance(s, dt: float) -> void:
 			e.motion_phase+=e.p.distance_to(before)/12
 			if motion_data.age>=motion_data.duration: e.erase("choreo_motion")
 		if e.choreo_elapsed>=e.attack_total: e.choreo_active=false
+		if not e.get("body_aims",[]).is_empty():
+			var body_beat := Design.beat(e)
+			var body_aim: Vector2=e.body_aims[clampi(int(body_beat.index),0,e.body_aims.size()-1)]
+			e["attack_aim"]=body_aim
+			if absf(body_aim.x)>.05: e.facing=signf(body_aim.x)
 	# Motion and steering are host authoritative, serialized in the existing snapshots.
 	for b in s.bullets:
 		if not b.get("boss_projectile",false): continue
@@ -625,6 +675,15 @@ static func cancel(s, source: int) -> void:
 		if s.raid.hazards[i].get("source",-1)==source and s.raid.hazards[i].get("choreographed",false): s.raid.hazards.remove_at(i)
 	for i in range(s.roguelike.combat.effects.size()-1,-1,-1):
 		if s.roguelike.combat.effects[i].source==source and s.roguelike.combat.effects[i].get("choreographed",false): s.roguelike.combat.effects.remove_at(i)
+
+## Called before damage on both game modes. The swing follows its living owner.
+static func bind_contact(s, h: Dictionary, dt: float) -> void:
+	h["contact_dt"]=dt
+	if not h.has("actor_offset"): return
+	for e in s.enemies:
+		if e.id==h.source and e.hp>0 and float(e.get("choreo_elapsed",0))>=float(h.get("bind_after",0)):
+			h.p=e.p+h.actor_offset
+			return
 static func cover_blocks(s, h: Dictionary, at: Vector2) -> bool:
 	if not h.get("cover",false): return false
 	var count := 0

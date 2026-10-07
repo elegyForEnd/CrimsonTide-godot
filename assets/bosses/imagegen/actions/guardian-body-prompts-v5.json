@@ -1,0 +1,55 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "id": "grove_body_v5",
+      "key": "grove",
+      "role": "body",
+      "style": "entity",
+      "file": "grove-body-clean-3x3-v5.png",
+      "columns": 3,
+      "rows": 3,
+      "prompt": "Create a native SQUARE 1:1 transparent RGBA CHARACTER ANIMATION ATLAS of exactly this grove guardian boss from the reference. Preserve its original costume, species, face, anatomy, weapons, silhouette, palette and painterly gothic 2D game style. EXACTLY THREE columns and THREE rows, NINE equal SQUARE cells. ONE same FULL BODY character per cell, facing RIGHT in side/three-quarter game view. All feet share precise registration x=50%, y=80% in each cell, same scale. Frame0 neutral anticipatory stance. Frame1 draws its attacking arm/weapon back. Frame2 raises arm or weapon for a cast. Frame3 fully tensioned hold. Frame4 genuine forward attacking arm extension / weapon gesture at CONTACT. Frame5 sustained forward follow-through. Frame6 arm returns. Frame7 relaxes back. Frame8 original neutral pose. Real arm, shoulder, torso and weight-shift differences across the nine frames. For wing the wings raise then beat forward; for obsidian the sword draws back and cuts forward; for furnace its arm/weapon pulls back and extends forward for chain throwing; for grove arms reach to summon roots; for astral hands gesture a crystal cast. ONLY the physical character body and its held weapon. ABSOLUTELY NO external attack effects, fire bursts, detached flames, glowing circles, smoke, beams, floor markings, ground cracks, slash trails, summoned objects, or particles. Built-in decorative eyes/armor glow may remain restrained. The entire pose, horns, wings, weapon and cape MUST stay within the central 64% width and 70% height of EACH cell, never touch neighbours. At least 16% empty transparent gutters. No scenery, ground background, texts, labels, numbers, grid lines, checkerboard artwork, watermark. Crisp detailed production sprites on TRUE alpha, preserve original identity and its neutral foot pivot. Native large square target 2048x2048 if available."
+    },
+    {
+      "id": "furnace_body_v5",
+      "key": "furnace",
+      "role": "body",
+      "style": "entity",
+      "file": "furnace-body-clean-3x3-v5.png",
+      "columns": 3,
+      "rows": 3,
+      "prompt": "Create a native SQUARE 1:1 transparent RGBA CHARACTER ANIMATION ATLAS of exactly this furnace guardian boss from the reference. Preserve its original costume, species, face, anatomy, weapons, silhouette, palette and painterly gothic 2D game style. EXACTLY THREE columns and THREE rows, NINE equal SQUARE cells. ONE same FULL BODY character per cell, facing RIGHT in side/three-quarter game view. All feet share precise registration x=50%, y=80% in each cell, same scale. Frame0 neutral anticipatory stance. Frame1 draws its attacking arm/weapon back. Frame2 raises arm or weapon for a cast. Frame3 fully tensioned hold. Frame4 genuine forward attacking arm extension / weapon gesture at CONTACT. Frame5 sustained forward follow-through. Frame6 arm returns. Frame7 relaxes back. Frame8 original neutral pose. Real arm, shoulder, torso and weight-shift differences across the nine frames. For wing the wings raise then beat forward; for obsidian the sword draws back and cuts forward; for furnace its arm/weapon pulls back and extends forward for chain throwing; for grove arms reach to summon roots; for astral hands gesture a crystal cast. ONLY the physical character body and its held weapon. ABSOLUTELY NO external attack effects, fire bursts, detached flames, glowing circles, smoke, beams, floor markings, ground cracks, slash trails, summoned objects, or particles. Built-in decorative eyes/armor glow may remain restrained. The entire pose, horns, wings, weapon and cape MUST stay within the central 64% width and 70% height of EACH cell, never touch neighbours. At least 16% empty transparent gutters. No scenery, ground background, texts, labels, numbers, grid lines, checkerboard artwork, watermark. Crisp detailed production sprites on TRUE alpha, preserve original identity and its neutral foot pivot. Native large square target 2048x2048 if available."
+    },
+    {
+      "id": "astral_body_v5",
+      "key": "astral",
+      "role": "body",
+      "style": "entity",
+      "file": "astral-body-clean-3x3-v5.png",
+      "columns": 3,
+      "rows": 3,
+      "prompt": "Create a native SQUARE 1:1 transparent RGBA CHARACTER ANIMATION ATLAS of exactly this astral guardian boss from the reference. Preserve its original costume, species, face, anatomy, weapons, silhouette, palette and painterly gothic 2D game style. EXACTLY THREE columns and THREE rows, NINE equal SQUARE cells. ONE same FULL BODY character per cell, facing RIGHT in side/three-quarter game view. All feet share precise registration x=50%, y=80% in each cell, same scale. Frame0 neutral anticipatory stance. Frame1 draws its attacking arm/weapon back. Frame2 raises arm or weapon for a cast. Frame3 fully tensioned hold. Frame4 genuine forward attacking arm extension / weapon gesture at CONTACT. Frame5 sustained forward follow-through. Frame6 arm returns. Frame7 relaxes back. Frame8 original neutral pose. Real arm, shoulder, torso and weight-shift differences across the nine frames. For wing the wings raise then beat forward; for obsidian the sword draws back and cuts forward; for furnace its arm/weapon pulls back and extends forward for chain throwing; for grove arms reach to summon roots; for astral hands gesture a crystal cast. ONLY the physical character body and its held weapon. ABSOLUTELY NO external attack effects, fire bursts, detached flames, glowing circles, smoke, beams, floor markings, ground cracks, slash trails, summoned objects, or particles. Built-in decorative eyes/armor glow may remain restrained. The entire pose, horns, wings, weapon and cape MUST stay within the central 64% width and 70% height of EACH cell, never touch neighbours. At least 16% empty transparent gutters. No scenery, ground background, texts, labels, numbers, grid lines, checkerboard artwork, watermark. Crisp detailed production sprites on TRUE alpha, preserve original identity and its neutral foot pivot. Native large square target 2048x2048 if available."
+    },
+    {
+      "id": "wing_body_v5",
+      "key": "wing",
+      "role": "body",
+      "style": "entity",
+      "file": "wing-body-clean-3x3-v5.png",
+      "columns": 3,
+      "rows": 3,
+      "prompt": "Create a native SQUARE 1:1 transparent RGBA CHARACTER ANIMATION ATLAS of exactly this wing guardian boss from the reference. Preserve its original costume, species, face, anatomy, weapons, silhouette, palette and painterly gothic 2D game style. EXACTLY THREE columns and THREE rows, NINE equal SQUARE cells. ONE same FULL BODY character per cell, facing RIGHT in side/three-quarter game view. All feet share precise registration x=50%, y=80% in each cell, same scale. Frame0 neutral anticipatory stance. Frame1 draws its attacking arm/weapon back. Frame2 raises arm or weapon for a cast. Frame3 fully tensioned hold. Frame4 genuine forward attacking arm extension / weapon gesture at CONTACT. Frame5 sustained forward follow-through. Frame6 arm returns. Frame7 relaxes back. Frame8 original neutral pose. Real arm, shoulder, torso and weight-shift differences across the nine frames. For wing the wings raise then beat forward; for obsidian the sword draws back and cuts forward; for furnace its arm/weapon pulls back and extends forward for chain throwing; for grove arms reach to summon roots; for astral hands gesture a crystal cast. ONLY the physical character body and its held weapon. ABSOLUTELY NO external attack effects, fire bursts, detached flames, glowing circles, smoke, beams, floor markings, ground cracks, slash trails, summoned objects, or particles. Built-in decorative eyes/armor glow may remain restrained. The entire pose, horns, wings, weapon and cape MUST stay within the central 64% width and 70% height of EACH cell, never touch neighbours. At least 16% empty transparent gutters. No scenery, ground background, texts, labels, numbers, grid lines, checkerboard artwork, watermark. Crisp detailed production sprites on TRUE alpha, preserve original identity and its neutral foot pivot. Native large square target 2048x2048 if available."
+    },
+    {
+      "id": "obsidian_body_v5",
+      "key": "obsidian",
+      "role": "body",
+      "style": "entity",
+      "file": "obsidian-body-clean-3x3-v5.png",
+      "columns": 3,
+      "rows": 3,
+      "prompt": "Create a native SQUARE 1:1 transparent RGBA CHARACTER ANIMATION ATLAS of exactly this obsidian guardian boss from the reference. Preserve its original costume, species, face, anatomy, weapons, silhouette, palette and painterly gothic 2D game style. EXACTLY THREE columns and THREE rows, NINE equal SQUARE cells. ONE same FULL BODY character per cell, facing RIGHT in side/three-quarter game view. All feet share precise registration x=50%, y=80% in each cell, same scale. Frame0 neutral anticipatory stance. Frame1 draws its attacking arm/weapon back. Frame2 raises arm or weapon for a cast. Frame3 fully tensioned hold. Frame4 genuine forward attacking arm extension / weapon gesture at CONTACT. Frame5 sustained forward follow-through. Frame6 arm returns. Frame7 relaxes back. Frame8 original neutral pose. Real arm, shoulder, torso and weight-shift differences across the nine frames. For wing the wings raise then beat forward; for obsidian the sword draws back and cuts forward; for furnace its arm/weapon pulls back and extends forward for chain throwing; for grove arms reach to summon roots; for astral hands gesture a crystal cast. ONLY the physical character body and its held weapon. ABSOLUTELY NO external attack effects, fire bursts, detached flames, glowing circles, smoke, beams, floor markings, ground cracks, slash trails, summoned objects, or particles. Built-in decorative eyes/armor glow may remain restrained. The entire pose, horns, wings, weapon and cape MUST stay within the central 64% width and 70% height of EACH cell, never touch neighbours. At least 16% empty transparent gutters. No scenery, ground background, texts, labels, numbers, grid lines, checkerboard artwork, watermark. Crisp detailed production sprites on TRUE alpha, preserve original identity and its neutral foot pivot. Native large square target 2048x2048 if available."
+    }
+  ]
+}

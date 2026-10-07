@@ -37,7 +37,9 @@ func warm_assets() -> void:
 		if warmed.has(key): continue
 		warmed[key]=true
 		Art.warm(key)
+		preload("res://scripts/boss_effect_sequence.gd").warm(key)
 	Art.finish_warming()
+	preload("res://scripts/boss_effect_sequence.gd").finish_warming()
 
 func reset() -> void:
 	damage_visual.reset()

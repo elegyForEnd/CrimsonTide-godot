@@ -26,6 +26,8 @@ static func pose(h: Dictionary, first_seen: float, impact_age: float, tail: floa
 	var role := str(h.get("vfx_role","slash"))
 	var kind := str(h.get("birth_style",style(key,role,str(h.shape))))
 	var active: bool=h.get("fired",h.get("active",false))
+	if str(h.get("delivery","")) in ["blade","whip","claw","bite","thrust"]:
+		return physical_pose(h,impact_age,tail)
 	var remaining := float(h.get("time",h.get("delay",0.0)))
 	var lead := clampf(1.0-remaining/maxf(.01,float(h.get("windup",h.get("total",.60)))),0.0,1.0)
 	var release := clampf(impact_age/.16,0.0,1.0) if active else 0.0
@@ -78,6 +80,7 @@ static func pose(h: Dictionary, first_seen: float, impact_age: float, tail: floa
 	if key in ["storm","wing"] and kind in ["orbit","vortex"]: alpha=0.0 # Wind and lightning are moving fields, never spinning objects.
 	if key=="storm" and role in ["chain","eye","plume"] and not h.get("construct_only",false): alpha=0.0
 	if not Language.body_allowed(key,role,str(h.shape),bool(h.get("construct_only",false))): alpha=0.0
+	if str(h.get("delivery",""))=="shadow": alpha=0.0
 	var sprite := Language.sprite_role(key,role,str(h.shape),str(h.get("move","")))
 	if sprite in ["thunder_impact","flame_vent"] and not h.get("construct_only",false):
 		# Actual vertical emission, contact pivot at the ground. Never spins or grows a crest.
@@ -93,3 +96,32 @@ static func pose(h: Dictionary, first_seen: float, impact_age: float, tail: floa
 		alpha=.90 if burning else .65
 	if tail>0: alpha*=pow(maxf(0.0,1.0-tail/.32),1.8); lift+=tail*22.0
 	return {"kind":kind,"size":size,"angle":angle,"lift":lift,"offset":offset,"reveal":reveal,"alpha":alpha,"flash":exp(-impact_age*19.0)*.45 if active else 0.0,"from_ground":kind in ["grow","portal","vent","vent_source"]}
+
+## Original painted art owns the silhouette. No warning-shaped crop or geometry stamp.
+static func physical_pose(h: Dictionary, age: float, tail: float) -> Dictionary:
+	var active: bool=h.get("fired",h.get("active",false))
+	var duration := float(h.get("strike_duration",.18))
+	var phase := clampf(age/maxf(.01,duration),0,1)
+	var kind := str(h.delivery)
+	var size := float(h.radius)*2.0
+	var offset := Vector2.ZERO
+	var pivot := Vector2.ZERO
+	var angle := 0.0
+	var alpha := (1.0-smoothstep(duration*.7,duration+.07,age))*smoothstep(0,.018,age) if active else 0.0
+	if kind=="thrust":
+		size=float(h.radius)*clampf(phase*1.7,.18,1.0)
+		pivot=Vector2(-.46,0.0) # The painted lance points right; tail begins at the weapon.
+	elif kind=="claw":
+		size=float(h.radius)*1.16
+		pivot=Vector2(-.42,0) # Dedicated three-stroke art travels to the right from the claw.
+		angle=lerpf(-float(h.get("arc",.55)),float(h.get("arc",.55)),phase)
+	elif kind=="whip":
+		size=float(h.radius)*1.08
+		pivot=Vector2(-.46,0) # Dedicated single vine, held at its left grip.
+		angle=lerpf(-float(h.get("arc",.75)),float(h.get("arc",.75)),phase)*(-1.0 if h.get("sweep_reverse",false) else 1.0)
+	elif kind=="bite":
+		size=float(h.radius)*1.28
+		pivot=Vector2(-.40,0)
+		alpha*=.85
+	if tail>0: alpha*=maxf(0.0,1.0-tail/.12)
+	return {"kind":"attached","size":size,"angle":angle,"lift":float(h.get("socket_height",42)),"offset":offset,"pivot":pivot,"reveal":1.0,"alpha":alpha,"flash":exp(-age*30)*.12,"from_ground":false,"stroke_mode":kind=="blade","stroke_phase":phase,"stroke_arc":float(h.get("arc",1.05)),"stroke_reverse":bool(h.get("sweep_reverse",false))}

@@ -51,7 +51,7 @@ func run() -> void:
 	preload("res://scripts/boss_choreography.gd").resolve_positions(mock,caster)
 	check(mock.raid.hazards[0].p==caster.choreo_steps[0].p,"Summon relocates its warning before release, never after")
 	check(mock.raid.hazards[1].p==caster.choreo_steps[1].to,"Blocked dash and follow-up warning resolve to one reachable point")
-	check(EnemyFrames.pose({"id":1,"type":4,"hp":100,"attack_time":1,"choreo_cast":true},0) in [8,9],"Knight never includes its old baked slash alongside a choreographed attack")
+	check(EnemyFrames.pose({"id":1,"type":4,"hp":100,"attack_total":1.8,"attack_time":1,"windup":.8,"choreo_cast":true},0)==5,"Knight extends its weapon at the real contact, using a clean body cell without the old baked slash")
 	var particles=Particles.new(); root.add_child(particles)
 	var lane := {"shape":"lane","p":Vector2.ZERO,"aim":Vector2.RIGHT,"radius":200.0,"inner":20.0}
 	check(particles.safe_particle(lane,Vector2(80,0),2),"Particles can occupy the actual lane centre")

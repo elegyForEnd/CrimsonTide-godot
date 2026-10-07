@@ -2,7 +2,7 @@ extends SceneTree
 
 ## R4 验收：魔境层间节点图生成器（`scripts/rogue_graph.gd`）。
 ## 覆盖：确定性（同种子逐字段相同）、结构不变量（1 boss / 无环 / 无死路 / 出口 1~2 /
-## 节点数 [7,10] / 入口可达 / 每层 ≥1 补给）、房间类型可抽性（含 5 种新房间）、
+## 节点数 [12,16] / 入口可达 / 每层 ≥1 补给）、房间类型可抽性（含 5 种新房间）、
 ## 与旧「每层 7 区」的等价映射、以及"只许用局部 RNG、不许碰全局随机/会话"。
 
 const Graph = preload("res://scripts/rogue_graph.gd")
@@ -75,7 +75,7 @@ func audit(g: Dictionary, tag: String, seen_kinds: Dictionary) -> Dictionary:
 		if kind == Graph.BOSS:
 			check(nexts.is_empty(), "%s the boss must be a terminal node" % tag)
 		else:
-			check(nexts.size() >= 1 and nexts.size() <= Graph.MAX_SUCCESSORS, "%s non-boss exits must stay in [1,%d] (got %d)" % [tag, Graph.MAX_SUCCESSORS, nexts.size()])
+			check(nexts.size() == (1 if depth == Graph.node(g, str(g.boss)).depth - 1 else 2), "%s non-boss exits must offer both branches except at the guardian (maximum %d, got %d)" % [tag, Graph.MAX_SUCCESSORS, nexts.size()])
 		for nid in nexts:
 			var target: Dictionary = nodes.get(str(nid), {})
 			check(not target.is_empty(), "%s exit points at a missing node: %s" % [tag, str(nid)])
@@ -156,7 +156,6 @@ func run() -> void:
 	var max_nodes := 0
 	var min_depths := 99
 	var max_depths := 0
-	var seven_node_chains := 0
 	for seed_value in AUDIT_SEEDS:
 		for f in range(1, FLOORS + 1):
 			var g: Dictionary = Graph.build(seed_value, f)
@@ -166,15 +165,11 @@ func run() -> void:
 			max_nodes = maxi(max_nodes, int(info.nodes))
 			min_depths = mini(min_depths, int(info.depths))
 			max_depths = maxi(max_depths, int(info.depths))
-			if int(info.nodes) == 7 and int(info.singles) == int(info.depths):
-				seven_node_chains += 1
-				check(Graph.legacy_areas(g).size() == 7, "%s the seven-room chain must project onto seven areas" % tag)
 			if f == 1:
 				distinct[Graph.signature(g)] = true
 	check(distinct.size() >= 50, "different seeds must produce different graphs (got %d distinct out of %d)" % [distinct.size(), AUDIT_SEEDS])
 	check(min_nodes == Graph.MIN_NODES and max_nodes == Graph.MAX_NODES, "the sample must span the [%d,%d] node-count range (got %d..%d)" % [Graph.MIN_NODES, Graph.MAX_NODES, min_nodes, max_nodes])
 	check(min_depths == Graph.MIN_DEPTHS and max_depths == Graph.MAX_DEPTHS, "the sample must span the [%d,%d] depth range (got %d..%d)" % [Graph.MIN_DEPTHS, Graph.MAX_DEPTHS, min_depths, max_depths])
-	check(seven_node_chains >= 1, "at least one sampled floor must be exactly the legacy seven-room chain")
 	for kind in Graph.kinds():
 		check(int(seen_kinds.get(kind, 0)) >= 1, "every advertised room type must be sampled: %s" % kind)
 	check(int(seen_kinds.get(Graph.BOSS, 0)) == AUDIT_SEEDS * FLOORS, "every sampled floor must contribute exactly one boss")
@@ -204,5 +199,5 @@ func run() -> void:
 	check(Graph.from_route(["combat"]).is_empty(), "a single-slot route must not fabricate a graph")
 	check(Graph.signature(Graph.from_route(Graph.LEGACY_ROUTE)) == Graph.signature(Graph.from_route(Graph.LEGACY_ROUTE)), "from_route() must be deterministic")
 
-	print("ROGUE GRAPH ", checks, " checks / ", failures, " failures", " | nodes ", min_nodes, "..", max_nodes, " depths ", min_depths, "..", max_depths, " distinct(floor1) ", distinct.size(), "/", AUDIT_SEEDS, " seven-chain ", seven_node_chains, " kinds ", seen_kinds.size())
+	print("ROGUE GRAPH ", checks, " checks / ", failures, " failures", " | nodes ", min_nodes, "..", max_nodes, " depths ", min_depths, "..", max_depths, " distinct(floor1) ", distinct.size(), "/", AUDIT_SEEDS, " kinds ", seen_kinds.size())
 	quit(1 if failures else 0)

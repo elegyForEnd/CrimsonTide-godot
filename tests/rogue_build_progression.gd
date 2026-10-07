@@ -38,27 +38,30 @@ func run() -> void:
 				var graph: Dictionary=s.rogue_graph
 				var kinds: Dictionary={}
 				for node_id in graph.get("order",[]): kinds[str(Graph.node(graph,str(node_id)).kind)]=true
-				check(int(graph.get("order",[]).size())>=7 and int(graph.get("order",[]).size())<=10,"Every floor builds a seven-to-ten node graph")
+				check(int(graph.get("order",[]).size())>=Graph.MIN_NODES and int(graph.get("order",[]).size())<=Graph.MAX_NODES,"Every floor builds both route branches")
 				check(kinds.has("boss"),"Every floor ends with a floor guardian")
 				check(kinds.has("shop") or kinds.has("treasure"),"Every floor offers at least one supply node")
 				check(kinds.has("combat") or kinds.has("elite"),"Every floor keeps at least one combat node")
 				check(kinds.has("talent"),"Every floor keeps a sanctuary node")
-				check(s.raid.exits.size()>=1 and s.raid.exits.size()<=2,"Entry node offers one or two doors")
-				# A guarantee only counts on a row with a single node: a sanctuary on the branch
-				# nobody walks would not be guaranteed (see the floor dressing in roguelike.gd).
-				var row_sizes: Dictionary={}
-				for node_id in graph.get("order",[]):
-					var row := int(Graph.node(graph,str(node_id)).get("depth",0))
-					row_sizes[row]=int(row_sizes.get(row,0))+1
+				check(s.raid.exits.size()==2,"Entry node offers two doors")
+				# A service is guaranteed when every node in a row provides it.
+				var row_kinds: Dictionary={}
 				var sanctuaries := 0
-				var walked_sanctuaries := 0
 				for node_id in graph.get("order",[]):
 					var entry: Dictionary=Graph.node(graph,str(node_id))
-					if str(entry.kind)=="talent":
-						sanctuaries+=1
-						if int(row_sizes.get(int(entry.get("depth",0)),0))==1: walked_sanctuaries+=1
-				check(walked_sanctuaries>=1,"Every floor guarantees a sanctuary on the walked row")
-				check(sanctuaries<=2,"A floor never rolls more than two sanctuaries")
+					var row := int(entry.depth)
+					if not row_kinds.has(row): row_kinds[row]=[]
+					row_kinds[row].append(str(entry.kind))
+					if str(entry.kind)=="talent": sanctuaries+=1
+				var sanctuary_guaranteed := false
+				var supply_guaranteed := false
+				for row in row_kinds:
+					var kinds_at_row: Array=row_kinds[row]
+					sanctuary_guaranteed=sanctuary_guaranteed or kinds_at_row.all(func(kind): return kind=="talent")
+					supply_guaranteed=supply_guaranteed or kinds_at_row.all(func(kind): return kind in ["shop","treasure"])
+				check(sanctuary_guaranteed,"Every route guarantees a sanctuary")
+				check(supply_guaranteed,"Every route guarantees supplies")
+				check(sanctuaries<=2,"A floor never rolls more than two sanctuary nodes")
 				expected_rooms+=s.roguelike.depth_count(s)
 			for door in s.raid.exits:
 				check(s.roguelike.ROOM_NAMES.has(str(door.room)) or str(door.room)=="finish","Every door advertises a legal room")
@@ -82,6 +85,12 @@ func run() -> void:
 					Build.award(s,p)
 					check(p.build_cultivation==cultivation and p.build_reward_queue.is_empty(),"Sanctuary cannot award twice")
 				check(s.raid.phase=="rogue_exit","Personal sanctuary choices release exit")
+				rooms+=1
+			elif s.raid.room not in s.roguelike.CHEST_ROOMS and s.raid.phase in ["rogue_reward","rogue_exit"]:
+				check(s.raid.reward_chest.is_empty(),"Service rooms never grant a combat chest")
+				for p in s.players.values():
+					while not p.rogue_selection.is_empty(): claim(s,p)
+				check(s.raid.phase=="rogue_exit","Service room rewards release the exit without a chest")
 				rooms+=1
 			elif s.raid.phase in ["rogue_combat","rogue_reward"]:
 				if s.raid.phase=="rogue_combat":

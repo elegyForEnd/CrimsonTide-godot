@@ -12,16 +12,38 @@ func pose(e: Dictionary, clock: float, rogue: bool) -> Dictionary:
 	if rogue and (e.get("rogue_minion",false) or e.get("rogue_guardian",false)):
 		if rogue_art==null: rogue_art=preload("res://scripts/rogue_art.gd").new()
 		var big: bool=e.get("rogue_guardian",false)
+		var art_index := int(e.get("boss_art",e.rogue_skin)) if big else int(e.rogue_skin)
+		if big and art_index>=5:
+			# Guardian identity is independent of floor; reuse that boss's body too.
+			var body := e.duplicate()
+			body.erase("rogue_guardian")
+			body["raid_boss"]=art_index==5
+			body["mini_boss"]=art_index>5
+			body["boss_kind"]=0 if art_index==5 else 2
+			if art_index>5: body["wild_boss"]=true; body["wild_kind"]=0 if art_index==6 else 2
+			return pose(body,clock,false)
 		var height := 255.0 if big else 78.0+(int(e.get("rogue_variant",0))%4)*3.0
+		if big and e.get("choreo_cast",false) and float(e.get("attack_time",0))>0:
+			var sequence := preload("res://scripts/boss_effect_sequence.gd")
+			var key: String=preload("res://scripts/boss_effect_art.gd").rogue_key(art_index)+"_body_v5"
+			if sequence.has(key):
+				var body_frame := sequence.frame(key,int(preload("res://scripts/boss_attack_design.gd").beat(e).frame))
+				var scale := height/float(body_frame.height)
+				var size: Vector2=body_frame.texture.get_size()
+				return {"texture":body_frame.texture,"rect":Rect2((-size*.5-body_frame.pivot)*scale,size*scale),"region":Rect2(),"facing":facing,"hover":0.0}
 		var index := int(clock*5+e.id)%4
 		if e.get("moving",false): index=4+int(e.motion_phase)%4
-		if e.get("attack_time",0)>0 and not e.get("choreo_cast",false):
+		if e.get("attack_time",0)>0:
 			var passed: float=e.attack_total-e.attack_time
 			var windup: float=e.get("boss_windup",e.get("minion_windup",.55))
 			var half := 4 if big else 2
 			var step: int=mini(half-1,int(passed/maxf(.01,windup)*half)) if passed<windup else half+mini(half-1,int((passed-windup)/maxf(.01,e.attack_total-windup)*half))
 			index=(8+int(e.boss_skill)*8 if big else 8+int(e.get("minion_skill",0))*4)+step
-		var frame: Dictionary=rogue_art.boss_animation(int(e.rogue_skin),index) if big else rogue_art.minion_animation(int(e.rogue_skin),int(e.get("rogue_variant",0)),index)
+			if big and e.get("choreo_cast",false):
+				var slot := int(e.get("attack_slot",e.get("boss_skill",0)))
+				var clip: int=[0,1,2,3,4,1,2][clampi(slot,0,6)]
+				index=8+clip*8+int(preload("res://scripts/boss_attack_design.gd").beat(e).frame)
+		var frame: Dictionary=rogue_art.boss_animation(art_index,index) if big else rogue_art.minion_animation(int(e.rogue_skin),int(e.get("rogue_variant",0)),index)
 		var texture: Texture2D=frame.texture
 		var h := height*float(frame.get("scale_ratio",1))
 		var w := h*texture.get_width()/texture.get_height()

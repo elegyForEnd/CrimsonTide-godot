@@ -7,6 +7,8 @@ const SHAPE_SHADER = preload("res://resources/boss_damage_shape.gdshader")
 const Staging = preload("res://scripts/boss_effect_staging.gd")
 const Language=preload("res://scripts/boss_effect_language.gd")
 const Contacts=preload("res://scripts/boss_entity_contacts.gd")
+const Design=preload("res://scripts/boss_attack_design.gd")
+const Sequence=preload("res://scripts/boss_effect_sequence.gd")
 const BIRTH_SHADER = preload("res://resources/boss_entity_birth.gdshader")
 const SHELL_SHADER = preload("res://resources/boss_projectile_shell.gdshader")
 # Readability shell for live boss projectiles.  It is its own additive pass on a
@@ -35,6 +37,7 @@ func reset() -> void:
 		node.root.queue_free()
 		node.body.queue_free()
 		if node.has("shell"): node.shell.queue_free()
+		for copy in node.get("copies",[]): copy.queue_free()
 	nodes.clear()
 func _process(dt: float) -> void:
 	if not field.visible or absf(get_global_transform().determinant())<.000001: return
@@ -49,7 +52,7 @@ func _process(dt: float) -> void:
 		if not b.get("boss_projectile",false): continue
 		var previous: Vector2=b.get("boss_previous",b.p)
 		var delta: Vector2=b.p-previous
-		hazards.append({"shape":"capsule","p":previous,"aim":delta.normalized() if delta.length()>.001 else Vector2.RIGHT,"radius":delta.length(),"inner":float(b.get("hit_radius",18)),"choreographed":true,"vfx_role":b.vfx_role,"art_key":b.art_key,"fired":true,"source":b.boss_source,"token":b.boss_token,"time":0.0,"linger":1.0,
+		hazards.append({"shape":"capsule","p":previous,"aim":delta.normalized() if delta.length()>.001 else Vector2.RIGHT,"radius":delta.length(),"inner":float(b.get("hit_radius",18)),"choreographed":true,"vfx_role":b.vfx_role,"art_key":b.art_key,"fired":true,"source":b.boss_source,"token":b.boss_token,"time":-float(b.get("boss_age",0)),"flight_age":float(b.get("boss_age",0)),"linger":1.0,
 			# Presentation-only variant factor: it grows the staged sprite in
 			# boss_effect_staging.pose() and nothing else.  `inner` - and so both
 			# the damage footprint and the shell drawn around it - stays exactly
@@ -67,6 +70,8 @@ func _process(dt: float) -> void:
 		if not h.get("choreographed",false) or h.p.distance_to(field.camera)>1400: continue
 		# Old network records also identify bosses through flags; normalize once for all stages.
 		h=render_record(h)
+		var physical: bool=str(h.get("delivery","")) in Design.PHYSICAL
+		var waiting: bool=not h.get("fired",h.get("active",false))
 		if h.get("preview_only",false) and h.get("fired",h.get("active",false)): continue
 		var token := str(h.get("source",0))+":"+str(h.get("choreo_serial",0))+":"+str(h.get("part",0))+":"+str(h.get("vfx_role",""))+":"+str(h.get("origin",h.p))
 		if h.has("token"): token="projectile:"+str(h.token)
@@ -77,7 +82,7 @@ func _process(dt: float) -> void:
 			var mat := ShaderMaterial.new()
 			mat.shader=SHAPE_SHADER
 			var art_key := str(h.get("art_key",Art.identity(h)))
-			var sprite_role := Language.sprite_role(art_key,str(h.vfx_role),str(h.shape),str(h.get("move","")))
+			var sprite_role := Language.sprite_role(art_key,str(h.vfx_role),str(h.shape),str(h.get("move","")),str(h.get("delivery","")))
 			var texture: Texture2D=Library.texture(str(h.standalone_key)) if h.has("standalone_key") else Art.texture(art_key,sprite_role)
 			mat.set_shader_parameter("art_texture",texture)
 			mat.set_shader_parameter("art_size",texture.get_size())
@@ -114,7 +119,8 @@ func _process(dt: float) -> void:
 		item.seen=generation
 		item.elapsed+=dt
 		item.tail=0.0
-		item.root.visible=not h.get("construct_only",false) and not h.get("cosmetic_only",false)
+		var near_release: bool=float(h.get("time",0))<=float(h.get("warning_lead",99))
+		item.root.visible=not physical and str(h.get("delivery",""))!="shadow" and not h.get("construct_only",false) and not h.get("cosmetic_only",false) and (not waiting or near_release)
 		item.hazard=h.duplicate()
 		item.root.position=h.p
 		item.root.rotation=Geometry.aim(h).angle()
@@ -140,10 +146,14 @@ func _process(dt: float) -> void:
 		var shape_data := Geometry.shader_data(h)
 		for key in shape_data: item.mat.set_shader_parameter(key,shape_data[key])
 		item.mat.set_shader_parameter("halo_strength",0.0)
+		item.mat.set_shader_parameter("warning_style",int(h.get("warning_style",0)))
+		item.mat.set_shader_parameter("contact_impact",str(h.get("delivery","")) in ["fall","pendulum","impact","slam","teeth"])
+		var atlas_role := Sequence.resolve(h,Language.sprite_role(str(h.art_key),str(h.vfx_role),str(h.shape),str(h.get("move","")),str(h.get("delivery",""))))
+		item.mat.set_shader_parameter("painted_body",Sequence.has(atlas_role))
 		var active: bool=h.get("fired",h.get("active",false))
 		particle_stage(token,item,h,active)
 		if active:
-			item.impact_age=maxf(float(item.impact_age)+dt,maxf(0.0,-float(h.get("time",0)))) if item.was_active else maxf(0.0,-float(h.get("time",0)))
+			item.impact_age=maxf(0.0,-float(h.get("time",0))) # Every atlas uses simulation-authoritative state.
 		item.was_active=active
 		item.mat.set_shader_parameter("clock",clock)
 		item.mat.set_shader_parameter("arrival",clampf(float(item.elapsed)/.22,0,1))
@@ -176,6 +186,7 @@ func _process(dt: float) -> void:
 			item.root.queue_free()
 			item.body.queue_free()
 			if item.has("shell"): item.shell.queue_free()
+			for copy in item.get("copies",[]): copy.queue_free()
 			nodes.erase(token)
 		else:
 			item.elapsed+=dt
@@ -186,35 +197,64 @@ func _process(dt: float) -> void:
 
 func update_body(item: Dictionary, h: Dictionary) -> void:
 	var pose := Staging.pose(h,float(item.elapsed),float(item.impact_age),float(item.tail))
+	var sprite_role := Language.sprite_role(str(h.art_key),str(h.vfx_role),str(h.shape),str(h.get("move","")),str(h.get("delivery","")))
+	sprite_role=Sequence.resolve(h,sprite_role)
+	var sequence: Dictionary={}
+	if Sequence.has(sprite_role):
+		var state := Sequence.state(h,float(item.impact_age),sprite_role,float(item.tail))
+		sequence=Sequence.frame(sprite_role,int(state.frame))
+		item.body.texture=sequence.texture
+		pose.alpha=state.opacity
+		if str(sequence.style)=="attached":
+			pose.size=float(h.radius)
+			pose.angle=0.0
+		else: pose=sequence_pose(h,pose,sequence)
+		pose["stroke_mode"]=false
+		item["sequence_state"]=state.name
+		item["sequence_frame"]=state.frame
+		item["sequence_key"]=sprite_role
 	if h.get("semantic_only",false): pose.alpha=0.0
 	if not h.get("construct_only",false) and h.has("link"):
 		for prop in field.session.enemies:
-			if prop.get("boss_construct",false) and prop.hp>0 and prop.get("construct_link","")==h.link and prop.art_key==h.get("art_key","") and prop.vfx_role==h.get("vfx_role","") and prop.p.distance_to(h.p)<10:
-				pose.alpha=0.0 # A linked suspended blade is the attack body, not a second stamp.
+			if prop.get("boss_construct",false) and prop.hp>0 and prop.get("construct_link","")==h.link and prop.art_key==h.get("art_key","") and prop.p.distance_to(h.p)<10:
+				var prop_record := {"art_key":prop.art_key,"vfx_role":prop.vfx_role,"shape":"circle","construct_only":true}
+				var prop_role := Sequence.resolve(prop_record,str(prop.vfx_role))
+				if prop.vfx_role==h.get("vfx_role","") or prop_role==sprite_role:
+					pose.alpha=0.0 # One linked object owns its physical body, including a furnace vent.
 	var anchor: Vector2=h.p
 	if pose.kind=="projectile": anchor+=Geometry.aim(h)*float(h.radius)
-	if pose.kind=="stream": anchor+=Geometry.aim(h)*minf(25.0,float(h.radius)*.06)
+	if pose.kind=="stream": anchor+=Geometry.aim(h)*float(h.get("stream_forward",0))
 	anchor+=pose.offset
 	var screen_point := get_global_transform()*anchor
 	screen_point.y-=float(pose.lift)
 	var native: Vector2=item.body.texture.get_size()
 	var uniform_scale := float(pose.size)/maxf(native.x,native.y)
-	if pose.kind in ["strike","vent","vent_source"]: screen_point.y-=native.y*uniform_scale*(.424 if pose.kind=="strike" else .438)
+	if not sequence.is_empty(): uniform_scale=float(pose.get("uniform_scale",maxf(1.0,float(h.radius)-float(h.get("socket_forward",0)))/float(sequence.reach)))
+	if pose.kind=="attached":
+		var projected := get_global_transform().basis_xform(Geometry.aim(h)).normalized()
+		pose.angle+=projected.angle()
+		screen_point+=get_global_transform().basis_xform(Geometry.aim(h)*float(h.get("socket_forward",0)))
+		var pivot: Vector2=sequence.pivot if not sequence.is_empty() else pose.pivot*native
+		screen_point-=pivot.rotated(float(pose.angle))*uniform_scale
+	if not sequence.is_empty() and pose.kind!="attached": screen_point-=sequence.pivot.rotated(float(pose.angle))*uniform_scale
+	if pose.kind=="stream" and str(h.get("delivery","")) in ["breath","beam","chain","thread"]:
+		screen_point.y-=float(h.get("stream_lift",0))
+	if sequence.is_empty() and pose.kind in ["strike","vent","vent_source"]: screen_point.y-=native.y*uniform_scale*(.424 if pose.kind=="strike" else .438)
 	var contact_key: String=item.body.texture.resource_path.get_file().get_basename()
-	if Contacts.DATA.has(contact_key):
+	if sequence.is_empty() and pose.kind!="attached" and Contacts.DATA.has(contact_key):
 		# New physical entities use their measured contact point, not a generic sprite centre.
 		if pose.kind=="vent_source": screen_point.y+=native.y*uniform_scale*.438
 		else: screen_point.y+=float(pose.size)*.27
 		var contact: Vector2=Contacts.DATA[contact_key]*native
 		screen_point-=contact.rotated(float(pose.angle))*uniform_scale
-	if pose.kind=="projectile" and str(h.get("art_key","")) in ["storm","wing"]:
+	if sequence.is_empty() and pose.kind=="projectile" and str(h.get("art_key","")) in ["storm","wing"]:
 		var projected := get_global_transform().basis_xform(Geometry.aim(h)).normalized()
 		pose.angle=projected.angle()-PI*.5 # The new bolt points down in its native image.
 		screen_point-=projected*native.y*uniform_scale*.424 # Bolt tip is the authoritative live projectile.
 	# Screen-space upright entities: ground projection never squashes falling art.
 	item.body.global_transform=Transform2D(float(pose.angle),Vector2.ONE*uniform_scale,0,screen_point)
-	# Horizontal attack images obey the warning's exact footprint, including rotated safe gaps.
-	var clip: bool=not h.get("construct_only",false) and pose.kind in ["sweep","grow","orbit","vortex","portal","projectile"]
+	# Clip continuous ground materials to gameplay geometry; airborne entities keep their silhouette.
+	var clip: bool=not h.get("construct_only",false) and pose.kind in ["sweep","orbit","vortex","portal","projectile"]
 	item.birth.set_shader_parameter("clip_ground",clip)
 	if clip:
 		var ground_pose := get_global_transform()*Transform2D(Geometry.aim(h).angle(),h.p)
@@ -226,6 +266,10 @@ func update_body(item: Dictionary, h: Dictionary) -> void:
 		for key in ["shape","radius","inner","arc","gap"]: item.birth.set_shader_parameter(key,dimensions[key])
 	for key in ["reveal","opacity","flash","from_ground"]:
 		item.birth.set_shader_parameter(key,pose.alpha if key=="opacity" else pose[key])
+	item.birth.set_shader_parameter("stroke_mode",bool(pose.get("stroke_mode",false)))
+	item.birth.set_shader_parameter("stroke_phase",float(pose.get("stroke_phase",0)))
+	item.birth.set_shader_parameter("stroke_arc",float(pose.get("stroke_arc",1.05)))
+	item.birth.set_shader_parameter("stroke_reverse",bool(pose.get("stroke_reverse",false)))
 	# Live projectiles carry their own outline plus bloom, in the boss's own tone.
 	# Everything else keeps a zeroed shell, so no other staged entity changes.
 	var shell: float=PROJECTILE_SHELL if pose.kind=="projectile" else 0.0
@@ -234,6 +278,85 @@ func update_body(item: Dictionary, h: Dictionary) -> void:
 	# outward.  canvas_item shaders have no TEXEL_SIZE builtin.
 	item.birth.set_shader_parameter("rim_step",Vector2.ONE/maxf(1.0,native.x)*PROJECTILE_SHELL_REACH)
 	item.birth.set_shader_parameter("rim_tone",Art.color(h))
+	update_sequence_copies(item,h,pose,sequence)
+
+func sequence_pose(h: Dictionary, pose: Dictionary, frame: Dictionary) -> Dictionary:
+	var style := str(frame.style)
+	var physical: bool=str(h.get("delivery","")) in Design.PHYSICAL
+	pose.angle=0.0; pose.offset=Vector2.ZERO; pose.reveal=1.0; pose.from_ground=false
+	var projected := get_global_transform().basis_xform(Geometry.aim(h)).normalized()
+	if physical:
+		pose.kind="attached"; pose.lift=float(h.get("socket_height",55))
+		pose.pivot=Vector2.ZERO
+		var projection := get_global_transform().basis_xform(Geometry.aim(h)).length()
+		pose["uniform_scale"]=maxf(1.0,float(h.radius)-float(h.get("socket_forward",0)))*projection/float(frame.reach)
+	elif h.shape=="capsule":
+		pose.kind="projectile"; pose.lift=0.0; pose.angle=projected.angle()
+		# Keep the projectile's forward tip at its authoritative live position.
+		pose["uniform_scale"]=float(h.inner)*2.0/maxf(1,float(frame.ink_height))
+		pose.offset=-Geometry.aim(h)*float(frame.reach)*float(pose.uniform_scale)
+	elif h.shape in ["lane","line"]:
+		pose.kind="stream"; pose.lift=0.0; pose.angle=projected.angle()
+		var width := 44.0 if h.shape=="line" else float(h.inner)
+		pose["uniform_scale"]=minf(240.0/float(frame.reach),width*1.5/maxf(1,float(frame.ink_height)))
+	elif h.shape in ["ring","gap_ring","arc"] or float(h.get("inner",0))>0:
+		pose.kind="orbit"; pose.lift=0.0
+		pose["uniform_scale"]=minf(110.0/float(frame.reach),(float(h.radius)-float(h.inner))*.55/maxf(1,float(frame.ink_height)))
+		pose.alpha=0.0 # Authored ribbons around the perimeter are drawn below, safe centre stays empty.
+	else:
+		pose.kind="fall" if style=="fall" else "grow" if style in ["ground","entity"] else "impact"
+		pose.lift=0.0
+		if style=="fall" and not h.get("fired",h.get("active",false)):
+			var lead := clampf(1-float(h.get("time",0))/maxf(.01,float(h.get("windup",h.get("total",1)))),0,1)
+			pose.lift=(1-lead)*(1-lead)*140
+		pose["uniform_scale"]=clampf(float(h.radius)*1.7,60,200)/float(frame.height)
+		if h.get("construct_only",false): pose["uniform_scale"]=110.0/float(frame.height)
+		if style in ["field","projectile","blade","directional","flow"]:
+			pose.offset=-Geometry.aim(h)*float(frame.reach)*float(pose.uniform_scale)*.5
+			pose.angle=projected.angle()
+			pose.kind="vortex" # These are horizontal flowing fields, not upright shrines.
+	return pose
+
+## Several small flowing cells follow the real path, all at uniform scale.
+## No square image is stretched across the entire lane or enlarged into a seal.
+func update_sequence_copies(item: Dictionary, h: Dictionary, pose: Dictionary, frame: Dictionary) -> void:
+	if not item.has("copies"): item["copies"]=[]
+	for copy in item.copies: copy.visible=false
+	if frame.is_empty() or str(frame.style)=="attached": return
+	var placements: Array=[]
+	var scale := float(pose.get("uniform_scale",1))
+	var alpha := float(pose.alpha)
+	if pose.kind=="stream":
+		var segment := maxf(35.0,float(frame.reach)*scale*.80)
+		var source_x := float(h.get("stream_forward",0))
+		var count := clampi(ceili((float(h.radius)-source_x)/segment),1,14)
+		for i in range(1,count): placements.append({"p":h.p+Geometry.aim(h)*(source_x+segment*i),"angle":pose.angle})
+	elif pose.kind=="orbit":
+		var middle := (float(h.radius)+float(h.inner))*.5
+		var count := clampi(ceili(TAU*middle/90),8,24)
+		alpha=Sequence.state(h,float(item.impact_age),str(item.sequence_key),float(item.tail)).opacity*.7
+		for i in count:
+			var angle := i*TAU/count
+			var at: Vector2=h.p+Vector2.from_angle(angle)*middle
+			if Geometry.contains(h,at): placements.append({"p":at,"angle":get_global_transform().basis_xform(Vector2.from_angle(angle+PI*.5)).angle()})
+	for i in placements.size():
+		if item.copies.size()<=i:
+			var copy := Sprite2D.new(); copy.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
+			var mat := ShaderMaterial.new(); mat.shader=BIRTH_SHADER; copy.material=mat
+			add_child(copy); item.copies.append(copy)
+		var copy: Sprite2D=item.copies[i]
+		copy.visible=true; copy.texture=frame.texture
+		var at: Vector2=get_global_transform()*placements[i].p
+		if pose.kind=="stream": at.y-=float(h.get("stream_lift",0))*maxf(0.0,1.0-placements[i].p.distance_to(h.p)/maxf(1,float(h.radius)))
+		at-=frame.pivot.rotated(float(placements[i].angle))*scale
+		copy.global_transform=Transform2D(float(placements[i].angle),Vector2.ONE*scale,0,at)
+		copy.material.set_shader_parameter("opacity",alpha)
+		copy.material.set_shader_parameter("clip_ground",pose.kind=="orbit")
+		var ground_pose := get_global_transform()*Transform2D(Geometry.aim(h).angle(),h.p)
+		var mask := ground_pose.affine_inverse()*copy.global_transform
+		copy.material.set_shader_parameter("mask_x",mask.x); copy.material.set_shader_parameter("mask_y",mask.y)
+		copy.material.set_shader_parameter("mask_origin",mask.origin)
+		for key in ["shape","radius","inner","arc","gap"]: copy.material.set_shader_parameter(key,Geometry.shader_data(h)[key])
 
 
 static func render_record(record: Dictionary) -> Dictionary:
@@ -272,6 +395,7 @@ static func minion_hazard(fx: Dictionary) -> Dictionary:
 
 func particle_stage(token: String, item: Dictionary, h: Dictionary, active: bool) -> void:
 	if h.get("preview_only",false): return
+	if str(h.get("delivery","")) in Design.PHYSICAL: return # The original attached artwork carries the strike.
 	if h.get("construct_only",false):
 		if h.get("art_key","")=="furnace" and h.vfx_role=="kiln":
 			var burning: bool=h.get("vent_active",false)

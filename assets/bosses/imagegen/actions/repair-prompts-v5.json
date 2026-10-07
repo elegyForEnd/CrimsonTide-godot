@@ -1,0 +1,149 @@
+{
+  "generator": "built-in image_gen",
+  "repairs": [
+    {
+      "id": "thorn_root_v3",
+      "file": "thorn-root-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a tangle of thorn roots pushes out of the ground, grows, holds writhing and withers Palette: blood crimson and black living wood. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "hidden_hands_v3",
+      "file": "hidden-hands-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: one spectral skeletal hand rises from the ground, reaches forward with clutching fingers and sinks back Palette: bone ivory and spectral grave violet. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "knight_slash_v3",
+      "file": "knight-slash-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a thin sharp silver-blue sword slash appears as a crescent CUTTING MOTION STREAK aimed right, grows across the stroke then dissipates, no solid giant sword Palette: silver steel and pale blue. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "thorn_bramble_v3",
+      "file": "thorn-bramble-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a black-red thorn branch thrusts sideways and whips forward, then retracts leaving red splinters Palette: blood crimson and black living wood. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "hidden_ribcage_v3",
+      "file": "hidden-ribcage-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a small segment of curved bone bars rises from the ground, flexes and crumbles, no complete skeleton Palette: bone ivory and spectral grave violet. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "earth_fault_v3",
+      "file": "earth-fault-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a low rolling earth shock-front of jagged cracks and rubble travels rightward then settles into dust Palette: warm ochre stone dark brown and muted gold. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "knight_burst_v3",
+      "file": "knight-burst-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: small sharp steel fragments and sword-contact sparks burst right and scatter then fade Palette: silver steel and pale blue. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "earth_furrow_v3",
+      "file": "earth-furrow-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a jagged ground fissure spreads rightward with small raised stones and dust, then settles Palette: warm ochre stone dark brown and muted gold. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "moon_eclipse_v3",
+      "file": "moon-eclipse-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a low outward rolling dark red blood wave crest curls, advances and dissolves to thin red mist Palette: deep crimson near-black and pale blood pink. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "abyss_devour_v3",
+      "file": "abyss-devour-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a low dark-purple inward sucking water swirl made of several broken ribbons and droplets, never a solid circular emblem Palette: deep violet dark tidal blue and pale lavender. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "abyss_current_v3",
+      "file": "abyss-current-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a thin dark-violet lateral water current ribbon flows horizontally right with pale foamy highlights, recedes into droplets Palette: deep violet dark tidal blue and pale lavender. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "grove_roots_v3",
+      "file": "grove-roots-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: one tangled ancient root segment grows from the ground and lashes forward with thin green spores before withering Palette: dark forest wood mint bioluminescence and soft green. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "dragon_frost_v3",
+      "file": "dragon-frost-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a small ground patch of jagged hoarfrost grows from subtle cracks, glitters while active, melts into vapour Palette: cold ivory ice white and pale cyan. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed grounded base at cell x=50%,y=73%, upright. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.5,
+        0.73
+      ]
+    },
+    {
+      "id": "abyss_jaw_snap_v3",
+      "file": "abyss-jaw-snap-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: two spectral purple jaw strokes with ivory-violet inward teeth, joined to a fixed left hinge and pointing RIGHT. Frame 0 jaws half open, frame 1 fully gaping, frame 2 jaws advancing and closing, frame 3 teeth snap together with a tiny flash, frames 4-6 jaw loosens then recoils, frame 7 faint opened jaw strokes, frame 8 saliva wisps. Upper and lower jaws really open and close, NO complete head or circular mouth. Palette: undefined. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "abyss_tide_v3",
+      "file": "abyss-tide-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: one curling lavender tidal wave crest advances rightward with a hollow gap underneath, collapses to foam Palette: deep violet dark tidal blue and pale lavender. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    },
+    {
+      "id": "furnace_chain_v3",
+      "file": "furnace-chain-3x3-v5-r1.png",
+      "prompt": "Production transparent SQUARE 3x3 nine-frame animation sheet, ONE effect only: a single heavy iron chain shoots horizontally right with linked metal elements, taut vibration and retracting sparks Palette: black iron burning orange and dull copper. Beautiful sharp painted gothic fantasy VFX. CRITICAL layout correction: each square frame's ENTIRE opaque object, glow, debris and smoke must fit strictly between x=25%-75% and y=25%-75% of that little cell, with at least 25% absolutely EMPTY TRANSPARENT gutters on all four sides. Even the strongest release frame MUST remain SMALL INSIDE its cell. Never draw an object or glow up to a cell boundary. Do not crop any part. Nine large equal SQUARE cells in THREE rows and THREE columns on a 1:1 canvas; exactly nine different poses, row major. Frame0 weak preparation,1 stronger preparation,2 onset/contact,3 peak attack,4-6 different sustained poses,7 collapse,8 faint wisps. Show actual deformation and destruction. Fixed source at cell x=25%,y=55%, pointing RIGHT. Narrow flowing strokes, absolutely NO surrounding energy bubble. All9 frames same native scale and registered source. True alpha background. No character, floor, scenery, drawn grid, labels, text, numbers, opaque rectangle, checkerboard artwork, watermark, warning circles or sectors. The reference only guides materials, NOT scale. Native square output, crisp detailed art.",
+      "source": [
+        0.25,
+        0.55
+      ]
+    }
+  ]
+}

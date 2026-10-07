@@ -1,0 +1,53 @@
+{
+  "generator": "built-in image_gen",
+  "repairs": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "wing_gust_v3",
+        "prompt": "ONE production 3x3 SQUARE transparent RGBA animation atlas, exactly nine separate square frames of ONE effect. Subject: three parallel narrow white wind ribbons stream horizontally right and curl at their ends, fade to transparent airflow. Palette: storm grey white wind and electric cyan. Crisp detailed painted gothic fantasy VFX. Each cell MUST keep EVERY ink pixel, glow, debris and smoke within the central 50% width and 50% height of its square, with a HUGE 25% absolutely EMPTY transparent guard on ALL four sides. Never touch or cross cell boundaries. Even peak frame3 is SMALL WITHIN the cell. Fixed source x=25%,y=55% for flowing horizontal ribbons pointed RIGHT; for grounded burst or blade marks base x=50%,y=73%. Nine actual deformation states, row major: 0 weak preparation,1 tension,2 onset/contact,3 peak,4-6 different sustained poses,7 breakdown,8 very faint sparse particles. Constant apparent scale and source. This is a 1:1 square canvas with exactly THREE columns and THREE rows. No other effect, no characters, floor, panels, labels, numbers, grid lines, checkerboard artwork, circle badges, sectors or watermark. Reference only guides materials, never copy its labels or background. True alpha background. Large native square target2048x2048 if possible, generous empty gutters; maximize actual detail in the nine cells.",
+        "file": "wing-gust-3x3-v5-r1.png",
+        "source": [
+          0.25,
+          0.55
+        ]
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "wing_cyclone_v3",
+        "prompt": "ONE production 3x3 SQUARE transparent RGBA animation atlas, exactly nine separate square frames of ONE effect. Subject: several broken curved pale wind ribbons curl around a hollow moving wind-eye, airy and open, no circular badge. Palette: storm grey white wind and electric cyan. Crisp detailed painted gothic fantasy VFX. Each cell MUST keep EVERY ink pixel, glow, debris and smoke within the central 50% width and 50% height of its square, with a HUGE 25% absolutely EMPTY transparent guard on ALL four sides. Never touch or cross cell boundaries. Even peak frame3 is SMALL WITHIN the cell. Fixed source x=25%,y=55% for flowing horizontal ribbons pointed RIGHT; for grounded burst or blade marks base x=50%,y=73%. Nine actual deformation states, row major: 0 weak preparation,1 tension,2 onset/contact,3 peak,4-6 different sustained poses,7 breakdown,8 very faint sparse particles. Constant apparent scale and source. This is a 1:1 square canvas with exactly THREE columns and THREE rows. No other effect, no characters, floor, panels, labels, numbers, grid lines, checkerboard artwork, circle badges, sectors or watermark. Reference only guides materials, never copy its labels or background. True alpha background. Large native square target2048x2048 if possible, generous empty gutters; maximize actual detail in the nine cells.",
+        "file": "wing-cyclone-3x3-v5-r1.png",
+        "source": [
+          0.25,
+          0.55
+        ]
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "wing_helm_v3",
+        "prompt": "ONE production 3x3 SQUARE transparent RGBA animation atlas, exactly nine separate square frames of ONE effect. Subject: a short fierce wind-and-lightning shock burst flares from a grounded point and dissolves into thin electrical strands. Palette: storm grey white wind and electric cyan. Crisp detailed painted gothic fantasy VFX. Each cell MUST keep EVERY ink pixel, glow, debris and smoke within the central 50% width and 50% height of its square, with a HUGE 25% absolutely EMPTY transparent guard on ALL four sides. Never touch or cross cell boundaries. Even peak frame3 is SMALL WITHIN the cell. Fixed source x=25%,y=55% for flowing horizontal ribbons pointed RIGHT; for grounded burst or blade marks base x=50%,y=73%. Nine actual deformation states, row major: 0 weak preparation,1 tension,2 onset/contact,3 peak,4-6 different sustained poses,7 breakdown,8 very faint sparse particles. Constant apparent scale and source. This is a 1:1 square canvas with exactly THREE columns and THREE rows. No other effect, no characters, floor, panels, labels, numbers, grid lines, checkerboard artwork, circle badges, sectors or watermark. Reference only guides materials, never copy its labels or background. True alpha background. Large native square target2048x2048 if possible, generous empty gutters; maximize actual detail in the nine cells.",
+        "file": "wing-helm-3x3-v5-r1.png",
+        "source": [
+          0.5,
+          0.73
+        ]
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "obsidian_seal_v3",
+        "prompt": "ONE production 3x3 SQUARE transparent RGBA animation atlas, exactly nine separate square frames of ONE effect. Subject: four short separated obsidian blade marks erupt from a ground crack, hold a dark energy field and break away, no circular sigil. Palette: near-black obsidian dark magenta and silver white. Crisp detailed painted gothic fantasy VFX. Each cell MUST keep EVERY ink pixel, glow, debris and smoke within the central 50% width and 50% height of its square, with a HUGE 25% absolutely EMPTY transparent guard on ALL four sides. Never touch or cross cell boundaries. Even peak frame3 is SMALL WITHIN the cell. Fixed source x=25%,y=55% for flowing horizontal ribbons pointed RIGHT; for grounded burst or blade marks base x=50%,y=73%. Nine actual deformation states, row major: 0 weak preparation,1 tension,2 onset/contact,3 peak,4-6 different sustained poses,7 breakdown,8 very faint sparse particles. Constant apparent scale and source. This is a 1:1 square canvas with exactly THREE columns and THREE rows. No other effect, no characters, floor, panels, labels, numbers, grid lines, checkerboard artwork, circle badges, sectors or watermark. Reference only guides materials, never copy its labels or background. True alpha background. Large native square target2048x2048 if possible, generous empty gutters; maximize actual detail in the nine cells.",
+        "file": "obsidian-seal-3x3-v5-r1.png",
+        "source": [
+          0.5,
+          0.73
+        ]
+      }
+    }
+  ]
+}

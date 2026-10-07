@@ -21,14 +21,13 @@ func run() -> void:
 	while not p.rogue_selection.is_empty():
 		s.perform(1,"rogue_selection_take",{"id":p.rogue_selection.id,"version":p.rogue_selection.version,"index":0})
 	s.roguelike.tick(s,.016)
-	# R5: rooms come from the per-floor node graph, so a node offers whatever the graph links
-	# (one or two doors) instead of a fixed seven-slot template and two random destinations.
+	# Every intermediate graph row has two destinations; the guardian remains unique.
 	var seen := {}
 	for seed in 200:
 		for floor_number in range(1,6):
 			var graph: Dictionary=Graph.build(seed,floor_number)
 			var nodes: Array=graph.get("order",[])
-			check(nodes.size()>=7 and nodes.size()<=10,"Node count stays between seven and ten")
+			check(nodes.size()>=Graph.MIN_NODES and nodes.size()<=Graph.MAX_NODES,"Node count includes both branches")
 			for id in nodes:
 				var entry: Dictionary=Graph.node(graph,str(id))
 				var nexts: Array=Graph.neighbors(graph,str(id))
@@ -52,7 +51,7 @@ func run() -> void:
 			# Follow the actual offered destination through the public exit action.
 			s.roguelike.enter(s)
 			check((s.raid.room=="boss")==(depth==depth_total),"Floor guardian is the last node of the floor")
-			check(s.raid.exits.size()>=1 and s.raid.exits.size()<=2,"Exit count is one or two")
+			check(s.raid.exits.size()==(1 if f==4 and depth==depth_total else 2),"Every junction offers two exits until the final return")
 			for index in s.raid.exits.size(): check(not s.ruins.blocked(s.ruins.exit_position(index),20),"Exit on ground")
 			p.rogue_selection={}; p.build_reward_queue=[]
 			var index := (depth+1)%2 if s.raid.exits.size()==2 else 0

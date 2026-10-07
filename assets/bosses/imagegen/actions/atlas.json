@@ -1,0 +1,385 @@
+{
+  "assets": {
+    "vine_lash_v2": {
+      "file": "thorn-whip-sequence-v2.png",
+      "frames": [
+        {
+          "region": [
+            47,
+            110,
+            256,
+            262
+          ],
+          "pivot": [
+            21,
+            215
+          ],
+          "sha256": "d1619276f535b270e2f285fab758827f8a9ded1f2bba34c9a0b42ac114b2562e"
+        },
+        {
+          "region": [
+            482,
+            85,
+            283,
+            288
+          ],
+          "pivot": [
+            25,
+            240
+          ],
+          "sha256": "72ca67ea573a0bb18a4bd99e7053130a497fa805c9bc95bbdb2531f6b1d5bdef"
+        },
+        {
+          "region": [
+            918,
+            74,
+            278,
+            299
+          ],
+          "pivot": [
+            16,
+            251
+          ],
+          "sha256": "021a124e80159de73d23e0f7b9b2cd1da6a8b21f8434ea7cfb8c09c54f72ac34"
+        },
+        {
+          "region": [
+            1325,
+            145,
+            434,
+            230
+          ],
+          "pivot": [
+            29,
+            180
+          ],
+          "sha256": "acdd4bd66f1a4f222acd53f3f0eaffcd483e28c28f4bd3712ed1a7d0cc996f9c"
+        },
+        {
+          "region": [
+            41,
+            584,
+            530,
+            180
+          ],
+          "pivot": [
+            25,
+            120
+          ],
+          "sha256": "97ab002aeb16b57c9393c02e16432cce5b5b057c5e8d62f0517f170d375434fb"
+        },
+        {
+          "region": [
+            591,
+            574,
+            407,
+            248
+          ],
+          "pivot": [
+            19,
+            130
+          ],
+          "sha256": "62441489b869a1ac97cd87fcc4ed2a0f6bb0c0cbbb1e338c7ecb347417ab235f"
+        },
+        {
+          "region": [
+            1019,
+            540,
+            238,
+            224
+          ],
+          "pivot": [
+            35,
+            164
+          ],
+          "sha256": "9619482e5e2c5e399bd052d9bef0a27f6cc131d1832ff45e7c0182bb8d74ef3b"
+        },
+        {
+          "region": [
+            1361,
+            551,
+            208,
+            213
+          ],
+          "pivot": [
+            29,
+            153
+          ],
+          "sha256": "4b535a20a4b9d5b8a87c9d8ae0f5cb415252180cb7bf6d8286e4e1bfd09d1233"
+        }
+      ],
+      "reach": 505,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7
+        ]
+      },
+      "sha256": "23aad0e949a0680f57f470f5a469a55e3d46f3dd322052c4ef9dd91eb47488ea"
+    },
+    "jaw_snap_v2": {
+      "file": "abyss-bite-sequence-v2.png",
+      "frames": [
+        {
+          "region": [
+            27,
+            122,
+            342,
+            249
+          ],
+          "pivot": [
+            28,
+            103
+          ],
+          "sha256": "b8be38a768db8f81e01ae2c9b44fa809a754287dc8ec20f08a3b9312f60b23e5"
+        },
+        {
+          "region": [
+            473,
+            56,
+            385,
+            347
+          ],
+          "pivot": [
+            15,
+            169
+          ],
+          "sha256": "e4ffbf9f4fb6624dc5d54dc02f4ee3b68342deff8564fa9672e7f3e2fe507317"
+        },
+        {
+          "region": [
+            907,
+            8,
+            401,
+            435
+          ],
+          "pivot": [
+            15,
+            217
+          ],
+          "sha256": "e2daab97c1e2a561aa552403571abcc2749df311f9ab39ad73e476393be6b7f9"
+        },
+        {
+          "region": [
+            1351,
+            88,
+            408,
+            288
+          ],
+          "pivot": [
+            29,
+            137
+          ],
+          "sha256": "56c2ce7e0f46d07b0b7c61e9f350dc1754f2c78572f580c0b7296546aa8e5706"
+        },
+        {
+          "region": [
+            25,
+            533,
+            407,
+            249
+          ],
+          "pivot": [
+            30,
+            132
+          ],
+          "sha256": "a619276c3b6f7b1ba15dc2f59cc6f9179eab75ed29739efbac99d4048639031b"
+        },
+        {
+          "region": [
+            473,
+            549,
+            388,
+            243
+          ],
+          "pivot": [
+            15,
+            116
+          ],
+          "sha256": "aa37e0debb03a7cc162bf9e4a684aec34d0cb0f984922a8eef56ff91167637f4"
+        },
+        {
+          "region": [
+            914,
+            443,
+            390,
+            385
+          ],
+          "pivot": [
+            8,
+            222
+          ],
+          "sha256": "c19f7520ad680d074a5c690e093a64d763422e28e2aec1b07ffa986116790e3c"
+        },
+        {
+          "region": [
+            1355,
+            545,
+            356,
+            268
+          ],
+          "pivot": [
+            25,
+            120
+          ],
+          "sha256": "48aa9a96d3786c755f2679297b7d1f1a02b40cdec4ad9ae7f7a95b6b828b307e"
+        }
+      ],
+      "reach": 377,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7
+        ]
+      },
+      "sha256": "8c688434fa247558bc3c42d0797fa076981e827091705e5d1404a4dc6eb4a7c4"
+    },
+    "claw_swipe_v2": {
+      "file": "dragon-claw-sequence-v2.png",
+      "frames": [
+        {
+          "region": [
+            45,
+            170,
+            137,
+            116
+          ],
+          "pivot": [
+            1,
+            55
+          ],
+          "sha256": "0e0fa8fdf493a41f41531a8766e28ea57bc39e871758f9f92e0909a305eb14c1"
+        },
+        {
+          "region": [
+            489,
+            95,
+            211,
+            205
+          ],
+          "pivot": [
+            6,
+            130
+          ],
+          "sha256": "0f3d6d5d37909c6c3224772169b6f5bfd96263b3ef11afcc498a79340b4ddfa0"
+        },
+        {
+          "region": [
+            930,
+            121,
+            205,
+            185
+          ],
+          "pivot": [
+            4,
+            104
+          ],
+          "sha256": "586fb7c50a7ee1f16a6484092a5689a2cd42eaada34ddc2ac5e23d4fd0b439f6"
+        },
+        {
+          "region": [
+            1375,
+            114,
+            372,
+            178
+          ],
+          "pivot": [
+            0,
+            111
+          ],
+          "sha256": "8f2a818cf902a81166cc52ba834f3aca724a47b850c3f81038923406628cd4d7"
+        },
+        {
+          "region": [
+            44,
+            511,
+            430,
+            242
+          ],
+          "pivot": [
+            2,
+            166
+          ],
+          "sha256": "ee72e44d5b23e43d6c44fe428992a13748f37b70f1b318ae1723fa220459c3aa"
+        },
+        {
+          "region": [
+            490,
+            547,
+            403,
+            234
+          ],
+          "pivot": [
+            5,
+            130
+          ],
+          "sha256": "f2d96823cbd2dd31dcdf1ea80eb2556d5b7cd3d9ae2256a2276a1aea5aab683d"
+        },
+        {
+          "region": [
+            932,
+            546,
+            376,
+            208
+          ],
+          "pivot": [
+            2,
+            131
+          ],
+          "sha256": "7ffa77bdfa48d24c4bba546934c6fba560e47f11f1ba758c77f326a96479ab38"
+        },
+        {
+          "region": [
+            1376,
+            549,
+            292,
+            190
+          ],
+          "pivot": [
+            -1,
+            128
+          ],
+          "sha256": "d250fe113ba0d7148a37ef8070a83c712b74868365cfd1218868babaae9acc03"
+        }
+      ],
+      "reach": 428,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7
+        ]
+      },
+      "sha256": "eac6380e55913497481522bc4d2de9b4ddff66ecf1a187872f007cf048303362"
+    }
+  }
+}

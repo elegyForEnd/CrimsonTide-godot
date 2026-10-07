@@ -18,13 +18,14 @@ var special_sheets: Array[Texture2D]=[]
 var special_footprints: Array=[]
 var special_paths: Array[String]=[]
 var generated := GeneratedAttacks.new()
+const Design = preload("res://scripts/boss_attack_design.gd")
 
 func attack_sprite(key: String, e: Dictionary) -> Dictionary:
-	if e.get("choreo_cast",false): return {} # Old generated poses include baked attack light outside the new damage geometry.
 	if float(e.get("hp",1))<=0 or float(e.get("stagger",0))>0 or float(e.get("guard_time",0))>0 or float(e.get("attack_time",0))<=0:
 		return {}
 	var poses := generated.frames("bosses/%s/attack" % key)
 	if poses.is_empty(): return {}
+	if e.get("choreo_cast",false): return poses[int(Design.beat(e).frame)]
 	var elapsed: float=float(e.attack_total)-float(e.attack_time)
 	var total: float=e.attack_total
 	var impact: float=e.get("windup",1.15)
@@ -69,9 +70,9 @@ static func region(index: int) -> Rect2:
 static func pose(e: Dictionary, clock: float) -> int:
 	if float(e.get("hp",1))<=0: return 11
 	if float(e.get("stagger",0))>0: return 10
-	if e.get("choreo_cast",false) and float(e.get("attack_time",0))>0:
-		return posmod(int(e.get("motion_phase",0)),4) if e.get("moving",false) else 8+posmod(int(clock*2+float(e.id)),2)
 	if float(e.get("guard_time",0))>0: return 5
+	if e.get("choreo_cast",false) and float(e.get("attack_time",0))>0:
+		return [4,4,5,5,6,6,7,7][int(Design.beat(e).frame)]
 	if float(e.get("attack_time",0))>0:
 		var passed: float=e.attack_total-e.attack_time
 		if e.has("attack_marks"):

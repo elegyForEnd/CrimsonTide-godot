@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-06",
+  "generator": "built-in image_gen",
+  "transparent_background": true,
+  "assets": [
+    {
+      "key": "dragon-claw-v2",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D gothic dark fantasy action RPG VFX sprite, one isolated transparent PNG. Create a beautiful sharp hand-painted frost dragon CLAW SWIPE, exactly THREE thin parallel slightly curved talon slash trails travelling from LEFT toward RIGHT, pale ice white cutting cores, restrained cyan frost fringes, few tiny icy splinters following the trailing left side. This is an attack motion smear attached to the dragon's actual claws, not a magical fan of ice spears and not a weapon or dragon drawing. Three trails have separate tapered left origins, brightest knife-like tips near the right. Primary motion axis strictly horizontal left-to-right centered near y=50%. Occupy middle 80 percent of canvas width and middle 45 percent height; generous transparent empty margins. Beautiful layered brush textures, graceful fast cutting lines, readable at 200 pixels in game, restrained glow. True RGBA transparent background. No circle, no sector, no ring, no floor, no character, no text, no frames, no watermark, no checkerboard artwork. One cohesive effect, not a sprite sheet."
+    },
+    {
+      "key": "thorn-whip-v2",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D gothic dark fantasy action RPG attack VFX, one isolated transparent PNG. Create a gorgeous living THORN VINE WHIP LASH motion sprite. A SINGLE long flexible blood red and near-black thorned vine whips from a thin grip origin on the LEFT around x=10%, y=50%, bends in one flowing shallow S, extends to a sharp tapered tip on the RIGHT near x=90%, y=50%. A restrained crimson motion smear hugs only the lash, sharp little thorns along the vine, a few red sparks trail behind. This must read as a flexible whip being swung by a hunter, not an upright branching shrub, roots growing from the ground, magic sigil or a giant axe. Primary motion LEFT-to-RIGHT, occupy middle 80 percent width and middle 40 percent height with generous genuinely transparent empty margins. Elegant detailed hand-painted dark fantasy game art, dynamic directional silhouette readable at 200 pixels, no overblown light. True RGBA transparent background, no floor, no character, no weapon handle, no text, no circle, no sector, no ring, no frame, no watermark, no checkerboard artwork. One cohesive effect, not a sprite sheet."
+    },
+    {
+      "key": "abyss-bite-v2",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D gothic dark fantasy action RPG attack VFX sprite on true transparent RGBA background. A spectral leviathan JAW SNAP seen side-on pointing RIGHT. Two elongated ghostly curved jaw strokes, upper and lower, each with 4 to 5 inward pointing sharp violet white tooth streaks, originate together near LEFT x=15%, y=50% and form a narrow closing bite toward RIGHT x=85%, y=50%. Show the moment just before the teeth meet: a tapered transparent gap between upper and lower rows, jaws slightly ajar. Deep purple shadow edges, tiny lavender saliva-like light wisps trailing back to the left, restrained ivory violet highlights on tooth tips. This is a short transient motion effect attached to a serpent's real mouth, not a complete monster head, full circular mouth, crescent ring, seal or solid skeletal object. Primary attack axis horizontally left-to-right. Middle 80 percent width and middle 45 percent height; generous empty transparent margins. Premium sharp hand-painted gothic fantasy game VFX, coherent clean silhouette at 180 pixels. No ground, circle, sector, ring, character, text, watermark, frame, checkerboard artwork. One cohesive isolated effect, not a sprite sheet."
+    }
+  ]
+}

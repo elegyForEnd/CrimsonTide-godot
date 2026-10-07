@@ -261,7 +261,9 @@ func _draw() -> void:
 			var pose: Dictionary=session.enemy_bodies.pose(actor,session.elapsed,true)
 			var texture: Texture2D=pose.texture
 			draw_set_transform((at-camera_offset()+Vector2(0,float(pose.hover))).round(),0,Vector2(float(pose.facing),1))
-			draw_texture_rect(texture,pose.rect,false,Color(1.6,1.2,1.2) if actor.get("flash",0)>0 else Color.WHITE)
+			var tint := Color(1.6,1.2,1.2) if actor.get("flash",0)>0 else Color.WHITE
+			if pose.region.size!=Vector2.ZERO: draw_texture_rect_region(texture,pose.rect,pose.region,tint)
+			else: draw_texture_rect(texture,pose.rect,false,tint)
 			draw_set_transform(-camera_offset())
 			draw_rect(Rect2(at+Vector2(-25,-height-13),Vector2(50,5)),Color("211d2c"))
 			draw_rect(Rect2(at+Vector2(-25,-height-13),Vector2(50*maxf(0,actor.hp/actor.max_hp),5)),tone)

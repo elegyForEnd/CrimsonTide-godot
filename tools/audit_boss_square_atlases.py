@@ -1,0 +1,64 @@
+"""Read-only pixel audit; registers square ImageGen atlases without repainting."""
+import hashlib
+import json
+from pathlib import Path
+import numpy as np
+from PIL import Image, ImageDraw
+ROOT=Path(__file__).resolve().parents[1]
+BASE=ROOT/'assets/bosses/imagegen/actions'
+
+def main():
+    catalog=json.loads((BASE/'catalog-square-v4.json').read_text(encoding='utf-8'))['assets']
+    assets={}; missing=[]; warnings=[]; summary=[]
+    for group in catalog:
+        path=BASE/group['file']
+        if not path.exists(): missing.append(group['key']); continue
+        image=Image.open(path)
+        assert image.mode=='RGBA', (path.name,image.mode)
+        assert image.width==image.height, (path.name,'must be square',image.size)
+        data=np.array(image)
+        assert data[:,:,3].min()==0, (path.name,'no transparent pixels')
+        cell=image.width/6
+        for quadrant,spec in enumerate(group['motifs']):
+            frames=[]; hashes=set(); height=1
+            horizontal=spec['style'] in ['flow','field','directional','projectile','blade']
+            source=(.16,.55) if horizontal else (.5,.82)
+            for index in range(9):
+                row=quadrant//2*3+index//3; col=quadrant%2*3+index%3
+                x0,x1=round(col*cell),round((col+1)*cell)
+                y0,y1=round(row*cell),round((row+1)*cell)
+                tile=data[y0:y1,x0:x1]; alpha=tile[:,:,3]
+                ys,xs=np.where(alpha>12)
+                if len(xs):
+                    left,right=max(0,int(xs.min())-2),min(x1-x0,int(xs.max())+3)
+                    top,bottom=max(0,int(ys.min())-2),min(y1-y0,int(ys.max())+3)
+                else: left,right,top,bottom=0,x1-x0,0,y1-y0
+                if index in [2,3,4,5,6]: height=max(height,bottom-top)
+                edge=np.r_[alpha[0],alpha[-1],alpha[:,0],alpha[:,-1]]
+                if (edge>100).mean()>.035:
+                    warnings.append({'asset':spec['id'],'frame':index,'issue':'solid pixels at cell edge'})
+                digest=hashlib.sha256(tile.tobytes()).hexdigest(); hashes.add(digest)
+                frames.append({'region':[x0+left,y0+top,right-left,bottom-top],
+                               'pivot':[cell*source[0]-left,cell*source[1]-top], 'sha256':digest})
+            assert len(hashes)>=8, (spec['id'],'insufficient distinct poses',len(hashes))
+            assets[spec['id']]={'file':path.name,'identity':group['key'],'role':spec['role'],
+                               'style':spec['style'],'square':True,'frames':frames,'reach':cell*.68,
+                               'height':cell*.67,'ink_height':height,'cell_size':cell,
+                               'states':{'prepare':[0,1],'contact':[2,3],'sustain':[4,5,6],'recover':[7,8]},
+                               'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+        summary.append({'identity':group['key'],'file':group['file'],'size':list(image.size),'clips':4,'frames':36})
+    (BASE/'atlas-square-v4.json').write_text(json.dumps({'assets':assets},indent=2)+'\n',encoding='utf-8')
+    report={'expected_identities':17,'ready_identities':len(summary),'clips':len(assets),'frames':len(assets)*9,'missing':missing,'warnings':warnings,'sheets':summary}
+    (BASE/'audit-square-v4.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    preview=ROOT/'build/boss-square-audit'; preview.mkdir(parents=True,exist_ok=True)
+    ids=list(assets)
+    for page in range((len(ids)+11)//12):
+        sheet=Image.new('RGB',(1280,1020),'#171d28'); draw=ImageDraw.Draw(sheet)
+        for n,key in enumerate(ids[page*12:(page+1)*12]):
+            entry=assets[key]; raw=Image.open(BASE/entry['file']); r=entry['frames'][3]['region']
+            sample=raw.crop((r[0],r[1],r[0]+r[2],r[1]+r[3])); sample.thumbnail((270,270))
+            x,y=n%4*320,n//4*340; sheet.paste(sample,(x+(320-sample.width)//2,y+40+(270-sample.height)//2),sample)
+            draw.text((x+14,y+12),key,fill='white')
+        sheet.save(preview/('contact-%02d.png'%page))
+    print(json.dumps({k:v for k,v in report.items() if k!='sheets'},ensure_ascii=False))
+if __name__=='__main__': main()

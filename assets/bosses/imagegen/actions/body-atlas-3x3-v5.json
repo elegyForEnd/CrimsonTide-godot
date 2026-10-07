@@ -1,0 +1,749 @@
+{
+  "assets": {
+    "grove_body_v5": {
+      "file": "grove-body-clean-3x3-v5-r1.png",
+      "identity": "grove",
+      "role": "body",
+      "style": "body",
+      "square": true,
+      "columns": 3,
+      "rows": 3,
+      "frames": [
+        {
+          "region": [
+            87,
+            116,
+            280,
+            290
+          ],
+          "pivot": [
+            104.0,
+            286.0
+          ],
+          "sha256": "c83a218d7049a88dbf6fcdfacd28badc8bda9f5e8fbe9eaf51a13f457bd6362f"
+        },
+        {
+          "region": [
+            496,
+            130,
+            303,
+            275
+          ],
+          "pivot": [
+            147.0,
+            271.0
+          ],
+          "sha256": "852d19339db92604cc359fee082e17cac5eb0b1dd2d23345a089780b090a98bf"
+        },
+        {
+          "region": [
+            932,
+            40,
+            274,
+            366
+          ],
+          "pivot": [
+            125.5,
+            362.0
+          ],
+          "sha256": "95de7ea9aa04f250e865ad61200b892d35eef062916f9ad6bd5762a46c85e0dc"
+        },
+        {
+          "region": [
+            78,
+            450,
+            265,
+            357
+          ],
+          "pivot": [
+            157.0,
+            353.0
+          ],
+          "sha256": "ff4c2c35543c7849ba20b76e7e566d5a834cab487aa6224dd345fcd21a65b7e5"
+        },
+        {
+          "region": [
+            451,
+            553,
+            419,
+            253
+          ],
+          "pivot": [
+            167.0,
+            249.0
+          ],
+          "sha256": "f0856358254214605c844833045ad8ad947e974cbf77204357894f69b92dd145"
+        },
+        {
+          "region": [
+            870,
+            578,
+            374,
+            227
+          ],
+          "pivot": [
+            167.0,
+            223.0
+          ],
+          "sha256": "ac33920b0856a488c96f06e5a98f72cee2bcc788d065854dad4324e010b979f6"
+        },
+        {
+          "region": [
+            85,
+            891,
+            302,
+            294
+          ],
+          "pivot": [
+            146.0,
+            290.0
+          ],
+          "sha256": "5326049d5ea4c2fa97b252d237a0815ed98450f83715fa0c067f00f25fd70a97"
+        },
+        {
+          "region": [
+            499,
+            891,
+            296,
+            295
+          ],
+          "pivot": [
+            107.0,
+            291.0
+          ],
+          "sha256": "a0a370e27d01d1d0b3914eb4416a50503a9ffa99daee5532358765da5c99d51a"
+        },
+        {
+          "region": [
+            930,
+            890,
+            282,
+            295
+          ],
+          "pivot": [
+            111.0,
+            291.0
+          ],
+          "sha256": "916ba3b7c38cee955e2f6fe8e7b1d2ac08d201fbc0c6330566cfbaeefab4cae9"
+        }
+      ],
+      "reach": 284.24,
+      "height": 286.0,
+      "reference_height": 286.0,
+      "ink_height": 286.0,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    "furnace_body_v5": {
+      "file": "furnace-body-clean-3x3-v5.png",
+      "identity": "furnace",
+      "role": "body",
+      "style": "body",
+      "square": true,
+      "columns": 3,
+      "rows": 3,
+      "frames": [
+        {
+          "region": [
+            51,
+            76,
+            347,
+            333
+          ],
+          "pivot": [
+            116.0,
+            330.0
+          ],
+          "sha256": "fd253a92bc57d7b285aeca9c28ad155caaf6afb88b6cacb524cf0242032b3c44"
+        },
+        {
+          "region": [
+            432,
+            111,
+            372,
+            302
+          ],
+          "pivot": [
+            255.0,
+            298.0
+          ],
+          "sha256": "5d7dc127419f51937e69ce763b258ce5866424b90d6c653f8a2d545b47b2105a"
+        },
+        {
+          "region": [
+            891,
+            25,
+            294,
+            388
+          ],
+          "pivot": [
+            94.0,
+            384.0
+          ],
+          "sha256": "792f8b8df65179117af7ff06fbbb25950ff6cb7765536d41b9f7954ac788b00f"
+        },
+        {
+          "region": [
+            43,
+            441,
+            346,
+            369
+          ],
+          "pivot": [
+            103.0,
+            365.0
+          ],
+          "sha256": "2cee0b25febb15685fb89eb66ee19a764dce9c48d4112cb1b720bcfad2c2d8e2"
+        },
+        {
+          "region": [
+            422,
+            507,
+            417,
+            303
+          ],
+          "pivot": [
+            65.0,
+            294.0
+          ],
+          "sha256": "5ab3eef11dbd5887d42790a4a73d9a3438c26b797aa5689e3a68241587ab1f55"
+        },
+        {
+          "region": [
+            842,
+            541,
+            397,
+            268
+          ],
+          "pivot": [
+            60.0,
+            257.0
+          ],
+          "sha256": "e9bb944a4ea21fbca2f113e41cae179c4d638cc5c195ae9bed5b3c71cb6d7593"
+        },
+        {
+          "region": [
+            55,
+            878,
+            333,
+            320
+          ],
+          "pivot": [
+            122.5,
+            317.0
+          ],
+          "sha256": "ba9d49e5f2071458a3fd057fc9750c9f1bf3b2c7c54a95649f6c1d2297ec6e84"
+        },
+        {
+          "region": [
+            468,
+            870,
+            307,
+            326
+          ],
+          "pivot": [
+            113.0,
+            322.0
+          ],
+          "sha256": "d98133c7a130d94d296825313b0f7f8bed2f03e7b573351d5f6af8908483581c"
+        },
+        {
+          "region": [
+            862,
+            880,
+            346,
+            323
+          ],
+          "pivot": [
+            110.0,
+            319.0
+          ],
+          "sha256": "15ab42fe5c365040c473d48868f3be430c8d646ff711c9c82545978d35b04fac"
+        }
+      ],
+      "reach": 284.24,
+      "height": 330.0,
+      "reference_height": 330.0,
+      "ink_height": 330.0,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    "astral_body_v5": {
+      "file": "astral-body-clean-3x3-v5.png",
+      "identity": "astral",
+      "role": "body",
+      "style": "body",
+      "square": true,
+      "columns": 3,
+      "rows": 3,
+      "frames": [
+        {
+          "region": [
+            48,
+            29,
+            307,
+            389
+          ],
+          "pivot": [
+            155.5,
+            375.0
+          ],
+          "sha256": "e3dad39132fda687ed66459e20a8580127afe627f6bbdacb913f999001cc6f1c"
+        },
+        {
+          "region": [
+            448,
+            58,
+            335,
+            351
+          ],
+          "pivot": [
+            167.0,
+            346.0
+          ],
+          "sha256": "129ac2306ddad3440fd11a74384b21f64ed380f55cadf33d871659e49d65fd54"
+        },
+        {
+          "region": [
+            859,
+            4,
+            339,
+            408
+          ],
+          "pivot": [
+            162.0,
+            402.0
+          ],
+          "sha256": "f3948f92c1cd12f405830b932018fd03848255e8cfa13cf6f22c773e92e7225b"
+        },
+        {
+          "region": [
+            49,
+            418,
+            327,
+            396
+          ],
+          "pivot": [
+            164.0,
+            392.0
+          ],
+          "sha256": "f5f57fdd2cb587a9cc1db41859e05e3cc125fc93f514d0c9ccb6376be801ad7d"
+        },
+        {
+          "region": [
+            413,
+            503,
+            431,
+            306
+          ],
+          "pivot": [
+            177.0,
+            302.0
+          ],
+          "sha256": "762f1717def3b72b3d8224f0e0f0fc5107804072ffd014620890e166806c1a46"
+        },
+        {
+          "region": [
+            844,
+            521,
+            410,
+            290
+          ],
+          "pivot": [
+            149.0,
+            285.0
+          ],
+          "sha256": "283f43881a12c4906e1a27908317281fdd40c9fe6ef7283bea5d34d25350ce67"
+        },
+        {
+          "region": [
+            43,
+            856,
+            329,
+            363
+          ],
+          "pivot": [
+            172.0,
+            358.0
+          ],
+          "sha256": "cd9c015ca0ed07cf6b44c7f584bfab6f3c6a3b7a532881a172a98fc7c80316b5"
+        },
+        {
+          "region": [
+            451,
+            856,
+            316,
+            362
+          ],
+          "pivot": [
+            162.0,
+            358.0
+          ],
+          "sha256": "cb588145f27a1f1f8c46643d0136a10fbc1ab5831bc976c906eb9abfa56b7017"
+        },
+        {
+          "region": [
+            888,
+            855,
+            304,
+            365
+          ],
+          "pivot": [
+            155.0,
+            359.0
+          ],
+          "sha256": "732548b3fc592f2c63003ade3cf4418e2ae6f7971e467566a9e627af1a3c8d61"
+        }
+      ],
+      "reach": 284.24,
+      "height": 375.0,
+      "reference_height": 375.0,
+      "ink_height": 375.0,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    "wing_body_v5": {
+      "file": "wing-body-clean-3x3-v5-r1.png",
+      "identity": "wing",
+      "role": "body",
+      "style": "body",
+      "square": true,
+      "columns": 3,
+      "rows": 3,
+      "frames": [
+        {
+          "region": [
+            74,
+            118,
+            300,
+            300
+          ],
+          "pivot": [
+            190.0,
+            297.0
+          ],
+          "sha256": "c2f27fbe5db57ef0518a116f4c17b9bc11dfdcde2f7e95d505bc5137bb95821d"
+        },
+        {
+          "region": [
+            474,
+            137,
+            266,
+            281
+          ],
+          "pivot": [
+            221.5,
+            278.0
+          ],
+          "sha256": "42b0d3c5369929a950f5683afdadc40f7c4fc779e5ad13fe49e136ac1443042f"
+        },
+        {
+          "region": [
+            873,
+            30,
+            279,
+            388
+          ],
+          "pivot": [
+            210.0,
+            385.0
+          ],
+          "sha256": "55359bc4bcf47b91f86bf2933d8cf58f991d6937c3049c304fa4ab07417b8560"
+        },
+        {
+          "region": [
+            48,
+            484,
+            316,
+            332
+          ],
+          "pivot": [
+            232.0,
+            328.0
+          ],
+          "sha256": "57fd3b53b3681a8bc2d6c10b0117bdfd1da75ccec64fba9aa90773658dc9edfc"
+        },
+        {
+          "region": [
+            435,
+            550,
+            417,
+            266
+          ],
+          "pivot": [
+            261.5,
+            262.0
+          ],
+          "sha256": "149e18ef99cda7a541bc30d42852f8e85c1019f68ef67a54b4b3a177bbb4356b"
+        },
+        {
+          "region": [
+            852,
+            565,
+            388,
+            250
+          ],
+          "pivot": [
+            237.0,
+            247.0
+          ],
+          "sha256": "66466828b15a9f6b682cbd41f02cf1ab2b9965dd200d30a02b1e9f8595054ee2"
+        },
+        {
+          "region": [
+            59,
+            907,
+            290,
+            293
+          ],
+          "pivot": [
+            207.0,
+            289.0
+          ],
+          "sha256": "ab638cf4ad9fc8b413104654ffac8e6e1d68d489075b9cc13dade5dbe4ab4e63"
+        },
+        {
+          "region": [
+            479,
+            912,
+            285,
+            288
+          ],
+          "pivot": [
+            198.5,
+            284.0
+          ],
+          "sha256": "f9964c517a6c8245c759322e096143f29c2492ae3ae83c67fc319321baa571bc"
+        },
+        {
+          "region": [
+            897,
+            905,
+            296,
+            296
+          ],
+          "pivot": [
+            192.0,
+            292.0
+          ],
+          "sha256": "973d332e9520868c9efa5ced7edfeb2d9c833e2633b26e70e7495f7db825c246"
+        }
+      ],
+      "reach": 284.24,
+      "height": 297.0,
+      "reference_height": 297.0,
+      "ink_height": 297.0,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    "obsidian_body_v5": {
+      "file": "obsidian-body-clean-3x3-v5.png",
+      "identity": "obsidian",
+      "role": "body",
+      "style": "body",
+      "square": true,
+      "columns": 3,
+      "rows": 3,
+      "frames": [
+        {
+          "region": [
+            24,
+            89,
+            399,
+            329
+          ],
+          "pivot": [
+            172.0,
+            325.0
+          ],
+          "sha256": "15bc70835762f30cd1d7b075c12c19af0aee2458cd4284ec10f3e27557e7a094"
+        },
+        {
+          "region": [
+            423,
+            113,
+            377,
+            304
+          ],
+          "pivot": [
+            307.0,
+            300.0
+          ],
+          "sha256": "04d3d7a09069f43cf4db172913d04d434f547bd1d63fc03a23bf00bf7791d72a"
+        },
+        {
+          "region": [
+            877,
+            41,
+            311,
+            376
+          ],
+          "pivot": [
+            132.0,
+            372.0
+          ],
+          "sha256": "f477e4370fef62093ce3c72e38057c70a89793e0493e5fd895a68c701661f920"
+        },
+        {
+          "region": [
+            53,
+            430,
+            316,
+            393
+          ],
+          "pivot": [
+            129.0,
+            389.0
+          ],
+          "sha256": "11305a12b8e9c58ab56a3998930f57ed6ac41f45ad3eeba215838a060972be5e"
+        },
+        {
+          "region": [
+            424,
+            557,
+            394,
+            266
+          ],
+          "pivot": [
+            113.0,
+            262.0
+          ],
+          "sha256": "a8c49ea5003d9eafe9011f491fd0852d210b58a3707ec0f8de045eeb23ebc00a"
+        },
+        {
+          "region": [
+            818,
+            552,
+            431,
+            271
+          ],
+          "pivot": [
+            136.0,
+            267.0
+          ],
+          "sha256": "92f6160f2e6df58282ed2037b9a8b412715de72c4910fb13fb5bbf4e42e6425b"
+        },
+        {
+          "region": [
+            31,
+            891,
+            390,
+            308
+          ],
+          "pivot": [
+            133.0,
+            304.0
+          ],
+          "sha256": "01f9c0d0018123652b05741442daf5a2d9ca0394cdfc9897fd1c18e90f38b17c"
+        },
+        {
+          "region": [
+            449,
+            890,
+            372,
+            310
+          ],
+          "pivot": [
+            150.0,
+            306.0
+          ],
+          "sha256": "b323d1e7b7a640e6c8dddff2f5c4d53131af3dc3f0c2024754ee9777eec91350"
+        },
+        {
+          "region": [
+            859,
+            889,
+            376,
+            311
+          ],
+          "pivot": [
+            163.0,
+            307.0
+          ],
+          "sha256": "7713662adb8da389515589a67d75e6439bdeb4a37b8985f4bc3458a6329b469d"
+        }
+      ],
+      "reach": 284.24,
+      "height": 325.0,
+      "reference_height": 325.0,
+      "ink_height": 325.0,
+      "states": {
+        "prepare": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "contact": [
+          4,
+          5
+        ],
+        "recover": [
+          6,
+          7,
+          8
+        ]
+      }
+    }
+  }
+}

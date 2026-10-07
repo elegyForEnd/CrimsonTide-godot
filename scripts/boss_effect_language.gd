@@ -8,7 +8,10 @@ static func body_allowed(key: String, role: String, shape: String, construct: bo
 	if key in ["storm","wing"]: return shape=="capsule"
 	return role in PHYSICAL or shape=="capsule" or (shape=="cone" and role in ["slash","scar","wings","maw"])
 
-static func sprite_role(key: String, role: String, shape: String, move: String="") -> String:
+static func sprite_role(key: String, role: String, shape: String, move: String="", delivery: String="") -> String:
+	if delivery=="claw" and key=="dragon": return "claw_swipe_v2"
+	if delivery=="whip" and key=="thorn": return "vine_lash_v2"
+	if delivery=="bite" and key=="abyss": return "jaw_snap_v2"
 	if key=="furnace" and role=="kiln": return "ground_vent"
 	if key in ["storm","wing"] and shape=="capsule": return "electric_bolt"
 	if key in ["storm","wing"] and shape=="circle" and role in ["chain","return"]: return "thunder_impact"

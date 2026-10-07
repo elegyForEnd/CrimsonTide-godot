@@ -10,13 +10,13 @@ extends RefCounted
 ## 结构：分层 DAG，深度 1..D。
 ##   * 第 1 层只有 1 个入口节点，kind 恒为 `combat`（对应旧 `route[0]`）。
 ##   * 第 D 层只有 1 个 boss 节点，`next` 为空。
-##   * 中间层每层 1~2 个节点；深度 d 的每个节点与深度 d+1 的**全部**节点相连，
+##   * 中间层每层 2 个节点；深度 d 的每个节点与深度 d+1 的**全部**节点相连，
 ##     所以每个非 boss 节点的出口数是 1~2。
 ##       - `ground-manifest.json` 里每个 region key 恰好 2 个出口，
 ##         `rogue_map.exit_position(index)` 也只支持 0/1（`rogue_map.gd:112`）；
 ##       - `rogue_map.gd:94-95` 有 `assert(joined.size()==1)`，出口数不能超 2。
 ##   * 全图无环、无死路（boss 除外）、从入口全可达。
-##   * 节点总数 ∈ [7, 10]，即新老结构都落在"每层 7~10 个房间"这一量级。
+##   * 每条路线仍走 7~9 个房间；两条分支的节点总数 ∈ [12, 16]。
 ##
 ## 与旧「每层 7 区」的等价性：
 ##   `legacy_areas()` 把图按"一个深度 = 一个区"投影成旧版相容视图；
@@ -36,8 +36,8 @@ const NEW_KIND_MIN_DEPTH := {"curse": 3, "event": 3, "forge": 3, "gamble": 4, "m
 const SUPPLY_KINDS := ["shop", "treasure"]
 const MIN_DEPTHS := 7
 const MAX_DEPTHS := 9
-const MIN_NODES := 7
-const MAX_NODES := 10
+const MIN_NODES := 12
+const MAX_NODES := 16
 const MAX_SUCCESSORS := 2
 
 ## 全部可出现的非 boss 房间类型。
@@ -82,14 +82,11 @@ static func build(seed_value: int, floor: int) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _seed_for(int(seed_value), floor_index)
 
-	# 层数 7~9；允许中间某一层放两个节点（玩家二选一），总数仍 ≤ MAX_NODES。
+	# 每个中间深度提供两个真实目的地，避免地图有分叉却只有一条出口。
 	var depths := MIN_DEPTHS + rng.randi_range(0, MAX_DEPTHS - MIN_DEPTHS)
 	var sizes: Array[int] = []
-	for _i in depths:
-		sizes.append(1)
-	if depths + 1 <= MAX_NODES and rng.randf() < 0.5:
-		var at := rng.randi_range(2, depths - 2)
-		sizes[at - 1] = 2
+	for i in depths:
+		sizes.append(1 if i==0 or i==depths-1 else 2)
 
 	# 逐层分配房间类型。
 	var kinds_by_depth: Array = []

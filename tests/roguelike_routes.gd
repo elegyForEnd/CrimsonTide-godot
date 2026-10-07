@@ -12,9 +12,9 @@ func run() -> void:
 	s.solo({"hero":0,"mode":"roguelike"})
 	s.launch(false,1729)
 	var p: Dictionary=s.players[1]
-	# R5: a node offers one or two doors (whatever the node graph links), not two random ones.
+	# Both visible branches lead to the next row of the node graph.
 	var doors: int=s.raid.exits.size()
-	check(doors>=1 and doors<=2,"One or two doors are prepared")
+	check(doors==2,"Both branches have usable doors")
 	var door := doors-1
 	s.enemies.clear()
 	s.roguelike.clear_room(s)

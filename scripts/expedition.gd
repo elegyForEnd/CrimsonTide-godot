@@ -329,6 +329,7 @@ func update_hazards(s, dt: float) -> void:
 				h.p+=h.get("velocity",Vector2.ZERO)*dt
 				h.aim=h.aim.rotated(float(h.get("rotate",0))*dt)
 		h.time-=dt
+		if h.get("choreographed",false): Choreography.bind_contact(s,h,dt)
 		if h.time<=0 and not h.fired:
 			h.fired=true
 			if h.has("boss_kind"):

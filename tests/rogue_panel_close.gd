@@ -40,6 +40,19 @@ func run() -> void:
 	p.rogue_gold+=20
 	app.update_rogue_hud(p)
 	check(not app.rogue_panel_open,"resource and revision updates preserve dismissal")
+	var loot_offers: Array=app.session.roguelike.reward_offers(app.session,1,"gear",p)
+	for selection_id in [901,902]:
+		p.rogue_selection={"id":selection_id,"version":0,"tier":1,"category":"gear","offers":loot_offers}
+		app.update_rogue_hud(p)
+		check(app.rogue_panel_open,"new chest reward opens over dismissed shop")
+		p.rogue_selection.version+=1
+		app.update_rogue_hud(p)
+		check(app.rogue_panel_open,"reward reroll remains visible")
+		p.rogue_selection={}
+		app.session.raid.revision+=1
+		app.update_rogue_hud(p)
+		check(not app.rogue_panel_open,"resolving chest reward does not reopen shop")
+		check(app.rogue_panel.has_node("RoguePanelReopen"),"dismissed shop stays manually accessible after loot")
 	app.rogue_panel.get_node("RoguePanelReopen").pressed.emit()
 	check(app.rogue_panel_open,"reopen button restores shop")
 	var escape := InputEventAction.new()
@@ -62,6 +75,12 @@ func run() -> void:
 		app.session.raid.revision+=1
 		app.update_rogue_hud(p)
 		check(not app.rogue_panel_open,"%s remains dismissed after refresh" % kind)
+		p.rogue_selection={"id":910+app.session.raid.area,"version":0,"tier":1,"category":"gear","offers":loot_offers}
+		app.update_rogue_hud(p)
+		check(app.rogue_panel_open,"loot selection opens over dismissed %s" % kind)
+		app._unhandled_input(escape)
+		app.update_rogue_hud(p)
+		check(p.rogue_selection.is_empty() and not app.rogue_panel_open,"returning loot keeps %s dismissed" % kind)
 		app.open_rogue_panel()
 		check(app.rogue_panel_open,"%s can be reopened" % kind)
 	app.pause_menu()

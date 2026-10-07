@@ -7,6 +7,7 @@ uniform vec2 center;
 uniform vec2 art_size = vec2(1280.0);
 uniform float radius;
 uniform float inner;
+uniform float source_x = 0.0;
 uniform float arc = 1.05;
 uniform float gap = 0.5;
 uniform int shape = 0;
@@ -20,6 +21,9 @@ uniform int stream_style = 0;
 uniform int entity_style = 0;
 uniform int motif = 0;
 uniform int attack_family = -1;
+uniform int warning_style = 0;
+uniform bool contact_impact = false;
+uniform bool painted_body = false;
 uniform int cover_count = 0;
 uniform vec3 covers[8];
 // A visible shell around the authoritative footprint.  It is painted only on
@@ -34,7 +38,7 @@ float inside_shape(vec2 p) {
 	float a=abs(atan(p.y,p.x));
 	if(shape==7) return float(length(vec2(p.x-clamp(p.x,0.0,radius),p.y))<=inner);
 	if(shape==3) return float(p.x>=-22.0 && p.x<=radius && abs(p.y)<=44.0);
-	if(shape==4) return float(p.x>=0.0 && p.x<=radius && abs(p.y)<=inner);
+	if(shape==4) return float(p.x>=source_x && p.x<=radius && abs(p.y)<=inner);
 	if(d>radius) return 0.0;
 	if(shape==2) return float(a<=arc);
 	if(d<inner) return 0.0;
@@ -52,8 +56,8 @@ float signed_distance(vec2 p) {
 		return mix(length(p-c),-length(p-c),inside);
 	}
 	if(shape==4) {
-		vec2 c=vec2(clamp(p.x,0.0,radius),clamp(p.y,-inner,inner));
-		float inside=float(p.x>=0.0 && p.x<=radius && abs(p.y)<=inner);
+		vec2 c=vec2(clamp(p.x,source_x,radius),clamp(p.y,-inner,inner));
+		float inside=float(p.x>=source_x && p.x<=radius && abs(p.y)<=inner);
 		return mix(length(p-c),-length(p-c),inside);
 	}
 	float d=length(p);
@@ -168,6 +172,38 @@ void fragment() {
 	float body=active?(.065+energy*.48):warning_fill*warning_in;
 	float border=active?.30:warning_edge;
 	float flash=active?exp(-impact_age*16.0)*.14:0.0;
+	if(painted_body && active) {
+		body=.010+energy*.045;
+		border=0.0;
+		flash=0.0;
+	}
+	if(!active && warning_style==2) { // Path: quiet rails, no luminous rectangular carpet.
+		body=exp(-abs(abs(p.y)-max(inner,1.0)*.72)/1.8)*(.08+.18*progress)*warning_in;
+		border=warning_edge*.4;
+	}
+	if(!active && warning_style==3) { // Suspended object: its contact shadow tightens before impact.
+		float d=length(p)/max(radius,1.0);
+		body=(1.0-smoothstep(.35,.95,d))*(.035+.11*progress)*warning_in;
+		border=0.0;
+	}
+	if(!active && warning_style==4) { // Ground eruption announces itself with fractures.
+		float d=length(p);
+		float a=atan(p.y,p.x);
+		float fissure=exp(-abs(sin(a*3.0+sin(d*.045)*.35))*d/1.5);
+		body=fissure*(.08+.28*progress)*warning_in;
+		border=warning_edge*.25;
+	}
+	if(!active && warning_style==5) { // Only genuine fields use propagating rings / ripples.
+		float ripple=pow(.5+.5*sin(length(p)*.085+clock*3.0),12.0);
+		body=ripple*(.025+.08*progress)*warning_in;
+	}
+	if(contact_impact && active) { // Landing / falling contact ends; it is not a glowing floor trap.
+		float d=length(p);
+		float wave=exp(-abs(d-radius*clamp(impact_age*6.0,0.0,1.0))/3.0);
+		body=wave*exp(-impact_age*8.0)*.7;
+		border=0.0;
+		flash=exp(-impact_age*22.0)*.18;
+	}
 	// Outer shell, strictly outside the damage boundary: a hard saturated rim
 	// plus the soft bloom it throws, both in the attack's own tone.
 	float sd=signed_distance(p);

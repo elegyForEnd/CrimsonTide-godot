@@ -3476,8 +3476,8 @@ func update_rogue_hud(p: Dictionary) -> void:
 	# the raid revision and the local resources that decide whether an offer is clickable.
 	var room_kind := str(session.raid.room)
 	# Purchases and rerolls change revision, but must not reopen a dismissed panel.
-	# A new room, event or personal reward gets its own visibility state.
-	var context := "%s:%s:%s:%s:%s:%s" % [session.raid.get("floor",1),session.raid.get("node",""),session.raid.get("area",1),room_kind,RogueUi.event_id(session.raid),selection.get("id",-1)]
+	# Reward selections temporarily cover the room panel without resetting its dismissal.
+	var context := "%s:%s:%s:%s:%s" % [session.raid.get("floor",1),session.raid.get("node",""),session.raid.get("area",1),room_kind,RogueUi.event_id(session.raid)]
 	if context!=rogue_panel_context:
 		rogue_panel_context=context
 		rogue_panel_dismissed=false
@@ -3501,7 +3501,7 @@ func update_rogue_hud(p: Dictionary) -> void:
 	elif RogueUi.event_active(session.raid): panel_title="幽暗异事"
 	elif RogueRoomUi.handled(room_kind): panel_title=RogueRoomUi.room_name(room_kind)
 	elif session.raid.phase=="rogue_shop" and browsing_shop: panel_title="游商"
-	if panel_title!="" and rogue_panel_dismissed:
+	if panel_title!="" and rogue_panel_dismissed and selection.is_empty():
 		var reopen := button(rogue_panel,"打开"+panel_title,Vector2(1130,140),Vector2(235,44),open_rogue_panel)
 		reopen.name="RoguePanelReopen"
 		return

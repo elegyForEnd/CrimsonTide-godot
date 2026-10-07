@@ -34,6 +34,8 @@ const ROOM_DESCS := {"combat":"迎战魔物 · 通关奖励", "elite":"更强敌
 # Contracts §7.2 ②: rooms that are NOT combat long-rooms. Missing one here silently turns a
 # new room into a combat lane (`session.gd:1501` has the client-side copy of this list).
 const SAFE_ROOMS := ["shop","treasure","talent","curse","event","forge","gamble","mirror"]
+# Service rooms pay through their own actions, rather than a free combat chest.
+const CHEST_ROOMS := ["combat","elite","boss","treasure"]
 const BOONS := [
 	{"name":"赤刃誓约", "desc":"伤害 +12%", "stat":"rogue_damage", "value":0.12},
 	{"name":"不屈之心", "desc":"最大生命 +22，立即回复 22", "stat":"rogue_hp", "value":22.0},
@@ -152,45 +154,40 @@ func new_floor(s) -> void:
 
 ## The generator fixes the shape of the floor (depths, branches, guardian) but not its
 ## content. A room that only exists on the branch nobody walked is not a guarantee, so the
-## run's per-floor needs are secured on rows that hold exactly one node (always visited):
+## run's per-floor needs are secured on rows whose branches all supply the same service:
 ## one supply row and one sanctuary row. Only `kind` strings change — depths, edges and the
 ## floor guardian never move, and the sanctuary count never exceeds the generator's cap of 2.
 func dress_floor(s) -> void:
-	var sizes: Dictionary={}
+	var rows: Dictionary={}
 	for id in s.rogue_graph.get("order",[]):
 		var depth := int(NodeGraph.node(s.rogue_graph,str(id)).get("depth",0))
-		sizes[depth]=int(sizes.get(depth,0))+1
-	var singles: Array=[]
-	var supply_ok := false
-	var sanctuary_ok := false
-	for id in s.rogue_graph.get("order",[]):
-		var entry: Dictionary=NodeGraph.node(s.rogue_graph,str(id))
-		var depth := int(entry.get("depth",1))
-		if depth<=1 or str(entry.kind)=="boss" or int(sizes.get(depth,0))!=1: continue
-		singles.append(str(id))
-		if str(entry.kind) in ["shop","treasure"]: supply_ok=true
-		if str(entry.kind)=="talent": sanctuary_ok=true
-	if not supply_ok:
-		for id in singles:
-			if str(NodeGraph.node(s.rogue_graph,str(id)).kind)=="talent": continue
-			s.rogue_graph["nodes"][str(id)]["kind"]="shop"
-			supply_ok=true
-			break
-	if not sanctuary_ok:
-		var sanctuaries := 0
+		if not rows.has(depth): rows[depth]=[]
+		rows[depth].append(str(id))
+	var supply_row := 0
+	var sanctuary_row := 0
+	for depth in range(2,depth_count(s)-1):
+		var supply_ok := true
+		var sanctuary_ok := true
+		for id in rows.get(depth,[]):
+			var kind := str(NodeGraph.node(s.rogue_graph,str(id)).kind)
+			supply_ok=supply_ok and kind in ["shop","treasure"]
+			sanctuary_ok=sanctuary_ok and kind=="talent"
+		if supply_ok: supply_row=depth
+		if sanctuary_ok: sanctuary_row=depth
+	if supply_row==0:
+		supply_row=3 if sanctuary_row==2 else 2
+		var index := 0
+		for id in rows[supply_row]:
+			s.rogue_graph["nodes"][id]["kind"]="shop" if index==0 else "treasure"
+			index+=1
+	if sanctuary_row==0:
+		sanctuary_row=3 if supply_row==2 else 2
+		# Two alternative sanctuary nodes count as one visit on every route.
 		for id in s.rogue_graph.get("order",[]):
-			if str(NodeGraph.node(s.rogue_graph,str(id)).kind)=="talent": sanctuaries+=1
-		if sanctuaries>=2:
-			# Both sanctuaries sit on branches: free one so a visited row can hold it.
-			for id in s.rogue_graph.get("order",[]):
-				var entry: Dictionary=NodeGraph.node(s.rogue_graph,str(id))
-				if str(entry.kind)=="talent" and int(sizes.get(int(entry.get("depth",1)),0))!=1:
-					s.rogue_graph["nodes"][str(id)]["kind"]="combat"
-					break
-		for id in singles:
-			if str(NodeGraph.node(s.rogue_graph,str(id)).kind) in ["shop","treasure"]: continue
-			s.rogue_graph["nodes"][str(id)]["kind"]="talent"
-			break
+			if str(NodeGraph.node(s.rogue_graph,str(id)).kind)=="talent":
+				s.rogue_graph["nodes"][str(id)]["kind"]="combat"
+		for id in rows[sanctuary_row]:
+			s.rogue_graph["nodes"][id]["kind"]="talent"
 
 ## One default room kind per depth (the first node at that depth). Entries a caller already
 ## wrote are kept: they are the explicit per-room override used by tests and debug jumps.
@@ -485,9 +482,11 @@ func clear_room(s) -> void:
 	s.fire_zones.clear()
 	s.raid.phase="rogue_reward"
 	s.raid.offers=[]
-	if s.raid.room=="talent":
+	if s.raid.room not in CHEST_ROOMS:
+		s.raid.reward_chest={}
 		s.raid.revision+=1
-		s.message.emit("灵契圣坛 · 每人两轮天赋三选一 · 可打开构筑配置")
+		if s.raid.room=="talent":
+			s.message.emit("灵契圣坛 · 每人两轮天赋三选一 · 可打开构筑配置")
 		for p in s.players.values(): next_personal(s,p)
 		finish_rewards(s)
 		return
@@ -586,7 +585,7 @@ func add_reward_drop(s, at: Vector2, tier: int, offer: Dictionary = {}, delay: f
 func loot_interact(s, p: Dictionary) -> void:
 	if p.status!="active" or not p.get("rogue_selection",{}).is_empty(): return
 	var chest: Dictionary=s.raid.get("reward_chest",{})
-	if not chest.is_empty() and not chest.opened and p.p.distance_to(chest.p)<=85:
+	if s.raid.room in CHEST_ROOMS and not chest.is_empty() and not chest.opened and p.p.distance_to(chest.p)<=85:
 		chest.opened=true
 		chest["opened_at"]=s.elapsed
 		var categories: Array=["weapon","gear"]
@@ -971,6 +970,9 @@ func refresh_dedicated(s, p: Dictionary = {}) -> void:
 	if who.is_empty(): return
 	var ctx: Dictionary=Rooms.context_of(s,who)
 	match str(s.raid.room):
+		"event":
+			if not s.raid.get("pending_event",{}).is_empty():
+				s.raid.pending_event.revision=int(s.raid.revision)
 		"forge":
 			s.raid["pending_forge"]={"offers":Rooms.offers("forge",ctx),"revision":int(s.raid.revision)}
 		"gamble":

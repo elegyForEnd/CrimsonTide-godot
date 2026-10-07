@@ -13,6 +13,11 @@ uniform float inner = 0.0;
 uniform float arc = 1.05;
 uniform float gap = .5;
 uniform int shape = 0;
+// Reveal along the painted slash itself, independent of any warning footprint.
+uniform bool stroke_mode = false;
+uniform float stroke_phase = 0.0;
+uniform float stroke_arc = 1.05;
+uniform bool stroke_reverse = false;
 // Readability shell for live projectiles: an outline traced from the sprite's
 // own alpha, plus the bloom it throws outward, so a boss bolt keeps its painted
 // shape but stops disappearing into the background.  Zero for every other
@@ -45,6 +50,13 @@ void fragment() {
 	float clip=clip_ground?footprint(mask_origin+mask_x*sprite_point.x+mask_y*sprite_point.y):1.0;
 	vec3 rgb=mix(art.rgb,vec3(1.0,.98,.92),clamp(flash+rim*.55,0.0,.8));
 	float alpha=art.a*opacity*grow*clip;
+	if(stroke_mode) {
+		vec2 q=UV-vec2(.5);
+		float a=atan(q.y,q.x)*(stroke_reverse?-1.0:1.0);
+		float head=mix(-stroke_arc,stroke_arc,stroke_phase);
+		float ink=smoothstep(head-.90,head-.55,a)*(1.0-smoothstep(head+.02,head+.20,a));
+		alpha*=ink;
+	}
 	if(rim_strength>0.001) {
 		// The filled sprite gets a saturated skin at its edge; the ink outside
 		// that edge is the bloom, and it fades out over `rim_step` in UV.

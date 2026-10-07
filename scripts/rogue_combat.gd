@@ -492,6 +492,7 @@ func tick(s, dt: float) -> void:
 				fx.direction=fx.aim
 		var active_dt: float=maxf(0,dt-maxf(0,fx.delay))
 		fx.delay-=dt
+		if fx.get("choreographed",false): Choreography.bind_contact(s,fx,dt)
 		if fx.delay>0: continue
 		if not fx.get("visual_sent",false):
 			fx["visual_sent"]=true

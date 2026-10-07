@@ -1,0 +1,710 @@
+{
+  "expected": 70,
+  "ready": 70,
+  "frames": 630,
+  "missing": [],
+  "warnings": [],
+  "errors": [],
+  "sheets": [
+    {
+      "identity": "bell",
+      "role": "pendulum",
+      "file": "bell-pendulum-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "bell",
+      "role": "score",
+      "file": "bell-score-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "bell",
+      "role": "fracture",
+      "file": "bell-fracture-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "bell",
+      "role": "dial",
+      "file": "bell-dial-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "thorn",
+      "role": "bramble",
+      "file": "thorn-bramble-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "thorn",
+      "role": "seed",
+      "file": "thorn-seed-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "thorn",
+      "role": "root",
+      "file": "thorn-root-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "thorn",
+      "role": "hunt",
+      "file": "thorn-hunt-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "queen",
+      "role": "sabres",
+      "file": "queen-sabres-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "queen",
+      "role": "crown",
+      "file": "queen-crown-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "queen",
+      "role": "regalia",
+      "file": "queen-regalia-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "queen",
+      "role": "petals",
+      "file": "queen-petals-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "knight",
+      "role": "slash",
+      "file": "knight-slash-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "knight",
+      "role": "lance",
+      "file": "knight-lance-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "knight",
+      "role": "burst",
+      "file": "knight-burst-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "knight",
+      "role": "crest",
+      "file": "knight-crest-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "hidden",
+      "role": "rift",
+      "file": "hidden-rift-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "hidden",
+      "role": "hands",
+      "file": "hidden-hands-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "hidden",
+      "role": "ribcage",
+      "file": "hidden-ribcage-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "hidden",
+      "role": "tomb",
+      "file": "hidden-tomb-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "mirror",
+      "role": "frame",
+      "file": "mirror-frame-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "mirror",
+      "role": "thread",
+      "file": "mirror-thread-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "mirror",
+      "role": "glass",
+      "file": "mirror-glass-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "mirror",
+      "role": "loom",
+      "file": "mirror-loom-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "ember",
+      "role": "censer",
+      "file": "ember-censer-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "ember",
+      "role": "moths",
+      "file": "ember-moths-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "ember",
+      "role": "pyre",
+      "file": "ember-pyre-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "ember",
+      "role": "vesper",
+      "file": "ember-vesper-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "moon",
+      "role": "eye",
+      "file": "moon-eye-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "moon",
+      "role": "drop",
+      "file": "moon-drop-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "moon",
+      "role": "artery",
+      "file": "moon-artery-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "moon",
+      "role": "eclipse",
+      "file": "moon-eclipse-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "earth",
+      "role": "furrow",
+      "file": "earth-furrow-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "earth",
+      "role": "plate",
+      "file": "earth-plate-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "earth",
+      "role": "stalactite",
+      "file": "earth-stalactite-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "earth",
+      "role": "fault",
+      "file": "earth-fault-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "storm",
+      "role": "feather",
+      "file": "storm-feather-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "storm",
+      "role": "chain",
+      "file": "storm-chain-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "storm",
+      "role": "eye",
+      "file": "storm-eye-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "storm",
+      "role": "plume",
+      "file": "storm-plume-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "abyss",
+      "role": "maw",
+      "file": "abyss-maw-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "abyss",
+      "role": "current",
+      "file": "abyss-current-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "abyss",
+      "role": "tide",
+      "file": "abyss-tide-3x3-v5-r2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "abyss",
+      "role": "devour",
+      "file": "abyss-devour-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "dragon",
+      "role": "icicle",
+      "file": "dragon-icicle-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "dragon",
+      "role": "breath",
+      "file": "dragon-breath-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "dragon",
+      "role": "wings",
+      "file": "dragon-wings-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "dragon",
+      "role": "frost",
+      "file": "dragon-frost-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "grove",
+      "role": "roots",
+      "file": "grove-roots-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "grove",
+      "role": "spore",
+      "file": "grove-spore-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "grove",
+      "role": "bloom",
+      "file": "grove-bloom-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "grove",
+      "role": "mycelium",
+      "file": "grove-mycelium-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "furnace",
+      "role": "chain",
+      "file": "furnace-chain-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "furnace",
+      "role": "rivets",
+      "file": "furnace-rivets-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "furnace",
+      "role": "hammer",
+      "file": "furnace-hammer-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "furnace",
+      "role": "kiln",
+      "file": "furnace-kiln-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "astral",
+      "role": "prism",
+      "file": "astral-prism-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "astral",
+      "role": "refraction",
+      "file": "astral-refraction-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "astral",
+      "role": "starfall",
+      "file": "astral-starfall-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "astral",
+      "role": "orrery",
+      "file": "astral-orrery-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "wing",
+      "role": "gust",
+      "file": "wing-gust-3x3-v5-r2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "wing",
+      "role": "return",
+      "file": "wing-return-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "wing",
+      "role": "cyclone",
+      "file": "wing-cyclone-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "wing",
+      "role": "helm",
+      "file": "wing-helm-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "obsidian",
+      "role": "scar",
+      "file": "obsidian-scar-3x3-v5-r2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "obsidian",
+      "role": "echo",
+      "file": "obsidian-echo-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "obsidian",
+      "role": "rain",
+      "file": "obsidian-rain-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "obsidian",
+      "role": "seal",
+      "file": "obsidian-seal-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "thorn",
+      "role": "vine_lash",
+      "file": "thorn-vine-lash-3x3-v5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    },
+    {
+      "identity": "abyss",
+      "role": "jaw_snap",
+      "file": "abyss-jaw-snap-3x3-v5-r1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 9
+    }
+  ]
+}
