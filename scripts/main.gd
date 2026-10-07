@@ -980,11 +980,17 @@ func on_camp_station(id: String) -> void:
 			show_rogue_setup()
 
 
+## The camp HUD's 「出发」 button. It has to leave from wherever the hero happens to stand: the
+## button is the only thing the player clicked, so answering with a hint — and with the 远征行囊
+## panel up, a hint that is drawn under the panel and cannot be seen at all — reads as a dead
+## button. The world ritual is untouched: walking to 搜打撤闸门 / 魔境传送门 and pressing E or
+## Space still goes through those very stations, in that very order.
 func camp_departure() -> void:
 	var station: Dictionary=camp.site.station_at(camp.site.hero_position())
 	if station.get("action","") in ["launch","rogue"]:
 		on_camp_station(str(station.action))
-	else: camp.say("走到南侧搜打撤闸门或东侧魔境传送门，再出发。")
+		return
+	on_camp_station("rogue" if session.selected_mode=="roguelike" else "launch")
 
 func on_camp_launch() -> void:
 	if session.players.is_empty():
@@ -1563,7 +1569,12 @@ func on_started() -> void:
 	popup_tip("屏幕下方新增三格道具栏：按 [1][2][3] 直接使用对应格的道具或换装。捡到背包后双击即可换装。")
 func _process(dt: float) -> void:
 	if camp:
-		camp.input_blocked=modal
+		# The camp is frozen while a panel owns the screen. The pack panel is drawn by
+		# `show_inventory()` instead of a modal box, so it has to be named here too:
+		# without it the camp kept walking (and kept answering E / the plot clicks)
+		# behind the open 远征行囊 panel, which is what `camp_screen.input_blocked`
+		# exists to prevent.
+		camp.input_blocked=modal or camp_pack_open
 	toast_time-=dt
 	toast.visible=toast_time>0 and not inventory_open
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty(): toast.hide()
@@ -1620,15 +1631,26 @@ func mouse_over_button() -> bool:
 	var hovered := get_viewport().gui_get_hovered_control()
 	return hovered is Button
 
+## Is the bag controller listening to the mouse on this page? The rogue mode drives its own
+## bag (`rogue_inventory.gd`), so this controller steps aside — but only **on the raid page**.
+## `raid.mode` stays "roguelike" for the whole session once the player picks 魔境, so a camp
+## visit *after* a rogue run used to answer this question with "yes, stay out": every grid
+## gesture in the 远征行囊 panel went dead while the panel's own buttons still worked
+## (they are Godot Buttons and never come through here). That is the reported bug.
+func bag_mouse_live() -> bool:
+	if not inventory_open or modal or page_name not in ["game","ground"]:
+		return false
+	return not (page_name=="game" and session.roguelike.active(session))
+
 # Dragging lives on the overlay: item bodies ignore the mouse, so the pointer is
 # hit-tested against whichever grid is underneath it.
 func _input(event: InputEvent) -> void:
-	if session.roguelike.active(session): return
+	if page_name=="game" and session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
 	# The camp bag panel shares this controller, so its page counts as an inventory
 	# screen too.
-	if not inventory_open or modal or page_name not in ["game","ground"]:
+	if not bag_mouse_live():
 		return
 	if event.button_index==MOUSE_BUTTON_MIDDLE:
 		# The mouse shortcut for the same R rotation. It used to be the **right**
@@ -2290,6 +2312,9 @@ func close_bag() -> void:
 	set_frost(false)
 	detach_drag_nodes()
 	clear(overlay)
+	# The camp panel's full-screen input shield went with the overlay: drop the reference so
+	# nothing can poke a freed node afterwards.
+	camp_pack.shield=null
 	# Hand the camp its controls back, unless an overlay panel is still up.
 	if camp and not modal:
 		camp.input_blocked=false
