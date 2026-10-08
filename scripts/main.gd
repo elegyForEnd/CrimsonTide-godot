@@ -1494,6 +1494,10 @@ func on_started() -> void:
 		meal_label.tooltip_text = str(food.desc)
 
 	hud.mission=label(page,"",Vector2(550,18),20,INK)
+	# 肉鸽房间类型徽标：原画在世界中心的"遗落宝藏/游商营火"宝箱贴图（rogue_field.gd）
+	# 会被误认成第二个、无法交互的假宝箱，改放到顶栏标题左侧，只作房间身份提示。
+	hud.room_marker=rogue_icon(page,rogue_field.art.item_icons[11],Vector2(518,19),Vector2(26,26))
+	hud.room_marker.visible=false
 	hud.area=label(page,"",Vector2(550,49),14,GOLD,Vector2(610,25))
 	ornament(page,Vector2(540,83),Vector2(300,10))
 	hud.seed=label(page,"遗迹 #"+str(session.seed_value),Vector2(1175,26),14,MUTED)
@@ -2091,6 +2095,12 @@ func update_hud() -> void:
 		hud.raid_extract.hide()
 		hud.time.text=RogueUi.floor_line(session.raid,session.roguelike.depth_count(session))
 		hud.mission.text=session.roguelike.FLOORS[int(session.raid.floor)-1]+" · "+session.roguelike.ROOM_NAMES[session.raid.room]
+		# 顶栏房间徽标：treasure 用宝箱、shop 用营火图标（与旧世界中心贴图同源），只作身份提示。
+		if hud.has("room_marker") and is_instance_valid(hud.room_marker):
+			var marker_room: String=str(session.raid.room)
+			hud.room_marker.visible=marker_room in ["shop","treasure"]
+			if hud.room_marker.visible:
+				hud.room_marker.texture=rogue_field.art.item_icons[11 if marker_room=="treasure" else 15]
 		# 按键字样只在自己真正进入判定圈后出现（_rogue_loot_near/_rogue_fork_near 与
 		# roguelike.gd 的判定同源）；远处只给叙述句，不出 [E] 等按键提示。
 		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱爆出随机品质秘藏","rogue_reward":("E 开箱 / 拾取 · 三选一后领取或分享" if _rogue_loot_near(p) else "搜刮战利品 · 三选一后领取或分享"),"rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":("直行或斜向 · 靠近路线末端按 E" if _rogue_fork_near(p) else "直行或斜向 · 走到路线末端进入下一段")}.get(session.raid.phase,"")

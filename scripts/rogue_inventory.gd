@@ -299,7 +299,11 @@ func show_menu(item: Dictionary, source: String, index: int, starter: bool) -> v
 		host.button(box,"确认回收",Vector2(14,101),Vector2(262,43),func(): sell_item(index),false,16)
 		host.button(box,"取消",Vector2(14,156),Vector2(262,43),close_menu,false,16)
 	,false,16)
-	sell.disabled=not sellable or p.status!="active" or host.session.raid.phase!="rogue_shop"
+	# 「只有游商处能回收」是设计规则（服务端 rogue_sell 的 phase 门）。禁用态要**看得见**：
+	# 光靠 GothicButton 变灰不足以让人明白"点不动"是有条件的，所以非游商时直接把原因写进按钮文字。
+	var shop_phase: bool=host.session.raid.phase=="rogue_shop"
+	if not shop_phase: sell.text="回收 · 需到游商处"
+	sell.disabled=not sellable or p.status!="active" or not shop_phase
 	if host.session.raid.phase!="rogue_shop":
 		sell.tooltip_text="只有游商处可以回收装备"
 	elif starter or source!="reserve":

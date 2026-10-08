@@ -350,9 +350,9 @@ func _draw() -> void:
 			draw_string(get_theme_default_font(),p.p-Vector2(65,130+float(p.get("height",0))),str(p.build_combo_label),HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color("f0d18f"))
 	for zone in session.fire_zones:
 		if zone.has("p"): glow(zone.p,Color("bc7cff"),45)
-	if session.raid.room in ["shop","treasure"]:
-		icon(art.item_icons[11 if session.raid.room=="treasure" else 15],Vector2(720,r.lane_center(720)),Vector2(100,100))
-	elif session.raid.room=="talent":
+	# 房间标识宝箱/营火贴图不再画在世界中心（曾被误认成第二个、无法交互的"假宝箱"）。
+	# 现由顶栏标题左侧的徽标承担（main.gd 的 hud.room_marker），见 §4.M / §11。
+	if session.raid.room=="talent":
 		var shrine_at := Vector2(720,r.lane_center(720))
 		glow(shrine_at-Vector2(0,45),Color("b888ec"),75)
 		icon(BuildArt.icon("T008"),shrine_at-Vector2(0,35),Vector2(120,120))
