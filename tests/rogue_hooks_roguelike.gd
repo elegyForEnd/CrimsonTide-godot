@@ -439,6 +439,7 @@ func run() -> void:
 	s.raid["ended"]=false
 	p.status="extracted"
 	p.rogue_ash_run=0
+	p.rogue_room_ash=0 # This section starts a clean settlement after earlier room rewards.
 	var want_coins := 10*12+250
 	rl.settle(s)
 	check(int(s.results[1].coins)==want_coins, "a clean settle pays cleared*12+250 (got %d)" % int(s.results[1].coins))

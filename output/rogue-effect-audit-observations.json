@@ -1,0 +1,107 @@
+[
+	{
+		"confirmed": true,
+		"detail": "art penalty multiplier=1.0; catalog requires x0.88",
+		"id": "T072"
+	},
+	{
+		"confirmed": true,
+		"detail": "healed buff=0.15; art multiplier=1.0",
+		"id": "T095"
+	},
+	{
+		"confirmed": true,
+		"detail": "art hitting own bleed gives no defense buff",
+		"id": "E054"
+	},
+	{
+		"confirmed": true,
+		"detail": "heavy-only counter also amplifies staff normal attack",
+		"id": "E006"
+	},
+	{
+		"confirmed": true,
+		"detail": "damage occurs immediately on freeze start, before freeze ends",
+		"id": "T038"
+	},
+	{
+		"confirmed": true,
+		"detail": "shared frost timer shortened to 6s also shortens stated 8s proc interval",
+		"id": "E009/T037/E062"
+	},
+	{
+		"confirmed": true,
+		"detail": "dodge bonus regranted after 2s; no catalog 4s interval check",
+		"id": "T075/I020/W005"
+	},
+	{
+		"confirmed": true,
+		"detail": "first and second attacks within dodge window both amplified",
+		"id": "W005"
+	},
+	{
+		"confirmed": true,
+		"detail": "catalog 3s window but implementation expires after 2s",
+		"id": "E011"
+	},
+	{
+		"confirmed": true,
+		"detail": "extra +22% remains during 3s secondary-attack cooldown",
+		"id": "T024"
+	},
+	{
+		"confirmed": true,
+		"detail": "air art alone then landing grants no mana-cost reduction",
+		"id": "WC010"
+	},
+	{
+		"confirmed": true,
+		"detail": "two default-source effects total 6%, not 10%",
+		"id": "SHIELD_SOURCES"
+	},
+	{
+		"confirmed": true,
+		"detail": "Q grants soul_order damage buff but no aim-target hard lock",
+		"id": "T086"
+	},
+	{
+		"confirmed": true,
+		"detail": "blood_moon +15% missing from enemy damage scale",
+		"id": "VARIANT_DAMAGE"
+	},
+	{
+		"confirmed": true,
+		"detail": "bedrock +20% applied during setup then overwritten; marker prevents reapply",
+		"id": "BOSS_VARIANT_HP"
+	},
+	{
+		"confirmed": true,
+		"detail": "frenzy minion HP reduced twice: x0.92 in budget then x0.92 in variant setup",
+		"id": "MINION_VARIANT_HP"
+	},
+	{
+		"confirmed": true,
+		"detail": "claim returns success while activation fails (missing basic prerequisite)",
+		"id": "TALENT_CLAIM"
+	},
+	{
+		"confirmed": true,
+		"detail": "spending 80 during ICD leaves progress=80.0 despite stated 39 cap",
+		"id": "T055"
+	},
+	{
+		"confirmed": true,
+		"detail": "wearer own art returns mana in multiplayer; catalog only permits own art in solo",
+		"id": "E048"
+	},
+	{
+		"confirmed": true,
+		"detail": "catalog excludes Q damage but high-mana skill receives +18%",
+		"id": "T056"
+	},
+	{
+		"confirmed": true,
+		"detail": "room-earned 50 shown in run total but omitted from profile ash bank",
+		"id": "ROOM_ASH_BANK"
+	}
+]

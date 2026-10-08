@@ -152,8 +152,8 @@ func run() -> void:
 	if not e1.is_empty() and not e2.is_empty():
 		var hp1: float=float(e1.hp)
 		var hp2: float=float(e2.hp)
-		plain_s.damage_enemy(e1,50.0,1,Vector2.RIGHT,0.0)
-		buff_s.damage_enemy(e2,50.0,1,Vector2.RIGHT,0.0)
+		plain_s.damage_enemy(e1,50.0,1,Vector2.RIGHT,0.0,-1,-1,{"kind":"attack","depth":0,"crit_targets":{e1.id:false}})
+		buff_s.damage_enemy(e2,50.0,1,Vector2.RIGHT,0.0,-1,-1,{"kind":"attack","depth":0,"crit_targets":{e2.id:false}})
 		var dealt_plain := hp1-float(e1.hp)
 		var dealt_buff := hp2-float(e2.hp)
 		check(dealt_plain>0.0,"The baseline hit lands damage")

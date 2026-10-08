@@ -1260,7 +1260,7 @@ func select_title_entry(target: GothicButton) -> void:
 
 func config() -> Dictionary:
 	var payload := profile.storage_payload()
-	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key,"loadout":payload.loadout}
+	return {"mode":session.selected_mode,"rogue_growth":profile.data.get("growth",{}).duplicate(true),"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key,"loadout":payload.loadout}
 
 func show_network() -> void:
 	new_page("network")
@@ -4173,6 +4173,7 @@ func on_finished() -> void:
 	recruited=""
 	var reward: Dictionary=session.results.get(session.my_id(),{})
 	if not session.report_paid and not reward.is_empty():
+		if reward.get("roguelike",false) and not session.authority(): profile.data.ashes+=maxi(0,int(reward.get("ashes",0)))
 		profile.data.coins+=reward.coins
 		profile.data.xp+=reward.xp
 		profile.data.runs+=1

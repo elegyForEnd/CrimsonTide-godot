@@ -103,6 +103,14 @@ func _ready() -> void:
 func my_id() -> int:
 	return multiplayer.get_unique_id() if online else 1
 
+func build_notice(p: Dictionary, text: String) -> void:
+	if int(p.id)==my_id(): message.emit(text)
+	elif online and authority(): receive_build_notice.rpc_id(int(p.id),text)
+
+@rpc("authority","call_remote","reliable")
+func receive_build_notice(text: String) -> void:
+	message.emit(text)
+
 func authority() -> bool:
 	return not online or multiplayer.is_server()
 
@@ -323,6 +331,9 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	player.merge({"attributes":attributes,"mana":WatcherAttributes.max_mana(attributes),"max_mana":WatcherAttributes.max_mana(attributes),"mana_delay":0.0,"art_cd":0.0})
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	player.merge({"mode":str(config.get("mode","expedition")),"rogue_rerolls":clampi(int(config.get("rogue_rerolls",0)),0,5),"rogue_weapon":clampi(int(config.get("rogue_weapon",-1)),-1,Catalog.WEAPONS.size()-1)})
+	player["rogue_growth_explicit"]=bool(config.get("rogue_growth_explicit",config.has("rogue_growth")))
+	var progression: Variant=config.get("rogue_growth",{})
+	player["rogue_growth"]=RogueGrowth.sanitize({"growth":progression if progression is Dictionary else {}}).growth
 	return player
 
 # What the player wears on top of the camp loadout: one weapon plus the three
@@ -504,7 +515,7 @@ func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	mods = RogueVariants.modifiers_of(ids)
 	# 成长树：账号级，与 p 无关（换人不换树）。先并入，再让诅咒叠在它上面。
 	# 只算一次表，循环里不再重复算（`rogue_mods()` 在移速路径上每帧每人一次）。
-	var growth: Dictionary = RogueGrowth.run_mods(profile_data())
+	var growth: Dictionary = rogue_growth_mods(p)
 	for key in growth:
 		mods[key] = float(mods.get(key,0.0)) + float(growth[key])
 	if not p.is_empty():
@@ -515,6 +526,21 @@ func rogue_mods(p: Dictionary = {}) -> Dictionary:
 		mods["defense_penalty"]=RogueCurses.defense_penalty(p)
 		mods["curse_count"]=RogueCurses.count(p)
 	return mods
+
+func rogue_growth_mods(p: Dictionary = {}) -> Dictionary:
+	if not p.is_empty() and p.has("rogue_growth"):
+		return RogueGrowth.run_mods({"growth":p.rogue_growth})
+	# Shared enemy budgets use the party average; personal stats use each player's tree.
+	var total: Dictionary={}
+	var count := 0
+	for ally in players.values():
+		if not ally.get("connected",true): continue
+		var own: Dictionary=RogueGrowth.run_mods({"growth":ally.rogue_growth}) if ally.has("rogue_growth") else RogueGrowth.run_mods(profile_data())
+		for key in own: total[key]=float(total.get(key,0))+float(own[key])
+		count+=1
+	if count==0: return RogueGrowth.run_mods(profile_data())
+	for key in total: total[key]/=count
+	return total
 
 ## 敌人普通弹幕的深渊变数钩子：只改弹速与**表现层**尺寸。
 ## mods 中性时返回原字典（逐字不变），也绝不写 hit_radius。
@@ -3328,10 +3354,10 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 		var running_now := sprint and not active_attack and direction.length()>0.1
 		var multiplier := RUN_MULTIPLIER if running_now else 1.0
 		if p.swing_time>0 and Catalog.weapon_family(p.weapon)==2:
-			multiplier*=(.6 if RogueBuild.weapon_id(p)==20 else .7)+(.15 if RogueBuild.gear(p,55) else 0)+(.05 if RogueBuild.core(p,4)==1 else .1 if RogueBuild.core(p,4)==2 else 0) if roguelike.active(self) else .48
+			multiplier*=minf(1,(.6 if RogueBuild.weapon_id(p)==20 else .7)+(.15 if RogueBuild.gear(p,55) else 0)+(.2 if RogueBuild.gear(p,18) and RogueBuild.buff(p,"e18_window",elapsed)>0 else 0)+(.05 if RogueBuild.core(p,4)==1 else .1 if RogueBuild.core(p,4)==2 else 0)) if roguelike.active(self) else .48
 		if roguelike.active(self):
 			if p.reload>0: multiplier*=.9 if RogueBuild.gear(p,57) else .6
-			elif active_attack and Catalog.weapon_family(p.weapon)!=2: multiplier*=.65 if RogueBuild.weapon_id(p)==45 else .9 if RogueBuild.weapon_id(p)==33 else 1.0 if RogueBuild.gear(p,18) and Catalog.weapon_family(p.weapon)==1 else .8
+			elif active_attack and Catalog.weapon_family(p.weapon)!=2: multiplier*=.65 if RogueBuild.weapon_id(p)==45 else .9 if RogueBuild.weapon_id(p)==33 else 1.0 if RogueBuild.gear(p,18) and Catalog.weapon_family(p.weapon)==1 and RogueBuild.buff(p,"e18_window",elapsed)>0 else .8
 		p.p=ruins.move(p.p,direction.limit_length(1)*speed*dt*multiplier)
 		if direction.length()>0.1:
 			p.move_dir=direction.normalized()
@@ -3381,6 +3407,7 @@ func attack(p: Dictionary) -> void:
 		return
 	if not spend_mana(p,RogueBuild.mana_cost(self,p,float(weapon.get("mana_cost",0)),"attack") if roguelike.active(self) else float(weapon.get("mana_cost",0.0))):
 		return
+	if roguelike.active(self) and family==3: p.build_buffs.erase("landing_cost")
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
 	p.combo_timeout=maxf(1.2,float(weapon.rate)*equipment_rate(p)+.65)
 	# A looted weapon of matching quality swings faster than the issue weapon.
@@ -3530,6 +3557,9 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 	if roguelike.active(self) and players.has(owner) and hp_before>0:
 		var attack_mods := rogue_mods(players[owner])
 		var rogue_output := float(attack_mods.get("player_damage",0.0))
+		# Only these two variants describe normal attacks; permanent growth remains universal.
+		if build_context.get("kind","")!="attack" and str(raid.get("variant","")) in ["rust","apocalypse"]:
+			rogue_output-=float(RogueVariants.modifiers_of([str(raid.variant)]).get("player_damage",0))
 		if rogue_output!=0.0: damage*=1.0+rogue_output
 		damage*=RogueBuild.hit_multiplier(self,players[owner],e,build_context)
 		e["build_shield_bonus"]=minf(.6,RogueBuild.r(players[owner],12,[.15,.25,.35])+(.30 if RogueBuild.weapon_id(players[owner])==34 else 0))

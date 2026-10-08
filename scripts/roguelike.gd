@@ -140,9 +140,11 @@ func reset(s) -> void:
 	s.raid["daily"]=launched_seed==Daily.global_daily_seed()
 	# W1b (R12 hook 3): the meta growth tree only pays into the *starting* purse. Without a
 	# profile channel `power()` is all zeros, so the shipped numbers are bit-identical.
-	var meta: Dictionary=Growth.power(profile_data_of(s))
 	# The new mode is a fresh run; carried campaign storage is never risked.
 	for p in s.players.values():
+		if not p.get("rogue_growth_explicit",false) and int(p.id)==s.my_id():
+			p["rogue_growth"]=Growth.sanitize(profile_data_of(s)).growth
+		var meta: Dictionary=Growth.power({"growth":p.get("rogue_growth",{})})
 		p.pocket=Catalog.clean_container({},Catalog.POCKET_GRID)
 		p.backpack=Catalog.make_bag("blue")
 		p.bags=[]
@@ -157,6 +159,7 @@ func reset(s) -> void:
 		# Contracts §3 (frozen): curses are personal while the abyss variant is shared.
 		p.rogue_curses=[]
 		p.rogue_ash_run=0
+		p["rogue_room_ash"]=0
 		p.rogue_mirror_used=false
 		# E1/E2 (2026-10). Both are **player** keys, not `raid` keys (the contract in §2 of
 		# `reset()` only forces new raid keys to have a default here). They must exist before the
@@ -380,7 +383,7 @@ func spawn_wave(s) -> void:
 	var count: int=1 if boss_wave else 6+floor_index+(2 if s.raid.room=="elite" else 0)
 	# W1b: `elite_chance` (R8 hook j) widens the elite prefix. Zero when no variant is active,
 	# which keeps the pre-W1b selection exactly as it was.
-	var extra_elite := int(round(maxf(0.0,mod_of(s,"elite_chance"))/0.12))
+	var extra_elite := clampf(mod_of(s,"elite_chance"),0,1)
 	var center: float=[760.0,1530.0,2360.0][int(s.raid.wave)-1]
 	var variants: Array=[]
 	var pool: Array=[0,1,2,3,4,5,6,7]
@@ -429,7 +432,9 @@ func spawn_wave(s) -> void:
 			# Draw a varied local roster with capped support and summoning pressure.
 			# W1b: `elite_chance` widens the elite prefix deterministically (no extra rng draw),
 			# so a variant can raise elite pressure without perturbing the seeded stream.
-			spawn_minion(s,at,floor_index,int(variants[i]),s.raid.room=="elite" and i<2+extra_elite)
+			var elite: bool=s.raid.room=="elite" and i<2
+			if not elite and extra_elite>0: elite=s.rng.randf()<extra_elite
+			spawn_minion(s,at,floor_index,int(variants[i]),elite)
 
 func dispersed_spawn_point(s, center: float) -> Vector2:
 	var left := maxf(180.0,center-230.0)
@@ -548,7 +553,7 @@ func clear_room(s) -> void:
 		# 作为**独立乘数**接到同一笔区域工资上——这是本局唯一反复产出的魔晶收入。
 		# 无诅咒/无该键时恒为 1.0，`scale_int` 在 1.0 处逐位恒等，因此既有出账不变。
 		var income_scale := maxf(0.0,1.0+mod_of(s,"gold_income",p))
-		var gold_scale := (1.0+mod_of(s,"gold"))*Curses.personal_reward_scale(p)*income_scale
+		var gold_scale := (1.0+mod_of(s,"gold",p))*Curses.personal_reward_scale(p)*income_scale
 		p.rogue_gold+=maxi(0,scale_int(25+int(s.raid.floor)*10+(50 if s.raid.get("challenge",false) else 0),gold_scale))
 		Build.award(s,p)
 	s.bullets.clear()
@@ -622,7 +627,7 @@ func set_loot_pity(s, scope: String, streak: int) -> void:
 	bucket[scope]=streak
 	s.raid["loot_pity"]=bucket
 
-func roll_tier(s, scope: String = LOOT_PITY_CHEST) -> int:
+func roll_tier(s, scope: String = LOOT_PITY_CHEST, p: Dictionary = {}) -> int:
 	var weights: Array=[[45,45,9,1,0,0],[10,40,42,8,0,0],[0,10,45,38,7,0],[0,0,20,50,28,2],[0,0,5,35,52,8]][clampi(int(s.raid.floor)-1,0,4)]
 	# IRON RULE (E3 §1): this is the one and only rng draw in this function, for **every**
 	# scope — the scope only changes what happens to the value *after* it is drawn, so the
@@ -644,7 +649,7 @@ func roll_tier(s, scope: String = LOOT_PITY_CHEST) -> int:
 		set_loot_pity(s,LOOT_PITY_CHEST,0 if tier>=LOOT_PITY_LOW else mini(pity+1,LOOT_PITY_STEP*LOOT_PITY_MAX))
 	# W1b (R8 hook f): the abyss variant shifts every drop's quality band. The single rng draw
 	# above is untouched, so the seeded stream is identical with or without a variant.
-	return clampi(tier+compensation+int(round(mod_of(s,"loot_tier"))),0,5)
+	return clampi(tier+compensation+int(round(mod_of(s,"loot_tier",p))),0,5)
 
 func reward_offers(s, tier: int, category: String = "gear", p: Dictionary = {}) -> Array:
 	var offers: Array=[]
@@ -730,7 +735,7 @@ func loot_interact(s, p: Dictionary) -> void:
 		for ally in s.players.values():
 			if not ally.connected: continue
 			for category in categories:
-				add_reward_drop(s,chest.p+Vector2((index%4-1)*70,45+floori(index/4.0)*50),roll_tier(s,LOOT_PITY_CHEST),{},.65+index*.04,int(ally.id),category)
+				add_reward_drop(s,chest.p+Vector2((index%4-1)*70,45+floori(index/4.0)*50),roll_tier(s,LOOT_PITY_CHEST,ally),{},.65+index*.04,int(ally.id),category)
 				s.raid.reward_drops.back()["personal"]=true
 				index+=1
 			# Personal, bound attribute shards use one roll per opened chest/player.
@@ -794,7 +799,9 @@ func apply_offer_reason(s, p: Dictionary, offer: Dictionary) -> String:
 					var def := Content.entry(known)
 					if int(def.school)==school and def.category=="N": has_basic=true; break
 				if not has_basic and p.build_library.size()-p.build_talents.size()<12: p.build_library.append(basic)
-		Build.activate(s,p,id,1)
+		var activation := Build.activation_reason(p,id)
+		if Build.activate(s,p,id,1): s.build_notice(p,"已激活：%s · %d级" % [Content.entry(id).name,p.build_talents[id]])
+		else: s.build_notice(p,"已收藏：%s · 未激活（%s），可在构筑页调整" % [Content.entry(id).name,activation if activation!="" else "当前不能调整构筑"])
 	elif offer.has("flask_refill"):
 		if p.flask>50 or p.flask_shop_floor==int(s.raid.floor): return "血瓶容量高于 50%，或本层已经补给过"
 		# A2 (R9 hook 7): 补给只能补到**当前容量**（CU07「破瓶」会把它削到 75/50）。
@@ -923,7 +930,7 @@ func roll_offers(s, _shop: bool, target: Dictionary = {}) -> void:
 			# E3 fix: the shelf's quality band is drawn with the **shop** scope. The shop is not
 			# the chest pool, so these four draws neither benefit from nor burn the chest streak
 			# (`roll_tier(s,LOOT_PITY_CHEST)` above is the only pity-driven caller).
-			var offer: Dictionary=reward_offers(s,roll_tier(s,LOOT_PITY_SHOP),category,p)[0]
+			var offer: Dictionary=reward_offers(s,roll_tier(s,LOOT_PITY_SHOP,p),category,p)[0]
 			offer.price=50 if category=="talent" else maxi(1,scale_int(65+int(s.raid.floor)*10,price_scale))
 			offers.append(offer)
 		offers.append({"name":"血瓶补充 50%","desc":"容量不高于50%时可买，每层一次；不会立即治疗。","flask_refill":50,"price":maxi(1,scale_int(45,price_scale)),"tier":0,"sold":p.flask_shop_floor==int(s.raid.floor)})
@@ -1457,10 +1464,10 @@ func settle(s) -> void:
 	# W1b (R8 hooks h/i): the run's abyss variant scales the end-of-run payout the same way it
 	# scales the floor payouts. Both factors are 1.0 when unused and `scale_int` is bit-exact
 	# identity at 1.0, so a variant-free run reproduces the shipped report exactly.
-	var gold_scale := 1.0+mod_of(s,"gold")
-	var xp_scale := 1.0+mod_of(s,"xp_gain")
 	for id in s.players:
 		var p: Dictionary=s.players[id]
+		var gold_scale := 1.0+mod_of(s,"gold",p)
+		var xp_scale := 1.0+mod_of(s,"xp_gain",p)
 		var won: bool=p.status=="extracted"
 		var coins: int=scale_int(int(s.raid.cleared)*12+(250 if won else 0),gold_scale)
 		var xp: int=scale_int(35+int(s.raid.cleared)*15,xp_scale)
@@ -1468,6 +1475,7 @@ func settle(s) -> void:
 		# Contracts §9.3 / v3-3: ash and the daily record leave through settle() only and exactly
 		# once — the `ended` latch above is the single guard, and it is already set at this point.
 		Growth.grant(s,p)
+		s.results[id]["ashes"]=int(p.rogue_ash_run)
 		record_daily(s,p,coins)
 	s.running=false
 	s.finished.emit()
@@ -1630,6 +1638,7 @@ func apply_room_delta(s, p: Dictionary, delta) -> Dictionary:
 		var ash_before := int(p.get("rogue_ash_run",0))
 		p["rogue_ash_run"]=maxi(0,ash_before+int(d.ash))
 		paid["ash"]=int(p.rogue_ash_run)-ash_before
+		p["rogue_room_ash"]=maxi(0,int(p.get("rogue_room_ash",0))+int(paid.ash))
 	if int(d.get("gear_reward",0))>0:
 		if not p.has("build_reward_queue"): p["build_reward_queue"]=[]
 		for i in int(d.gear_reward): p["build_reward_queue"].append("gear")

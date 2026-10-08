@@ -178,6 +178,9 @@ static func context(s, p: Dictionary, kind: String) -> Dictionary:
 	p.build_serial=int(p.get("build_serial",0))+1
 	var result := {"root":"%s:%d" % [p.id,p.build_serial],"kind":kind,"depth":0,"seen":{},"counted":false,"family":Catalog.weapon_family(int(p.weapon)),"weapon":weapon_id(p),"combo":int(p.combo),"height":float(p.get("height",0)),"unit":unit(s,p,kind=="skill"),"cost":float(p.get("build_last_cost",0)),"refunded":0.0,"first":true,"route":int(p.get("build_next_route",-1)),"hero_route":int(p.get("build_next_hero",-1)),"art_bonus":buff(p,"relay",s.elapsed)+(.2 if buff(p,"rotation",s.elapsed)>0 else 0)}
 	result["vfx"]=visual_state(p) # Snapshot before a projectile outlives this equipment.
+	result["strike_buffs"]={}
+	for key in ["dodge_strike","perfect_strike","shield_strike","counter","heavy_counter","healed","summon_strike","reload_strike","art_strike","landing_strike","w5_strike"]:
+		result.strike_buffs[key]=buff(p,key,s.elapsed)
 
 	for input in p.build_inputs:
 		if input.get("root","")=="" and input.key=={"attack":"A","art":"S","skill":"U"}.get(kind,""): input.root=result.root
@@ -264,12 +267,13 @@ static func spend_event(s, p: Dictionary, cost: float) -> void:
 			var target := lowest(s,p)
 			if not target.is_empty(): heal(s,p,target,maxf(.02 if gear(p,21) else 0,r(p,93,[.015,.02])))
 		if rank(p,96)>0 and ready(s,p,"T096",6):
-			shield(s,p,.04,3)
+			shield(s,p,.04,3,"T096:%s" % p.id)
 			var ally := lowest(s,p,240,true)
-			if not ally.is_empty(): shield(s,ally,.04,3)
-	if rank(p,55)>0 and float(p.build_counts.spent)>=40 and ready(s,p,"T055",5):
+			if not ally.is_empty(): shield(s,ally,.04,3,"T096:%s" % p.id)
+	if rank(p,55)>0 and float(p.build_counts.spent)>=40 and buff(p,"spring_echo",s.elapsed)<=0 and ready(s,p,"T055",5):
 		p.build_counts.spent=minf(39,float(p.build_counts.spent)-40)
 		grant(p,"spring_echo",r(p,55,[.20,.30]),8,s.elapsed)
+	if rank(p,55)>0: p.build_counts.spent=minf(39,float(p.build_counts.spent))
 
 static func mana_cost(s, p: Dictionary, base: float, kind: String) -> float:
 	if base<=0: return 0
@@ -285,25 +289,33 @@ static func attenuation(p: Dictionary, base: float) -> float:
 static func status(e: Dictionary, owner: int, name: String) -> int:
 	return int(e.get("build_status",{}).get(str(owner),{}).get(name,{}).get("stacks",0))
 
-static func add_status(s, p: Dictionary, e: Dictionary, name: String, stacks: int, power: float) -> void:
+static func cc_interval(p: Dictionary) -> float:
+	return 6.0 if rank(p,40)>0 else 7.0 if gear(p,38) else 8.0
+
+static func add_status(s, p: Dictionary, e: Dictionary, name: String, stacks: int, power: float, propagated: bool = false) -> void:
 	if e.hp<=0 or e.get("boss_construct",false): return
 	if not e.has("build_status"): e.build_status={}
 	var owner := str(p.id)
 	if not e.build_status.has(owner): e.build_status[owner]={}
 	var states: Dictionary=e.build_status[owner]
 	var duration := 4.0
-	if name=="burn": duration=minf(6.0,4+r(p,26,[.5,1,1.5])+(1 if gear(p,8) else 0)+(1 if gear(p,35) else 0)+(.5 if engraving(p,11) else 0))
+	if name=="burn": duration=minf(5.0 if gear(p,8) else 6.0,4+r(p,26,[.5,1,1.5])+(1 if gear(p,8) else 0)+(1 if gear(p,35) else 0)+(.5 if engraving(p,11) else 0))
 	elif name=="bleed": duration=4.0+(.5 if engraving(p,11) else 0)
 	elif name=="frost": duration=minf(4.5,3.0+r(p,34,[.4,.7,1]))
 	elif name=="mark": duration=4.0
-	states[name]={"stacks":mini(1 if name=="mark" else 5,status(e,p.id,name)+stacks),"time":duration,"power":power,"clock":float(states.get(name,{}).get("clock",0))}
+	var old: Dictionary=states.get(name,{})
+	states[name]={"stacks":mini(1 if name=="mark" else 5,status(e,p.id,name)+stacks),"time":duration,"power":power,"clock":float(old.get("clock",0)),"propagated":propagated and (old.is_empty() or bool(old.get("propagated",false)))}
 	if name=="frost" and int(states[name].stacks)==5 and s.elapsed>=float(e.get("build_cc_until",0)):
-		e["build_cc_until"]=s.elapsed+(6 if rank(p,40)>0 else 7 if gear(p,38) else 8)
+		e["build_cc_until"]=s.elapsed+cc_interval(p)
 		if not e.get("rogue_guardian",false): e.stagger=maxf(float(e.get("stagger",0)),.3 if e.get("build_elite",false) else .6)
-		if gear(p,9): shield(s,p,.06,4,"E009")
-		if rank(p,37)>0: shield(s,p,r(p,37,[.05,.08]),4,"T037")
-		if gear(p,62): mana(s,p,4)
-		if rank(p,38)>0: proc(s,p,e,r(p,38,[.2,.3]),power)
+		if gear(p,9) and ready(s,p,"E009",8): shield(s,p,.06,4,"E009")
+		if rank(p,37)>0 and ready(s,p,"T037",8): shield(s,p,r(p,37,[.05,.08]),4,"T037")
+		if gear(p,62) and ready(s,p,"E062",8): mana(s,p,4)
+		if rank(p,38)>0 and ready(s,p,"T038",8):
+			if e.get("rogue_guardian",false): proc(s,p,e,r(p,38,[.2,.3]),power)
+			else:
+				if not e.has("build_frost_finish"): e.build_frost_finish=[]
+				e.build_frost_finish.append({"owner":p.id,"time":float(e.stagger),"ratio":r(p,38,[.2,.3]),"power":power})
 
 static func proc(s, p: Dictionary, e: Dictionary, ratio: float, power: float = -1.0, kind: String = "proc") -> void:
 	if ratio<=0 or e.hp<=0: return
@@ -433,9 +445,10 @@ static func soul_step(s, p: Dictionary, soul: Dictionary, dt: float) -> void:
 		proc(s,p,targets[0],float(soul.ratio)*minf(1,.16/maxf(.001,total))*(1+pool),float(soul.power),"summon")
 		if rank(p,85)>0 and ready(s,p,"T085",3): grant(p,"summon_strike",r(p,85,[.08,.12]),3,s.elapsed)
 
-static func field(p: Dictionary, at: Vector2, seconds: float, radius: float, ratio: float, power: float, count: int = 3) -> void:
-	if p.build_fields.size()>=2: return
-	p.build_fields.append({"p":at,"time":seconds,"radius":radius,"ratio":ratio,"power":power,"clock":0.0,"count":count})
+static func field(p: Dictionary, at: Vector2, seconds: float, radius: float, ratio: float, power: float, count: int = 3, source: String = "general") -> void:
+	var same: Array=p.build_fields.filter(func(zone): return zone.get("source","general")==source)
+	if same.size()>=2: return
+	p.build_fields.append({"p":at,"time":seconds,"radius":radius,"ratio":ratio,"power":power,"clock":0.0,"count":count,"source":source})
 
 static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> float:
 	if int(ctx.get("depth",0))>0: return 1.0
@@ -443,6 +456,7 @@ static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> 
 	var art: bool=ctx.get("kind","")=="art"
 	var family: int=int(ctx.get("family",Catalog.weapon_family(int(p.weapon))))
 	var spell: bool=family==3 or ctx.get("kind","")=="skill"
+	var direct: bool=normal or art or ctx.get("kind","")=="skill"
 	var c := 0.0
 	var local_a := 0.0
 	var penalty := 1.0
@@ -467,7 +481,10 @@ static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> 
 		if rank(p,24)>0:
 			if family==0 and distance<160: penalty*=.85
 			if marked: c+=.22
-		for key in ["dodge_strike","perfect_strike","shield_strike","counter","healed","summon_strike","reload_strike","art_strike","landing_strike"]: c+=buff(p,key,s.elapsed)
+		for key in ["dodge_strike","perfect_strike","shield_strike","counter","summon_strike","reload_strike","art_strike","landing_strike"]: c+=float(ctx.get("strike_buffs",{}).get(key,buff(p,key,s.elapsed)))
+		if family==2: c+=float(ctx.get("strike_buffs",{}).get("heavy_counter",buff(p,"heavy_counter",s.elapsed)))
+	if direct:
+		c+=float(ctx.get("strike_buffs",{}).get("healed",buff(p,"healed",s.elapsed)))
 		if rank(p,72)>0: penalty*=.88
 	if rank(p,96)>0: penalty*=.90
 	if art:
@@ -482,7 +499,7 @@ static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> 
 	if frost>=3: c+=r(p,35,[.06,.09,.12])+(.12 if spell and gear(p,37) else 0)
 	if frost==5 and e.get("rogue_guardian",false) and spell and rank(p,40)>0: c+=.20
 	if float(e.get("build_break_time",0))>0: c+=.12+r(p,13,[.12,.18])
-	if spell and mp>=.7: c+=r(p,51,[.06,.09,.12])+(.18 if rank(p,56)>0 else 0)
+	if spell and mp>=.7: c+=r(p,51,[.06,.09,.12])+(.18 if rank(p,56)>0 and ctx.get("kind","")!="skill" else 0)
 	if gear(p,25) and mp>=.7: c+=.12
 	if gear(p,27) and e.get("rogue_guardian",false): c+=.16
 	if gear(p,28) and enemy_hp<.3: c+=.18
@@ -498,7 +515,7 @@ static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> 
 	if buff(p,"perfect_haste",s.elapsed)>0: c+=.12
 	var w: int=int(ctx.get("weapon",weapon_id(p)))
 	if normal:
-		if w==5 and buff(p,"dodge_window",s.elapsed)>0: c+=.16
+		if w==5: c+=float(ctx.get("strike_buffs",{}).get("w5_strike",buff(p,"w5_strike",s.elapsed)))
 		if w==6 and fire>0: c+=.10
 		if w==9 and hp<.5: c+=.14
 		if w==13 and enemy_hp>=.9: c+=.12
@@ -534,6 +551,7 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 	for input in p.build_inputs:
 		if input.get("root","")==ctx.get("root","?"): input["hit"]=true
 	if first: hero_effect(s,p,e,ctx)
+	if first and ctx.get("kind","") in ["attack","art","skill"]: p.build_buffs.erase("healed")
 	var normal: bool=ctx.get("kind","")=="attack"
 	var art: bool=ctx.get("kind","")=="art"
 	var family: int=int(ctx.get("family",0))
@@ -547,6 +565,7 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 	# Only statuses that predate this hit may react.
 	reactions(s,p,e,family,power)
 	if status(e,p.id,"frost")>=3 and gear(p,10): grant(p,"defense",.08,2,s.elapsed)
+	if status(e,p.id,"bleed")>0 and gear(p,54) and ready(s,p,"E054",3): grant(p,"defense",.06,2,s.elapsed)
 	if normal and first:
 		p.build_counts["attacks"]=int(p.build_counts.get("attacks",0))+1
 		p.build_counts["same"]=int(p.build_counts.get("same",0))+1 if int(p.build_counts.get("target",-1))==int(e.id) else 1
@@ -562,7 +581,6 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 			proc(s,p,e,buff(p,"spring_echo",s.elapsed),power); p.build_buffs.erase("spring_echo")
 		if first and gear(p,14) and p.mana<=p.max_mana*.3 and ready(s,p,"E014",3): mana(s,p,4)
 		if third and gear(p,53) and ready(s,p,"E053",3): grant(p,"speed",20,2,s.elapsed)
-		if blood>0 and gear(p,54) and ready(s,p,"E054",3): grant(p,"defense",.06,2,s.elapsed)
 		if blood>=3 and gear(p,29) and ready(s,p,"E029",4): add_status(s,p,e,"bleed",1,power)
 		if gear(p,34) and not marked and ready(s,p,"E034",3): add_status(s,p,e,"mark",1,power)
 		if rank(p,20)>0 and ready(s,p,"T020",r(p,20,[4,3.5,3])): add_status(s,p,e,"mark",1,power)
@@ -588,8 +606,9 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 			consume(e,p.id,"shock",5); proc(s,p,e,.35,power)
 			for target in nearby(s,p,e,180+r(p,43,[15,25,35])): proc(s,p,target,.35,power)
 			mana(s,p,r(p,45,[3,5]))
+		if buff(p,"e11_window",s.elapsed)>0 and gear(p,11) and ready(s,p,"E011",4):
+			add_status(s,p,e,"shock",2,power); p.build_buffs.erase("e11_window")
 		if buff(p,"dodge_window",s.elapsed)>0:
-			if gear(p,11) and ready(s,p,"E011",4): add_status(s,p,e,"shock",2,power)
 			if rank(p,47)>0 and ready(s,p,"T047",4): add_status(s,p,e,"shock",int(r(p,47,[1,2])),power)
 			if first and gear(p,63) and ready(s,p,"E063",4): proc(s,p,e,.15,power)
 			if first and family in [1,2] and rank(p,78)>0 and ready(s,p,"T078",4): proc(s,p,e,r(p,78,[.16,.24]),power)
@@ -621,7 +640,7 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 			16: add_status(s,p,e,"burn",2,power)
 			18: if ready(s,p,"W018",1.5): add_status(s,p,e,"shock",2,power)
 			19: if blood>=3 and ready(s,p,"W019",2): consume(e,p.id,"bleed",1); proc(s,p,e,.18,power)
-			21: if buff(p,"hurt_window",s.elapsed)>0 and ready(s,p,"W021",6): shield(s,p,.04,3)
+			21: if buff(p,"hurt_window",s.elapsed)>0 and ready(s,p,"W021",6): shield(s,p,.04,3,"W021")
 			25: if buff(p,"reload_window",s.elapsed)>0: add_status(s,p,e,"mark",1,power); p.build_buffs.erase("reload_window")
 			27: if int(p.build_counts.get("same",0))%3==0: add_status(s,p,e,"bleed",1,power)
 			28,38,43: if ready(s,p,"W-burn",.8 if w!=38 else 1): add_status(s,p,e,"burn",1,power)
@@ -643,7 +662,8 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 			if buff(p,"mirror_echo",s.elapsed)>0: proc(s,p,e,.18,power); p.build_buffs.erase("mirror_echo")
 			if int(p.build_counts.get("reload_refunds",0))>0:
 				mana(s,p,r(p,23,[1,2])); p.build_counts.reload_refunds-=1
-			for key in ["dodge_strike","perfect_strike","shield_strike","counter","healed","summon_strike","reload_strike","art_strike","landing_strike","landing_cost"]: p.build_buffs.erase(key)
+			for key in ["dodge_strike","perfect_strike","shield_strike","counter","summon_strike","reload_strike","art_strike","landing_strike","w5_strike"]: p.build_buffs.erase(key)
+			if family==2: p.build_buffs.erase("heavy_counter")
 	if art:
 		add_poise(s,p,e,20,power)
 		if first:
@@ -651,27 +671,27 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 			refund(s,p,ctx,r(p,59,[.08,.12,.16])+(.1 if engraving(p,13) else 0)+(buff(p,"combo_refund",s.elapsed)))
 			if core(p,9)>0 and float(ctx.refunded)>refunded_before and buff(p,"combo_refund",s.elapsed)>0: core_visual(s,p,9,p.p,ctx)
 			if rank(p,62)>0 and ready(s,p,"T062",6): proc(s,p,e,r(p,62,[.16,.24]),power)
-			if gear(p,48) and ready(s,p,"E048",5): mana(s,p,2)
+			if s.players.size()==1 and gear(p,48) and ready(s,p,"E048",5): mana(s,p,2)
 			for ally in s.players.values():
 				if ally.id!=p.id and ally.status=="active" and ally.p.distance_to(p.p)<=240 and gear(ally,48) and ready(s,ally,"E048",5): mana(s,ally,2)
 			if e.hp<=e.max_hp*.3 and rank(p,63)>0: p.art_cd=maxf(0,p.art_cd-minf(float(p.get("build_art_base",5))*.15,r(p,63,[.4,.7])))
 			if w==23:
 				proc(s,p,e,.08*int(p.build_counts.get("souls",0)),power); p.build_counts.souls=0
 			if w==36 and ready(s,p,"W036",8):
-				shield(s,p,.03,3)
+				shield(s,p,.03,3,"W036:%s" % p.id)
 				var ally := lowest(s,p,220,true)
-				if not ally.is_empty(): shield(s,ally,.03,3)
+				if not ally.is_empty(): shield(s,ally,.03,3,"W036:%s" % p.id)
 			if w==48 and ready(s,p,"W048",8): heal(s,p,p,.02)
 			if core(p,5)>0 and ready(s,p,"WC005",8):
-				shield(s,p,.03 if core(p,5)==1 else .05,3); grant(p,"art_strike",.06 if core(p,5)==1 else .10,3,s.elapsed); core_visual(s,p,5,p.p,ctx)
+				shield(s,p,.03 if core(p,5)==1 else .05,3,"WC005"); grant(p,"art_strike",.06 if core(p,5)==1 else .10,3,s.elapsed); core_visual(s,p,5,p.p,ctx)
 			if core(p,11)>0 and float(ctx.height)>0 and ready(s,p,"WC011",6):
 				add_status(s,p,e,"frost",core(p,11),power); core_visual(s,p,11,e.p,ctx)
-			if rank(p,32)>0 and fire>=3 and ready(s,p,"T032",6): field(p,e.p,3,90,.08,power)
+			if rank(p,32)>0 and fire>=3 and ready(s,p,"T032",6): field(p,e.p,3,90,.08,power,3,"T032")
 		if blood==5 and rank(p,6)>0 and ready(s,p,"T006",4): consume(e,p.id,"bleed",3); proc(s,p,e,r(p,6,[.30,.40]),power)
 
 	if e.get("rogue_guardian",false):
 		if normal and gear(p,51) and ready(s,p,"E051-boss",8): mana(s,p,4)
-		if gear(p,20) and ready(s,p,"E020-boss",10): shield(s,p,.04,4)
+		if gear(p,20) and ready(s,p,"E020-boss",10): shield(s,p,.04,4,"E020")
 
 static func add_poise(s, p: Dictionary, e: Dictionary, amount: float, power: float) -> void:
 	if e.hp<=0 or s.elapsed<float(e.get("build_break_until",0)): return
@@ -682,7 +702,7 @@ static func add_poise(s, p: Dictionary, e: Dictionary, amount: float, power: flo
 	e["build_break_time"]=2.0
 	e["build_break_until"]=s.elapsed+12.0
 	if not e.get("rogue_guardian",false): e.stagger=maxf(float(e.get("stagger",0)),.8)
-	if gear(p,32) and ready(s,p,"E032",10): shield(s,p,.06,4)
+	if gear(p,32) and ready(s,p,"E032",10): shield(s,p,.06,4,"E032")
 	if rank(p,16)>0 and ready(s,p,"T016",12): mana(s,p,6)
 
 static func reactions(s, p: Dictionary, e: Dictionary, family: int, power: float, broken: bool = false) -> void:
@@ -702,7 +722,7 @@ static func reactions(s, p: Dictionary, e: Dictionary, family: int, power: float
 
 static func perfect(s, p: Dictionary) -> void:
 	if buff(p,"dodge_age",s.elapsed)<=0 or not ready(s,p,"perfect",3): return
-	grant(p,"perfect_strike",(.18 if gear(p,70) else 0),2,s.elapsed)
+	if gear(p,70) and ready(s,p,"E070",5): grant(p,"perfect_strike",.18,2,s.elapsed)
 	if rank(p,76)>0 and ready(s,p,"T076",4): mana(s,p,r(p,76,[2,3,4]))
 	if rank(p,77)>0 and ready(s,p,"T077",5): shield(s,p,r(p,77,[.04,.06]),3,"T077")
 	if core(p,3)>0 and ready(s,p,"WC003",5):
@@ -712,6 +732,7 @@ static func perfect(s, p: Dictionary) -> void:
 	p.build_combo_time=1.2
 
 static func incoming(s, p: Dictionary, amount: float, source: Dictionary, tag: String, element: String = "physical") -> float:
+	if tag in ["dot","burn"] and element=="fire": amount*=1.0-minf(.3,r(p,28,[.1,.15,.2])+(.2 if gear(p,7) else 0))
 	if tag=="direct" and rank(p,72)>0 and ready(s,p,"T072",8): shield(s,p,.1,4,"T072")
 	if tag=="direct" and gear(p,16) and ready(s,p,"E016",8): amount*=.88
 	var absorb_ratio := .20 if gear(p,3) else 0.0
@@ -731,7 +752,7 @@ static func incoming(s, p: Dictionary, amount: float, source: Dictionary, tag: S
 	if amount>0:
 		p.build_last_hurt=s.elapsed
 		grant(p,"hurt_window",1,4,s.elapsed)
-		if gear(p,6) and amount>=p.max_hp*.08 and ready(s,p,"E006",8): grant(p,"counter",.2,4,s.elapsed)
+		if gear(p,6) and amount>=p.max_hp*.08 and ready(s,p,"E006",8): grant(p,"heavy_counter",.2,4,s.elapsed)
 		if element=="lightning" and gear(p,12) and ready(s,p,"E012",8): shield(s,p,.05,4,"E012")
 		if tag=="direct" and rank(p,70)>0 and amount>=p.max_hp*.04 and not source.is_empty() and source.p.distance_to(p.p)<=400 and s.ruins.clear_line(p.p,source.p) and ready(s,p,"T070",3): proc(s,p,source,r(p,70,[.16,.24]))
 	if before>0: p.flask_time=0.0; p["flask_pending_commit"]=false
@@ -761,24 +782,29 @@ static func action_event(s, p: Dictionary, token: String) -> void:
 	if token=="D":
 		grant(p,"dodge_window",1,2,now)
 		grant(p,"dodge_age",1,.12,now)
-		var bonus: float=r(p,75,[.08,.12,.16])+(.12 if engraving(p,20) else 0)+(.08 if core(p,1)==1 or core(p,7)==1 else .12 if core(p,1)==2 or core(p,7)==2 else 0)
-		grant(p,"dodge_strike",bonus,2,now)
-		if gear(p,18): grant(p,"speed",18,2,now)
-		if gear(p,60) and ready(s,p,"E060",4): field(p,p.p,2,50,.04,unit(s,p),2)
-		if core(p,7)>0:
-			grant(p,"reload_haste",.05 if core(p,7)==1 else .08,5,now); core_visual(s,p,7,p.p)
+		var bonus: float=(r(p,75,[.08,.12,.16]) if rank(p,75)>0 and ready(s,p,"T075",4) else 0)+(.12 if engraving(p,20) and ready(s,p,"I020",4) else 0)+(.08 if core(p,1)==1 or core(p,7)==1 else .12 if core(p,1)==2 or core(p,7)==2 else 0)
+		if bonus>0: grant(p,"dodge_strike",bonus,2,now)
+		if weapon_id(p)==5 and ready(s,p,"W005",4): grant(p,"w5_strike",.16,2,now)
+		if rank(p,79)>0: grant(p,"art_windup",r(p,79,[.1,.15]),2,now)
+		if gear(p,11): grant(p,"e11_window",1,3,now)
+		if gear(p,18): grant(p,"speed",18,2,now); grant(p,"e18_window",1,2,now)
+		if gear(p,60) and ready(s,p,"E060",4):
+			p["build_dodge_fire"]={"last":p.p,"placed":0,"power":unit(s,p)}
 	if token=="S":
 		grant(p,"art_window",1,3,now)
 		if gear(p,17) and ready(s,p,"E017",6): grant(p,"mirror_echo",1,3,now)
 		if gear(p,66) and ready(s,p,"E066",4): grant(p,"speed",24,2,now)
-		if engraving(p,21) and ready(s,p,"I021",8): shield(s,p,.04,3)
+		if engraving(p,21) and ready(s,p,"I021",8): shield(s,p,.04,3,"I021")
 		if engraving(p,23) and float(p.get("build_last_cost",0))>=12 and ready(s,p,"I023",6): heal(s,p,p,.01)
 		grant(p,"mark_next",1,5,now)
 	if token=="U":
 		if rank(p,94)>0 and ready(s,p,"T094",12):
 			for ally in s.players.values():
-				if ally.status=="active" and ally.p.distance_to(p.p)<=240: shield(s,ally,r(p,94,[.04,.06]),3)
-		if rank(p,86)>0: grant(p,"soul_order",r(p,86,[.12,.18]),3,now)
+				if ally.status=="active" and ally.p.distance_to(p.p)<=240: shield(s,ally,r(p,94,[.04,.06]),3,"T094:%s" % p.id)
+		if rank(p,86)>0:
+			grant(p,"soul_order",r(p,86,[.12,.18]),3,now)
+			var target := aimed_enemy(s,p)
+			if not target.is_empty(): grant(p,"soul_target",float(target.id),3,now)
 		if gear(p,46): extend_summons(p,1)
 	for i in CM_ROUTES[route_index].size():
 		var required: int=[0,1,3,3][i] if family==1 else [0,1,0,3][i]
@@ -790,6 +816,20 @@ static func action_event(s, p: Dictionary, token: String) -> void:
 		for i in HC_ROUTES[int(p.hero)].size():
 			if keys.ends_with(HC_ROUTES[int(p.hero)][i]): p.build_next_hero=i; break
 	if token=="S" and keys.ends_with("AAS") and core(p,9)>0: grant(p,"combo_refund",.05 if core(p,9)==1 else .08,1,now)
+	if token=="A" and family==0 and p.build_next_route==0 and core(p,7)>0:
+		grant(p,"reload_haste",.05 if core(p,7)==1 else .08,INF,now); core_visual(s,p,7,p.p)
+
+static func aimed_enemy(s, p: Dictionary) -> Dictionary:
+	var aim: Vector2=p.aim.normalized()
+	var requested: Vector2=s.inputs.get(p.id,{}).get("aim_point",p.p+aim*420)
+	var result: Dictionary={}
+	var best := INF
+	for enemy in s.enemies:
+		var delta: Vector2=enemy.p-p.p
+		if enemy.hp<=0 or enemy.get("boss_construct",false) or not s.ruins.clear_line(p.p,enemy.p) or delta.length()>420 or delta.normalized().dot(aim)<.2: continue
+		var distance: float=enemy.p.distance_squared_to(requested)
+		if distance<best: best=distance; result=enemy
+	return result
 
 static func extend_summons(p: Dictionary, seconds: float) -> void:
 	for soul in p.build_summons:
@@ -825,6 +865,7 @@ static func jump(s, p: Dictionary) -> bool:
 	p.jump_cd=1.2
 	p.air_attacks=0
 	p.air_art=false
+	p["build_air_cast"]=false
 	p.air_dodge=false
 	p.swing_time=0.0
 	p.attack=maxf(0,p.attack-.08)
@@ -873,14 +914,21 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 			p.build_landing_time=.18
 			if core(p,3)>0:
 				grant(p,"landing_strike",.08 if core(p,3)==1 else .12,2,s.elapsed); core_visual(s,p,3,p.p)
-			if core(p,10)>0 and p.air_attacks>0:
+			if core(p,10)>0 and (p.air_attacks>0 or p.get("build_air_cast",false)):
 				grant(p,"landing_cost",.08 if core(p,10)==1 else .12,2,s.elapsed); core_visual(s,p,10,p.p)
+			p["build_air_cast"]=false
 	var move: Vector2=s.inputs.get(p.id,{}).get("move",Vector2.ZERO)
 	if move.normalized().dot(p.aim)<-.6: p["build_back_time"]=s.elapsed
 	p.build_stationary=float(p.get("build_stationary",0))+dt if move.length()<.1 and p.dodge_time<=0 else 0.0
 	var dodge_active: bool=p.dodge_time>0
 	if p.get("build_was_dodging",false) and not dodge_active and gear(p,67) and ready(s,p,"E067",6): shield(s,p,.04,2,"E067")
 	p["build_was_dodging"]=dodge_active
+	if p.has("build_dodge_fire"):
+		var trail: Dictionary=p.build_dodge_fire
+		if p.p.distance_to(trail.last)>=35 or not dodge_active:
+			field(p,p.p,2,50,.04,float(trail.power),2,"E060")
+			trail.last=p.p; trail.placed+=1
+		if int(trail.placed)>=2 or not dodge_active: p.erase("build_dodge_fire")
 	if gear(p,72):
 		for ally in s.players.values():
 			if ally.id!=p.id and ally.status=="down" and ally.p.distance_to(p.p)<=300 and move.normalized().dot((ally.p-p.p).normalized())>.6: grant(p,"speed",25,.1,s.elapsed); break
@@ -906,6 +954,12 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 
 static func tick_enemies(s, dt: float) -> void:
 	for e in s.enemies:
+		for finish in e.get("build_frost_finish",[]).duplicate():
+			finish.time-=dt
+			if finish.time<=0:
+				var owner: Dictionary=s.players.get(int(finish.owner),{})
+				if not owner.is_empty() and owner.status=="active": proc(s,owner,e,float(finish.ratio),float(finish.power))
+				e.build_frost_finish.erase(finish)
 		e["build_poise"]=maxf(0,float(e.get("build_poise",0))-12*dt)
 		if float(e.get("build_air_time",0))>0:
 			e.build_air_time=maxf(0,float(e.build_air_time)-dt)
@@ -934,6 +988,27 @@ static func talent_cost(p: Dictionary) -> int:
 	var cost := 0
 	for id in p.get("build_talents",{}): cost+=int(p.build_talents[id])*int(Content.entry(id).get("cost",1))
 	return cost
+
+static func activation_reason(p: Dictionary, id: String) -> String:
+	var entry := Content.entry(id)
+	if entry.is_empty(): return "未知天赋"
+	var level := int(p.get("build_talents",{}).get(id,0))
+	if level>=int(entry.max_rank): return "天赋已满级"
+	if level==0 and p.build_talents.size()>=8: return "激活天赋已满8项"
+	if entry.category=="K":
+		for active in p.build_talents:
+			if active!=id and Content.entry(active).category=="K": return "已激活其他流派核心"
+	var basic := 0
+	var investment := 0
+	for active in p.build_talents:
+		var def := Content.entry(active)
+		if def.school==entry.school and def.category!="K":
+			investment+=int(p.build_talents[active])
+			if def.category=="N": basic+=1
+	if entry.category=="A" and basic==0: return "需先激活同流派普通天赋"
+	if entry.category=="K" and investment<2: return "需先在同流派非核心天赋投入2点"
+	if talent_cost(p)+int(entry.cost)>mini(18,int(p.build_cultivation)): return "可用修为不足"
+	return ""
 
 static func legal_talents(talents: Dictionary, budget: int) -> bool:
 	if talents.size()>8: return false
@@ -1091,7 +1166,7 @@ static func hero_skill(s, p: Dictionary, aim: Vector2) -> void:
 		for ally in s.players.values():
 			if ally.status=="active" and ally.p.distance_to(p.p)<=240: heal(s,p,ally,.12,false); shield(s,ally,.06,4,"Q:%s" % p.id)
 	elif p.hero==2: shield(s,p,.08,4,"Q:%s" % p.id)
-	elif p.hero==3: field(p,s.ruins.move(p.p,aim*160),4,160,.20,power,5)
+	elif p.hero==3: field(p,s.ruins.move(p.p,aim*160),4,160,.20,power,5,"Q")
 
 static func enemy_budget(s, e: Dictionary) -> void:
 	var floor_index := clampi(int(s.raid.floor)-1,0,4)
@@ -1107,12 +1182,18 @@ static func enemy_budget(s, e: Dictionary) -> void:
 	# 「变强」同时变成「怪更肉」，形成越买越难的负反馈（见报告 §3 的复核）。
 	# 分开乘 = rubber-band 只看当场的构筑/装备强度，成长树永远是玩家净赚。
 	# 成长树为 0 时两个 hook 都是 0.0，乘数恒为 1.0，出厂数值逐位不变。
-	var growth_enemy_hp := 1.0+clampf(hook_mod(s,e,"enemy_hp"),-0.95,0.0)
-	var growth_enemy_damage := 1.0+clampf(hook_mod(s,e,"enemy_damage"),-0.95,0.0)
+	# Combat.apply_variant_stats owns variant HP; this budget owns permanent growth.
+	var growth: Dictionary=s.rogue_growth_mods() if s.has_method("rogue_growth_mods") else {}
+	var growth_enemy_hp := 1.0+clampf(float(growth.get("enemy_hp",0)),-.95,0)
+	var growth_enemy_damage := 1.0+clampf(float(growth.get("enemy_damage",0)),-.95,0)
+	var variant: Dictionary=s.RogueVariants.modifiers_of([str(s.raid.get("variant",""))])
 	e.hp=base*(1+(count-1)*(.85 if boss else .75 if elite else .65))*(1.8 if elite else 1.0)*float(s.raid.get("build_enemy_hp",1))*growth_enemy_hp
 	e.max_hp=e.hp
-	e["build_damage_scale"]=float(s.raid.get("build_enemy_damage",1))*growth_enemy_damage
+	e["build_damage_scale"]=float(s.raid.get("build_enemy_damage",1))*growth_enemy_damage*(1.0+float(variant.get("enemy_damage",0)))
 	e["build_base_damage"]=[24,30,37,45,54][floor_index]
+	if e.get("variant_stats_applied",false):
+		e.hp*=s.roguelike.combat.enemy_hp_scale(s); e.max_hp=e.hp
+	else: s.roguelike.combat.apply_variant_stats(s,e)
 
 static func departure(s) -> void:
 	var damage := 0.0
@@ -1152,9 +1233,9 @@ static func hero_effect(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> voi
 		1:
 			if index==0: add_status(s,p,e,"frost",2 if high else 1,power)
 			elif index==1:
-				shield(s,p,.03 if high else .02,3)
+				shield(s,p,.03 if high else .02,3,"HC06:%s" % p.id)
 				var ally := lowest(s,p,240,true)
-				if not ally.is_empty(): shield(s,ally,.03 if high else .02,3)
+				if not ally.is_empty(): shield(s,ally,.03 if high else .02,3,"HC06:%s" % p.id)
 			elif index==2: proc(s,p,e,.14 if high else .10,power)
 			else:
 				for ally in s.players.values():
@@ -1162,7 +1243,7 @@ static func hero_effect(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> voi
 		2:
 			if index==0: add_poise(s,p,e,16 if high else 10,power)
 			elif index==1: proc(s,p,e,.16 if high else .12,power)
-			elif index==2: shield(s,p,.04 if high else .03,3)
+			elif index==2: shield(s,p,.04 if high else .03,3,"HC11")
 			else: proc(s,p,e,.20 if high else .16,power)
 		3:
 			if index in [0,3]:
@@ -1209,15 +1290,11 @@ static func enemy_experience(s, e: Dictionary) -> void:
 	# 与变数会产出它，所以与队伍里是谁打死怪无关。
 	# 键为 0 时乘数恒为 1.0（`is_equal_approx` 守卫），出厂的 `build_xp` 逐位不变（无 profile
 	# 通道即旧行为）。
-	var holder: Dictionary = {}
-	for ally in s.players.values():
-		holder = ally
-		break
-	var xp_scale := 1.0+hook_mod(s,holder,"xp_gain")
-	if not is_equal_approx(xp_scale,1.0): amount=maxi(1,int(round(float(amount)*xp_scale)))
 	e["build_xp_awarded"]=true
 	for ally in s.players.values():
-		if ally.connected and ally.status in ["active","down"]: add_experience(s,ally,amount)
+		if ally.connected and ally.status in ["active","down"]:
+			var xp_scale := 1.0+hook_mod(s,ally,"xp_gain")
+			add_experience(s,ally,maxi(1,int(round(float(amount)*xp_scale))))
 
 static func killed(s, p: Dictionary, e: Dictionary) -> void:
 	if e.get("boss_construct",false) or e.get("rogue_summoned",false) or e.get("build_no_rewards",false) or e.get("build_last_kind","") not in ["attack","art","skill","dot"] or p.status!="active": return
@@ -1226,9 +1303,10 @@ static func killed(s, p: Dictionary, e: Dictionary) -> void:
 	if gear(p,51) and ready(s,p,"E051",2): mana(s,p,4)
 	if gear(p,20) and ready(s,p,"E020",6): shield(s,p,.04,4,"E020")
 	if status(e,p.id,"burn")>0:
-		if gear(p,36) and ready(s,p,"E036",4): field(p,e.p,2,90,.06,power)
-		if rank(p,29)>0 and ready(s,p,"T029",3):
-			for target in nearby(s,p,e,140,2): add_status(s,p,target,"burn",int(r(p,29,[1,2])),power)
+		if gear(p,36) and ready(s,p,"E036",4): field(p,e.p,2,90,.06,power,3,"E036")
+		var propagated: bool=e.get("build_status",{}).get(str(p.id),{}).get("burn",{}).get("propagated",false)
+		if rank(p,29)>0 and not (propagated and e.get("build_last_kind","")=="dot") and ready(s,p,"T029",3):
+			for target in nearby(s,p,e,140,2): add_status(s,p,target,"burn",int(r(p,29,[1,2])),power,true)
 	if p.build_floor_souvenirs<3 and s.rng.randf()<minf(.2,.1*s.stat_discovery(p)/100.0):
 		p.build_floor_souvenirs+=1; p.build_souvenirs+=1
 

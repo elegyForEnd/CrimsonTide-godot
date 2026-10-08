@@ -302,8 +302,8 @@ static func weapon(index: int) -> Dictionary:
 		return STARTER_WEAPONS[index-STARTER_BASE]
 	return WEAPONS[clampi(index,0,WEAPONS.size()-1)]
 
-static func scaling_text(index: int) -> String:
-	var grades: Dictionary=weapon(index).get("scaling",{})
+static func scaling_text(index: int, override_grades: Dictionary = {}) -> String:
+	var grades: Dictionary=weapon(index).get("scaling",{}) if override_grades.is_empty() else override_grades
 	var parts: Array[String] = []
 	for key in ["strength","dexterity","intelligence","arcane"]:
 		var at := WatcherAttributes.KEYS.find(key)

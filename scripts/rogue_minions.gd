@@ -162,7 +162,8 @@ func release(s, c, e: Dictionary) -> void:
 	var move: Dictionary=skill(e,int(e.minion_skill))
 	var kind: String=move.kind
 	var aim: Vector2=e.attack_aim
-	var damage: float=(9.0+int(e.rogue_skin)*2)*(1.2 if e.buff_kind=="power" else 1.0)*float(e.get("build_damage_scale",1))
+	# The receiving zone/missile/bolt applies the enemy budget exactly once.
+	var damage: float=(9.0+int(e.rogue_skin)*2)*(1.2 if e.buff_kind=="power" else 1.0)
 	var point: Vector2=e.attack_point
 	if kind in ["heal","sacrifice_heal","repair","shield","haste","armor","speed","power"]:
 		support(s,e,kind); return

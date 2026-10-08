@@ -251,6 +251,7 @@ func visual_move(e: Dictionary) -> String:
 	return str(moves[clampi(int(e.get("boss_skill",0)),0,moves.size()-1)].shape)
 
 func missile(e: Dictionary, kind: String, from: Vector2, to: Vector2, delay: float, duration: float, damage: float) -> void:
+	if e.get("rogue_minion",false): damage*=float(e.get("build_damage_scale",1))
 	missiles.append({"source":e.id,"floor":e.rogue_skin,"fx_move":visual_move(e),"kind":kind,"start":from,"end":to,"p":from,
 		"delay":delay,"duration":duration,"age":0.0,"damage":damage,"hit":{},"visual_height":0.0})
 
@@ -417,6 +418,7 @@ func release(s, e: Dictionary) -> void:
 	elif shape=="blink": e.p=e.attack_point
 
 func bolt(s, e: Dictionary, direction: Vector2, speed: float, damage: float) -> void:
+	if e.get("rogue_minion",false): damage*=float(e.get("build_damage_scale",1))
 	# bullet_visual 只被表现层读取（G 集合），命中判定始终是 session.gd 里的默认 hit_radius=18.0。
 	s.bullets.append({"p":e.p,"v":direction*speed*bullet_speed_of(e),"life":2.6,"damage":damage,"owner":0,"boss_source":e.id,"fx_move":visual_move(e),"rogue_tone":e.rogue_skin,"rogue_guardian":e.get("rogue_guardian",false),"bullet_visual":bullet_visual_of(e)})
 
@@ -514,7 +516,9 @@ func tick(s, dt: float) -> void:
 					for enemy in s.enemies:
 						if enemy.id==fx.source: source=enemy; break
 					var height_tag: String=fx.get("height_tag","ground" if fx.shape in ["ring","roots","cross"] else "normal")
-					s.hurt(p,float(fx.damage),source,height_tag,"direct",str(fx.get("element","lightning" if int(fx.floor)==3 else "fire" if int(fx.floor)==1 else "physical")))
+					var element := str(fx.get("element","lightning" if int(fx.floor)==3 else "fire" if int(fx.floor)==1 else "physical"))
+					var damage_tag := str(fx.get("damage_tag","burn" if element=="fire" and float(fx.total)>.6 and fx.shape in ["circle","line","eruption","cross"] else "direct"))
+					s.hurt(p,float(fx.damage),source,height_tag,damage_tag,element)
 				if not fx.get("choreographed",false) and float(fx.get("pull",0))>0: p.p=s.ruins.move(p.p,(fx.p-p.p).normalized()*float(fx.pull)*(.7 if s.RogueBuild.gear(p,56) else 1.0),15)
 				if float(fx.get("push",0))>0: p.p=s.ruins.move(p.p,(p.p-fx.p).normalized()*float(fx.push)*(.7 if s.RogueBuild.gear(p,56) else 1.0),15)
 				fx.hit[p.id]=fx.age

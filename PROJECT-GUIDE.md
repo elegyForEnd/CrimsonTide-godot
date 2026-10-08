@@ -829,3 +829,9 @@ git status --porcelain
 用户澄清要求使用 ImageGen 重做原图：新生成14张 _v2 素材，由 weapon_image_art.gd 的 REDRAWN 映射接入，46张原始RGBA及提示词留档。移除主体扩边shader和细长贴图横截面拉厚，按自然比例显示。原图对照 build/weapon-imagegen-redraw.png，试玩 build/CrimsonTide-WeaponImageRedraw.exe；GPU 直接比较旧/新原图，验证主体亮像素增加至少50%，同时检查圆斩空心/中心/高度和光束挂点。
 
 Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/rogue_combat.gd` 的 `BOSS_ORDER`、`boss_pool()` 和 `setup_boss()`。条件终局分派位于 `scripts/session.gd` 的 `defeated_boss` 分支：无名赤月存活时不得触发隐藏战。Boss 特效事件必须携带实际 `art_key`，死亡事件不能依赖已从快照移除的敌人。
+
+### 2026-10-08 闯关构筑效果审计
+
+完整清单见 `output/ROGUE-EFFECTS-AUDIT-2026-10-08.md`：252条构筑内容及永久成长/层变数/诅咒/事件/32派生，区分静态接入、动态复现与规则歧义，记录32组待处理问题；本次未修改运行玩法、未重新导出。
+
+武器升级实伤验证入口：`tests/rogue_weapon_upgrade_audit.gd:23 run()`，48把武器的品质、锻造、稳锋、补正及实例绑定共718项检查通过；原始数值在 `output/rogue-weapon-upgrade-audit.json`。定向观察入口：`output/rogue_effect_audit_probe.gd:34 run()`，21场景复现当前异常/歧义，结果在 `output/rogue-effect-audit-observations.json`，不表示问题已经修复。目录重建：`python tools/build_rogue_effect_audit.py`。重点：领取天赋未激活的反馈、变数正倍率截断/负生命重复应用、房间灰烬遗漏永久入库、不同盾来源共用general、联机个人成长数据通道。
