@@ -82,6 +82,11 @@ func build(app, p: Dictionary) -> void:
 		"forge": forge()
 		"combos": combos()
 		"codex": codex()
+	# Seed the correct range immediately, avoiding a visible frame at the top.
+	var vertical_bar := scroll.get_v_scroll_bar()
+	vertical_bar.max_value=body.custom_minimum_size.y
+	vertical_bar.page=scroll.size.y
+	scroll.scroll_vertical=saved_scroll
 	restore_scroll.call_deferred(saved_scroll)
 	text(self,"F 喝血瓶 · Space 闪避 · C 跃起 · 左键攻击 · 右键战技 · Q 角色奥义",Vector2(68,841),Vector2(1290,30),16,MUTED)
 

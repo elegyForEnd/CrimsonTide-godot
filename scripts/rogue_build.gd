@@ -31,6 +31,7 @@ const SOUL_STUCK := 0.6        # 被地形卡住累计多少秒就放弃追击
 const SOUL_UNREACHABLE := 1.5  # 放弃后多久才重新尝试追同一只（免得在墙前来回抖）
 
 static func reset(s, p: Dictionary) -> void:
+	p.erase("build_dodge_fire")
 	p.merge({"build_version":3,"build_talents":{},"build_library":[],"build_cultivation":0,"build_attributes":{},"build_attribute_points":0,
 		"build_level":1,"build_xp":0,"build_xp_total":0,"build_chest_attribute_drops":0,
 		"build_forge_points":0,"build_forge_level":0,"build_forge_bound":"","build_core":"","build_temper":"","build_awards":{},
@@ -38,7 +39,7 @@ static func reset(s, p: Dictionary) -> void:
 		"soul_focus":-1,
 		"build_reward_queue":[],"build_serial":0,"build_inputs":[],"build_combo_label":"","build_combo_time":0.0,"build_hero_cd":0.0,
 		"build_shield":0.0,"build_shield_time":0.0,"build_shields":{},"build_last_hurt":-10.0,"build_stationary":0.0,"build_souvenirs":0,"build_floor_souvenirs":0,
-		"height":0.0,"height_velocity":0.0,"jump_cd":0.0,"air_attacks":0,"air_art":false,"air_dodge":false,
+		"height":0.0,"height_velocity":0.0,"jump_cd":0.0,"air_attacks":0,"air_art":false,"air_dodge":false,"build_air_cast":false,
 		"flask":100.0,"flask_cd":0.0,"flask_time":0.0,"flask_committed":false,"soul_lamp":true,"lamp_time":0.0,
 		"flask_refills":0,"flask_combat_awards":0,"flask_elite_award":false,"build_vitality_healed":0,"flask_shop_floor":0,"build_respec_floor":0},true)
 	# `rogue_rerolls` is *caller-owned config*, not run state: `session.gd` already
@@ -887,6 +888,7 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 	p.build_shield=0.0
 	for source in p.get("build_shields",{}).values(): p.build_shield+=float(source.amount)
 	if p.status=="down":
+		p.erase("build_dodge_fire")
 		p.flask_time=0.0; p.height=0.0; p.height_velocity=0.0
 		var cmd: Dictionary=s.inputs.get(p.id,{})
 		if p.soul_lamp and bool(cmd.get("flask_held",false)):
@@ -1138,6 +1140,8 @@ static func award(s, p: Dictionary) -> void:
 ## `s` 是可选参数：仅用于 A2 的 `flask_max`（CU07「破瓶」）容量钳制。旧调用方
 ## （tests 的裸会话）不传 `s` 时容量恒为 100，行为与接线前逐位相同。
 static func floor_enter(p: Dictionary, s = null) -> void:
+	p.erase("build_dodge_fire")
+	p["build_air_cast"]=false
 	p.build_chest_attribute_drops=0
 	p.flask=minf(flask_cap(s,p),p.flask+50)
 	p.mana=minf(p.max_mana,p.mana+p.max_mana*.5)
@@ -1277,19 +1281,8 @@ static func enemy_experience(s, e: Dictionary) -> void:
 	if e.hp>0 or e.get("build_xp_awarded",false) or e.get("rogue_summoned",false) or e.get("boss_construct",false) or e.get("build_no_rewards",false): return
 	var amount := int(e.get("build_xp_reward",0))
 	if amount<=0: return
-	# A1 · 成长树 `scholar`（xp_gain，≤ +50%）与变数 `famine`/`starlight` 的同一个键，都在
-	# **获得经验的那一刻**落地，而且**只在这里落地一次**：`e.build_xp_reward` 是刷怪时写入的
-	# **基础值**（`roguelike.gd:383` 的 boss 分支与 `roguelike.gd:450` 的杂兵分支不再预乘），它是"这只怪值多少经验"的声明，也是随敌人
-	# 进快照的字段，但它本身不是入账；真正决定 `build_xp_total`/等级/属性点的入口就是下面的
-	# `add_experience()`。
-	# 2026-06 修复：此前刷怪侧与这里**各乘了一次同一份** `(1+xp_gain)`，正增益被平方放大
-	# （+40% 实际 ×1.96），而负增益（`famine` -20%）因为旧代码这里的 `maxf(0.0,·)` 只有刷怪侧
-	# 生效过一次。两处合一后正负增益都严格线性一次；`maxf(0.0,·)` 必须一并移除，否则删掉预乘
-	# 会把「饥荒」的 -20% 悄悄变成 0%。`amount` 仍有 `maxi(1,·)` 兜底，XP 永远不会变负或归零。
-	# `xp_gain` 与 `gold` 一样是**全队**加成：它不是诅咒键，`session.rogue_mods()` 里只有成长树
-	# 与变数会产出它，所以与队伍里是谁打死怪无关。
-	# 键为 0 时乘数恒为 1.0（`is_equal_approx` 守卫），出厂的 `build_xp` 逐位不变（无 profile
-	# 通道即旧行为）。
+	# Base encounter XP is shared in full; each recipient applies their own scholarship
+	# and the shared floor variant exactly once, including negative XP modifiers.
 	e["build_xp_awarded"]=true
 	for ally in s.players.values():
 		if ally.connected and ally.status in ["active","down"]:

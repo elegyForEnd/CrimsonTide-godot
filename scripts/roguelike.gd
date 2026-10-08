@@ -381,8 +381,8 @@ func spawn_wave(s) -> void:
 	var boss_wave: bool=s.raid.room=="boss" and int(s.raid.wave)==3
 	var floor_index: int=int(s.raid.floor)-1
 	var count: int=1 if boss_wave else 6+floor_index+(2 if s.raid.room=="elite" else 0)
-	# W1b: `elite_chance` (R8 hook j) widens the elite prefix. Zero when no variant is active,
-	# which keeps the pre-W1b selection exactly as it was.
+	# Extra elite chance is evaluated per non-guaranteed minion, including ordinary rooms.
+	# At zero chance no additional RNG draws are made.
 	var extra_elite := clampf(mod_of(s,"elite_chance"),0,1)
 	var center: float=[760.0,1530.0,2360.0][int(s.raid.wave)-1]
 	var variants: Array=[]
@@ -430,8 +430,8 @@ func spawn_wave(s) -> void:
 			s.message.emit(str(s.enemies.back().get("boss_name",combat.NAMES[floor_index]))+"降临！")
 		else:
 			# Draw a varied local roster with capped support and summoning pressure.
-			# W1b: `elite_chance` widens the elite prefix deterministically (no extra rng draw),
-			# so a variant can raise elite pressure without perturbing the seeded stream.
+			# Guaranteed elite-room slots remain elite; every other slot rolls the variant chance.
+			# Both the draw and species use the run RNG, preserving same-seed determinism.
 			var elite: bool=s.raid.room=="elite" and i<2
 			if not elite and extra_elite>0: elite=s.rng.randf()<extra_elite
 			spawn_minion(s,at,floor_index,int(variants[i]),elite)

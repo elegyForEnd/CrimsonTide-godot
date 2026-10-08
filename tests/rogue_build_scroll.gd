@@ -27,7 +27,9 @@ func run() -> void:
 	var old_button: Button=old.find_child("TalentActivate_T065",true,false)
 	var old_y: float=old_button.global_position.y
 	check(old.scroll.scroll_vertical==1100,"Test starts below top of long talent list")
-	old_button.pressed.emit(); app.show_inventory(); await frames()
+	old_button.pressed.emit(); app.show_inventory()
+	check(sheet().scroll.scroll_vertical==1100,"Rebuild never exposes an initial frame at the top")
+	await frames()
 	var current=sheet()
 	check(p.build_talents.get("T065",0)==1,"Actual button activates talent")
 	check(current.scroll.scroll_vertical==1100,"Activation preserves scroll after rebuilding layout")

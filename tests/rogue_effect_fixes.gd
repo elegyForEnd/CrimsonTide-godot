@@ -174,6 +174,18 @@ func run() -> void:
 	check(is_equal_approx(f.s.roguelike.combat.missiles.back().damage,9*1.15),"Minion missile budget multiplied once")
 	f.s.roguelike.combat.bolt(f.s,f.e,Vector2.RIGHT,200,9)
 	check(is_equal_approx(f.s.bullets.back().damage,9*1.15),"Minion bolt budget multiplied once")
+	reset(); f.s.raid.room="combat"; f.s.raid.wave=1; f.s.raid.variant=""
+	f.s.roguelike.spawn_wave(f.s)
+	check(not f.s.enemies.any(func(enemy): return enemy.get("build_elite",false)),"Ordinary room has no elites without chance modifier")
+	var elite_count := 0
+	var monster_count := 0
+	for sample in 20:
+		f.s.enemies.clear(); f.s.raid.variant="wolves"; f.s.rng.seed=1000+sample
+		f.s.roguelike.spawn_wave(f.s)
+		monster_count+=f.s.enemies.size()
+		for enemy in f.s.enemies:
+			if enemy.get("build_elite",false): elite_count+=1
+	check(elite_count>0 and elite_count<monster_count,"Wolves adds actual elite chance in ordinary combat rooms")
 	var summary := {"checks":checks,"failures":failures}
 	var file := FileAccess.open("res://output/rogue-effect-fixes-result.json",FileAccess.WRITE); file.store_string(JSON.stringify(summary)); file.close()
 	f.free()

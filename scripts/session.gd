@@ -494,16 +494,9 @@ func rogue_damage_pool(p: Dictionary) -> float:
 ## 铁律：不消耗 s.rng、不重置种子；绝不产出任何命中判定几何键——弹幕只允许
 ## 改表现层 `bullet_visual` 与速度，命中半径永远沿用默认的 18.0。
 ## 非魔境模式返回空表（调用方换算恒等）。
-## A1（成长树接线）：第三个来源是 `RogueGrowth.run_mods(profile_data())`——成长树有 14 个
-## 节点，其中 11 个（`iron_constitution`/`monster_slaying`/`hunt_instinct`/`warden_plate`/
-## `deep_pockets`/`scavenger`/`field_medic`/`swift_boots`/`scholar`/`midas_hand`/`hunter_luck`）
-## 的效果键在别处本来就有消费点，但从来没人把成长树读进这张表，所以「买了不生效」。
-## 合并是**加法**（与诅咒同义）：`move_speed` 是加性点数（诅咒 CU02 = -18，成长 = +12/级），
-## `shop_price`/`chest_drop`/`heal_scale`/`gold` 是比例增量（诅咒 CU04 = +0.35，成长 = -0.05/级）。
-## 成长表的符号约定与诅咒**相反**（正数＝对玩家有利），GDScript 加法天然正确处理。
-## 两个来源的键集不相交（成长只产 canonical 键，诅咒只产 `EFFECT_KEYS`），
-## 唯一交叠的 `move_speed`/`shop_price`/`chest_drop`/`heal_scale` 正是设计上要同池相加的。
-## 无 profile 通道时 `run_mods({})` 全零，`4 玩家数` 与接线前逐位一致。
+## 永久成长从玩家的开局快照 rogue_growth 读取，不读取房主的账号替代队友。
+## 个人属性/资源读取自己的树；敌人公共预算用已连接队员成长效果的平均值。
+## 变数全队共享、诅咒个人生效，仍按原键名合成，不消耗随机数。
 func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	var mods: Dictionary = {}
 	if not roguelike.active(self):
@@ -513,7 +506,7 @@ func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	if variant_id != "":
 		ids.append(variant_id)
 	mods = RogueVariants.modifiers_of(ids)
-	# 成长树：账号级，与 p 无关（换人不换树）。先并入，再让诅咒叠在它上面。
+	# 成长树：个人开局快照。先并入，再让个人诅咒叠在它上面。
 	# 只算一次表，循环里不再重复算（`rogue_mods()` 在移速路径上每帧每人一次）。
 	var growth: Dictionary = rogue_growth_mods(p)
 	for key in growth:

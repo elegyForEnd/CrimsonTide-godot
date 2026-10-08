@@ -1,4 +1,4 @@
-"""Rebuild the 2026-10-08 source audit catalog; does not modify gameplay data."""
+"""Rebuild the historical audit catalog; current repair status is in the fixes report."""
 import json
 import re
 from pathlib import Path
@@ -92,6 +92,8 @@ ISSUES = [
 ]
 
 intro = """# 魔境闯关构筑效果审计（2026-10-08）
+
+> 这是修复前的审计快照。后续修复状态与验收见 [构筑修复说明](ROGUE-EFFECTS-FIXES-2026-10-08.md)，下文“待处理”不代表当前源码仍存在该问题。
 
 本次只核查源码与运行结算，未修改玩法数值/天赋实现，也未重新导出EXE。旧发行包是否与源码一致未验证。
 
