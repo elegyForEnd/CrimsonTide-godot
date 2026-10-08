@@ -283,6 +283,6 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 蓄力、阶段、死亡和旧招式释放事件显式携带实际 art_key；缺省 art_key 时以 boss_art 恢复身份。阶段与死亡音效按身份选择，死亡清除旧蓄力/阶段演出；远征死亡事件携带 raid_boss，避免额外普通怪死亡粒子。
 - 九组逻辑套件共 11954 项，零失败：expedition 79、hidden_ending 103、map_boss_roster 984、boss_full_effect_coverage 4675、boss_attack_intent 1592、rogue_boss_phase2 406、rogue_boss_pool 2340、boss_vfx 425、boss_choreography 1350。覆盖全部 104 招、20 张招式表，以及缺失身份字段/敌人已移除后的死亡特效。
 - GPU 实机可视测试：五层 25 招各预警/释放 50 张、五张小怪场景、远征 13 张演出截图，已检查代表画面。修正旧可视夹具直接写 area=5 进入镜中挑战的错误，改为真实图节点的 Boss 房间，避免 UI 遮挡。
-- Boss VFX 双进程联机房主与客户端通过，四主题释放与危险区快照、蓄力、招架、破防、阶段、死亡事件均收到。旧联机测试误要求危险区主题总数为 3，而当前骑士也有主题 3；修为验证完整四主题，并增加 RPC 身份一致性断言。
+- Boss VFX 双进程联机房主与客户端通过，四主题释放与危险区快照、蓄力、招架、破防、阶段、死亡事件均收到。旧联机测试误要求危险区主题总数为 3，而当前骑士也有主题 3；修为验证完整四主题，并增加 RPC 身份一致性断言。演出夹具按 actor_id 定位 Boss，不再误将敌人列表最后的女王机关当成骑士发送死亡事件。
 - 旧 boss_redesign 素材审计仍有 3/744 失败（Native HD art、No shared reskin source、Seventeen bosses each have four original effects）。单独加载 HEAD 修改前 boss_effect_art.gd 复跑得到完全相同的三项失败；本轮未修改 PNG、图集清单或纹理映射。该套件亦有原有退出资源泄漏警告。新专项及主场景脚本未出现解析错误。
 - 项目路牌 727 锚点：OK 471 / DRIFT 0 / WRONG 0 / HINT 256；git diff --check 通过。本轮修正在源码，旧导出 EXE 尚未重新打包。

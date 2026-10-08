@@ -4,6 +4,7 @@ var host_mode := false
 var age := 0.0
 var launched := false
 var stage := -1
+var actor_id := -1
 var release_themes: Dictionary={}
 var actions: Dictionary={}
 var snapshots: Dictionary={}
@@ -21,7 +22,7 @@ func run() -> void:
 		var identity_data := data.duplicate()
 		identity_data.erase("art_key")
 		if str(data.get("art_key",""))!=s.BossPresentation.Art.identity(identity_data):
-			push_error("Boss VFX identity was lost in the combat RPC")
+			push_error("Boss VFX identity was lost in the combat RPC: %s" % data)
 			quit(1)
 		actions[data.action]=true
 		if data.action=="release": release_themes[data.boss_kind]=true)
@@ -51,6 +52,7 @@ func _process(dt: float) -> bool:
 			if stage==3: s.spawn_enemy(s.raid.center,4)
 			else: s.expedition.spawn_boss(s)
 			var e: Dictionary=s.enemies.back()
+			actor_id=int(e.id)
 			for p in s.players.values():
 				p.p=e.p+Vector2(130,60)
 				p.invuln=100
@@ -64,7 +66,8 @@ func _process(dt: float) -> bool:
 				s.expedition.cast_boss(s,e,s.players[1],["cross","feint","execution"][stage],Vector2.RIGHT,s.players[1].p)
 			s.BossPresentation.send(s,e,"phase")
 		if age>12.0 and not actions.has("fall"):
-			s.BossPresentation.send(s,s.enemies.back(),"fall")
+			for e in s.enemies:
+				if int(e.id)==actor_id: s.BossPresentation.send(s,e,"fall"); break
 		if age>14:
 			print("BOSS VFX NETWORK HOST PASS")
 			s.disconnect_room()
