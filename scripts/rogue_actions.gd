@@ -39,6 +39,9 @@ static func start_art(s, p: Dictionary) -> bool:
 	p.swing_total=p.cast_time
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=false
+	# The art's windup can differ from the previous normal attack's windup.
+	p["build_strike_windup"]=windup
+	p["build_strike_kind"]=str(move.kind)
 	s.broadcast_combat({"kind":"windup","p":p.p,"aim":p.aim,"weapon":family,"weapon_index":p.weapon,"windup":windup,"id":p.id,"combo":2,"vfx":ctx.get("vfx",{})})
 	for key in ["hammer_cost","rotation","relay"]: p.build_buffs.erase(key)
 	return true

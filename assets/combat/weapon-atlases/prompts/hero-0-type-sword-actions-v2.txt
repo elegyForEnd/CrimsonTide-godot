@@ -1,0 +1,13 @@
+Production sprite-sheet edit. The supplied atlas is a REFERENCE for face/costume ONLY, NOT for layout. Draw a new TWO-ACTION sword atlas on genuine transparent background, landscape4:3.
+LAYOUT IS THE MOST IMPORTANT REQUIREMENT: EXACTLY THREE COLUMNS and FOUR ROWS. Exactly12 complete separate sprites at the following centres as percentages of canvas:
+row1 y12.5%: x16.7%,50%,83.3%.
+row2 y37.5%: x16.7%,50%,83.3%.
+row3 y62.5%: x16.7%,50%,83.3%.
+row4 y87.5%: x16.7%,50%,83.3%.
+Never draw a fourth sprite in a row. Draw each WHOLE sprite (including blade/hair/boots) small enough that it lies inside its own33.3%-by25% rectangle with at least3% canvas height of TRANSPARENT space separating rows. Character body height around13% of full canvas. The sword height also fits each row. No overlap anywhere.
+Heroine exactly the original top-left reference heroine: silver grouped smooth hair with NO frizz/fur, unchanged original hair volume and chibi proportions, white sleeves, black-gold dress, red ribbon and eyes. No red lighting or magic glow. Same simple black-iron sword with red jewel, in anatomical right hand all12.
+ROW1: normal-cut preparation low blade; raising blade with grip just above/right of head; winding blade backward slightly with grip STILL just above/right of head and only a slight wrist rotation. Two raised grips must stay close together and never switch sides of head.
+ROW2: normal-cut contact with blade cutting down-right; low-right followthrough; recover to low-right guard. Keep rear boot same cell-localgroundpoint at30%cellwidth/90%cellheight in allsix.
+ROW3: special-sweep guard; waist windup with sword pointing up-left; turn body slightly and lift sword up-right.
+ROW4: special-sweep contact arm forward-right atwaist; low-right followthrough; relaxed guard.
+Readable distinct chronological action keys, gentle shoulder/elbow movement, one connected sword from hilt to blade. Transparent RGBA, no circle, trails, background, floor shadows, labels, checkerboard or cell lines. Keepall12 same body scale.

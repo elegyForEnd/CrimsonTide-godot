@@ -293,9 +293,10 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 特效编排总控（事件→贴图特效/伤害数字/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:148；剑雨布局 `blade_layout()` combat_visuals.gd:501；与服务端判定共形 `patch_local_rect` combat_visuals.gd:475；敌方弹幕可读性常量 combat_visuals.gd:300-318、绘制 `draw_enemy_bolt()` combat_visuals.gd:363） |
-| 刀光/突刺/蓄力/连招/大招（固定轨迹：一次捕获挂点） | `scripts/stylized_vfx.gd:51 emit()`、`stylized_vfx.gd:96 event()`、`stylized_vfx.gd:215 advance()`；仅蓄力跟随，释放和延迟残影保持原挂点 |
-| 69 把具体武器的元素、配色与三段编排 | `scripts/weapon_vfx.gd:34 profile()`、`weapon_vfx.gd:40 stroke()`、`weapon_vfx.gd:99 draw()`；主轮廓使用独立 ImageGen 方图，同名远征/闯关武器共用主图，48 把闯关武器各自独立；闯关弹体 `combat_visuals.gd:661 draw_run_projectile()`；确认角色派生 `rogue_build.gd:1131 hero_effect()` |
-| 方形武器原画、接斩/终结层、实际核心触发图 | `scripts/weapon_image_art.gd:17 texture()`；74 张原始 RGBA 方图及完整提示词/哈希在 assets/combat/imagegen-square；绯红剑三段各一张，其余武器使用专属主图和类别连段层；审计 tools/audit_weapon_square_art.py、验证 tests/weapon_square_art.gd |
+| 刀光/突刺/蓄力/连招/大招 | `scripts/stylized_vfx.gd:55 emit()`、`stylized_vfx.gd:111 event()`、`stylized_vfx.gd:227 advance()`；释放固定在世界坐标，蓄力跟随；圆斩围绕身体并读取实际 height；光束起点捕获为局部坐标 |
+| 69 把武器身份与实际招式选图 | `scripts/weapon_vfx.gd:34 profile()`；`scripts/weapon_mechanics.gd:3 normal_role()` 与 projectile_role()/strike_role()/burst_role() 从实际 family/pattern/spell/attack_kind 选图；飞行弹体 `combat_visuals.gd:661 draw_run_projectile()`；角色确认派生 `rogue_build.gd:1131 hero_effect()` |
+| 按用途制作的 ImageGen 方图（50 张原图留档） | `scripts/weapon_image_art.gd:36 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；mechanic_source() 选择各轮新版，重刃 v3、双刃 v3、震地 v2、重刃终结 v2 已接入；出手、弹体、光束与爆发分开；旧图保留来源记录 |
+| 全部武器逐项视觉验收 | `tests/weapon_full_visual_audit.gd` 生成 69 页四角色核对图与 coverage.json；`tests/weapon_full_matrix.gd` 验证全部武器、四角色、八方向、两模式、三播放时刻与真实战技姿势；报告 WEAPON-FULL-AUDIT.md，浏览入口 build/weapon-full-audit/index.html |
 | 强化/品质快照与核心确认事件 | `scripts/rogue_build.gd:80 visual_state()`、`rogue_build.gd:187 core_visual()`；session.gd 的 weapon_visual_state() 处理远征品质；出手时冻结状态传给弹丸/爆炸/连锁/命中；+2 核心 I、+3 角色连招、+4 核心 II、+5 角色连招增强，详见 WEAPON-IMAGE-VFX.md |
 | CPU 粒子（1400 上限/21 武器材质物理/双通道渲染） | `scripts/combat_particles.gd`（WEAPON_STYLES combat_particles.gd:7；材质参数 spawn combat_particles.gd:42） |
 | 粒子批量渲染（MultiMesh 光晕 + 三角数组几何） | `scripts/particle_glow_batch.gd` + `scripts/particle_geometry_batch.gd` |
@@ -504,7 +505,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|---|
 | 加新武器特效 | assets/combat/imagegen-mechanics 按真实用途生成独立方图与 prompts/manifest.json；weapon_mechanics.gd 按招式/弹体选图；weapon_vfx.gd 管身份配色；不用 1:3 长图 | tests/weapon_square_art.gd、weapon_vfx_identity.gd、weapon_vfx_battle.gd、standalone_vfx.gd、all_weapon_mounts.gd |
 | 改强化与核心的视觉反馈 | rogue_build.gd 的 visual_state()/core_visual() + session.gd 快照传递 + stylized_vfx.gd/weapon_vfx.gd 播放；核心必须在真实机制执行后发事件 | tests/weapon_vfx_progression.gd、weapon_upgrade_visual.gd、weapon_vfx_identity.gd |
-| 改刀光/蓄力/连段表现 | stylized_vfx.gd + weapon_mechanics.gd + weapon_image_art.gd + weapon_edge_glow.gdshader（⚠️ 固定轨迹契约；combo_route 随具体动作发送，hero_combo 在权威端确认时发送；原图重做通过 REDRAWN 选择 _v2，不能用拉厚贴图替代原图重做） | tests/weapon_mechanics_visual.gd、weapon_redraw_preview.gd、weapon_stroke_stability.gd、weapon_vfx_identity.gd、weapon_vfx_battle.gd |
+| 改刀光/蓄力/连段表现 | stylized_vfx.gd + weapon_mechanics.gd + weapon_image_art.gd + weapon_edge_glow.gdshader（⚠️ 真实剑尖与固定轨迹契约；接触点见 mechanic_contact()，新原图选择见 mechanic_source()；不能用拉厚贴图替代原图重做） | tests/weapon_mechanic_contact.gd、weapon_mount_preview.gd、weapon_stroke_directions.gd、weapon_mechanics_visual.gd、weapon_stroke_stability.gd、weapon_vfx_identity.gd |
 | 加音效 | assets/audio/<kind>-<i>.wav + sound.gd:5-17 VARIANTS/LEVELS | tools/prepare_library_audio.py；tests/audio.gd |
 | 加曲目 | assets/audio/music/<cue>.ogg + music-manifest.json + music.gd:41 set_world 选择逻辑 | tests/music.gd、python tests/scene_music_assets.py |
 | 改大招 CG/台词 | ultimate_cinematic.gd:5-26 + assets/combat/ultimate-cg.png | tests/ultimate.gd |
@@ -656,7 +657,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 3. **藏品序号只追加不插入**：`catalog.gd:124 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
 5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:357 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:706 `weapon_effect_socket` 挂点契约**，且释放类特效"一次捕获、原地淡出"（stylized_vfx.gd:56-62）——否则 `tests/weapon_stroke_stability.gd` 失败。
+6. **特效必须走 battlefield.gd:706 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:44 mechanic_contact()` 等比映射，`stylized_vfx.gd:358 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
 8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4140 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4167 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:628 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。**营地是例外但要显式**：营地 `session.running==false`，`perform()` 会直接 return，所以营地的存储编辑全部集中在 `scripts/camp_storage.gd`，并且**只调用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`）——不要在营地面板里重写一套装箱或装备规则。
@@ -774,6 +775,8 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-07 | （本批未提交） | 69 把武器逐页人工核对与完整方向 GPU 矩阵；ImageGen 再绘重刃 v3/震地 v2，锤类改为冲击环；战技前摇与精确出手姿势修复；新增全量测试、69 页预览与 WEAPON-FULL-AUDIT.md，同步 §4、§11 与验证记录 |
+| 2026-10-07 | （本批未提交） | 武器真实剑尖与亮刃接触点修复，去掉释放旋转漂移、降低过曝、同步实际前摇；ImageGen 重画双刃 v3 和重刃终结 v2；新增真实 GPU 接触测试与角色四方向预览，更新 §5、§11、专题说明与测试台账；试玩 build/CrimsonTide-WeaponTipFixed.exe |
 | 2026-10-05 | b034286 | 初版：按功能域建立全项目文件地图（§3–§11） |
 | 2026-10-05 | 见同批提交 | 全量锚点审计（476 个锚点，见 §12.7）并修正 11 处错标 / 漂移；新增本§12 维护规范；README 加入口指引 |
 | 2026-10-05 | 见同批提交 | 跟随 `abcbaaf`（肉鸽扩展全量接线 + 攻击前摇，179 文件/+17267 行）全量重锚：机械修正 47 处 + 8 章节人工复核（修正 100+ 处漂移/错标）；新增 attack_telegraph、肉鸽七子系统（图谱/事件/诅咒/每日/成长/房间/变体）、房间 UI 与每日/成长页等条目；装入 `tools/verify_anchors.py`；结构数字更新为 102 脚本 / 2.95 万行 |

@@ -737,6 +737,1169 @@
       ],
       "sha256": "557d8fb73b450ba03171270cae881d4ab65768d21383bde08b7964afdea0e47b",
       "prompt": "assets/combat/imagegen-mechanics/prompts/release_bow_v2.txt"
+    },
+    "motion_heavy_overhead_v2": {
+      "file": "motion_heavy_overhead_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114ef-01a5-7691-8d29-d9b82933d1c7\\exec-1b304b39-64f4-4d84-9845-8669ab231bf1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        160,
+        406,
+        1095,
+        844
+      ],
+      "sha256": "76b081e0fe3de957005279d12702853ad5ddd96c53f5abf954cdfcd9c697a596",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_heavy_overhead_v2.txt"
+    },
+    "motion_double_slash_v3": {
+      "file": "motion_double_slash_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114ef-01a5-7691-8d29-d9b82933d1c7\\exec-290edef7-5e5a-40b3-9c36-4bdb8ef19169.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        130,
+        287,
+        1136,
+        977
+      ],
+      "sha256": "67c45e3ee049348107821a4589476995695e0bc240fc40b48bd16e553da970c0",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_double_slash_v3.txt"
+    },
+    "motion_quake_v2": {
+      "file": "motion_quake_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114ef-01a5-7691-8d29-d9b82933d1c7\\exec-88fcd450-e079-45e9-846c-a83992345329.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        76,
+        94,
+        1182,
+        1130
+      ],
+      "sha256": "93e12f8a349c12b8447594d6b038c8fabae3ac183e2a749f3960d8c008b082b3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_quake_v2.txt"
+    },
+    "motion_heavy_slash_v3": {
+      "file": "motion_heavy_slash_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a114ef-01a5-7691-8d29-d9b82933d1c7\\exec-f53279f3-0288-4bc5-9671-d0f3459ecb75.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        236,
+        151,
+        1142,
+        1120
+      ],
+      "sha256": "3a9878fdef96ddab852c98d7394ae45f1f1aeb0b62026b0713ccbc579f326646",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/motion_heavy_slash_v3.txt"
+    },
+    "identity_602_spin": {
+      "file": "identity_602_spin.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-80bc6f7e-a6bd-4ee2-b174-c5dab40769f5.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        82,
+        75,
+        1191,
+        1166
+      ],
+      "sha256": "b65b698e45a859f8918feab19f8ca2f4bdbfa7ccc1817e3c8e9fb13ced17b198",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_602_spin.txt"
+    },
+    "identity_614_spin": {
+      "file": "identity_614_spin.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-a26db3cc-d107-4ef8-9e28-b84155f12e2d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        27,
+        25,
+        1228,
+        1202
+      ],
+      "sha256": "b59d0096933b35fd120a7898f54d966c52af6b6db8037141f05c9b7d89ddc58e",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_614_spin.txt"
+    },
+    "identity_615_spin": {
+      "file": "identity_615_spin.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-107eb80b-0830-4e86-93cc-432aad20ab00.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        21,
+        23,
+        1237,
+        1239
+      ],
+      "sha256": "7bf329459931d6f0170647f6e833e68f41df3256557977fbc72420eb23596a66",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_615_spin.txt"
+    },
+    "identity_619_spin": {
+      "file": "identity_619_spin.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-5a6b73c2-092b-4017-8c25-b43bc7c3885c.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        44,
+        29,
+        1231,
+        1162
+      ],
+      "sha256": "9f06ffe7cdae2dbc6f7f942dc88a960e5af53a1ba8b344b7c3443885270b4ff1",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_619_spin.txt"
+    },
+    "identity_15_quake": {
+      "file": "identity_15_quake.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-fe051d9f-69b2-468d-b6fb-f2db89686fa9.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        16,
+        47,
+        1236,
+        1222
+      ],
+      "sha256": "2531d56e26dc21f8d39b420c1970ca83a4de0e8c23e6dd6bf340a5536849aa24",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_15_quake.txt"
+    },
+    "identity_601_thrust": {
+      "file": "identity_601_thrust.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-e4eaf836-d288-487a-b321-ff5c47bb7b40.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        71,
+        580,
+        1186,
+        673
+      ],
+      "sha256": "649d85cb33c37a6dd00350370cefc98f23bf9e778b61e2380e9a520e99683a6f",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_601_thrust.txt",
+      "contact": [
+        1137,
+        632
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "identity_608_slash": {
+      "file": "identity_608_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-759d7759-31bc-47de-b102-31e8e0dc7d47.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        114,
+        86,
+        1191,
+        1156
+      ],
+      "sha256": "94786ed01000f4807f61f73f0ae72a99a9984656d06a78acac29da24bcbd56c4",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_608_slash.txt",
+      "contact": [
+        1138,
+        602
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "identity_610_slash": {
+      "file": "identity_610_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-fe06ff1d-fb94-4223-9605-c50111871383.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        394,
+        82,
+        1122,
+        1175
+      ],
+      "sha256": "7ff9ca6a76afa73379b4495fe1b7a83f4fc6a034a11814dd965b4999855f39cc",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_610_slash.txt",
+      "contact": [
+        1056,
+        630
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "identity_611_slash": {
+      "file": "identity_611_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-85d4fc5e-4baa-4292-81d3-763c04f6d42a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        99,
+        17,
+        1192,
+        1240
+      ],
+      "sha256": "aa0435a428f3e5fe0d35c3b70c53b8fcbae33716fb6c9055dff3da41d0183eb3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_611_slash.txt",
+      "contact": [
+        1153,
+        661
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "identity_621_sweep": {
+      "file": "identity_621_sweep.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-b2ac2c06-188f-4321-b6b4-75bbcfe9d3a7.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        43,
+        528,
+        1232,
+        738
+      ],
+      "sha256": "a56150cf12deeb1b096d019880b0b120f50da641e2b4bf018cb8a1b8e4baa238",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_621_sweep.txt",
+      "contact": [
+        1190,
+        633
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "identity_600_spin": {
+      "file": "identity_600_spin.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-d0d0a656-6b88-4a32-a2a4-758d079a15b1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        43,
+        77,
+        1221,
+        1160
+      ],
+      "sha256": "1c6abc3b7473994d6b176423b06a61585e5a1b80dc01f6674f98294ffc78e29a",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_600_spin.txt"
+    },
+    "identity_600_slash": {
+      "file": "identity_600_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-bbea5ca8-8050-425b-bc02-101057d022a6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        174,
+        279,
+        1148,
+        950
+      ],
+      "sha256": "d6eba8771d39686642a242b429e4148e0efa643e50ecc36201c6eb49b26ecfbf",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_600_slash.txt",
+      "contact": [
+        992,
+        910
+      ],
+      "contact_review": "Bright forward cutting edge, measured from untouched source; the old midpoint heuristic misses diagonal short arcs"
+    },
+    "identity_600_return": {
+      "file": "identity_600_return.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-281c690f-d682-4d65-8b7a-6127a58e6005.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        84,
+        179,
+        1204,
+        1104
+      ],
+      "sha256": "51e57f756f4ea698efdac3ed8188a7db28d60c2b7094a814f812d941ebd2eaa0",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_600_return.txt",
+      "contact": [
+        1136,
+        411
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_600_finisher": {
+      "file": "identity_600_finisher.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-7ab74c74-898c-4936-934f-c5231715d115.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        126,
+        131,
+        1184,
+        1124
+      ],
+      "sha256": "4008ebce998b391401eafe46d6eddf4b69838511cbea67095a251bfd3652f9df",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_600_finisher.txt",
+      "contact": [
+        1146,
+        1081
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_603_double_slash": {
+      "file": "identity_603_double_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-edbaa5ec-beeb-4233-abb2-499ebf49a5ca.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        104,
+        214,
+        1237,
+        964
+      ],
+      "sha256": "a735acea0849a2b0cacea9e7ab7bc9defda7554f7e1ca6592603b713147c478c",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_603_double_slash.txt",
+      "contact": [
+        1173,
+        534
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_604_slash": {
+      "file": "identity_604_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-e8664e29-449b-4f7b-8657-7a19543cc2ae.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        44,
+        417,
+        1239,
+        795
+      ],
+      "sha256": "f5c0abaa040b47a5f03256034734db4b716a0e8dad0777906fda43cac037a1a7",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_604_slash.txt",
+      "contact": [
+        1108,
+        551
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_605_slash": {
+      "file": "identity_605_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-d8059c3b-9342-429d-9884-0575f20fb3a3.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        35,
+        397,
+        1217,
+        855
+      ],
+      "sha256": "b7af7f9d3c4cefb1b88f711bfc16a364d806dfad6e3a3b64bac9c2c41904509f",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_605_slash.txt",
+      "contact": [
+        1112,
+        649
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_606_slash": {
+      "file": "identity_606_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-d5c9d397-7c61-4292-b8ca-ec978ec3287b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        37,
+        234,
+        1243,
+        962
+      ],
+      "sha256": "c665d3340730e53837ed6ae475bbfe68bbdaebf1183531bb491a86858016a9fa",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_606_slash.txt",
+      "contact": [
+        947,
+        770
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_607_slash": {
+      "file": "identity_607_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-c497db29-c5e0-4f9f-9989-f0e8485429a6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        47,
+        328,
+        1245,
+        949
+      ],
+      "sha256": "e65c0e1cc07b917ef9bfd15793ee21ce9b94f07c20d02ccd1f9e530f6cb245f8",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_607_slash.txt",
+      "contact": [
+        1187,
+        706
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "identity_609_slash": {
+      "file": "identity_609_slash.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-be3ba726-3dce-4d1d-ac33-4f7392bf2ef1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        17,
+        277,
+        1253,
+        931
+      ],
+      "sha256": "0a4771054bd55ae703fa1ea9320ecc0fcb9905cc88d825610965f14e086866be",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/identity_609_slash.txt",
+      "contact": [
+        1206,
+        503
+      ],
+      "contact_review": "Bright forward edge in visually reviewed directional stroke; original RGBA unchanged"
+    },
+    "authored_603_art": {
+      "file": "raw/weapon-603-art-v1.png",
+      "ink": [
+        31,
+        110,
+        2144,
+        624
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "49f5816398c8ed263b5d9fd94522023d101e120285b6af47f9a0a143e4f88b60",
+      "contact": [
+        2022,
+        368
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_604_art": {
+      "file": "raw/weapon-604-art-v1.png",
+      "ink": [
+        48,
+        242,
+        1732,
+        700
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "sha256": "e39443d58a132e5a4848d01f14c4cb2f5001390c906f89cc55e3f13badd670e7",
+      "contact": [
+        1627,
+        491
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_605_art": {
+      "file": "raw/weapon-605-art-v1.png",
+      "ink": [
+        41,
+        153,
+        2112,
+        589
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "73c8ac2b8434eb973e3cc3d95241f801daa1b558baea09104a20f49ff92d17bb",
+      "contact": [
+        2035,
+        386
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_606_art": {
+      "file": "raw/weapon-606-art-v1.png",
+      "ink": [
+        109,
+        192,
+        2092,
+        550
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "f030719610d71d017b6312d3b2a502923274583196e3a163c2a1e313d45233d6",
+      "contact": [
+        1957,
+        372
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_607_art": {
+      "file": "raw/weapon-607-art-v1.png",
+      "ink": [
+        52,
+        196,
+        2148,
+        545
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "5e80b0fff9a48a09d510a6e35a9628ee254d871d2c588c00ec47fa5d57e30bef",
+      "contact": [
+        2006,
+        385
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_608_art": {
+      "file": "raw/weapon-608-art-v1.png",
+      "ink": [
+        54,
+        117,
+        2121,
+        603
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "862424c9a60d5db92e7780dd7c502cb60f1a2622a3199e48ca44409bdda6d648",
+      "contact": [
+        2037,
+        361
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_609_art": {
+      "file": "raw/weapon-609-art-v1.png",
+      "ink": [
+        28,
+        106,
+        1235,
+        1145
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0f35a4c8e3cb40834f5555108a4877c0ac504e730fe6c6267ec7afbeab081bf5",
+      "contact": [
+        1184,
+        669
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_610_art": {
+      "file": "raw/weapon-610-art-v1.png",
+      "ink": [
+        27,
+        129,
+        2144,
+        595
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "2637464a08053ff60f23ee8de41bf5bf37c442d651d89705a7e1fce7db2ffd59",
+      "contact": [
+        2016,
+        409
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_611_art": {
+      "file": "raw/weapon-611-art-v1.png",
+      "ink": [
+        53,
+        191,
+        1950,
+        561
+      ],
+      "size": [
+        1983,
+        793
+      ],
+      "sha256": "ab9b7dfe95db7df5cc6d93dfdde046396636cda5e45fa38dc3a1e646fb078107",
+      "contact": [
+        1867,
+        418
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_621_art": {
+      "file": "raw/weapon-621-art-v1.png",
+      "ink": [
+        12,
+        192,
+        1236,
+        1100
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "8617e19dacdc7bfbaa57ac500310e25ed8160beed7705e6393cc807c97745cb3",
+      "contact": [
+        1182,
+        646
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_622_art": {
+      "file": "raw/weapon-622-art-v1.png",
+      "ink": [
+        31,
+        67,
+        1225,
+        1223
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2140a583c88e625ec52588317432e0bd6ab0e62370907001cb6955c06dc7a2d0",
+      "contact": [
+        1174,
+        643
+      ],
+      "contact_method": "distal luminous core; original alpha"
+    },
+    "authored_624_projectile": {
+      "file": "raw/weapon-624-projectile-v1.png",
+      "ink": [
+        39,
+        447,
+        1202,
+        811
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "87ec3880ac137aecdfc335bb18fc10f3bf3423703919f1638a4abac6b108f529"
+    },
+    "authored_625_projectile": {
+      "file": "raw/weapon-625-projectile-v1.png",
+      "ink": [
+        24,
+        399,
+        1226,
+        791
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "8cce81decd31996c2988691d881c07b8bafda2abbfa86d70f67535f087b3707d"
+    },
+    "authored_626_projectile": {
+      "file": "raw/weapon-626-projectile-v1.png",
+      "ink": [
+        22,
+        436,
+        1239,
+        813
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2f206e6d7e1b52db5cb7d18bc8413c515ccf6e7b32819cfc33d291441342c881"
+    },
+    "authored_627_projectile": {
+      "file": "raw/weapon-627-projectile-v1.png",
+      "ink": [
+        33,
+        422,
+        1182,
+        817
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "ad9dce29f4ac25206c2c9cce0c38e4862b9865162c77bf135a7fdb40c2fedab2"
+    },
+    "authored_628_projectile": {
+      "file": "raw/weapon-628-projectile-v1.png",
+      "ink": [
+        19,
+        475,
+        1237,
+        883
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e12afc0bf7720ecfd6d34c0a41339945c9e816d1a24856828fa3af527436a598"
+    },
+    "authored_629_projectile": {
+      "file": "raw/weapon-629-projectile-v1.png",
+      "ink": [
+        65,
+        446,
+        1198,
+        798
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "90b16197364610f960fedac4d5cfc6d2318dbf5fe3985b3903703c7406be0ab8"
+    },
+    "authored_630_projectile": {
+      "file": "raw/weapon-630-projectile-v1.png",
+      "ink": [
+        83,
+        447,
+        1198,
+        812
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7681f4981d13ea9821dd5f1536738394fccd426c822f5aab36beec4ebe82413c"
+    },
+    "authored_631_projectile": {
+      "file": "raw/weapon-631-projectile-v1.png",
+      "ink": [
+        168,
+        361,
+        1221,
+        943
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "90b5a285db6d819dff053fb41a252bf2958a13a8690ee2ab5b0e4629506436ec"
+    },
+    "authored_632_projectile": {
+      "file": "raw/weapon-632-projectile-v1.png",
+      "ink": [
+        25,
+        356,
+        1239,
+        917
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9d6e3207c6d53c7b45cd0e55dc64b97414bd6cde018a26f59e4c4f48e9134650"
+    },
+    "authored_633_projectile": {
+      "file": "raw/weapon-633-projectile-v1.png",
+      "ink": [
+        59,
+        453,
+        1200,
+        821
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d8b4ca3672a1c9bbe96ee1e4b8adadee09fe8e3d147a132f5dbe2c917c1ded87"
+    },
+    "authored_634_projectile": {
+      "file": "raw/weapon-634-projectile-v1.png",
+      "ink": [
+        39,
+        422,
+        1230,
+        839
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "812d51d3868d2e8e30c53ca85181afb62c9e46509e95b6c4fb8cf2eeecf9a568"
+    },
+    "authored_635_projectile": {
+      "file": "raw/weapon-635-projectile-v1.png",
+      "ink": [
+        66,
+        410,
+        1202,
+        972
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "16e4fd93344e343f11c1cff0ec45478979f52df19b0f76db16dea07acd38f6d7"
+    },
+    "authored_636_beam": {
+      "file": "raw/weapon-636-beam-v1.png",
+      "ink": [
+        91,
+        246,
+        1706,
+        659
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "sha256": "cefa54ca578157e9e10af47308fdb7e785f1f5ec277162467504f0397aaffff8"
+    },
+    "authored_636_projectile": {
+      "file": "raw/weapon-636-projectile-v1.png",
+      "ink": [
+        112,
+        399,
+        1206,
+        853
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "978971d714a719d10fb50d3f34cd3f89f7b10f24f8f24f10cb73514ac72e7f82"
+    },
+    "authored_637_burst": {
+      "file": "raw/weapon-637-burst-v1.png",
+      "ink": [
+        61,
+        38,
+        1230,
+        1207
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c40bfc3b1622ed78850f12256a4657c2e81546e59dd0d6f3f29ca62692457fd9"
+    },
+    "authored_637_projectile": {
+      "file": "raw/weapon-637-projectile-v1.png",
+      "ink": [
+        41,
+        406,
+        1223,
+        856
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a04f8ba56c78dceb8a6df729b8755bd37b08ffe15a7bbff6ce04e51223c52fd5"
+    },
+    "authored_638_projectile": {
+      "file": "raw/weapon-638-projectile-v1.png",
+      "ink": [
+        188,
+        383,
+        1175,
+        900
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b0fd6036ba8a8436dff48db829ddeac7a046a5207f2fe177ca8195abbf913b46"
+    },
+    "authored_639_burst": {
+      "file": "raw/weapon-639-burst-v1.png",
+      "ink": [
+        33,
+        14,
+        1219,
+        1178
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "457789bd379fb5d188eb4b85322bfb6007cc08f55bfaab5c1605e012f0df8c76"
+    },
+    "authored_639_projectile": {
+      "file": "raw/weapon-639-projectile-v1.png",
+      "ink": [
+        65,
+        380,
+        1238,
+        869
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "79c2a399648ab7b4932bbc6d1f7b851dd3c7a103cc0c0f50fb5b449de1752406"
+    },
+    "authored_640_beam": {
+      "file": "raw/weapon-640-beam-v1.png",
+      "ink": [
+        129,
+        137,
+        2092,
+        616
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "a5c6cfd5b7ca782fa90b463a7760e9a53d13fbdefea36f9b12d0f30d64b81167"
+    },
+    "authored_640_projectile": {
+      "file": "raw/weapon-640-projectile-v1.png",
+      "ink": [
+        38,
+        304,
+        1248,
+        952
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c424392808b8eec053c5835b1e2d1d15c34534eb6f061558c097d254b011ea89"
+    },
+    "authored_641_beam": {
+      "file": "raw/weapon-641-beam-v1.png",
+      "ink": [
+        74,
+        182,
+        1743,
+        705
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "sha256": "b6c5e0d431efc4839b024a6ea4c90cd8f36dfe24464a4699ba18843edc490b1d"
+    },
+    "authored_642_projectile": {
+      "file": "raw/weapon-642-projectile-v1.png",
+      "ink": [
+        125,
+        425,
+        1221,
+        831
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d020c5a9ae84885c47432b49b73bb7e184d90e8c99e4fae534167a20e66d653c"
+    },
+    "authored_643_burst": {
+      "file": "raw/weapon-643-burst-v1.png",
+      "ink": [
+        71,
+        51,
+        1185,
+        1198
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "12e822141ff75419ec678bdfd7d1e520783256d5ecb81f45979aec96da2aba48"
+    },
+    "authored_643_projectile": {
+      "file": "raw/weapon-643-projectile-v1.png",
+      "ink": [
+        86,
+        363,
+        1179,
+        928
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f07fc206a779c50ebf0e9f4747c0084e4927cf1f6ec888884db3e87c294880a9"
+    },
+    "authored_644_beam": {
+      "file": "raw/weapon-644-beam-v1.png",
+      "ink": [
+        97,
+        136,
+        2109,
+        606
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "sha256": "db1e33a0acc23b6e0fdbd458f1d1cdaa01031ebea42530d761b4aab42dd7ced2"
+    },
+    "authored_644_projectile": {
+      "file": "raw/weapon-644-projectile-v1.png",
+      "ink": [
+        40,
+        433,
+        1225,
+        847
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c0d3d60acb7224fb62ef76e854e0bcd6a9a0cbc8b71e85bebfca9b62dc2dbfc7"
+    },
+    "authored_645_burst": {
+      "file": "raw/weapon-645-burst-v1.png",
+      "ink": [
+        59,
+        33,
+        1183,
+        1225
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b3eae007e9c447263450b562fcf46116ad57808b58fdd4e3988df0928caf9668"
+    },
+    "authored_645_projectile": {
+      "file": "raw/weapon-645-projectile-v1.png",
+      "ink": [
+        154,
+        254,
+        1175,
+        1020
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "3f91425ba86f1085b3cd1fd7c7fa5f2d29327a3a30c5589bede84ef9f8001768"
+    },
+    "authored_646_burst": {
+      "file": "raw/weapon-646-burst-v1.png",
+      "ink": [
+        77,
+        67,
+        1168,
+        1179
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e5cdc012ba7f1e86cc78e1161765b500cc4771c7b010741f2d3280826f1d5f13"
+    },
+    "authored_646_projectile": {
+      "file": "raw/weapon-646-projectile-v1.png",
+      "ink": [
+        128,
+        256,
+        1171,
+        1008
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0d48439a8a560a9cc72cf7bd989ec451f039ce10df88fff40453dea1470d907d"
+    },
+    "authored_647_burst": {
+      "file": "raw/weapon-647-burst-v1.png",
+      "ink": [
+        32,
+        37,
+        1218,
+        1218
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e51426252601b4d03bf39e1ae24e46d279f14a28a8d63fe276d96281d3aeb860"
+    },
+    "authored_647_projectile": {
+      "file": "raw/weapon-647-projectile-v1.png",
+      "ink": [
+        98,
+        419,
+        1230,
+        883
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "cc1bc3c6e2dc88dd3890bb0adf45f6ed60f5b943bc140804c6439f78a7a00c68"
+    },
+    "identity_615_drop_v2": {
+      "file": "identity_615_drop_v2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        117,
+        31,
+        1170,
+        1222
+      ],
+      "contact": [
+        627.0,
+        1078.44
+      ],
+      "sha256": "1d81faa720c685e3a4bf5353fe43ed4f0e76eabfba0a503c312cd953f544b7da",
+      "motion": "overhead impact; grounded fragments; no shockwave ring"
+    },
+    "identity_619_drop_v2": {
+      "file": "identity_619_drop_v2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        188,
+        0,
+        1066,
+        1214
+      ],
+      "contact": [
+        627.0,
+        1078.44
+      ],
+      "sha256": "f5385500d0822a18f2f1a76e8a2c739f0bb455949d4706f7ad58e2e11a52d735",
+      "motion": "overhead impact; grounded fragments; no shockwave ring"
     }
   }
 }

@@ -72,10 +72,12 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 	if kind!="charge" and uses_weapon_socket(effect) and socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
 		var socket: Dictionary=socket_provider.call(current_source)
 		if not socket.is_empty():
-			# A painted slash is the whole stroke, stamped once in world space.
-			# Capture immediately, including delayed echoes, before pose recovery.
+			# The hand provides a release pivot, but mouse aim owns the strike.
+			# Capture once so later fixed-facing poses cannot drag the released cut.
 			effect["socket_local"]=get_global_transform().affine_inverse()*socket.get("stroke_tip",socket.tip)
 			effect["socket_aim"]=socket.aim
+			effect["socket_axis"]=socket.get("blade_axis",Vector2.ZERO)
+			if socket.has("grip"): effect["socket_grip"]=get_global_transform().affine_inverse()*socket.grip
 	effects.append(effect)
 	return true
 
@@ -87,6 +89,10 @@ func uses_weapon_socket(effect: Dictionary) -> bool:
 func emit_mechanic(kind: String, role: String, at: Vector2, aim: Vector2, color: Color, radius: float, life: float, reverse: float=1.0, delay: float=0.0) -> bool:
 	if not emit(kind,at,aim,color,radius,life,reverse,delay): return false
 	effects.back()["art_role"]=role
+	if not current_identity.is_empty() and kind in ["slash","lance","spin","muzzle","cast","echo","route"]:
+		effects.back()["art_source"]=ImageArt.release_source(int(current_identity.weapon),role,current_stage,current_weapon_art)
+	if not current_identity.is_empty() and kind in ["beam","detonation","chain"]:
+		effects.back()["art_source"]=ImageArt.payload_source(int(current_identity.weapon),"beam" if kind=="beam" else "burst" if kind=="detonation" else "projectile",role)
 	if kind=="beam" and socket_provider.is_valid():
 		var socket: Dictionary=socket_provider.call(current_source)
 		if not socket.is_empty() and absf(get_global_transform().determinant())>.000001:
@@ -108,7 +114,10 @@ func shatter(at: Vector2, aim: Vector2, color: Color, count: int, power: float =
 		shards.append({"p":at,"v":direction*speed,"age":0.0,"life":.22+fposmod(phase,.24),
 			"color":color,"size":(4.0+fposmod(phase*9.0,8.0))*sqrt(power)})
 
+var current_weapon_art := false
+
 func event(data: Dictionary, hero: int = 0) -> void:
+	current_weapon_art=data.has("attack_kind")
 	current_source=int(data.get("id",-1))
 	var at: Vector2=data.p
 	var aim: Vector2=data.get("aim",Vector2.RIGHT)
@@ -151,11 +160,12 @@ func event(data: Dictionary, hero: int = 0) -> void:
 				return
 			var heavy := weapon==2
 			if role=="motion_thrust":
-				emit_mechanic("lance",role,anchor,aim,color,reach*.50*float(stroke.scale),float(stroke.life))
+				if emit_mechanic("lance",role,anchor,aim,color,reach*.50,float(stroke.life)):
+					effects.back()["attack_width"]=float(data.get("width",26))
 			elif Mechanics.body_centered(role):
 				if emit_mechanic("spin",role,at,aim,color,reach,float(stroke.life),reverse): effects.back()["height"]=float(data.get("height",0))
 			else:
-				emit_mechanic("slash",role,anchor,aim,color,reach*float(stroke.scale),float(stroke.life),reverse)
+				emit_mechanic("slash",role,anchor,aim,color,reach,float(stroke.life),reverse)
 			if finishing and not Mechanics.body_centered(role) and role!="motion_thrust":
 				emit_mechanic("echo",role,anchor,aim,color,reach*.78,.24,-reverse,.065)
 			combo_route_fx(anchor,aim,color,minf(reach,180))
@@ -357,26 +367,49 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 
 func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 	var role: String=fx.art_role
+	var source: String=fx.get("art_source",ImageArt.mechanic_source(role))
+	var authored := source.begins_with("weapon_") or source.begins_with("identity_") or source.begins_with("authored_")
 	var t := clampf(float(fx.age)/float(fx.life),0,1)
 	# Hold a crisp luminous attack through its contact, then fade during recovery.
 	var fade := smoothstep(0,.008,float(fx.age))*(1-smoothstep(.56,1.0,t))
 	var upgrade: Dictionary=fx.get("upgrade",{})
 	var light_gain := clampi(int(upgrade.get("forge",0)),0,5)*.008+clampi(int(upgrade.get("quality",0)),0,5)*.004
 	var tint := Color(fx.color)
-	tint.s=maxf(tint.s,.72)
-	tint.v=1.75
-	tint.a=fade*(.62+light_gain if additive else 1.0)
+	# Preserve the painted white core instead of tinting and clipping it to neon.
+	tint=tint.lerp(Color.WHITE,.18)
+	tint.v=1.0
+	if authored: tint=Color.WHITE # Each original has its own materials and palette.
+	tint.a=fade*(.14+light_gain if additive else .94)
 	if fx.kind=="echo": tint.a*=.36
 	var r: float=fx.radius
 	var bounds := Vector2(r*1.8,r*1.5)
 	var angle: float=fx.aim.angle()
 	var at: Vector2=fx.p
-	if Mechanics.body_centered(role):
+	var stroke := Mechanics.heavy_stroke(int(fx.get("identity",{}).get("weapon",-1)),role) if fx.has("identity") else {}
+	if stroke.get("plane","")=="drop":
+		# Downward weight and grounded fragments, instead of a spinning shockwave.
+		bounds=Vector2(stroke.aspect)*r
+		var mirror := Vector2(-1 if fx.aim.x<0 else 1,1)
+		var landing: Vector2=at+fx.aim*r*.12
+		landing.y-=float(fx.get("height",0))
+		var contact := ImageArt.mechanic_contact(role,bounds,source)
+		if fx.has("socket_local"):
+			var point: Vector2=get_global_transform()*fx.socket_local
+			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(0,mirror,0,point-contact*mirror))
+		else: target.draw_set_transform(landing-contact*mirror,0,mirror)
+	elif Mechanics.body_centered(role):
 		# Full circle attacks are centered on the captured body, never on a blade tip.
 		bounds=Vector2.ONE*r*2
 		angle=float(fx.stage)*.25 if role=="motion_quake" else t*.7*float(fx.reverse)
 		var body_pose := get_global_transform()*Transform2D(angle,at)
 		body_pose.origin.y-=float(fx.get("height",0))
+		if role!="motion_quake" and fx.has("socket_grip") and fx.has("socket_local"):
+			var grip: Vector2=get_global_transform()*fx.socket_grip
+			var tip: Vector2=get_global_transform()*fx.socket_local
+			var blade_length := grip.distance_to(tip)
+			if blade_length>4:
+				bounds=Vector2.ONE*blade_length*2
+				body_pose=Transform2D(angle,grip)
 		target.draw_set_transform_matrix(get_global_transform().affine_inverse()*body_pose)
 	elif fx.kind in ["beam","chain"]:
 		var start: Vector2=get_global_transform()*fx.beam_start_local if fx.has("beam_start_local") else get_global_transform()*at-Vector2(0,float(fx.get("height",0))+24 if fx.kind=="beam" else 24)
@@ -386,8 +419,8 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 		# The painted straight beam fills the authoritative segment; alpha is
 		# cropped to its ink before mapping onto that segment, never a wave stamp.
 		target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(delta.angle(),(start+end)*.5))
-		var art := ImageArt.mechanic_texture(role)
-		if art: target.draw_texture_rect_region(art,Rect2(-bounds*.5,bounds),ImageArt.mechanic_ink(role),tint)
+		var art := ImageArt.mechanic_texture(source)
+		if art: target.draw_texture_rect_region(art,Rect2(-bounds*.5,bounds),ImageArt.mechanic_ink(source),tint)
 		if role=="beam_eclipse":
 			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(delta.angle(),end-delta.normalized()*20))
 			ImageArt.stamp_mechanic(target,"projectile_eclipse",Vector2(54,12),tint)
@@ -403,27 +436,40 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 			if not socket.is_empty():
 				fx["socket_local"]=get_global_transform().affine_inverse()*socket.tip
 				fx["socket_aim"]=socket.aim
-		if socket.is_empty() and fx.has("socket_local"): socket={"tip":get_global_transform()*fx.socket_local,"aim":fx.socket_aim}
-		if role=="motion_thrust": bounds=Vector2(r*1.8,r*.36)
+				fx["socket_axis"]=socket.get("blade_axis",Vector2.ZERO)
+		if socket.is_empty() and fx.has("socket_local"): socket={"tip":get_global_transform()*fx.socket_local,"aim":fx.socket_aim,"blade_axis":fx.get("socket_axis",Vector2.ZERO)}
+		if role=="motion_thrust": bounds=Vector2(r*1.8,float(fx.get("attack_width",r*.36)))
 		elif role in ["muzzle_fire","release_bow"]: bounds=Vector2(r*2,r*1.2)
 		elif role.begins_with("cast_"): bounds=Vector2.ONE*r*1.7
+		if not stroke.is_empty(): bounds=Vector2(stroke.aspect)*r
+		if fx.kind=="lance": bounds.x*=[.78,.90,1.0][clampi(int(fx.stage),0,2)]
 		if fx.kind=="charge":
 			tint.a*=smoothstep(0,.1,t)*.42
 			bounds*=.5+t*.5
-		elif role.begins_with("motion_") and role!="motion_thrust":
-			angle+=float(fx.reverse)*lerpf(-.18,.18,t)
 		if not socket.is_empty():
 			angle=socket.aim.angle()
-			if role.begins_with("motion_") and role!="motion_thrust": angle+=float(fx.reverse)*lerpf(-.35,.18,smoothstep(0,.55,t))
-			var offset := Vector2(-r*.65,0) if role.begins_with("motion_") and role!="motion_thrust" else Vector2(r*.2,0) if role=="motion_thrust" else Vector2.ZERO
+			if not stroke.is_empty(): angle+=float(stroke.angle)*(1 if socket.aim.x>=0 else -1)
+			var offset := Vector2.ZERO
 			if fx.kind=="route":
 				tint.a*=.55
 				if int(fx.route)==0: offset=Vector2(-r*.9,0)
 				elif int(fx.route)==2: angle-=PI*.45; offset=Vector2(0,-r*.25)
 				elif int(fx.route)==3: offset=Vector2(-r*.3,r*.55); bounds*=.72
-			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(angle,Vector2(1,float(fx.reverse)),0,socket.tip+offset.rotated(angle)))
-		else: target.draw_set_transform(at,angle,Vector2(1,float(fx.reverse)))
-	ImageArt.stamp_mechanic(target,role,bounds,tint)
+			var mirror := Vector2(1,float(fx.reverse))
+			if authored and ImageArt.distinct_stage(int(fx.identity.weapon),int(fx.stage)): mirror.y=1
+			var contact := ImageArt.mechanic_contact(role,bounds,source) if fx.kind!="charge" else Vector2.ZERO
+			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(angle,mirror,0,socket.tip+offset.rotated(angle)-(contact*mirror).rotated(angle)))
+		else:
+			if not stroke.is_empty(): angle+=float(stroke.angle)*(1 if fx.aim.x>=0 else -1)
+			target.draw_set_transform(at,angle,Vector2(1,float(fx.reverse)))
+	ImageArt.stamp_mechanic(target,source,bounds,tint)
+	# Preserve the weapon's primary silhouette in all three stages. A faint,
+	# fitted counter-cut/finishing wake supports it without widening hit reach.
+	if authored and not role.begins_with("motion_") and fx.kind in ["cast","muzzle"]:
+		var extra := ImageArt.overlay(int(fx.identity.weapon),int(fx.stage))
+		if extra:
+			var extra_size := extra.get_size()*minf(bounds.x/extra.get_width(),bounds.y/extra.get_height())*.72
+			target.draw_texture_rect(extra,Rect2(-extra_size*.5,extra_size),false,Color(fx.color,tint.a*.18))
 	target.draw_set_transform(Vector2.ZERO)
 
 func _draw() -> void:

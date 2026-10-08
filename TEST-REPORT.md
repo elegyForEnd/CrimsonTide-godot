@@ -1,5 +1,21 @@
 # 验证记录
 
+## 2026-10-07 全部69把武器逐项验收
+
+- 逐页人工查看 21 把远征、48 把闯关武器，四角色 × 八类展示项，共 2208 格；实际有特效的 1908 项独立 GPU 检查先隐藏角色，避免角色像素掩盖空特效。69 页与 coverage.json 位于 build/weapon-full-audit，浏览器索引 index.html，逐把结论见 WEAPON-FULL-AUDIT.md。
+- weapon_full_matrix：17664 个释放组合（69×4角色×8方向×4阶段×2模式），每组合三个播放时刻；另3520个普攻/战技弹体组合。151375 检查，0 failures。验证真实挂点、地面投影、接触像素、可见性、细长弹体速度轴及真实战技姿势；最终日志 build/weapon-full-matrix-complete.log。
+- 全量验收发现并修复：重刃白色主体遮挡角色；震地缺少落地冲击轮廓；巨锤/石槌误用剑刃圆斩；战技沿用上次普攻前摇；16把重武器的精确出手边界因归一化浮点比较被判回前摇。内置 ImageGen 重绘重刃 v3 和震地 v2，50张原始RGBA审计0 failures。
+- 配套复跑：weapon_mechanics 429、weapon_mechanic_contact 506、weapon_mechanics_visual 30、weapon_vfx_identity 553、weapon_stroke_stability 196、rogue_build_rules 565，全部0 failures。
+- 新版 build/CrimsonTide-WeaponTipFixed.exe 已重新导出（2084617104 字节）。通过 --main-pack 加载内嵌资源，接触像素506、机制429，共935检查，0 failures。图页测试退出无资源泄漏错误；加载主场景的矩阵仍有既有的4个ObjectDB退出警告。
+- 项目路牌610锚点：OK405 / DRIFT0 / WRONG0 / HINT205；git diff --check 通过。
+
+## 2026-10-07 真实剑尖、方向与素材修复
+
+- 九组共 11839 检查，0 failures：weapon_stroke_directions 6872（四角色、全部远征/闯关近战、八方向、两模式）、weapon_mechanic_contact 505（真实 GPU 接触像素）、all_weapon_mounts 2568、weapon_stroke_stability 196、weapon_mechanics 429、weapon_vfx_identity 553、weapon_contact_particles 654、weapon_vfx_progression 32、weapon_mechanics_visual 30。渲染测试使用开窗 Godot，存档全部放在工作区 .testappdata。
+- ImageGen 新生成双刃 v3、重刃终结 v2，原始 RGBA 直接复制入项目。48 张素材通过透明背景、SHA256、提示词与轮廓审计，0 failures。新素材接入后重跑接触像素、GPU 机制、武器身份与释放稳定性检查，全部通过。
+- 八动作四方向角色预览 build/weapon-mount-repaired.png 已实际渲染并逐行检查。
+- Windows 单文件 build/CrimsonTide-WeaponTipFixed.exe 导出成功（2083330232 字节）。引擎通过 --main-pack 加载该 exe 内嵌资源，接触像素 505、实际机制 429 共 934 项检查，0 failures。项目路牌 610 锚点：OK406 / DRIFT0 / WRONG0 / HINT204。
+
 环境：Windows，项目内 Godot 4.7.2 stable，OpenGL Compatibility，NVIDIA RTX 3080 Ti。
 
 ## 2026-10-06 营地行囊面板 + 15×15 网格仓库 + 装备持久化

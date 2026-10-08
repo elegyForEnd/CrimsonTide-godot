@@ -12,7 +12,7 @@ func check(ok: bool, message: String) -> void:
 	checks+=1
 	if not ok: failures+=1; push_error(message)
 func run() -> void:
-	var cases := {601:"motion_thrust",602:"motion_spin",603:"motion_double_slash",614:"motion_heavy_spin",615:"motion_heavy_spin",619:"motion_heavy_spin",15:"motion_quake",625:"release_bow",624:"muzzle_fire",638:"cast_ice",637:"cast_fire",646:"cast_soul"}
+	var cases := {601:"motion_thrust",602:"motion_spin",603:"motion_double_slash",614:"motion_heavy_spin",615:"motion_hammer_spin",619:"motion_hammer_spin",15:"motion_quake",625:"release_bow",624:"muzzle_fire",638:"cast_ice",637:"cast_fire",646:"cast_soul"}
 	for id in cases: check(M.normal_role(id)==cases[id],"Known actual normal action must use its own role: %d" % id)
 	for id in [625,626,628,632,634,16]: check(M.projectile_role(id,"arrow")=="projectile_arrow","Bow/crossbow fires an arrow, not its release effect")
 	for id in [624,627,629,630,631,633,635,0]: check(M.projectile_role(id,"star")=="projectile_bullet","Firearms retain actual bullet silhouette even with legacy default spell")

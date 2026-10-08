@@ -3390,6 +3390,8 @@ func attack(p: Dictionary) -> void:
 	var rate: float=weapon.rate*equipment_rate(p)
 	p.attack=rate
 	p.swing_total=rate
+	p["build_strike_kind"]=""
+	p["build_strike_windup"]=float(weapon.windup)
 	p.swing_time=rate
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=true
@@ -3431,6 +3433,7 @@ func release_weapon_art(p: Dictionary) -> bool:
 	var build_ctx: Dictionary={}
 	build_ctx["vfx"]=weapon_visual_state(p)
 	p.cast_time=0.35
+	p["build_strike_kind"]=str(move.kind)
 	p.attack=maxf(p.attack,0.35)
 	p.channel=0.0
 	var aim: Vector2=p.aim.normalized()

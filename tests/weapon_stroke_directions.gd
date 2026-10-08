@@ -22,7 +22,9 @@ func run() -> void:
 		var p: Dictionary=app.session.players[1]
 		for hero in 4:
 			p.hero=hero
-			for weapon in [1,2,12,13,14,15,17,19,20]:
+			var weapons := range(21)+range(600,648)
+			for weapon in weapons:
+				if Catalog.weapon_family(weapon) not in [1,2]: continue
 				p.weapon=weapon
 				p.swing_total=1.5
 				p.swing_time=1.5-float(Catalog.weapon(weapon).windup)-.08
@@ -30,6 +32,7 @@ func run() -> void:
 					p.strike_aim=Vector2.from_angle(direction*PI/4)
 					p.aim=p.strike_aim
 					var socket: Dictionary=field.weapon_effect_socket(1)
+					check(socket.stroke_tip.distance_to(socket.tip)<.001,"Release attaches to visible blade rather than a virtual directional endpoint")
 					var delta: Vector2=socket.stroke_tip-socket.stroke_pivot
 					check(absf(delta.cross(socket.aim))<.001,"Stroke origin lies along attack direction")
 					check(delta.dot(socket.aim)>0,"Stroke origin lies ahead of swing pivot")
@@ -47,7 +50,7 @@ func run() -> void:
 						check(emitted.distance_to(socket.stroke_tip)<.01,"Actual rendered release uses the directional stroke point")
 						root.get_texture().get_image().save_png("user://stroke-%s-%d.png"%[mode,direction])
 		field.combat.reset()
-	print("STROKE DIRECTIONS ",checks," checks, ",failures," failures; four heroes, nine melee weapons, eight directions, two modes")
+	print("STROKE DIRECTIONS ",checks," checks, ",failures," failures; four heroes, all campaign/run melee weapons, eight directions, two modes")
 	app.queue_free()
 	await process_frame
 	quit(1 if failures else 0)

@@ -5,6 +5,7 @@ static func normal_role(index: int) -> String:
 	var family := Catalog.weapon_family(index)
 	if family==0: return "release_bow" if weapon.get("spell","")=="arrow" else "muzzle_fire"
 	if family==3: return cast_role(index)
+	if index in [615,619]: return "motion_hammer_spin"
 	match str(weapon.get("pattern","")):
 		"thrust": return "motion_thrust"
 		"spin": return "motion_spin" if family==1 else "motion_heavy_spin"
@@ -20,6 +21,7 @@ static func strike_role(index: int, data: Dictionary) -> String:
 		"thrust": return "motion_thrust"
 		"circle":
 			if index in [2,15]: return "motion_quake" # Campaign arts explicitly slam the ground.
+			if index in [615,619]: return "motion_hammer_spin"
 			return "motion_spin" if Catalog.weapon_family(index)==1 else "motion_heavy_spin"
 		"cone": return "motion_heavy_overhead" if index==19 else "motion_heavy_slash"
 		"volley": return "release_bow" if Catalog.weapon(index).get("spell","")=="arrow" else "muzzle_fire" if Catalog.weapon_family(index)==0 else cast_role(index)
@@ -71,7 +73,25 @@ static func beam_role(spell: String) -> String:
 	return "beam_eclipse" if spell=="eclipse" else "beam_moon" if spell=="moon" else "beam_light"
 
 static func body_centered(role: String) -> bool:
-	return role in ["motion_spin","motion_heavy_spin","motion_quake"]
+	return role in ["motion_spin","motion_heavy_spin","motion_quake","motion_hammer_spin"]
+
+## Visual stroke planes differ from the ground-space damage shape.
+## A hammer can hit surrounding enemies without painting an expanding ring.
+static func heavy_stroke(index: int, role: String) -> Dictionary:
+	var id := preload("res://scripts/weapon_image_art.gd").canonical(index)
+	if id in [615,619] and role=="motion_hammer_spin":
+		return {"plane":"drop","angle":0.0,"aspect":Vector2(1.65,1.85)}
+	if role not in ["motion_heavy_slash","motion_heavy_overhead","motion_narrow_sweep","motion_scythe"]: return {}
+	match id:
+		612,623: return {"plane":"overhead","angle":PI*.5,"aspect":Vector2(1.7,.80)}
+		613: return {"plane":"diagonal","angle":PI*.27,"aspect":Vector2(1.8,.95)}
+		616: return {"plane":"chop","angle":PI*.38,"aspect":Vector2(1.6,.82)}
+		617: return {"plane":"diagonal","angle":-PI*.24,"aspect":Vector2(1.85,.68)}
+		618: return {"plane":"chop","angle":PI*.32,"aspect":Vector2(1.75,.72)}
+		620: return {"plane":"diagonal","angle":PI*.18,"aspect":Vector2(1.65,1.05)}
+		621: return {"plane":"polearm","angle":-PI*.12,"aspect":Vector2(1.85,.55)}
+		622: return {"plane":"hook","angle":PI*.12,"aspect":Vector2(1.7,1.25)}
+	return {}
 
 static func projectile_size(role: String, index: int = -1) -> Vector2:
 	match role:

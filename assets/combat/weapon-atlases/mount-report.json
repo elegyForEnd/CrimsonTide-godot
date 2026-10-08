@@ -1,0 +1,1059 @@
+{
+  "registered": 4399,
+  "methods": {
+    "colored metal assembly; automatic": 3631,
+    "anticipation weapon extremity": 384,
+    "distal contact silhouette": 384,
+    "legacy fallback": 209
+  },
+  "fallback": [
+    {
+      "atlas": "0/624",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "1/600",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "1/601",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "1/601",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "1/601",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "1/601",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "2/601",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "2/601",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "2/601",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/601",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "2/601",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "2/601",
+      "state": "walk",
+      "frame": 0
+    },
+    {
+      "atlas": "2/601",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "2/601",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/601",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "2/601",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "2/601",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "3/600",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "3/601",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "3/601",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "3/601",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "3/601",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "3/601",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "3/601",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/601",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/601",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/601",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "3/601",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "3/601",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "3/601",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "3/601",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "3/601",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "1/604",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/605",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/604",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "3/604",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "3/604",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "3/604",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "1/606",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "1/606",
+      "state": "art",
+      "frame": 3
+    },
+    {
+      "atlas": "1/606",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "1/606",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "2/606",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "2/606",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/606",
+      "state": "art",
+      "frame": 3
+    },
+    {
+      "atlas": "2/606",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "2/606",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "2/606",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "2/606",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "2/606",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "2/606",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "2/607",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "3/606",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "3/606",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "3/606",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "3/606",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "3/606",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/606",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "3/606",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "3/606",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "1/609",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "1/609",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "1/609",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "1/609",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "1/610",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "2/609",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "2/609",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "2/610",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "2/610",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "2/610",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/610",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "2/610",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "2/610",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "2/610",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "2/610",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "3/609",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/609",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "3/609",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "3/610",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "3/610",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "3/610",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "3/610",
+      "state": "art",
+      "frame": 3
+    },
+    {
+      "atlas": "3/610",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "3/610",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "3/610",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "3/610",
+      "state": "walk",
+      "frame": 0
+    },
+    {
+      "atlas": "3/610",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/610",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/610",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "3/610",
+      "state": "run",
+      "frame": 1
+    },
+    {
+      "atlas": "3/610",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "3/610",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "3/610",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "3/610",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "3/610",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "3/611",
+      "state": "walk",
+      "frame": 0
+    },
+    {
+      "atlas": "3/611",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/611",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/611",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "3/611",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/622",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/622",
+      "state": "art",
+      "frame": 3
+    },
+    {
+      "atlas": "2/622",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "2/622",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "2/622",
+      "state": "run",
+      "frame": 1
+    },
+    {
+      "atlas": "2/623",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "2/623",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "3/622",
+      "state": "attack",
+      "frame": 0
+    },
+    {
+      "atlas": "3/622",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "3/622",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "3/622",
+      "state": "dodge",
+      "frame": 1
+    },
+    {
+      "atlas": "3/622",
+      "state": "dodge",
+      "frame": 2
+    },
+    {
+      "atlas": "3/622",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "3/623",
+      "state": "attack",
+      "frame": 3
+    },
+    {
+      "atlas": "3/623",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "3/623",
+      "state": "art",
+      "frame": 3
+    },
+    {
+      "atlas": "3/623",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "1/624",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "1/624",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "1/624",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "1/624",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "1/624",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "1/629",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "1/629",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "1/629",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "1/629",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "1/629",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "1/630",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "1/630",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "1/630",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "1/630",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "1/630",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "1/633",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "1/633",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "1/633",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "1/633",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "1/633",
+      "state": "dodge",
+      "frame": 0
+    },
+    {
+      "atlas": "2/624",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "2/624",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "2/624",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "2/624",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "2/624",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "2/624",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "2/624",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "2/624",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "2/624",
+      "state": "run",
+      "frame": 1
+    },
+    {
+      "atlas": "2/624",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/624",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "2/624",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "2/624",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/629",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "2/629",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "2/629",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "2/629",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "2/629",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "2/629",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "2/629",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "2/629",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "2/629",
+      "state": "run",
+      "frame": 1
+    },
+    {
+      "atlas": "2/629",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/629",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "2/629",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "2/629",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/630",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "2/630",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "2/630",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "2/630",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "2/630",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "2/630",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "2/630",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "2/630",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "2/630",
+      "state": "run",
+      "frame": 1
+    },
+    {
+      "atlas": "2/630",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/630",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "2/630",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "2/630",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "2/633",
+      "state": "idle",
+      "frame": 0
+    },
+    {
+      "atlas": "2/633",
+      "state": "idle",
+      "frame": 1
+    },
+    {
+      "atlas": "2/633",
+      "state": "idle",
+      "frame": 2
+    },
+    {
+      "atlas": "2/633",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "2/633",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "2/633",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "2/633",
+      "state": "walk",
+      "frame": 3
+    },
+    {
+      "atlas": "2/633",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "2/633",
+      "state": "run",
+      "frame": 1
+    },
+    {
+      "atlas": "2/633",
+      "state": "run",
+      "frame": 2
+    },
+    {
+      "atlas": "2/633",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "2/633",
+      "state": "dodge",
+      "frame": 3
+    },
+    {
+      "atlas": "2/633",
+      "state": "art",
+      "frame": 0
+    },
+    {
+      "atlas": "3/624",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/624",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/624",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/624",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "3/624",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "3/629",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/629",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/629",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/629",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "3/629",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "3/630",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/630",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/630",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/630",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "3/630",
+      "state": "run",
+      "frame": 3
+    },
+    {
+      "atlas": "3/633",
+      "state": "idle",
+      "frame": 3
+    },
+    {
+      "atlas": "3/633",
+      "state": "walk",
+      "frame": 1
+    },
+    {
+      "atlas": "3/633",
+      "state": "walk",
+      "frame": 2
+    },
+    {
+      "atlas": "3/633",
+      "state": "run",
+      "frame": 0
+    },
+    {
+      "atlas": "3/633",
+      "state": "run",
+      "frame": 3
+    }
+  ],
+  "validated_contact_frames": 384,
+  "registered_anticipation_frames": 384,
+  "note": "Contact keys visually inspected in four character boards and checked against alpha; other automatic landmarks retain source-quality limitations."
+}

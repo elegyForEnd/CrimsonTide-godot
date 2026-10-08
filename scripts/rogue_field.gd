@@ -11,6 +11,7 @@ var idle_meshes: Dictionary={}
 var frames: CharacterFrames
 var art = preload("res://scripts/rogue_art.gd").new()
 var clock := 0.0
+var move_phases: Dictionary={}
 var camera_x := 0.0
 var camera_y := 0.0
 const CAMERA_DEAD_ZONE := Rect2(590,440,260,160)
@@ -48,6 +49,7 @@ func _ready() -> void:
 func reset_effects() -> void:
 	combat.reset()
 	enemy_fx.reset()
+	move_phases.clear()
 
 func ground_transform() -> Transform2D:
 	return Transform2D(0,-camera_offset())
@@ -70,16 +72,24 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	var family := Catalog.weapon_family(p.weapon)
 	var frame := CharacterFrames.attack_pose_frame(p)
 	var aim: Vector2=p.strike_aim if p.swing_time>0 else p.aim
-	var tip := (frames.ranged_weapon_tip(p) if family==0 else frames.weapon_tip(p.hero,maxi(1,family),frame))*Vector2(-1 if aim.x<0 else 1,1)
+	var tip := frames.equipped_weapon_tip(p)*Vector2(-1 if aim.x<0 else 1,1)
 	var origin: Vector2=p.p-camera_offset()+CharacterMetrics.FOOT_OFFSET*HERO_SCALE-Vector2(0,float(p.get("height",0)))
-	var stroke_pivot: Vector2=origin+Vector2(0,tip.y)*HERO_SCALE
-	var stroke_tip: Vector2=stroke_pivot+aim.normalized()*absf(tip.x)*HERO_SCALE if family in [1,2] else origin+tip*HERO_SCALE
-	return {"tip":origin+tip*HERO_SCALE,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":aim.normalized(),"active":p.swing_time>0 or p.cast_time>0}
+	var pose := frames.equipped_attack_frame(p)
+	var grip: Vector2=Vector2(pose.get("grip",pose.get("socket",Vector2.ZERO)))*Vector2(-1 if aim.x<0 else 1,1)
+	var stroke_pivot: Vector2=origin+grip*HERO_SCALE
+	var stroke_tip: Vector2=stroke_pivot+aim.normalized()*tip.distance_to(grip)*HERO_SCALE
+	return {"tip":origin+tip*HERO_SCALE,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":aim.normalized(),
+		"grip":origin+grip*HERO_SCALE,"blade_axis":(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":p.swing_time>0 or p.cast_time>0}
 
 func _process(dt: float) -> void:
 	if not visible: return
 	clock+=dt
-	for actor: Dictionary in session.players.values(): idle.tick(actor,dt)
+	for actor: Dictionary in session.players.values():
+		idle.tick(actor,dt)
+		if actor.motion in ["walk","run"]:
+			var cadence: float=frames.weapon_atlases.rate(actor.hero,actor.weapon,actor.motion,11.5 if actor.motion=="run" else 7.0)
+			move_phases[actor.id]=float(move_phases.get(actor.id,0.0))+dt*cadence
+		else: move_phases[actor.id]=0.0
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	var at: Vector2=p.get("p",Vector2(720,520))
 	var desired := camera_target(at)
@@ -222,14 +232,14 @@ func _draw() -> void:
 			if actor.swing_time>0 or actor.cast_time>0:
 				pose=frames.equipped_attack_frame(actor)
 			elif actor.get("height",0)>0:
-				pose=frames.jump_frame(actor.hero,float(actor.get("height_velocity",0)),float(actor.height))
+				pose=frames.held_jump_frame(actor,float(actor.get("height_velocity",0)),float(actor.height))
 			elif actor.get("build_landing_time",0)>0:
-				pose=frames.jump_frame(actor.hero,-200,0,float(actor.build_landing_time))
+				pose=frames.held_jump_frame(actor,-200,0,float(actor.build_landing_time))
 			elif Idle.active(actor): pose=frames.held_idle_frame(actor.hero,actor.weapon,float(idle.sample(actor).time))
-			else: pose=frames.motion_frame(actor.hero,actor.motion,clock*8,actor.dodge_time)
+			else: pose=frames.held_motion_frame(actor,actor.motion,float(move_phases.get(actor.id,0)),actor.dodge_time)
 			var facing_aim: Vector2=actor.strike_aim if actor.swing_time>0 else actor.aim
 			draw_set_transform(at-camera_offset(),0,Vector2(-1 if facing_aim.x<0 else 1,1)*HERO_SCALE)
-			if Idle.active(actor):
+			if Idle.active(actor) and not pose.get("weapon_atlas",false):
 				var state := idle.sample(actor)
 				var side: float=float(pose.get("hand_side",1.0))
 				var mesh_data := Idle.geometry(pose,actor.weapon,state.time,state.blend,side)
@@ -237,6 +247,9 @@ func _draw() -> void:
 				draw_mesh(idle_meshes[actor.id],mesh_data.texture)
 			else:
 				draw_texture_rect(pose.texture,pose.rect,false,Color.WHITE if actor.status=="active" else Color("a77d8e"))
+			if actor.status=="active":
+				for glint in preload("res://scripts/weapon_held_glow.gd").samples(pose,clock):
+					draw_texture_rect(glint.texture,glint.rect,false,glint.tint)
 			draw_set_transform(-camera_offset())
 			# [2026-06 禁用] 这段"新武器手持贴图叠加绘制"会把 weapons-*-v1.png 图集里的
 			# 青色尖刺剪影画到角色手上，与旧立绘自带的武器美术冲突。用户要求保留旧立绘、

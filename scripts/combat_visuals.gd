@@ -668,14 +668,22 @@ func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> 
 	target.draw_set_transform_matrix(world.affine_inverse()*Transform2D(direction.angle(),world*at))
 	var semantics := preload("res://scripts/weapon_mechanics.gd")
 	var role: String=semantics.projectile_role(int(bullet.weapon_index),str(bullet.get("spell","star")))
+	var art := preload("res://scripts/weapon_image_art.gd")
+	var source: String=art.payload_source(int(bullet.weapon_index),"projectile",role)
 	var upgrade: Dictionary=bullet.get("build_context",{}).get("vfx",{})
 	var forge := clampi(int(upgrade.get("forge",0)),0,5)
 	var quality := clampi(int(upgrade.get("quality",0)),0,5)
 	var tint := Color(identity.color)
 	tint.s=maxf(tint.s,.72)
 	tint.v=1.7
+	if source.begins_with("authored_"): tint=Color.WHITE
 	tint.a=.48+forge*.008+quality*.004 if glow else 1.0
-	preload("res://scripts/weapon_image_art.gd").stamp_mechanic(target,role,semantics.projectile_size(role,int(bullet.weapon_index)),tint)
+	var bounds: Vector2=semantics.projectile_size(role,int(bullet.weapon_index))
+	if source.begins_with("authored_"):
+		# Flight has an authoritative longitudinal/transverse footprint.
+		# Wide painted wakes must not turn a needle into a broad collision wave.
+		target.draw_texture_rect_region(art.mechanic_texture(source),Rect2(-bounds*.5,bounds),art.mechanic_ink(source),tint)
+	else: art.stamp_mechanic(target,source,bounds,tint)
 	target.draw_set_transform(Vector2.ZERO)
 
 func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) -> void:
