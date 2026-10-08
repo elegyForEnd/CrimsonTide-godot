@@ -105,9 +105,9 @@ func run() -> void:
 		await shoot(id+"-panel")
 		if id=="home_shop":
 			var coins: int = profile.data.coins
-			var seeds: int = home.state().seeds.wheat
+			var seeds: int = profile.product_count("wheat_seed")
 			check(press_named(screen.home_ui,"购买  12 ◈"),"Image card purchase is interactive")
-			check(profile.data.coins==coins-12 and home.state().seeds.wheat==seeds+1,"Card purchase commits currency and seed")
+			check(profile.data.coins==coins-12 and profile.product_count("wheat_seed")==seeds+1,"Card purchase commits currency and seed")
 			check(press_named(screen.home_ui,"出售"),"Sell tab opens harvest holdings cards")
 			profile.receive_product("wheat",2)
 			profile.bank_item({"kind":"wheat","count":6})
@@ -117,10 +117,13 @@ func run() -> void:
 			# first, and its stack's count is trimmed in place.
 			var coins_before: int = profile.data.coins
 			check(press_named(screen.home_ui,"卖 1"),"Sell-one button is live on the holdings card")
-			check(profile.warehouse_count()==1 and int(profile.vault_items()[0].count)==5,"The sold copy left the vault entity, not just the label")
+			var wheat_in_vault := 0
+			for item in profile.vault_items():
+				if str(item.get("kind",""))=="wheat": wheat_in_vault += Catalog.units_of_item(item)
+			check(wheat_in_vault==5,"The sold copy left the vault entity, not just the label")
 			check(profile.data.coins==coins_before+9 and profile.product_count("wheat")==7,"Sale pays the unit price and the holding label follows storage")
 			check(press_named(screen.home_ui,"全部出售"),"Sell-all button is live")
-			check(profile.product_count("wheat")==0 and profile.warehouse_count()==0,"Sell-all empties vault cells and carried stacks")
+			check(profile.product_count("wheat")==0 and profile.product_count("wheat_seed")==1,"Sell-all empties wheat cells and carried stacks")
 			check(not press_named(screen.home_ui,"卖 1"),"An empty holding cannot be sold")
 		else:
 			profile.receive_product("wheat",3)

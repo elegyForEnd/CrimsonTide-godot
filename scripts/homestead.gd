@@ -86,11 +86,22 @@ func buy(key: String) -> String:
 		cost = 120
 	else: return "商品不存在。"
 	if profile.data.coins<cost: return "金币不足，出售收获或远征获取金币。"
-	if (CROPS.has(key) and state().seeds[key]>=9999) or (key=="bait" and state().bait>9994): return "库存已满。"
+	# Seeds and bait are real grid-occupying entities now: bought units land in the
+	# vault first, spill into the carried backpack when the vault is full, and whatever
+	# neither can hold is parked in `overflow` for the shop to drop on the camp floor.
+	# The purchase is charged in full either way — nothing is ever silently swallowed.
+	if CROPS.has(key) or key=="bait":
+		var kind := (key+"_seed") if CROPS.has(key) else "bait"
+		var units := 1 if CROPS.has(key) else 5
+		var left: int = profile.warehouse_deposit({"kind":kind,"count":units,"valued":true})
+		if left>0: left = profile.deposit_backpack(kind,left)
+		overflow = left
+		overflow_key = kind if left>0 else ""
+		profile.data.coins -= cost
+		commit()
+		return "购买成功，花费 %d 金币。" % cost
 	profile.data.coins -= cost
-	if CROPS.has(key): state().seeds[key] += 1
-	elif key=="rod": state().rod += 1
-	elif key=="bait": state().bait += 5
+	if key=="rod": state().rod += 1
 	elif key=="beds": state().beds = 9
 	commit()
 	return "购买成功，花费 %d 金币。" % cost
@@ -104,9 +115,9 @@ func remaining(index: int, timestamp: int = -1) -> int:
 
 func plant(index: int, crop: String) -> String:
 	if index<0 or index>=state().beds: return "这块土地尚未开垦。"
-	if not CROPS.has(crop) or state().seeds[crop]<=0: return "种子不足，请去家园商店购买。"
+	if not CROPS.has(crop) or profile.product_count(crop+"_seed")<=0: return "种子不足，请去家园商店购买。"
 	if not str(state().plots[index].crop).is_empty(): return "先收获这块土地上的作物。"
-	state().seeds[crop] -= 1
+	profile.spend_product(crop+"_seed",1)
 	state().plots[index] = {"crop":crop,"planted":now(),"watered":false}
 	commit()
 	return "已种下%s，浇水可缩短 35%% 生长时间。" % CROPS[crop].name
@@ -160,10 +171,10 @@ func consume_started(meal: String) -> void:
 
 func cast() -> String:
 	if state().rod==0: return "先购买一支钓竿。"
-	if state().bait<=0: return "鱼饵不足，15 金币可购买 5 份。"
+	if profile.product_count("bait")<=0: return "鱼饵不足，15 金币可购买 5 份。"
 	if now()-int(state().last_cast)<8: return "鱼群还未聚拢，稍等片刻再抛竿。"
 	active_cast = true
-	state().bait -= 1
+	profile.spend_product("bait",1)
 	state().casts += 1
 	state().last_cast = now()
 	commit()

@@ -8,11 +8,34 @@ const GRADE_ORDER := ["-","E","D","C","B","A","S"]
 const CM_ROUTES := [["DA","AADA",">S","JAS"],["DA","ADS","JA","AJS"],["DA","AADS","JA","JAS"],["DA","ADS","JA","JAS"]]
 const HC_ROUTES := [["AADAS",">SJA","JAS","ASU"],["ADS","JAS","AADS","DASU"],["ADJS","DAAS","AA<>S","JASU"],["ADS","AJAS","DAAS","ASU"]]
 
+# 引魂召唤（school 10）· 灵体索敌。设计契约（ROGUE-BUILD-SYSTEM-DESIGN §7.12）钉死的是
+# 1 秒/次、最多 2 个实体、总预算 0.16P×(1+召唤加算池) 按实体平均分配、灵体不挡路不吸引仇恨
+# —— 这几条一个都不许动。半径与规则（2026-10-07 定，同日二轮按实测缩小）：
+#   ① 主人的指令：主人用普攻/战技/技能打中过的那只怪（T086 冥火指令 / 墓煜 HC 连招终结的
+#      3 秒硬锁优先于它）→ 无距离上限地追，出大圈也继续打，直到它死或主人改指令。
+#      **指令接收是全局的**：灵体哪怕正在很远的地方追别的怪，也会立刻改用主人的新目标往回赶。
+#   ② 主人大圈（`SOUL_SEEK`，圆心＝主人）内最合适的一只 → 追。
+#   ③ 灵体自己的小圈（`SOUL_NEAR`，圆心＝灵体，低优先自保）内最近的一只 → 追。
+#   ④ 都没有 → 回到主人身边的待命位（每个灵体一个固定偏移，两个不叠在一起）。
+# 二轮缩小：用户验收预览后判定「圈太大」——大圈减半（600→300），灵体自己的攻击距离与
+# 索敌距离等比缩到原来的 1/3（450→150、500→166.7），停靠跟着按同一比例走（380→127.5）。
+# 三轮：**取消牵引距离**（原 `SOUL_LEASH`=300，会让灵体在主人侧后的怪身上来回抖动）——
+# 第②③档也不再限制离主人多远，只有"被地形卡住"才回主人身边。
+const SOUL_RANGE := 150.0      # 攻击判定半径（仍要过 `ruins.clear_line` 视线）
+const SOUL_SEEK := 300.0       # 召唤主为原点的索敌大圈（＝旧值的一半）
+const SOUL_NEAR := 166.7       # 灵体自身为原点的低优先自保圈（＝旧值 500 的 1/3，仍是射程 +16.7）
+const SOUL_KEEP := 127.5       # 追击停靠距离（射程的 85%，贴着 150 会来回抖）
+const SOUL_LOCK_CD := 0.5      # 高优先→高优先 的转火内置 CD（从低优先升上来可立刻抢占）
+const SOUL_IDLE_RING := 70.0   # 静默待命偏移半径（0 号在左、1 号在右）
+const SOUL_STUCK := 0.6        # 被地形卡住累计多少秒就放弃追击
+const SOUL_UNREACHABLE := 1.5  # 放弃后多久才重新尝试追同一只（免得在墙前来回抖）
+
 static func reset(s, p: Dictionary) -> void:
 	p.merge({"build_version":3,"build_talents":{},"build_library":[],"build_cultivation":0,"build_attributes":{},"build_attribute_points":0,
 		"build_level":1,"build_xp":0,"build_xp_total":0,"build_chest_attribute_drops":0,
 		"build_forge_points":0,"build_forge_level":0,"build_forge_bound":"","build_core":"","build_temper":"","build_awards":{},
 		"build_cd":{},"build_buffs":{},"build_counts":{},"build_heals":[],"build_mana_returns":[],"build_summons":[],"build_fields":[],
+		"soul_focus":-1,
 		"build_reward_queue":[],"build_serial":0,"build_inputs":[],"build_combo_label":"","build_combo_time":0.0,"build_hero_cd":0.0,
 		"build_shield":0.0,"build_shield_time":0.0,"build_shields":{},"build_last_hurt":-10.0,"build_stationary":0.0,"build_souvenirs":0,"build_floor_souvenirs":0,
 		"height":0.0,"height_velocity":0.0,"jump_cd":0.0,"air_attacks":0,"air_art":false,"air_dodge":false,
@@ -295,7 +318,120 @@ static func nearby(s, p: Dictionary, e: Dictionary, distance: float, count: int 
 
 static func summon(s, p: Dictionary, seconds: float, ratio: float) -> void:
 	if p.build_summons.size()>=2: return
-	p.build_summons.append({"time":minf(10,seconds+r(p,83,[.5,1,1.5])),"clock":0.0,"ratio":ratio,"power":unit(s,p),"extended":0.0,"p":p.p})
+	p.build_summons.append({"time":minf(10,seconds+r(p,83,[.5,1,1.5])),"clock":0.0,"ratio":ratio,"power":unit(s,p),"extended":0.0,"p":p.p,
+		"slot":soul_free_slot(p),"target":-1,"tier":"idle","switch":-1.0e9,"stuck":0.0,"blocked_until":-1.0})
+
+## 待命位形：0 / 1 两个槽挑一个没被占的（0 号在主人左边、1 号在右边），
+## 两个灵体因此不会叠成一点。槽位在召唤时定下，中途不会因为兄弟到期而换位。
+static func soul_free_slot(p: Dictionary) -> int:
+	for slot in 2:
+		var used: bool=false
+		for soul in p.build_summons:
+			if int(soul.get("slot",-1))==slot: used=true; break
+		if not used: return slot
+	return 0
+
+static func soul_idle_point(p: Dictionary, soul: Dictionary) -> Vector2:
+	var side: float=-1.0 if int(soul.get("slot",0))==0 else 1.0
+	return p.p+Vector2(side*SOUL_IDLE_RING,-10)
+
+static func enemy_by_id(s, id: int) -> Dictionary:
+	if id<0: return {}
+	for e in s.enemies:
+		if int(e.id)==id and e.hp>0 and not e.get("boss_construct",false): return e
+	return {}
+
+## 圈内最适合的一只：先比"现在就能打"（在射程内且视线通），再比离灵体的距离。
+static func soul_pick(s, soul: Dictionary, at: Vector2, radius: float) -> Dictionary:
+	var best: Dictionary={}
+	var best_key: float=INF
+	for e in s.enemies:
+		if e.hp<=0 or e.get("boss_construct",false): continue
+		if e.p.distance_to(at)>radius: continue
+		var gap: float=e.p.distance_squared_to(soul.p)
+		var key: float=gap if (e.p.distance_to(soul.p)<=SOUL_RANGE and s.ruins.clear_line(soul.p,e.p)) else gap+1.0e9
+		if key<best_key: best_key=key; best=e
+	return best
+
+## 一只灵体的一帧：定目标（三级）→ 移动（追到 `SOUL_KEEP`，否则回主人待命位）→ 每 1 秒结算一次伤害。
+## 伤害那一节逐字保留原来的预算算法 `ratio × min(1, .16/Σratio)`，只把"打谁"换成算出来的目标。
+static func soul_step(s, p: Dictionary, soul: Dictionary, dt: float) -> void:
+	var now: float=s.elapsed
+	soul.time-=dt; soul.clock+=dt
+	if soul.time<=0: return
+	var target_id: int=int(soul.get("target",-1))
+	var tier: String=str(soul.get("tier","idle"))
+	# ① 主人的指令。T086 / HC 的 3 秒硬锁优先；否则是"主人最近打中过的那只"。
+	var high: int=int(buff(p,"soul_target",now))
+	if high<=0: high=int(p.get("soul_focus",-1))
+	if high>0 and enemy_by_id(s,high).is_empty():
+		if int(p.get("soul_focus",-1))==high: p.soul_focus=-1
+		high=-1
+	if high>0:
+		# 高→高 的转火要过 0.5 秒内置 CD；从小圈/待命升上来可以立刻抢占（决策④）。
+		if target_id==high or tier!="command" or now-float(soul.get("switch",-1.0e9))>=SOUL_LOCK_CD:
+			if target_id!=high: soul.switch=now
+			target_id=high; tier="command"
+	elif tier=="command":
+		target_id=-1; tier="idle"   # 主人那只死了 → 掉到低优先重选
+	if tier!="command":
+		var pick: Dictionary=soul_pick(s,soul,p.p,SOUL_SEEK)
+		var picked: String="seek"
+		if pick.is_empty():
+			pick=soul_pick(s,soul,soul.p,SOUL_NEAR)
+			picked="near"
+		if pick.is_empty():
+			target_id=-1; tier="idle"
+		elif int(pick.id)!=target_id:
+			target_id=int(pick.id); tier=picked; soul.switch=now
+		else:
+			tier=picked
+	soul.target=target_id; soul.tier=tier
+	# 移动：追到射程的 85% 就停下开火。**没有牵引**（2026-10-07 用户拍板取消）：第②③档也一路追到
+	# 停靠距离；追不到（被地形卡住）才回主人身边，`SOUL_UNREACHABLE` 秒后再试。第②档的目标按定义
+	# 在主人 300 大圈内、每帧重选，所以它追出圈就会自然换目标；只有主人点名的第①档能追到天边。
+	var target: Dictionary=enemy_by_id(s,target_id)
+	if not target.is_empty() and now<float(soul.get("blocked_until",-1.0)): target={}
+	var wanted: Vector2=soul_idle_point(p,soul)
+	if not target.is_empty():
+		var gap: float=soul.p.distance_to(target.p)
+		if gap>SOUL_KEEP: wanted=target.p
+		else: wanted=soul.p
+	var step: Vector2=(wanted-soul.p).limit_length((125.0 if gear(p,71) else 100.0)*dt)
+	var before: Vector2=soul.p
+	soul.p=s.ruins.move(soul.p,step,8)
+	if not target.is_empty() and step.length()>0.5 and soul.p.distance_to(before)<0.2*step.length():
+		soul["stuck"]=float(soul.get("stuck",0.0))+dt
+		if float(soul.stuck)>=SOUL_STUCK:
+			soul.blocked_until=now+SOUL_UNREACHABLE
+			soul.stuck=0.0
+	else:
+		soul["stuck"]=0.0
+	if soul.clock<1: return
+	soul.clock-=1
+	var targets: Array=[]
+	for e in s.enemies:
+		if e.hp>0 and not e.get("boss_construct",false) and e.p.distance_to(soul.p)<=SOUL_RANGE and s.ruins.clear_line(soul.p,e.p): targets.append(e)
+	if target_id>0:
+		var reachable: bool=false
+		for e in targets:
+			if int(e.id)==target_id: reachable=true; break
+		# 集火：主人点名的那只够不着就这一秒不开火，绝不打别人（决策③的集火语义）。
+		if not reachable and tier=="command": targets=[]
+	targets.sort_custom(func(a,b):
+		if a.id==target_id: return true
+		if b.id==target_id: return false
+		var lock := int(buff(p,"soul_target",s.elapsed))
+		if lock>0:
+			if a.id==lock: return true
+			if b.id==lock: return false
+		return a.p.distance_squared_to(soul.p)<b.p.distance_squared_to(soul.p))
+	if not targets.is_empty():
+		var pool := minf(.4,r(p,82,[.08,.12,.16])+(.1 if gear(p,45) else 0)+(.08 if engraving(p,22) else 0)+(.04 if core(p,12)==1 else .08 if core(p,12)==2 else 0)+buff(p,"soul_order",s.elapsed))
+		var total := 0.0
+		for entity in p.build_summons: total+=float(entity.ratio)
+		proc(s,p,targets[0],float(soul.ratio)*minf(1,.16/maxf(.001,total))*(1+pool),float(soul.power),"summon")
+		if rank(p,85)>0 and ready(s,p,"T085",3): grant(p,"summon_strike",r(p,85,[.08,.12]),3,s.elapsed)
 
 static func field(p: Dictionary, at: Vector2, seconds: float, radius: float, ratio: float, power: float, count: int = 3) -> void:
 	if p.build_fields.size()>=2: return
@@ -391,6 +527,10 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 	ctx.seen=seen
 	var first: bool=not bool(ctx.get("counted",false))
 	ctx.counted=true
+	# 引魂：主人自己打中的怪就是给灵体的索敌指令（普攻 / 战技 / 技能）。跳伤（燃烧/出血）
+	# 根本不走这里，灵体自身的召唤伤害与其它 proc 走 `depth>0`，上面已经 return 了；
+	# 0 伤害的命中也在同一个早退里被排除 —— 与"不算指令"的口径一致。
+	if str(ctx.get("kind","")) in ["attack","art","skill"]: p["soul_focus"]=e.id
 	for input in p.build_inputs:
 		if input.get("root","")==ctx.get("root","?"): input["hit"]=true
 	if first: hero_effect(s,p,e,ctx)
@@ -747,28 +887,10 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 	if gear(p,68) and s.elapsed-p.build_last_hurt>=6 and ready(s,p,"E068",6): heal(s,p,p,.01)
 	for i in range(p.build_summons.size()-1,-1,-1):
 		var soul: Dictionary=p.build_summons[i]
-		soul.p=s.ruins.move(soul.p,(p.p-soul.p).limit_length((125 if gear(p,71) else 100)*dt),8)
-		soul.time-=dt; soul.clock+=dt
+		soul_step(s,p,soul,dt)
 		if soul.time<=0:
 			p.build_summons.remove_at(i)
 			if rank(p,84)>0 and ready(s,p,"T084",5): mana(s,p,r(p,84,[1,2,3]))
-			continue
-		if soul.clock>=1:
-			soul.clock-=1
-			var targets: Array=[]
-			for e in s.enemies:
-				if e.hp>0 and not e.get("boss_construct",false) and e.p.distance_to(soul.p)<=450 and s.ruins.clear_line(soul.p,e.p): targets.append(e)
-			targets.sort_custom(func(a,b):
-				if buff(p,"soul_target",s.elapsed)>0:
-					if a.id==int(buff(p,"soul_target",s.elapsed)): return true
-					if b.id==int(buff(p,"soul_target",s.elapsed)): return false
-				return a.p.distance_squared_to(soul.p)<b.p.distance_squared_to(soul.p))
-			if not targets.is_empty():
-				var pool := minf(.4,r(p,82,[.08,.12,.16])+(.1 if gear(p,45) else 0)+(.08 if engraving(p,22) else 0)+(.04 if core(p,12)==1 else .08 if core(p,12)==2 else 0)+buff(p,"soul_order",s.elapsed))
-				var total := 0.0
-				for entity in p.build_summons: total+=float(entity.ratio)
-				proc(s,p,targets[0],float(soul.ratio)*minf(1,.16/maxf(.001,total))*(1+pool),float(soul.power),"summon")
-				if rank(p,85)>0 and ready(s,p,"T085",3): grant(p,"summon_strike",r(p,85,[.08,.12]),3,s.elapsed)
 	for i in range(p.build_fields.size()-1,-1,-1):
 		var zone: Dictionary=p.build_fields[i]
 		var active_dt := minf(dt,maxf(0,float(zone.time)))
@@ -949,6 +1071,7 @@ static func floor_enter(p: Dictionary, s = null) -> void:
 	p.flask_shop_floor=0
 	p.build_floor_souvenirs=0
 	p.build_summons=[]; p.build_fields=[]; p.build_inputs=[]
+	p.soul_focus=-1
 
 static func hero_skill(s, p: Dictionary, aim: Vector2) -> void:
 	var power := unit(s,p,true)

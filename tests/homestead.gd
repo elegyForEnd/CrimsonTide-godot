@@ -13,13 +13,19 @@ func run() -> void:
 	var home := Home.new(profile)
 	check(home.state().plots.size()==9 and home.state().beds==6,"Old profiles get six free plots and no unearned inventory")
 	check(home.state().seeds.wheat==0,"No repeating login seed gifts")
+	# A resale must always undercut the shop price: buying and instantly selling back
+	# is a loss, never a money pump.
+	check(Catalog.ITEMS["wheat_seed"].value < Home.CROPS["wheat"].price,"Wheat seed resale undercuts its buy price")
+	check(Catalog.ITEMS["carrot_seed"].value < Home.CROPS["carrot"].price,"Carrot seed resale undercuts its buy price")
+	check(Catalog.ITEMS["herb_seed"].value < Home.CROPS["herb"].price,"Herb seed resale undercuts its buy price")
+	check(Catalog.ITEMS["bait"].value*5 < 15,"Bait pack resale undercuts its 15-coin buy price")
 	profile.data.coins = 1000
 	for crop in Home.CROPS:
 		var before: int = profile.data.coins
 		home.buy(crop)
-		check(home.state().seeds[crop]==1 and profile.data.coins==before-Home.CROPS[crop].price,"Exact seed transaction: "+crop)
+		check(profile.product_count(crop+"_seed")==1 and profile.data.coins==before-Home.CROPS[crop].price,"Exact seed transaction: "+crop)
 		home.plant(0,crop)
-		check(home.state().seeds[crop]==0 and home.state().plots[0].crop==crop,"Plant consumes one seed: "+crop)
+		check(profile.product_count(crop+"_seed")==0 and home.state().plots[0].crop==crop,"Plant consumes one seed: "+crop)
 		var planted: int = home.state().plots[0].planted
 		check(home.remaining(0,planted)==Home.CROPS[crop].seconds,"Dry growth time: "+crop)
 		home.tend(0)
@@ -48,9 +54,9 @@ func run() -> void:
 	check(home.state().rod==1 and profile.data.coins==810,"Wood rod costs 70")
 	check(not home.cast().is_empty(),"Fishing requires bait")
 	home.buy("bait")
-	check(home.state().bait==5 and profile.data.coins==795,"Bait pack costs 15 for five")
-	check(home.cast()=="" and home.state().bait==4,"A cast pays exactly one bait")
-	check(not home.cast().is_empty() and home.state().bait==4,"Cast cooldown blocks spam without extra charge")
+	check(profile.product_count("bait")==5 and profile.data.coins==795,"Bait pack costs 15 for five")
+	check(home.cast()=="" and profile.product_count("bait")==4,"A cast pays exactly one bait")
+	check(not home.cast().is_empty() and profile.product_count("bait")==4,"Cast cooldown blocks spam without extra charge")
 	home.catch_fish(1.0,0.0)
 	check(profile.product_count("silver")==1,"Basic successful catch enters storage as an instance")
 	home.catch_fish(1.0,0.99)
@@ -85,6 +91,15 @@ func run() -> void:
 	loaded.path = profile.path
 	loaded.load_profile()
 	check(loaded.data.home==profile.data.home,"Complete homestead survives JSON save/load")
+	# Legacy saves held seeds and bait as counters; loading must hand them to the
+	# vault as real entities with zero loss, then zero the counters.
+	var legacy := Profile.new()
+	legacy.path = "user://homestead-migrate-test.json"
+	legacy.apply_data({"home":{"seeds":{"wheat":3,"carrot":2,"herb":1},"bait":7}})
+	check(legacy.product_count("wheat_seed")==3 and legacy.product_count("carrot_seed")==2 and legacy.product_count("herb_seed")==1,"Legacy seed counters migrate into vault entities without loss")
+	check(legacy.product_count("bait")==7,"Legacy bait counter migrates into vault entities without loss")
+	check(int(legacy.data.home.seeds.wheat)==0 and int(legacy.data.home.bait)==0,"Migrated seed and bait counters are zeroed")
+	DirAccess.remove_absolute(legacy.path)
 	var session := TideSession.new()
 	root.add_child(session)
 	session.set_physics_process(false)

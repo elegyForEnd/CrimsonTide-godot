@@ -98,8 +98,11 @@ func configure(floor_index: int, area: int, long_room: bool, room: String = "") 
 	var diagonal := PackedVector2Array()
 	for point in region.branch: diagonal.append(uv_point(point))
 	fork_polygons.append(diagonal)
-	var joined: Array[PackedVector2Array]=Geometry2D.merge_polygons(floor_polygon,diagonal)
-	assert(joined.size()==1,"Both level paths must join the same floor")
+	# 分叉口是一整块开阔路口，不是两条走廊：直行路与斜向路之间的地面可走，
+	# 所以斜着走向「斜向」门口不会再撞上一堵看不见的墙（旧的写法只把两条路并起来，
+	# 两路之间的楔形留白会留下一个必须绕过去的隐形尖角）。
+	var joined: Array[PackedVector2Array]=Geometry2D.merge_polygons(floor_polygon,fork_junction(diagonal))
+	assert(joined.size()==1,"Both level roads must join the same floor")
 	floor_polygon=joined[0]
 	if not long_room: return
 	for i in 6:
@@ -119,6 +122,29 @@ func configure(floor_index: int, area: int, long_room: bool, room: String = "") 
 
 func exit_position(index: int) -> Vector2:
 	return uv_point(region.exits[index])
+
+## 分叉口的可走地面：上界取岔路的「外沿」（`branch` 前半段，x 递增），下界取实测地面的
+## 下沿。与地面并起来就把两路之间的楔形补平，门口的碰撞空间与出口位置都不受影响。
+func fork_junction(band: PackedVector2Array) -> PackedVector2Array:
+	var half := band.size()/2
+	var outline: Array=[]
+	for i in half: outline.append(band[i])
+	var x0: float=band[0].x
+	var x1: float=band[half-1].x
+	outline.append(Vector2(x1,edge_y(bottom_edge,x1)))
+	for i in range(bottom_edge.size()-1,-1,-1):
+		var at: Vector2=bottom_edge[i]
+		if at.x<x1 and at.x>x0: outline.append(at)
+	outline.append(Vector2(x0,edge_y(bottom_edge,x0)))
+	return PackedVector2Array(outline)
+
+## 折线上 x 处的 y（左右端点外夹取端点值）。
+func edge_y(points: PackedVector2Array, x: float) -> float:
+	for i in points.size()-1:
+		var a: Vector2=points[i]
+		var b: Vector2=points[i+1]
+		if x>=a.x and x<=b.x: return lerpf(a.y,b.y,(x-a.x)/maxf(.001,b.x-a.x))
+	return points[points.size()-1].y
 
 func inside_floor(pos: Vector2) -> bool:
 	return Geometry2D.is_point_in_polygon(pos,floor_polygon)

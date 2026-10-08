@@ -99,6 +99,7 @@ func apply_data(parsed) -> void:
 	sanitize_storage()
 	# One-time hand-off of legacy home counts to the vault (see migrate_home_stock).
 	migrate_home_stock()
+	migrate_home_seeds_bait()
 
 # --- hidden recruits ---------------------------------------------------------
 # Which heroes this profile may pick. The base three are always available; a
@@ -576,6 +577,17 @@ func receive_product(kind: String, units: int) -> int:
 	save_profile()
 	return left
 
+# The carried backpack only — the pocket stays reserved for high-quality loot, so a
+# bought seed or bait that cannot reach the vault falls back here and nowhere else.
+# Returns how many units the backpack could not take; the caller commits the save.
+func deposit_backpack(kind: String, units: int) -> int:
+	var left := units
+	var bag: Dictionary = data.bags[0]
+	while left>0:
+		if not Catalog.place_loot(bag,kind): break
+		left-=1
+	return left
+
 # Total product units across every storage the kitchen draws from: the carried
 # backpack, the safe pocket and the permanent warehouse. A stack counts its units,
 # not its slot, so six wheat is six — which is how the kitchen and the harvest
@@ -699,6 +711,39 @@ func migrate_home_stock() -> void:
 			remaining-=batch
 	for key in stock.keys():
 		stock[key]=0
+
+# Legacy `home.seeds` / `home.bait` were plain counters. Now that bought seeds and
+# bait are real grid entities, whatever an old save still holds is handed to the
+# vault (spilling into `warehouse_spill` instead of ever destroying a unit), then
+# zeroed. Batching mirrors `migrate_home_stock()` so a hand-edited pile can never
+# exceed the save-time cap on a single entry.
+func migrate_home_seeds_bait() -> void:
+	var home: Dictionary = data.get("home",{})
+	var seeds: Dictionary = home.get("seeds",{})
+	if seeds is Dictionary:
+		for crop in seeds.keys():
+			var units := clampi(int(seeds.get(crop,0)),0,9999)
+			var kind := str(crop)+"_seed"
+			if units<=0 or not Catalog.ITEMS.has(kind):
+				continue
+			var remaining := units
+			while remaining>0:
+				var batch := mini(6,remaining)
+				var item := {"kind":kind,"count":batch,"x":0,"y":0,"rot":false,"valued":true}
+				var left := warehouse_deposit(item)
+				if left>0: spill_item(item,left)
+				remaining-=batch
+			seeds[crop]=0
+	var bait := clampi(int(home.get("bait",0)),0,9999)
+	if bait>0 and Catalog.ITEMS.has("bait"):
+		var remaining := bait
+		while remaining>0:
+			var batch := mini(6,remaining)
+			var item := {"kind":"bait","count":batch,"x":0,"y":0,"rot":false,"valued":true}
+			var left := warehouse_deposit(item)
+			if left>0: spill_item(item,left)
+			remaining-=batch
+		home["bait"]=0
 
 func sell_items(indices: Array) -> int:
 	var unique: Array = []

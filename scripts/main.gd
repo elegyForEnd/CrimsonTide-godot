@@ -57,6 +57,8 @@ const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
 # `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
 # 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
 const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
+# 开发者模式 · 判定框总览（环境变量 CRIMSON_DEV_RANGES 才创建，见 开发者模式启动.cmd / 任务.md）
+const DevRanges := preload("res://scripts/dev_ranges.gd")
 # U1 · 构筑内容表（核心 / 铭刻 / 天赋的只读定义）。`main.gd` 以前从不直接读它，
 # 但"核心候选按武器家族过滤"这条规则（`rogue_build_ui.gd:117-118`）需要 `data.cores`，
 # 而写死 12 个 id 会随内容表漂移，所以按同一个 preload 规则引进来。
@@ -72,6 +74,7 @@ var economy_syncing := false
 var session: TideSession
 var sound: TideSound
 var rogue_field: Control
+var dev_ranges                            # 开发者模式判定框总览（`scripts/dev_ranges.gd`）
 var rogue_panel: Control
 var rogue_signature := ""
 var rogue_panel_context := ""
@@ -279,6 +282,12 @@ func _ready() -> void:
 	rogue_field.session=session
 	rogue_field.visible=false
 	root.add_child(rogue_field)
+	# 开发者模式（环境变量 CRIMSON_DEV_RANGES，见 开发者模式启动.cmd）才创建判定框总览。
+	# 只读覆盖层：正式游玩时这一段根本不执行，`scripts/dev_ranges.gd` 见工作区上一层 任务.md。
+	if DevRanges.enabled():
+		dev_ranges=DevRanges.new()
+		dev_ranges.main=self
+		rogue_field.add_child(dev_ranges)
 	var serif := FontVariation.new()
 	serif.base_font=load("res://assets/NotoSerifSC.ttf")
 	serif.variation_embolden=0.55
@@ -899,6 +908,7 @@ func ensure_camp() -> Control:
 		camp.update_static())
 	camp.codex_requested.connect(show_help)
 	camp.pack_requested.connect(toggle_camp_pack)
+	camp.notice_requested.connect(notice_popup)
 	# The camp floor hands a picked-up item to the same containers a raid loots into.
 	if camp.activities:
 		camp.activities.item_receiver=func(entry: Dictionary) -> bool:
@@ -979,11 +989,17 @@ func on_camp_station(id: String) -> void:
 			show_rogue_setup()
 
 
+## The camp HUD's 「出发」 button. It has to leave from wherever the hero happens to stand: the
+## button is the only thing the player clicked, so answering with a hint — and with the 远征行囊
+## panel up, a hint that is drawn under the panel and cannot be seen at all — reads as a dead
+## button. The world ritual is untouched: walking to 搜打撤闸门 / 魔境传送门 and pressing E or
+## Space still goes through those very stations, in that very order.
 func camp_departure() -> void:
 	var station: Dictionary=camp.site.station_at(camp.site.hero_position())
 	if station.get("action","") in ["launch","rogue"]:
 		on_camp_station(str(station.action))
-	else: camp.say("走到南侧搜打撤闸门或东侧魔境传送门，再出发。")
+		return
+	on_camp_station("rogue" if session.selected_mode=="roguelike" else "launch")
 
 func on_camp_launch() -> void:
 	if session.players.is_empty():
@@ -1562,7 +1578,12 @@ func on_started() -> void:
 	popup_tip("屏幕下方新增三格道具栏：按 [1][2][3] 直接使用对应格的道具或换装。捡到背包后双击即可换装。")
 func _process(dt: float) -> void:
 	if camp:
-		camp.input_blocked=modal
+		# The camp is frozen while a panel owns the screen. The pack panel is drawn by
+		# `show_inventory()` instead of a modal box, so it has to be named here too:
+		# without it the camp kept walking (and kept answering E / the plot clicks)
+		# behind the open 远征行囊 panel, which is what `camp_screen.input_blocked`
+		# exists to prevent.
+		camp.input_blocked=modal or camp_pack_open
 	toast_time-=dt
 	toast.visible=toast_time>0 and not inventory_open
 	if session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty(): toast.hide()
@@ -1619,15 +1640,26 @@ func mouse_over_button() -> bool:
 	var hovered := get_viewport().gui_get_hovered_control()
 	return hovered is Button
 
+## Is the bag controller listening to the mouse on this page? The rogue mode drives its own
+## bag (`rogue_inventory.gd`), so this controller steps aside — but only **on the raid page**.
+## `raid.mode` stays "roguelike" for the whole session once the player picks 魔境, so a camp
+## visit *after* a rogue run used to answer this question with "yes, stay out": every grid
+## gesture in the 远征行囊 panel went dead while the panel's own buttons still worked
+## (they are Godot Buttons and never come through here). That is the reported bug.
+func bag_mouse_live() -> bool:
+	if not inventory_open or modal or page_name not in ["game","ground"]:
+		return false
+	return not (page_name=="game" and session.roguelike.active(session))
+
 # Dragging lives on the overlay: item bodies ignore the mouse, so the pointer is
 # hit-tested against whichever grid is underneath it.
 func _input(event: InputEvent) -> void:
-	if session.roguelike.active(session): return
+	if page_name=="game" and session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
 	# The camp bag panel shares this controller, so its page counts as an inventory
 	# screen too.
-	if not inventory_open or modal or page_name not in ["game","ground"]:
+	if not bag_mouse_live():
 		return
 	if event.button_index==MOUSE_BUTTON_MIDDLE:
 		# The mouse shortcut for the same R rotation. It used to be the **right**
@@ -2289,6 +2321,9 @@ func close_bag() -> void:
 	set_frost(false)
 	detach_drag_nodes()
 	clear(overlay)
+	# The camp panel's full-screen input shield went with the overlay: drop the reference so
+	# nothing can poke a freed node afterwards.
+	camp_pack.shield=null
 	# Hand the camp its controls back, unless an overlay panel is still up.
 	if camp and not modal:
 		camp.input_blocked=false

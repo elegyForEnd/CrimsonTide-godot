@@ -42,6 +42,9 @@ var host
 var zones: Array = []
 var focus_vault := false
 var vault_scroll := 0
+## The full-screen sheet that owns every click the columns do not use. `main.gd` clears the
+## overlay before each repaint, so this node is rebuilt with the panel.
+var shield: Control
 
 func text(value: String, at: Vector2, size: Vector2, font_size: int = 17, color: Color = INK) -> Label:
 	return host.label(host.overlay,value,at,font_size,color,size)
@@ -54,6 +57,18 @@ func draw(app, p: Dictionary) -> void:
 	host.cabinet_zones.clear()
 	host.slot_zone_rects.clear()
 	var player := p
+	# The panel owns the screen, so the camp's own Controls (the 家园设施 rows, the 出发 button,
+	# the station markers) must not answer a click that was aimed at a socket. They live behind
+	# the overlay, and Godot hands a click to the topmost Control that does not ignore the mouse
+	# — the panel is drawn with plain nodes, so nothing was claiming the empty space and the
+	# click fell through to the page below (clicking 主手 also warped to 晨光菜园). One
+	# transparent sheet, added before everything else, claims it instead. `home_screen.gd` does
+	# the same thing with the full-rect MOUSE_FILTER_STOP root of the 炉边厨房 / 家园商店 pages.
+	shield=Control.new()
+	shield.name="CampPackShield"
+	shield.mouse_filter=Control.MOUSE_FILTER_STOP
+	shield.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	host.overlay.add_child(shield)
 	var backdrop := TextureRect.new()
 	backdrop.texture=load("res://assets/ui/camp-pack-vault-v1.png")
 	backdrop.expand_mode=TextureRect.EXPAND_IGNORE_SIZE

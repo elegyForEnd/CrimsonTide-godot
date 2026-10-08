@@ -69,6 +69,21 @@ func sell_report(kind: String, units: int) -> String:
 	if int(result.missing)>0: message += " 库存不足，仍有 %d 份未售出。" % int(result.missing)
 	return message
 
+## A seed or bait purchase. `buy()` stows the entities (vault → backpack) and parks
+## whatever neither could hold in `overflow`; that surplus drops on the camp floor and
+## gets a top-centre notice, because the coins are charged in full and nothing may be
+## silently swallowed.
+func buy_report(key: String) -> void:
+	var message: String = home.buy(key)
+	var surplus: Dictionary = home.take_overflow()
+	if not surplus.is_empty():
+		var kind := str(surplus.kind)
+		var units := int(surplus.units)
+		camp.activities.origin = camp.site.hero_at
+		camp.activities.drop_entry({"kind":kind,"count":units,"valued":true},Vector2(randf_range(-42,42),randf_range(-30,30)))
+		camp.notice_requested.emit("仓库与背包已满，%d 份%s已掉在地上，按 F 拾回。" % [units,Catalog.ITEMS[kind].name])
+	report(message)
+
 func card(parent: Node, key: String, title: String, hint: String, tall: bool = false) -> VBoxContainer:
 	# The composed backdrop carries the design; items have no repeated outer frames.
 	var content := VBoxContainer.new()
@@ -109,14 +124,14 @@ func build_shop(parent: Node) -> void:
 		var crop: String = key
 		var entry: Dictionary = Rules.CROPS[key]
 		var content := card(grid,crop,entry.name+"种子","生长 %d 分钟，每块田收获 3 份。浇水缩短 35%% 生长时间；离线继续生长，成熟不会枯萎。" % (entry.seconds/60))
-		text(content,"× %d" % home.state().seeds[key],14,MUTED)
-		button(content,"购买  %d ◈" % entry.price,func(): report(home.buy(crop)))
+		text(content,"× %d" % camp.profile.product_count(crop+"_seed"),14,MUTED)
+		button(content,"购买  %d ◈" % entry.price,func(): buy_report(crop))
 	var rod := card(grid,"rod",["木制钓竿","精工钓竿","精工钓竿"][home.state().rod],"钓竿永久保留。精工钓竿扩大绿色收竿区域，提升稀有鱼概率。在栈桥按 E / Space 抛竿与收竿。")
 	text(rod,["未购置","可升级","已满级"][home.state().rod],14,MUTED)
 	button(rod,"购买  70 ◈" if home.state().rod==0 else "升级  180 ◈",func(): report(home.buy("rod"))).disabled = home.state().rod>=2
 	var bait := card(grid,"bait","鱼饵 ×5","每次抛竿消耗 1 份鱼饵；取消或失败不返还。等鱼咬钩后，在绿色区域内按 E / Space 收竿。")
-	text(bait,"持有 %d" % home.state().bait,14,MUTED)
-	button(bait,"购买  15 ◈",func(): report(home.buy("bait")))
+	text(bait,"持有 %d" % camp.profile.product_count("bait"),14,MUTED)
+	button(bait,"购买  15 ◈",func(): buy_report("bait"))
 	var beds := card(grid,"seeds","开垦田畦","花费 120 金币，永久增加 3 块田畦，最多 9 块。前往菜园，在空田块按 E 播种，Q 切换种子。")
 	text(beds,"田畦 %d / 9" % home.state().beds,14,MUTED)
 	button(beds,"开垦  120 ◈",func(): report(home.buy("beds"))).disabled = home.state().beds>=9
