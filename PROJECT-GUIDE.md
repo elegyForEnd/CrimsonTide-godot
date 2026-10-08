@@ -714,6 +714,15 @@ python tests/scene_music_assets.py # 曲目清单校验
     - **本轮决策（用户拍板）：保留兜底、绿了就行，把 flaky 登记为已知缺口**。`tests/ui.gd` 里两处兜底——`:368` 拖入背包失败退 `app.auto_store_loot(0)`、`:381` 背包内挪格失败退 `app.session.move_between(...)`——是**刻意保留**的：探针实测**同一次运行里 `:368` 那次真链路命中成功、`:381` 那次真链路 miss**，证明真鼠标时好时坏，删兜底就会随机红。`:610 / :630 / :650` 的 `auto_store_loot` 兜底同此。
     - **后人若要根治（勿与功能提交混做）**：需同时处理三件事，缺一不可——① 消除 `mouse_point()` 与 stretch 的二次缩放（先坐实多面板下 `get_mouse_position()` 与 canvas 变换的真实语义）；② 把手势 helper 里"单 `process_frame` 等 readback"改成轮询到光标真到位再点（`item_bar.gd` 已用 `create_timer` 拉开两次拖拽，可参考）；③ 保证测试窗口前台焦点。**根治前，别删这几处兜底。**
 
+50. **`verify_anchors.py --fix` 会静默跳过"在全文出现不止一次"的锚点，别以为它把漂移全清了**：`--fix` 的去重门在 `tools/verify_anchors.py:334 text.count(old) == 1`——同一个 `文件:行号 符号` 字符串只有在**整份路牌里唯一**时才会被改写。合并主线后常有几十个锚点（`perform` / `show_inventory` / `saved_loadout` / `settle` / `double_click_equip` …）在 §3/§4/§5/§11 各章节被反复引用，这些全被跳过，表现为 **`--fix` 跑再多轮 DRIFT 数都不再下降（本轮卡在 26）**。正确做法：`--fix` 跑到收敛后，改用 `python tools/verify_anchors.py --guide PROJECT-GUIDE.md --root . --json`（用 `utf-8-sig` 读，PowerShell `Out-File` 会写 BOM），把每条 DRIFT 的 `实测行号` 建成"旧串→新串"映射，对全文 `str.replace(old,new)`（**不限次数**，一次覆盖所有重复引用），再补区间锚点。本轮 26 处即这样一次清零。⚠️ 别写"再跑一遍 --fix 直到 0"的死循环——它永远到不了 0。
+
+51. **`--fix` 每次都会写出 `PROJECT-GUIDE.md.bak` 备份，这是临时产物，绝不要提交**：备份在 `tools/verify_anchors.py:271 guide_path.with_suffix(... + ".bak")` 生成。上游 `8252812` 曾把它误入库（本轮已 `git rm --cached` 移除，并在 `.gitignore` 加了 `*.bak` 防复发）。看到 `git status` 里有 `.bak` 先确认是不是又被谁 `git add .` 带进来的。
+
+52. **git 网络命令（`fetch` / `push`）不要把 stdout 用管道交给 `Select-Object` 等下游，会假死**：实测把 `git push` 的 stdout 直接 `| Select-String` 会挂住不返回；改成 `git push origin master > 文件 2>&1` 重定向到文件再看，或前台直跑不接管道。另外**被 `job_kill` 杀掉的 pwsh 不会带走它的 `git` / `git-remote-https` 子进程**（与第 30 条 Godot 残留同源），残留进程会占住凭据/锁让后续 `git fetch` 一直卡——卡住先 `Get-Process git,git-remote-https | Stop-Process -Force` 再重跑。GitHub 到本机很慢（数分钟），用 `GIT_TERMINAL_PROMPT=0` + `credential.interactive=false` 走非交互，慢就用后台 job 而不是干等。
+
+53. **工作区常年显示 ` M` 的两个幽灵文件永远不要 `git add`**：`scripts/rogue_backdrop.gd` 与 `tests/direct_fallback.gd` 是 CRLF/归一化导致的 stat-cache 幽灵——`git status` 天天列它们"已修改"，但 `git diff --ignore-cr-at-eol` 对它们是 **0 真实改动**（内容根本没变）。它们是 §11.36 那条 autocrlf 假象的具体实例，也是禁止 `git add .` 最现实的理由：一旦提交就把这俩脏进去。提交一律**显式列自己改的文件路径**（`git add -- 路牌 脚本…`），别 `git add -A` / `git add .`。
+
+
 ---
 
 ## 12. 路牌维护规范（做完一个功能、交接前必做）
@@ -784,6 +793,7 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-08 | （本轮文档） | **把合并轮踩到的 4 类可规避坑写进规范**：§11 追加 50–53——**50** `verify_anchors --fix` 的去重门（`tools/verify_anchors.py:334` 只改全文唯一锚点，合并后 DRIFT 卡住不再下降是常态，改按 `--json` 报告做**全文替换**清零，`--fix` 死循环到不了 0）；**51** `--fix` 写出的 `.bak` 是临时产物勿提交（上游 `8252812` 曾误入库，已移除并 `.gitignore` 加 `*.bak`）；**52** git 网络命令的 stdout 别接管道（`| Select-Object` 会假死），`job_kill` 留下的 `git`/`git-remote-https` 子进程会卡住后续 fetch，先 `Stop-Process` 再重跑；**53** 两个 CRLF stat-cache 幽灵文件（`scripts/rogue_backdrop.gd`、`tests/direct_fallback.gd`）常年显示 ` M`，永远不要 add——这是禁止 `git add .` 最现实的实例。§12.7 结论同步补"合并后 --fix 修不干净是常态"的指引；上一层工作区 `AGENTS.md` 薄壳加对应硬规则（只放规则 + 指回本节）。锚点全量复跑 DRIFT 0 / WRONG 0。 |
 | 2026-10-08 | 1681f7b / 741ab38 / d5badcd | **合并上游 `origin/master`（10 提交 dac2149，镜像试炼 + 武器美术 + 肉鸽修复）与本地 R.1/文档链**：①3 处内容冲突保留双方功能——`scripts/main.gd` 把镜像试炼分支（origin）与 R.1 救援者近身提示循环（HEAD）并成 `elif rogue_combat` 内 if/else + 其后独立 `if p.status=="active"`；`tests/rogue_hooks_roguelike.gd` 取 origin 刷新卡 value-only 复用断言（HEAD 断言的超集，实测 **178 checks / 0 failures**）；`PROJECT-GUIDE.md` 19 冲突块逐一合并，两处 origin 独有描述（§5 attack() 战技携带 attack_kind/width/radius、§11.6 特效挂点 `weapon_effect_socket` + `mechanic_contact`/`draw_mechanic`）按合并后代码回填。②R.1 表整体保留 HEAD 的"已修/已对齐"（本地 c130864 已把半径落进合并后的 session/battlefield/camp_activities），丢弃 origin 侧旧"待修"快照。③合并后全量重锚：`verify_anchors --fix` 三轮 + 手工补 26 处被去重门挡掉的重复锚点，**756 锚点 → OK 494 / DRIFT 0 / WRONG 0 / HINT 262（退出码 0）**。④清理：移除上游误入库的 `PROJECT-GUIDE.md.bak`（8252812 带入），`.gitignore` 加 `*.bak` 防复发。⑤`main.gd` / 测试脚本均 `--check-only` 解析通过。**未跑全量门禁**（`run_all_tests.ps1` / `run_rogue_gate.ps1`），留待 M2 一并跑。 |
 | 2026-10-07 | （本批未提交） | 69 把武器逐页人工核对与完整方向 GPU 矩阵；ImageGen 再绘重刃 v3/震地 v2，锤类改为冲击环；战技前摇与精确出手姿势修复；新增全量测试、69 页预览与 WEAPON-FULL-AUDIT.md，同步 §4、§11 与验证记录 |
 | 2026-10-07 | （本批未提交） | 武器真实剑尖与亮刃接触点修复，去掉释放旋转漂移、降低过曝、同步实际前摇；ImageGen 重画双刃 v3 和重刃终结 v2；新增真实 GPU 接触测试与角色四方向预览，更新 §5、§11、专题说明与测试台账；试玩 build/CrimsonTide-WeaponTipFixed.exe |
@@ -816,7 +826,7 @@ git status --porcelain
 - **范围**：全文 `文件:行号` 锚点，`tools/verify_anchors.py` 解析出 **675** 个（含区间与裸行号锚点），逐条对代码实测。
 - **结果**：**全部通过**——OK 455 / DRIFT 0 / WRONG 0；另有 220 条 HINT（锚点只写了行号、附近才出现符号名，或按设计就容忍 ≤3 行漂移，脚本无法硬校验，建议后续逐步补符号名）。
 - **本轮改动**：①肉鸽岔路修复（`rogue_map.gd`）与营地行囊面板三修（`main.gd`/`camp_pack.gd`）重锚 `main.gd` 共 53 处；②引魂灵体索敌（`rogue_build.gd` 前部插入常量与五个函数）把该文件的路牌锚点全部重锚（`stat` 81→117、`hit_multiplier` 259→435、`hit_event` 341→517、`action_event` 544→735、`legal_talents` 746→933、`management` 798→985、`award` 847→1034、`add_experience` 973→1178、`hero_effect` 1008→1126、`visual_state` 55→80、`core_visual` 164→183、武器分支表 :320-327→:496-659、match 表 :423-445→:609）；③新增 §4.E 路线图、§4.F 派生链预览与灵体索敌、§4.R 开发工具与判定框总览、§5 四行、§6 灵体数值、§9 开发者启动、§11.43–48 等条目。**本轮 `main.gd` 又插了 9 行（开发者覆盖层挂载点），全部 `main.gd` 锚点再重锚一次**：`verify_anchors.py --fix` 机械修正 21 处，另有 28 处是「只写短路径」的锚点（工具的 `--fix` 因路径归一化匹配不上），用 `build/probe/fix_bare_anchors.py` 按工具自己的 `--json` 报告逐行改写。上一轮（2026-10-05，基准 `abcbaaf`）的审计记录见 §12.6 对应行。
-- **结论**：每次 pull 到含代码变更的提交后，先跑一次 `python tools/verify_anchors.py --guide PROJECT-GUIDE.md --root . --summary`；有 DRIFT / WRONG 就按报告改完再交接。批量修行号可用 `--fix`（只在符号唯一命中时改，并写 `.bak`）。
+- **结论**：每次 pull 到含代码变更的提交后，先跑一次 `python tools/verify_anchors.py --guide PROJECT-GUIDE.md --root . --summary`；有 DRIFT / WRONG 就按报告改完再交接。批量修行号可用 `--fix`（只在符号唯一命中时改，并写 `.bak`）。⚠️ **合并主线后 `--fix` 修不干净是常态**——全文重复出现的锚点会被它的去重门跳过、DRIFT 卡住不再下降，此时改按 `--json` 报告做全局替换（见 §11.50）；`--fix` 写出的 `.bak` 是临时产物，已被 `.gitignore` 忽略，勿提交（§11.51）。
 
 ### 2026-10-06 本地恢复与同步
 
