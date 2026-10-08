@@ -275,3 +275,14 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - GPU原图比较不使用扩边或辉光shader：相同绘制尺寸下，旧轻刃原图亮像素140，新原图1675，通过新增的至少50%主体增量检查。实际飞行渲染中长弓箭和短弩箭可见高度6，冰针10；圆斩中心/空心/空中高度及光束相机稳定性通过。前后对照首次捕获中的白块来自预览临时纹理过早释放，已通过持续持有纹理修复；第二次绘制等待字体图集稳定，14组对照已完整检查。
 - build/CrimsonTide-WeaponImageRedraw.exe 导出成功，2,082,811,544字节；引擎从空目录以 --main-pack 加载 exe 内嵌资源，五组1163检查，0 failures（机制429、GPU30、身份553、强化32、独立特效119）。
 - 原图对照 build/weapon-imagegen-redraw.png、招式对照 build/weapon-mechanics-comparison.png、动态 build/weapon-mechanics-motion.gif 与实战截图 build/weapon-vfx-battle-603.png 已更新并检查。项目路牌609锚点：OK405 / DRIFT0 / WRONG0 / HINT204。
+
+
+## 2026-10-08 Boss 固定顺序与特效身份修正
+
+- 远征主线固定主教→猎王→女王→无名赤月→条件终局。隐藏战等无名赤月倒下后再触发；已结算隐藏战不再重复推进普通终局。魔境五层恢复古王→暴君→女皇→舰长→剑圣，额外三身份素材与招式保留。
+- 蓄力、阶段、死亡和旧招式释放事件显式携带实际 art_key；缺省 art_key 时以 boss_art 恢复身份。阶段与死亡音效按身份选择，死亡清除旧蓄力/阶段演出；远征死亡事件携带 raid_boss，避免额外普通怪死亡粒子。
+- 九组逻辑套件共 11954 项，零失败：expedition 79、hidden_ending 103、map_boss_roster 984、boss_full_effect_coverage 4675、boss_attack_intent 1592、rogue_boss_phase2 406、rogue_boss_pool 2340、boss_vfx 425、boss_choreography 1350。覆盖全部 104 招、20 张招式表，以及缺失身份字段/敌人已移除后的死亡特效。
+- GPU 实机可视测试：五层 25 招各预警/释放 50 张、五张小怪场景、远征 13 张演出截图，已检查代表画面。修正旧可视夹具直接写 area=5 进入镜中挑战的错误，改为真实图节点的 Boss 房间，避免 UI 遮挡。
+- Boss VFX 双进程联机房主与客户端通过，四主题释放与危险区快照、蓄力、招架、破防、阶段、死亡事件均收到。旧联机测试误要求危险区主题总数为 3，而当前骑士也有主题 3；修为验证完整四主题，并增加 RPC 身份一致性断言。
+- 旧 boss_redesign 素材审计仍有 3/744 失败（Native HD art、No shared reskin source、Seventeen bosses each have four original effects）。单独加载 HEAD 修改前 boss_effect_art.gd 复跑得到完全相同的三项失败；本轮未修改 PNG、图集清单或纹理映射。该套件亦有原有退出资源泄漏警告。新专项及主场景脚本未出现解析错误。
+- 项目路牌 727 锚点：OK 471 / DRIFT 0 / WRONG 0 / HINT 256；git diff --check 通过。本轮修正在源码，旧导出 EXE 尚未重新打包。

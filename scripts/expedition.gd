@@ -47,9 +47,7 @@ const HIDDEN_REWARD := 1200
 # by. It sits after the three shipped raid bosses.
 const HIDDEN_KIND := 4
 
-# The daily dawn boss. Days one and two draw from the first two entries, so the
-# roster is exactly the size of the two exploring days; the queen (kind 2) is the
-# fixed final boss. No dawn boss may repeat across the run.
+# Main encounters follow their authored progression: bishop, hunter, queen.
 const DAWN_KINDS := [0,1]
 
 func reset(s) -> void:
@@ -93,20 +91,8 @@ func prepare_day(s, day: int) -> void:
 		spawn_boss(s)
 
 func roll_dawn_kind(s, day: int) -> int:
-	# A dawn boss already fought on an earlier day is struck from the pool, so
-	# day two can only field the dawn boss day one did not use. Day three is the
-	# queen and never competes for a slot.
-	if day>=3: return 2
-	var used: Dictionary={}
+	var pick := clampi(day-1,0,2)
 	var history: Dictionary=s.raid.get("boss_kinds",{})
-	for taken_day in history:
-		if int(taken_day)<day: used[int(history[taken_day])]=true
-	var pool: Array=[]
-	for kind in DAWN_KINDS:
-		if not used.has(kind): pool.append(kind)
-	# A run cannot exhaust the roster; fall back to the full pool if it ever did.
-	if pool.is_empty(): pool=DAWN_KINDS.duplicate()
-	var pick: int=pool[s.rng.randi_range(0,pool.size()-1)]
 	history[day]=pick
 	s.raid.boss_kinds=history
 	return pick
@@ -178,6 +164,7 @@ func tick(s, dt: float) -> void:
 func spawn_boss(s, final_form: bool = false) -> void:
 	if s.raid.phase=="boss" and not final_form: return
 	if final_form:
+		if s.raid.get("final_spawned",false) or s.raid.get("ended",false): return
 		s.raid.final_spawned=true
 		s.raid.hazards.clear()
 	s.raid.phase="boss"
@@ -334,7 +321,7 @@ func update_hazards(s, dt: float) -> void:
 			h.fired=true
 			if h.has("boss_kind"):
 				var event: Dictionary=h.duplicate(true)
-				event.merge({"kind":"boss-vfx","action":"release","id":h.get("source",0)},true)
+				event.merge({"kind":"boss-vfx","action":"release","id":h.get("source",0),"art_key":Presentation.Art.identity(h)},true)
 				s.broadcast_combat(event)
 			else: s.emit_effect("hit",h.p)
 			for p in s.players.values():

@@ -1,5 +1,5 @@
 extends SceneTree
-## R14：守层者池扩容（8 个身份 / 每局抽 5 个 / 每人 7 招，含两招二阶段终结技）。
+## 固定五层出场顺序；八个身份的招式与阶段、死亡特效仍逐一验证。
 ##
 ## 本用例**刻意不依赖 TideSession**（W1 正在改 session.gd / roguelike.gd），
 ## 用最小桩会话驱动真实的 RogueCombat / BossChoreography，保证结论随时可复跑。
@@ -11,6 +11,11 @@ const RogueArt = preload("res://scripts/rogue_art.gd")
 
 var checks := 0
 var failures := 0
+
+
+class StubField extends Control:
+	var camera := Vector2(2500,580)
+	var session
 
 
 class StubRuins:
@@ -47,9 +52,10 @@ class StubSession:
 	var seed_value: int = 0
 	var rng := RandomNumberGenerator.new()
 	var audio: Array = []
+	var combat_events: Array = []
 
-	func broadcast_combat(_data: Dictionary) -> void:
-		pass
+	func broadcast_combat(data: Dictionary) -> void:
+		combat_events.append(data.duplicate(true))
 
 	func broadcast_audio(cue: String, _emitter = null) -> void:
 		audio.append(cue)
@@ -159,13 +165,14 @@ func run() -> void:
 	var differing := 0
 	for seed in range(1,201):
 		if not same_pool(Combat.boss_pool(seed),pool_a): differing+=1
-	check(differing>=190,"different seeds shuffle the pool (>=190/200)")
+	check(differing==0 and pool_a==[0,1,2,3,4],"all seeds preserve the authored five-floor progression")
+	check(Combat.boss_art_for(1729,-1)==0 and Combat.boss_art_for(1729,5)==4,"out-of-range floors clamp instead of wrapping the roster")
 
 	# —— ② 身份与楼层解耦，且不消耗会话 RNG、不写 raid ——
 	var reachable := {}
 	for seed in range(1,1001):
 		for index in Combat.boss_pool(seed): reachable[int(index)]=true
-	check(reachable.size()==8,"every identity in the pool can actually appear")
+	check(reachable.size()==5,"only the five main guardians enter the floor progression")
 	var raid_keys_before: Array=[]
 	for seed in [1,7,4242,999983,20261005]:
 		var s := make_session(seed)
@@ -198,17 +205,47 @@ func run() -> void:
 		check(legacy_session.roguelike.combat.moves_of(e).size()==7,"legacy tables keep seven moves")
 
 	# —— ④ 每个身份：7 招都能真打，含三个新身份的真编排 ——
-	var covered := {}
-	for seed in range(1,400):
-		var s := make_session(seed)
-		for floor_index in 5:
-			var e := make_boss(s,floor_index)
-			var index := int(e.boss_art)
-			if covered.has(index): continue
-			covered[index]=true
-			drive_all_moves(s,e,index)
-		if covered.size()==8: break
-	check(covered.size()==8,"all eight guardians were driven through their seven moves")
+	for index in Art.ROGUE.size():
+		var s := make_session(1729)
+		var e := make_boss(s,0)
+		e.boss_art=index
+		e.art_key=Art.ROGUE[index]
+		e.boss_name=Combat.NAMES[index]
+		if Combat.CHOREO_KEYS.has(index): e.choreo_key=Combat.CHOREO_KEYS[index]
+		drive_all_moves(s,e,index)
+		var legacy := e.duplicate(true)
+		legacy.erase("art_key")
+		check(Art.identity(legacy)==Art.ROGUE[index],"missing explicit art_key falls back to boss_art, not floor")
+		s.roguelike.combat.update_boss(s,e,0.01)
+		e.hp=e.max_hp*.4
+		s.roguelike.combat.update_boss(s,e,0.01)
+		check(str(s.combat_events.back().get("art_key",""))==Art.ROGUE[index],"phase event carries the actual identity")
+		s.roguelike.combat.defeated(s,e)
+		check(str(s.combat_events.back().get("art_key",""))==Art.ROGUE[index],"death effect survives removal of the caster")
+
+	# The renderer must retain the defeated identity after its snapshot is gone.
+	var fx_session := make_session(1729)
+	var fx_boss := make_boss(fx_session,0)
+	fx_boss.boss_art=7
+	fx_boss.art_key="abyss"
+	var field := StubField.new()
+	field.session=fx_session
+	var vfx := preload("res://scripts/rogue_boss_effects.gd").new()
+	vfx.field=field
+	root.add_child(field)
+	field.add_child(vfx)
+	vfx.set_process(false)
+	vfx.damage_visual.set_process(false)
+	vfx.event({"kind":"rogue-boss-charge","id":1,"p":fx_boss.p,"floor":0})
+	vfx.event({"kind":"rogue-boss-phase","id":1,"p":fx_boss.p,"floor":0})
+	check(vfx.pulses.size()==2,"charge and phase are retained during a living attack")
+	fx_session.roguelike.combat.defeated(fx_session,fx_boss)
+	fx_session.enemies.clear()
+	vfx.event(fx_session.combat_events.back())
+	check(vfx.pulses.size()==1 and vfx.pulses[0].kind=="rogue-boss-fall","fall clears the previous charge and phase effects")
+	check(str(vfx.pulses[0].art_key)=="abyss","fall keeps the abyss identity after the caster is removed")
+	vfx.free()
+	field.free()
 
 	# —— ⑤ 二阶段专属两招在一阶段绝不出现 ——
 	check(Combat.PHASE1_MOVES==5 and Combat.PHASE2_MOVES==7,"phase one keeps five moves, phase two opens seven")

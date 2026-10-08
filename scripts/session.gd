@@ -3232,24 +3232,18 @@ func simulate(dt: float) -> void:
 			else:
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 		emit_effect("hit",e.p)
-		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"rogue_floor":e.get("rogue_skin",-1),"rogue_minion":e.get("rogue_minion",false),"rogue_guardian":e.get("rogue_guardian",false),"id":e.id})
+		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"raid_boss":e.get("raid_boss",false),"art_key":BossPresentation.Art.identity(e),"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"rogue_floor":e.get("rogue_skin",-1),"rogue_minion":e.get("rogue_minion",false),"rogue_guardian":e.get("rogue_guardian",false),"id":e.id})
 	for e in fallen:
 		enemies.erase(e)
 	if map_id=="city" and ruins.sites[0].get("boss_defeated",false) and not ruins.sites[0].get("cleared",false) and enemies.is_empty():
 		ruins.sites[0]["cleared"]=true
 		knight_reward(RoyalCity.BOSS)
 	if roguelike.active(self): roguelike.tick(self,dt)
-	if defeated_boss:
+	if defeated_boss and not raid.get("ended",false):
 		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
 		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("map_boss_defeats",{}).size()>=2: wild_bosses.spawn_final(self)
+		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and hidden_ending_ready(): expedition.spawn_hidden(self)
 		else: expedition.victory(self)
-	# The hidden encounter unlocks on the frame the four conditions below first
-	# hold together, whatever order they were satisfied in: every sunrise bell
-	# lit, the knight's amulet still carried, the queen already down, and the
-	# secret abyss finale not already running in her place.
-	if not raid.is_empty() and not raid.get("ended",false) and not raid.get("hidden_slain",false) \
-			and not raid.get("abyss_spawned",false) and raid.get("final_spawned",false) \
-			and hidden_ending_ready(): expedition.spawn_hidden(self)
 	var alive := false
 	for p in players.values():
 		if p.status in ["active","down"]:

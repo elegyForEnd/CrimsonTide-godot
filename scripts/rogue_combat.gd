@@ -14,8 +14,9 @@ const ENEMY_HP_SCALE_BOUNDS := Vector2(0.5,3.0)
 const ENEMY_TEMPO_BOUNDS := Vector2(0.5,2.0)
 const BULLET_SPEED_BOUNDS := Vector2(0.5,2.0)
 const BULLET_VISUAL_BOUNDS := Vector2(1.0,3.0)
-# 守层者池（R14）：每层从 Art.ROGUE 的 8 个身份里确定性地抽 5 个互不重复。
+# 五层按原版身份推进；扩展身份保留招式与素材，供独立遭遇使用。
 const POOL_FLOORS := 5
+const BOSS_ORDER := [0,1,2,3,4]
 # 三个新守层者各自的编排键：复用该身份既有的四招编排骨架，另加两招二阶段终结技。
 const CHOREO_KEYS := {5:"rq_bell",6:"rq_earth",7:"rq_abyss"}
 
@@ -94,45 +95,25 @@ func reset() -> void:
 	missiles.clear()
 
 func setup_boss(e: Dictionary, floor_index: int, s = null) -> void:
-	# 身份由 (seed_value, floor) 纯函数派生：房主与客户端各自算出同一个守层者，
-	# 不需要任何新的 raid 键，也不消耗 s.rng。拿不到种子时回落到扩容前的“楼层即身份”。
-	var art_index := clampi(floor_index,0,Art.ROGUE.size()-1)
-	var run_seed := pool_seed(s,e)
-	if run_seed != 0: art_index = boss_art_for(run_seed,floor_index)
+	var art_index := boss_art_for(pool_seed(s,e),floor_index)
 	e.merge({"rogue_guardian":true,"rogue_skin":floor_index,"boss_art":art_index,
 		"art_key":Art.rogue_key(art_index),"boss_name":NAMES[art_index],
 		"hp":950.0+floor_index*350.0,"max_hp":950.0+floor_index*350.0,"cd":1.8,
 		"rogue_radius":30.0,"move_cursor":0,"boss_skill":-1,"boss_elapsed":0.0,
 		"boss_windup":0.0,"boss_released":false,"boss_enraged":false,"phase":1,"attack_time":0.0},true)
 	if CHOREO_KEYS.has(art_index): e["choreo_key"]=CHOREO_KEYS[art_index]
+	else: e.erase("choreo_key")
 	# 变数属性钩子（R8 待接线项 c）：调用方传 s 时立刻生效；未传则由 update() 首次补应用。
 	apply_variant_stats(s,e)
 
-# —— 守层者池（R14）：确定性、无副作用、不写 raid、不动 s.rng ——
-# 只用整数混洗：同一 (seed_value, floor) 在房主与客户端得到逐位相同的身份。
-static func mix_seed(value: int, salt: int) -> int:
-	var h := (int(value) ^ (salt * 0x9E3779B1)) & 0x7FFFFFFF
-	h = ((h ^ (h >> 15)) * 0x2C1B3C6D) & 0x7FFFFFFF
-	h = ((h ^ (h >> 12)) * 0x297A2D39) & 0x7FFFFFFF
-	return (h ^ (h >> 15)) & 0x7FFFFFFF
-
-# 本局的身份池：8 取 5，互不重复。与楼层无关，所以同一局内各层不会撞同一个守层者。
-static func boss_pool(seed_value: int) -> Array:
-	var order: Array=[]
-	for i in Art.ROGUE.size(): order.append(i)
-	var state := mix_seed(seed_value,0x5EED)
-	for i in range(order.size()-1,0,-1):
-		state = (state * 1103515245 + 12345) & 0x7FFFFFFF
-		var j: int = state % (i + 1)
-		var swap = order[i]
-		order[i]=order[j]
-		order[j]=swap
-	return order.slice(0,POOL_FLOORS)
+# 返回独立副本，调用者不能改写主线顺序；种子只影响地图与掉落。
+static func boss_pool(_seed_value: int) -> Array:
+	return BOSS_ORDER.duplicate()
 
 # 第 floor 层的守层者身份索引（0..7）。
 static func boss_art_for(seed_value: int, floor_index: int) -> int:
 	var pool: Array=boss_pool(seed_value)
-	return int(pool[posmod(floor_index,pool.size())])
+	return int(pool[clampi(floor_index,0,pool.size()-1)])
 
 # 种子只从既有字段取：会话的 seed_value（随 begin RPC 同步）或敌人字典里的 run_seed。
 func pool_seed(s, e: Dictionary) -> int:
@@ -366,10 +347,14 @@ func begin_skill(s, e: Dictionary, skill: int, target: Dictionary) -> void:
 		# Radial / fan / orbit / summon warns at the caster before release.
 		zone(e,"aura",e.p,85.0,delay,0.35,0.0,e.attack_aim)
 	s.broadcast_audio(cue(e,skill,"charge"),e)
-	s.broadcast_combat({"kind":"rogue-boss-charge","p":e.p,"id":e.id,"floor":e.rogue_skin,"duration":delay})
+	s.broadcast_combat({"kind":"rogue-boss-charge","p":e.p,"id":e.id,"floor":e.rogue_skin,"art_key":Art.identity(e),"aim":e.attack_aim,"duration":delay})
 
 func cue(e: Dictionary, skill: int, action: String) -> String:
-	return "rogue-%d-%d-%s" % [int(e.rogue_skin),skill,action]
+	var identity := int(e.get("boss_art",e.rogue_skin))
+	if identity>=Art.LEGACY_ROGUE:
+		return Art.identity(e)+"-"+{"charge":"charge","release":"burst","phase":"ritual","fall":"fall"}.get(action,"burst")
+	if action in ["phase","fall"]: return "rogue-%d-%s" % [identity,action]
+	return "rogue-%d-%d-%s" % [identity,skill,action]
 
 func update_boss(s, e: Dictionary, dt: float) -> void:
 	var target: Dictionary=nearest(s,e)
@@ -378,9 +363,9 @@ func update_boss(s, e: Dictionary, dt: float) -> void:
 		# 阶段切换只发生一次：boss_enraged 一旦置位便单调不回退（回血也不会退回一阶段）。
 		e.boss_enraged=true
 		e["phase"]=2
-		s.broadcast_combat({"kind":"rogue-boss-phase","id":e.id,"p":e.p,"floor":e.rogue_skin,"duration":1.2})
+		s.broadcast_combat({"kind":"rogue-boss-phase","id":e.id,"p":e.p,"floor":e.rogue_skin,"art_key":Art.identity(e),"duration":1.2})
 		s.message.emit(e.boss_name+"进入二阶段！招式全开")
-		s.broadcast_audio("rogue-%d-phase" % int(e.rogue_skin),e)
+		s.broadcast_audio(cue(e,-1,"phase"),e)
 		# Dedicated identity crest announces the phase, without a generic aura.
 	if e.attack_time>0 and e.get("choreo_cast",false):
 		e.attack_time=maxf(0,e.attack_time-dt)
@@ -533,8 +518,8 @@ func tick(s, dt: float) -> void:
 
 func defeated(s, e: Dictionary) -> void:
 	if not e.get("rogue_guardian",false): return
-	s.broadcast_combat({"kind":"rogue-boss-fall","id":e.id,"p":e.p,"floor":e.rogue_skin,"duration":1.3})
-	s.broadcast_audio("rogue-%d-fall" % int(e.rogue_skin),e)
+	s.broadcast_combat({"kind":"rogue-boss-fall","id":e.id,"p":e.p,"floor":e.rogue_skin,"art_key":Art.identity(e),"duration":1.3})
+	s.broadcast_audio(cue(e,-1,"fall"),e)
 	s.message.emit(e.boss_name+"已击败")
 	# Keep an animated death silhouette, with no remaining damage.
 	# 尸体也带上身份：新守层者（bell/earth/abyss）的身体立绘按身份取帧；缺少 boss_art 的

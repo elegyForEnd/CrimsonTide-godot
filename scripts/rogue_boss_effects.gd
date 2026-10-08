@@ -20,11 +20,16 @@ func reset() -> void:
 func event(data: Dictionary) -> void:
 	if data.kind not in ["rogue-boss-charge","rogue-boss-phase","rogue-boss-fall"]: return
 	if data.p.distance_to(field.camera)>1400: return
-	if data.kind!="rogue-boss-phase":
-		for i in range(pulses.size()-1,-1,-1):
-			if pulses[i].id==data.id and pulses[i].kind=="rogue-boss-charge": pulses.remove_at(i)
+	for i in range(pulses.size()-1,-1,-1):
+		if pulses[i].id!=data.id: continue
+		if data.kind=="rogue-boss-fall" or pulses[i].kind==data.kind:
+			pulses.remove_at(i)
 	if pulses.size()>=32: pulses.pop_front()
 	var fx := data.duplicate(true)
+	# Keep the identity in the event even after the caster leaves the snapshot.
+	if str(fx.get("art_key","")).is_empty():
+		for e in field.session.enemies:
+			if e.id==data.id: fx["art_key"]=Art.identity(e); break
 	fx["age"]=0.0
 	fx["life"]=float(data.get("duration",1.1))
 	pulses.append(fx)
@@ -62,9 +67,7 @@ func _draw() -> void:
 			draw_rect(Rect2(prop.p+Vector2(-24,-lift),Vector2(48,4)),Color("24182c"))
 			draw_rect(Rect2(prop.p+Vector2(-24,-lift),Vector2(48*prop.hp/prop.max_hp,4)),Color("b6f4df"))
 	for fx in pulses:
-		var key: String=str(fx.get("art_key",Art.rogue_key(int(fx.floor))))
-		for e in field.session.enemies:
-			if e.id==fx.id: key=Art.identity(e); break
+		var key: String=Art.identity({"rogue_guardian":true,"art_key":fx.get("art_key",""),"boss_art":fx.get("boss_art",fx.floor)})
 		var action := "charge" if fx.kind=="rogue-boss-charge" else "fall" if fx.kind=="rogue-boss-fall" else "phase"
 		Language.actor(self,key,fx.p,fx.get("aim",Vector2.RIGHT),action,float(fx.age),float(fx.life))
 	# Shared damage renderer owns all ground zones; do not stamp a second full sprite.

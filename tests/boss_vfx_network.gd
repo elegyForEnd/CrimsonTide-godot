@@ -18,6 +18,11 @@ func run() -> void:
 	root.add_child(s)
 	s.combat_event.connect(func(data: Dictionary):
 		if data.kind!="boss-vfx": return
+		var identity_data := data.duplicate()
+		identity_data.erase("art_key")
+		if str(data.get("art_key",""))!=s.BossPresentation.Art.identity(identity_data):
+			push_error("Boss VFX identity was lost in the combat RPC")
+			quit(1)
 		actions[data.action]=true
 		if data.action=="release": release_themes[data.boss_kind]=true)
 	var error: Error=s.host({"hero":0}) if host_mode else s.join("127.0.0.1",{"hero":1,"ready":true})
@@ -68,7 +73,7 @@ func _process(dt: float) -> bool:
 		for h in s.raid.hazards:
 			if h.has("boss_kind") and h.has("move") and h.has("part") and h.has("source"):
 				snapshots[h.boss_kind]=true
-		if release_themes.size()==4 and snapshots.size()==3 and actions.has("charge") and actions.has("guard") and actions.has("break") and actions.has("phase") and actions.has("fall"):
+		if release_themes.size()==4 and snapshots.size()==4 and actions.has("charge") and actions.has("guard") and actions.has("break") and actions.has("phase") and actions.has("fall"):
 			print("BOSS VFX NETWORK CLIENT PASS: four themes, timed releases, guard, break, phase, fall and hazard metadata")
 			s.disconnect_room()
 			quit()

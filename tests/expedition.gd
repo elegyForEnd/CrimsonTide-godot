@@ -22,7 +22,7 @@ func run() -> void:
 	s.spawn_timer=9999
 	var p: Dictionary=s.players[1]
 	check(s.raid.day==1 and s.raid.phase=="explore","First day starts in exploration")
-	check(s.raid.kind in s.expedition.DAWN_KINDS,"Day one fields one of the two dawn bosses")
+	check(s.raid.kind==0,"Day one always fields the bishop")
 	check(not s.can_extract(),"Day one extraction locked")
 	p.p=s.ruins.exits[0]
 	s.interact(p,true,5)
@@ -50,7 +50,7 @@ func run() -> void:
 	check(count==1,"Boss spawns once")
 	kill_boss(s)
 	check(s.raid.day==2 and s.raid.phase=="explore" and s.raid.time==0,"First boss starts day two and resets time")
-	check(s.raid.kind!=first_kind and s.raid.kind in s.expedition.DAWN_KINDS,"Day two refuses to repeat the first dawn boss")
+	check(first_kind==0 and s.raid.kind==1,"Day two always follows the bishop with the hunter")
 	check(s.safe_center().distance_to(first)>700 and s.safe_radius()>4000,"New centre and reset circle")
 	check(s.can_extract(),"Day two extraction enabled")
 	check(int(p.get("boss_reward",0))==150,"First reward awarded once")
@@ -138,7 +138,7 @@ func run() -> void:
 		s.raid.time=s.duration
 		s.simulate(0.01)
 		check(int(boss(s).boss_kind)!=first_spawn and int(boss(s).boss_kind)==int(s.raid.kind),"Seed %d day two spawns the boss its marker announced" % seed)
-	check(centres.size()>1 and kinds.size()==2,"Seeds vary both location and boss identity")
+	check(centres.size()>1 and kinds.keys()==[0],"Seeds vary arena locations while day one always fields the bishop")
 	print("EXPEDITION %d checks, %d failures" % [checks,failures])
 	s.queue_free()
 	quit(1 if failures else 0)

@@ -168,8 +168,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 三天状态机/黎明 Boss 生成/跨天恢复/遗赠 | `scripts/expedition.gd`：常量 expedition.gd:6-53（Boss 名/血 1650/3100/5500、REWARDS、隐藏 Boss 9200）；`prepare_day` expedition.gd:60；`victory` expedition.gd:196；黎明抉择 `choose` expedition.gd:290 |
-| 三大主线 Boss + 无名赤月 + 隐藏 Boss「冥火尸王·墓玥」招式 | `expedition.gd:424 cast_boss()`（23 招，match 分支 439-536）、`expedition.gd:566 cast_hidden()`；危险区判定 `expedition.gd:314 update_hazards()`、`expedition.gd:357 hazard_contains()` |
-| 地图守护者抽取（弱/强池→三种 Boss 模块） | `expedition.gd:114 spawn_map_guardians()` |
+| 三大主线 Boss + 无名赤月 + 隐藏 Boss「冥火尸王·墓玥」招式 | `expedition.gd:412 cast_boss()`（23 招，match 分支 439-536）、`expedition.gd:566 cast_hidden()`；危险区判定 `expedition.gd:314 update_hazards()`、`expedition.gd:345 hazard_contains()` |
+| 地图守护者抽取（弱/强池→三种 Boss 模块） | `expedition.gd:100 spawn_map_guardians()` |
 | 缩圈视觉（血雾 Shader） | `scripts/blood_tide.gd`（挂接 battlefield.gd:52，setup 调用 battlefield.gd:61）+ `resources/blood_tide.gdshader` |
 | 边境大地图（9600×7200、六地貌、18 据点、3 封印、4 撤离点、6 野外箱、河流三桥） | `scripts/ruins.gd`：常量 ruins.gd:4-15；`generate` ruins.gd:38（海岸 55/撤离点 56/地貌 58/桥 72/据点 75-81/道路 100/箱 165-179，落表 ruins.gd:179）；碰撞 `blocked` ruins.gd:239、`move` ruins.gd:260 |
 | 王城室内图 | `scripts/royal_city.gd`（extends Ruins；GATE/BOSS royal_city.gd:4-5，墙 royal_city.gd:23） |
@@ -181,7 +181,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | 五层七区闯关主控（路线/刷怪波/圣坛/宝箱/商店/出口/结算） | `scripts/roguelike.gd`：开局 `reset` roguelike.gd:91；房间生成 `enter` roguelike.gd:249；刷怪 `spawn_wave` roguelike.gd:325；清场奖励 `clear_room` roguelike.gd:470；三选一奖励池 `reward_offers` roguelike.gd:516；装备/换装 `equip` roguelike.gd:712；出口选择 `exit_choices` roguelike.gd:844 |
 | 横版地图（地面碰撞/岩浆/出口 UV/分叉口路口广场） | `scripts/rogue_map.gd`（extends Ruins；地面清单来自 `assets/rogue/regions/ground-manifest.json`，区域键规则 `region_key` rogue_map.gd:54；**分叉口 = 一整块可走路口广场**：`fork_junction()` rogue_map.gd:128 把直行路与斜向路之间的地面并进 `floor_polygon`，见 §11.43） |
-| 守层者（8 身份×7 招＝5 常规+2 二阶段）与小怪导弹/毒圈权威判定 | `scripts/rogue_combat.gd`：招式表 `MOVES` rogue_combat.gd:24-82；`begin_skill` rogue_combat.gd:308；zone 判定 `tick` rogue_combat.gd:451 |
+| 守层者（固定五层主线，8 身份×7 招仍保留）与小怪导弹/毒圈权威判定 | `scripts/rogue_combat.gd`：招式表 `MOVES` rogue_combat.gd:24-82；`begin_skill` rogue_combat.gd:308；zone 判定 `tick` rogue_combat.gd:451 |
 | 40 种小怪×2 技能 AI/支援/受击吸收 | `scripts/rogue_minions.gd`（NAMES/ROLES/LOADOUTS rogue_minions.gd:3-21，release rogue_minions.gd:161） |
 | 玩家普攻/战技结算（闯关版） | `scripts/rogue_actions.gd`（`start_art` rogue_actions.gd:13、`normal` rogue_actions.gd:132） |
 | 闯关战场渲染（相机/角色/敌人血条/预警弧/出口） | `scripts/rogue_field.gd`（相机死区 rogue_field.gd:16，`_draw` rogue_field.gd:157） |
@@ -282,7 +282,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 战场主渲染（相机跟随/震屏/角色与怪物 billboard/预警/伤害数字/夜幕） | `scripts/battlefield.gd`（_process battlefield.gd:109；角色绘制 `actor` battlefield.gd:319；怪物预警 `monster` battlefield.gd:408；特殊 Boss 立绘索引 `SPECIAL_BOSS_ART` battlefield.gd:31） |
-| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:706 weapon_effect_socket()`、`battlefield.gd:703 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
+| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:716 weapon_effect_socket()`、`battlefield.gd:713 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
 | 3D 场景层（正交相机/地砖/墙/桥/湖/宝箱开盖/billboard 池） | `scripts/world_3d.gd`（rebuild world_3d.gd:165；精灵俯视压缩补偿 world_3d.gd:254） |
 | 2D 地形底图与战术地图绘制 | `scripts/world_art.gd`（atlas world_art.gd:103；王城夜景 `city_terrain` world_art.gd:132） |
 | CC0 模型库运行时（KayKit/Quaternius，shader 着色/包围盒） | `scripts/scene_assets.gd`（registry scene_assets.gd:5；宝箱开盖 chest_state scene_assets.gd:88） |
@@ -293,9 +293,9 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 特效编排总控（事件→贴图特效/伤害数字/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:148；剑雨布局 `blade_layout()` combat_visuals.gd:501；与服务端判定共形 `patch_local_rect` combat_visuals.gd:475；敌方弹幕可读性常量 combat_visuals.gd:300-318、绘制 `draw_enemy_bolt()` combat_visuals.gd:363） |
-| 刀光/突刺/蓄力/连招/大招 | `scripts/stylized_vfx.gd:55 emit()`、`stylized_vfx.gd:111 event()`、`stylized_vfx.gd:227 advance()`；释放固定在世界坐标，蓄力跟随；圆斩围绕身体并读取实际 height；光束起点捕获为局部坐标 |
+| 刀光/突刺/蓄力/连招/大招 | `scripts/stylized_vfx.gd:55 emit()`、`stylized_vfx.gd:111 event()`、`stylized_vfx.gd:237 advance()`；释放固定在世界坐标，蓄力跟随；圆斩围绕身体并读取实际 height；光束起点捕获为局部坐标 |
 | 69 把武器身份与实际招式选图 | `scripts/weapon_vfx.gd:34 profile()`；`scripts/weapon_mechanics.gd:3 normal_role()` 与 projectile_role()/strike_role()/burst_role() 从实际 family/pattern/spell/attack_kind 选图；飞行弹体 `combat_visuals.gd:661 draw_run_projectile()`；角色确认派生 `rogue_build.gd:1131 hero_effect()` |
-| 按用途制作的 ImageGen 方图（50 张原图留档） | `scripts/weapon_image_art.gd:36 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；mechanic_source() 选择各轮新版，重刃 v3、双刃 v3、震地 v2、重刃终结 v2 已接入；出手、弹体、光束与爆发分开；旧图保留来源记录 |
+| 按用途制作的 ImageGen 方图（50 张原图留档） | `scripts/weapon_image_art.gd:59 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；mechanic_source() 选择各轮新版，重刃 v3、双刃 v3、震地 v2、重刃终结 v2 已接入；出手、弹体、光束与爆发分开；旧图保留来源记录 |
 | 全部武器逐项视觉验收 | `tests/weapon_full_visual_audit.gd` 生成 69 页四角色核对图与 coverage.json；`tests/weapon_full_matrix.gd` 验证全部武器、四角色、八方向、两模式、三播放时刻与真实战技姿势；报告 WEAPON-FULL-AUDIT.md，浏览入口 build/weapon-full-audit/index.html |
 | 强化/品质快照与核心确认事件 | `scripts/rogue_build.gd:80 visual_state()`、`rogue_build.gd:187 core_visual()`；session.gd 的 weapon_visual_state() 处理远征品质；出手时冻结状态传给弹丸/爆炸/连锁/命中；+2 核心 I、+3 角色连招、+4 核心 II、+5 角色连招增强，详见 WEAPON-IMAGE-VFX.md |
 | CPU 粒子（1400 上限/21 武器材质物理/双通道渲染） | `scripts/combat_particles.gd`（WEAPON_STYLES combat_particles.gd:7；材质参数 spawn combat_particles.gd:42） |
@@ -535,7 +535,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 数值 | 位置 |
 |---|---|
 | 联机端口 24872 / 一天 300s / 缩圈 180s 开始 | session.gd:31 / :50-51 |
-| 终圈半径 540(day1-2)/620(day3) | `session.gd:3274 final_radius()` |
+| 终圈半径 540(day1-2)/620(day3) | `session.gd:3268 final_radius()` |
 | 理智衰减/出圈掉血/气味=血晶×8/38 阈值引怪 | session.gd:2688-2696（血晶×8 :2688、理智衰减 :2690/:2693、出圈掉血 :2692、38 阈值引怪 :2696） |
 | 威胁度公式 / 环境刷怪上限 52+2n | session.gd:2624 / 2628 |
 | 搜索每件耗时 6 档 [0.55..2.4]s | `session.gd:84 SEARCH_SECONDS_BY_TIER` |
@@ -656,8 +656,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 2. **`STARTER_BASE=17`（catalog.gd:167）必须等于 WEAPONS.size()**，tests/systems.gd 有断言——增删野战武器后必须同步这个字面量。
 3. **藏品序号只追加不插入**：`catalog.gd:124 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
-5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:357 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:706 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:44 mechanic_contact()` 等比映射，`stylized_vfx.gd:358 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
+5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:345 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
+6. **特效必须走 battlefield.gd:716 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:69 mechanic_contact()` 等比映射，`stylized_vfx.gd:358 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
 8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4140 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4167 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:628 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。**营地是例外但要显式**：营地 `session.running==false`，`perform()` 会直接 return，所以营地的存储编辑全部集中在 `scripts/camp_storage.gd`，并且**只调用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`）——不要在营地面板里重写一套装箱或装备规则。
@@ -798,6 +798,8 @@ git status --porcelain
 | 2026-10-07 | （本轮未提交） | **取消灵体牵引 + 互动半径审计 + 路牌新增「R. 开发者模式」大类**：①用户拍板**取消牵引距离**（原 `SOUL_LEASH`=300：第②③档追击时离主人超过 300 就往回走，会在主人侧后的怪身上「追一步→回一步」来回抖）——现在第②③档也一路追到停靠 127.5，只有被地形卡住才回主人身边；第②档目标按定义在主人 300 大圈内且每帧重选，出圈自然换目标。**指令接收是全局的**：灵体在远处追别的东西时，主人换点名也立刻生效——新增 4 项断言覆盖（31/0），含"灵体离主人 >300 时仍改打新点名目标并从远处赶回来"。②互动半径审计（子智能体 glm-5.3 只读审计，行号实读核实）：营地 `[E]` 提示本身已与判定同源（`station.radius`），真正不一致的是营地名牌 650、搜打撤世界标签按"相机 1500"、魔境常驻提示无距离、宝箱提示 70 vs 判定 80；全部写进 §4.R.1 的"互动半径表 + 待修总清单"。③路牌按用户拍板的**方案 A** 新增「R. 开发者模式」大类（大类开头写索引与跨类指引），下含 R.1 互动半径表、R.2 判定框总览；**方案 D 的全量重构计划**（大类按模式：营地与家园 / 正式对局(搜打撤+魔境合并) / 表现与音频 / 联机 / 开发者模式）写在工作区上一层 `任务.md`。
 | | | |
 
+| 2026-10-08 | 见同批提交 | Boss 出场恢复固定顺序：远征主教→猎王→女王→无名赤月→条件终局；肉鸽 BOSS_ORDER=[0,1,2,3,4]。隐藏战仅在无名赤月倒下后触发；阶段/死亡特效保留 art_key，缺省身份优先 boss_art，死亡清掉旧演出，远征死亡不叠普通怪碎片。回归与旧素材审计结果见 TEST-REPORT.md；可视测试按真实 Boss 图节点进入，避免镜中挑战面板遮挡。 |
+
 ### 12.7 最近一次全量审计（2026-10-07）
 
 - **范围**：全文 `文件:行号` 锚点，`tools/verify_anchors.py` 解析出 **675** 个（含区间与裸行号锚点），逐条对代码实测。
@@ -825,3 +827,5 @@ git status --porcelain
 主表现改为 weapon_mechanics.gd 依据实际 family/pattern/spell 和 attack_kind 选图；32 张原始透明方图与完整提示词在 assets/combat/imagegen-mechanics。圆斩中心和高度、光束宽度/端点、爆发落点/半径来自实际事件。预览 build/weapon-mechanics-comparison.png 与 build/weapon-mechanics-motion.gif，试玩 build/CrimsonTide-WeaponMechanics.exe；详见 WEAPON-MECHANICS-VFX.md。
 
 用户澄清要求使用 ImageGen 重做原图：新生成14张 _v2 素材，由 weapon_image_art.gd 的 REDRAWN 映射接入，46张原始RGBA及提示词留档。移除主体扩边shader和细长贴图横截面拉厚，按自然比例显示。原图对照 build/weapon-imagegen-redraw.png，试玩 build/CrimsonTide-WeaponImageRedraw.exe；GPU 直接比较旧/新原图，验证主体亮像素增加至少50%，同时检查圆斩空心/中心/高度和光束挂点。
+
+Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/rogue_combat.gd` 的 `BOSS_ORDER`、`boss_pool()` 和 `setup_boss()`。条件终局分派位于 `scripts/session.gd` 的 `defeated_boss` 分支：无名赤月存活时不得触发隐藏战。Boss 特效事件必须携带实际 `art_key`，死亡事件不能依赖已从快照移除的敌人。
