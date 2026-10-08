@@ -784,6 +784,7 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-08 | 1681f7b / 741ab38 / d5badcd | **合并上游 `origin/master`（10 提交 dac2149，镜像试炼 + 武器美术 + 肉鸽修复）与本地 R.1/文档链**：①3 处内容冲突保留双方功能——`scripts/main.gd` 把镜像试炼分支（origin）与 R.1 救援者近身提示循环（HEAD）并成 `elif rogue_combat` 内 if/else + 其后独立 `if p.status=="active"`；`tests/rogue_hooks_roguelike.gd` 取 origin 刷新卡 value-only 复用断言（HEAD 断言的超集，实测 **178 checks / 0 failures**）；`PROJECT-GUIDE.md` 19 冲突块逐一合并，两处 origin 独有描述（§5 attack() 战技携带 attack_kind/width/radius、§11.6 特效挂点 `weapon_effect_socket` + `mechanic_contact`/`draw_mechanic`）按合并后代码回填。②R.1 表整体保留 HEAD 的"已修/已对齐"（本地 c130864 已把半径落进合并后的 session/battlefield/camp_activities），丢弃 origin 侧旧"待修"快照。③合并后全量重锚：`verify_anchors --fix` 三轮 + 手工补 26 处被去重门挡掉的重复锚点，**756 锚点 → OK 494 / DRIFT 0 / WRONG 0 / HINT 262（退出码 0）**。④清理：移除上游误入库的 `PROJECT-GUIDE.md.bak`（8252812 带入），`.gitignore` 加 `*.bak` 防复发。⑤`main.gd` / 测试脚本均 `--check-only` 解析通过。**未跑全量门禁**（`run_all_tests.ps1` / `run_rogue_gate.ps1`），留待 M2 一并跑。 |
 | 2026-10-07 | （本批未提交） | 69 把武器逐页人工核对与完整方向 GPU 矩阵；ImageGen 再绘重刃 v3/震地 v2，锤类改为冲击环；战技前摇与精确出手姿势修复；新增全量测试、69 页预览与 WEAPON-FULL-AUDIT.md，同步 §4、§11 与验证记录 |
 | 2026-10-07 | （本批未提交） | 武器真实剑尖与亮刃接触点修复，去掉释放旋转漂移、降低过曝、同步实际前摇；ImageGen 重画双刃 v3 和重刃终结 v2；新增真实 GPU 接触测试与角色四方向预览，更新 §5、§11、专题说明与测试台账；试玩 build/CrimsonTide-WeaponTipFixed.exe |
 | 2026-10-05 | b034286 | 初版：按功能域建立全项目文件地图（§3–§11） |
