@@ -60,6 +60,8 @@ Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-release "Wind
 
 ### 从源码运行
 
+- 拉取更新后推荐双击 `Start-Game.cmd`（`游戏启动.cmd`、`源码版启动.cmd` 使用同一启动流程）。脚本会先导入新增或更新的素材并检查类缓存，再启动游戏；首次导入可能需要等待。`.godot/` 是本机生成的缓存，无需提交或从别人电脑复制。
+- 只修复资源缓存而不启动游戏：在项目目录运行 `Start-Game.cmd --import-only`。导入失败会停止启动，请根据控制台报错处理。
 - 使用 Godot 4.7.2 导入 `project.godot`，按 F6/F5 运行主场景。
 - 需要看完整日志：`Godot_v4.7.2-stable_win64_console.exe --path . --verbose`。
 

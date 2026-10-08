@@ -619,9 +619,9 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 | 文件 | 用途 |
 |---|---|
-| `游戏启动.cmd` | 推荐源码启动（先跑 check_class_cache.ps1 守卫） |
+| `游戏启动.cmd` | 转发到 `Start-Game.cmd`，启动前检查类缓存并导入更新的资源；失败时停止启动 |
 | `开发者模式启动.cmd` | 与 `游戏启动.cmd` 同一条链，但先设 `CRIMSON_DEV_RANGES=all`：进入开发者模式，画面叠加**判定框总览**（仅开发可见；不设这个环境变量时覆盖层根本不会被创建）。见 `scripts/dev_ranges.gd` 与工作区上一层 `任务.md` |
-| `源码版启动.cmd` / `Start-Game.cmd` | 极简源码启动 |
+| `源码版启动.cmd` / `Start-Game.cmd` | 统一源码启动入口；每次先运行资源导入，支持 `--import-only`。解决 pull 后新增特效和角色动画没有本机 `.ctex` 缓存的问题 |
 | `Godot_…win64.exe` / `…_console.exe` | 编辑器/跑游戏；控制台版用于一切 headless 测试与服务器进程 |
 | `game.cfg` | 客户端 API 地址（当前已配真实域名）；导出后可复制到 exe 旁覆盖 |
 | `Dockerfile` + `compose.yaml` + `.env.example` + `server/Caddyfile.docker` | 服务器容器部署（Dockerfile 的 test 阶段即 CI：test_server + test_p2p + systems.gd）；端口 8080(HTTP)/3478(STUN)/24900-24915(房间 UDP) |
