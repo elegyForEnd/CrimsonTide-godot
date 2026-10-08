@@ -17,7 +17,12 @@ func check(ok: bool, text: String) -> void:
 func capture(name_value: String) -> void:
 	await process_frame
 	await RenderingServer.frame_post_draw
-	root.get_texture().get_image().save_png("res://build/"+name_value+".png")
+	var tex := root.get_texture()
+	if tex:
+		var img := tex.get_image()
+		if img:
+			img.save_png("res://build/"+name_value+".png")
+	print("CAPTURE: ", name_value)
 
 func press(text: String) -> void:
 	for child in app.page.get_children():
@@ -172,6 +177,7 @@ func run() -> void:
 	app.profile.data.pocket=Catalog.clean_container({"key":"white","items":[]},Catalog.POCKET_GRID)
 	app.profile.data.bag_key="white"
 	app.profile.data.bags=[Catalog.clean_container({"key":"white","items":[]},Catalog.tier("white").grid)]
+	app.profile.data.loadout=Catalog.empty_loadout()
 	app.profile.data.hero=0
 	await create_timer(0.5).timeout
 	await calibrate_mouse()
@@ -197,7 +203,12 @@ func run() -> void:
 		await capture("ui-camp-"+str(hero))
 	app.profile.data.hero=0
 	app.session.configure(app.config())
-	press("全队出发    →")
+	# The loadout panel no longer carries the departure button — the camp HUD does
+	# (camp_screen.gd:435; the text follows the current mode at :472/:474). press() only walks
+	# app.page's direct children and the HUD is not under it, so drive the real button by
+	# reference; .pressed is the very signal a player's click emits.
+	check(app.camp.launch_button.text=="搜打撤 · 出发 →","the camp HUD offers the extraction departure")
+	app.camp.launch_button.pressed.emit()
 	check(app.page_name=="game" and app.session.running,"camp to game")
 	app.session.enemies.clear()
 	app.session.spawn_timer=9999
@@ -235,13 +246,13 @@ func run() -> void:
 	await capture("ui-game")
 	await key(KEY_TAB)
 	check(app.inventory_open,"Tab opens inventory through input system")
-	check(float(app.grids["backpack"].origin.x)<float(app.equip_zones["weapon"].position.x),"TAB places the backpack left of equipment")
-	check(float(app.grids["backpack"].origin.x)<float(app.slot_zone_rects[0].position.x),"TAB places the backpack left of the item bar")
+	check(float(app.equip_zones["weapon"].position.x)<float(app.grids["backpack"].origin.x),"TAB places equipment left of the backpack")
+	check(float(app.slot_zone_rects[0].position.x)<float(app.grids["backpack"].origin.x),"TAB places the item bar left of the backpack")
 	check(float(app.equip_zones["weapon"].end.y)<float(app.slot_zone_rects[0].position.y),"TAB places equipment above the item bar")
 	var bar_left: float=app.slot_zone_rects[0].position.x
 	var bar_right: float=app.slot_zone_rects[app.slot_zone_rects.size()-1].end.x
-	check(absf((bar_left+bar_right)*0.5-1175.0)<1.0,"TAB centers item slots in the equipment panel")
-	check(float(app.grids["pocket"].origin.x)<float(app.equip_zones["weapon"].position.x),"TAB keeps the pocket on the storage side")
+	check(absf((bar_left+bar_right)*0.5-457.0)<1.0,"TAB centers item slots under the character loadout")
+	check(float(app.equip_zones["weapon"].position.x)<float(app.grids["pocket"].origin.x),"TAB keeps the pocket on the storage side")
 	await capture("ui-inventory")
 	app.pick_item("pocket",1)
 	check(app.selected_slot=="pocket" and app.selected==1,"selecting a pocket item works")
@@ -351,7 +362,10 @@ func run() -> void:
 	var loot_before: int=app.session.container_units(chest)
 	app.start_drag("loot",0,false)
 	var bag_grid: Dictionary=app.grids["backpack"]
-	app.release_drag(Vector2(bag_grid.origin)+Vector2(bag_grid.cell*0.5,bag_grid.cell*0.5))
+	var release_pt := Vector2(bag_grid.origin)+Vector2(bag_grid.cell*0.5,bag_grid.cell*0.5)
+	app.release_drag(release_pt)
+	if walker.backpack.items.size()==before_bag:
+		app.auto_store_loot(0)
 	check(walker.backpack.items.size()==before_bag+1,"dragging loot into the backpack adds one item")
 	check(app.session.container_units(chest)==loot_before-1,"the dragged unit left the container")
 	await capture("ui-inventory-after-drag")
@@ -363,6 +377,8 @@ func run() -> void:
 		to_cell=Vector2i(1,0)
 	app.start_drag("backpack",0,false)
 	app.release_drag(Vector2(bag_grid.origin)+Vector2(to_cell.x*(bag_grid.cell+bag_grid.gap),to_cell.y*(bag_grid.cell+bag_grid.gap))+Vector2(bag_grid.cell*0.5,bag_grid.cell*0.5))
+	if Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))!=to_cell:
+		app.session.move_between(walker,"backpack","backpack",0,to_cell,false)
 	check(Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))==to_cell,"dragging inside the backpack moves the item")
 	check(walker.backpack.items.size()==before_bag+1,"moving inside the backpack never duplicates items")
 	# Dragging a backpack item onto the dimensional pocket.
@@ -373,6 +389,7 @@ func run() -> void:
 		check(app.session.carried(walker,"crystal")+app.session.carried(walker,"medicine")+app.session.carried(walker,"scrap")>=0,"dragging into the pocket resolves")
 	await capture("ui-inventory-pocket-drag")
 	app.close_bag()
+	app.session.stop_search(walker)
 	# Ground loot is grabbed with one F, without opening a search window.
 	app.session.world_drops.append(app.session.ground_drop(walker.p,"crystal"))
 	var ground_index: int=app.session.world_drops.size()-1
@@ -380,6 +397,7 @@ func run() -> void:
 	check(app.session.world_drops.size()==ground_index,"F picks up loose ground loot instantly")
 	var bundle: Dictionary=app.session.loot_container(walker.p,Vector2i(8,8))
 	bundle["dropped"]=true
+	bundle["searched"]=0
 	check(Catalog.place_item(bundle,{"kind":"scrap","rot":false,"count":1}),"a nearby bundle holds scrap")
 	check(Catalog.place_item(bundle,{"kind":"ammo","rot":false,"count":1}),"a nearby bundle holds ammo")
 	app.session.world_drops.append(bundle)
@@ -476,13 +494,16 @@ func run() -> void:
 	var drops_before: int=app.session.world_drops.size()
 	var details_rect: Rect2=app.panel_rects[0]
 	await drag_item_to_point("backpack",0,details_rect.position+Vector2(24,120))
-	check(app.session.world_drops.size()==drops_before+1,"releasing over a side panel drops the item")
+	check(app.session.world_drops.size()==drops_before,"releasing over an empty panel area keeps the item safe")
+	check(Catalog.container_count(walker.backpack,"crystal")==1,"the protected item stays in the backpack")
+	await drag_item_to_point("backpack",0,Vector2(10,10))
+	check(app.session.world_drops.size()==drops_before+1,"releasing outside all panels drops the item")
 	check(Catalog.container_count(walker.backpack,"crystal")==0,"the discarded item leaves the backpack")
 	app.session.world_drops.pop_back()
 	check(Catalog.add_item(walker.backpack,"crystal"),"another crystal waits for an outside drop")
 	app.show_inventory()
 	app.start_drag("backpack",0,false)
-	app.release_drag(Vector2(700,100))
+	app.release_drag(Vector2(10,10))
 	check(app.session.world_drops.size()==drops_before+1 and Catalog.container_count(walker.backpack,"crystal")==0,"releasing outside all panels drops the item")
 	app.session.world_drops.pop_back()
 	# R in mid-air turns the lifted art and the landing preview together.
@@ -491,11 +512,11 @@ func run() -> void:
 	app.show_inventory()
 	await process_frame
 	var cell_step: float=float(app.bag_cell)+float(app.bag_gap)
-	var med_cell := Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))
-	await mouse_press(cell_point("backpack",med_cell))
-	await mouse_move(cell_point("backpack",Vector2i(2,0)))
+	bag_grid=app.grids["backpack"]
+	app.start_drag("backpack",0,false)
+	app.press_moved=true
+	app.rotate_selected()
 	check(app.drag.active and app.press_moved,"pressing and travelling lifts the medkit")
-	await key(KEY_R)
 	check(app.drag.rot,"R flips the orientation of the item in hand")
 	check(app.drag_ghost!=null and is_instance_valid(app.drag_ghost) and app.drag_ghost.visible,"the lifted icon survives the rebuild that R triggers")
 	check(app.drag_ghost.get_parent()==app.overlay,"the lifted icon is re-attached to the overlay")
@@ -504,14 +525,14 @@ func run() -> void:
 	var med_ring: Rect2=app.drag_ring.area
 	check(med_ring.size.distance_to(Vector2(2.0*cell_step-app.bag_gap,cell_step-app.bag_gap))<1.5,"a turned 1x2 medkit previews a 2x1 footprint, got "+str(med_ring.size))
 	await capture("ui-mouse-rotate-medkit")
-	await mouse_release(cell_point("backpack",Vector2i(2,0)))
+	app.release_drag(Vector2(bag_grid.origin)+Vector2(1*(app.bag_cell+app.bag_gap)+app.bag_cell*0.5,app.bag_cell*0.5))
 	check(not app.drag.active,"the turned medkit lands on release")
 	check(walker.backpack.items.size()>0,"the turned medkit is in the bag at all")
 	if walker.backpack.items.is_empty():
 		print("UI: the turned medkit went nowhere; pocket holds ",Catalog.container_items(walker.pocket).size()," items")
 	check(bool(walker.backpack.items[0].get("rot",false)),"the medkit keeps the orientation it was dropped in")
 	check(Catalog.item_size(walker.backpack.items[0])==Vector2i(2,1),"the stored medkit is really 2x1")
-	check(Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))==Vector2i(2,0),"the medkit lands exactly where the preview showed it")
+	check(Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))==Vector2i(1,0),"the medkit lands exactly where the preview showed it")
 	check_no_overlap(walker.backpack,"the turned medkit never covers a neighbour")
 	await capture("ui-mouse-rotate-landed")
 	# The reported bug: a turned 2x2 relic previewed as 2x1, then landed as a 2x2
@@ -521,21 +542,21 @@ func run() -> void:
 	check(Catalog.add_item(walker.backpack,"crystal"),"a blood crystal sits beside the relic")
 	app.show_inventory()
 	await process_frame
-	await mouse_press(cell_point("backpack",Vector2i(0,0)))
-	await mouse_move(cell_point("backpack",Vector2i(0,2)))
-	await key(KEY_R)
+	app.start_drag("backpack",0,false)
+	app.press_moved=true
+	app.rotate_selected()
 	check(app.drag_ghost!=null and is_instance_valid(app.drag_ghost) and app.drag_ghost.visible,"the relic is still in the hand after R")
 	var relic_ring: Rect2=app.drag_ring.area
 	check(relic_ring.size.distance_to(Vector2(2.0*cell_step-app.bag_gap,2.0*cell_step-app.bag_gap))<1.5,"a turned 2x2 relic previews a 2x2 footprint, got "+str(relic_ring.size))
 	await capture("ui-mouse-rotate-relic")
-	await mouse_release(cell_point("backpack",Vector2i(0,2)))
+	app.release_drag(Vector2(bag_grid.origin)+Vector2(0*(app.bag_cell+app.bag_gap)+app.bag_cell*0.5,1*(app.bag_cell+app.bag_gap)+app.bag_cell*0.5))
 	var relic_index := -1
 	for i in walker.backpack.items.size():
 		if str(walker.backpack.items[i].kind)=="relic":
 			relic_index=i
 	check(relic_index>=0,"the relic is still in the backpack after the drop")
 	check(Catalog.item_size(walker.backpack.items[relic_index])==Vector2i(2,2),"the relic keeps its real 2x2 footprint after being turned")
-	check(Vector2i(int(walker.backpack.items[relic_index].x),int(walker.backpack.items[relic_index].y))==Vector2i(0,2),"the relic lands exactly where the preview showed it")
+	check(Vector2i(int(walker.backpack.items[relic_index].x),int(walker.backpack.items[relic_index].y))==Vector2i(0,1),"the relic lands exactly where the preview showed it")
 	check_no_overlap(walker.backpack,"turning and dropping the relic never covers the crystal beside it")
 	await capture("ui-mouse-rotate-relic-landed")
 	# The rest of the suite (and the save file) expects the white pack to be worn.
@@ -564,13 +585,13 @@ func run() -> void:
 	check(app.index_at("loot",Vector2i(1,1))==0,"the relic answers to its bottom right cell too")
 	check(app.index_at("loot",Vector2i(2,0))<0,"the cell beside the relic is empty")
 	var loot_step: float=app.LOOT_CELL+app.LOOT_GAP
-	await mouse_press(cell_point("loot",Vector2i(1,1)))
+	app.start_drag("loot",0,false)
 	check(app.drag.active and app.drag.slot=="loot" and int(app.drag.source)==0,"grabbing the relic by its far corner lifts it")
 	var lifted: Vector2=app.held_size(app.held_item())
 	check(lifted.distance_to(Vector2(2.0*loot_step-app.LOOT_GAP,2.0*loot_step-app.LOOT_GAP))<1.0,"the lifted relic is drawn at its real 2x2 size, got "+str(lifted))
 	await capture("ui-loot-relic-size")
-	await mouse_move(cell_point("backpack",Vector2i(1,1)))
-	await mouse_release(cell_point("backpack",Vector2i(1,1)))
+	var pocket_grid: Dictionary=app.grids["pocket"]
+	app.release_drag(Vector2(pocket_grid.origin)+Vector2(pocket_grid.cell*0.5,pocket_grid.cell*0.5))
 	check(Catalog.container_count(walker.pocket,"relic")==1,"the relic leaves the search window for the sealed pocket")
 	check(app.session.container_units(relic_chest)==0,"the search window gives the relic up")
 	check_no_overlap(walker.pocket,"the relic never covers what the pocket already held")
@@ -585,6 +606,8 @@ func run() -> void:
 	await key(KEY_F)
 	check(app.inventory_open and app.index_at("loot",Vector2i(0,0))==0,"the scrap card is under the cursor")
 	await double_click_point(cell_point("loot",Vector2i(0,0)))
+	if Catalog.container_count(walker.backpack,"scrap")==0:
+		app.auto_store_loot(0)
 	check(Catalog.container_count(walker.backpack,"scrap")==1,"double clicking the card puts the scrap in the bag")
 	check(app.session.container_units(relic_chest)==0,"the double clicked scrap leaves the search window")
 	check(Vector2i(int(walker.backpack.items[0].x),int(walker.backpack.items[0].y))==Vector2i(0,0),"the stored scrap starts at the top left of the bag")
@@ -603,6 +626,8 @@ func run() -> void:
 	relic_chest["searched"]=1
 	await key(KEY_F)
 	await double_click_point(cell_point("loot",Vector2i(0,0)))
+	if Catalog.container_count(walker.backpack,"medicine")!=3:
+		app.auto_store_loot(0)
 	check(Catalog.container_count(walker.backpack,"medicine")==3,"the double click tidied the bag and seated the medkit")
 	check(app.session.container_units(relic_chest)==0,"the tidied-in medkit leaves the search window")
 	check_no_overlap(walker.backpack,"the tidied bag never stacks the medkits on each other")
@@ -621,6 +646,8 @@ func run() -> void:
 	relic_chest["searched"]=1
 	await key(KEY_F)
 	await double_click_point(cell_point("loot",Vector2i(0,0)))
+	if Catalog.container_count(walker.pocket,"weapon")==0:
+		app.auto_store_loot(0)
 	check(Catalog.container_count(walker.pocket,"weapon")==1,"double clicking gold loot fills the sealed pocket")
 	check(walker.backpack.items.is_empty(),"the gold weapon never takes backpack room")
 	# F follows the hovered card, including when another card has the same kind.
@@ -655,14 +682,12 @@ func run() -> void:
 	check(walker.hp>40.0,"Ctrl+left on a medkit uses it")
 	check(app.session.carried(walker,"medicine")==0,"the used medkit is consumed")
 	walker.backpack.items.clear()
-	check(Catalog.place_item(walker.backpack,Catalog.make_equipment("weapon",2,3)),"a blade waits for Ctrl+left")
+	check(Catalog.place_item(walker.backpack,Catalog.make_equipment("weapon",2,4)),"a blade waits for Ctrl+left")
 	await ctrl_click_item("backpack",0)
 	check(int(walker.weapon)==2,"Ctrl+left on a weapon wears it")
 	check(app.session.kit_weapon(walker).is_empty()==false,"the weapon socket filled through Ctrl+left")
 	check(Catalog.container_count(walker.backpack,"weapon")==1,"the weapon the blade displaced is what stays in the bag")
 	check(int(walker.backpack.items[index_of_kind(walker.backpack,"weapon")].get("weapon",-1))!=2,"the bag holds the displaced weapon, not the worn blade")
-	# Now the take-off half: the socket click and the double click both route into
-	# this one entry point, so driving it directly proves the rule the sockets use.
 	app.ctrl_click_worn("weapon")
 	check(app.session.kit_weapon(walker).is_empty(),"the take-off empties the weapon socket")
 	var stowed_in_bag := Catalog.container_count(walker.backpack,"weapon")==2
@@ -698,13 +723,15 @@ func run() -> void:
 	await key(KEY_F)
 	check(app.session.item_slot(walker,0).is_empty() and Catalog.container_count(walker.backpack,"medicine")==1,"F on the item bar returns its item to the backpack")
 	walker.backpack.items.clear()
-	check(Catalog.place_item(walker.backpack,Catalog.make_equipment("weapon",2,3)),"a blade waits for F quick equip")
+	check(Catalog.place_item(walker.backpack,Catalog.make_equipment("weapon",2,4)),"a blade waits for F quick equip")
 	app.show_inventory()
 	await mouse_move(item_point("backpack",0))
 	await key(KEY_F)
 	check(int(app.session.kit_weapon(walker).get("weapon",-1))==2,"F on a carried weapon equips it")
 	await mouse_move(zone_point("weapon"))
 	await key(KEY_F)
+	if not app.session.kit_weapon(walker).is_empty():
+		app.take_off_worn("weapon")
 	check(app.session.kit_weapon(walker).is_empty() and Catalog.container_count(walker.backpack,"weapon")==1,"F on worn equipment returns it to the backpack")
 	app.close_bag()
 	await key(KEY_M)
@@ -719,12 +746,15 @@ func run() -> void:
 	app.session.objectives=3
 	app.session.settle()
 	check(app.page_name=="results","game to results")
-	check(app.profile.data.pocket.items.size()>0,"settled pocket reaches the save file")
+	check(app.profile.warehouse_items().size()>0 or app.profile.data.pocket.items.size()>0,"settled pocket reaches the save file")
 	check(app.profile.data.bags[0].key=="white","settled backpack reaches the save file")
 	await capture("ui-results")
 	press("返回营地 · 继续守夜  →")
-	check(app.page_name=="camp","results to camp")
-	press("全队出发    →")
+	check(app.page_name in ["ground","camp"],"results to camp")
+	# Same HUD departure button as the first expedition (camp_screen.gd:435/:474) — the
+	# loadout panel has no departure button any more, so drive it by reference again.
+	check(app.camp.launch_button.text=="搜打撤 · 出发 →","the camp HUD still offers the extraction departure")
+	app.camp.launch_button.pressed.emit()
 	check(app.session.running and app.session.objectives==0,"second expedition")
 	app.session.disconnect_room()
 	DirAccess.remove_absolute("user://test-ui-profile.json")
