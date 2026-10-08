@@ -73,13 +73,27 @@ func run() -> void:
 	check(app.rogue_room_buttons.size()==1, "the mirror panel drew exactly one button")
 	await capture("rogue-room-mirror")
 
-	# 4. 镜中挑战 —— 影子已经站起，第二次点击结算
-	app.session.raid["mirror_state"]={"active":true,"owner":int(p.id),"round":1,"settled":false}
+	# 4. 应战后面板关闭，场景中出现持有同款武器的影子。
+	p.rogue_selection={}; p.build_reward_queue=[]
+	app.session.enemies.clear()
+	app.session.roguelike.mirror_action(app.session,p)
+	var mirror: Dictionary=app.session.enemies.back()
+	mirror.p=p.p+Vector2(230,0)
+	check(mirror.get("rogue_mirror",false),"Visual encounter contains the mirror enemy")
+	app.rogue_field.queue_redraw()
 	app.update_rogue_hud(p)
-	check(app.rogue_room_buttons.size()==1 and not bool(app.rogue_room_buttons[0].disabled), "the settle button is live while the duel is active")
+	check(not preload("res://scripts/rogue_room_ui.gd").panel_open("mirror",app.session.raid), "combat closes the service panel")
 	await capture("rogue-room-mirror-active")
+	p.rogue_curses=["CU08"]
+	app.rogue_field._process(0.0)
+	check(app.rogue_field.vision_overlay.visible,"Mist curse enables the local vision mask")
+	check(is_equal_approx(float((app.rogue_field.vision_overlay.material as ShaderMaterial).get_shader_parameter("radius")),416.0),"Mist reduces the visible radius by 35 percent")
+	await capture("rogue-room-mirror-mist")
+	p.rogue_curses=[]
+	app.rogue_field._process(0.0)
+	check(not app.rogue_field.vision_overlay.visible,"Removing mist restores vision")
 
-	print("ROGUE ROOM UI VISUAL: 4 captures, %d checks, %d failures" % [checks,failures])
+	print("ROGUE ROOM UI VISUAL: 5 captures, %d checks, %d failures" % [checks,failures])
 	app.session.disconnect_room()
 	app.queue_free()
 	await process_frame

@@ -2,6 +2,7 @@ extends RefCounted
 const Choreography = preload("res://scripts/boss_choreography.gd")
 const Variants = preload("res://scripts/rogue_variants.gd")
 const Art = preload("res://scripts/boss_effect_art.gd")
+const Mirror = preload("res://scripts/rogue_mirror.gd")
 
 # Phase one keeps the original five-move rotation byte for byte; phase two opens
 # the two authored finishers (indices 5 and 6) that only exist past half health.
@@ -225,6 +226,9 @@ func move_towards(s, e: Dictionary, direction: Vector2, distance: float) -> void
 	e.motion_phase+=e.p.distance_to(before)/12.0
 
 func update(s, e: Dictionary, dt: float) -> void:
+	if e.get("rogue_mirror",false):
+		Mirror.update(s,self,e,dt)
+		return
 	apply_variant_stats(s,e)
 	e.flash=maxf(0,float(e.get("flash",0))-dt)
 	e.moving=false

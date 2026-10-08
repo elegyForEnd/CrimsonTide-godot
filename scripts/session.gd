@@ -579,7 +579,10 @@ func incoming_damage(p: Dictionary, damage: float) -> float:
 		# 诅咒与既有减伤池**同池相减**：不开新乘数。
 		var pool := RogueBuild.conditional_defense(self,p)
 		var penalty := float(mods.get("defense_penalty",0.0))
-		if penalty>0.0: pool=clampf(pool-penalty,0.0,RogueCurses.MAX_POOL)
+		# Permit a negative defense contribution: without this, an unarmored player
+		# ignored blood/fragmented-shield curses entirely. Convert the query's
+		# reciprocal penalty back to the advertised additive damage contribution.
+		if penalty>0.0: pool=clampf(pool-penalty/maxf(.01,1.0-penalty),-float(RogueCurses.CAPS.damage_taken),RogueCurses.MAX_POOL)
 		var received := maxf(0,damage)*(1-stat_defense(p))*(1-pool)
 		var taken := float(mods.get("player_damage_taken",0.0))
 		if taken!=0.0: received*=1.0+taken

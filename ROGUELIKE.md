@@ -55,7 +55,11 @@
 
 - **游方锻炉（forge）**：熔炼锻造点（复用 `RogueBuild` 既有锻造规则与预算，不另造数值）、当场锻打 +1 级、转移锻造。
 - **赌徒营帐（gamble）**：三种赌法（魔晶 / 奥术灰烬 / 装备升阶），胜率与期望值写进描述文本，三种期望均 ≤ 100%。
-- **镜中挑战（mirror）**：以当前构筑生成镜像对手，两段确认（应战 → 结算），每局一次性（`p.rogue_mirror_used`），奖励有上限。
+- **镜中挑战（mirror）**：应战后生成与挑战者同角色、同武器的真实镜像敌人。敌人按武器类型使用有预警的近战、远程和武器技攻击；击败镜像领取魔晶、灰烬和装备三选一，挑战者倒地或断线则失败。接受挑战即消耗本局一次机会，重复点击不能结算或领奖，挑战期间关闭服务面板并锁住出口。
+
+事件房的全部 25 个选项均落实到实际资源：魔晶、生命、蓝量、血瓶、属性点、锻造点、诅咒及装备选择。消耗不足或已持有同名诅咒时拒绝交易；治疗与血瓶遵守诅咒修正和容量限制，选择后显示实际到账结果。进房清理上一房的事件与镜像状态。补充验收：`tests/rogue_event_completion.gd`。
+
+迷雾诅咒通过跟随本地玩家的遮罩缩小实际目视范围，移除后立即恢复，HUD 不受遮罩遮挡。血蚀／碎盾将受伤加成作为同一减伤池的负贡献，即使没有减伤加成也生效（最多增加 60% 伤害）。双端验收：`tests/rogue_event_network.gd`；界面与迷雾截图：`tests/rogue_room_ui_visual.gd`。
 
 实现位置：`scripts/rogue_rooms.gd`（`offers/resolve/gamble_stake/mirror_accept/mirror_resolve`）、`scripts/roguelike.gd` 的 `open_room()`/`refresh_dedicated()`/`room_action()`/`mirror_action()`/`apply_room_delta()`（换阶会同步 `refresh_max_hp()` 与 `rogue_inventory_revision`）；验收 `tests/rogue_rooms.gd`（1299/0）。
 

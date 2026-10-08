@@ -329,6 +329,10 @@ func enter(s) -> void:
 	# 把面板顶掉（main.gd 的派发越过 room 面板直接在 event_active 处 return）。这里与
 	# offers / reward_chest / reward_drops 一样按"进房即清"处理；事件房自己随后重新 roll 一份。
 	s.raid["pending_event"]={}
+	s.raid["event_result"]={}
+	s.raid["mirror_state"]={}
+	s.raid["pending_forge"]={}
+	s.raid["pending_gamble"]={}
 	# R7e (2026-06 · 实机修复) · "进房即清"：本间服务房的"已主动离店"标志绝不能跨房残留，
 	# 否则走到下一间服务房时面板会一进来就是收起的。这里与 `pending_event` / `offers` /
 	# `reward_chest` / `reward_drops` 同一处清场、同一个口径（`enter()` 是本文件唯一的进房入口，
@@ -512,6 +516,15 @@ func tick(s, dt: float) -> void:
 			if p.hp<=0: s.down(p)
 		else: p.rogue_lava=false
 	if s.raid.phase=="rogue_reward": finish_rewards(s)
+	if str(s.raid.room)=="event": refresh_dedicated(s)
+	if str(s.raid.room)=="mirror" and bool(s.raid.get("mirror_state",{}).get("active",false)):
+		var state: Dictionary=s.raid.mirror_state
+		var owner: Dictionary=s.players.get(int(state.owner),{})
+		if owner.is_empty() or owner.status!="active" or not owner.connected:
+			finish_mirror(s,false)
+		elif s.enemies.is_empty():
+			finish_mirror(s,true)
+		return
 	if s.raid.phase!="rogue_combat" or not s.enemies.is_empty(): return
 	if int(s.raid.wave)<3:
 		var gate: float=[0.0,1120.0,1990.0][int(s.raid.wave)]
@@ -1289,9 +1302,21 @@ func choose(s,p: Dictionary,kind: String,payload: Dictionary) -> void:
 	# W1b: the event / dedicated-room actions. All of them sit *behind* the revision guard
 	# above, so a stale click can neither move currency nor resolve the same offer twice.
 	if kind=="rogue_event":
+		if str(s.raid.room)!="event": return
 		if not Events.matches_revision(s,int(payload.get("revision",-1))): return
-		if not Events.apply(s,p,int(payload.get("index",-1))): return
-		s.message.emit("幽暗异事 · 抉择已生效")
+		if not Events.apply(s,p,int(payload.get("index",-1))):
+			s.message.emit("幽暗异事 · 无法选择：请检查资源、诅咒位或是否已有同名诅咒")
+			return
+		var outcome: Dictionary=s.raid.get("event_result",{})
+		var event: Dictionary=Events.find(str(outcome.get("id","")))
+		var paid: Dictionary=outcome.get("paid",{})
+		var receipt: PackedStringArray=[]
+		for key in ["gold","hp","mana","flask","attribute_points","forge_points","curse","gear_reward"]:
+			var amount := float(paid.get(key,0))
+			if is_zero_approx(amount): continue
+			var names := {"gold":"魔晶","hp":"生命","mana":"蓝量","flask":"血瓶","attribute_points":"属性点","forge_points":"锻造点","curse":"诅咒","gear_reward":"装备三选一"}
+			receipt.append("%s %+.0f" % [str(names[key]),amount])
+		s.message.emit("%s · %s" % [str(event.get("name","幽暗异事"))," / ".join(receipt) if not receipt.is_empty() else "已达到恢复上限"])
 		return
 	if kind=="rogue_forge" and str(s.raid.room)=="forge":
 		room_action(s,p,"forge",int(payload.get("index",-1)))
@@ -1498,13 +1523,6 @@ func refresh_dedicated(s, p: Dictionary = {}) -> void:
 			s.raid["pending_forge"]={"offers":Rooms.offers("forge",ctx),"revision":int(s.raid.revision)}
 		"gamble":
 			s.raid["pending_gamble"]={"stake":Rooms.gamble_stake(int(s.raid.floor)),"revision":int(s.raid.revision)}
-		"event":
-			# BUG-SWEEP: `open_room()` 记 pending 报价时 `clear_room()` 还没把 revision 自增，
-			# 于是 pending.revision 永远比 UI 回传的少 1，`Events.matches_revision()` 恒不成立，
-			# 事件房点了没反应且面板永不清空。这里与 forge/gamble 一样在进房流程末尾重新盖章
-			# （`tests\rogue_hooks_roguelike.gd:169-177` 对服务房断言的正是同一条不变量）。
-			var pending: Dictionary=s.raid.get("pending_event",{})
-			if not pending.is_empty(): pending["revision"]=int(s.raid.revision)
 
 ## 铁匠铺 / 赌徒的统一结算：先扣报价里的 `cost`，再落 `delta`；任何一步失败都不改状态。
 func room_action(s, p: Dictionary, kind: String, index: int) -> void:
@@ -1530,10 +1548,15 @@ func room_action(s, p: Dictionary, kind: String, index: int) -> void:
 	s.raid.revision+=1
 	refresh_dedicated(s,p)
 
-## 镜像试炼（契约 §2 的 `mirror_state` 形状）：第一次点击"应战"把状态置为 active，
-## 第二次点击才结算胜负，并置 `p.rogue_mirror_used`（本局一次性，契约 §3）。
+## 应战后生成真实敌人；胜负只由战斗决定，重复点击不能结算或领奖。
 func mirror_action(s, p: Dictionary) -> void:
 	var state: Dictionary=s.raid.get("mirror_state",{})
+	if bool(state.get("active",false)): return
+	if p.status!="active" or not p.connected: return
+	for ally in s.players.values():
+		if not ally.get("rogue_selection",{}).is_empty() or not ally.get("build_reward_queue",[]).is_empty():
+			s.message.emit("镜像试炼 · 请先完成全队的奖励选择")
+			return
 	if not bool(state.get("active",false)):
 		var accepted: Dictionary=Rooms.mirror_accept(Rooms.context_of(s,p))
 		if not bool(accepted.get("ok",false)):
@@ -1542,17 +1565,33 @@ func mirror_action(s, p: Dictionary) -> void:
 		var opened: Dictionary=accepted.get("state",{})
 		if opened.is_empty(): opened={"active":true,"owner":int(p.get("id",0)),"round":1,"settled":false}
 		s.raid["mirror_state"]=opened
+		opened["reward"]=(accepted.offer.reward as Dictionary).duplicate(true)
+		p["rogue_mirror_used"]=true
+		s.raid.phase="rogue_combat"
+		combat.reset()
+		var at := spawn_point(s,p.p+Vector2(260,0))
+		combat.Mirror.setup(s,p,at)
 		s.raid.revision+=1
-		s.message.emit("镜像试炼 · 影子已经站起，再次确认即开始结算")
+		s.message.emit("镜像试炼 · 击败自己的影子即可领取奖励")
 		return
-	var resolved: Dictionary=Rooms.mirror_resolve(s.rng,Rooms.context_of(s,p))
-	if not bool(resolved.get("ok",false)): return
-	apply_room_delta(s,p,resolved.get("delta",{}))
-	var settled: Dictionary=resolved.get("state",{})
-	s.raid["mirror_state"]=settled if not settled.is_empty() else {"active":false,"owner":int(p.get("id",0)),"round":2,"settled":true}
-	p["rogue_mirror_used"]=true
+
+func finish_mirror(s, won: bool) -> void:
+	var state: Dictionary=s.raid.get("mirror_state",{})
+	if not bool(state.get("active",false)) or bool(state.get("settled",false)): return
+	state.active=false
+	state["settled"]=true
+	state["win"]=won
+	state["round"]=2
+	# Remove only the challenge opponent and its attacks on defeat/disconnect.
+	for i in range(s.enemies.size()-1,-1,-1):
+		if s.enemies[i].get("rogue_mirror",false): s.enemies.remove_at(i)
+	combat.reset()
+	s.raid.phase="rogue_reward"
+	var owner: Dictionary=s.players.get(int(state.get("owner",0)),{})
+	if won and not owner.is_empty(): apply_room_delta(s,owner,state.get("reward",{}))
 	s.raid.revision+=1
-	s.message.emit("镜像试炼 · %s" % ["胜" if bool(resolved.get("win",false)) else "败"])
+	finish_rewards(s)
+	s.message.emit("镜像试炼 · "+("胜利，奖励已到账" if won else "挑战失败"))
 
 ## 落地 R10 的房间增量（`DELTA_KEYS`）。所有货币夹在 0 以上，任何房间都造不出负余额；
 ## `forge_level` / `weapon_tier` 会同步 `Build.bind_forge` 与 `refresh_max_hp` +

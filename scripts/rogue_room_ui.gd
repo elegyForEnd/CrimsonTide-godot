@@ -72,6 +72,7 @@ static func room_left(raid) -> bool:
 ## 状态位维度因此单独放在这个新函数里，由 `main.gd` 的派发处调用。
 static func panel_open(kind: String, raid) -> bool:
 	if not handled(kind): return false
+	if kind=="mirror" and raid is Dictionary and bool(raid.get("mirror_state",{}).get("active",false)): return false
 	return not room_left(raid)
 
 
@@ -103,7 +104,7 @@ static func body(kind: String, ctx: Dictionary) -> String:
 		"gamble":
 			return "三种赌法的胜率与期望都写在每一项里，不藏赔率。押注只在点击的那一刻结算。"
 		"mirror":
-			return "对手强度只看层数，不看你多强。本局只能挑战一次，结算时用你的构筑分胜负。"
+			return "应战后与持有你当前武器的镜像战斗。躲开预警并击败它领取奖励；挑战者倒地即失败，每局一次。"
 	return ""
 
 
@@ -159,9 +160,10 @@ static func _mirror_row(raid: Dictionary, ctx: Dictionary) -> Dictionary:
 	var name := str(offer.get("name", room_name("mirror")))
 	var desc := str(offer.get("desc", ""))
 	if active:
-		# Second click: `mirror_action()` settles the duel this time.
-		name = "结算镜像决斗"
-		desc = "影子已经站起。再次确认即结算胜负，并根据结果发放奖励。"
+		name = "镜像战斗进行中"
+		desc = "击败影子即可获胜，挑战者倒地即失败。"
+		enabled = false
+		reason = "请在场景中战斗"
 	elif used:
 		enabled = false
 		reason = "本局已经挑战过镜像"
@@ -224,7 +226,7 @@ static func signature(kind: String, raid: Dictionary, ctx: Dictionary) -> String
 static func footer(kind: String, raid: Dictionary, phase: String) -> String:
 	var state: Dictionary = raid.get("mirror_state", {}) if raid.get("mirror_state", {}) is Dictionary else {}
 	if kind == "mirror" and bool(state.get("active", false)):
-		return "再次确认即结算 · 结算后本局不再开启镜像"
+		return "击败镜像领取奖励 · 挑战者倒地即失败"
 	if phase == "rogue_reward":
 		return "E 开箱 / 拾取 · 每人武器与装备三选一 · Tab 管理构筑"
 	if phase in ["rogue_shop", "rogue_exit"]:

@@ -21,9 +21,11 @@ var enemy_fx: Node2D
 var backdrop: Node2D
 const HERO_SCALE := 1.15
 var area_signature := ""
+var vision_overlay: ColorRect
 const TONES := [Color("6cedce"),Color("ff9b56"),Color("bfa1ff"),Color("83dcff"),Color("ff638a")]
 
 func _ready() -> void:
+	size=Vector2(1440,900)
 	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	mouse_filter=Control.MOUSE_FILTER_IGNORE
 	backdrop=preload("res://scripts/rogue_backdrop.gd").new()
@@ -38,6 +40,14 @@ func _ready() -> void:
 	enemy_fx=preload("res://scripts/rogue_enemy_vfx.gd").new()
 	enemy_fx.field=self
 	add_child(enemy_fx)
+	vision_overlay=ColorRect.new()
+	vision_overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	vision_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var fog_material := ShaderMaterial.new()
+	fog_material.shader=preload("res://shaders/rogue_vision.gdshader")
+	vision_overlay.material=fog_material
+	vision_overlay.visible=false
+	add_child(vision_overlay)
 	session.combat_event.connect(func(data: Dictionary):
 		if visible and session.roguelike.active(session):
 			combat.event(data)
@@ -83,6 +93,14 @@ func weapon_effect_socket(source: int) -> Dictionary:
 
 func _process(dt: float) -> void:
 	if not visible: return
+	var viewer: Dictionary=session.players.get(session.my_id(),{})
+	var vision := float(session.rogue_mods(viewer).get("vision",0.0)) if not viewer.is_empty() else 0.0
+	vision_overlay.visible=vision<0.0
+	if vision_overlay.visible:
+		var fog_material: ShaderMaterial=vision_overlay.material
+		fog_material.set_shader_parameter("viewport_size",size)
+		fog_material.set_shader_parameter("focus",viewer.p-camera_offset()-Vector2(0,45))
+		fog_material.set_shader_parameter("radius",640.0*clampf(1.0+vision,.4,1.0))
 	clock+=dt
 	for actor: Dictionary in session.players.values():
 		idle.tick(actor,dt)
@@ -225,7 +243,7 @@ func _draw() -> void:
 		draw_set_transform(at-camera_offset(),0,Vector2(1,0.3))
 		draw_circle(Vector2.ZERO,19 if actor.has("hero") else 27,Color(0.02,0.01,0.03,0.4))
 		draw_set_transform(-camera_offset())
-		if actor.has("hero"):
+		if actor.has("hero") and not actor.get("rogue_mirror",false):
 			at.y-=float(actor.get("height",0))
 			if actor.status not in ["active","down"]: continue
 			var pose: Dictionary
@@ -272,6 +290,16 @@ func _draw() -> void:
 					draw_texture_rect(weapon_texture,Rect2(Vector2(-dimensions.x*.24,-dimensions.y*.7),dimensions),false)
 					draw_set_transform(-camera_offset())
 			draw_colored_polygon(PackedVector2Array([at+Vector2(-5,-106),at+Vector2(5,-106),at+Vector2(0,-98)]),tone)
+		elif actor.get("rogue_mirror",false):
+			var pose: Dictionary=frames.held_motion_frame(actor,"walk" if actor.moving else "idle",float(actor.motion_phase),0.0)
+			if float(actor.attack_time)>0:
+				pose=frames.attack_frame(int(actor.hero),maxi(1,Catalog.weapon_family(int(actor.weapon))),clampi(int((1.0-float(actor.attack_time)/float(actor.attack_total))*4),0,3))
+			draw_set_transform(at-camera_offset(),0,Vector2(float(actor.facing),1)*HERO_SCALE)
+			draw_texture_rect(pose.texture,pose.rect,false,Color(1.4,.8,1.8,.85) if actor.flash>0 else Color(.6,.4,.85,.9))
+			draw_set_transform(-camera_offset())
+			draw_rect(Rect2(at+Vector2(-30,-125),Vector2(60,5)),Color("211d2c"))
+			draw_rect(Rect2(at+Vector2(-30,-125),Vector2(60*clampf(actor.hp/actor.max_hp,0,1),5)),Color("c58aff"))
+			draw_string(get_theme_default_font(),at+Vector2(-55,-137),str(actor.rogue_name),HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("d9baff"))
 		else:
 			at.y-=float(actor.get("height",0))
 			var big: bool=actor.get("rogue_guardian",false)

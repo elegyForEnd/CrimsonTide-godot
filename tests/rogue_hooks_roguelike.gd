@@ -375,15 +375,19 @@ func run() -> void:
 	check(int(s.raid.revision)==rev2+1, "a settled bet advances the room revision")
 
 	# ---------------------------------------------------------------- 6. 镜像：两步 + 每局一次
+	p.rogue_selection={}
+	p.build_reward_queue=[]
 	s.raid["room"]="mirror"
 	p.rogue_mirror_used=false
 	s.raid["mirror_state"]={"active":false,"owner":int(p.id),"round":0,"settled":false}
 	var rev3: int=int(s.raid.revision)
 	s.perform(1,"rogue_mirror",{"index":0,"revision":rev3})
 	check(bool(s.raid.mirror_state.active), "the first click accepts the mirror")
-	check(not bool(p.rogue_mirror_used), "accepting does not spend the run's mirror yet")
+	check(bool(p.rogue_mirror_used), "accepting spends the run's challenge")
 	var rev4: int=int(s.raid.revision)
 	s.perform(1,"rogue_mirror",{"index":0,"revision":rev4})
+	check(bool(s.raid.mirror_state.active), "a second click cannot settle combat")
+	rl.finish_mirror(s,true)
 	check(bool(p.rogue_mirror_used), "settling marks rogue_mirror_used")
 	check(bool(s.raid.mirror_state.settled) and not bool(s.raid.mirror_state.active), "the settled mirror state is closed")
 	s.raid["mirror_state"]={"active":false,"owner":int(p.id),"round":0,"settled":false}
@@ -563,6 +567,8 @@ func run() -> void:
 	check(is_equal_approx(float(p4.max_hp),hp_after), "max_hp was re-synced by the tier change (kept %f, recomputed %f)" % [hp_after,float(p4.max_hp)])
 
 	# ---- 11c. 镜像试炼：应战 / 结算 / 奖励入账 / 第二次被拒
+	p4.rogue_selection={}
+	p4.build_reward_queue=[]
 	s4.raid["room"]="mirror"
 	p4.rogue_mirror_used=false
 	s4.raid["mirror_state"]={"active":false,"owner":int(p4.id),"round":0,"settled":false}
@@ -572,8 +578,10 @@ func run() -> void:
 	check(int(p4.rogue_gold)==gold_m and not bool(s4.raid.mirror_state.active), "a stale UI mirror click changes nothing")
 	s4.action(RoomUi.ACTION_MIRROR,RoomUi.mirror_payload(s4.raid))
 	check(bool(s4.raid.mirror_state.active), "a UI mirror click accepts the challenge")
-	check(not bool(p4.rogue_mirror_used), "accepting the mirror does not spend it")
+	check(bool(p4.rogue_mirror_used), "accepting spends the mirror challenge")
 	s4.action(RoomUi.ACTION_MIRROR,RoomUi.mirror_payload(s4.raid))
+	check(bool(s4.raid.mirror_state.active), "a repeated UI click cannot settle combat")
+	s4.roguelike.finish_mirror(s4,true)
 	check(bool(p4.rogue_mirror_used), "settling the mirror spends the run's mirror")
 	check(not bool(s4.raid.mirror_state.active) and bool(s4.raid.mirror_state.settled), "the settled mirror closes its state")
 	var gold_m2: int=p4.rogue_gold
@@ -735,7 +743,12 @@ func run() -> void:
 	var reroll_button: Button=app._rogue_hud_nodes.get("reroll")
 	check(int(pa.rogue_rerolls)==3, "no reroll was spent by the two purchases (rerolls %d)" % int(pa.rogue_rerolls))
 	app.update_rogue_hud(pa)
-	check(reroll_button==app._rogue_hud_nodes.get("reroll"), "a value-only tick reuses the very same 使用刷新卡 button instance")
+	# Buying equipment changes the sell-list structure; the rebuilt button must then
+	# stay stable across a value-only refresh.
+	reroll_button=app._rogue_hud_nodes.get("reroll")
+	pa.rogue_gold+=1
+	app.update_rogue_hud(pa)
+	check(reroll_button==app._rogue_hud_nodes.get("reroll"), "a value-only tick after rebuilding the sell list reuses the reroll button")
 	check(int(pa.rogue_rerolls)==3 and not reroll_button.disabled, "the recycled reroll button stays live with 3 cards in hand")
 	# The reroll itself is revision-guarded too (`roguelike.gd:967`), so ship the live value.
 	app._rogue_hud_revision=int(app.session.raid.revision)

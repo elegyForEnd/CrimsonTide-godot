@@ -2137,7 +2137,11 @@ func update_hud() -> void:
 		if p.status=="down":
 			hud.notice.text="倒地 · 长按F两秒使用魂灯" if p.soul_lamp else "倒地 · 等待队友长按E救援"
 		elif session.raid.phase=="rogue_combat":
-			hud.prompt.text=("剩余魔物 %d · 第 %d / 3 段遭遇" % [session.enemies.size(),session.raid.wave]) if not session.enemies.is_empty() else "继续向右探索 · 前方还有魔物"
+			if session.raid.room=="mirror" and session.raid.get("mirror_state",{}).get("active",false):
+				hud.prompt.text="镜像试炼 · 躲开预警，击败自己的影子"
+				hud.area.text="击败镜像领取奖励 · 挑战者倒地即失败"
+			else:
+				hud.prompt.text=("剩余魔物 %d · 第 %d / 3 段遭遇" % [session.enemies.size(),session.raid.wave]) if not session.enemies.is_empty() else "继续向右探索 · 前方还有魔物"
 		if p.get("rogue_lava",false): hud.notice.text="岩浆灼烧！离开橙红色熔岩区域"
 		return
 	if p.status=="down":
@@ -5326,7 +5330,7 @@ func _rogue_hud_refresh_event(p: Dictionary) -> void:
 			desc.position=Vector2(378,y+42)
 		var pick: Button=buttons[i]
 		if is_instance_valid(pick):
-			pick.tooltip_text=require_line if require_line!="" else "无门槛"
+			pick.tooltip_text=str(option.get("reason","")) if not bool(option.get("enabled",false)) else (require_line if require_line!="" else "无门槛")
 			pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
 	var fallback: Label=_rogue_hud_nodes.get("fallback")
 	if is_instance_valid(fallback): fallback.visible=options.is_empty()

@@ -75,7 +75,6 @@ func run() -> void:
 	p["build_buffs"]["defense"]={"value":0.10,"until":s.elapsed+99.0}
 	var pool: float=RogueBuild.conditional_defense(s,p)
 	check(near(pool,0.10),"The fixture produces a deterministic 0.10 reduction pool")
-	var penalty := float(mods.get("defense_penalty",0.0))
 	var base_before := maxf(0.0,100.0)*(1.0-s.stat_defense(p))
 	p["rogue_curses"]=[]
 	var without: float=s.incoming_damage(p,100.0)
@@ -83,12 +82,12 @@ func run() -> void:
 	p["rogue_curses"]=["CU01"]
 	var with_one: float=s.incoming_damage(p,100.0)
 	check(with_one>without,"A damage-taken curse makes hits land harder")
-	check(near(with_one,base_before*(1.0-clampf(pool-penalty,0.0,Curses.MAX_POOL))),"The curse subtracts from the same pool")
+	check(near(with_one,base_before*(1.0-clampf(pool-.15,-.6,Curses.MAX_POOL))),"The curse subtracts its advertised contribution from the same pool")
 	check(not near(with_one,without*1.15),"The curse is not a second multiplier")
 	p["rogue_curses"]=["CU01","CU01","CU01","CU01"]
 	var floored: float=s.incoming_damage(p,100.0)
-	check(floored>=base_before-0.0001,"The pool never goes below zero, so a curse cannot invert into a bonus")
-	check(near(floored,base_before),"Four CU01 curses bottom the pool out exactly at zero reduction")
+	check(floored>=base_before-0.0001,"The negative contribution increases damage")
+	check(near(floored,base_before*1.5),"The curse cap contributes .60 against the existing .10 defense")
 
 	# 变数的受伤加成（austerity：受到伤害 +10%）叠在同池结果之上
 	p["rogue_curses"]=["CU01"]
@@ -166,7 +165,10 @@ func run() -> void:
 	var source := FileAccess.get_file_as_string("res://scripts/session.gd")
 	check(source.contains("bullets.append(rogue_enemy_bolt("),"Ordinary enemy bolts pass through the variant hook")
 	check(source.contains("speed+RogueBuild.stat(self,p,\"speed\")+move_bonus"),"Move speed joins the same additive pool before the cap")
-	check(source.contains("pool=clampf(pool-penalty,0.0,RogueCurses.MAX_POOL)"),"Curses subtract from the reduction pool")
+	p.build_buffs={}; p.rogue_curses=[]; s.raid.variant=""
+	var unarmored := s.incoming_damage(p,100.0)
+	p.rogue_curses=["CU01"]
+	check(near(s.incoming_damage(p,100.0),unarmored*1.15),"Blood curse also increases damage without a defense buff")
 	check(source.contains("float(b.get(\"hit_radius\",18.0))"),"The bullet hit test still defaults to 18.0")
 	check(not source.contains("bolt[\"hit_radius\"]"),"The bolt hook never writes a hit radius")
 
