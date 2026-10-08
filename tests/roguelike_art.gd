@@ -18,9 +18,17 @@ func run() -> void:
 	for key in art.region_manifest:
 		for entry in art.region_manifest[key]:
 			check(entry.x>entry.cell_x and entry.y>entry.cell_y and entry.x+entry.w<entry.cell_x+entry.cell_w and entry.y+entry.h<entry.cell_y+entry.cell_h,"Transparent padding surrounds every asset: "+key)
-	var manifest_file := FileAccess.open("res://assets/rogue/atlas-regions.json",FileAccess.WRITE)
-	manifest_file.store_string(JSON.stringify(art.region_manifest,"\t"))
-	manifest_file.close()
+	# The dump is a build artifact that nothing in the project reads (ROGUELIKE.md:106 only
+	# documents it), so it lives in the gitignored build/ dir: res://assets/ is not writable in
+	# every environment (a sandboxed host refuses it and FileAccess.open returns null), and the
+	# old null deref aborted the run before the terrain half and the summary line ever ran.
+	DirAccess.make_dir_recursive_absolute("res://build")
+	var manifest_file := FileAccess.open("res://build/atlas-regions.json",FileAccess.WRITE)
+	if manifest_file==null:
+		check(false,"atlas-regions dump opens for writing (FileAccess error %d)" % FileAccess.get_open_error())
+	else:
+		manifest_file.store_string(JSON.stringify(art.region_manifest,"\t"))
+		manifest_file.close()
 	var Map = preload("res://scripts/rogue_map.gd")
 	for floor_index in 5:
 		for area in [1,3,5]:

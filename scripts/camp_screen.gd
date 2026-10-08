@@ -726,7 +726,7 @@ func warp_to(id: String) -> void:
 		return
 	site.hero_at = site.safe_position(station.at + station.offset + Vector2(0, 120))
 	if id=="garden": site.hero_at = site.safe_position(Vector2(2050,2300))
-	if id=="fish": site.hero_at = site.safe_position(Vector2(3460,2390))
+	if id=="fish": site.hero_at = site.safe_position(preload("res://scripts/camp_activities.gd").PIER_AT)
 	site.set_camera_focus(site.hero_at, true)
 
 
@@ -736,6 +736,8 @@ func _update_markers() -> void:
 		var marker: Control = station_markers[str(station.id)]
 		var active: bool = not near.is_empty() and str(near.id) == str(station.id)
 		marker.position = site.project(station.at + station.offset) - marker.size / 2
+		# 650 只是"地名名牌"的可见范围；可交互样式（光环/箭头）与 [E] 提示都只由
+		# active（= station_at() 命中，距离 < station.radius）驱动，见 StationMarker._draw()。
 		marker.visible = active or site.hero_at.distance_to(station.at + station.offset) < 650
 		marker.set_active(active)
 		if station_shortcuts.has(station.id): station_shortcuts[station.id].set_pressed_no_signal(active)
@@ -785,27 +787,32 @@ class StationMarker extends Control:
 
 	func _draw() -> void:
 		var centre := size / 2
-		var pulse := 1.0 + (0.06 * sin(Time.get_ticks_msec() * 0.004) if active else 0.0)
-		var radius := (23.0 if active else 16.0) * pulse
-		draw_arc(centre, radius + 9, 0, TAU, 40, Color(color, 0.22 if active else 0.10), 2.0, true)
-		draw_arc(centre, radius, 0, TAU, 32, Color(color, 0.95 if active else 0.55), 2.5 if active else 1.5, true)
-		for i in 4:
-			var angle := i * TAU / 4 + PI * 0.25
-			var from := centre + Vector2.from_angle(angle) * (radius + 3)
-			var to := centre + Vector2.from_angle(angle) * (radius + 13 if active else radius + 8)
-			draw_line(from, to, Color(color, 0.85 if active else 0.4), 2.0, true)
-		# A caret hanging under the ring, so a marker never hides its own station.
-		var foot := centre + Vector2(0, radius + 16)
-		if active:
-			draw_colored_polygon(PackedVector2Array([foot + Vector2(-9, 0), foot + Vector2(9, 0),
-				foot + Vector2(0, 12)]), Color(color, 0.9))
 		var font := ThemeDB.fallback_font
 		var caption := "%s  %s" % [str(station.no), str(station.name)]
 		var width := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+		if not active:
+			# 圈外只当"地名"：变暗、不出环/箭头等任何可交互样式，更不出 [E] 等按键
+			# 字样——按键提示只由 station_at() 命中（< station.radius）后的 prompt 提供。
+			var far := centre + Vector2(-width / 2, -16.0 - 14)
+			draw_rect(Rect2(far + Vector2(-6, -14), Vector2(width + 12, 21)), Color(0.02, 0.04, 0.07, 0.45), true)
+			draw_string(font, far, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(color, 0.55))
+			return
+		var pulse := 1.0 + 0.06 * sin(Time.get_ticks_msec() * 0.004)
+		var radius := 23.0 * pulse
+		draw_arc(centre, radius + 9, 0, TAU, 40, Color(color, 0.22), 2.0, true)
+		draw_arc(centre, radius, 0, TAU, 32, Color(color, 0.95), 2.5, true)
+		for i in 4:
+			var angle := i * TAU / 4 + PI * 0.25
+			var from := centre + Vector2.from_angle(angle) * (radius + 3)
+			var to := centre + Vector2.from_angle(angle) * (radius + 13)
+			draw_line(from, to, Color(color, 0.85), 2.0, true)
+		# A caret hanging under the ring, so a marker never hides its own station.
+		var foot := centre + Vector2(0, radius + 16)
+		draw_colored_polygon(PackedVector2Array([foot + Vector2(-9, 0), foot + Vector2(9, 0),
+			foot + Vector2(0, 12)]), Color(color, 0.9))
 		var at := centre + Vector2(-width / 2, -radius - 14)
 		draw_rect(Rect2(at + Vector2(-6, -14), Vector2(width + 12, 21)), Color(0.02, 0.04, 0.07, 0.72), true)
-		draw_string(font, at, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16,
-			Color(1, 1, 1) if active else Color(color, 0.9))
+		draw_string(font, at, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(1, 1, 1))
 
 
 func home_summary() -> String:

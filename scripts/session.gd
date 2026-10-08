@@ -83,6 +83,18 @@ var dragon_boss = preload("res://scripts/dragon_boss.gd").new()
 
 const SEARCH_SECONDS_BY_TIER := [0.55,0.8,1.1,1.45,1.9,2.4]
 const SEARCH_RANGE := 86.0
+## 互动判定半径的单一真值——提示（main.gd / battlefield.gd）与判定（本文件 / roguelike.gd）
+## 都从这里取，改任何判定半径先改这里（PROJECT-GUIDE §4.R.1）。注意 `SEARCH_RANGE` 仍是
+## "搜索中途离开"的宽限（必须 ≥ SEARCH_RADIUS），不要拿来当提示圈。
+const GATE_RADIUS := 85.0      # 搜打撤 城门（长按 E 1.5s 旅行）
+const RESCUE_RADIUS := 75.0    # 救援倒地队友（搜打撤 3s / 魔境 2.5s，同一语义同一值）
+const EXIT_RADIUS := 83.0      # 搜打撤 撤离点（长按 E 4s）
+const SHRINE_RADIUS := 72.0    # 搜打撤 晨钟封印（长按 E 3s）
+const SEARCH_RADIUS := 80.0    # 搜打撤 搜索容器（[F]/[H]；HUD 提示与判定同圈）
+const DROP_RADIUS := 70.0      # 搜打撤 拾取 / 搜刮地面掉落与背包（[F]/[H]）
+const CHEST_RADIUS := 85.0     # 魔境 开宝箱（[E]）
+const LOOT_RADIUS := 80.0      # 魔境 拾取掉落（[E]）
+const FORK_RADIUS := 64.0      # 魔境 分叉选路（按住 E；还需已过 ruins.fork_start）
 
 func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_peer_left)
@@ -959,7 +971,7 @@ func search_seconds(item: Dictionary) -> float:
 
 func search_target(p: Dictionary) -> int:
 	var nearest := -1
-	var best := 80.0*80.0
+	var best := SEARCH_RADIUS*SEARCH_RADIUS
 	for i in ruins.chests.size():
 		var distance: float=p.p.distance_squared_to(ruins.chests[i].p)
 		if distance<best:
@@ -969,7 +981,7 @@ func search_target(p: Dictionary) -> int:
 
 func search_dropped_target(p: Dictionary) -> int:
 	var nearest := -1
-	var best := 70.0*70.0
+	var best := DROP_RADIUS*DROP_RADIUS
 	for i in world_drops.size():
 		var drop: Dictionary=world_drops[i]
 		if container_units(drop)<=1:
@@ -985,7 +997,7 @@ func pick_up_ground(p: Dictionary) -> bool:
 	var nearby: Array[int]=[]
 	for i in world_drops.size():
 		var bag: Dictionary=world_drops[i]
-		if container_units(bag)!=1 or bag.p.distance_to(p.p)>=70:
+		if container_units(bag)!=1 or bag.p.distance_to(p.p)>=DROP_RADIUS:
 			continue
 		nearby.append(i)
 	nearby.sort_custom(func(a: int,b: int) -> bool: return world_drops[a].p.distance_squared_to(p.p)<world_drops[b].p.distance_squared_to(p.p))
@@ -3622,7 +3634,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 		if pressed: roguelike.loot_interact(self,p)
 		if held and p.p.x>ruins.fork_start and raid.phase in ["rogue_shop","rogue_exit"]:
 			for index in raid.get("exits",[]).size():
-				if p.p.distance_to(ruins.exit_position(index))<=64:
+				if p.p.distance_to(ruins.exit_position(index))<=FORK_RADIUS:
 					roguelike.choose(self,p,"rogue_next",{"revision":raid.revision,"index":index})
 					break
 		return
@@ -3634,23 +3646,23 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 	# E is the world's key: everything it does is held down, because everything it
 	# does takes seconds and is worth interrupting. The gate comes first so a party
 	# standing on it travels together rather than one Watcher lighting a shrine.
-	if can_travel() and p.p.distance_to(portal_position())<85 and party_at_gate():
+	if can_travel() and p.p.distance_to(portal_position())<GATE_RADIUS and party_at_gate():
 		target="portal:0"
 		seconds=1.5
 	for other in players.values():
-		if other.id!=p.id and other.status=="down" and p.p.distance_to(other.p)<75:
+		if other.id!=p.id and other.status=="down" and p.p.distance_to(other.p)<RESCUE_RADIUS:
 			target="revive:%d" % other.id
 			seconds=3.0
 			break
 	if target.is_empty():
 		for i in ruins.exits.size():
-			if can_extract() and p.p.distance_to(ruins.exits[i])<83:
+			if can_extract() and p.p.distance_to(ruins.exits[i])<EXIT_RADIUS:
 				target="exit:%d" % i
 				seconds=4.0
 				break
 	if target.is_empty():
 		for i in ruins.shrines.size():
-			if raid.phase not in ["choice","complete"] and not ruins.shrines[i].done and p.p.distance_to(ruins.shrines[i].p)<72:
+			if raid.phase not in ["choice","complete"] and not ruins.shrines[i].done and p.p.distance_to(ruins.shrines[i].p)<SHRINE_RADIUS:
 				target="shrine:%d" % i
 				seconds=3.0
 				break

@@ -33,7 +33,9 @@ func run() -> void:
 	# 不再是 Catalog 索引；用稳定的 `build_id` 表达同一意图（配置买的那把真的进了这一局）。
 	# `rogue_rerolls==2` 现在真的成立：`Build.reset()` 不再把调用方配置的刷新卡覆盖成 3。
 	check(app.session.players[1].rogue_rerolls==2 and str(app.session.players[1].equipped.get("weapon",{}).get("build_id",""))=="W001","purchased kit reaches run")
-	check(app.profile.data.coins==100,"confirmed purchases charged once on start")
+	# 出发已经免费（main.gd:4510 rogue_cost() 恒 0；main.gd:4493「免费出发…」文案同源）。
+	# 断言跟着 rogue_cost() 走：将来若恢复收费，这行不用再改。
+	check(app.profile.data.coins==200-app.rogue_cost(),"免费出发不扣金币")
 	app.session.players[1].status="extracted"
 	app.session.roguelike.settle(app.session)
 	app.session.request_camp()

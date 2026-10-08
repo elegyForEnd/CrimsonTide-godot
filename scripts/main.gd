@@ -1972,7 +1972,8 @@ func loot_action() -> bool:
 	if p.is_empty() or p.status not in ["active","down"]:
 		return false
 	for drop in session.world_drops:
-		if session.container_units(drop)==1 and p.p.distance_to(drop.p)<70:
+		# 入口预判与判定同源（session.DROP_RADIUS，pick_up_ground() 同一圈）。
+		if session.container_units(drop)==1 and p.p.distance_to(drop.p)<session.DROP_RADIUS:
 			if session.authority():
 				if session.pick_up_ground(p):
 					if inventory_open:
@@ -2090,7 +2091,9 @@ func update_hud() -> void:
 		hud.raid_extract.hide()
 		hud.time.text=RogueUi.floor_line(session.raid,session.roguelike.depth_count(session))
 		hud.mission.text=session.roguelike.FLOORS[int(session.raid.floor)-1]+" · "+session.roguelike.ROOM_NAMES[session.raid.room]
-		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱爆出随机品质秘藏","rogue_reward":"E 开箱 / 拾取 · 三选一后领取或分享","rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":"直行或斜向 · 靠近路线末端按 E"}.get(session.raid.phase,"")
+		# 按键字样只在自己真正进入判定圈后出现（_rogue_loot_near/_rogue_fork_near 与
+		# roguelike.gd 的判定同源）；远处只给叙述句，不出 [E] 等按键提示。
+		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱爆出随机品质秘藏","rogue_reward":("E 开箱 / 拾取 · 三选一后领取或分享" if _rogue_loot_near(p) else "搜刮战利品 · 三选一后领取或分享"),"rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":("直行或斜向 · 靠近路线末端按 E" if _rogue_fork_near(p) else "直行或斜向 · 走到路线末端进入下一段")}.get(session.raid.phase,"")
 		hud.area.text+=" · Lv.%d 经验%d/%d 属性点%d" % [p.build_level,p.build_xp,preload("res://scripts/rogue_build.gd").xp_needed(int(p.build_level)),p.build_attribute_points]
 		if hud.has("rogue_variant"):
 			hud.rogue_variant.text=RogueUi.variant_line(session.raid)
@@ -2138,6 +2141,14 @@ func update_hud() -> void:
 			hud.notice.text="倒地 · 长按F两秒使用魂灯" if p.soul_lamp else "倒地 · 等待队友长按E救援"
 		elif session.raid.phase=="rogue_combat":
 			hud.prompt.text=("剩余魔物 %d · 第 %d / 3 段遭遇" % [session.enemies.size(),session.raid.wave]) if not session.enemies.is_empty() else "继续向右探索 · 前方还有魔物"
+		# 靠近倒地队友才出救援提示（判定同源 session.RESCUE_RADIUS，与 roguelike.gd
+		# rescue() 同一圈）：补上 R.1 审计"救援者侧没有任何距离提示"的待修项，
+		# 优先于上面的通用战斗行；倒地/阵亡的自己不出（那是队友的按键，不是我的）。
+		if p.status=="active":
+			for ally in session.players.values():
+				if ally.id!=p.id and ally.status=="down" and not ally.get("rogue_rescued_room",false) and p.p.distance_to(ally.p)<=session.RESCUE_RADIUS:
+					hud.prompt.text="长按 [E] 救起 "+ally.name
+					break
 		if p.get("rogue_lava",false): hud.notice.text="岩浆灼烧！离开橙红色熔岩区域"
 		return
 	if p.status=="down":
@@ -2155,23 +2166,25 @@ func update_hud() -> void:
 	elif p.sanity<25:
 		hud.notice.text="理智濒临崩坏 · 治疗或尽快撤离"
 	for ally in session.players.values():
-		if ally.id!=p.id and ally.status=="down" and p.p.distance_to(ally.p)<75:
+		if ally.id!=p.id and ally.status=="down" and p.p.distance_to(ally.p)<session.RESCUE_RADIUS:
 			hud.prompt.text="长按 [E] 3 秒救援 "+ally.name
 			return
-	if p.p.distance_to(session.portal_position())<85 and session.can_travel():
+	if p.p.distance_to(session.portal_position())<session.GATE_RADIUS and session.can_travel():
 		hud.prompt.text=("长按 [E] 1.5 秒返回边境" if session.map_id=="city" else "长按 [E] 1.5 秒进入王城") if session.party_at_gate() else "全体存活队友需在城门附近集合；先救起倒地队友"
 		return
 	for exit_pos in session.ruins.exits:
-		if p.p.distance_to(exit_pos)<83:
+		if p.p.distance_to(exit_pos)<session.EXIT_RADIUS:
 			hud.prompt.text="长按 [E] 4 秒独立撤离 · 受伤会打断" if session.can_extract() else "撤离封锁 · 第一天需击败黎明 Boss；终局需击败女王"
 			return
 	for shrine in session.ruins.shrines:
-		if session.raid.phase not in ["choice","complete"] and not shrine.done and p.p.distance_to(shrine.p)<72:
+		if session.raid.phase not in ["choice","complete"] and not shrine.done and p.p.distance_to(shrine.p)<session.SHRINE_RADIUS:
 			hud.prompt.text="长按 [E] 3 秒点亮封印 · 惊动当地守军 · 全队 +55 ◈"
 			return
 	for i in session.container_count():
 		var container: Dictionary=session.container_at(i)
-		if container.is_empty() or (container.items.is_empty() and i>=session.ruins.chests.size()) or container.p.distance_to(p.p)>=70:
+	# 提示圈与判定圈同源（session.SEARCH_RADIUS=80）：提示出现 = 一定能按。70~80 之间
+	# "没提示却能按"的反向不一致已消除；`session.SEARCH_RANGE`(86) 仍是搜索中途离开的宽限。
+		if container.is_empty() or (container.items.is_empty() and i>=session.ruins.chests.size()) or container.p.distance_to(p.p)>=session.SEARCH_RADIUS:
 			continue
 		var title: String=session.container_title(container)
 		if i>=session.ruins.chests.size() and session.container_units(container)==1:
@@ -4721,6 +4734,48 @@ func _rogue_hud_me() -> Dictionary:
 	return session.players.get(session.my_id(),{})
 
 
+## 魔境「按 E」提示的距离判定——与 `roguelike.gd` 的交互判定同源：宝箱 ≤ `session.CHEST_RADIUS`、
+## 掉落 < `session.LOOT_RADIUS`（含落地延迟/归属门，与 loot_interact() 同款）、分叉选路 =
+## 已过 `ruins.fork_start` 且距出口 ≤ `session.FORK_RADIUS`。口径：提示出现 = 一定能按键，
+## 远处一律只给不带按键字样的叙述句。
+func _rogue_loot_near(p: Dictionary) -> bool:
+	if p.is_empty() or str(p.status)!="active" or not p.get("rogue_selection",{}).is_empty():
+		return false
+	var chest: Dictionary=session.raid.get("reward_chest",{})
+	if session.raid.room in session.roguelike.CHEST_ROOMS and not chest.is_empty() and not bool(chest.get("opened",false)) and p.p.distance_to(chest.p)<=session.CHEST_RADIUS:
+		return true
+	for drop in session.raid.get("reward_drops",[]):
+		if session.elapsed<float(drop.born)+float(drop.delay): continue
+		if drop.get("personal",false) and int(drop.owner)!=int(p.id): continue
+		if not drop.get("personal",false) and drop.owner==p.id and session.elapsed<float(drop.born)+1.0: continue
+		if p.p.distance_to(drop.p)<session.LOOT_RADIUS:
+			return true
+	return false
+
+
+func _rogue_fork_near(p: Dictionary) -> bool:
+	if p.is_empty() or str(p.status)!="active": return false
+	if p.p.x<=session.ruins.fork_start: return false
+	for index in session.raid.get("exits",[]).size():
+		if p.p.distance_to(session.ruins.exit_position(index))<=session.FORK_RADIUS:
+			return true
+	return false
+
+
+## 魔境面板/底部提示是全队共享的：任一 active 队友进入判定圈即算"近"（判定本身仍逐人
+## 严格同源，谁的圈谁按键）。
+func _rogue_team_loot_near() -> bool:
+	for ally in session.players.values():
+		if _rogue_loot_near(ally): return true
+	return false
+
+
+func _rogue_team_fork_near() -> bool:
+	for ally in session.players.values():
+		if _rogue_fork_near(ally): return true
+	return false
+
+
 ## E1 · 回收区的结构指纹：只取**前 8 件装备**（与 `_ROGUE_SELL_SLOTS` 同一窗口、同一个
 ## `while` 顺序），这样"换一件、卖一件"都会让 `_rogue_hud_layout` 变化并重建一次按钮，
 ## 而回收价、禁用态这类纯数值不进指纹（它们每 tick 值级刷新）。
@@ -4842,7 +4897,9 @@ func _rogue_preview_toggle(event: InputEvent) -> bool:
 func _build_rogue_shop_panel(browsing_shop: bool) -> void:
 	rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
 	label(rogue_panel,"游商 · 可购买多件",Vector2(360,187),22,GOLD)
-	label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	# 指路行的按键字样按判定圈值级刷新（_rogue_hud_refresh_shop）；建树时先给安全的
+	# 远处叙述句，绝不把「按 E」常驻挂着。
+	_rogue_hud_nodes["exit_hint"]=label(rogue_panel,"全队向右集合 · 走到路线末端进入下一段",Vector2(1040,730),20,GOLD,Vector2(360,40))
 	# The buttons read `_rogue_hud_revision` at click time; the index is baked into a mutable
 	# cell so a reused button still ships the row it was drawn for.
 	#
@@ -4890,6 +4947,10 @@ func _rogue_hud_shop_offer(i: int) -> Dictionary:
 
 
 func _rogue_hud_refresh_shop(p: Dictionary, browsing_shop: bool) -> void:
+	# 指路行（建树时登记为 "exit_hint"）的按键字样按判定圈值级刷新，绝不常驻「按 E」。
+	var exit_hint: Label=_rogue_hud_nodes.get("exit_hint")
+	if is_instance_valid(exit_hint):
+		exit_hint.text=("全队向右集合 · 靠近目标路线末端按 E" if _rogue_team_fork_near() else "全队向右集合 · 走到路线末端进入下一段")
 	var offers: Array=p.get("rogue_shop_offers",[])
 	var indices: Array=_rogue_hud_nodes.get("indices",[])
 	var buttons: Array=_rogue_hud_offer_buttons
@@ -5090,8 +5151,10 @@ func _rogue_hud_offer_icon(offer: Dictionary) -> Texture2D:
 
 func _build_rogue_default_panel() -> void:
 	_rogue_hud_nodes["gold"]=label(rogue_panel,"",Vector2(1030,92),18,GOLD,Vector2(380,35))
-	_rogue_hud_nodes["reward_hint"]=label(rogue_panel,"E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑",Vector2(380,130),20,GOLD,Vector2(900,40))
-	_rogue_hud_nodes["exit_hint"]=label(rogue_panel,"全队向右集合 · 靠近目标路线末端按 E",Vector2(1040,730),20,GOLD,Vector2(360,40))
+	# 两行提示的按键字样都按判定圈值级刷新（_rogue_hud_refresh_default）；建树时先给
+	# 不带按键字样的安全叙述句。
+	_rogue_hud_nodes["reward_hint"]=label(rogue_panel,"搜刮战利品 · 每人武器与装备三选一",Vector2(380,130),20,GOLD,Vector2(900,40))
+	_rogue_hud_nodes["exit_hint"]=label(rogue_panel,"全队向右集合 · 走到路线末端进入下一段",Vector2(1040,730),20,GOLD,Vector2(360,40))
 	# The 游商 block is a lazy sub-panel of the default tree: it exists only when the shop is
 	# on screen and is appended **after** the hints, exactly the order the old builder used.
 	_rogue_hud_nodes["shop_block"]=rect(rogue_panel,Vector2(335,174),Vector2(1050,530),Color(0.035,0.025,0.07,0.96))
@@ -5137,9 +5200,15 @@ func _rogue_hud_refresh_default(p: Dictionary, browsing_shop: bool) -> void:
 	var gold: Label=_rogue_hud_nodes.get("gold")
 	if is_instance_valid(gold): gold.text="魔晶 %d · 刷新卡 %d" % [p.rogue_gold,p.rogue_rerolls]
 	var reward_hint: Label=_rogue_hud_nodes.get("reward_hint")
-	if is_instance_valid(reward_hint): reward_hint.visible=session.raid.phase=="rogue_reward"
+	if is_instance_valid(reward_hint):
+		reward_hint.visible=session.raid.phase=="rogue_reward"
+		# 按键字样按判定圈出（全队任一 active 队友进圈即"近"，与 roguelike.gd 判定同源）：
+		# 远处只有不带按键字样的叙述句——提示出现 = 一定能按键。
+		reward_hint.text=("E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑" if _rogue_team_loot_near() else "搜刮战利品 · 每人武器与装备三选一")
 	var exit_hint: Label=_rogue_hud_nodes.get("exit_hint")
-	if is_instance_valid(exit_hint): exit_hint.visible=session.raid.phase in ["rogue_shop","rogue_exit"]
+	if is_instance_valid(exit_hint):
+		exit_hint.visible=session.raid.phase in ["rogue_shop","rogue_exit"]
+		exit_hint.text=("全队向右集合 · 靠近目标路线末端按 E" if _rogue_team_fork_near() else "全队向右集合 · 走到路线末端进入下一段")
 	# 幽灵按钮修复（2026-10）· 值级显隐：默认树的「离开商店」只在**玩家确实在商店房**时出现。
 	#
 	# 上一版把相位集合抄成与紧邻的通用指路行 `exit_hint`（上一行）逐字相同
@@ -5265,7 +5334,10 @@ func _rogue_hud_refresh_room(p: Dictionary, kind: String) -> void:
 		fallback.visible=rows.is_empty()
 		fallback.text="这件房契没有可用的服务，向右离开即可。"
 	var hint: Label=_rogue_hud_nodes.get("hint")
-	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase))
+	# near_loot/near_fork 的口径见 rogue_room_ui.gd footer()：全队任一 active 队友进入判定圈
+	# （_rogue_team_loot_near/_rogue_team_fork_near，与 roguelike.gd 判定同源走 session 常量）
+	# 才亮「按 E」字样；默认（不传）是安全的无按键叙述句。
+	var hint_line := RogueRoomUi.footer(kind,session.raid,str(session.raid.phase),_rogue_team_loot_near(),_rogue_team_fork_near())
 	if is_instance_valid(hint):
 		hint.text=hint_line
 		hint.visible=hint_line!=""
@@ -5455,13 +5527,17 @@ func buy_growth_node(id: String) -> void:
 	notify("已强化："+RogueGrowth.label(id))
 
 
-## 五层的节点总数。节点图每层生成 7~10 个节点（由种子决定），所以结算面板的分母
-## 必须按本局种子算出来，旧的固定「25 区」是「每层五区」年代的写法。
+## 五层的"区"总数。一个"区"= 一段深度：每层 depths∈[7,9]（rogue_graph.gd 的 MIN/MAX_DEPTHS），
+## boss 节点挂在各层最后一档深度上，所以**对各层 boss 节点的 depth 求和**就是全旅程的区数
+## （5 层 × 7~9 = 35~45，tests/rogue_ui.gd 断言 [35,50]）。旧写法对 nodes.size() 求和是错的：
+## 每层 12~16 个节点里含每档并排的两个真实目的地，那会把结算面板的分母虚大约一倍。
 func rogue_total_nodes() -> int:
 	var total := 0
 	for floor_index in 5:
 		var graph: Dictionary=RogueGraph.build(int(session.seed_value),floor_index+1)
-		total+=(graph.get("nodes",{}) as Dictionary).size()
+		for node: Dictionary in (graph.get("nodes",{}) as Dictionary).values():
+			if str(node.get("kind",""))==RogueGraph.BOSS:
+				total+=int(node.get("depth",0))
 	return maxi(1,total)
 
 

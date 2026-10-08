@@ -221,12 +221,19 @@ static func signature(kind: String, raid: Dictionary, ctx: Dictionary) -> String
 
 
 ## 面板底部那行状态提示（与既有 HUD 的措辞保持一致）。
-static func footer(kind: String, raid: Dictionary, phase: String) -> String:
+## 按键字样只在本队有人真正进入判定距离后出现（与 roguelike.gd 的交互判定同源）：
+## 开箱 / 拾取 85 / 80、分叉选路 64 且已越过 fork_start。调用方不传 near_*（或传
+## false）时，只给不带按键字样的叙述句——远处不得出现 [E] 等按键提示。
+static func footer(kind: String, raid: Dictionary, phase: String, near_loot: bool = false, near_fork: bool = false) -> String:
 	var state: Dictionary = raid.get("mirror_state", {}) if raid.get("mirror_state", {}) is Dictionary else {}
 	if kind == "mirror" and bool(state.get("active", false)):
 		return "再次确认即结算 · 结算后本局不再开启镜像"
 	if phase == "rogue_reward":
-		return "E 开箱 / 拾取 · 每人武器与装备三选一 · Tab 管理构筑"
+		if near_loot:
+			return "E 开箱 / 拾取 · 每人武器与装备三选一 · Tab 管理构筑"
+		return "搜刮战利品 · 每人武器与装备三选一"
 	if phase in ["rogue_shop", "rogue_exit"]:
-		return "全队向右集合 · 靠近目标路线末端按 E"
+		if near_fork:
+			return "全队向右集合 · 靠近目标路线末端按 E"
+		return "全队向右集合 · 走到目标路线末端进入下一段"
 	return ""

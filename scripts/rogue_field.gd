@@ -121,8 +121,13 @@ func route_label_style() -> StyleBoxFlat:
 func draw_rewards() -> void:
 	var me: Dictionary=session.players.get(session.my_id(),{})
 	var nearest := -1
-	var distance := 80.0
+	# 最近掉落的「· E」字样按拾取判定圈出：session.LOOT_RADIUS，门条件与
+	# roguelike.gd loot_interact() 同款（落地延迟 / 归属），提示出现 = 一定能按。
+	var distance := float(session.LOOT_RADIUS)
 	for packet in session.raid.get("reward_drops",[]):
+		if session.elapsed<float(packet.born)+float(packet.delay): continue
+		if packet.get("personal",false) and int(packet.owner)!=int(me.get("id",-1)): continue
+		if not packet.get("personal",false) and packet.owner==me.get("id",-1) and session.elapsed<float(packet.born)+1.0: continue
 		var d: float=me.get("p",Vector2.ZERO).distance_to(packet.p)
 		if d<distance: nearest=packet.id; distance=d
 	var chest: Dictionary=session.raid.get("reward_chest",{})
@@ -134,7 +139,10 @@ func draw_rewards() -> void:
 		var texture: Texture2D=OPEN_CHEST if opened else art.item_icons[11]
 		icon(texture,at+Vector2(0,-38),Vector2(126,112) if opened else Vector2(100,88))
 		if not opened:
-			draw_string(get_theme_default_font(),at+Vector2(-75,-100),"%s宝箱 · E 开启" % Catalog.BAG_TIERS[int(chest.tier)].quality,HORIZONTAL_ALIGNMENT_LEFT,210,16,tone)
+			# 「E 开启」只在自己进入开箱判定圈（session.CHEST_RADIUS）后出现；远处只留
+			# 宝箱本身的叙述，不出按键字样。
+			var chest_near: bool=(not me.is_empty()) and str(me.get("status",""))=="active" and me.get("rogue_selection",{}).is_empty() and me.get("p",Vector2.ZERO).distance_to(at)<=session.CHEST_RADIUS
+			draw_string(get_theme_default_font(),at+Vector2(-75,-100),("%s宝箱 · E 开启" if chest_near else "%s宝箱") % Catalog.BAG_TIERS[int(chest.tier)].quality,HORIZONTAL_ALIGNMENT_LEFT,210,16,tone)
 		elif session.elapsed-float(chest.get("opened_at",0))<1.2:
 			var t: float=(session.elapsed-float(chest.opened_at))/1.2
 			Semantics.reward(self,at-Vector2(0,40),tone,t,clock,true)
@@ -173,7 +181,8 @@ func _draw() -> void:
 		var exit_at: Vector2=r.exit_position(index)
 		var destination: Dictionary=session.raid.exits[index]
 		var exit_tone := Color("d3bb85") if destination.room in ["shop","treasure","talent"] else tone
-		var near: bool=session.players.get(session.my_id(),{}).get("p",Vector2.ZERO).distance_to(exit_at)<=64
+		# 高亮与「· E」字样的判定圈与 session.gd 的分叉选路判定同源（FORK_RADIUS）。
+		var near: bool=session.players.get(session.my_id(),{}).get("p",Vector2.ZERO).distance_to(exit_at)<=session.FORK_RADIUS
 		# The two open path ends share ground-plane movement and carry route labels.
 		if opened:
 			if near:

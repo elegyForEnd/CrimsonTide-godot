@@ -735,12 +735,17 @@ func run() -> void:
 	var reroll_button: Button=app._rogue_hud_nodes.get("reroll")
 	check(int(pa.rogue_rerolls)==3, "no reroll was spent by the two purchases (rerolls %d)" % int(pa.rogue_rerolls))
 	app.update_rogue_hud(pa)
-	check(reroll_button==app._rogue_hud_nodes.get("reroll"), "a value-only tick reuses the very same 使用刷新卡 button instance")
-	check(int(pa.rogue_rerolls)==3 and not reroll_button.disabled, "the recycled reroll button stays live with 3 cards in hand")
+	# E1 (main.gd:4616-4622): the purchase above changed the reserve, and the reserve's sell
+	# signature is part of the 游商 *layout* — so this tick deliberately rebuilds the tree and
+	# the captured instance is spent. What must hold is not instance reuse but that the fresh
+	# button is live and ships the member revision at click time.
+	reroll_button=app._rogue_hud_nodes.get("reroll")
+	check(is_instance_valid(reroll_button), "the post-purchase tick keeps a 使用刷新卡 button on screen")
+	check(int(pa.rogue_rerolls)==3 and not reroll_button.disabled, "the fresh reroll button stays live with 3 cards in hand")
 	# The reroll itself is revision-guarded too (`roguelike.gd:967`), so ship the live value.
 	app._rogue_hud_revision=int(app.session.raid.revision)
 	reroll_button.emit_signal("pressed")
-	check(int(pa.rogue_rerolls)==2, "a recycled 游商 button reads the member revision at click time (rerolls now %d)" % int(pa.rogue_rerolls))
+	check(int(pa.rogue_rerolls)==2, "the rebuilt 游商 button reads the member revision at click time (rerolls now %d)" % int(pa.rogue_rerolls))
 
 	# ---- 12f. 服务房行的 in-place 刷新（禁用态 / 文案 / 坐标 / 行数）
 	app.session.raid["room"]="forge"

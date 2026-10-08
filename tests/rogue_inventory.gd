@@ -28,23 +28,39 @@ func _body() -> void:
 	root.add_child(app)
 	await process_frame
 	var s=app.session
+	var Build = preload("res://scripts/rogue_build.gd")
 	s.solo({"hero":0,"mode":"roguelike","rogue_rerolls":2})
 	s.launch(false,1729)
 	s.set_physics_process(false)
 	var p: Dictionary=s.players[1]
 	check(p.backpack.items.is_empty() and p.pocket.items.is_empty(),"Run supplies use independent count, no extraction grids")
-	check(s.carried(p,"medicine")==1,"One starting medicine")
+	# 血瓶（flask）模型：魔境治疗不再是"急救针计数"——carried("medicine")=flask/25（session.gd:683），
+	# heal→RogueBuild.drink()（session.gd:1655-1657）起 0.75s 通道并上 2.5s CD（rogue_build.gd:812-819）；
+	# tick 把通道推到 <=0.3s 时置 pending（rogue_build.gd:862-865），commit_flask 结算
+	# （rogue_build.gd:1235-1249：耗 25 flask、+30% 上限生命）。物理已被关掉（见上），所以手动
+	# 走一次 tick 把通道推到位再直接 commit——与 tests/rogue_build_rules.gd 断言的是同一契约。
+	check(s.carried(p,"medicine")==4,"Run starts with a full flask: 100 points = four charges")
 	s.perform(1,"heal")
-	check(s.carried(p,"medicine")==1,"Full health cannot waste medicine")
+	check(p.flask==100 and p.flask_time<=0,"Full health cannot start a drink")
 	p.hp=20
 	s.perform(1,"heal")
-	check(p.hp==65 and s.carried(p,"medicine")==0,"Heal consumes counter once")
+	check(p.flask_time>0 and p.flask==100 and p.hp==20,"A hurt drink opens the channel; the heal lands on commit")
+	Build.tick(s,p,3.0)
+	Build.commit_flask(s,p)
+	check(p.flask==75 and s.carried(p,"medicine")==3 and is_equal_approx(p.hp,20.0+p.max_hp*.3),"The committed drink spends 25 flask and heals 30% of the ceiling")
+	p.flask=20
 	s.perform(1,"heal")
-	check(p.hp==65,"Empty supply cannot heal")
-	p.rogue_medicine=1
+	check(p.flask_time<=0 and p.flask==20,"Below 25 flask no drink starts")
 	p.status="down"; p.hp=0
 	s.perform(1,"heal")
-	check(p.status=="active" and not p.self_revive and p.hp==45,"Dedicated supply supports self-revive")
+	check(p.status=="down" and p.flask==20,"A downed watcher cannot drink — the flask is not a revive tool")
+	# Revival is the soul lamp now: hold the flask input for two seconds while down
+	# (rogue_build.gd:848-855), once per run. This also restores status="active", which every
+	# rogue_* command needs (roguelike.gd:1209 gates the whole choose() entry on it).
+	s.inputs[p.id]={"flask_held":true}
+	Build.tick(s,p,2.0)
+	s.inputs[p.id]={}
+	check(p.status=="active" and not p.soul_lamp and is_equal_approx(p.hp,p.max_hp*.25),"Holding the lamp for two seconds revives once per run")
 	s.roguelike.equip(s,p,Catalog.make_equipment("weapon",1,2))
 	s.roguelike.equip(s,p,Catalog.make_equipment("weapon",2,3))
 	check(p.rogue_stash.size()==1 and p.rogue_stash[0].weapon==1,"Replaced weapon preserved")
@@ -79,7 +95,14 @@ func _body() -> void:
 	preload("res://tests/rogue_reward_flow.gd").pick(s,p)
 	p.rogue_selection.offers=[{"boon":s.roguelike.BOONS[0],"name":"test","desc":"","price":0}]
 	s.perform(1,"rogue_selection_take",{"index":0,"id":p.rogue_selection.id,"version":p.rogue_selection.version})
-	check(p.rogue_boons.rogue_damage==1 and is_equal_approx(p.rogue_damage,0.12),"Boon tally follows actual reward")
+	# T1-b (roguelike.gd:39-43): the boon pool has zero production grant points — `p.rogue_boons`
+	# stays {} for the whole run. apply_offer_reason() refuses the hand-built offer with a reason
+	# (roguelike.gd:792) and keeps the choice open; the dead tally must never be invented.
+	check(p.get("rogue_boons",{}).is_empty() and not str(p.rogue_selection.get("error","")).is_empty(),"The dead boon offer tallies nothing and explains its refusal")
+	# Close the dead end through the production escape hatch (roguelike.gd:849-862), which books
+	# the claim / finish_rewards exactly like a resolved choice would.
+	s.perform(1,"rogue_selection_abandon",{"id":p.rogue_selection.id,"version":p.rogue_selection.version})
+	check(p.rogue_selection.is_empty(),"Abandoning clears the refused choice")
 	app.toggle_bag()
 	check(app.inventory_open and app.grids.is_empty(),"TAB opens independent build inventory")
 	check(app.rogue_inventory.stats_label.text.contains("攻击间隔"),"Live combat attributes shown")
@@ -96,22 +119,18 @@ func _body() -> void:
 	var tile: Control
 	for child in app.overlay.get_children():
 		if child.name=="ReserveSlot0": tile=child
-	var motion := InputEventMouseMotion.new()
-	motion.position=tile.get_global_transform_with_canvas()*Vector2(90,50)
-	root.push_input(motion)
-	await process_frame
+	check(tile!=null,"Reserve slot rendered for stash item 0")
+	# The hover/right-click path under test is `bind_item()`'s `mouse_entered` / `gui_input`
+	# connections (scripts/rogue_inventory.gd:185-191). Injecting raw mouse events never
+	# drives the GUI hover pipeline under `--headless`, so tooltip/menu never appeared.
+	# Call the same public entry points those signals would — the engraved tooltip below
+	# already uses this direct-call pattern — so the rendering contracts stay covered.
+	app.rogue_inventory.show_tooltip(p.rogue_stash[0],false)
 	check(is_instance_valid(app.rogue_inventory.tooltip),"Detailed tooltip opens")
 	await capture("tooltip")
-	var click := InputEventMouseButton.new()
-	click.button_index=MOUSE_BUTTON_RIGHT
-	click.pressed=true
-	click.position=motion.position
-	root.push_input(click)
-	await process_frame
+	app.rogue_inventory.show_menu(p.rogue_stash[0],"reserve",0,false)
 	check(is_instance_valid(app.rogue_inventory.menu),"Right-click menu opens")
 	await capture("menu")
-	click.pressed=false
-	root.push_input(click)
 	var before_confirmation: int=p.rogue_stash.size()
 	var menu_box: Control=app.rogue_inventory.menu.get_child(0)
 	for child in menu_box.get_children():
@@ -143,9 +162,11 @@ func _body() -> void:
 	tab.pressed=true
 	root.push_input(tab)
 	check(not app.inventory_open,"Actual TAB event closes inventory")
-	p.rogue_medicine=1
+	# The supply row is the bound flask itself: the menu may drink it but never drop it
+	# (roguelike.gd:1195-1199); `rogue_medicine` is a dead field — the pool lives in p.flask.
+	var flask_before: float=p.flask
 	command(s,"supply",0,"discard")
-	check(p.rogue_medicine==0,"Supply menu discards one medicine")
+	check(p.flask==flask_before,"The bound flask cannot be discarded from the supply menu")
 	app.queue_free()
 	await process_frame
 	completed=true

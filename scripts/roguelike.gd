@@ -709,7 +709,7 @@ func add_reward_drop(s, at: Vector2, tier: int, offer: Dictionary = {}, delay: f
 func loot_interact(s, p: Dictionary) -> void:
 	if p.status!="active" or not p.get("rogue_selection",{}).is_empty(): return
 	var chest: Dictionary=s.raid.get("reward_chest",{})
-	if s.raid.room in CHEST_ROOMS and not chest.is_empty() and not chest.opened and p.p.distance_to(chest.p)<=85:
+	if s.raid.room in CHEST_ROOMS and not chest.is_empty() and not chest.opened and p.p.distance_to(chest.p)<=s.CHEST_RADIUS:
 		chest.opened=true
 		chest["opened_at"]=s.elapsed
 		var categories: Array=["weapon","gear"]
@@ -735,7 +735,7 @@ func loot_interact(s, p: Dictionary) -> void:
 		s.raid.revision+=1
 		return
 	var nearest := -1
-	var distance := 80.0
+	var distance := float(s.LOOT_RADIUS)
 	for i in s.raid.get("reward_drops",[]).size():
 		var drop: Dictionary=s.raid.reward_drops[i]
 		if s.elapsed<float(drop.born)+float(drop.delay): continue
@@ -1451,7 +1451,7 @@ func settle(s) -> void:
 func rescue(s, p: Dictionary, held: bool, dt: float) -> bool:
 	if not held: p.channel=0.0; p.target=""; return false
 	for ally in s.players.values():
-		if ally.status=="down" and not ally.get("rogue_rescued_room",false) and ally.p.distance_to(p.p)<=75:
+		if ally.status=="down" and not ally.get("rogue_rescued_room",false) and ally.p.distance_to(p.p)<=s.RESCUE_RADIUS:
 			var key := "revive:%s" % ally.id
 			if p.target!=key: p.channel=0.0; p.target=key
 			var seconds: float=2.5*(1-Build.r(p,92,[.08,.12,.16]))

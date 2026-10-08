@@ -3,6 +3,13 @@ extends Node3D
 const Rules = preload("res://scripts/homestead.gd")
 const Art = preload("res://scripts/home_art.gd")
 const ItemArt = preload("res://scripts/ui_art.gd")
+## 营地生活互动半径的单一真值——提示（camp_screen.gd 的 [E]/[F] 文案）与判定都从
+## 这里取，改任何判定半径先改这里：田畦 PLOT_RADIUS / 栈桥抛竿 PIER_RADIUS（竿位
+## PIER_AT，warp_to 的"fish"落点也用它）/ 地面拾取 DROP_RADIUS。
+const PLOT_RADIUS := 155.0
+const PIER_RADIUS := 240.0
+const DROP_RADIUS := 120.0
+const PIER_AT := Vector2(3460, 2390)
 var camp: Control
 var home
 ## Where a picked-up floor item goes. `main.gd` sets it to its own route into the
@@ -110,7 +117,7 @@ func segment(parent: Node3D, start: Vector3, end: Vector3, radius: float, mat: M
 	node.quaternion = Quaternion(Vector3.UP,(end-start).normalized())
 	return node
 
-func nearest_plot(at: Vector2, within: float = 155.0) -> int:
+func nearest_plot(at: Vector2, within: float = PLOT_RADIUS) -> int:
 	var best := -1
 	var distance := within
 	for i in 9:
@@ -121,7 +128,7 @@ func nearest_plot(at: Vector2, within: float = 155.0) -> int:
 	return best
 
 func at_pier() -> bool:
-	return camp.site.DOCK.has_point(camp.site.hero_at) and camp.site.hero_at.distance_to(Vector2(3460,2390))<240
+	return camp.site.DOCK.has_point(camp.site.hero_at) and camp.site.hero_at.distance_to(PIER_AT)<PIER_RADIUS
 
 func cycle_seed() -> void:
 	if busy(): return
@@ -152,7 +159,7 @@ func farm(index: int) -> void:
 	if index<0 or index>=home.state().beds:
 		camp.say("土地尚未开垦，去家园商店扩建。")
 		return
-	if camp.site.hero_at.distance_to(camp.site.garden_at(index))>155:
+	if camp.site.hero_at.distance_to(camp.site.garden_at(index))>PLOT_RADIUS:
 		camp.say("走近这块田畦，再按 E 操作。")
 		return
 	var plot: Dictionary = home.state().plots[index]
@@ -339,12 +346,12 @@ func restore_drops() -> void:
 		else:
 			drop["node"]=drop_node(Art.icon(str(drop.get("kind",""))),at)
 
-func has_drop_near(at: Vector2, within: float = 120.0) -> bool:
+func has_drop_near(at: Vector2, within: float = DROP_RADIUS) -> bool:
 	for drop in drops:
 		if at.distance_to(drop.at)<within: return true
 	return false
 
-func nearest_drop(at: Vector2, within: float = 120.0) -> int:
+func nearest_drop(at: Vector2, within: float = DROP_RADIUS) -> int:
 	var best := -1
 	var distance := within
 	for i in drops.size():

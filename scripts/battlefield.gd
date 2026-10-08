@@ -176,6 +176,14 @@ func aim() -> Vector2:
 		return Vector2.RIGHT
 	return (world_3d.unproject(get_global_mouse_position())-p.p).normalized()
 
+## 世界标签里"按键字样"的真值是玩家判定半径（与 session 的交互判定同源，单一来源是
+## session.gd 的 GATE_RADIUS / EXIT_RADIUS / SEARCH_RADIUS / DROP_RADIUS 常量）。
+## 相机 1500 只决定"纯地名"的可见性，按键字样一律按玩家距离出——远处只显示纯地名，
+## 不出 [E]/[F]/[H]。
+func key_hint(at: Vector2, radius: float) -> bool:
+	var me: Dictionary=session.players.get(session.my_id(),{})
+	return (not me.is_empty()) and at.distance_to(me.p)<radius
+
 func _draw() -> void:
 	if not session or session.ruins.sites.is_empty():
 		return
@@ -187,7 +195,12 @@ func _draw() -> void:
 	var visible_distance_sq := 1500.0*1500.0
 	if gate.distance_squared_to(camera)<visible_distance_sq:
 		draw_arc(gate,45,0,TAU,48,Color("a5ebed"),4,true)
-		label(gate+Vector2(-95,-58),("返回月冠边境 [E]" if world.interior else "进入晨曦王城 [E]") if session.can_travel() else "血潮封锁 · 城门关闭",18,Color("ecdfba"))
+		var gate_text: String="血潮封锁 · 城门关闭"
+		if session.can_travel():
+			gate_text="返回月冠边境" if world.interior else "进入晨曦王城"
+			if key_hint(gate,session.GATE_RADIUS):
+				gate_text+=" [E]"
+		label(gate+Vector2(-95,-58),gate_text,18,Color("ecdfba"))
 	for site in world.sites:
 		if site.p.distance_to(camera)<1000:
 			label(site.p+Vector2(-80,-site.rect.size.y/2-45),site.name,19,Color("fff1db"))
@@ -199,7 +212,12 @@ func _draw() -> void:
 		if channel>0:
 			draw_texture_rect(extraction_sigil,gate_rect.grow(3+channel*7),false,Color(0.30,1.0,0.78,0.15+channel*0.24))
 		draw_texture_rect(extraction_sigil,gate_rect,false,Color.WHITE if session.can_extract() else Color(0.48,0.52,0.55,0.74))
-		label(pos+Vector2(-58,80),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else " · [E] 撤离"),15,Color("a5ead6") if session.can_extract() else Color("98a3aa"))
+		var exit_text: String=Ruins.EXIT_NAMES[i]
+		if not session.can_extract():
+			exit_text+=" · 封锁"
+		elif key_hint(pos,session.EXIT_RADIUS):
+			exit_text+=" · [E] 撤离"
+		label(pos+Vector2(-58,80),exit_text,15,Color("a5ead6") if session.can_extract() else Color("98a3aa"))
 	for shrine in world.shrines:
 		var pos: Vector2=shrine.p
 		if pos.distance_squared_to(camera)>visible_distance_sq: continue
@@ -217,7 +235,9 @@ func _draw() -> void:
 			var reward_color: Color=Catalog.BAG_TIERS[int(chest.get("reward_tier",4))].color
 			draw_circle(pos,48,Color(reward_color,0.16))
 			draw_line(pos,pos-Vector2(0,85),Color(reward_color,0.5),5,true)
-			var caption := session.container_title(chest)+" · [F] 搜索"
+			var caption := session.container_title(chest)
+			if key_hint(pos,session.SEARCH_RADIUS):
+				caption+=" · [F] 搜索"
 			label(pos+Vector2(-font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,16).x/2,-94),caption,16,reward_color)
 		var revealed: int=int(chest.get("searched",0))
 		if not empty and revealed>0:
@@ -240,11 +260,17 @@ func _draw() -> void:
 			draw_rect(Rect2(at-Vector2(13,15),Vector2(26,30)),Color(bag_colour,0.9),false,1.5)
 			draw_arc(at-Vector2(0,15),10,PI,TAU,14,Color(bag_colour.lightened(0.2)),2.5)
 			draw_line(at-Vector2(13,0),at+Vector2(13,0),Color(bag_colour.darkened(0.3)),1)
-			label(at+Vector2(-30,-40),Catalog.bag_quality({"key":str(bag.key).substr(4)})+"背包"+(" · [H] 搜索" if bundled else " · [F] 拾取"),12,bag_colour.lightened(0.25))
+			var bag_text := Catalog.bag_quality({"key":str(bag.key).substr(4)})+"背包"
+			if key_hint(at,session.DROP_RADIUS):
+				bag_text+=(" · [H] 搜索" if bundled else " · [F] 拾取")
+			label(at+Vector2(-30,-40),bag_text,12,bag_colour.lightened(0.25))
 		elif bundled:
 			draw_rect(Rect2(at-Vector2(15,13),Vector2(30,26)),Color("625b69"))
 			draw_rect(Rect2(at-Vector2(15,13),Vector2(30,26)),Color("b7a6b8"),false,1.5)
-			label(at+Vector2(-40,-36),"掉落包 · [H] 搜索",12,Color("d3c4d5"))
+			var pack_text := "掉落包"
+			if key_hint(at,session.DROP_RADIUS):
+				pack_text+=" · [H] 搜索"
+			label(at+Vector2(-40,-36),pack_text,12,Color("d3c4d5"))
 		else:
 			for item in Catalog.container_items(bag):
 				var colour: Color=Catalog.item_color(item)
