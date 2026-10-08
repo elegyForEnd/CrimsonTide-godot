@@ -153,7 +153,7 @@ func event(data: Dictionary) -> void:
 	var aim_dir: Vector2=data.get("aim",Vector2.RIGHT)
 	var angle := aim_dir.angle()
 	var weapon := int(data.get("weapon",0))
-	var run_weapon: bool=int(data.get("weapon_index",-1))>=600 and int(data.get("weapon_index",-1))<648
+	var painted_weapon := int(data.get("weapon_index",-1))>=0
 	var spell := str(data.get("spell","star"))
 	if data.kind=="enemy_defeated" and not data.get("rogue_guardian",false) and not data.get("raid_boss",false):
 		var style: String=["stone","soul","ember","feather"][int(data.get("type",0))%4]
@@ -176,13 +176,13 @@ func event(data: Dictionary) -> void:
 	spell_energy(data,spell,at,aim_dir)
 	match data.kind:
 		"spell_beam":
-			if not run_weapon: spell_fx("prism",at,Vector2.ONE*70,0.26,angle)
+			if not painted_weapon: spell_fx("prism",at,Vector2.ONE*70,0.26,angle)
 		"spell_arc":
 			var target: Vector2=data.target
 			var delta := target-at
-			if not run_weapon: spell_fx("chain",target,Vector2.ONE*70,0.26,delta.angle())
+			if not painted_weapon: spell_fx("chain",target,Vector2.ONE*70,0.26,delta.angle())
 		"spell_burst":
-			if not run_weapon: spell_fx(spell,at,Vector2.ONE*(290 if spell=="meteor" else 260),0.65)
+			if not painted_weapon: spell_fx(spell,at,Vector2.ONE*(290 if spell=="meteor" else 260),0.65)
 			trauma=maxf(trauma,0.38 if spell=="meteor" else 0.20)
 		"dodge": pass
 		"windup": pass
@@ -450,7 +450,7 @@ func _draw() -> void:
 		if bullet.has("rogue_tone"): continue
 		var spell := str(bullet.get("spell","star"))
 		var concrete := int(bullet.get("weapon_index",-1))
-		if concrete>=600 and concrete<648:
+		if int(bullet.get("owner",0))>0 and concrete>=0:
 			draw_run_projectile(self,bullet,false)
 			continue
 		if SPELL_CELLS.has(spell): continue
@@ -639,7 +639,7 @@ func draw_spells() -> void:
 		if bullet.has("rogue_tone"): continue
 		var spell := str(bullet.get("spell","star"))
 		var concrete := int(bullet.get("weapon_index",-1))
-		if concrete>=600 and concrete<648:
+		if int(bullet.get("owner",0))>0 and concrete>=0:
 			draw_run_projectile(spell_light,bullet,true)
 			continue
 		if not SPELL_CELLS.has(spell): continue
@@ -666,25 +666,30 @@ func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> 
 	var at: Vector2=bullet.p-Vector2(0,float(bullet.get("height",0)))
 	var direction: Vector2=world.basis_xform(bullet.v).normalized()
 	target.draw_set_transform_matrix(world.affine_inverse()*Transform2D(direction.angle(),world*at))
-	var r := 21.0 if int(identity.family)==0 else 29.0
-	var color := Color(identity.color,.8)
-	var art := preload("res://scripts/weapon_image_art.gd").texture(int(bullet.weapon_index),0)
-	if art:
-		var extent := Vector2.ONE*r*2.8
-		var upgrade: Dictionary=bullet.get("build_context",{}).get("vfx",{})
-		var forge := clampi(int(upgrade.get("forge",0)),0,5)
-		var quality := clampi(int(upgrade.get("quality",0)),0,5)
-		var opacity := .12+forge*.008+quality*.004 if glow else .9+forge*.012
-		target.draw_texture_rect(art,Rect2(-extent*.5,extent),false,Color(1,1,1,opacity))
-	elif int(identity.family)==0: WeaponVfx.projectile_shape(target,identity,r,1.0,color,glow)
-	else: WeaponVfx.cast_shape(target,identity,r,1.0,color,glow)
-	WeaponVfx.line(target,PackedVector2Array([Vector2(-r*1.5,0),Vector2.ZERO]),Color(color,.20),1.2,glow)
+	var semantics := preload("res://scripts/weapon_mechanics.gd")
+	var role: String=semantics.projectile_role(int(bullet.weapon_index),str(bullet.get("spell","star")))
+	var art := preload("res://scripts/weapon_image_art.gd")
+	var source: String=art.payload_source(int(bullet.weapon_index),"projectile",role)
+	var upgrade: Dictionary=bullet.get("build_context",{}).get("vfx",{})
+	var forge := clampi(int(upgrade.get("forge",0)),0,5)
+	var quality := clampi(int(upgrade.get("quality",0)),0,5)
+	var tint := Color(identity.color)
+	tint.s=maxf(tint.s,.72)
+	tint.v=1.7
+	if source.begins_with("authored_"): tint=Color.WHITE
+	tint.a=.48+forge*.008+quality*.004 if glow else 1.0
+	var bounds: Vector2=semantics.projectile_size(role,int(bullet.weapon_index))
+	if source.begins_with("authored_"):
+		# Flight has an authoritative longitudinal/transverse footprint.
+		# Wide painted wakes must not turn a needle into a broad collision wave.
+		target.draw_texture_rect_region(art.mechanic_texture(source),Rect2(-bounds*.5,bounds),art.mechanic_ink(source),tint)
+	else: art.stamp_mechanic(target,source,bounds,tint)
 	target.draw_set_transform(Vector2.ZERO)
 
 func spell_energy(data: Dictionary, spell: String, at: Vector2, aim: Vector2) -> void:
 	if not SPELL_CELLS.has(spell): return
 	var index := int(data.get("weapon_index",Library.SPELL_WEAPONS[int(SPELL_CELLS[spell])]))
-	if index>=600 and index<648: return # The concrete weapon owns its beam/burst.
+	if index>=0: return # Mechanic-specific painted beam/burst is drawn by stylized.
 	var col: Color=Library.weapon_color(index)
 	var source := int(data.get("id",-1))
 	match str(data.kind):

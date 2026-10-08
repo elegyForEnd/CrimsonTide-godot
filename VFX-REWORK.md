@@ -154,3 +154,13 @@ rogue_actions.gd 将 combo_route 随普攻/战技广播；四类派生分别是�
 主轮廓现使用内置 ImageGen 生成的 74 张独立透明方图，完整素材与强化口径见 WEAPON-IMAGE-VFX.md。绯红剑三段各自一张，其他武器以专属主图配合类别接斩/终结图层、动画揭示、固定挂点与少量粒子；52 个不同武器名称共用到 69 把具体武器，48 把闯关武器各自保持独立主图。长图不参与运行时。
 
 锻造只轻微提高刃缘光，命中范围和伤害规则保持现有逻辑；+2/+4 核心图在机制实际执行时播放，+3/+5 角色连招按权威确认。弹丸、爆炸、连锁与命中冻结出手时的品质/强化状态。预览 build/weapon-image-upgrades.png，试玩 build/CrimsonTide-WeaponImageVFX.exe。
+
+## 2026-10-07 按实际机制重做与辉光增强
+
+续接反馈“太细、太弱”后，新增 weapon_body.gdshader 加厚刀光主体，并加厚突刺与飞行弹体亮芯、加强外围辉光、扩大出手与命中闪光。GPU 对同一刀光的前后检查确认亮像素增加至少 35%。当前预览与试玩均已重新生成，验证记录见 TEST-REPORT.md。
+
+### 最新：用 ImageGen 重画原图
+
+用户澄清后，重新生成14张原始透明方图，替换过细刀光/弹体及方向不清的雷弹。新图带 _v2，映射由 weapon_image_art.gd 的 REDRAWN 管理；主画面保持原始比例，上一轮主体扩边shader已移除，不再横向拉厚细长贴图。以上扩边实现仅为历史记录。14组原图对照在 build/weapon-imagegen-redraw.png，最新试玩 build/CrimsonTide-WeaponImageRedraw.exe；提示词与哈希保存在 assets/combat/imagegen-mechanics。
+
+普通武器主表现改用 32 张新的 ImageGen 透明方图：刀迹/直刺/圆斩/窄扇/砸地、枪焰与弦振、11 类飞行弹体、直线光束及8类范围爆发分别选图，不再把波状武器主图同时当出手与弹丸。强化接线继续沿用。饱和色亮芯、边缘辉光、出手显示保持与终结残影增强；空中圆斩读取实际高度，光束捕获局部起点，远程派生不另画剑弧或冰晶。规则与预览见 WEAPON-MECHANICS-VFX.md；试玩 build/CrimsonTide-WeaponMechanics.exe。

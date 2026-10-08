@@ -15,6 +15,7 @@ var generated_idle = preload("res://scripts/character_idle_frames.gd").new()
 var rogue_jump = preload("res://scripts/rogue_jump_frames.gd").new()
 var ranged := GeneratedAttacks.new("res://assets/combat/ranged-imagegen/manifest.json")
 var ranged_poses: Dictionary = {}
+var weapon_atlases = preload("res://scripts/weapon_atlas_frames.gd").new()
 
 func _init() -> void:
 	if USE_GENERATED_HERO_ANIMATIONS:
@@ -189,9 +190,10 @@ func weapon_tip(hero: int, family: int, frame: int) -> Vector2:
 static func attack_pose_frame(p: Dictionary) -> int:
 	if float(p.get("swing_time",0))>0:
 		var total: float=maxf(.001,p.swing_total)
-		var progress := 1.0-float(p.swing_time)/total
-		var windup: float=Catalog.weapon(p.weapon).windup/total
-		return 1 if progress<windup else 2 if progress<windup+.23 else 3
+		var elapsed := total-float(p.swing_time)
+		var windup: float=float(p.get("build_strike_windup",Catalog.weapon(p.weapon).windup))
+		# Compare seconds like ranged_pose_frame: ratios can round release back to windup.
+		return 1 if elapsed+.00001<windup else 2 if elapsed<windup+total*.23 else 3
 	if float(p.get("cast_time",0))>0:
 		return 1 if p.cast_time>.55 else 2 if p.cast_time>.2 else 3
 	return 0
@@ -229,6 +231,8 @@ func idle_frame(hero: int, weapon: int, phase: float) -> Dictionary:
 	return attack_frame(hero,maxi(1,weapon),0)
 
 func held_idle_frame(hero: int, weapon: int, seconds: float = 0.0) -> Dictionary:
+	var held: Dictionary=weapon_atlases.frame(hero,weapon,"idle",int(seconds*weapon_atlases.rate(hero,weapon,"idle",1.0)),walk_height(hero))
+	if not held.is_empty(): return held
 	var pose: Dictionary=generated_idle.frame(hero,weapon,walk_height(hero),seconds)
 	# The idle library has separate bow, rifle and empty-hand run-weapon clips.
 	if not pose.is_empty(): return pose
@@ -255,9 +259,32 @@ static func ranged_pose_frame(p: Dictionary) -> int:
 	return 2 if elapsed-hit<minf(.10,maxf(.001,total-hit)*.45) else 3
 
 func equipped_attack_frame(p: Dictionary) -> Dictionary:
+	var phase := ranged_pose_frame(p) if Catalog.weapon_family(int(p.weapon))==0 else attack_pose_frame(p)
+	var state := "art" if str(p.get("build_strike_kind",""))!="" else "attack"
+	var held: Dictionary=weapon_atlases.frame(int(p.hero),int(p.weapon),state,weapon_atlases.attack_index(p,state),walk_height(int(p.hero)))
+	if not held.is_empty(): return held
 	if Catalog.weapon_family(int(p.weapon))==0:
 		return ranged_frame(int(p.hero),int(p.weapon),ranged_pose_frame(p))
 	return attack_frame(int(p.hero),maxi(1,Catalog.weapon_family(int(p.weapon))),attack_pose_frame(p))
+
+func held_motion_frame(p: Dictionary, mode: String, phase: float, dodge_time: float) -> Dictionary:
+	var size: int=weapon_atlases.count(int(p.hero),int(p.weapon),mode)
+	var index := clampi(int((1.0-dodge_time/TideSession.DODGE_DURATION)*size),0,maxi(0,size-1)) if mode=="dodge" else int(phase)
+	var held: Dictionary=weapon_atlases.frame(int(p.hero),int(p.weapon),mode,index,walk_height(int(p.hero)))
+	return held if not held.is_empty() else motion_frame(int(p.hero),mode,phase,dodge_time)
+
+func held_jump_frame(p: Dictionary, velocity: float, height: float = 50.0, landing_time: float = 0.0) -> Dictionary:
+	# Keep the weapon on aerial poses; the host owns the actual jump height.
+	var size: int=weapon_atlases.count(int(p.hero),int(p.weapon),"dodge")
+	var phase := maxi(0,size-1) if landing_time>0 else 0 if velocity>100 else maxi(0,size/2)
+	var held: Dictionary=weapon_atlases.frame(int(p.hero),int(p.weapon),"dodge",phase,walk_height(int(p.hero)))
+	return held if not held.is_empty() else jump_frame(int(p.hero),velocity,height,landing_time)
+
+func equipped_weapon_tip(p: Dictionary) -> Vector2:
+	var pose := equipped_attack_frame(p)
+	if pose.has("socket"): return pose.socket
+	if Catalog.weapon_family(int(p.weapon))==0: return ranged_weapon_tip(p)
+	return weapon_tip(int(p.hero),maxi(1,Catalog.weapon_family(int(p.weapon))),attack_pose_frame(p))
 
 const BOW_SOCKETS := [
 	[Vector2(290,146),Vector2(653,145),Vector2(993,154),Vector2(1344,196)],

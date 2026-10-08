@@ -44,8 +44,8 @@ static func rogue_key(index: int) -> String:
 	return ROGUE[clampi(index,0,ROGUE.size()-1)]
 
 static func identity(data: Dictionary) -> String:
-	if data.has("art_key"): return str(data.art_key)
-	if data.get("rogue_guardian",false): return rogue_key(int(data.get("rogue_skin",data.get("floor",0))))
+	if not str(data.get("art_key","")).is_empty(): return str(data.art_key)
+	if data.get("rogue_guardian",false): return rogue_key(int(data.get("boss_art",data.get("rogue_skin",data.get("floor",0)))))
 	if data.get("dragon_boss",false): return "dragon"
 	if data.get("wild_boss",false): return ["earth","storm","abyss"][clampi(int(data.get("wild_kind",0)),0,2)]
 	if data.get("hidden_final",false): return "hidden"

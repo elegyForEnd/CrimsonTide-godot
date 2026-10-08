@@ -22,7 +22,12 @@
             180,
             1196,
             1093
-          ]
+          ],
+          "contact": [
+            1139,
+            597
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "25fd4fee3f1281eb09ec8d8e181833046cc3367ab0e54f9c9621fbb8996215b6",
@@ -48,7 +53,12 @@
             123,
             1206,
             1134
-          ]
+          ],
+          "contact": [
+            1136,
+            769
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "b0d63e2dad520d9d80fe8582565e21b216d4865471627f00f896098f050d4633",
@@ -74,7 +84,12 @@
             206,
             1215,
             1045
-          ]
+          ],
+          "contact": [
+            1164,
+            626
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "eaa4417be14b4edea89f7709e1015282a03709f66b8a3c734b916e29c7d3bb35",
@@ -100,7 +115,12 @@
             358,
             1216,
             884
-          ]
+          ],
+          "contact": [
+            1146,
+            664
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "c985e56352724ed86ddc63c90293f03bd60ec957e3df03f2345e368cf47e56b4",
@@ -126,7 +146,12 @@
             231,
             1234,
             1005
-          ]
+          ],
+          "contact": [
+            1129,
+            680
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "ae2c369a34b90814a558540fbb1b0d2c50215c5d505145b5434046de53038369",
@@ -152,7 +177,12 @@
             251,
             1200,
             1001
-          ]
+          ],
+          "contact": [
+            1116,
+            664
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "c654282aa29fe7665cf267b1eab304697c21bd1f60a59e47a600408bd6574489",
@@ -178,7 +208,12 @@
             194,
             1231,
             1047
-          ]
+          ],
+          "contact": [
+            1097,
+            628
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "f409ec094bbb537697b9a6cba6247cc403b0d1f0c84e93c1736b7945a65d375a",
@@ -204,7 +239,12 @@
             157,
             1218,
             1071
-          ]
+          ],
+          "contact": [
+            1138,
+            659
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "a4dce6ac7e63c6e62bcedf1c3457347bae35b0da4cb33437c4468f457f80fb88",
@@ -230,7 +270,12 @@
             248,
             1238,
             1019
-          ]
+          ],
+          "contact": [
+            1174,
+            442
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "0c6307df3d19cddee9ad19adf1e69c69f1618033054ddb59e356a0eecae50c03",
@@ -256,7 +301,12 @@
             261,
             1208,
             980
-          ]
+          ],
+          "contact": [
+            1154,
+            695
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "b361b7d38e21a79acfe9f202d5ebada38fad56df7c456f25d944d4a0990b9040",
@@ -282,7 +332,12 @@
             236,
             1212,
             1017
-          ]
+          ],
+          "contact": [
+            1138,
+            541
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "5805b2dc88c720001bf6163a8cf0209cc1210aeab9948df9c6471c6a439d87ef",
@@ -308,7 +363,12 @@
             180,
             1202,
             1058
-          ]
+          ],
+          "contact": [
+            1139,
+            653
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "2935311e383d61ae0bf3d6eb9c9dcafd4cfea1cb5f5ddfb146c1d030b6d1dec8",
@@ -334,7 +394,12 @@
             324,
             1218,
             947
-          ]
+          ],
+          "contact": [
+            1160,
+            702
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "5ca9cb60a43a4b471b0ba02ea15c3078f92a3397187b2d7332ba5b10ad3c9177",
@@ -360,7 +425,12 @@
             211,
             1190,
             1022
-          ]
+          ],
+          "contact": [
+            1121,
+            601
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "e529423417f1e5c352a282959173051df35e34651584662dde229ac8f96c90c8",
@@ -386,7 +456,12 @@
             221,
             1194,
             1026
-          ]
+          ],
+          "contact": [
+            1087,
+            652
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "3c698ea101cef56fdad637316846a27a59b326ab18796e884d3a0ef5bd17ff56",
@@ -412,7 +487,12 @@
             215,
             1176,
             978
-          ]
+          ],
+          "contact": [
+            1114,
+            760
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "d7a68037e49015389fd986844f112041bf2a117f387249fd2bad7680c2dc681b",
@@ -438,7 +518,12 @@
             266,
             1234,
             1032
-          ]
+          ],
+          "contact": [
+            1150,
+            654
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "ab7c12b6da0fb284aae11c13622edb37e0e1a64ad78313cba978d9fc46125e45",
@@ -464,7 +549,12 @@
             186,
             1238,
             1078
-          ]
+          ],
+          "contact": [
+            1156,
+            652
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "d93c766d90ae4cf50e7f58588065d222b928249bd9acd6028754826e7732cd8a",
@@ -490,7 +580,12 @@
             186,
             1213,
             1091
-          ]
+          ],
+          "contact": [
+            1150,
+            673
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "a60c02850fceba1a077abe68915acbf2d7a910e53a1c3b9bffa130e3832be989",
@@ -516,7 +611,12 @@
             146,
             1228,
             1102
-          ]
+          ],
+          "contact": [
+            1127,
+            658
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "2f096d32a77d07e20b1b1661d06a2d34aab69d10970627119ca34ca6dbc4f2dd",
@@ -542,7 +642,12 @@
             196,
             1220,
             1042
-          ]
+          ],
+          "contact": [
+            1160,
+            660
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "5d2c70a64d0a52f25381b62a2ae59e1cc55431f7ce3a858ebd899890ea882ce4",
@@ -568,7 +673,12 @@
             180,
             1198,
             1079
-          ]
+          ],
+          "contact": [
+            1083,
+            659
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "f22dc6249b5e91afcfb6bb60239d1a4d4a99965109a96b414f77922c3be6d2e1",
@@ -594,7 +704,12 @@
             167,
             1227,
             1060
-          ]
+          ],
+          "contact": [
+            1164,
+            607
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "139d7dc7975ee70088379d308c96adf088c4062261bc5bae8d04c21c5cf9af15",
@@ -620,7 +735,12 @@
             273,
             1228,
             983
-          ]
+          ],
+          "contact": [
+            1158,
+            666
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "9cb076555428f1d125e956598edc8d112e1cf352f6419f1d9a299da344f61661",
@@ -646,7 +766,12 @@
             225,
             1199,
             1057
-          ]
+          ],
+          "contact": [
+            1152,
+            779
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "000f4587b5aeeaec457d184cdaae12186d51bb2aac5c222fb5b8f2fe7db1dd03",
@@ -672,7 +797,12 @@
             238,
             1225,
             1020
-          ]
+          ],
+          "contact": [
+            1147,
+            675
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "a925ed9057233c33bb4286f8dc66330e86642fa3cd322a7a3524021fec22eed5",
@@ -698,7 +828,12 @@
             313,
             1176,
             926
-          ]
+          ],
+          "contact": [
+            1060,
+            652
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "f77a79dde905238001c1f9ec45cf0097acc678dbfa25b0706e60f6eb263f8e92",
@@ -724,7 +859,12 @@
             339,
             1206,
             913
-          ]
+          ],
+          "contact": [
+            1138,
+            662
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "781912ae64f2bfddcaadf41bd54aff6f4039193e2155502443c8d7d5ef6eb10a",
@@ -750,7 +890,12 @@
             371,
             1210,
             895
-          ]
+          ],
+          "contact": [
+            1145,
+            644
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "be7e2d1a41024af98ad1c88cd4cb84d7a6259a01f5e9b140271a5e3d39d4e62a",
@@ -776,7 +921,12 @@
             245,
             1212,
             982
-          ]
+          ],
+          "contact": [
+            1128,
+            664
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "1146b27e2ca2be6d8d6ba161740144fc4cb10dec6dcbefb380ce4c9323d860a5",
@@ -802,7 +952,12 @@
             398,
             1220,
             911
-          ]
+          ],
+          "contact": [
+            1132,
+            677
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "456062c650f7dd550d800c30630ec100a1c62aa84a5741696edacbebfbe09881",
@@ -828,7 +983,12 @@
             267,
             1233,
             1013
-          ]
+          ],
+          "contact": [
+            1121,
+            656
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "8a83443be0accdfa6772081dba760adcb5d287df149145fc791931b27ef0624c",
@@ -854,7 +1014,12 @@
             333,
             1195,
             947
-          ]
+          ],
+          "contact": [
+            1092,
+            654
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "0df2c3e3aa375ea3d3fca0869161c242974c3d31862201f2f0807c173ebb481e",
@@ -880,7 +1045,12 @@
             243,
             1205,
             1029
-          ]
+          ],
+          "contact": [
+            1112,
+            620
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "08a0b908bcbf6ce0becaf4d2076328120057966dc774cbda42486eb73fca0118",
@@ -906,7 +1076,12 @@
             235,
             1232,
             1005
-          ]
+          ],
+          "contact": [
+            1139,
+            657
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "392eeef2515bde45fbd3ea7a7004739468cb578c7817643d782b8e4281a3af1d",
@@ -932,7 +1107,12 @@
             305,
             1242,
             933
-          ]
+          ],
+          "contact": [
+            1143,
+            641
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "5cbf85459aaf11dfb7bae65f507d46bb33ed710a929adabb8978efa8220c891d",
@@ -958,7 +1138,12 @@
             349,
             1224,
             900
-          ]
+          ],
+          "contact": [
+            1151,
+            632
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "9801accb1bcec2cfbd1cb112333cbc3d0c058ae61a2028d3089654b12a5dc02c",
@@ -984,7 +1169,12 @@
             260,
             1187,
             996
-          ]
+          ],
+          "contact": [
+            1092,
+            634
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "4c9bd96ce53850908f908f392e7625aee7aa3e08e158c502746b1a33e924120e",
@@ -1010,7 +1200,12 @@
             330,
             1229,
             951
-          ]
+          ],
+          "contact": [
+            1112,
+            685
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "0412a5de26d713d9089d249f89fc76de2a67b5f6a54355e39f6b91c8afd42a6e",
@@ -1036,7 +1231,12 @@
             259,
             1188,
             964
-          ]
+          ],
+          "contact": [
+            1151,
+            707
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "2eba1392c3e25d56fbd61d73d2661db8b0c4a0e0ffb276f343f065226e8f4a13",
@@ -1062,7 +1262,12 @@
             360,
             1187,
             918
-          ]
+          ],
+          "contact": [
+            1108,
+            676
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "79fc1e8232df4425415f4ac92dd1323028c844798552915ea6597eecdb1a8811",
@@ -1088,7 +1293,12 @@
             207,
             1203,
             1028
-          ]
+          ],
+          "contact": [
+            1124,
+            669
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "88f407f483dcd33c543ab37a43d81e2c343894e8f436a3560c52297ff42150ed",
@@ -1114,7 +1324,12 @@
             191,
             1188,
             1061
-          ]
+          ],
+          "contact": [
+            1104,
+            637
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "4ce74cebbe2f24302eb51c10d538e058b23e38baf78370cdea9f9c28490a2aee",
@@ -1140,7 +1355,12 @@
             333,
             1201,
             899
-          ]
+          ],
+          "contact": [
+            1102,
+            648
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "5427bab3080b2d66286c410557931d6ece963fe45e2afa546314622f65164c24",
@@ -1166,7 +1386,12 @@
             163,
             1224,
             916
-          ]
+          ],
+          "contact": [
+            1166,
+            664
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "9d36c1fb4c12ec973175defe2625adf300413e1908f940ccd2b29e93961a856b",
@@ -1192,7 +1417,12 @@
             221,
             1235,
             1019
-          ]
+          ],
+          "contact": [
+            1158,
+            677
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "43719aa7225e01e066c5251a483e3b0c4718511e73b48c2783c7b0f6d729a838",
@@ -1218,7 +1448,12 @@
             328,
             1235,
             906
-          ]
+          ],
+          "contact": [
+            1155,
+            658
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "8267cbe48e1e3953585b244fae4b9bdc64e371c85fc80dd7c000619325b1586f",
@@ -1244,7 +1479,12 @@
             276,
             1222,
             1009
-          ]
+          ],
+          "contact": [
+            1165,
+            585
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "ba0fe40d04971ab299c475bcb1d2fc99f7ddc504b468c102026cd3e80e88f2ba",
@@ -1270,7 +1510,12 @@
             313,
             1221,
             916
-          ]
+          ],
+          "contact": [
+            1154,
+            700
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "1c6399b8cb12ad4659f8c455a7f8dcb0009c1b604658bda7e8a0f18df39041fe",
@@ -1296,7 +1541,12 @@
             210,
             1187,
             1042
-          ]
+          ],
+          "contact": [
+            1091,
+            637
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "27a980f9fc0eda860ec6584fae1b64573a79a82316fc7553e98476a8e3d41573",
@@ -1322,7 +1572,12 @@
             158,
             1221,
             1091
-          ]
+          ],
+          "contact": [
+            1165,
+            444
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "18eb3bba4ef67e99bc10dcdec3e85cf30218871f79e3690e624fb5a8070200db",
@@ -1348,7 +1603,12 @@
             298,
             1179,
             997
-          ]
+          ],
+          "contact": [
+            1096,
+            679
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "10d04f6f4b47172ad6c13a52b0fbadaca09262fab666335fc9d70e844e2008cb",
@@ -1374,7 +1634,12 @@
             200,
             1220,
             1080
-          ]
+          ],
+          "contact": [
+            1144,
+            666
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "6730e233c3863f2f898e3061a61deb5b5cc63aebd14b503006485cce53602caf",
@@ -1400,7 +1665,12 @@
             174,
             1209,
             1073
-          ]
+          ],
+          "contact": [
+            1146,
+            709
+          ],
+          "contact_method": "distal luminous core; original alpha"
         }
       ],
       "sha256": "292a8e933928f7a2e818d03a791390370efc1217a846ac64e2c332707393d3bb",

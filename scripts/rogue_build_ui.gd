@@ -13,6 +13,25 @@ var player: Dictionary
 var body: Control
 var safe := false
 var scroll: ScrollContainer
+var built_section := ""
+var restoring_scroll := true
+
+func remember_scroll() -> void:
+	if is_instance_valid(scroll) and not restoring_scroll:
+		scroll_positions[built_section]=scroll.scroll_vertical
+
+func restore_scroll(value: int) -> void:
+	# Container ranges are calculated after the content is laid out.
+	await get_tree().process_frame
+	if not is_inside_tree(): return
+	await get_tree().process_frame
+	if not is_inside_tree(): return
+	scroll.scroll_vertical=value
+	restoring_scroll=false
+	remember_scroll()
+
+func _exit_tree() -> void:
+	remember_scroll()
 
 func text(parent: Node, value: String, at: Vector2, dimensions: Vector2, size: int = 18, color: Color = PAPER) -> Label:
 	var label: Label=host.label(parent,value,at,size,color,dimensions)
@@ -27,6 +46,7 @@ func button(parent: Node, title: String, at: Vector2, dimensions: Vector2, callb
 	return result
 
 func command(verb: String, id: String = "", index: int = -1) -> void:
+	remember_scroll()
 	host.session.action("rogue_build",{"verb":verb,"id":id,"index":index,"version":int(player.rogue_inventory_revision)})
 
 func row(at: Vector2, dimensions: Vector2) -> Panel:
@@ -36,6 +56,8 @@ func row(at: Vector2, dimensions: Vector2) -> Panel:
 
 func build(app, p: Dictionary) -> void:
 	host=app; player=p; safe=Build.safe(host.session,p)
+	built_section=section
+	var saved_scroll := int(scroll_positions.get(built_section,0))
 	size=Vector2(1440,900)
 	host.overlay.add_child(self)
 	host.rect(self,Vector2.ZERO,size,Color(.012,.016,.027,.98))
@@ -45,7 +67,7 @@ func build(app, p: Dictionary) -> void:
 	var keys := ["talents","attributes","forge","combos","codex"]
 	for i in keys.size():
 		var key: String=keys[i]
-		var b := button(self,["天赋与流派","七属性","武器锻造","连招手册","构筑图鉴"][i],Vector2(67+i*254,150),Vector2(238,45),func(): section=key; host.show_inventory())
+		var b := button(self,["天赋与流派","七属性","武器锻造","连招手册","构筑图鉴"][i],Vector2(67+i*254,150),Vector2(238,45),func(): remember_scroll(); section=key; host.show_inventory())
 		if key==section: b.modulate=GOLD
 	scroll=ScrollContainer.new()
 	scroll.position=Vector2(66,214); scroll.size=Vector2(1305,607)
@@ -53,14 +75,19 @@ func build(app, p: Dictionary) -> void:
 	add_child(scroll)
 	body=Control.new(); body.custom_minimum_size=Vector2(1280,607)
 	scroll.add_child(body)
-	scroll.scroll_vertical=int(scroll_positions.get(section,0))
-	scroll.get_v_scroll_bar().value_changed.connect(func(value): scroll_positions[section]=value)
+	scroll.get_v_scroll_bar().value_changed.connect(func(_value): remember_scroll())
 	match section:
 		"talents": talents()
 		"attributes": attribute_sheet()
 		"forge": forge()
 		"combos": combos()
 		"codex": codex()
+	# Seed the correct range immediately, avoiding a visible frame at the top.
+	var vertical_bar := scroll.get_v_scroll_bar()
+	vertical_bar.max_value=body.custom_minimum_size.y
+	vertical_bar.page=scroll.size.y
+	scroll.scroll_vertical=saved_scroll
+	restore_scroll.call_deferred(saved_scroll)
 	text(self,"F 喝血瓶 · Space 闪避 · C 跃起 · 左键攻击 · 右键战技 · Q 角色奥义",Vector2(68,841),Vector2(1290,30),16,MUTED)
 
 func talents() -> void:
@@ -70,7 +97,7 @@ func talents() -> void:
 		text(body,"天赋来自灵契圣坛，每层1～2座，每座两轮三选一。完成区域另获修为；收藏不消耗修为。",Vector2(35,130),Vector2(1080,100),24,GOLD)
 		return
 	var ids: Array=player.build_library.duplicate()
-	ids.sort_custom(func(a,b): return int(player.build_talents.get(a,0))>int(player.build_talents.get(b,0)))
+	# Keep acquisition order so upgrading a row does not move it under the cursor.
 	for i in ids.size():
 		var id: String=ids[i]
 		var def := Content.entry(id)
@@ -82,8 +109,10 @@ func talents() -> void:
 		text(box,Content.player_text(str(def.text)),Vector2(115,47),Vector2(810,64),16,PAPER)
 		var proposed: Dictionary=player.build_talents.duplicate(true); proposed[id]=level+1
 		var plus := button(box,"+ 激活 / 升级",Vector2(1000,14),Vector2(235,42),func(): command("talent_up",id),not safe or not Build.legal_talents(proposed,int(player.build_cultivation)))
-		plus.tooltip_text="需满足前置、修为预算与槽位上限"
-		button(box,"− 降级" if level>0 else "遗忘收藏",Vector2(1000,69),Vector2(235,40),func(): command("talent_down" if level>0 else "forget",id),not safe)
+		plus.name="TalentActivate_"+id
+		plus.tooltip_text=Build.activation_reason(player,id)
+		var minus := button(box,"− 降级" if level>0 else "遗忘收藏",Vector2(1000,69),Vector2(235,40),func(): command("talent_down" if level>0 else "forget",id),not safe)
+		minus.name="TalentRemove_"+id
 	body.custom_minimum_size.y=100+ids.size()*136
 
 func attribute_sheet() -> void:
@@ -100,7 +129,7 @@ func attribute_sheet() -> void:
 		text(box,WatcherAttributes.DESCRIPTIONS[i],Vector2(680,15),Vector2(430,28),16)
 		button(box,"+1",Vector2(1138,9),Vector2(93,43),func(): command("attribute",key),not safe or player.build_attribute_points<=0 or values[key]>=99)
 	button(body,"重置本局属性（每层一次）",Vector2(0,610),Vector2(360,45),func(): command("respec"),not safe or player.build_respec_floor==int(host.session.raid.floor))
-	text(body,"武器补正："+Catalog.scaling_text(int(player.weapon))+"\n当前武器属性加成：+%.1f%%　·　角色奥义属性加成：+%.1f%%" % [host.session.weapon_scaling(player)*100,WatcherAttributes.scaling(values,Build.HERO_GRADES[int(player.hero)])*100],Vector2(400,610),Vector2(835,76),18,GOLD)
+	text(body,"武器补正："+Catalog.scaling_text(int(player.weapon),Build.grades(player,int(player.weapon)))+"\n当前武器属性加成：+%.1f%%　·　角色奥义属性加成：+%.1f%%" % [host.session.weapon_scaling(player)*100,WatcherAttributes.scaling(values,Build.HERO_GRADES[int(player.hero)])*100],Vector2(400,610),Vector2(835,76),18,GOLD)
 	body.custom_minimum_size.y=710
 
 func forge() -> void:
@@ -111,7 +140,7 @@ func forge() -> void:
 	var cost: int=Build.FORGE_COST[level] if level<5 else 0
 	button(body,"升级 +%d · %d锻造点" % [mini(5,level+1),cost] if level<5 else "已达到 +5",Vector2(10,119),Vector2(340,46),func(): command("forge"),not safe or player.equipped.weapon.is_empty() or level>=mini(5,int(host.session.raid.floor)) or player.build_forge_points<cost)
 	button(body,"转移锻造到当前武器",Vector2(380,119),Vector2(310,46),func(): command("bind"),not safe or player.equipped.weapon.is_empty() or str(player.equipped.weapon.get("instance_id",""))==str(player.build_forge_bound))
-	text(body,"每层最多提升一级。转移免费；旧武器回到+0，需要重新选择核心与补正。",Vector2(715,122),Vector2(530,63),16,MUTED)
+	text(body,"锻造等级上限为当前层数。转移免费；旧武器回到+0，需要重新选择核心与补正。",Vector2(715,122),Vector2(530,63),16,MUTED)
 	var family := Catalog.weapon_family(int(player.weapon))
 	var index := 0
 	for def in Content.data.cores:

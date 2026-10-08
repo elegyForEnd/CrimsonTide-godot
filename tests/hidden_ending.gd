@@ -80,20 +80,26 @@ func run() -> void:
 	check(Catalog.add_item(hoarder.players[1].pocket,"amulet"),"the amulet fits in the pocket")
 	check(not hoarder.hidden_ending_ready(),"an amulet sunk into the pocket does not count")
 
-	# --- the queen's fall becomes the hidden encounter ----------------------
+	# --- queen -> nameless moon -> hidden, without replacing a live boss -----
 	var raid := fresh()
 	raid.seal_bell(0)
 	raid.seal_bell(1)
 	raid.seal_bell(2)
 	Catalog.add_item(raid.players[1].backpack,"amulet")
-	raid.raid.day=3
-	raid.raid.phase="boss"
-	raid.expedition.spawn_boss(raid,true)
-	check(raid.raid.get("final_spawned",false),"the queen's final form is on the field")
-	var queen: Dictionary=raid.enemies[0]
+	raid.enemies.clear()
+	raid.expedition.prepare_day(raid,3)
+	var queen: Dictionary=raid.enemies.back()
+	check(int(queen.boss_kind)==2 and not queen.get("final_form",false),"day three begins with the queen")
 	queen.hp=0
 	raid.simulate(0.016)
-	check(raid.raid.get("hidden_spawned",false),"her fall raises the hidden encounter")
+	check(raid.raid.get("final_spawned",false) and not raid.raid.get("hidden_spawned",false),"the queen's fall raises the moon before the hidden encounter")
+	var moon: Dictionary=raid.enemies.back()
+	check(moon.get("final_form",false),"the nameless moon remains on the field")
+	raid.simulate(0.016)
+	check(not raid.raid.get("hidden_spawned",false),"a living moon is never replaced by the hidden boss")
+	moon.hp=0
+	raid.simulate(0.016)
+	check(raid.raid.get("hidden_spawned",false),"the moon's fall raises the hidden encounter")
 	check(raid.raid.phase=="boss","the run is still a boss fight")
 	check(raid.enemies.size()==1,"only the hidden encounter stands")
 	var boss: Dictionary=raid.enemies[0]

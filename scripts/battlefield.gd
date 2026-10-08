@@ -383,8 +383,7 @@ func actor(p: Dictionary) -> void:
 	var lean := 0.0
 	var lunge := Vector2.ZERO
 	if p.swing_time>0:
-		var windup: float=Catalog.weapon(p.weapon).windup/maxf(0.001,p.swing_total)
-		frame=1 if progress<windup else (2 if progress<windup+0.23 else 3)
+		frame=CharacterFrames.attack_pose_frame(p)
 		lean=(-0.08 if frame==1 else 0.12 if frame==2 else 0.04)*facing
 		lunge=direction*(12 if frame==2 else -3 if frame==1 else 4)
 	if p.cast_time>0:
@@ -399,27 +398,38 @@ func actor(p: Dictionary) -> void:
 		lean=0.0
 		lunge=Vector2.ZERO
 	if travelling:
-		var pose := character_frames.motion_frame(p.hero,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
+		var pose := character_frames.held_motion_frame(p,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
 		if p.motion=="dodge":
 			for ghost in [3,2,1]:
 				set_world_transform(pos-direction*ghost*17,0,Vector2(facing,1))
 				draw_billboard(pose.texture,pose.rect,false,Color(color,0.21/ghost))
 		set_world_transform(pos,0,Vector2(facing,1))
 		draw_billboard(pose.texture,pose.rect,false)
+		draw_held_glow(pose)
 	elif Idle.active(p):
 		var pose := character_frames.held_idle_frame(p.hero,p.weapon,float(idle.sample(p).time))
-		var state := idle.sample(p)
-		var side: float=float(pose.get("hand_side",1.0))
-		var data := Idle.geometry(pose,p.weapon,state.time,state.blend,side)
-		idle_billboards.submit(p.id,data,world_3d.point(pos,2),world_3d.view_camera,facing)
+		if pose.get("weapon_atlas",false):
+			set_world_transform(pos,0,Vector2(facing,1))
+			draw_billboard(pose.texture,pose.rect,false)
+			draw_held_glow(pose)
+		else:
+			var state := idle.sample(p)
+			var side: float=float(pose.get("hand_side",1.0))
+			var data := Idle.geometry(pose,p.weapon,state.time,state.blend,side)
+			idle_billboards.submit(p.id,data,world_3d.point(pos,2),world_3d.view_camera,facing)
 	elif Catalog.weapon_family(p.weapon)==0:
 		var pose := character_frames.equipped_attack_frame(p)
 		set_world_transform(pos,0,Vector2(facing,1))
 		draw_billboard(pose.texture,pose.rect,false)
 	elif Catalog.weapon_family(p.weapon)>0 or p.hero==3:
-		var pose := character_frames.attack_frame(p.hero,maxi(1,Catalog.weapon_family(p.weapon)),frame)
+		var pose := character_frames.equipped_attack_frame(p)
+		if pose.get("weapon_atlas",false):
+			# Authored poses already contain the weight transfer. Translating
+			# and rotating the whole canvas again would slide the planted boot.
+			lean=0.0
+			lunge=Vector2.ZERO
 		var sprite_rect: Rect2=pose.rect
-		if not generated_attack: sprite_rect.position.y+=sway*0.35
+		if not generated_attack and not pose.get("weapon_atlas",false): sprite_rect.position.y+=sway*0.35
 		if not generated_attack and frame==2 and p.swing_time>0:
 			for ghost in [2,1]:
 				set_world_transform(pos+lunge-direction*ghost*12,lean,Vector2(facing,1))
@@ -739,19 +749,24 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	var facing := -1.0 if aim.x<0 else 1.0
 	var upright_weapon: bool=family>0
 	var lunge := aim*(12 if frame==2 else -3 if frame==1 else 4) if p.swing_time>0 and upright_weapon else Vector2.ZERO
-	var tip := (character_frames.weapon_tip(p.hero,maxi(1,family),frame) if upright_weapon else character_frames.ranged_weapon_tip(p))*Vector2(facing,1)
+	var authored: bool=character_frames.equipped_attack_frame(p).get("weapon_atlas",false)
+	if authored: lunge=Vector2.ZERO
+	var tip := character_frames.equipped_weapon_tip(p)*Vector2(facing,1)
 	# submit_sprite uses a two-unit height and ignores the legacy pose lean.
 	var pos: Vector2=smooth_positions.get(p.id,p.p)
 	var at: Vector2=world_3d.view_camera.unproject_position(world_3d.point(pos+lunge,2))
 	var moving := minf(1.0,float(velocity_visual.get(p.id,0.0))/100)
 	var sway := sin(clock*(4+moving*9)+p.id)*(1.3+moving*2)
-	if upright_weapon: tip.y+=sway*.35
+	if upright_weapon and not authored: tip.y+=sway*.35
 	var screen_aim := ground_transform().basis_xform(aim).normalized()
-	var stroke_pivot := at+Vector2(0,tip.y)
-	# Upright sprites only mirror horizontally. The painted swing must still
-	# originate in the actual attack direction, including vertical/diagonal aims.
-	var stroke_tip := stroke_pivot+screen_aim*absf(tip.x) if family in [1,2] else at+tip
-	return {"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":screen_aim,"active":active_attack}
+	# Attach to the visible blade, even when the upright atlas cannot aim vertically.
+	var pose := character_frames.equipped_attack_frame(p)
+	var grip: Vector2=Vector2(pose.get("grip",pose.get("socket",Vector2.ZERO)))*Vector2(facing,1)
+	var blade_axis := (tip-grip).normalized()
+	var stroke_pivot := at+grip
+	var stroke_tip := stroke_pivot+screen_aim*tip.distance_to(grip)
+	return {"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":screen_aim,
+		"grip":at+grip,"blade_axis":blade_axis,"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":active_attack}
 
 func set_world_transform(at: Vector2 = Vector2.ZERO, angle: float = 0.0, scale_value: Vector2 = Vector2.ONE) -> void:
 	world_pose=Transform2D(angle,scale_value,0,at)
@@ -762,6 +777,10 @@ func draw_billboard(texture: Texture2D, rect: Rect2, _tile: bool = false, tint: 
 	# In 3D that would place the boots below the floor. Use the actual foot pivot.
 	rect.position-=CharacterMetrics.FOOT_OFFSET
 	world_3d.submit_sprite(texture,rect,Rect2(),tint,world_pose)
+
+func draw_held_glow(pose: Dictionary) -> void:
+	for glint in preload("res://scripts/weapon_held_glow.gd").samples(pose,clock):
+		draw_billboard(glint.texture,glint.rect,false,glint.tint)
 
 func draw_billboard_region(texture: Texture2D, rect: Rect2, region: Rect2, tint: Color = Color.WHITE) -> void:
 	world_3d.submit_sprite(texture,rect,region,tint,world_pose)

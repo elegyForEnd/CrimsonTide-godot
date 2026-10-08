@@ -89,8 +89,8 @@ func run() -> void:
 	check(int(fresh[0].payload.revision)==int(app.session.raid.revision), "the mirror payload carries the raid revision")
 	app.session.raid["mirror_state"]={"active":true,"owner":int(p.id),"round":1,"settled":false}
 	var armed := RoomUi.rows("mirror",app.session.raid,RoomUi.context_of(app.session,p))
-	check(str(armed[0].name).contains("结算"), "the second click offers to settle instead of accepting twice")
-	check(bool(armed[0].enabled), "the settle button is live while the duel is active")
+	check(str(armed[0].name).contains("战斗"), "the mirror row describes the ongoing fight")
+	check(not bool(armed[0].enabled), "buttons cannot settle an active fight")
 	app.session.raid["mirror_state"]={"active":false,"owner":int(p.id),"round":2,"settled":true}
 	p["rogue_mirror_used"]=true
 	var spent := RoomUi.rows("mirror",app.session.raid,RoomUi.context_of(app.session,p))

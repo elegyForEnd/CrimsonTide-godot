@@ -115,6 +115,14 @@ func _ready() -> void:
 func my_id() -> int:
 	return multiplayer.get_unique_id() if online else 1
 
+func build_notice(p: Dictionary, text: String) -> void:
+	if int(p.id)==my_id(): message.emit(text)
+	elif online and authority(): receive_build_notice.rpc_id(int(p.id),text)
+
+@rpc("authority","call_remote","reliable")
+func receive_build_notice(text: String) -> void:
+	message.emit(text)
+
 func authority() -> bool:
 	return not online or multiplayer.is_server()
 
@@ -335,6 +343,9 @@ func make_player(id: int, config: Dictionary) -> Dictionary:
 	player.merge({"attributes":attributes,"mana":WatcherAttributes.max_mana(attributes),"max_mana":WatcherAttributes.max_mana(attributes),"mana_delay":0.0,"art_cd":0.0})
 	player.merge({"motion":"idle","move_dir":Vector2.RIGHT,"move_speed":0.0,"dodge_time":0.0,"dodge_dir":Vector2.RIGHT})
 	player.merge({"mode":str(config.get("mode","expedition")),"rogue_rerolls":clampi(int(config.get("rogue_rerolls",0)),0,5),"rogue_weapon":clampi(int(config.get("rogue_weapon",-1)),-1,Catalog.WEAPONS.size()-1)})
+	player["rogue_growth_explicit"]=bool(config.get("rogue_growth_explicit",config.has("rogue_growth")))
+	var progression: Variant=config.get("rogue_growth",{})
+	player["rogue_growth"]=RogueGrowth.sanitize({"growth":progression if progression is Dictionary else {}}).growth
 	return player
 
 # What the player wears on top of the camp loadout: one weapon plus the three
@@ -495,16 +506,9 @@ func rogue_damage_pool(p: Dictionary) -> float:
 ## 铁律：不消耗 s.rng、不重置种子；绝不产出任何命中判定几何键——弹幕只允许
 ## 改表现层 `bullet_visual` 与速度，命中半径永远沿用默认的 18.0。
 ## 非魔境模式返回空表（调用方换算恒等）。
-## A1（成长树接线）：第三个来源是 `RogueGrowth.run_mods(profile_data())`——成长树有 14 个
-## 节点，其中 11 个（`iron_constitution`/`monster_slaying`/`hunt_instinct`/`warden_plate`/
-## `deep_pockets`/`scavenger`/`field_medic`/`swift_boots`/`scholar`/`midas_hand`/`hunter_luck`）
-## 的效果键在别处本来就有消费点，但从来没人把成长树读进这张表，所以「买了不生效」。
-## 合并是**加法**（与诅咒同义）：`move_speed` 是加性点数（诅咒 CU02 = -18，成长 = +12/级），
-## `shop_price`/`chest_drop`/`heal_scale`/`gold` 是比例增量（诅咒 CU04 = +0.35，成长 = -0.05/级）。
-## 成长表的符号约定与诅咒**相反**（正数＝对玩家有利），GDScript 加法天然正确处理。
-## 两个来源的键集不相交（成长只产 canonical 键，诅咒只产 `EFFECT_KEYS`），
-## 唯一交叠的 `move_speed`/`shop_price`/`chest_drop`/`heal_scale` 正是设计上要同池相加的。
-## 无 profile 通道时 `run_mods({})` 全零，`4 玩家数` 与接线前逐位一致。
+## 永久成长从玩家的开局快照 rogue_growth 读取，不读取房主的账号替代队友。
+## 个人属性/资源读取自己的树；敌人公共预算用已连接队员成长效果的平均值。
+## 变数全队共享、诅咒个人生效，仍按原键名合成，不消耗随机数。
 func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	var mods: Dictionary = {}
 	if not roguelike.active(self):
@@ -514,9 +518,9 @@ func rogue_mods(p: Dictionary = {}) -> Dictionary:
 	if variant_id != "":
 		ids.append(variant_id)
 	mods = RogueVariants.modifiers_of(ids)
-	# 成长树：账号级，与 p 无关（换人不换树）。先并入，再让诅咒叠在它上面。
+	# 成长树：个人开局快照。先并入，再让个人诅咒叠在它上面。
 	# 只算一次表，循环里不再重复算（`rogue_mods()` 在移速路径上每帧每人一次）。
-	var growth: Dictionary = RogueGrowth.run_mods(profile_data())
+	var growth: Dictionary = rogue_growth_mods(p)
 	for key in growth:
 		mods[key] = float(mods.get(key,0.0)) + float(growth[key])
 	if not p.is_empty():
@@ -527,6 +531,21 @@ func rogue_mods(p: Dictionary = {}) -> Dictionary:
 		mods["defense_penalty"]=RogueCurses.defense_penalty(p)
 		mods["curse_count"]=RogueCurses.count(p)
 	return mods
+
+func rogue_growth_mods(p: Dictionary = {}) -> Dictionary:
+	if not p.is_empty() and p.has("rogue_growth"):
+		return RogueGrowth.run_mods({"growth":p.rogue_growth})
+	# Shared enemy budgets use the party average; personal stats use each player's tree.
+	var total: Dictionary={}
+	var count := 0
+	for ally in players.values():
+		if not ally.get("connected",true): continue
+		var own: Dictionary=RogueGrowth.run_mods({"growth":ally.rogue_growth}) if ally.has("rogue_growth") else RogueGrowth.run_mods(profile_data())
+		for key in own: total[key]=float(total.get(key,0))+float(own[key])
+		count+=1
+	if count==0: return RogueGrowth.run_mods(profile_data())
+	for key in total: total[key]/=count
+	return total
 
 ## 敌人普通弹幕的深渊变数钩子：只改弹速与**表现层**尺寸。
 ## mods 中性时返回原字典（逐字不变），也绝不写 hit_radius。
@@ -591,7 +610,10 @@ func incoming_damage(p: Dictionary, damage: float) -> float:
 		# 诅咒与既有减伤池**同池相减**：不开新乘数。
 		var pool := RogueBuild.conditional_defense(self,p)
 		var penalty := float(mods.get("defense_penalty",0.0))
-		if penalty>0.0: pool=clampf(pool-penalty,0.0,RogueCurses.MAX_POOL)
+		# Permit a negative defense contribution: without this, an unarmored player
+		# ignored blood/fragmented-shield curses entirely. Convert the query's
+		# reciprocal penalty back to the advertised additive damage contribution.
+		if penalty>0.0: pool=clampf(pool-penalty/maxf(.01,1.0-penalty),-float(RogueCurses.CAPS.damage_taken),RogueCurses.MAX_POOL)
 		var received := maxf(0,damage)*(1-stat_defense(p))*(1-pool)
 		var taken := float(mods.get("player_damage_taken",0.0))
 		if taken!=0.0: received*=1.0+taken
@@ -3244,24 +3266,18 @@ func simulate(dt: float) -> void:
 			else:
 				world_drops.append(ground_drop(e.p,str(loot.kind),str(loot.get("key","")),false,loot_meta(loot)))
 		emit_effect("hit",e.p)
-		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"rogue_floor":e.get("rogue_skin",-1),"rogue_minion":e.get("rogue_minion",false),"rogue_guardian":e.get("rogue_guardian",false),"id":e.id})
+		broadcast_combat({"kind":"enemy_defeated","p":e.p,"type":e.type,"raid_boss":e.get("raid_boss",false),"art_key":BossPresentation.Art.identity(e),"facing":e.get("facing",1.0),"boss_kind":e.get("boss_kind",-1),"mini_boss":e.get("mini_boss",false),"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),"wild_boss":e.get("wild_boss",false),"wild_kind":e.get("wild_kind",-1),"abyss_final":e.get("abyss_final",false),"dragon_boss":e.get("dragon_boss",false),"hidden_final":e.get("hidden_final",false),"rogue_floor":e.get("rogue_skin",-1),"rogue_minion":e.get("rogue_minion",false),"rogue_guardian":e.get("rogue_guardian",false),"id":e.id})
 	for e in fallen:
 		enemies.erase(e)
 	if map_id=="city" and ruins.sites[0].get("boss_defeated",false) and not ruins.sites[0].get("cleared",false) and enemies.is_empty():
 		ruins.sites[0]["cleared"]=true
 		knight_reward(RoyalCity.BOSS)
 	if roguelike.active(self): roguelike.tick(self,dt)
-	if defeated_boss:
+	if defeated_boss and not raid.get("ended",false):
 		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
 		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("map_boss_defeats",{}).size()>=2: wild_bosses.spawn_final(self)
+		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and hidden_ending_ready(): expedition.spawn_hidden(self)
 		else: expedition.victory(self)
-	# The hidden encounter unlocks on the frame the four conditions below first
-	# hold together, whatever order they were satisfied in: every sunrise bell
-	# lit, the knight's amulet still carried, the queen already down, and the
-	# secret abyss finale not already running in her place.
-	if not raid.is_empty() and not raid.get("ended",false) and not raid.get("hidden_slain",false) \
-			and not raid.get("abyss_spawned",false) and raid.get("final_spawned",false) \
-			and hidden_ending_ready(): expedition.spawn_hidden(self)
 	var alive := false
 	for p in players.values():
 		if p.status in ["active","down"]:
@@ -3343,10 +3359,10 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 		var running_now := sprint and not active_attack and direction.length()>0.1
 		var multiplier := RUN_MULTIPLIER if running_now else 1.0
 		if p.swing_time>0 and Catalog.weapon_family(p.weapon)==2:
-			multiplier*=(.6 if RogueBuild.weapon_id(p)==20 else .7)+(.15 if RogueBuild.gear(p,55) else 0)+(.05 if RogueBuild.core(p,4)==1 else .1 if RogueBuild.core(p,4)==2 else 0) if roguelike.active(self) else .48
+			multiplier*=minf(1,(.6 if RogueBuild.weapon_id(p)==20 else .7)+(.15 if RogueBuild.gear(p,55) else 0)+(.2 if RogueBuild.gear(p,18) and RogueBuild.buff(p,"e18_window",elapsed)>0 else 0)+(.05 if RogueBuild.core(p,4)==1 else .1 if RogueBuild.core(p,4)==2 else 0)) if roguelike.active(self) else .48
 		if roguelike.active(self):
 			if p.reload>0: multiplier*=.9 if RogueBuild.gear(p,57) else .6
-			elif active_attack and Catalog.weapon_family(p.weapon)!=2: multiplier*=.65 if RogueBuild.weapon_id(p)==45 else .9 if RogueBuild.weapon_id(p)==33 else 1.0 if RogueBuild.gear(p,18) and Catalog.weapon_family(p.weapon)==1 else .8
+			elif active_attack and Catalog.weapon_family(p.weapon)!=2: multiplier*=.65 if RogueBuild.weapon_id(p)==45 else .9 if RogueBuild.weapon_id(p)==33 else 1.0 if RogueBuild.gear(p,18) and Catalog.weapon_family(p.weapon)==1 and RogueBuild.buff(p,"e18_window",elapsed)>0 else .8
 		p.p=ruins.move(p.p,direction.limit_length(1)*speed*dt*multiplier)
 		if direction.length()>0.1:
 			p.move_dir=direction.normalized()
@@ -3396,12 +3412,15 @@ func attack(p: Dictionary) -> void:
 		return
 	if not spend_mana(p,RogueBuild.mana_cost(self,p,float(weapon.get("mana_cost",0)),"attack") if roguelike.active(self) else float(weapon.get("mana_cost",0.0))):
 		return
+	if roguelike.active(self) and family==3: p.build_buffs.erase("landing_cost")
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
 	p.combo_timeout=maxf(1.2,float(weapon.rate)*equipment_rate(p)+.65)
 	# A looted weapon of matching quality swings faster than the issue weapon.
 	var rate: float=weapon.rate*equipment_rate(p)
 	p.attack=rate
 	p.swing_total=rate
+	p["build_strike_kind"]=""
+	p["build_strike_windup"]=float(weapon.windup)
 	p.swing_time=rate
 	p.strike_aim=p.aim.normalized()
 	p.pending_strike=true
@@ -3443,6 +3462,7 @@ func release_weapon_art(p: Dictionary) -> bool:
 	var build_ctx: Dictionary={}
 	build_ctx["vfx"]=weapon_visual_state(p)
 	p.cast_time=0.35
+	p["build_strike_kind"]=str(move.kind)
 	p.attack=maxf(p.attack,0.35)
 	p.channel=0.0
 	var aim: Vector2=p.aim.normalized()
@@ -3452,7 +3472,7 @@ func release_weapon_art(p: Dictionary) -> bool:
 	var reach := float(move.reach)
 	var kind := str(move.kind)
 	var spell := str(move.get("spell",Catalog.weapon(int(p.weapon)).get("spell","star")))
-	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","reach":reach,"id":p.id,"combo":2,"art":move.name})
+	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name})
 	if kind=="volley":
 		var count := int(move.get("count",3))
 		var speed := float(Catalog.weapon(int(p.weapon)).get("speed",850.0))
@@ -3468,9 +3488,9 @@ func release_weapon_art(p: Dictionary) -> bool:
 	if kind=="burst":
 		# Keep the impact on the caster's side of walls.
 		center=ruins.move(p.p,aim*reach)
-		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",180)),"id":p.id,"weapon_index":int(p.weapon)})
 	elif kind=="beam":
-		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 	for e in enemies:
 		if e.hp<=0 or not ruins.clear_line(p.p,e.p): continue
 		var delta: Vector2=e.p-p.p
@@ -3520,7 +3540,7 @@ func release_strike(p: Dictionary) -> void:
 				var delta: Vector2=e.p-p.p
 				if e.hp>0 and enemy_bodies.attack_hit(e,p.p,direction,float(w.reach),elapsed,false,"beam",30.0) and ruins.clear_line(p.p,e.p):
 					damage_enemy(e,damage,p.id,direction,w.knock,3,-1,build_ctx)
-			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+			broadcast_combat({"kind":"spell_beam","p":p.p,"aim":direction,"reach":w.reach,"width":30.0,"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
 		else:
 			var count := 5 if spell=="scatter" else 1
 			var pellet_hits: Dictionary = {}
@@ -3542,6 +3562,9 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 	if roguelike.active(self) and players.has(owner) and hp_before>0:
 		var attack_mods := rogue_mods(players[owner])
 		var rogue_output := float(attack_mods.get("player_damage",0.0))
+		# Only these two variants describe normal attacks; permanent growth remains universal.
+		if build_context.get("kind","")!="attack" and str(raid.get("variant","")) in ["rust","apocalypse"]:
+			rogue_output-=float(RogueVariants.modifiers_of([str(raid.variant)]).get("player_damage",0))
 		if rogue_output!=0.0: damage*=1.0+rogue_output
 		damage*=RogueBuild.hit_multiplier(self,players[owner],e,build_context)
 		e["build_shield_bonus"]=minf(.6,RogueBuild.r(players[owner],12,[.15,.25,.35])+(.30 if RogueBuild.weapon_id(players[owner])==34 else 0))
@@ -4060,7 +4083,7 @@ func spell_burst(b: Dictionary, at: Vector2) -> void:
 		build_hits+=1
 		if spell=="vortex" and e.hp>0 and not e.get("rogue_guardian",false):
 			e.p=ruins.move(e.p,pull*(35 if roguelike.active(self) else 42))
-	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
+	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"radius":radius,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
 	if b.get("build_context",{}).has("vfx"): burst_data["vfx"]=b.build_context.vfx
 	broadcast_combat(burst_data)
 

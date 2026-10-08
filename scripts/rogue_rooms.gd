@@ -389,8 +389,7 @@ static func mirror_offer(ctx: Dictionary) -> Dictionary:
 	var p_win := clampf(0.62 - 0.045*float(floor_index) + 0.02*float(tier), 0.30, 0.65)
 	return {
 		"id": "mirror", "kind": "mirror", "name": str(ROOM_NAMES["mirror"]),
-		"desc": "与你自己的构筑对打：胜率预估 %d%% · 胜则得 %d 魔晶 + 1 次装备三选一 + %d 灰烬。" % [
-			int(round(p_win*100.0)), gold_reward, ash_reward],
+		"desc": "应战后生成持有你当前武器的镜像，击败它得 %d 魔晶 + 1 次装备三选一 + %d 灰烬；倒地即失败，每局一次。" % [gold_reward, ash_reward],
 		"available": mirror_allowed(context),
 		"opponent": {"name": "镜像 · 你的构筑", "hp_scale": hp_scale, "tier": tier, "floor": floor_index},
 		"reward": {"gold": gold_reward, "gear_reward": MIRROR_REWARD_GEAR, "ash": ash_reward},

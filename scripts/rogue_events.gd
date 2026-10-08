@@ -13,6 +13,7 @@ extends RefCounted
 ##    让玩家改选；任何路径下 hp 都不低于 1、魔晶都不低于 0。
 
 const Curses = preload("res://scripts/rogue_curses.gd")
+const Build = preload("res://scripts/rogue_build.gd")
 
 ## result 允许键（冻结）。任何表内出现别的键都会被 resolve() 整体拒绝，避免脏状态。
 const DELTA_KEYS := ["gold", "hp_ratio", "mana_ratio", "flask", "attribute_points", "forge_points", "curse", "gear_reward"]
@@ -35,7 +36,7 @@ const TABLE := [
 	]},
 	{"id": "EV04", "name": "拾遗老树", "floor_min": 2, "options": [
 		{"name": "摘下果实", "desc": "回复 50% 生命", "result": {"hp_ratio": 0.50}},
-		{"name": "摇落枝干", "desc": "魔晶 +70，血瓶 -20", "result": {"gold": 70, "flask": -20.0}},
+		{"name": "摇落枝干", "desc": "魔晶 +70，血瓶 -20", "result": {"gold": 70, "flask": -20.0}, "require": {"flask": 20}},
 		{"name": "掘出树心", "desc": "获得 1 条诅咒，并立刻得到一次装备三选一", "result": {"curse": "CU07", "gear_reward": 1}, "require": {"curse_slots": 1}},
 	]},
 	{"id": "EV05", "name": "深渊回声", "floor_min": 2, "options": [
@@ -147,6 +148,13 @@ static func available(s, p: Dictionary, event_id: String, index: int) -> bool:
 	if float(require.get("hp_ratio", 0.0))>0.0 and float(p.hp)<float(p.max_hp)*float(require.hp_ratio): return false
 	if float(require.get("flask", 0.0))>0.0 and float(p.flask)<float(require.flask): return false
 	if int(require.get("curse_slots", 0))>0 and Curses.count(p)>=Curses.MAX_CURSES: return false
+	var delta := resolve(event_id, index)
+	if delta.is_empty(): return false
+	var curse := str(delta.get("curse", ""))
+	if curse!="" and (Curses.has(p,curse) or Curses.count(p)>=Curses.MAX_CURSES): return false
+	if int(p.get("rogue_gold",0))+int(delta.get("gold",0))<0: return false
+	if float(p.flask)+float(delta.get("flask",0))<0: return false
+	if float(delta.get("hp_ratio",0))<0 and float(p.hp)+float(p.max_hp)*float(delta.hp_ratio)<1: return false
 	return true
 
 ## 把增量落到玩家身上，返回**实际到账**的增量（可能因上限而被夹小）。
@@ -161,7 +169,9 @@ static func commit(s, p: Dictionary, delta: Dictionary) -> Dictionary:
 		paid["gold"]=after_gold-before_gold
 	if float(delta.get("hp_ratio", 0.0))!=0.0:
 		var before_hp: float=float(p.hp)
-		p.hp=clampf(float(p.hp)+float(p.max_hp)*float(delta.hp_ratio), 1.0, float(p.max_hp))
+		var ratio := float(delta.hp_ratio)
+		if ratio>0: ratio*=maxf(0.0,1.0+Build.hook_mod(s,p,"heal_scale"))
+		p.hp=clampf(float(p.hp)+float(p.max_hp)*ratio, 1.0, float(p.max_hp))
 		paid["hp"]=float(p.hp)-before_hp
 	if float(delta.get("mana_ratio", 0.0))!=0.0:
 		var before_mana: float=float(p.mana)
@@ -169,7 +179,7 @@ static func commit(s, p: Dictionary, delta: Dictionary) -> Dictionary:
 		paid["mana"]=float(p.mana)-before_mana
 	if float(delta.get("flask", 0.0))!=0.0:
 		var before_flask: float=float(p.flask)
-		p.flask=clampf(float(p.flask)+float(delta.flask), 0.0, 100.0)
+		p.flask=clampf(float(p.flask)+float(delta.flask), 0.0, Build.flask_cap(s,p))
 		paid["flask"]=float(p.flask)-before_flask
 	if int(delta.get("attribute_points", 0))!=0:
 		var points := int(delta.attribute_points)
@@ -181,6 +191,7 @@ static func commit(s, p: Dictionary, delta: Dictionary) -> Dictionary:
 		paid["forge_points"]=forge
 	if str(delta.get("curse", ""))!="" and Curses.apply(s, p, str(delta.curse)):
 		paid["curse"]=1
+		p.flask=minf(float(p.flask),Build.flask_cap(s,p))
 	if int(delta.get("gear_reward", 0))>0:
 		if not p.has("build_reward_queue"): p["build_reward_queue"]=[]
 		var queue: Array=p["build_reward_queue"]
@@ -197,7 +208,8 @@ static func apply(s, p: Dictionary, index: int) -> bool:
 	if event_id=="" or not available(s, p, event_id, index): return false
 	var delta := resolve(event_id, index)
 	if delta.is_empty(): return false
-	commit(s, p, delta)
+	var paid := commit(s, p, delta)
+	s.raid["event_result"]={"id":event_id,"index":index,"owner":int(p.get("id",0)),"paid":paid}
 	s.raid["pending_event"]={}
 	s.raid["revision"]=int(s.raid.get("revision", 0))+1
 	return true

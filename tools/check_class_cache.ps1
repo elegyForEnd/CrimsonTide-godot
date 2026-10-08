@@ -24,6 +24,7 @@
 # Usage:
 #   pwsh -File tools/check_class_cache.ps1 -ProjectPath .            # detect + repair
 #   pwsh -File tools/check_class_cache.ps1 -ProjectPath . -CheckOnly # detect only
+#   pwsh -File tools/check_class_cache.ps1 -ProjectPath . -ImportResources # also import changed art
 #
 # Exit codes: 0 = cache usable, 1 = duplicate/shadowing or cache still stale, 2 = setup problem.
 
@@ -31,7 +32,8 @@
 param(
     [string]$ProjectPath = ".",
     [string]$GodotExe = "",
-    [switch]$CheckOnly
+    [switch]$CheckOnly,
+    [switch]$ImportResources
 )
 
 $ErrorActionPreference = "Stop"
@@ -159,19 +161,25 @@ if ($outside.Count -gt 0) {
 $declared = Get-DeclaredClasses $root
 $missing = Get-MissingClasses $cacheFile $declared
 
-if ($missing.Count -eq 0) {
+if ($missing.Count -eq 0 -and (-not $ImportResources -or $CheckOnly)) {
     Write-Info "Godot class cache is up to date ($($declared.Count) classes registered)."
     exit 0
 }
 
-Write-Info "Stale Godot class cache: $($missing.Count) class(es) missing -> $($missing -join ', ')"
+if ($missing.Count -gt 0) {
+    Write-Info "Stale Godot class cache: $($missing.Count) class(es) missing -> $($missing -join ', ')"
+}
 if ($CheckOnly) {
     Write-Host "[setup] -CheckOnly requested, not rebuilding."
     exit 1
 }
 
-Write-Info "Rebuilding the cache: $GodotExe --headless --path . --import"
-& $GodotExe --headless --path $root --import
+Write-Info "Importing changed resources and rebuilding classes before launch."
+& $GodotExe --headless --path $root --editor --import
+if ($LASTEXITCODE -ne 0) {
+    Write-Err "Godot resource import failed (exit $LASTEXITCODE)."
+    exit 2
+}
 Write-Info "Rebuild finished (exit $LASTEXITCODE)."
 
 $stillMissing = Get-MissingClasses $cacheFile $declared

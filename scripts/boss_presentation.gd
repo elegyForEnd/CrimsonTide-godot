@@ -1,4 +1,5 @@
 extends RefCounted
+const Art = preload("res://scripts/boss_effect_art.gd")
 ## Authoritative presentation events share the combat RPC with ordinary attacks.
 const KEYS := ["bell", "thorn", "queen", "knight"]
 ## The hidden encounter reuses the queen's art and audio theme but is drawn with
@@ -20,6 +21,7 @@ const COLORS := [Color("c8a8ff"),Color("f987a4"),Color("ffe5ad"),Color("c4e9ff")
 
 static func send(s, e: Dictionary, action: String, extra: Dictionary = {}) -> void:
 	var event := {"kind":"boss-vfx","action":action,"boss_kind":theme(e),"id":e.id,
+		"art_key":Art.identity(e),
 		"p":e.p,"aim":e.get("attack_aim",Vector2.RIGHT),"move":e.get("move_id",e.get("move_name","")),
 		"phase":e.get("phase",1),"mini_boss":e.get("mini_boss",false),
 		"mini_kind":e.get("mini_kind",-1),"final_form":e.get("final_form",false),

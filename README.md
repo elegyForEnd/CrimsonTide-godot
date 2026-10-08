@@ -1,4 +1,6 @@
-武器特效现使用 74 张 ImageGen 独立透明方图，覆盖 69 把武器的主图、接斩/终结层与十二类核心触发；按实际锻造、品质和核心解锁播放。试玩 `build/CrimsonTide-WeaponImageVFX.exe`，素材与强化说明见 [武器图片特效](WEAPON-IMAGE-VFX.md)。
+Boss 出场顺序已恢复固定：远征主教→猎王→女王→无名赤月→条件终局；魔境五层为古王→暴君→女皇→舰长→剑圣。Boss 阶段和死亡特效按实际身份播放，隐藏战在无名赤月击败后触发。改动在源码中，旧导出 EXE 不会自动更新。
+
+全部69把武器已逐页核对四角色、三连段、战技、弹体/爆发、命中和蓄力；完整八方向与两模式 GPU 矩阵检查真实剑尖及出手姿势。双刃、重刃、震地与重刃终结斩已用内置 ImageGen 重画，巨锤和石槌改用冲击环。最新试玩 `build/CrimsonTide-WeaponTipFixed.exe`，[逐把核对清单](WEAPON-FULL-AUDIT.md)，全部预览 `build/weapon-full-audit/index.html`，实现说明见 [实际武器特效](WEAPON-MECHANICS-VFX.md)。
 
 场景配乐已补齐：新增 23 首 Suno 纯器乐，覆盖五层闯关、五名守层 Boss 与家园、王城、远征首领等场景；现共 32 首本地曲目。新版试玩 `dist/CrimsonTide-Music-v1.exe`，曲目与验证见 [背景音乐说明](MUSIC.md)。
 
@@ -20,7 +22,7 @@ Boss 招式与独立高清特效重做见 [BOSS-REWORK.md](BOSS-REWORK.md)。
 
 Godot 4 / GDScript 原生桌面合作搜打撤游戏。当前交付为可反复游玩的首版，包含完整结算与成长循环；采用哥特二次元插画、独立营地立绘、角色和怪物精灵、手绘地面材质与原生交互界面。视觉改版说明与素材提示词见 `ART-DIRECTION.md`。
 
-三日远征玩法已接入：第一天禁撤离、前两天随机黎明 Boss、第二天可撤离、第三天挑战血潮女王。详细技能与规则见 [三日远征设计](EXPEDITION.md)。
+三日远征玩法已接入：第一天禁撤离、第一天主教、第二天猎王、第二天可撤离、第三天挑战血潮女王。详细技能与规则见 [三日远征设计](EXPEDITION.md)。
 
 魔境闯关新增252项独立构筑：48武器、72装备、96天赋、24铭刻与12武器核心，均有新绘素材。支持个人血瓶、角色七属性/武器补正、+5锻造、跳跃和32条连招。每层1～2座灵契圣坛提供天赋，打怪积累局内经验，每级+2属性点，装备宝箱有概率掉属性灵晶。免费出发后按Tab进入“构筑”，管理天赋、加点、锻造及连招手册；F喝血瓶、C跃起。开发与验收见[ROGUE-BUILD-IMPLEMENTATION.md](ROGUE-BUILD-IMPLEMENTATION.md)。
 
@@ -58,6 +60,8 @@ Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-release "Wind
 
 ### 从源码运行
 
+- 拉取更新后推荐双击 `Start-Game.cmd`（`游戏启动.cmd`、`源码版启动.cmd` 使用同一启动流程）。脚本会先导入新增或更新的素材并检查类缓存，再启动游戏；首次导入可能需要等待。`.godot/` 是本机生成的缓存，无需提交或从别人电脑复制。
+- 只修复资源缓存而不启动游戏：在项目目录运行 `Start-Game.cmd --import-only`。导入失败会停止启动，请根据控制台报错处理。
 - 使用 Godot 4.7.2 导入 `project.godot`，按 F6/F5 运行主场景。
 - 需要看完整日志：`Godot_v4.7.2-stable_win64_console.exe --path . --verbose`。
 

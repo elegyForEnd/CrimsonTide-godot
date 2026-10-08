@@ -1,5 +1,21 @@
 # 验证记录
 
+## 2026-10-07 全部69把武器逐项验收
+
+- 逐页人工查看 21 把远征、48 把闯关武器，四角色 × 八类展示项，共 2208 格；实际有特效的 1908 项独立 GPU 检查先隐藏角色，避免角色像素掩盖空特效。69 页与 coverage.json 位于 build/weapon-full-audit，浏览器索引 index.html，逐把结论见 WEAPON-FULL-AUDIT.md。
+- weapon_full_matrix：17664 个释放组合（69×4角色×8方向×4阶段×2模式），每组合三个播放时刻；另3520个普攻/战技弹体组合。151375 检查，0 failures。验证真实挂点、地面投影、接触像素、可见性、细长弹体速度轴及真实战技姿势；最终日志 build/weapon-full-matrix-complete.log。
+- 全量验收发现并修复：重刃白色主体遮挡角色；震地缺少落地冲击轮廓；巨锤/石槌误用剑刃圆斩；战技沿用上次普攻前摇；16把重武器的精确出手边界因归一化浮点比较被判回前摇。内置 ImageGen 重绘重刃 v3 和震地 v2，50张原始RGBA审计0 failures。
+- 配套复跑：weapon_mechanics 429、weapon_mechanic_contact 506、weapon_mechanics_visual 30、weapon_vfx_identity 553、weapon_stroke_stability 196、rogue_build_rules 565，全部0 failures。
+- 新版 build/CrimsonTide-WeaponTipFixed.exe 已重新导出（2084617104 字节）。通过 --main-pack 加载内嵌资源，接触像素506、机制429，共935检查，0 failures。图页测试退出无资源泄漏错误；加载主场景的矩阵仍有既有的4个ObjectDB退出警告。
+- 项目路牌610锚点：OK405 / DRIFT0 / WRONG0 / HINT205；git diff --check 通过。
+
+## 2026-10-07 真实剑尖、方向与素材修复
+
+- 九组共 11839 检查，0 failures：weapon_stroke_directions 6872（四角色、全部远征/闯关近战、八方向、两模式）、weapon_mechanic_contact 505（真实 GPU 接触像素）、all_weapon_mounts 2568、weapon_stroke_stability 196、weapon_mechanics 429、weapon_vfx_identity 553、weapon_contact_particles 654、weapon_vfx_progression 32、weapon_mechanics_visual 30。渲染测试使用开窗 Godot，存档全部放在工作区 .testappdata。
+- ImageGen 新生成双刃 v3、重刃终结 v2，原始 RGBA 直接复制入项目。48 张素材通过透明背景、SHA256、提示词与轮廓审计，0 failures。新素材接入后重跑接触像素、GPU 机制、武器身份与释放稳定性检查，全部通过。
+- 八动作四方向角色预览 build/weapon-mount-repaired.png 已实际渲染并逐行检查。
+- Windows 单文件 build/CrimsonTide-WeaponTipFixed.exe 导出成功（2083330232 字节）。引擎通过 --main-pack 加载该 exe 内嵌资源，接触像素 505、实际机制 429 共 934 项检查，0 failures。项目路牌 610 锚点：OK406 / DRIFT0 / WRONG0 / HINT204。
+
 环境：Windows，项目内 Godot 4.7.2 stable，OpenGL Compatibility，NVIDIA RTX 3080 Ti。
 
 ## 2026-10-06 营地行囊面板 + 15×15 网格仓库 + 装备持久化
@@ -241,3 +257,32 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - tools/audit_weapon_square_art.py：74 个原始 RGBA、0 failures；Godot 编辑器导入成功。最初加载检查失败是新增素材尚未完成导入，导入后通过。48 武器对照、八组三段对照、+0/+2/+3/+4/+5 实际核心触发对照及九张主场景截图已生成并检查代表性武器画面。
 - build/CrimsonTide-WeaponImageVFX.exe Windows 单文件导出成功（2,003,072,008 字节，内嵌 PCK，包含当前工作区资源）。成品中再次运行 weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553、weapon_vfx_battle 45、standalone_vfx 119，共 1467 检查、0 failures。
 - 更新 PROJECT-GUIDE.md §2/§4.K/§5/§8/§10/§11/§12.6，以及 README.md、VFX-REWORK.md、WEAPON-IMAGE-VFX.md。路牌审计 441 个锚点：OK 344 / DRIFT 0 / WRONG 0 / HINT 97。
+
+## 2026-10-07 实际武器机制与特效加厚
+
+- 续接完成 32 张按动作、飞行、范围爆发分工的原始 ImageGen 方图；素材审计 32 项，0 failures。修正空中圆斩高度、光束相机稳定性和远程派生多余画面。
+- 按“太细、太弱”的反馈，在运行时加厚刀光主体、突刺与弹体亮芯，加强边缘辉光，增大枪焰/法杖出手/命中闪光，延后刀光淡出。原始图片像素不变，伤害与碰撞规则不变。
+- 本轮源码 9 组共 4621 检查，0 failures：weapon_mechanics 429、weapon_mechanics_visual 29、weapon_vfx_identity 553、weapon_stroke_stability 196、weapon_vfx_battle 41、all_weapon_mounts 2568、weapon_vfx_progression 32、weapon_contact_particles 654、standalone_vfx 119。
+- 新增 GPU 检查：同一捕获刀光、同一帧，启用加厚后的亮像素较关闭扩展增加至少 35%；箭/冰针在飞行中有至少 6 像素可见厚度；圆斩保持空心和身体中心。中心检查采用 alpha > 0.08 的可见轮廓，避免极淡辉光像素干扰测量。命中闪光检查同步为半径不超过 40、时间不超过 0.18 秒，继续检查位置、去重和碎片数量。
+- 编辑器导入和 Windows 单文件导出成功：build/CrimsonTide-WeaponMechanics.exe，2,076,241,536 字节。使用引擎 --main-pack 加载 exe 内嵌资源，在空目录运行外部测试脚本；五组共 1162 检查，0 failures（机制 429、GPU 29、身份 553、强化 32、独立特效 119）。
+- 更新并检查 build/weapon-mechanics-comparison.png、build/weapon-mechanics-motion.gif 和代表性主场景截图 build/weapon-vfx-battle-603.png；GIF 由 viewport 帧直接编码。项目路牌 609 个锚点：OK 405 / DRIFT 0 / WRONG 0 / HINT 204。
+
+## 2026-10-07 ImageGen 原图重新制作
+
+- 用户澄清要求重新用 ImageGen 绘制不理想的素材，重新生成14张透明方图：8种动作轨迹（轻刃、双刃、突刺、重刃、轻/重圆斩、仪镰、战戟窄扫）、5种弹体（箭、冰针、子弹、雷弹、月刃）和弓弦出手。保留旧图供对照，现46张原始RGBA通过哈希、透明度、长宽比和圆斩透明中心审计，0 failures。
+- 新图统一为 _v2，weapon_image_art.gd 的 REDRAWN 映射实际攻击及关联施法出手；原始图片直接复制，完整提示词与生成原始路径在 assets/combat/imagegen-mechanics/prompts 和 manifest.json。没有对像素加工。删除上轮 weapon_body 扩边shader，取消横截面拉厚，普通贴图按自然比例显示。
+- 本轮源码9组共4622检查，0 failures：weapon_mechanics 429、weapon_mechanics_visual 30、weapon_vfx_identity 553、weapon_stroke_stability 196、weapon_vfx_battle 41、all_weapon_mounts 2568、weapon_vfx_progression 32、weapon_contact_particles 654、standalone_vfx 119。
+- GPU原图比较不使用扩边或辉光shader：相同绘制尺寸下，旧轻刃原图亮像素140，新原图1675，通过新增的至少50%主体增量检查。实际飞行渲染中长弓箭和短弩箭可见高度6，冰针10；圆斩中心/空心/空中高度及光束相机稳定性通过。前后对照首次捕获中的白块来自预览临时纹理过早释放，已通过持续持有纹理修复；第二次绘制等待字体图集稳定，14组对照已完整检查。
+- build/CrimsonTide-WeaponImageRedraw.exe 导出成功，2,082,811,544字节；引擎从空目录以 --main-pack 加载 exe 内嵌资源，五组1163检查，0 failures（机制429、GPU30、身份553、强化32、独立特效119）。
+- 原图对照 build/weapon-imagegen-redraw.png、招式对照 build/weapon-mechanics-comparison.png、动态 build/weapon-mechanics-motion.gif 与实战截图 build/weapon-vfx-battle-603.png 已更新并检查。项目路牌609锚点：OK405 / DRIFT0 / WRONG0 / HINT204。
+
+
+## 2026-10-08 Boss 固定顺序与特效身份修正
+
+- 远征主线固定主教→猎王→女王→无名赤月→条件终局。隐藏战等无名赤月倒下后再触发；已结算隐藏战不再重复推进普通终局。魔境五层恢复古王→暴君→女皇→舰长→剑圣，额外三身份素材与招式保留。
+- 蓄力、阶段、死亡和旧招式释放事件显式携带实际 art_key；缺省 art_key 时以 boss_art 恢复身份。阶段与死亡音效按身份选择，死亡清除旧蓄力/阶段演出；远征死亡事件携带 raid_boss，避免额外普通怪死亡粒子。
+- 九组逻辑套件共 11954 项，零失败：expedition 79、hidden_ending 103、map_boss_roster 984、boss_full_effect_coverage 4675、boss_attack_intent 1592、rogue_boss_phase2 406、rogue_boss_pool 2340、boss_vfx 425、boss_choreography 1350。覆盖全部 104 招、20 张招式表，以及缺失身份字段/敌人已移除后的死亡特效。
+- GPU 实机可视测试：五层 25 招各预警/释放 50 张、五张小怪场景、远征 13 张演出截图，已检查代表画面。修正旧可视夹具直接写 area=5 进入镜中挑战的错误，改为真实图节点的 Boss 房间，避免 UI 遮挡。
+- Boss VFX 双进程联机房主与客户端通过，四主题释放与危险区快照、蓄力、招架、破防、阶段、死亡事件均收到。旧联机测试误要求危险区主题总数为 3，而当前骑士也有主题 3；修为验证完整四主题，并增加 RPC 身份一致性断言。演出夹具按 actor_id 定位 Boss，不再误将敌人列表最后的女王机关当成骑士发送死亡事件。
+- 旧 boss_redesign 素材审计仍有 3/744 失败（Native HD art、No shared reskin source、Seventeen bosses each have four original effects）。单独加载 HEAD 修改前 boss_effect_art.gd 复跑得到完全相同的三项失败；本轮未修改 PNG、图集清单或纹理映射。该套件亦有原有退出资源泄漏警告。新专项及主场景脚本未出现解析错误。
+- 项目路牌 727 锚点：OK 471 / DRIFT 0 / WRONG 0 / HINT 256；git diff --check 通过。本轮修正在源码，旧导出 EXE 尚未重新打包。

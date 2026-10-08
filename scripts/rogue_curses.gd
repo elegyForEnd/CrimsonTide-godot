@@ -8,7 +8,7 @@ extends RefCounted
 ##    契约 §2 的 raid["curse_serial"] 只做"施加序号"，用于一次性提示与去重。
 ##
 ## 2. 诅咒**不开新乘数**：它的减益被折算成"既有减伤池里的一项负贡献"。魔境分支的伤害应写成
-##        (1 - clampf(RogueBuild.conditional_defense(s,p) - RogueCurses.defense_penalty(p), 0.0, RogueCurses.MAX_POOL))
+##        (1 - clampf(RogueBuild.conditional_defense(s,p) - stat_delta(p).damage_taken, -0.60, RogueCurses.MAX_POOL))
 ##    这样诅咒 / 天赋 / 装备共用同一个池与同一个上限，不会出现乘算爆炸。
 ##    defense_penalty() 与 damage_taken_scale() 是同一份信息的两种表达（见各自的注释）。
 ##
@@ -126,9 +126,10 @@ static func stat_delta(p: Dictionary) -> Dictionary:
 static func damage_taken_scale(p: Dictionary) -> float:
 	return 1.0 + float(stat_delta(p).damage_taken)
 
-## 减伤池罚项（0.0 .. MAX_POOL）：真正接进 session.incoming_damage 的量。
+## 减伤罚项的倒数形式（0.0 .. MAX_POOL），用于查询与遥测。
 ## 语义 = "从既有减伤池里减掉这么多"，而不是再乘一层 1.15。
-## 与 damage_taken_scale 严格等价：penalty = 1 - 1/scale（在未触池上限时）。
+## 与 damage_taken_scale 严格等价：penalty = 1 - 1/scale。
+## session.incoming_damage 将 penalty/(1-penalty) 还原为加性贡献，允许负减伤。
 static func defense_penalty(p: Dictionary) -> float:
 	return clampf(1.0 - 1.0/damage_taken_scale(p), 0.0, MAX_POOL)
 

@@ -19,16 +19,18 @@ func run() -> void:
 		s.roguelike.new_floor(s)
 		s.raid.area=1
 		s.roguelike.enter(s)
+		s.raid.room_left=true
 		s.players[1].p=Vector2(650,580)
 		app.rogue_field.camera_x=150
 		app.toast_time=0
 		await screenshot("res://build/rogue-minions-f%d.png" % [floor_index+1])
-		s.raid.area=5
+		s.raid.node=str(s.rogue_graph.boss)
+		s.raid.area=s.roguelike.depth_count(s)
 		s.roguelike.enter(s)
 		s.enemies.clear()
 		# Boss rooms are selected through raid.room now; use an explicit visual fixture.
 		s.spawn_enemy(s.roguelike.spawn_point(s,Vector2(2490,580)),4)
-		combat.setup_boss(s.enemies.back(),floor_index)
+		combat.setup_boss(s.enemies.back(),floor_index,s)
 		var boss: Dictionary=s.enemies[0]
 		boss.p=s.roguelike.spawn_point(s,Vector2(2490,580))
 		s.players[1].p=s.roguelike.spawn_point(s,Vector2(2310,600))

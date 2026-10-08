@@ -17,7 +17,7 @@ func run() -> void:
 			check(fx.effects.size()==1 and fx.effects[0].kind=="impact","Only one contact flash, no duplicate ring")
 			check(fx.effects[0].p==contact,"Contact flash uses torso-side point, not enemy feet")
 			check(fx.shards.is_empty(),"The obsolete hit shards do not duplicate the particle response")
-			check(fx.effects[0].radius<=28,"Hit response remains smaller than weapon silhouette")
+			check(fx.effects[0].radius<=40 and fx.effects[0].life<=.18,"Stronger hit flash stays local and short, never a full attack wave")
 			var count: int=fx.particles.particles.size()
 			check(count<=8,"Contact releases only a few fragments, not a cloud")
 			for bit in fx.particles.particles:

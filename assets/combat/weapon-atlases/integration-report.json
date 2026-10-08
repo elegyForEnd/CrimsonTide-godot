@@ -1,0 +1,3281 @@
+{
+  "characters": 4,
+  "weapons_per_character": 48,
+  "states": [
+    "idle",
+    "walk",
+    "run",
+    "dodge",
+    "attack",
+    "art"
+  ],
+  "clips": 1152,
+  "keys": 4608,
+  "original_pages": 276,
+  "extra_effects": 44,
+  "packing_issues": [
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-600-602-dodge-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-603-605-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-603-605-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-603-605-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-606-608-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-606-608-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-606-608-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-606-608-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-606-608-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-606-608-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-609-611-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-609-611-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-run-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-615-617-run-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-615-617-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-615-617-walk-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-dodge-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-idle-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-run-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-618-620-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-idle-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-621-623-walk-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-624-626-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-624-626-attack-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-624-626-dodge-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-dodge-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-dodge-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-624-626-idle-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-627-629-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-627-629-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-630-632-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-630-632-art-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-630-632-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-630-632-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-633-635-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-633-635-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-633-635-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-633-635-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-636-638-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-636-638-run-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-639-641-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-639-641-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-dodge-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-639-641-walk-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-dodge-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-642-644-walk-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-0-weapons-645-647-dodge-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-dodge-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-dodge-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-idle-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-0-weapons-645-647-run-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-art-v2.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-3-weapons-600-602-art-v2.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-art-v2.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-art-v2.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-3-weapons-600-602-art-v2.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-art-v2.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-1-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-600-602-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-2-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-idle-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-1-weapons-600-602-walk-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-walk-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-walk-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-600-602-walk-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-600-602-walk-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-3-weapons-600-602-run-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-600-602-run-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-603-605-walk-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-603-605-dodge-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-603-605-dodge-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-606-608-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-606-608-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-606-608-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-609-611-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-2-weapons-609-611-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-609-611-attack-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-609-611-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-3-weapons-609-611-run-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-609-611-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-609-611-run-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-612-614-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-idle-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-walk-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-walk-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-612-614-run-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-612-614-dodge-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-dodge-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-612-614-dodge-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-art-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-idle-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-615-617-idle-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-idle-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-idle-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-615-617-idle-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-615-617-walk-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-615-617-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-1-weapons-615-617-run-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-615-617-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-615-617-run-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-615-617-run-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-615-617-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-3-weapons-615-617-run-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-615-617-run-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-615-617-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-615-617-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-618-620-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-618-620-walk-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-618-620-dodge-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-618-620-dodge-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-621-623-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-1-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-621-623-attack-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-2-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-2-weapons-621-623-attack-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-attack-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-art-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-3-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-art-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-weapons-621-623-run-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-0"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 0,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 0,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-2"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 2,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 2,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-weapons-621-623-run-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-ranged-rifle-combat-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "columns-1"
+    },
+    {
+      "file": "hero-1-ranged-rifle-combat-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-ranged-rifle-combat-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-crossbow-locomotion-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-crossbow-locomotion-v1.png",
+      "row": 2,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-1-ranged-staff-combat-v1.png",
+      "row": 1,
+      "frame": 2,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "issue": "No fully clear gutter",
+      "axis": "rows"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "row": 0,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "row": 0,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "row": 1,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "row": 1,
+      "frame": 1,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "row": 1,
+      "frame": 3,
+      "issue": "Source touches frame edge"
+    },
+    {
+      "file": "hero-3-ranged-staff-combat-v1.png",
+      "row": 2,
+      "frame": 0,
+      "issue": "Source touches frame edge"
+    }
+  ],
+  "note": "Original artwork unchanged; source quality repairs remain separate from runtime integration."
+}

@@ -59,7 +59,7 @@ func event(data: Dictionary) -> void:
 	if data.action=="charge": fx.duration=maxf(.35,float(data.get("total",.5)))
 	if data.action in ["release","fall","break"]:
 		for i in range(effects.size()-1,-1,-1):
-			if effects[i].id==data.id and effects[i].action=="charge": effects.remove_at(i)
+			if effects[i].id==data.id and (data.action=="fall" or effects[i].action=="charge"): effects.remove_at(i)
 	if effects.size()>=96: effects.pop_front()
 	effects.append(fx)
 	animate_event(fx)

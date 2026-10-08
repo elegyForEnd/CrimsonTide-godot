@@ -1260,7 +1260,7 @@ func select_title_entry(target: GothicButton) -> void:
 
 func config() -> Dictionary:
 	var payload := profile.storage_payload()
-	return {"mode":session.selected_mode,"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key,"loadout":payload.loadout}
+	return {"mode":session.selected_mode,"rogue_growth":profile.data.get("growth",{}).duplicate(true),"rogue_rerolls":rogue_cards if rogue_pending_cost>=0 else 0,"rogue_weapon":rogue_weapon if rogue_pending_cost>=0 else -1,"name":profile.data.name,"hero":profile.data.hero,"gear":profile.data.gear,"talents":profile.data.talents.duplicate(),"attributes":profile.data.attributes.duplicate(),"home_meal":str(profile.data.home.prepared),"meds":1+extra_meds,"ready":ready_local or session.is_leader(),"pocket":payload.pocket,"bags":payload.bags,"bag_key":payload.bag_key,"loadout":payload.loadout}
 
 func show_network() -> void:
 	new_page("network")
@@ -2140,7 +2140,11 @@ func update_hud() -> void:
 		if p.status=="down":
 			hud.notice.text="倒地 · 长按F两秒使用魂灯" if p.soul_lamp else "倒地 · 等待队友长按E救援"
 		elif session.raid.phase=="rogue_combat":
-			hud.prompt.text=("剩余魔物 %d · 第 %d / 3 段遭遇" % [session.enemies.size(),session.raid.wave]) if not session.enemies.is_empty() else "继续向右探索 · 前方还有魔物"
+			if session.raid.room=="mirror" and session.raid.get("mirror_state",{}).get("active",false):
+				hud.prompt.text="镜像试炼 · 躲开预警，击败自己的影子"
+				hud.area.text="击败镜像领取奖励 · 挑战者倒地即失败"
+			else:
+				hud.prompt.text=("剩余魔物 %d · 第 %d / 3 段遭遇" % [session.enemies.size(),session.raid.wave]) if not session.enemies.is_empty() else "继续向右探索 · 前方还有魔物"
 		# 靠近倒地队友才出救援提示（判定同源 session.RESCUE_RADIUS，与 roguelike.gd
 		# rescue() 同一圈）：补上 R.1 审计"救援者侧没有任何距离提示"的待修项，
 		# 优先于上面的通用战斗行；倒地/阵亡的自己不出（那是队友的按键，不是我的）。
@@ -4182,6 +4186,7 @@ func on_finished() -> void:
 	recruited=""
 	var reward: Dictionary=session.results.get(session.my_id(),{})
 	if not session.report_paid and not reward.is_empty():
+		if reward.get("roguelike",false) and not session.authority(): profile.data.ashes+=maxi(0,int(reward.get("ashes",0)))
 		profile.data.coins+=reward.coins
 		profile.data.xp+=reward.xp
 		profile.data.runs+=1
@@ -5398,7 +5403,7 @@ func _rogue_hud_refresh_event(p: Dictionary) -> void:
 			desc.position=Vector2(378,y+42)
 		var pick: Button=buttons[i]
 		if is_instance_valid(pick):
-			pick.tooltip_text=require_line if require_line!="" else "无门槛"
+			pick.tooltip_text=str(option.get("reason","")) if not bool(option.get("enabled",false)) else (require_line if require_line!="" else "无门槛")
 			pick.disabled=not bool(option.get("enabled",false)) or p.status!="active"
 	var fallback: Label=_rogue_hud_nodes.get("fallback")
 	if is_instance_valid(fallback): fallback.visible=options.is_empty()

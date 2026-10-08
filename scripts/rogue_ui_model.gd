@@ -74,13 +74,7 @@ static func curses_lines(p: Dictionary) -> PackedStringArray:
 	out.append("诅咒 %d / %d · 受创 ×%.2f" % [rows.size(), int(RogueCurses.MAX_CURSES), scale])
 	for row in rows:
 		out.append("· %s · %s" % [str(row.name), str(row.desc)])
-	# A2 (R9 hook 9) · CU08「迷雾」：`vision` 在魔境渲染侧**没有**接入点 —— `rogue_field.gd`
-	# 的世界绘制只有平移（`draw_set_transform(-camera_offset())`），没有缩放/遮罩层，
-	# 真接线要重做整套世界→屏幕变换。因此这一条是**显式降级**：只把惩罚呈现在 HUD 的
-	# 诅咒区里（`main.gd` 每帧读 `RogueUi.curses_text(p)`），而不是伪造一个永远没人的分支。
-	# 没有迷雾诅咒时（key 为 0）连一行都不加：`tests/rogue_ui.gd` 的
-	# `curses_lines({"rogue_curses":["CU01","CU02"]}).size()==3` 与
-	# `curses_text({"rogue_curses":[]})=="诅咒 · 无"` 都保持原样。
+	# The field's local-player fog mask uses this same vision modifier.
 	var vision := float(RogueCurses.stat_delta(p).get("vision", 0.0))
 	if vision<0.0:
 		out.append("· 视野 -%d%%（迷雾压低了目视距离）" % int(round(-vision*100.0)))
@@ -187,6 +181,12 @@ static func event_options(s, p: Dictionary, raid: Dictionary) -> Array:
 		var view: Dictionary = (row as Dictionary).duplicate(true)
 		var index := int(view.get("index", -1))
 		view["enabled"] = id != "" and RogueEvents.available(s, p, id, index)
+		view["reason"] = ""
+		if not bool(view.enabled):
+			var delta := RogueEvents.resolve(id,index)
+			var curse := str(delta.get("curse",""))
+			view["reason"] = "当前资源不足或诅咒位已满"
+			if curse!="" and RogueCurses.has(p,curse): view["reason"]="已持有同名诅咒，不能重复交换奖励"
 		out.append(view)
 	return out
 

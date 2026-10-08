@@ -233,7 +233,7 @@ static func ashes_on_settle(s, p: Dictionary) -> int:
 		stats["floor"] = int(raid.get("floor", 0))
 	if p is Dictionary:
 		stats["won"] = str(p.get("status", "")) == "extracted"
-	var data := _session_profile_data(s)
+	var data: Dictionary={"growth":p.rogue_growth} if p.has("rogue_growth") else _session_profile_data(s)
 	if not data.is_empty():
 		stats["ash_bonus"] = ash_bonus(data)
 	return earn_for_run(stats)
@@ -243,13 +243,14 @@ static func ashes_on_settle(s, p: Dictionary) -> int:
 ## 返回本次发放的灰烬（0 表示无产出，此时不写任何字段）。
 static func grant(s, p: Dictionary) -> int:
 	var value := ashes_on_settle(s, p)
-	if value <= 0:
+	var room_ash := maxi(0,int(p.get("rogue_room_ash",0)))
+	if value <= 0 and room_ash==0:
 		return 0
 	if p is Dictionary:
 		p["rogue_ash_run"] = int(p.get("rogue_ash_run", 0)) + value
 	var data := _session_profile_data(s)
-	if not data.is_empty():
-		data["ashes"] = _ashes_of(data) + value
+	if not data.is_empty() and (not s.has_method("my_id") or int(p.get("id",s.my_id()))==s.my_id()):
+		data["ashes"] = _ashes_of(data) + value + room_ash
 	return value
 
 # ---------------------------------------------------------------- 追加：查询与规则
