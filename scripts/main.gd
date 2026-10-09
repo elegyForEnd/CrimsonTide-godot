@@ -1427,7 +1427,7 @@ func show_camp() -> void:
 		buy_camp_supply()
 	)
 	supply.disabled=extra_meds>=2
-	label(page,"每天 5 分钟 · 第 3 分钟缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
+	label(page,"三日 11/11/8 分钟 · 到六成时间缩圈",Vector2(1024,745),18,INK,Vector2(349,43))
 	ornament(page,Vector2(62,814),Vector2(1314,10))
 	button(page,"← 返回营地",Vector2(60,839),Vector2(183,43),go_camp)
 	button(page,"行囊",Vector2(255,839),Vector2(140,43),func(): show_camp_pack(false))
@@ -2084,8 +2084,8 @@ func update_hud() -> void:
 	hud.raid_continue.visible=choosing
 	hud.raid_wait.visible=choosing
 	hud.raid_extract.visible=(choosing or session.raid.get("phase","")=="complete") and p.status=="active"
-	var remaining := maxi(0,int(ceil(session.duration-float(session.raid.get("time",0)))))
-	hud.time.text="第 %d 天 · %02d:%02d / %s" % [session.raid.get("day",1),remaining/60,remaining%60,{"explore":"血潮收缩" if float(session.raid.get("time",0))>=session.SHRINK_START else "血月初升","boss":"黎明决战","choice":"黎明抉择","complete":"终夜已破"}.get(session.raid.get("phase","explore"),"")]
+	var remaining := maxi(0,int(ceil(session.day_duration()-float(session.raid.get("time",0)))))
+	hud.time.text="第 %d 天 · %02d:%02d / %s" % [session.raid.get("day",1),remaining/60,remaining%60,{"explore":"血潮收缩" if float(session.raid.get("time",0))>=session.shrink_start() else "血月初升","boss":"黎明决战","choice":"黎明抉择","complete":"终夜已破"}.get(session.raid.get("phase","explore"),"")]
 	hud.mission.text="王城探索 · 缩圈前自动返回边境" if session.map_id=="city" else ("晨钟封印 %d/3 · %s" % [session.objectives,"可撤离" if session.can_extract() else "撤离封锁 · 击败黎明 Boss"])
 	var block := Ecology.block_at(session.ruins,p.p) if session.map_id=="border" else -1
 	hud.area.text=str(session.ruins.sites[block].name)+" · "+Ecology.site_status(session,block) if block>=0 else ("击败骑士与全部守卫，领取王庭珍藏" if session.map_id=="city" else "野外稀有补给 · 清理据点获得宝箱")
@@ -4496,7 +4496,7 @@ func show_help() -> void:
 	var coop := label(overlay,"地图上的金色菱形是晨钟封印。长按 [E] 3 秒激活；每处全队奖励 55 银币，完成三处额外奖励 100。\n\n绿色十字是撤离点：第二天起长按 [E] 4 秒独立撤离，受伤会中断。城门是往返王城的路，全队到齐后长按 [E] 1.5 秒通过。\n\n第二天击败 Boss 后，Y 留下挑战第三天，N 直接撤离，U 取消就绪。所有留下的人就绪后进入终局。",right+Vector2(0,51),17,MUTED,Vector2(463,262))
 	coop.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	label(overlay,"04  /  道具栏与不要遗忘时间",right+Vector2(0,318),23,GOLD)
-	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 直接使用对应格的道具或换装。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天每天 5 分钟，第 3 分钟围绕黎明印记缩圈，第 5 分钟 Boss 降临。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,366),17,MUTED,Vector2(463,268))
+	var danger := label(overlay,"装备面板下方有三格道具栏，关闭 TAB 后同样显示在屏幕底部：拖进去一个物品，不管它在背包里占几格，道具栏里都只占一格。按 1 / 2 / 3 直接使用对应格的道具或换装。\n\n藏品（月蚀遗物等）放在道具栏里按 [F] 没有任何效果，只有武器、护甲 / 瞄具 / 轻靴、背包和急救针 / 弹药匣有用。身边没东西可捡时，[F] 会先给道具栏，再兜底用急救针；倒地时按 [F] 仍可消耗急救针自救。\n\n前两天每天 11 分钟，到六成时间围绕黎明印记缩圈，整点时 Boss 降临；第三天 8 分钟直奔终局。倒地可被队友长按 [E] 救起，背包与身上装备会掉落。全员离场后结算：撤离保留战利品，阵亡只保留次元口袋。",right+Vector2(0,366),17,MUTED,Vector2(463,268))
 	danger.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 
 func show_credits() -> void:

@@ -31,7 +31,7 @@ func run() -> void:
 	for corner in [Vector2.ZERO,Ruins.SIZE,Vector2(6400,0),Vector2(0,4800)]:
 		check(corner.distance_to(first)<s.safe_radius(),"Reset circle covers whole map")
 	check(not s.ruins.blocked(first,30),"Random arena walkable")
-	s.raid.time=s.SHRINK_START
+	s.raid.time=s.shrink_start()
 	var radius := s.safe_radius()
 	s.raid.time=s.duration-0.1
 	check(s.safe_radius()<radius and boss(s).is_empty(),"Shrinks before boss appears")
@@ -57,7 +57,7 @@ func run() -> void:
 	# Optional city must not be a way to bypass the closing circle.
 	p.p=s.CITY_GATE
 	check(s.travel_city(),"City available in early exploration")
-	s.raid.time=s.SHRINK_START-0.01
+	s.raid.time=s.shrink_start()-0.01
 	s.simulate(0.02)
 	check(s.map_id=="border" and not s.can_travel(),"City returns party when shrinking starts")
 	p.p=s.safe_center()+Vector2(130,0)

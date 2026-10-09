@@ -153,7 +153,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 弹丸飞行/链电/陨石落点 | `session.gd:4005 update_bullets()` |
 | 大招（雪璃治疗/死灵法师魂收+冥火地带全套常量） | `session.gd:2436 release_ultimate()`、死灵常量块 session.gd:2481-2498（NECROMANCER/FIRE_*/BURN_*/SOUL_REAP_*） |
 | 理智/血晶气味/威胁度/环境刷怪 | 理智+血晶气味 `session.gd:2685-2698`；威胁度公式 `session.gd:2624`；环境刷怪 `session.gd:2629-2632` |
-| **血潮缩圈**（数值） | `session.gd:2788 safe_center()`、`session.gd:2791 safe_radius()`；开始时间 `session.gd:51 SHRINK_START=180s` |
+| **血潮缩圈**（数值） | `session.gd:3298 safe_center()`、`session.gd:3313 safe_radius()`；逐天时长真源 `session.gd:53 DAY_DURATIONS=[660,660,480]` + `:55 SHRINK_RATIO=0.6`；换算口 `session.gd:3303 day_duration()` / `:3310 shrink_start()`（缩圈从当天 60% 时刻开始，逐天不等长） |
 | 搜索容器（F 逐件浮出） | `session.gd:931-979`（`begin_search()` / `advance_search()` / `search_seconds()`） |
 | 死亡散包/撤离带入/口袋保护 | `session.gd:819 spill_storage()`、结算 `session.gd:4120 settle()`；**穿戴装备同背包**：撤离保留穿着（写回 loadout，`session.gd:4175 saved_loadout()`）、阵亡散落并清空存档 loadout |
 | 据点守军锁定/清剿宝箱 | `session.gd:3850 resolve_site_defeat()` |
@@ -444,11 +444,11 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 需求 | 主要文件 | 配套（测试/文档/工具） |
 |---|---|---|
-| 调远征三天时长/跨天恢复/黎明 Boss 数值 | expedition.gd:6-93 + session.gd:50-51（:50 一天时长、:51 缩圈开始） | tests/expedition*.gd；EXPEDITION.md |
+| 调远征三天时长/跨天恢复/黎明 Boss 数值 | expedition.gd:6-93 + session.gd:53-55（:53 逐天时长 DAY_DURATIONS、:55 缩圈比例 SHRINK_RATIO、helper day_duration()/shrink_start() :3303/:3310；prepare_day 写入 raid.day_duration expedition.gd:68） | tests/expedition*.gd；EXPEDITION.md |
 | 改主线 Boss/隐藏 Boss 招式 | boss_choreography.gd（编排）+ expedition.gd:424-614（legacy） | tests/boss_choreography.gd；BOSS-REWORK.md |
 | 调骑士数值/格挡 | boss_tactics.gd（KNIGHT_MOVES :10）+ `session.gd:4290 KNIGHT_MOVES`（招式表用在 :3845 与 :3905） | tests/boss_tactics.gd |
 | 加新 Boss（身份） | boss_choreography.gd `MOVES` + boss_effect_art.gd（`KEYS` :4 / `MOTIFS` :6 / `color()` 色表 :55-57，按 KEYS 索引）+ assets/bosses/imagegen/ + boss_frames.gd `SPECIAL_KEYS`（**追加表尾**，`COLORS` 在 boss_frames.gd:9）+ boss_presentation.gd cue + boss_hud.gd 颜色/阶段 | tests/boss_*；BOSS-REWORK.md |
-| 调缩圈数值/时序 | session.gd:51、2788-2802（safe_center/safe_radius/final_radius） | tests/expedition.gd；视觉另改 blood_tide.gdshader |
+| 调缩圈数值/时序 | session.gd:53-55、3298-3311（safe_center/day_duration/shrink_start/safe_radius/final_radius）；逐天时长同步走 raid.day_duration | tests/balance.gd tests/expedition.gd；视觉另改 blood_tide.gdshader |
 | 调理智/气味/威胁度/刷怪 | session.gd:2624-2632、2688-2696、3247-3319 | tests/ecology.gd |
 | 改掉落（宝箱/敌人/据点/骑士） | session.gd:1312 chest_loot / 1328 enemy_loot / 3342 resolve_site_defeat / 3740 knight_reward | tests/systems.gd；BALANCE.md |
 | 加新野外怪物 | enemy_frames.gd:4-8 四表 + ecology.gd:5-19 六表 + ecology.gd update() 新分支 + assets/enemies/ 4×3 图集（脚底 210px）+ 悬浮怪名单 enemy_body.gd:44 | tests/enemies.gd、ecology.gd；ENEMY-UPDATE.md |
@@ -536,7 +536,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 数值 | 位置 |
 |---|---|
-| 联机端口 24872 / 一天 300s / 缩圈 180s 开始 | session.gd:31 / :50-51 |
+| 联机端口 24872 / 一天 660/660/480s（合计 30 分钟）/ 缩圈=当天×SHRINK_RATIO(0.6) | session.gd:31 / :53-55 |
 | 终圈半径 540(day1-2)/620(day3) | `session.gd:3302 final_radius()` |
 | 理智衰减/出圈掉血/气味=血晶×8/38 阈值引怪 | session.gd:2688-2696（血晶×8 :2688、理智衰减 :2690/:2693、出圈掉血 :2692、38 阈值引怪 :2696） |
 | 威胁度公式 / 环境刷怪上限 52+2n | session.gd:2624 / 2628 |
@@ -726,6 +726,8 @@ python tests/scene_music_assets.py # 曲目清单校验
     - **圆环战技（右键 `kind:"circle"`）异常**：判定是**以角色为圆心、半径 = `reach`** 的整圆（`enemy_body.gd:133` 用 `half=PI` 画满圆，半径取 `reach`，例如冥潮仪镰 W023 `rogue_build_content.json` 的 `art.reach=170`）；但绘制阶段 `stylized_vfx.gd:400-413` 的 `body_centered` 分支先按 `bounds=Vector2.ONE*r*2`（身体居中、半径=reach，本应与判定一致），紧接着一段 `if role!="motion_quake" and fx.has("socket_grip")…`（`:406-412`）又把圆**重新以武器握把(grip)为圆心、缩成刀刃长度 `blade_length`**——于是屏幕上是一枚又小又偏到一边的旋涡，而真正会掉血的是围绕身体的一整圈。修法（留给后人）：去掉 `:406-412` 这段 grip 重定心/缩刃，让圆斩保持身体居中 + `reach*2`。⚠️ 该分支同时服务平A的 spin 类武器（`weapon_mechanics.gd:75 body_centered()` 含 `motion_spin/motion_heavy_spin/motion_quake/motion_hammer_spin`），改动会波及平A观感，须重跑 `tests/weapon_mechanics.gd`（`:46` 断言"Full circle follows captured body center"）、`tests/weapon_heavy_strokes.gd`、`tests/weapon_full_matrix.gd`。
     - **多数近战刀光末端 ≠ 攻击范围最远处**：月牙/横扫类贴图的"刀尖"是从角色位置向外画的装饰，判定框（`attack_hit()` 的 cone/thrust 多边形）最远处与贴图末端不重合，月牙常把角色整个包住或明显短于/超出真实 reach。用户实测反馈：这类要"往角色外的方向移动很多"才能对齐实际判定。根治需要把特效末端与 `reach` 建立显式映射（当前 `mechanic_contact()` 只处理接触点、不处理 reach 对齐），属独立批次，勿与功能提交混做。
 
+55. **搜打撤逐天时长必须走 `raid.day_duration` 同步，不能只依赖 `session.duration`**（2026-10-09 三日时长改为 660/660/480s 时踩出来的规则）：`session.gd:56 var duration` 是**本地变量、不在联机快照里**（`session.gd:1614` 打包数组没有它）；房主在 `expedition.gd:69` 每天 `prepare_day` 时**同时写** `s.raid.day_duration` 与镜像 `s.duration`，客户端在快照恢复路径（`session.gd:1662` `raid=data[11]`）里靠 raid 拿到正确的当日时长。所有需要读"当天时长/缩圈起点"的代码**一律走 `session.day_duration()` / `session.shrink_start()` 两个 helper**（`session.gd:3303 / :3310`），**不要直接读 `session.duration` 或 `DAY_DURATIONS[day-1]` 硬下标**——早期版本 `duration` 恒等于 `DAY_DURATION=300`（三天等长），那时客户端读本地 `duration` 也没问题；现在三天**不等长**（Day3 只有 480s），客户端如果绕过 helper、直接读本地 `session.duration`，房主 `prepare_day(3)` 后客户端的 `duration` 变量仍然是上一次同步的 660s，缩圈半径会一路按 660 算到底、和房主不一致，**Day3 圈永远缩不满、毒圈伤害也不对**。同理 `expedition.gd:tick/spawn_boss` 与 `main.gd:update_hud` 都已改成走 helper，`SHRINK_START` 常量已删（比例改走 `SHRINK_RATIO`）。`tests/expedition_network.gd:54` 有一条客户端同步断言守卫（读 `s.day_duration()`，若同步链坏了会红）。⚠️ 未来若再加"逐天差异"字段（比如每天缩圈比例不同、每天 Boss 数量不同），一律**写进 raid、读走 helper**，别再往本地 var 上贴。
+
 
 ---
 
@@ -825,6 +827,7 @@ git status --porcelain
 
 | 2026-10-08 | 见同批提交 | Boss 出场恢复固定顺序：远征主教→猎王→女王→无名赤月→条件终局；肉鸽 BOSS_ORDER=[0,1,2,3,4]。隐藏战仅在无名赤月倒下后触发；阶段/死亡特效保留 art_key，缺省身份优先 boss_art，死亡清掉旧演出，远征死亡不叠普通怪碎片。回归与旧素材审计结果见 TEST-REPORT.md；可视测试按真实 Boss 图节点进入，避免镜中挑战面板遮挡。 |
 | 2026-10-08 | （本轮未提交） | **肉鸽实测三 bug（用户图文报告）**：①**遗落宝藏/游商房"第二个假宝箱"**——`rogue_field.gd` 原在 `room in ["shop","treasure"]` 时把房间标识宝箱/营火贴图（`art.item_icons[11/15]`）画在世界中心 `Vector2(720,lane_center)`，与真 `reward_chest`（能按 E、有交互圈）并排，被误认成第二个无法交互的宝箱。**用户拍板：把该标识移到顶栏标题左侧**。改：删掉 `rogue_field.gd` 世界中心那段（talent 神龛保留）；`main.gd` HUD 新增 `hud.room_marker`（`rogue_icon`，标题 x=550 左侧 518,19，26×26），在 `_update_hud` 肉鸽分支按 `room` 显隐并切 treasure=11/shop=15 图标。②**行囊右键"回收此物品"点不动**——非 bug，是设计：`rogue_sell` 只在 `phase=="rogue_shop"` 生效（`rogue_inventory.gd:302` 按钮门 + `roguelike.gd:1345` 服务端门）。**用户拍板：保留游商限制，但把禁用态做明显**。改：`rogue_inventory.gd` 非游商时把按钮文字改成"回收 · 需到游商处"（原来只有 tooltip + 轻微变灰，看不出是被条件挡住）。③**冥潮仪镰右键圆斩特效与判定框不符**——判定是以角色为心、半径=reach(170) 的整圆，但 `stylized_vfx.gd:406-412` 把圆重定心到握把、缩成刀刃长。**用户拍板：本轮只登记、暂不改**（近战特效原点=角色、与判定普遍不重合是系统性问题）。新增 §11.54 已知缺口 + §4.K 刀光行加 ⚠️ 说明。测试：`rogue_inventory` 34/0、`rogue_room_chests` 75/0、`inventory_panels` 28/0；三脚本 `--check-only` 均 exit 0。 |
+| 2026-10-09 | （本轮提交） | **搜打撤（三日远征）一局时长改为 30 分钟**：用户拍板"三天等比放大 + 前松后紧"——`DAY_DURATION=300/SHRINK_START=180` 两个常量替换为 `session.gd:53 DAY_DURATIONS=[660,660,480]`（Day1/Day2 各 11 分、Day3 8 分，合计 30 分钟探索+缩圈上限；黎明 Boss 战照旧不计时）与 `:55 SHRINK_RATIO=0.6`（缩圈从当天 60% 时刻开始，节奏形状与旧版完全一致）。新增唯一换算口 `session.gd:3303 day_duration()` / `:3310 shrink_start()`；**逐天时长写进随快照同步的 `raid.day_duration`**（`expedition.gd:68 prepare_day` 写入、`expedition.gd:69` 镜像 `s.duration`），`safe_radius`（:3319）/`can_travel`（:3363）/`threat`（:3141）/`expedition.tick+spawn_boss`/`main.gd:2087-2088` HUD 全部改走 helper；`SHRINK_START` 常量删除。⚠️ 关键约束登记为 §11.55：三天不等长后，**任何读当天时长的代码必须走 helper（raid 同步真值），直接读本地 `session.duration` 会让客户端 Day3 缩圈与房主错位**。测试同步：`tests/balance.gd` 缩圈时序段改为 396/528/659.99s 节点、`tests/systems.gd` 两处 300→660、`tests/expedition.gd` 两处 `s.SHRINK_START`→`s.shrink_start()`、`tests/expedition_network.gd` 客户端断言改读 `day_duration()`。验证：`expedition` 79/0、`systems` 除 3 项 save/load 沙箱红（`user://logs` 被拦，HEAD 基线同样红）外 10850/0、`balance` 6 项 Boss 攻击节奏红为**既有红**（路牌 2026-10-07 行已登记"旧 gear 基线同样复现"，且 `attack_output`/`update_boss` 不碰本次改动变量）。路牌：§4.B 缩圈行、§5 两行速查、§6 数值行、§11.55 新坑。 |
 
 ### 12.7 最近一次全量审计（2026-10-07）
 

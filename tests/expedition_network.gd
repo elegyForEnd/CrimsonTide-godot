@@ -51,8 +51,8 @@ func _process(dt: float) -> bool:
 			s.action("raid_choice",{"choice":"extract"})
 			stage=6
 	elif s.running:
-		if s.duration!=300:
-			push_error("Client did not receive the five-minute day")
+		if s.day_duration()!=660.0:
+			push_error("Client did not receive the synced day-one length")
 			quit(1)
 		if s.raid.day==2 and s.raid.phase=="boss" and not s.raid.hazards.is_empty():
 			for e in s.enemies:

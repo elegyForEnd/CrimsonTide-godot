@@ -195,7 +195,7 @@ func run() -> void:
 	var carried := {"name":"Test","hero":0,"talents":[0,0,0],"bag_key":"green","bags":[],"pocket":pocket_start}
 	session.solo(carried)
 	check(session.launch(false,12345),"solo launches")
-	check(session.duration==300,"standard duration")
+	check(session.duration==660.0,"standard duration")
 	var p: Dictionary=session.players[1]
 	check(Catalog.bag_grid(p.backpack)==Vector2i(4,4),"saved green backpack loads at 4x4")
 	check(Catalog.container_count(p.pocket,"crystal")==3,"saved pocket loot loads")
@@ -776,7 +776,7 @@ func run() -> void:
 	session.solo({"name":"Test","hero":0,"talents":[0,0,0],"bag_key":"white","bags":[],
 		"pocket":Catalog.make_container([{"kind":"relic","x":0,"y":0,"rot":false}],Catalog.POCKET_GRID)})
 	check(session.launch(true,42),"replay long expedition")
-	check(session.duration==300 and session.objectives==0,"new run resets objectives and timer")
+	check(session.duration==660.0 and session.objectives==0,"new run resets objectives and timer")
 	check(Catalog.container_count(session.players[1].pocket,"relic")==1,"the pocket follows the save file into the next run")
 	check(Catalog.bag_grid(session.players[1].backpack)==Vector2i(3,3),"a fresh run starts from the white backpack")
 	session.enemies.clear()

@@ -47,9 +47,13 @@ var world_drops: Array = []
 var results: Dictionary = {}
 var running := false
 var online := false
-const DAY_DURATION := 300.0
-const SHRINK_START := 180.0
-var duration := DAY_DURATION
+# 搜打撤（三日远征）每天时长：Day1/Day2 各 11 分、Day3 8 分，合计 30 分钟一局上限
+#（黎明 Boss 战本身不计时，是额外浮动）。逐天时长写进 raid.day_duration，随快照同步，
+# 客户端才不会和房主的缩圈半径错位（duration 变量不在快照里，只做兼容初值）。
+const DAY_DURATIONS := [660.0, 660.0, 480.0]
+# 缩圈节奏比例：每天满圈搜刮到当天此时长比例后才开始等比收缩到底，与旧版 0.6 同形。
+const SHRINK_RATIO := 0.6
+var duration := DAY_DURATIONS[0]
 var elapsed := 0.0
 var threat := 0.0
 var objectives := 0
@@ -1523,8 +1527,8 @@ func launch(_long_run: bool = false, fixed_seed: int = 0) -> bool:
 			message.emit("等待所有队友准备完毕。")
 			return false
 	seed_value=fixed_seed if fixed_seed!=0 else randi_range(1,9999999)
-	# Retain the legacy argument for callers; every exploration day is five minutes.
-	duration=DAY_DURATION
+	# Retain the legacy argument for callers; day one is the first entry of DAY_DURATIONS.
+	duration=DAY_DURATIONS[0]
 	var i := 0
 	for id in players:
 		var old: Dictionary=players[id]
@@ -3133,7 +3137,7 @@ func simulate(dt: float) -> void:
 			if p.status!="active": continue
 			var block := Ecology.block_at(ruins,p.p)
 			if block>=0 and Ecology.remaining(self,block)>0: ruins.sites[block].engaged=true
-	threat=clampf(float(raid.day-1)*0.35+float(raid.time)/duration,0,1.6)
+	threat=clampf(float(raid.day-1)*0.35+float(raid.time)/day_duration(),0,1.6)
 	spawn_timer-=dt
 	# Opening the map already places about 52 site defenders. Keep only a small
 	# refill margin rather than growing the live population toward the old 65 cap.
@@ -3294,6 +3298,18 @@ func simulate(dt: float) -> void:
 func safe_center() -> Vector2:
 	return raid.get("center",Ruins.CENTER)
 
+# 逐天时长的唯一真值：房主在 prepare_day 写入 raid.day_duration，随快照同步给客户端。
+# 兜底按天号取 DAY_DURATIONS，保证 raid 尚未生成（或旧包缺字段）时也能算。
+func day_duration() -> float:
+	if raid.is_empty(): return float(DAY_DURATIONS[0])
+	var d: float=float(raid.get("day_duration",0.0))
+	if d<=0.0: d=float(DAY_DURATIONS[clampi(int(raid.get("day",1))-1,0,DAY_DURATIONS.size()-1)])
+	return d
+
+# 当天缩圈起点：满圈搜刮到此时长比例（SHRINK_RATIO）后才开始收缩到底。
+func shrink_start() -> float:
+	return day_duration()*SHRINK_RATIO
+
 func safe_radius() -> float:
 	if roguelike.active(self): return 10000.0
 	if map_id=="city": return 10000.0
@@ -3305,7 +3321,7 @@ func safe_radius() -> float:
 	var center := safe_center()
 	var full := maxf(center.distance_to(Vector2.ZERO),center.distance_to(Ruins.SIZE))
 	full=maxf(full,maxf(center.distance_to(Vector2(Ruins.SIZE.x,0)),center.distance_to(Vector2(0,Ruins.SIZE.y))))+100
-	return lerpf(full,final_radius,clampf((float(raid.time)-SHRINK_START)/maxf(1.0,duration-SHRINK_START),0,1))
+	return lerpf(full,final_radius,clampf((float(raid.time)-shrink_start())/maxf(1.0,day_duration()-shrink_start()),0,1))
 
 func can_extract() -> bool:
 	if roguelike.active(self): return false
@@ -3344,7 +3360,7 @@ func hidden_ending_ready() -> bool:
 
 func can_travel() -> bool:
 	if roguelike.active(self): return false
-	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<SHRINK_START)
+	return raid.is_empty() or (raid.phase=="explore" and float(raid.time)<shrink_start())
 
 func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
 	var before: Vector2=p.p
