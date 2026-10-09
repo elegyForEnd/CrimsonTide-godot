@@ -27,6 +27,7 @@ static func tile(host, at: Vector2, size: Vector2, item: Dictionary = {}, tone: 
 	if str(item.get("kind",""))=="backpack":
 		node.tone=Catalog.tier(Catalog.bag_key_of_item(item)).color
 	node.occupied=not item.is_empty()
+	if node.occupied: node.set_meta("controller_item","packed")
 	node.secure=secure
 	node.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	host.overlay.add_child(node)

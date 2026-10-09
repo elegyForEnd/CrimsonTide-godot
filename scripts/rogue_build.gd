@@ -1151,7 +1151,7 @@ static func award(s, p: Dictionary) -> void:
 			p.build_core_granted=true
 	if (floor_index==1 and area==3) or (floor_index in [2,3,4] and area in [2,4]) or (floor_index==5 and area==3): p.build_forge_points+=1
 	if s.raid.room in ["combat","elite"]:
-		if p.flask_combat_awards<2:
+		if p.flask_combat_awards<4:
 			p.flask_combat_awards+=1; p.flask=minf(flask_cap(s,p),p.flask+10); p.flask_refills+=10
 		if s.raid.room=="elite" and not p.flask_elite_award:
 			p.flask_elite_award=true; p.flask=minf(flask_cap(s,p),p.flask+5); p.flask_refills+=5
@@ -1194,11 +1194,14 @@ static func hero_skill(s, p: Dictionary, aim: Vector2) -> void:
 
 static func enemy_budget(s, e: Dictionary) -> void:
 	var floor_index := clampi(int(s.raid.floor)-1,0,4)
-	var count := mini(4,maxi(1,s.players.size()))
+	var count := 0
+	for member in s.players.values():
+		if member.get("connected",true) and member.get("status","active") in ["active","down"]: count+=1
+	count = clampi(count,1,4)
 	var boss: bool=e.get("rogue_guardian",false)
 	var elite: bool=e.get("build_elite",false)
 	var front: bool=e.get("role","front") in ["front","melee","ambush"]
-	var base: float=[2600,4600,7200,10200,13800][floor_index] if boss else [150,260,420,620,900][floor_index] if front else [120,210,330,490,710][floor_index]
+	var base: float=[2600,4600,7200,10200,13800][floor_index] if boss else [150,240,370,530,740][floor_index] if front else [120,190,290,420,590][floor_index]
 	# A1 · 成长树 `monster_slaying`（enemy_hp，≤ -20%）与 `iron_constitution`（enemy_damage，≤ -15%）
 	# 在这里落地。**必须与 `raid.build_enemy_hp/build_enemy_damage` 分开乘**：
 	# 那两个键是反向 rubber-banding（`departure()` 用玩家当前强度反推，clamp 到 [1,2.4]/[1,1.35]），

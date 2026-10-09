@@ -199,9 +199,15 @@ func draw_particles(target: CanvasItem, glow: bool) -> void:
 			geometry_batch.flush(target)
 			target.draw_circle(screen,size*(.7+t),Color(color,color.a*.12))
 			target.draw_circle(pose*Vector2(size*.4,0),size*.6,Color(color,color.a*.08))
-		elif style=="charge":
+		elif style.begins_with("charge"):
 			geometry_batch.flush(target)
-			target.draw_circle(screen,size*.55,color)
+			if style=="charge_electric":
+				target.draw_polyline(pose*PackedVector2Array([Vector2(-size*2,0),Vector2(-size*.4,size*.5),Vector2(size*.3,-size*.3),Vector2(size*1.7,0)]),color,1.2,true)
+			elif style in ["charge_soul","charge_water","charge_flame"]:
+				target.draw_arc(screen,size*.9,float(item.seed)+clock*4,float(item.seed)+clock*4+PI*.85,8,color,1.4,true)
+			elif style=="charge_chime":
+				target.draw_arc(screen,size*.8,0,PI*1.6,10,color,1.0,true)
+			else: target.draw_circle(screen,size*.55,color)
 			target.draw_line(pose*Vector2(-size*1.8,0),screen,Color(color,fade*.55),1.0,true)
 		elif style in ["ice","star","stone"]:
 			var points := PackedVector2Array([Vector2(-size,0),Vector2(0,-size*.60),Vector2(size,0),Vector2(0,size*.60)])

@@ -32,7 +32,12 @@ func run() -> void:
 		var origin := Vector2(240+(id-1)*480,450)+CharacterMetrics.FOOT_OFFSET*3
 		var points: Array=[]
 		for site in preload("res://scripts/weapon_held_glow.gd").charge_sites(pose): points.append(origin+site*3)
-		return {"tip":origin+preload("res://scripts/weapon_held_glow.gd").charge_anchor(pose)*3,"aim":Vector2.RIGHT,"charge_points":points}
+		var tracks: Array=[]
+		for path in preload("res://scripts/weapon_held_glow.gd").charge_paths(pose):
+			var track: Array=[]
+			for point in path: track.append(origin+point*3)
+			tracks.append(track)
+		return {"tip":origin+preload("res://scripts/weapon_held_glow.gd").charge_anchor(pose)*3,"aim":Vector2.RIGHT,"charge_points":points,"charge_paths":tracks}
 	for i in 3:
 		fx.event({"kind":"hold_charge","p":Vector2(240+i*480,450),"id":i+1,"weapon_index":600,"hold_time":.47})
 		fx.effects.back().age=[.12,.28,.47][i]

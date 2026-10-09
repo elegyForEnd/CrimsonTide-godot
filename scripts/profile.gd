@@ -9,7 +9,7 @@ var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs"
 	# version 1 so an old save is never skipped (a skipped parse wipes the profile).
 	# CHANGE-LOG v3-1 adds `daily`: the per-day daily-challenge record written by
 	# `roguelike.record_daily()` through the session's `profile_data()` channel.
-	"ashes":0,"growth":{},"daily":{}}
+	"controller_rumble":true,"controller_rumble_strength":1.0,"ashes":0,"growth":{},"daily":{}}
 const Homestead = preload("res://scripts/homestead.gd")
 # The daily record's key format (`daily:YYYY-MM-DD`) and record shape
 # (`{"best":int,"plays":int}`) are owned by `RogueDaily`; the profile reuses that

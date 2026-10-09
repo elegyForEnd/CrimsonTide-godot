@@ -1,5 +1,6 @@
 class_name Battlefield
 extends Node2D
+var input_hint: Callable
 const WorldPresentation = preload("res://scripts/world_3d.gd")
 const Idle = preload("res://scripts/character_idle.gd")
 var idle = Idle.new()
@@ -612,6 +613,7 @@ func draw_map(rect: Rect2, big: bool) -> void:
 		prev=point
 
 func label(at: Vector2, text: String, size: int, color: Color) -> void:
+	if input_hint.is_valid(): text=input_hint.call(text)
 	draw_string(font,at+Vector2(1,1),text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,Color(0.06,0.08,0.09,color.a*0.9))
 	draw_string(font,at,text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,color)
 
@@ -780,7 +782,13 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	if p.has("weapon_hold"):
 		for site in preload("res://scripts/weapon_held_glow.gd").charge_sites(pose):
 			charge_points.append(at+site*Vector2(facing,1))
-	return {"charge_points":charge_points,"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":screen_aim,
+	var charge_paths: Array=[]
+	if p.has("weapon_hold"):
+		for track in preload("res://scripts/weapon_held_glow.gd").charge_paths(pose):
+			var points: Array=[]
+			for site in track: points.append(at+site*Vector2(facing,1))
+			charge_paths.append(points)
+	return {"charge_paths":charge_paths,"charge_points":charge_points,"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":screen_aim,
 		"grip":at+grip,"blade_axis":blade_axis,"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":active_attack}
 
 func set_world_transform(at: Vector2 = Vector2.ZERO, angle: float = 0.0, scale_value: Vector2 = Vector2.ONE) -> void:

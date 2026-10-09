@@ -181,6 +181,7 @@ func draw_reserve(p: Dictionary) -> void:
 		next.disabled=reserve_page>=pages-1
 
 func bind_item(control: Control, item: Dictionary, source: String, index: int, starter: bool) -> void:
+	control.set_meta("controller_item","rogue")
 	control.mouse_filter=Control.MOUSE_FILTER_STOP
 	control.mouse_entered.connect(func(): show_tooltip(item,starter))
 	control.mouse_exited.connect(hide_tooltip)

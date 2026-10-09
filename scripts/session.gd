@@ -1689,7 +1689,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 		WeaponHold.cancel(self,p); return
 	if kind in ["attack_press","attack_release"]:
 		if payload.get("aim") is Vector2 and payload.aim.is_finite(): p.aim=payload.aim.normalized()
-		if kind=="attack_press": WeaponHold.begin(self,p)
+		if kind=="attack_press": WeaponHold.begin(self,p,bool(payload.get("heavy",false)))
 		else: WeaponHold.release(self,p)
 		return
 	if kind in ["dash","jump","reload","skill","weapon_art","heal"]: WeaponHold.cancel(self,p)
@@ -3128,6 +3128,7 @@ func reload_player(p: Dictionary) -> void:
 		broadcast_audio("reload",p)
 
 func simulate(dt: float) -> void:
+	if not running: return
 	elapsed+=dt
 	for actor in players.values(): actor["boss_slow"]=0.0
 	if roguelike.active(self):
@@ -3232,12 +3233,17 @@ func simulate(dt: float) -> void:
 		advance_search(p,dt)
 		if p.hp<=0:
 			down(p)
+			if not running: return
 	if roguelike.active(self): RogueBuild.tick_enemies(self,dt)
 	update_enemies(dt)
+	if not running: return
 	update_soul_reaps(dt)
+	if not running: return
 	update_fire_zones(dt)
+	if not running: return
 	update_burns(dt)
 	update_bullets(dt)
+	if not running: return
 	if roguelike.active(self):
 		for player in players.values(): RogueBuild.commit_flask(self,player)
 	var defeated_boss := false
@@ -3282,6 +3288,7 @@ func simulate(dt: float) -> void:
 		ruins.sites[0]["cleared"]=true
 		knight_reward(RoyalCity.BOSS)
 	if roguelike.active(self): roguelike.tick(self,dt)
+	if not running: return
 	if defeated_boss and not raid.get("ended",false):
 		if int(raid.day)==3 and not raid.get("final_spawned",false): expedition.spawn_boss(self,true)
 		elif int(raid.day)==3 and raid.get("final_spawned",false) and not raid.get("abyss_spawned",false) and raid.get("map_boss_defeats",{}).size()>=2: wild_bosses.spawn_final(self)
@@ -3376,7 +3383,8 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 		if direction.length()>0.1:
 			p.move_dir=direction.normalized()
 		p.motion="run" if running_now else "walk"
-		if before.distance_to(p.p)<0.01:
+		# Locomotion follows input even when collision prevents displacement.
+		if direction.length()<=0.1:
 			p.motion="idle"
 	p.move_speed=before.distance_to(p.p)/maxf(dt,0.001)
 
@@ -3401,6 +3409,11 @@ func down(p: Dictionary) -> void:
 	else: spill_storage(p)
 	emit_effect("hurt",p.p)
 	broadcast_audio("down",p)
+	# Solo has no teammate to revive the player: settle this run immediately.
+	if not online and running:
+		p.status="dead"
+		p.bleed=0.0
+		settle()
 
 func attack(p: Dictionary) -> void:
 	if roguelike.active(self) and elapsed>float(p.get("build_attack_edge_until",-1)): p.build_attack_edge=false

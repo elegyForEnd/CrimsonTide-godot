@@ -286,3 +286,32 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - Boss VFX 双进程联机房主与客户端通过，四主题释放与危险区快照、蓄力、招架、破防、阶段、死亡事件均收到。旧联机测试误要求危险区主题总数为 3，而当前骑士也有主题 3；修为验证完整四主题，并增加 RPC 身份一致性断言。演出夹具按 actor_id 定位 Boss，不再误将敌人列表最后的女王机关当成骑士发送死亡事件。
 - 旧 boss_redesign 素材审计仍有 3/744 失败（Native HD art、No shared reskin source、Seventeen bosses each have four original effects）。单独加载 HEAD 修改前 boss_effect_art.gd 复跑得到完全相同的三项失败；本轮未修改 PNG、图集清单或纹理映射。该套件亦有原有退出资源泄漏警告。新专项及主场景脚本未出现解析错误。
 - 项目路牌 727 锚点：OK 471 / DRIFT 0 / WRONG 0 / HINT 256；git diff --check 通过。本轮修正在源码，旧导出 EXE 尚未重新打包。
+
+
+## 2026-10-09 魔境地图顺序与战斗密度重平衡
+
+- 调整源码 `rogue_graph.gd`、`roguelike.gd`、`rogue_build.gd`：每层 8～9 房、每条路线最少 6 场战斗（含守层者），前两场战斗后进入圣坛，第三场战斗后进入补给，长层后段可选特殊服务。取消会话二次覆盖生成图，保留镜像出现保底、分支与确定性。
+- 同批调整每波数量、后期普通怪生命、前四场战斗补瓶、精英/首领奖励，以及连接中 active/down 玩家的人数预算。数值表与边界写入 `BALANCE.md`、`ROGUELIKE.md`、`ROGUE-BUILD-IMPLEMENTATION.md`。
+- 新增 `tests/rogue_map_balance.gd`：209619 项、0 失败，穷举 100 种子×5 层所有路线，无连续服务房；实际生成五层普通/精英三波、地面合法性、补瓶去重和上限、风险奖励与离场人数均通过。
+- 相关回归：rogue_graph 146223/0、rogue_build_progression 956/0（单人/四人五层、天赋核心、修为/锻造、XP/属性守恒）、rogue_hooks_roguelike 178/0、rogue_build_growth 4066/0、roguelike 194/0、rogue_effect_fixes 65/0、roguelike_spawn_spacing 4924/0、rogue_build_system 440/0、roguelike_seven_rooms 18581/0、rogue_rooms 1198/0、rogue_growth 6886/0。均为无头逻辑验证，不等同于真人操作通关。
+- 正确启动双进程 `rogue_growth_network_fixes`：房主 9/0、客户端 7/0，成长、联机状态与结算通过。
+- `final_e2e_roguelike` 120 项仍有 3 失败：诅咒减伤池、镜像首次确认、镜像二次确认。将本次三个逻辑文件临时替换为 HEAD 原版、运行后原样还原，得到完全相同的 3 项失败，非本次引入；没有修改夹具压低失败数。
+- 200 种子×5 层比较实际旧图（含 dress_floor）与新图：平均每层房数 7.984→8.608、平均战斗 4.102→6.304、最少战斗 3→6。各门等概率均值，未计可跳过镜像为战斗；结果 `output/map-route-statistics.json`。本轮没有实测真人通关率，也未重新导出 EXE。
+- 项目路牌已同步，锚点校验 766 项：DRIFT 0 / WRONG 0；`git diff --check` 通过。工作区原有和同时出现的武器特效、地图移动等改动未覆盖。
+
+## 2026-10-09 手柄与强烈震动
+
+- `tests/controller.gd`：37 项 / 0 失败；标准映射、死区、两种战斗模式的真实蓄力/释放、菜单隔离、虚拟拖拽释放、键鼠切换、OS光标回送保护、本地玩家震动过滤与包络优先级。
+- `tests/weapon_hold_attack.gd`：1056 项 / 0 失败。
+- `tests/rogue_panel_close.gd`：45 项 / 0 失败。
+- `tests/item_bar_shortcuts.gd`：12 项 / 0 失败。
+- `tests/camp_collision.gd`：35 项 / 1 失败，`right input restores hero`；用 HEAD 的 `camp_screen.gd` 副本运行同一测试，仍为相同 1 失败，属于既有角色朝向问题。
+- 无头测试未验证实物手柄马达、驱动兼容性和实际菜单拖拽手感；验收操作见 `CONTROLLER.md`。未重新导出 EXE。
+
+### 2026-10-09 手柄菜单与提示补修
+
+`tests/controller_ui.gd`：21 项 / 0 失败，覆盖原始手柄事件→主界面 `_input()`→真实按钮回调：开始游戏进入营地、菜单方向选择、设置滑杆、B 返回、窗口光标点击、实际三选一卡牌选择及领取。`tests/controller.gd` 继续验证战斗与震动 37 项。窗口预览 `tests/controller_ui_visual.gd` 生成并检查标题/设置/营地/战斗截图；底部按键提示、焦点框和键鼠切换已接入。未重新导出 EXE。
+
+### 2026-10-09 RB/RT 与 B 长短按
+
+`tests/controller_layout.gd`：30 项 / 0 失败；两种模式 RB 立即普通攻击、RT 点按恰好一次重击与长按蓄满、B 短按松开闪避、长按奔跑不闪避、停止奔跑、面板/失焦取消、已有魔境 A 跳跃。`tests/controller.gd` 更新为 36 项 / 0 失败；`tests/weapon_hold_attack.gd` 原有键鼠蓄力机制 1056 项 / 0 失败。按键与长短按阈值同步于 `CONTROLLER.md`。

@@ -141,7 +141,7 @@ func event(data: Dictionary, hero: int = 0) -> void:
 	current_hero=clampi(hero,0,3)
 	var hero_color: Color=skin_colors.get(current_hero,PALETTES[current_hero])
 	var exact_weapon := int(data.get("weapon_index",data.get("weapon",0)))
-	current_identity=WeaponVfx.profile(exact_weapon)
+	current_identity=WeaponVfx.charge_profile(exact_weapon) if data.kind in ["hold_charge","hold_ready"] else WeaponVfx.profile(exact_weapon)
 	current_stage=clampi(int(data.get("combo",0)),0,2)
 	current_route=int(data.get("combo_route",-1))
 	current_upgrade=data.get("vfx",{}).duplicate()
@@ -287,11 +287,12 @@ func advance(dt: float) -> void:
 					for n in mini(12,int(fx.particle_credit)):
 						fx.particle_credit-=1.0
 						var phase: float=particles.rng.randf()
+						if fx.get("identity",{}).get("staff",false): phase=lerpf(.72,1.0,phase) if particles.rng.randf()<.7 else phase
 						var target: Vector2=sites[mini(sites.size()-1,int(phase*sites.size()))]
 						var radial := Vector2.from_angle(particles.rng.randf()*TAU)
 						var start: Vector2=target+radial*particles.rng.randf_range(8,18+progress*12)
-						var color := Color(fx.color).lerp(Color.WHITE,.3+progress*.3)
-						particles.spawn(start,-radial*38+radial.orthogonal()*30,color,"charge",.8+progress,source,target,true)
+						var color := Color(fx.color).lerp(Color.WHITE,.08+progress*.14)
+						particles.spawn(start,-radial*38+radial.orthogonal()*30,color,str(fx.get("identity",{}).get("particle","charge_spark")),.8+progress,source,target,true)
 						particles.particles.back()["weapon_charge"]=true
 						particles.particles.back()["site_phase"]=phase
 	if socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
@@ -462,15 +463,16 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 		var breath := 1.0+sin(float(fx.age)*9)*.035*energy
 		var sites: Array=held.get("charge_points",[point])
 		if sites.is_empty(): sites=[point]
-		if sites.size()>1:
+		for track in held.get("charge_paths",[sites]):
+			if track.size()<2: continue
 			var line := PackedVector2Array()
-			for site in sites: line.append(get_global_transform().affine_inverse()*Vector2(site))
+			for site in track: line.append(get_global_transform().affine_inverse()*Vector2(site))
 			target.draw_set_transform(Vector2.ZERO)
-			var veil := Color(fx.color).lerp(Color.WHITE,.3)
+			var veil := Color(fx.color).lerp(Color.WHITE,.08)
 			veil.a=lerpf(.1,.55,energy)*(.8 if additive else 1.0)
 			target.draw_polyline(line,Color(veil,veil.a*.3),lerpf(3.0,8.0,energy),true)
 			target.draw_polyline(line,veil,lerpf(.8,2.1,energy),true)
-		var color := Color(fx.color).lerp(Color.WHITE,.15+.45*energy)
+		var color := Color(fx.color).lerp(Color.WHITE,.05+.16*energy)
 		color.a=smoothstep(0,.06,float(fx.age))*lerpf(.12,.72,energy)*breath*(.75 if additive else 1.0)
 		var radius := lerpf(4.0,10.0,energy)
 		for site in sites:

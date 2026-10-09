@@ -90,8 +90,12 @@ func run() -> void:
 					var pixel := Vector2i((anchor-rect.position)/rect.size*Vector2(image.get_size()))
 					check(image.get_pixelv(pixel).a>.7,"Charge light on opaque surface %d/%d" % [hero,weapon])
 			if int(early.get("frame",0))!=int(full.get("frame",0)): changing+=1
-	check(full_surfaces>100,"Whole weapon distributed surface sampling")
+	check(full_surfaces==192,"Every reviewed full-charge weapon has distributed sampling")
 	print("Distributed charge surfaces: ",full_surfaces,"/192")
+	for weapon in range(600,648):
+		var identity := preload("res://scripts/weapon_vfx.gd").charge_profile(weapon)
+		check(identity.color.s>.15 and str(identity.particle).begins_with("charge_"),"Weapon material charge identity %d" % weapon)
+		check(bool(identity.staff)==(Catalog.weapon_family(weapon)==3),"Staff uses head gathering %d" % weapon)
 	check(changing>100,"Weapon charge anticipation advances rather than static frame")
 	var field := Field.new(); field.session=s; field.frames=CharacterFrames.new()
 	clear(p); p.weapon=600; p.motion="run"; p.aim=Vector2.RIGHT; p.weapon_hold={"shown":true,"time":.3}; field.move_phases[1]=1.0
@@ -108,7 +112,7 @@ func run() -> void:
 	fx.advance(.1)
 	check(fx.effects[0].p.distance_to(moved.tip)<.01,"Live charge position updated")
 	check(not fx.particles.particles.is_empty(),"Charge spawns surrounding particles")
-	check(fx.particles.particles.all(func(particle): return particle.style=="charge"),"Charge particles are light dots, no flakes")
+	check(fx.particles.particles.all(func(particle): return str(particle.style).begins_with("charge")),"Charge particles are light dots, no flakes")
 	p.p+=Vector2(80,40); fx.advance(.1)
 	check(fx.effects[0].p.distance_to(field.weapon_effect_socket(1).tip)<.01,"Light follows next movement")
 	fx.event({"kind":"hold_cancel","p":p.p,"id":1,"weapon_index":600})

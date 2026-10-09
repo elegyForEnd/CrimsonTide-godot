@@ -66,6 +66,7 @@ const RogueContent := preload("res://scripts/rogue_content.gd")
 # U1 任务3 · 装备属性差。`Equipment.value()/definition()` 是魔境装备数值的唯一尺子
 # （`rogue_reward_ui.gd:4` 也是这个 preload），商店的"与当前装备差异"必须用同一把。
 const Equipment := preload("res://scripts/rogue_equipment.gd")
+var controller = preload("res://scripts/controller.gd").new()
 var profile := Profile.new()
 var online_service: OnlineService
 var p2p: TideP2P
@@ -171,7 +172,10 @@ var overlay: Control
 var toast: Label
 var page_name := "title"
 var hud: Dictionary = {}
-var inventory_open := false
+var inventory_open := false:
+	set(value):
+		inventory_open=value
+		sync_solo_pause()
 var selected := -1
 var selected_slot := "backpack"
 var rotated := false
@@ -188,7 +192,10 @@ var drop_art := ""
 const FROST_ALPHA := 0.30
 var drag_last_point := Vector2(-1,-1)
 var drag: Dictionary = {"active":false,"slot":"backpack","source":-1,"rot":false,"carry":0,"kind":"","blank":{}}
-var _loot_index := -1
+var _loot_index := -1:
+	set(value):
+		_loot_index=value
+		sync_solo_pause()
 # Click bookkeeping: a press that never moves is a select, two of them in quick
 # succession on the same item are an equip shortcut.
 var press_point := Vector2(-1,-1)
@@ -237,7 +244,10 @@ var nickname: LineEdit
 var address: LineEdit
 var extra_meds := 0
 var toast_time := 0.0
-var modal := false
+var modal := false:
+	set(value):
+		modal=value
+		sync_solo_pause()
 var ready_local := false
 var time_ui := 0.0
 var title_font: Font
@@ -252,6 +262,8 @@ var camp: Control
 var recruited := ""
 
 func _ready() -> void:
+	# Keep menus and inventory interactive while the solo world is paused.
+	process_mode=Node.PROCESS_MODE_ALWAYS
 	profile.load_profile()
 	online_service=OnlineService.new()
 	add_child(online_service)
@@ -261,6 +273,7 @@ func _ready() -> void:
 	sound=TideSound.new()
 	add_child(sound)
 	session=TideSession.new()
+	session.process_mode=Node.PROCESS_MODE_PAUSABLE
 	session.name="Session"
 	add_child(session)
 	p2p=TideP2P.new()
@@ -268,6 +281,8 @@ func _ready() -> void:
 	p2p.setup(online_service,session)
 	p2p.status.connect(notify)
 	field=Battlefield.new()
+	field.process_mode=Node.PROCESS_MODE_PAUSABLE
+	field.input_hint=func(text: String): return controller.ui.prompt_text(self,text)
 	field.session=session
 	field.visible=false
 	add_child(field)
@@ -279,6 +294,8 @@ func _ready() -> void:
 	canvas.add_child(root)
 	root.theme=make_theme()
 	rogue_field=preload("res://scripts/rogue_field.gd").new()
+	rogue_field.process_mode=Node.PROCESS_MODE_PAUSABLE
+	rogue_field.input_hint=func(text: String): return controller.ui.prompt_text(self,text)
 	rogue_field.session=session
 	rogue_field.visible=false
 	root.add_child(rogue_field)
@@ -353,7 +370,7 @@ func _ready() -> void:
 	add_child(cinema_layer)
 	ultimate=UltimateCinematic.new()
 	cinema_layer.add_child(ultimate)
-	ultimate.burst.connect(func(): sound.burst_cinematic(ultimate.hero))
+	ultimate.burst.connect(func(): sound.burst_cinematic(ultimate.hero); controller.pulse(0.85,1.0,0.45))
 	ultimate.ended.connect(sound.end_cinematic)
 	ultimate.ended.connect(func(_interrupted: bool):
 		if not session.online and page_name=="game":
@@ -646,6 +663,7 @@ func setup_inputs() -> void:
 		var art_click := InputEventMouseButton.new()
 		art_click.button_index=MOUSE_BUTTON_RIGHT
 		InputMap.action_add_event("weapon_art",art_click)
+	controller.setup()
 
 func make_theme() -> Theme:
 	var theme := Theme.new()
@@ -897,6 +915,7 @@ func ensure_camp() -> Control:
 		return camp
 	camp=preload("res://scripts/camp_screen.gd").new()
 	camp.name="GroundCamp"
+	camp.input_hint=func(text: String): return controller.ui.prompt_text(self,text)
 	# The camp builds its map in _ready, so it has to be in the tree before it is
 	# handed the session and the profile it reads the roster from.
 	add_child(camp)
@@ -1580,7 +1599,20 @@ func on_started() -> void:
 	# The two things a first raid has to know: the backpack is a piece of equipment
 	# like any other, and three sockets at the bottom of the screen are one key away.
 	popup_tip("屏幕下方新增三格道具栏：按 [1][2][3] 直接使用对应格的道具或换装。捡到背包后双击即可换装。")
+func sync_solo_pause() -> void:
+	if not is_inside_tree() or session==null: return
+	var cinematic_pause: bool=ultimate!=null and ultimate.active and ultimate.owns_pause
+	# Search uses the inventory overlay, but its timed reveals need a live world.
+	var bag_pause: bool=inventory_open and _loot_index<0
+	get_tree().paused=session.running and not session.online and page_name=="game" and (bag_pause or modal or cinematic_pause)
+
+func _exit_tree() -> void:
+	controller.stop()
+	get_tree().paused=false
+
 func _process(dt: float) -> void:
+	controller.tick(self,dt)
+	sync_solo_pause()
 	if camp:
 		# The camp is frozen while a panel owns the screen. The pack panel is drawn by
 		# `show_inventory()` instead of a modal box, so it has to be named here too:
@@ -1610,9 +1642,10 @@ func _process(dt: float) -> void:
 		if rogue_build_preview and is_instance_valid(rogue_build_preview): rogue_build_preview.visible=false
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
-	var blocked: bool=inventory_open or modal or field.map_open or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
-	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim(),"fire_blocked":blocked or mouse_over_button(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint"),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
-	if session.roguelike.active(session): session.local_input["aim_point"]=mouse_point()+rogue_field.camera_offset()
+	var blocked: bool=inventory_open or modal or field.map_open or (controller.active and controller.pointer_mode(self)) or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
+	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim()),"fire_blocked":blocked or (not controller.active and mouse_over_button()),"fire":not blocked and Input.is_action_pressed("fire") and (controller.active or not mouse_over_button()),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and (Input.is_action_pressed("sprint") or controller.sprinting()),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
+	if session.roguelike.active(session):
+		session.local_input["aim_point"]=session.players.get(session.my_id(),{}).get("p",Vector2.ZERO)+controller.direction*600.0 if controller.active else mouse_point()+rogue_field.camera_offset()
 	time_ui+=dt
 	if time_ui>0.1:
 		time_ui=0
@@ -1658,14 +1691,21 @@ func bag_mouse_live() -> bool:
 # Dragging lives on the overlay: item bodies ignore the mouse, so the pointer is
 # hit-tested against whichever grid is underneath it.
 func _notification(what: int) -> void:
+	if what==NOTIFICATION_WM_WINDOW_FOCUS_OUT and controller:
+		controller.release_pointer(self)
 	if what==NOTIFICATION_WM_WINDOW_FOCUS_OUT and is_instance_valid(session) and session.running:
 		session.action("attack_cancel")
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and event.device==-2:
+		pass
+	elif controller.handle(self,event):
+		get_viewport().set_input_as_handled()
+		return
 	# Release precedes GUI consumption, so a button cannot swallow a held attack.
 	if page_name=="game" and event.is_action_released("fire"):
-		if inventory_open or modal or field.map_open or mouse_over_button(): session.action("attack_cancel")
-		else: session.action("attack_release",{"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim()})
+		if inventory_open or modal or field.map_open or (not controller.active and mouse_over_button()): session.action("attack_cancel")
+		else: session.action("attack_release",{"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim())})
 	if page_name=="game" and session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
@@ -1855,6 +1895,7 @@ func index_at(slot: String, cell: Vector2i) -> int:
 	return -1
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.device==-2 and controller.pointer_mode(self): return
 	if event.is_action_pressed("pause"):
 		# Esc first puts the units in hand back where they came from: cancelling a
 		# carry must not also close the panel under the player's cursor.
@@ -1971,7 +2012,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if field.map_open:
 		return
 	if event.is_action_pressed("fire") and not event.is_echo():
-		session.action("attack_press",{"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim()})
+		session.action("attack_press",{"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim())})
 	for action in ["reload","skill","dash","weapon_art","jump"]:
 		if event.is_action_pressed(action) and not event.is_echo():
 			session.action(action)
@@ -3321,7 +3362,7 @@ func drag_resolve(slot: String, cursor: Vector2i, probe: Dictionary) -> Dictiona
 func mouse_point() -> Vector2:
 	var viewport := get_viewport()
 	if viewport and root and root.is_inside_tree():
-		return root.get_global_transform_with_canvas().affine_inverse()*viewport.get_mouse_position()
+		return root.get_global_transform_with_canvas().affine_inverse()*(controller.cursor_position if controller.active and controller.cursor_valid else viewport.get_mouse_position())
 	return Vector2.ZERO
 
 # Every cell the held item covers where it currently sits. A socket is not a
@@ -4316,6 +4357,8 @@ func clear_damage_feedback() -> void:
 		damage_overlay.hide()
 
 func on_combat_audio(data: Dictionary) -> void:
+	if page_name=="game" and not modal and not inventory_open and not get_tree().paused:
+		controller.combat(data,session.my_id())
 	if page_name!="game":
 		return
 	sound.listener.global_position=rogue_field.camera if session.roguelike.active(session) else field.camera
@@ -4412,7 +4455,7 @@ func close_modal() -> void:
 
 func pause_menu() -> void:
 	var at := modal_box("守夜通讯",Vector2(630,460))
-	label(overlay,"本局时间继续流逝，请先移动到安全处。",at+Vector2(35,100),18,MUTED)
+	label(overlay,"游戏已暂停，关闭菜单后继续。" if not session.online else "本局时间继续流逝，请先移动到安全处。",at+Vector2(35,100),18,MUTED)
 	# P1 · 肉鸽的「地图」入口。战役的 HUD 上本来就有 `地图  M` 按钮（见 `on_started`），
 	# 肉鸽那一栏被 `行囊 · 构筑` 占满，所以补进菜单。回调里先 `close_modal()` 再开图：
 	# 模态框画在 `overlay` 上，不关掉的话路线图会被它压在下面。
@@ -4439,7 +4482,7 @@ func leave_to_title() -> void:
 	show_title()
 
 func show_settings() -> void:
-	var at := modal_box("设置",Vector2(740,585))
+	var at := modal_box("设置",Vector2(740,690))
 	label(overlay,"主音量",at+Vector2(37,112),20)
 	var slider := HSlider.new()
 	slider.position=at+Vector2(185,127)
@@ -4475,8 +4518,29 @@ func show_settings() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if profile.data.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		profile.save_profile()
 	)
-	label(overlay,"日语角色语音 · 奥义配有中文字幕",at+Vector2(37,443),16,MUTED)
-	label(overlay,"成长自动保存；标题页「账号 / 存档」可设置云同步。",at+Vector2(37,485),15,MUTED)
+	var rumble := CheckButton.new()
+	rumble.text="手柄震动 · 强烈战斗反馈"
+	rumble.position=at+Vector2(37,420)
+	rumble.button_pressed=profile.data.get("controller_rumble",true)
+	rumble.toggled.connect(func(value: bool): profile.data.controller_rumble=value; profile.save_profile(); controller.preview_time=0.0; controller.stop())
+	overlay.add_child(rumble)
+	var rumble_slider := HSlider.new()
+	rumble_slider.position=at+Vector2(350,430)
+	rumble_slider.size=Vector2(240,30)
+	rumble_slider.min_value=0.0
+	rumble_slider.max_value=1.0
+	rumble_slider.step=0.05
+	rumble_slider.value=profile.data.get("controller_rumble_strength",1.0)
+	rumble_slider.value_changed.connect(func(value: float): profile.data.controller_rumble_strength=value; profile.save_profile())
+	overlay.add_child(rumble_slider)
+	button(overlay,"试震",at+Vector2(605,420),Vector2(95,40),func():
+		if controller.device>=0 and profile.data.get("controller_rumble",true):
+			var power := float(profile.data.get("controller_rumble_strength",1.0))
+			controller.preview_time=0.4
+			Input.start_joy_vibration(controller.device,0.9*power,power,0.4)
+	)
+	label(overlay,"手柄：左摇杆移动 / 右摇杆瞄准；菜单十字键选择，A确认，B返回；右摇杆光标",at+Vector2(37,483),15,MUTED)
+	label(overlay,"成长自动保存；标题页「账号 / 存档」可设置云同步。",at+Vector2(37,520),15,MUTED)
 
 func set_music_volume(value: float) -> void:
 	var bus := AudioServer.get_bus_index("Music")

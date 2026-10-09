@@ -72,6 +72,7 @@ var station_shortcuts: Dictionary = {}
 var squad_count: Label
 var supply_status: Label
 var extra_meds := 0
+var input_hint: Callable
 var input_blocked := false
 
 
@@ -535,6 +536,7 @@ func _process(dt: float) -> void:
 	if activities.busy():
 		site.hero_walking = false
 		prompt.text = "[Space / E] 收竿  ·  [Esc] 收起钓竿" if activities.action=="fish" else "正在操作田畦  ·  [Esc] 取消"
+		if input_hint.is_valid(): prompt.text=input_hint.call(prompt.text)
 		return
 	if input_blocked:
 		warp_charge = 0.0
@@ -543,19 +545,9 @@ func _process(dt: float) -> void:
 		return
 	clock += dt
 	var speed := 420.0
-	var stick := Vector2.ZERO
-	if held("right"):
-		stick.x += 1.0
-	if held("left"):
-		stick.x -= 1.0
-	if held("down"):
-		stick.y += 1.0
-	if held("up"):
-		stick.y -= 1.0
+	var stick := Input.get_vector("left","right","up","down")
 	if held("sprint"):
 		speed = 700.0
-	if stick.length() > 0.01:
-		stick = stick.normalized()
 	drive_hero(stick, dt * (speed / 420.0))
 
 	# Hold the right mouse button to charge a jump straight to a station.
@@ -765,6 +757,10 @@ func _update_markers() -> void:
 				prompt.text = "[F]  拾取 " + Catalog.item_name(drop.entry)
 			else:
 				prompt.text = "[F] 拾取 %s ×%d" % [str(preload("res://scripts/homestead.gd").CROPS.get(str(drop.kind),preload("res://scripts/homestead.gd").FISH.get(str(drop.kind),{})).name),int(drop.units)]
+	if input_hint.is_valid():
+		prompt.text=input_hint.call(prompt.text)
+		seed_status.text=input_hint.call(seed_status.text)
+
 
 
 

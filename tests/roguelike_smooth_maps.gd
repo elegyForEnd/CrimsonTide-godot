@@ -35,11 +35,13 @@ func run() -> void:
 				var at := Vector2(map.width*.70,map.lane_center(map.width*.70))
 				var points: Array=[]
 				if exit_index==0:
-					for x in [.75,.80,.85,.90,.95]: points.append(Vector2(map.width*x,map.lane_center(map.width*x)))
+					for x in [.75,.80,.85,.90,.95]:
+						if x<map.region.exits[exit_index][0]: points.append(Vector2(map.width*x,map.lane_center(map.width*x)))
 				else:
 					var b: Array=map.region.branch
 					points.append(map.uv_point([b[0][0],(b[0][1]+b[-1][1])/2]))
-					for i in range(1,5): points.append(map.uv_point([b[i][0],(b[i][1]+b[11-i][1])/2]))
+					for i in range(1,b.size()/2-1):
+						if b[i][0]<map.region.exits[exit_index][0]: points.append(map.uv_point([b[i][0],(b[i][1]+b[b.size()-1-i][1])/2]))
 				points.append(map.exit_position(exit_index))
 				for waypoint in points:
 					at=map.move(at,waypoint-at,20)

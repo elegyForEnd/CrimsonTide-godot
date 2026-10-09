@@ -1,6 +1,7 @@
 extends RefCounted
 ## Left-button gesture, resolved by the host. Right-button arts keep their cooldown.
 const TAP_TIME := .18
+const HEAVY_MIN_RATIO := .35
 static var charge_bar_box: StyleBoxFlat
 const ImageArt=preload("res://scripts/weapon_image_art.gd")
 
@@ -67,11 +68,11 @@ static func cancel(s, p: Dictionary) -> void:
 	p.erase("weapon_hold")
 	s.broadcast_combat({"kind":"hold_cancel","p":p.p,"id":p.id})
 
-static func begin(s, p: Dictionary) -> void:
+static func begin(s, p: Dictionary, heavy: bool = false) -> void:
 	if p.has("weapon_hold") or p.status!="active" or p.dodge_time>0 or p.reload>0 or p.cast_time>0 or s.pending_ultimates.has(p.id): return
 	if s.roguelike.active(s) and (s.raid.phase!="rogue_combat" or p.flask_time>0 or p.height>0 or not p.get("rogue_selection",{}).is_empty()): return
 	var move := parameters(s,p)
-	p["weapon_hold"]={"weapon":int(p.weapon),"time":0.0,"shown":false,"ready":false,"full_time":float(move.hold_time),"max_damage":float(move.damage)}
+	p["weapon_hold"]={"heavy":heavy,"weapon":int(p.weapon),"time":0.0,"shown":false,"ready":false,"full_time":float(move.hold_time),"max_damage":float(move.damage)}
 
 static func tick(s, p: Dictionary, cmd: Dictionary, dt: float) -> void:
 	if not p.has("weapon_hold"): return
@@ -100,12 +101,14 @@ static func release(s, p: Dictionary) -> void:
 	move.hold_time=float(hold.get("full_time",move.hold_time))
 	move.damage=float(hold.get("max_damage",move.damage))
 	# A tap keeps its combo; every longer hold increases charged damage continuously.
-	if float(hold.time)<=TAP_TIME:
+	if float(hold.time)<=TAP_TIME and not bool(hold.get("heavy",false)):
 		if s.roguelike.active(s):
 			p["build_attack_edge"]=true
 			p["build_attack_edge_until"]=s.elapsed+.20
 		s.attack(p)
 	else:
-		move["charge_ratio"]=fraction(float(hold.time),float(move.hold_time))
-		move.damage=damage_at(float(hold.time),move)
+		var seconds := float(hold.time)
+		if hold.get("heavy",false): seconds=maxf(seconds,lerpf(TAP_TIME,float(move.hold_time),HEAVY_MIN_RATIO))
+		move["charge_ratio"]=fraction(seconds,float(move.hold_time))
+		move.damage=damage_at(seconds,move)
 		s.release_weapon_art(p,move)

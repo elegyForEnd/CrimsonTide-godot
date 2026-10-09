@@ -193,46 +193,8 @@ func new_floor(s) -> void:
 	# together with the rest of the floor's fresh state (`route`/`node` below) — a bad floor
 	# never pre-loads the next one's drops, and `reset()` gets `{}` for a brand-new run.
 	s.raid["loot_pity"]={}
-	dress_floor(s)
 	s.raid.node=str(s.rogue_graph.get("entry",""))
 	fill_floor_route(s)
-
-## The generator fixes the shape of the floor (depths, branches, guardian) but not its
-## content. A room that only exists on the branch nobody walked is not a guarantee, so the
-## run's per-floor needs are secured on rows whose branches all supply the same service:
-## one supply row and one sanctuary row. Only `kind` strings change — depths, edges and the
-## floor guardian never move, and the sanctuary count never exceeds the generator's cap of 2.
-func dress_floor(s) -> void:
-	var rows: Dictionary={}
-	for id in s.rogue_graph.get("order",[]):
-		var depth := int(NodeGraph.node(s.rogue_graph,str(id)).get("depth",0))
-		if not rows.has(depth): rows[depth]=[]
-		rows[depth].append(str(id))
-	var supply_row := 0
-	var sanctuary_row := 0
-	for depth in range(2,depth_count(s)-1):
-		var supply_ok := true
-		var sanctuary_ok := true
-		for id in rows.get(depth,[]):
-			var kind := str(NodeGraph.node(s.rogue_graph,str(id)).kind)
-			supply_ok=supply_ok and kind in ["shop","treasure"]
-			sanctuary_ok=sanctuary_ok and kind=="talent"
-		if supply_ok: supply_row=depth
-		if sanctuary_ok: sanctuary_row=depth
-	if supply_row==0:
-		supply_row=3 if sanctuary_row==2 else 2
-		var index := 0
-		for id in rows[supply_row]:
-			s.rogue_graph["nodes"][id]["kind"]="shop" if index==0 else "treasure"
-			index+=1
-	if sanctuary_row==0:
-		sanctuary_row=3 if supply_row==2 else 2
-		# Two alternative sanctuary nodes count as one visit on every route.
-		for id in s.rogue_graph.get("order",[]):
-			if str(NodeGraph.node(s.rogue_graph,str(id)).kind)=="talent":
-				s.rogue_graph["nodes"][str(id)]["kind"]="combat"
-		for id in rows[sanctuary_row]:
-			s.rogue_graph["nodes"][id]["kind"]="talent"
 
 ## One default room kind per depth (the first node at that depth). Entries a caller already
 ## wrote are kept: they are the explicit per-room override used by tests and debug jumps.
@@ -380,7 +342,7 @@ func enter(s) -> void:
 func spawn_wave(s) -> void:
 	var boss_wave: bool=s.raid.room=="boss" and int(s.raid.wave)==3
 	var floor_index: int=int(s.raid.floor)-1
-	var count: int=1 if boss_wave else 6+floor_index+(2 if s.raid.room=="elite" else 0)
+	var count: int=1 if boss_wave else [6,6,7,7,8][floor_index]+(2 if s.raid.room=="elite" else 0)
 	# Extra elite chance is evaluated per non-guaranteed minion, including ordinary rooms.
 	# At zero chance no additional RNG draws are made.
 	var extra_elite := clampf(mod_of(s,"elite_chance"),0,1)
@@ -502,6 +464,7 @@ func tick(s, dt: float) -> void:
 		if not waiting: s.raid.phase="rogue_combat"; s.raid.revision+=1
 		return
 	combat.tick(s,dt)
+	if not s.running: return
 	for corpse in s.raid.get("rogue_corpses",[]): corpse.time=maxf(0,corpse.time-dt)
 	for p in s.players.values():
 		if (p.status!="active" or not p.connected) and not p.get("rogue_selection",{}).is_empty():
@@ -518,7 +481,9 @@ func tick(s, dt: float) -> void:
 			p.hp=maxf(0.0,p.hp-Build.incoming(s,p,s.incoming_damage(p,14.0*dt*(1.0-resist)),{},"lava"))
 			p.flask_time=0.0; p.build_last_hurt=s.elapsed
 			p.rogue_lava=true
-			if p.hp<=0: s.down(p)
+			if p.hp<=0:
+				s.down(p)
+				if not s.running: return
 		else: p.rogue_lava=false
 	if s.raid.phase=="rogue_reward": finish_rewards(s)
 	if str(s.raid.room)=="event": refresh_dedicated(s)
@@ -540,6 +505,16 @@ func tick(s, dt: float) -> void:
 				break
 	else: clear_room(s)
 
+# Combat pays for risk; service actions supply their own benefits.
+func room_gold(s) -> int:
+	var floor_number := int(s.raid.floor)
+	var room := str(s.raid.room)
+	var base := 25+floor_number*10 if room in CHEST_ROOMS else 15+floor_number*5
+	if room == "elite": base+=15
+	elif room == "boss": base+=30
+	if s.raid.get("challenge",false): base+=50
+	return base
+
 func clear_room(s) -> void:
 	if s.raid.get("room_rewarded",false): return
 	s.raid["room_rewarded"]=true
@@ -554,7 +529,7 @@ func clear_room(s) -> void:
 		# 无诅咒/无该键时恒为 1.0，`scale_int` 在 1.0 处逐位恒等，因此既有出账不变。
 		var income_scale := maxf(0.0,1.0+mod_of(s,"gold_income",p))
 		var gold_scale := (1.0+mod_of(s,"gold",p))*Curses.personal_reward_scale(p)*income_scale
-		p.rogue_gold+=maxi(0,scale_int(25+int(s.raid.floor)*10+(50 if s.raid.get("challenge",false) else 0),gold_scale))
+		p.rogue_gold+=maxi(0,scale_int(room_gold(s),gold_scale))
 		Build.award(s,p)
 	s.bullets.clear()
 	s.pending_ultimates.clear()

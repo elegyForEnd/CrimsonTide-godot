@@ -222,6 +222,10 @@ func build(owner, data: Dictionary) -> void:
 	paid.disabled=not bool(check.get("ok",false))
 	if paid.disabled: paid.text="魔晶刷新 · %s" % short
 	take=action_button(stage,"收藏天赋" if selection.get("category","") in ["talent","core"] else "领取奖励",Rect2(468,898,270,48),func(): submit("rogue_selection_take"))
+	for i in selection.offers.size():
+		var card: Control=stage.get_node("RewardCard%d" % i)
+		card.focus_neighbor_bottom=card.get_path_to(take)
+		take.focus_neighbor_top=take.get_path_to(stage.get_node("RewardCard0"))
 	share=action_button(stage,"跳过本轮" if selection.get("category","") in ["talent","core"] else "丢给队友",Rect2(803,898,270,48),func():
 		if selection.get("category","") in ["talent","core"]: host.session.action("rogue_selection_bank",payload)
 		else: submit("rogue_selection_drop")

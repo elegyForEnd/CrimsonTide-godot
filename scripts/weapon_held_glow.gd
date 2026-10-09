@@ -4,6 +4,10 @@ static var light: GradientTexture2D
 static var surfaces: Dictionary={}
 static var charge_anchors: Dictionary={}
 static var charge_surfaces: Dictionary={}
+static var reviewed_guides: Dictionary={}
+static var reviewed_surfaces: Dictionary={}
+static var reviewed_tracks: Dictionary={}
+static var guides_loaded := false
 
 static func surface_light() -> GradientTexture2D:
 	if light==null:
@@ -78,7 +82,52 @@ static func samples(pose: Dictionary, seconds: float) -> Array[Dictionary]:
 	return accents
 
 ## Select an opaque colored blade point; white hair must not own the charge light.
+static func reviewed_points(pose: Dictionary) -> Array:
+	if not pose.get("weapon_atlas",false): return []
+	var texture: Texture2D=pose.texture
+	if not texture is AtlasTexture: return []
+	if not guides_loaded:
+		guides_loaded=true
+		var data: Variant=JSON.parse_string(FileAccess.get_file_as_string("res://resources/weapon_charge_guides.json"))
+		if data is Dictionary: reviewed_guides=data.get("entries",{})
+	var region: Rect2=texture.region
+	var key := "%s|%d,%d,%d,%d" % [texture.atlas.resource_path,region.position.x,region.position.y,region.size.x,region.size.y]
+	if not reviewed_guides.has(key): return []
+	if reviewed_surfaces.has(key): return reviewed_surfaces[key]
+	var image := texture.get_image()
+	var dimensions := Vector2(image.get_size())
+	var paths: Array=reviewed_guides[key].get("paths",[reviewed_guides[key].guide])
+	var result: Array=[]
+	var tracks: Array=[]
+	for guide: Array in paths:
+		var track: Array=[]
+		for segment in range(guide.size()-1):
+			var first := Vector2(guide[segment][0],guide[segment][1])*dimensions
+			var last := Vector2(guide[segment+1][0],guide[segment+1][1])*dimensions
+			for i in 5:
+				var desired := first.lerp(last,float(i)/4)
+				var best := INF
+				var chosen := Vector2.ZERO
+				for y in range(-8,9):
+					for x in range(-8,9):
+						var pixel := Vector2i(desired)+Vector2i(x,y)
+						if pixel.x<0 or pixel.y<0 or pixel.x>=image.get_width() or pixel.y>=image.get_height(): continue
+						var color := image.get_pixelv(pixel)
+						if color.a<.7: continue
+						var point := Vector2(pixel)+Vector2(.5,.5)
+						var distance := point.distance_squared_to(desired)
+						if distance<best: best=distance; chosen=point/dimensions
+				if best<INF and (track.is_empty() or Vector2(track.back()).distance_to(chosen)>.002): track.append(chosen)
+		if not track.is_empty(): tracks.append(track); result.append_array(track)
+	reviewed_tracks[key]=tracks
+	reviewed_surfaces[key]=result
+	return result
+
 static func charge_anchor(pose: Dictionary) -> Vector2:
+	var reviewed := reviewed_points(pose)
+	if not reviewed.is_empty():
+		var rect: Rect2=pose.rect
+		return rect.position+Vector2(reviewed.back() if Catalog.weapon_family(int(pose.weapon_identity))==3 else reviewed[reviewed.size()/2])*rect.size-CharacterMetrics.FOOT_OFFSET
 	var grip := Vector2(pose.get("grip",pose.get("socket",Vector2.ZERO)))
 	if not pose.get("weapon_atlas",false): return Vector2(pose.get("socket",grip))
 	var key: int=pose.texture.get_instance_id()
@@ -114,6 +163,11 @@ static func charge_anchor(pose: Dictionary) -> Vector2:
 
 static func charge_sites(pose: Dictionary) -> Array[Vector2]:
 	var result: Array[Vector2]=[]
+	var reviewed := reviewed_points(pose)
+	if not reviewed.is_empty():
+		var rect: Rect2=pose.rect
+		for point in reviewed: result.append(rect.position+Vector2(point)*rect.size-CharacterMetrics.FOOT_OFFSET)
+		return result
 	if not pose.get("weapon_atlas",false): return [charge_anchor(pose)]
 	var texture: Texture2D=pose.texture
 	var key := texture.get_instance_id()
@@ -156,4 +210,18 @@ static func charge_sites(pose: Dictionary) -> Array[Vector2]:
 	for point in charge_surfaces[key]:
 		result.append(rect.position+Vector2(point)*rect.size-CharacterMetrics.FOOT_OFFSET)
 	if result.is_empty(): result.append(charge_anchor(pose))
+	return result
+
+static func charge_paths(pose: Dictionary) -> Array:
+	var reviewed := reviewed_points(pose)
+	if reviewed.is_empty(): return [charge_sites(pose)]
+	var texture: AtlasTexture=pose.texture
+	var region := texture.region
+	var key := "%s|%d,%d,%d,%d" % [texture.atlas.resource_path,region.position.x,region.position.y,region.size.x,region.size.y]
+	var result: Array=[]
+	var rect: Rect2=pose.rect
+	for track: Array in reviewed_tracks.get(key,[]):
+		var points: Array[Vector2]=[]
+		for uv in track: points.append(rect.position+Vector2(uv)*rect.size-CharacterMetrics.FOOT_OFFSET)
+		result.append(points)
 	return result
