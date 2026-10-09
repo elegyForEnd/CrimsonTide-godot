@@ -34,4 +34,5 @@ static func of(index: int) -> Dictionary:
 
 static func text(index: int) -> String:
 	var move := of(index)
-	return "战技 · %s [右键] · 蓝耗 %d · 冷却 %.1fs。%s" % [move.name,move.mana,move.cooldown,move.desc]
+	var hold := preload("res://scripts/weapon_hold_attack.gd").profile(index)
+	return "左键点按普攻 / 长按：%s，伤害随蓄力增长，%.2fs 达上限；松开释放。战技 · %s [右键] · 蓝耗 %d · 冷却 %.1fs。%s" % [hold.name,hold.hold_time,move.name,move.mana,move.cooldown,move.desc]

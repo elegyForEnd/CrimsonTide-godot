@@ -45,7 +45,7 @@ func run() -> void:
 				var map=preload("res://scripts/rogue_map.gd").new()
 				map.generate(3162920)
 				map.configure(floor_index,area,long_room)
-				for x in range(330,int(map.fork_start)-100,100):
+				for x in range(330,int(minf(map.fork_start,map.fork_polygons[0][0].x))-100,100):
 					var start := Vector2(x,map.lane_center(x))
 					if map.blocked(start,15): continue
 					var stopped: Vector2=map.move(start,Vector2(0,-map.extent.y),15)

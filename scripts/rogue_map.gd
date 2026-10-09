@@ -1,6 +1,7 @@
 extends Ruins
 
 var floor_polygon := PackedVector2Array()
+var ground_holes: Array[PackedVector2Array]=[]
 var top_edge := PackedVector2Array()
 var bottom_edge := PackedVector2Array()
 var obstacles: Array=[]
@@ -73,12 +74,17 @@ func configure(floor_index: int, area: int, long_room: bool, room: String = "") 
 	obstacles.clear()
 	terrain_hazards.clear()
 	fork_polygons.clear()
+	ground_holes.clear()
 	width=3600.0 if long_room else 3000.0
 	extent=Vector2(width,width/3.0)
 	var rng := RandomNumberGenerator.new()
 	rng.seed=map_seed*7919+area*104729
 	layout=area-1
 	region=ground_regions[region_key(floor_index,area,room)]
+	for outline in region.get("ground_holes",[]):
+		var hole := PackedVector2Array()
+		for point in outline: hole.append(uv_point(point))
+		ground_holes.append(hole)
 	ground_top=region.top
 	ground_lower=region.bottom
 	ground_bottom=ground_lower.max()
@@ -98,10 +104,9 @@ func configure(floor_index: int, area: int, long_room: bool, room: String = "") 
 	var diagonal := PackedVector2Array()
 	for point in region.branch: diagonal.append(uv_point(point))
 	fork_polygons.append(diagonal)
-	# 分叉口是一整块开阔路口，不是两条走廊：直行路与斜向路之间的地面可走，
-	# 所以斜着走向「斜向」门口不会再撞上一堵看不见的墙（旧的写法只把两条路并起来，
-	# 两路之间的楔形留白会留下一个必须绕过去的隐形尖角）。
-	var joined: Array[PackedVector2Array]=Geometry2D.merge_polygons(floor_polygon,fork_junction(diagonal))
+	# Merge the measured roads, preserving the scenery between their inner edges.
+	# Filling the whole junction would let actors walk through its walls and foliage.
+	var joined: Array[PackedVector2Array]=Geometry2D.merge_polygons(floor_polygon,diagonal)
 	assert(joined.size()==1,"Both level roads must join the same floor")
 	floor_polygon=joined[0]
 	if not long_room: return
@@ -123,31 +128,11 @@ func configure(floor_index: int, area: int, long_room: bool, room: String = "") 
 func exit_position(index: int) -> Vector2:
 	return uv_point(region.exits[index])
 
-## 分叉口的可走地面：上界取岔路的「外沿」（`branch` 前半段，x 递增），下界取实测地面的
-## 下沿。与地面并起来就把两路之间的楔形补平，门口的碰撞空间与出口位置都不受影响。
-func fork_junction(band: PackedVector2Array) -> PackedVector2Array:
-	var half := band.size()/2
-	var outline: Array=[]
-	for i in half: outline.append(band[i])
-	var x0: float=band[0].x
-	var x1: float=band[half-1].x
-	outline.append(Vector2(x1,edge_y(bottom_edge,x1)))
-	for i in range(bottom_edge.size()-1,-1,-1):
-		var at: Vector2=bottom_edge[i]
-		if at.x<x1 and at.x>x0: outline.append(at)
-	outline.append(Vector2(x0,edge_y(bottom_edge,x0)))
-	return PackedVector2Array(outline)
-
-## 折线上 x 处的 y（左右端点外夹取端点值）。
-func edge_y(points: PackedVector2Array, x: float) -> float:
-	for i in points.size()-1:
-		var a: Vector2=points[i]
-		var b: Vector2=points[i+1]
-		if x>=a.x and x<=b.x: return lerpf(a.y,b.y,(x-a.x)/maxf(.001,b.x-a.x))
-	return points[points.size()-1].y
-
 func inside_floor(pos: Vector2) -> bool:
-	return Geometry2D.is_point_in_polygon(pos,floor_polygon)
+	if not Geometry2D.is_point_in_polygon(pos,floor_polygon): return false
+	for hole in ground_holes:
+		if Geometry2D.is_point_in_polygon(pos,hole): return false
+	return true
 
 func footprint_on_ground(pos: Vector2, radius: Vector2) -> bool:
 	for i in 32:
@@ -160,6 +145,10 @@ func blocked(pos: Vector2, radius: float = 15.0) -> bool:
 	for i in floor_polygon.size():
 		var edge_point := Geometry2D.get_closest_point_to_segment(pos,floor_polygon[i],floor_polygon[(i+1)%floor_polygon.size()])
 		if pos.distance_squared_to(edge_point)<radius*radius: return true
+	for hole in ground_holes:
+		for i in hole.size():
+			var edge_point := Geometry2D.get_closest_point_to_segment(pos,hole[i],hole[(i+1)%hole.size()])
+			if pos.distance_squared_to(edge_point)<radius*radius: return true
 	for prop in obstacles:
 		var d: Vector2=(pos-prop.p)/(prop.radius+Vector2.ONE*radius)
 		if d.length_squared()<1.0: return true

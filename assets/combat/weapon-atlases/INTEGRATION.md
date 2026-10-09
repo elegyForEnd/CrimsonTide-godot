@@ -43,3 +43,54 @@ manifest.json 直接引用原始 RGBA 图片，AtlasTexture 按透明间隔切�
 实际战斗事件验证：tests/weapon_vfx_battle.gd
 弹体及范围渲染验证：tests/weapon_mechanics_visual.gd
 四名角色六种动作预览：build/weapon-raw-integration-preview.png
+
+上下瞄准与尺寸修正（2026-10-08）：
+释放挂点保留手部高度，将左右手部伸展量旋转到鼠标方向；可见武器挂点
+继续用于持械微光与蓄力。独立近战斩击的绘制中心沿瞄准方向位于虚拟
+握点前方，不再因素材接触点或固定朝向偏到左右。重武器的附加斜角
+限制为约 22 度，避免把向上的攻击横置；差异仍由原始画面和轨迹比例
+保留。近战绘制尺寸增加 22%，旋转特效不再缩小到剑身长度。
+八方向预览：build/weapon-mouse-aim-preview.png
+像素位置与可读尺寸验证：tests/weapon_mechanics_visual.gd
+
+绯红单手剑：新增原始 ImageGen 透明素材 identity_600_compact_v2.png，
+三段普攻换成短厚弧刃，反手斩仅翻转弧的首尾而保留外侧朝向鼠标。
+这把剑独立限制绘制宽度，不套用大范围长柄或重剑拖尾的尺寸。
+
+### Held surface light correction
+Held accents no longer select or shrink release_source paintings. weapon_held_glow reads opaque pixels along the current pose's real grip-to-tip segment, caches their material colors, and draws low-opacity native radial light on those pixels. Melee uses a moving sequence along the blade; ranged weapons use a quiet head light. Empty material samples remain unlit. Both field renderers retain their original pose transforms. Verification: 42,593 checks across four heroes and 48 weapons, including pixel attachment, intensity, and no attack-painting reuse; zero failures.
+
+
+### Full weapon effects audit (2026-10-08)
+Six original ImageGen replacements are registered by tools/register_weapon_effect_audit.py: identity_610_cut_v2, identity_612_cut_v2, identity_618_cut_v2, identity_623_cut_v2, audit_637_burst_v2, audit_639_burst_v2. Normal cut selection and burst payload selection consume these assets; original alpha and RGB remain unchanged. Spins retain the captured body center instead of the grip. Charge uses quiet native gathering light at the live weapon socket rather than miniature released art. Full per-weapon render coverage and observations: build/weapon-full-audit/AUDIT.md. Held glow sampling coverage separately records 83 candidate mount/material misses; these stay unlit until source landmarks are refined.
+
+
+
+## 左键点按 / 长按攻击（2026-10-08）
+
+已接入闯关、远征和主机权威输入。左键按下只记录手势，松开执行；长按不再自动重复普攻。
+
+| 武器 | 满蓄时间 | 长按释放 |
+| --- | --- | --- |
+| 单手武器 | 0.65 秒 | 按武器专属招式释放回旋、突刺等强化攻击，伤害倍率 1.65 |
+| 重武器 | 1.05 秒 | 专属重劈、锤砸、旋转等强化攻击，伤害倍率 2.15、增强击退 |
+| 枪弓 | 0.70 秒 | 枪弹贯穿 2 人、弓箭贯穿 3 人；散射类缩小散布；消耗 1 发弹药 |
+| 法杖 | 0.85 秒 | 按每把法杖原有元素招式释放光束、齐射或爆发，伤害倍率 1.65 |
+
+- 0.18 秒开始显示聚能光与武器材质粒子；满蓄发出一次碎光提示。角色静止时保持现有战技预备帧，移动仍使用持械走跑动画。
+- 未满蓄就松开，执行现有普通攻击并保留连击与输入缓存。攻击前摇、后摇期间不能白赚蓄力进度。
+- 满蓄攻击使用每把武器已有专属战技素材，叠加新的聚能与释放碎光；本次没有生成新的 48 套位图或角色动作。
+- 满蓄不占用右键战技冷却。近战 / 法杖耗蓝为基础战技蓝耗的 35%，闯关仍应用普攻耗蓝修正；枪弓不耗蓝。
+- 闪避、跳跃、装填、技能、换武器、打开界面或失去战斗状态取消手势。客户端发送可靠按下 / 松开动作，主机计时与结算，不接收客户端自报蓄力强度。
+- 蓄力光跟随实际武器挂点；攻击松开时捕获鼠标方向，后续角色动作不拖动已经释放的特效。
+
+验证：`tests/weapon_hold_attack.gd` 覆盖 48 武器 × 两种模式、资源消耗、冷却独立、取消与重复松开（1002 检查）；战斗回归 78 检查、特效释放稳定性 196 检查通过。预览：`build/weapon-hold-preview.png`（聚能中 / 满蓄 / 释放瞬间；远程投射物沿用游戏现有绘制，预览展示释放光）。
+
+
+## 2026-10-09 独立蓄力素材补齐
+
+48 把武器已配置独立新 ImageGen 透明原图：24 近战、14 飞行弹体、4 光束、6 爆发。左键蓄力不再复用右键战技贴图；charged 标记贯穿主机结算、投射物与特效事件。远征同名武器使用相同的蓄力招式类别，避免齐射/光束类别错配。
+
+630–635、639–647 按用户追加要求使用连续干净轮廓，无细碎鳞片纹理，并关闭这些蓄力动作的碎片粒子；满蓄用光脉冲。其余前批原图保留。614/615/619 地面碎岩加入角色位置的局部遮挡处理。
+
+详细原图与四方向预览：`build/weapon-charged-audit/README.md`。素材/方向 737、手势与资源 1056、释放稳定性 196、战斗回归 78 检查通过。

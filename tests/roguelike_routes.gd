@@ -149,14 +149,7 @@ func run() -> void:
 			# A continuous central lane guarantees every encounter and exit is reachable.
 			for x in range(330,2781,12): check(map.inside_floor(Vector2(x,map.lane_center(x))),"Ground corridor remains connected before obstacle avoidance")
 		check(silhouettes.size()==5,"All five areas have distinct silhouettes")
-	# R5+ (walkability): the route is planned on the map grid and then replayed
-	# through the real `map.move()`, instead of walking one hand-picked polyline.
-	# The old `(width*.88, ground_y(.425))` waypoint sat inside the blocked wedge
-	# between the two roads, so the straight leg into it was rejected by collision
-	# and the walker stalled there — a stale test route, not a blocked branch.
-	# 2026-10-07: that wedge is gone (`rogue_map.gd` `fork_junction()` merges the
-	# junction ground), so the fork is now one open plaza and the walker no longer
-	# has to find an angle around an invisible corner.
+	# Plan a route around painted scenery and replay it through real collision.
 	for long_room in [false,true]:
 		var map=preload("res://scripts/rogue_map.gd").new()
 		map.generate(1742)
@@ -172,28 +165,22 @@ func run() -> void:
 			if path.is_empty(): continue
 			var walk: Dictionary=replay_path(map,BODY_MARGIN,path)
 			check(not walk.stalled and walk.at.distance_to(destination)<15.0,"Player can walk continuously along each branch in long and compact rooms")
-			if index==1:
-				# 直行路与斜向路之间的地面属于路口广场：从岔口斜着直走上门的整条直线必须畅通。
-				var cut := false
-				for sample in 200:
-					if map.blocked(fork.lerp(destination,float(sample+1)/200.0),BODY_MARGIN): cut=true; break
-				check(not cut,"The straight diagonal from the fork into the upper door is walkable")
-	# 2026-10-07 · 全地图的分叉口都不许再有隐形墙：从岔口中心到两个门口的整条直线都必须
-	# 直接可走，且要留出 BODY_MARGIN 的余量。旧的 `merge_polygons(floor, branch)` 写法会在
-	# 两条路之间留下一个必须绕行的楔形空地（实测 30%~56% 的直线被挡）。
+	# Every fork retains both measured roads and excludes the scenery between them.
 	for floor_index in 5:
 		for area in range(1,8):
 			for long_room in [true,false]:
 				var map=preload("res://scripts/rogue_map.gd").new()
 				map.generate(1729+floor_index*100+area)
 				map.configure(floor_index,area,long_room)
-				var fork := Vector2(map.fork_start,map.lane_center(map.fork_start))
-				for index in 2:
-					var destination: Vector2=map.exit_position(index)
-					var clear := true
-					for sample in 200:
-						if map.blocked(fork.lerp(destination,float(sample+1)/201.0),BODY_MARGIN): clear=false; break
-					check(clear,"No air wall between the fork and door %d: f%d a%d %s" % [index,floor_index+1,area,"long" if long_room else "compact"])
+				var branch: Array=map.region.branch
+				var half: int=branch.size()/2
+				for i in range(1,half-1):
+					var upper: Vector2=map.uv_point(branch[i])
+					var lower: Vector2=map.uv_point(branch[branch.size()-1-i])
+					check(not map.blocked((upper+lower)*.5,BODY_MARGIN),"Measured branch center remains walkable")
+					var main_top: float=map.ground_limits(lower.x).x
+					if main_top-lower.y>BODY_MARGIN*2:
+						check(map.blocked(Vector2(lower.x,(lower.y+main_top)*.5),BODY_RADIUS),"Scenery between branch roads remains blocked")
 	s.queue_free()
 	await process_frame
 	print("ROGUE ROUTES ",checks," checks / ",failures," failures")

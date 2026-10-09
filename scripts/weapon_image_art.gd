@@ -22,7 +22,7 @@ static func mechanic_texture(role: String) -> Texture2D:
 	var key := "mechanic:"+source
 	if cells.has(key): return cells[key]
 	var path := (BASE if source.begins_with("weapon_") else MECHANICS_BASE)+source+".png"
-	if source.begins_with("authored_"):
+	if source.begins_with("authored_") or source.begins_with("audit_") or source.begins_with("charged_"):
 		load_mechanic_manifest()
 		path=MECHANICS_BASE+str(mechanics.get(source,{}).get("file",""))
 	if not ResourceLoader.exists(path): return null
@@ -37,8 +37,22 @@ static func load_mechanic_manifest() -> void:
 ## Payload selection changes the painting, never the spell's collision rules.
 static func payload_source(index: int, payload: String, fallback: String) -> String:
 	load_mechanic_manifest()
+	var revised := "audit_%d_%s_v2" % [canonical(index),payload]
+	if mechanics.has(revised): return revised
 	var key := "authored_%d_%s" % [canonical(index),payload]
 	return key if mechanics.has(key) else mechanic_source(fallback)
+
+## Charged originals are selected only by a host-tagged charged attack.
+## A flight sprite must never become a held glow or a ground explosion.
+static func charged_source(index: int, payload: String, fallback: String) -> String:
+	load_mechanic_manifest()
+	var key := "charged_%d_v1" % canonical(index)
+	if mechanics.get(key,{}).get("payload","")==payload: return key
+	return fallback
+
+static func clean_charged(index: int) -> bool:
+	load_mechanic_manifest()
+	return str(mechanics.get("charged_%d_v1" % canonical(index),{}).get("style","")).begins_with("clean")
 
 static func mechanic_ink(role: String) -> Rect2:
 	if role.begins_with("weapon_"):
@@ -107,12 +121,16 @@ static func release_source(index: int, role: String, stage: int, weapon_art: boo
 		var source := payload_source(index,"art",role)
 		if source.begins_with("authored_"): return source
 	var normal := preload("res://scripts/weapon_mechanics.gd").normal_role(index)
+	if role==normal and canonical(index) in [610,612,618,623]:
+		var revised := "identity_%d_cut_v2" % canonical(index)
+		if ResourceLoader.exists(MECHANICS_BASE+revised+".png"): return revised
 	# A named circular weapon art may differ from its normal linear cut.
 	if preload("res://scripts/weapon_mechanics.gd").body_centered(role):
 		var special := "identity_%d_%s" % [15 if index==15 else canonical(index),"quake" if role=="motion_quake" else "spin"]
 		if ResourceLoader.exists(MECHANICS_BASE+special+".png"): return special
 	if role!=normal: return mechanic_source(role)
 	if canonical(index)==600:
+		if ResourceLoader.exists(MECHANICS_BASE+"identity_600_compact_v2.png"): return "identity_600_compact_v2"
 		var sword_source: String=["identity_600_slash","identity_600_return","identity_600_finisher"][clampi(stage,0,2)]
 		if ResourceLoader.exists(MECHANICS_BASE+sword_source+".png"): return sword_source
 	var authored: String={600:"identity_600_slash",601:"identity_601_thrust",603:"identity_603_double_slash",604:"identity_604_slash",605:"identity_605_slash",606:"identity_606_slash",607:"identity_607_slash",608:"identity_608_slash",609:"identity_609_slash",610:"identity_610_slash",611:"identity_611_slash",621:"identity_621_sweep"}.get(canonical(index),"")

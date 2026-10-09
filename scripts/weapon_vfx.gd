@@ -37,6 +37,16 @@ static func profile(index: int) -> Dictionary:
 	return {"weapon":index,"motif":str(row[0]),"color":Color(row[1]),"detail":int(row[2]),
 		"style":"spark" if index in [605,616,620] else str(STYLES[row[0]]),"run":run_weapon,"procedural":run_weapon and not preload("res://scripts/weapon_image_art.gd").available(index),"family":Catalog.weapon_family(index)}
 
+## Charge palette follows the painted material of each concrete weapon.
+const CHARGE_COLORS := ["e83e52","9eaed6","ff6860","f74259","aabbea","ffc866","55caff","6b9eff","eb5454","dda4d4","aa8cd8","bf3e58","ffbd48","46bdeb","ff783d","ff6b29","72cfff","6699ff","ef3e58","9c6ce8","ff7937","78caed","36d6de","b94250","ffc577","e4a44c","ee3b5a","ff983e","89d8ff","72a9ff","b154ce","95d2ef","66d7bb","ffbd52","b992ed","ffe5a0","69bfff","ff7532","75ddff","749dff","c3afff","ffd36c","ff733c","aa5eee","d24467","ef4a65","5fe4da","ffd077"]
+static func charge_profile(index: int) -> Dictionary:
+	var canonical: int=preload("res://scripts/weapon_image_art.gd").canonical(index)
+	var result := profile(canonical).duplicate()
+	if canonical>=600 and canonical<648: result.color=Color(CHARGE_COLORS[canonical-600])
+	result["particle"]= "charge_"+str({"ember":"flame","storm":"electric","frost":"frost","tide":"water","moon":"orbit","void":"soul","soul":"soul","bell":"chime","blood":"blood","star":"star","sun":"star","mirror":"orbit"}.get(result.motif,"spark"))
+	result["staff"]=Catalog.weapon_family(index)==3
+	return result
+
 static func stroke(combo: int, family: int, detail: int) -> Dictionary:
 	var stage := clampi(combo,0,2)
 	return {"scale":[.83,.96,1.12][stage],"life":[.19,.24,.34][stage]+(.045 if family==2 else 0.0),

@@ -1,5 +1,6 @@
 class_name Battlefield
 extends Node2D
+var input_hint: Callable
 const WorldPresentation = preload("res://scripts/world_3d.gd")
 const Idle = preload("res://scripts/character_idle.gd")
 var idle = Idle.new()
@@ -406,6 +407,10 @@ func actor(p: Dictionary) -> void:
 		set_world_transform(pos,0,Vector2(facing,1))
 		draw_billboard(pose.texture,pose.rect,false)
 		draw_held_glow(pose)
+	elif p.has("weapon_hold") and p.weapon_hold.get("shown",false):
+		var pose := character_frames.equipped_attack_frame(p)
+		set_world_transform(pos,0,Vector2(facing,1))
+		draw_billboard(pose.texture,pose.rect,false)
 	elif Idle.active(p):
 		var pose := character_frames.held_idle_frame(p.hero,p.weapon,float(idle.sample(p).time))
 		if pose.get("weapon_atlas",false):
@@ -445,6 +450,7 @@ func actor(p: Dictionary) -> void:
 		draw_arc(Vector2.ZERO,32,0,TAU,40,Color(color,0.55),2)
 	set_actor_overlay(pos)
 	label(pos+Vector2(-27,-104),p.name,12,color.lightened(0.25))
+	preload("res://scripts/weapon_hold_attack.gd").draw_bar(self,p,pos+Vector2(0,-119))
 	draw_rect(Rect2(pos+Vector2(-23,-96),Vector2(46,3)),Color("322a35"))
 	draw_rect(Rect2(pos+Vector2(-23,-96),Vector2(46*maxf(0,p.hp/p.max_hp),3)),color)
 	set_world_transform()
@@ -607,6 +613,7 @@ func draw_map(rect: Rect2, big: bool) -> void:
 		prev=point
 
 func label(at: Vector2, text: String, size: int, color: Color) -> void:
+	if input_hint.is_valid(): text=input_hint.call(text)
 	draw_string(font,at+Vector2(1,1),text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,Color(0.06,0.08,0.09,color.a*0.9))
 	draw_string(font,at,text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,color)
 
@@ -751,7 +758,11 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	var lunge := aim*(12 if frame==2 else -3 if frame==1 else 4) if p.swing_time>0 and upright_weapon else Vector2.ZERO
 	var authored: bool=character_frames.equipped_attack_frame(p).get("weapon_atlas",false)
 	if authored: lunge=Vector2.ZERO
-	var tip := character_frames.equipped_weapon_tip(p)*Vector2(facing,1)
+	var pose := character_frames.equipped_attack_frame(p)
+	if not active_attack and p.motion in ["walk","run"]:
+		pose=character_frames.held_motion_frame(p,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
+		facing=-1.0 if p.move_dir.x<0 else 1.0
+	var tip: Vector2=Vector2(pose.get("socket",character_frames.equipped_weapon_tip(p)))*Vector2(facing,1)
 	# submit_sprite uses a two-unit height and ignores the legacy pose lean.
 	var pos: Vector2=smooth_positions.get(p.id,p.p)
 	var at: Vector2=world_3d.view_camera.unproject_position(world_3d.point(pos+lunge,2))
@@ -759,13 +770,25 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	var sway := sin(clock*(4+moving*9)+p.id)*(1.3+moving*2)
 	if upright_weapon and not authored: tip.y+=sway*.35
 	var screen_aim := ground_transform().basis_xform(aim).normalized()
-	# Attach to the visible blade, even when the upright atlas cannot aim vertically.
-	var pose := character_frames.equipped_attack_frame(p)
+	# Release toward mouse aim, including the hand's sideways reach.
+	if p.has("weapon_hold"):
+		tip=preload("res://scripts/weapon_held_glow.gd").charge_anchor(pose)*Vector2(facing,1)
 	var grip: Vector2=Vector2(pose.get("grip",pose.get("socket",Vector2.ZERO)))*Vector2(facing,1)
 	var blade_axis := (tip-grip).normalized()
-	var stroke_pivot := at+grip
-	var stroke_tip := stroke_pivot+screen_aim*tip.distance_to(grip)
-	return {"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":screen_aim,
+	var mount := CharacterMetrics.aimed_mount(at,grip,tip,screen_aim)
+	var stroke_pivot: Vector2=mount.pivot
+	var stroke_tip: Vector2=mount.tip
+	var charge_points: Array[Vector2]=[]
+	if p.has("weapon_hold"):
+		for site in preload("res://scripts/weapon_held_glow.gd").charge_sites(pose):
+			charge_points.append(at+site*Vector2(facing,1))
+	var charge_paths: Array=[]
+	if p.has("weapon_hold"):
+		for track in preload("res://scripts/weapon_held_glow.gd").charge_paths(pose):
+			var points: Array=[]
+			for site in track: points.append(at+site*Vector2(facing,1))
+			charge_paths.append(points)
+	return {"charge_paths":charge_paths,"charge_points":charge_points,"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":screen_aim,
 		"grip":at+grip,"blade_axis":blade_axis,"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":active_attack}
 
 func set_world_transform(at: Vector2 = Vector2.ZERO, angle: float = 0.0, scale_value: Vector2 = Vector2.ONE) -> void:

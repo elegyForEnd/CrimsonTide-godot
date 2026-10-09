@@ -44,6 +44,17 @@ func run() -> void:
 		session.move_player(p,Vector2.LEFT,true,0.02,220)
 	check(is_equal_approx(p.p.x-origin.x,145.0),"Dodge covers exactly 145 pixels and ignores movement reversal")
 	check(p.dodge_time<=0.00001,"Dodge ends after 240ms")
+	p.dodge_time=0.0
+	p.p=origin
+	session.ruins.walls.append(Rect2(1215,1020,18,160))
+	for sprint in [false,true]:
+		for frame in 10:
+			session.move_player(p,Vector2.RIGHT,sprint,0.016,220)
+			check(p.p==origin and p.move_speed==0,"Holding into a wall cannot move the player")
+			check(p.motion==("run" if sprint else "walk"),"Blocked movement retains the requested animation")
+	session.move_player(p,Vector2.ZERO,false,0.016,220)
+	check(p.motion=="idle","Releasing movement at a wall returns to idle")
+	session.ruins.walls.clear()
 	p.p=origin
 	p.dash=0.0
 	session.ruins.walls.append(Rect2(1260,1020,18,160))

@@ -250,7 +250,7 @@ func _process(dt: float) -> void:
 	elapsed+=dt
 	energy.advance(dt)
 	for player in field.session.players.values():
-		if player.status!="active" or player.dodge_time>0 or (not player.pending_strike and player.cast_time<=0):
+		if player.status!="active" or player.dodge_time>0 or (not player.pending_strike and player.cast_time<=0 and not player.has("weapon_hold")):
 			stylized.cancel_charge(int(player.id))
 	stylized.advance(dt)
 	observe_particles(dt)
@@ -670,16 +670,18 @@ func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> 
 	var role: String=semantics.projectile_role(int(bullet.weapon_index),str(bullet.get("spell","star")))
 	var art := preload("res://scripts/weapon_image_art.gd")
 	var source: String=art.payload_source(int(bullet.weapon_index),"projectile",role)
+	if bullet.get("charged",false): source=art.charged_source(int(bullet.weapon_index),"projectile",source)
 	var upgrade: Dictionary=bullet.get("build_context",{}).get("vfx",{})
 	var forge := clampi(int(upgrade.get("forge",0)),0,5)
 	var quality := clampi(int(upgrade.get("quality",0)),0,5)
 	var tint := Color(identity.color)
 	tint.s=maxf(tint.s,.72)
 	tint.v=1.7
-	if source.begins_with("authored_"): tint=Color.WHITE
+	if source.begins_with("authored_") or source.begins_with("charged_"): tint=Color.WHITE
 	tint.a=.48+forge*.008+quality*.004 if glow else 1.0
 	var bounds: Vector2=semantics.projectile_size(role,int(bullet.weapon_index))
-	if source.begins_with("authored_"):
+	if source.begins_with("charged_"): bounds*=1.35
+	if source.begins_with("authored_") or source.begins_with("charged_"):
 		# Flight has an authoritative longitudinal/transverse footprint.
 		# Wide painted wakes must not turn a needle into a broad collision wave.
 		target.draw_texture_rect_region(art.mechanic_texture(source),Rect2(-bounds*.5,bounds),art.mechanic_ink(source),tint)

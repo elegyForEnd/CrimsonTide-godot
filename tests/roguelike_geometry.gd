@@ -39,6 +39,21 @@ func run() -> void:
 	s.enemies.clear()
 	var p: Dictionary=s.players[1]
 	p.invuln=999
+	# The painted wall/foliage separating the roads is outside both road surfaces.
+	var scenery := Vector2(s.ruins.width*.90,s.ruins.extent.y*.53)
+	check(s.ruins.blocked(scenery,15),"Fork scenery stays outside the walkable roads")
+	var lane := Vector2(scenery.x,s.ruins.lane_center(scenery.x))
+	p.p=s.ruins.move(lane,Vector2.UP*s.ruins.extent.y,15)
+	for sprint in [false,true]:
+		# Smaller per-frame steps can consume the final few pixels of clearance.
+		for frame in 10: s.move_player(p,Vector2.UP,sprint,.016,220)
+		var contact: Vector2=p.p
+		for frame in 10:
+			s.move_player(p,Vector2.UP,sprint,.016,220)
+			check(p.p==contact and p.move_speed==0,"Fork boundary prevents displacement")
+			check(p.motion==("run" if sprint else "walk"),"Fork boundary retains locomotion animation")
+	s.move_player(p,Vector2.ZERO,false,.016,220)
+	check(p.motion=="idle","Fork contact returns to idle on release")
 	# Position legal for movement's 15px radius but inside the former 20px snap zone.
 	var a: Vector2=s.ruins.top_edge[2]
 	var b: Vector2=s.ruins.top_edge[3]

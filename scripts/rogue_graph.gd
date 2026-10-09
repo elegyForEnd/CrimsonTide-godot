@@ -16,7 +16,7 @@ extends RefCounted
 ##         `rogue_map.exit_position(index)` 也只支持 0/1（`rogue_map.gd:112`）；
 ##       - `rogue_map.gd:94-95` 有 `assert(joined.size()==1)`，出口数不能超 2。
 ##   * 全图无环、无死路（boss 除外）、从入口全可达。
-##   * 每条路线仍走 7~9 个房间；两条分支的节点总数 ∈ [12, 16]。
+##   * 每条路线仍走 8~9 个房间；两条分支的节点总数 ∈ [14, 16]。
 ##
 ## 与旧「每层 7 区」的等价性：
 ##   `legacy_areas()` 把图按"一个深度 = 一个区"投影成旧版相容视图；
@@ -34,9 +34,9 @@ const PREBOSS_KINDS := ["combat", "elite"]
 ## 新房间允许出现的最小深度（1-based）；mirror 更晚，避免开局就被镜像挑战打断。
 const NEW_KIND_MIN_DEPTH := {"curse": 3, "event": 3, "forge": 3, "gamble": 4, "mirror": 5}
 const SUPPLY_KINDS := ["shop", "treasure"]
-const MIN_DEPTHS := 7
+const MIN_DEPTHS := 8
 const MAX_DEPTHS := 9
-const MIN_NODES := 12
+const MIN_NODES := 14
 const MAX_NODES := 16
 const MAX_SUCCESSORS := 2
 
@@ -84,68 +84,31 @@ static func build(seed_value: int, floor: int) -> Dictionary:
 
 	# 每个中间深度提供两个真实目的地，避免地图有分叉却只有一条出口。
 	var depths := MIN_DEPTHS + rng.randi_range(0, MAX_DEPTHS - MIN_DEPTHS)
+	# A guaranteed mirror needs a late slot separated from supplies and the guardian.
+	if floor_index == _mirror_floor_for(int(seed_value)): depths = MAX_DEPTHS
 	var sizes: Array[int] = []
 	for i in depths:
 		sizes.append(1 if i==0 or i==depths-1 else 2)
 
-	# 逐层分配房间类型。
+	# Combat first, then growth, then supplies; one late optional service branch.
+	# Every path fights at least six encounters (including the guardian).
 	var kinds_by_depth: Array = []
-	for _d in range(1, depths + 1):
-		kinds_by_depth.append([])
-	kinds_by_depth[0] = [ENTRY_KIND]
-	kinds_by_depth[depths - 1] = [BOSS]
-	var used_new := {}
-	var talent_used := 0
-	var middle_slots: Array = []
-	for d in range(2, depths):
-		for i in sizes[d - 1]:
-			var kind := ""
-			if d == depths - 1:
-				kind = str(PREBOSS_KINDS[rng.randi_range(0, PREBOSS_KINDS.size() - 1)])
-				if i > 0 and kind == str(kinds_by_depth[d - 1][0]):
-					kind = str(PREBOSS_KINDS[1]) if str(kinds_by_depth[d - 1][0]) == str(PREBOSS_KINDS[0]) else str(PREBOSS_KINDS[0])
-			else:
-				kind = _pick_kind(rng, d, used_new, talent_used)
-				if kind in NEW_KIND_MIN_DEPTH:
-					used_new[kind] = true
-				if kind == "talent":
-					talent_used += 1
-			kinds_by_depth[d - 1].append(kind)
-			if d <= depths - 2:
-				middle_slots.append([d, kinds_by_depth[d - 1].size() - 1])
-	# 保底：每层至少一个商店/宝藏补给节点（旧模板的 route[3]/route[5] 语义）。
-	var has_supply := false
-	for d in range(2, depths):
-		for kind in kinds_by_depth[d - 1]:
-			if str(kind) in SUPPLY_KINDS:
-				has_supply = true
-	if not has_supply and not middle_slots.is_empty():
-		var slot: Array = middle_slots[rng.randi_range(0, middle_slots.size() - 1)]
-		kinds_by_depth[int(slot[0]) - 1][int(slot[1])] = str(SUPPLY_KINDS[rng.randi_range(0, SUPPLY_KINDS.size() - 1)])
-
-	# 保底：整局**至少出现一次**镜中挑战。mirror 的深度下限是 5、又受"每层至多一次"限制，
-	# 只能靠深度 ≥5 的中间槽随机命中，实测单局(x5 层)出现率仅 71.8%（400 局统计；对照
-	# gamble 85.3% / curse 91.0% / event 93.3% / forge 93.5%）。这里由 seed_value 派生一个
-	# "指定层"（纯整数运算、不消耗 s.rng、两端各自重算结果相同），在该层填一个空位；
-	# 位置固定不消耗随机，因此同种子同图、且既有随机流一位不动。
-	var mirror_layer := _mirror_floor_for(int(seed_value))
-	if floor_index == mirror_layer:
-		var has_mirror := false
-		for d in range(2, depths):
-			for kind in kinds_by_depth[d - 1]:
-				if str(kind) == "mirror":
-					has_mirror = true
-		if not has_mirror:
-			var mirror_slot: Array = _mirror_slot(depths, sizes, kinds_by_depth)
-			if not mirror_slot.is_empty():
-				kinds_by_depth[int(mirror_slot[0]) - 1][int(mirror_slot[1])] = "mirror"
-				# 刚把唯一的补给顶掉时就地补一个（不与 mirror 同槽），保持"每层至少一个补给"。
-				if not _depth_has_supply(kinds_by_depth, depths):
-					for other in middle_slots:
-						if int(other[0]) == int(mirror_slot[0]) and int(other[1]) == int(mirror_slot[1]):
-							continue
-						kinds_by_depth[int(other[0]) - 1][int(other[1])] = str(SUPPLY_KINDS[0])
-						break
+	var side_depth := depths - 2
+	var services := ["curse", "event", "forge", "gamble", "mirror"]
+	for d in range(1, depths + 1):
+		var row: Array = PREBOSS_KINDS.duplicate()
+		if d == 1: row = [ENTRY_KIND]
+		elif d == depths: row = [BOSS]
+		elif d == 2: row = ["combat", "combat"]
+		elif d == 3: row = ["talent", "talent"]
+		elif d == 5: row = ["shop", "treasure"]
+		elif d == side_depth and depths == MAX_DEPTHS:
+			var service := str(services[rng.randi_range(0, services.size()-1)])
+			if floor_index == _mirror_floor_for(int(seed_value)): service = "mirror"
+			row = ["combat", service]
+		# Random door orientation preserves choice without changing the pacing.
+		if row.size() == 2 and rng.randi_range(0,1) == 1: row.reverse()
+		kinds_by_depth.append(row)
 
 	# 建节点，再一次性接边（layer d → layer d+1 全连）。
 	var nodes := {}
@@ -237,45 +200,6 @@ static func from_route(route: Array, floor_index: int = 1) -> Dictionary:
 static func _mirror_floor_for(seed_value: int) -> int:
 	return int((int(seed_value) * 40503 + 17) & 0x7FFFFFFF) % 3 + 1
 
-
-## 指定层里放 mirror 的槽位：只取"深度 ≥ mirror 下限、且不是 pre-boss 层"的中间槽，
-## 优先挑当前不是补给的槽（免得接着还要回补补给）；取最深的一个 —— 位置固定、不消耗随机。
-static func _mirror_slot(depths: int, sizes: Array, kinds_by_depth: Array) -> Array:
-	var min_depth := int(NEW_KIND_MIN_DEPTH["mirror"])
-	var preferred: Array = []
-	var fallback: Array = []
-	for d in range(maxi(2, min_depth), depths - 1):
-		for i in sizes[d - 1]:
-			fallback.append([d, i])
-			if not (str(kinds_by_depth[d - 1][i]) in SUPPLY_KINDS):
-				preferred.append([d, i])
-	var pool: Array = preferred if not preferred.is_empty() else fallback
-	if pool.is_empty():
-		return []
-	return pool[pool.size() - 1]
-
-
-## 这一层是否还有补给房（`shop` / `treasure`）。
-static func _depth_has_supply(kinds_by_depth: Array, depths: int) -> bool:
-	for d in range(2, depths):
-		for kind in kinds_by_depth[d - 1]:
-			if str(kind) in SUPPLY_KINDS:
-				return true
-	return false
-
-
-static func _pick_kind(rng: RandomNumberGenerator, depth: int, used_new: Dictionary, talent_used: int) -> String:
-	var candidates: Array = []
-	for kind in MIDDLE_KINDS:
-		if kind in NEW_KIND_MIN_DEPTH:
-			if depth < int(NEW_KIND_MIN_DEPTH[kind]) or used_new.has(kind):
-				continue
-		if kind == "talent" and talent_used >= 2:
-			continue
-		candidates.append(kind)
-	if candidates.is_empty():
-		return ENTRY_KIND
-	return str(candidates[rng.randi_range(0, candidates.size() - 1)])
 
 static func _node_id(floor_index: int, depth: int, index: int) -> String:
 	return "f%d-d%d-%d" % [floor_index, depth, index]

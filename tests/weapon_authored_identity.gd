@@ -37,6 +37,11 @@ func run() -> void:
 		if Catalog.weapon_family(id) in [1,2]: check(radii.size()==1,"Normal combo never expands actual attack reach")
 	check(sources.size()==48,"All 48 weapons have different consumed source images")
 	check(shapes.size()==48,"All 48 source alpha silhouettes differ before color or particles")
+	for id in [610,612,618,623]:
+		for stage in 3:
+			check(Art.release_source(id,M.normal_role(id),stage)=="identity_%d_cut_v2"%id,"Audited blade cut is consumed in every stage")
+	for id in [637,639]:
+		check(Art.payload_source(id,"burst",M.burst_role(id,str(Catalog.weapon(id).spell)))=="audit_%d_burst_v2"%id,"Audited area burst replaces the vortex painting")
 	for pair in [[13,602],[12,601],[2,612],[0,624]]:
 		check(Art.release_source(pair[0],M.normal_role(pair[0]),0)==Art.release_source(pair[1],M.normal_role(pair[1]),0),"Same weapon name shares compatible painting across modes")
 	check(Art.release_source(15,M.normal_role(15),0)!=Art.release_source(614,M.normal_role(614),0),"Campaign ground slam and run spin keep different motion paintings")

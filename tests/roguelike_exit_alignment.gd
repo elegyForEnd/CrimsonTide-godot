@@ -16,12 +16,14 @@ func run():
      var at:=Vector2(map.width*.70,map.lane_center(map.width*.70))
      var route:Array=[]
      if index==0:
-      for x in [.75,.80,.85,.90,.95]: route.append(Vector2(map.width*x,map.lane_center(map.width*x)-map.extent.y*.012))
+      for x in [.75,.80,.85,.90,.95]:
+       if x<map.region.exits[index][0]: route.append(Vector2(map.width*x,map.lane_center(map.width*x)-map.extent.y*.012))
      else:
       var b:Array=map.region.branch
       route.append(map.uv_point([b[0][0],(b[0][1]+b[-1][1])/2]))
       if f==0 and a==3: route.append(Vector2(map.width*.80,map.lane_center(map.width*.80)))
-      for i in range(1,5): route.append(map.uv_point([b[i][0],(b[i][1]+b[11-i][1])/2]))
+      for i in range(1,b.size()/2-1):
+       if b[i][0]<map.region.exits[index][0]: route.append(map.uv_point([b[i][0],(b[i][1]+b[b.size()-1-i][1])/2]))
      route.append(map.exit_position(index))
      for waypoint in route:
       at=map.move(at,waypoint-at,20)

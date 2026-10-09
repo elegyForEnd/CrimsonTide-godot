@@ -62,9 +62,13 @@ func make_tile(board, weapon: int, hero: int, state: int) -> void:
 	var body := Vector2(span*.5,span*.50)
 	if state==3 and move.kind=="beam": body.x=span*.18 if direction.x>0 else span*.82
 	var p := {"weapon":weapon,"hero":hero,"swing_total":1.5,"swing_time":1.5-float(spec.windup)-.025,"cast_time":0.0,"strike_aim":direction}
+	if state==3: p["build_strike_kind"]=move.kind
+	if state==7: p.swing_time=1.5-float(spec.windup)*.4
 	var actor := Actor.new(); actor.pose=frames.equipped_attack_frame(p); actor.at=body; actor.facing=direction.x; viewport.add_child(actor)
 	var tip := frames.equipped_weapon_tip(p)
-	var socket := {"tip":body+CharacterMetrics.FOOT_OFFSET+tip*Vector2(direction.x,1),"aim":direction,"active":true}
+	var grip: Vector2=actor.pose.get("grip",tip)
+	var aimed := CharacterMetrics.aimed_mount(body+CharacterMetrics.FOOT_OFFSET,grip*Vector2(direction.x,1),tip*Vector2(direction.x,1),direction)
+	var socket := {"tip":body+CharacterMetrics.FOOT_OFFSET+tip*Vector2(direction.x,1),"grip":body+CharacterMetrics.FOOT_OFFSET+grip*Vector2(direction.x,1),"stroke_tip":aimed.tip,"stroke_pivot":aimed.pivot,"aim":direction,"active":true}
 	var fx := FX.new(); viewport.add_child(fx); fx.socket_provider=func(_id): return socket
 	var label: String=["普攻1","普攻2","普攻3","战技","普攻飞行 / 蓄力","战技飞行 / 爆发","命中","蓄力"][state]
 	var data := {"kind":"strike","p":body,"aim":direction,"id":1,"weapon":family,"weapon_index":weapon,"reach":spec.reach,"combo":mini(state,2),"pattern":spec.get("pattern","")}
@@ -72,6 +76,7 @@ func make_tile(board, weapon: int, hero: int, state: int) -> void:
 	if state<=3:
 		if state==3:
 			data["attack_kind"]=move.kind; data.reach=move.reach; data.combo=2
+			data["radius"]=move.radius; data["width"]=move.width
 		fx.event(data,hero)
 		if state==3 and move.kind=="beam": fx.event({"kind":"spell_beam","p":body,"aim":direction,"weapon_index":weapon,"reach":move.reach,"width":move.width,"spell":move.spell,"id":1},hero)
 	elif state==4 or state==5:
@@ -96,11 +101,13 @@ func make_tile(board, weapon: int, hero: int, state: int) -> void:
 		if float(spec.windup)>0: fx.event({"kind":"windup","p":body,"aim":direction,"weapon":family,"weapon_index":weapon,"windup":spec.windup,"id":1},hero)
 		else: expected=false; label="— 无蓄力"
 	fx.advance(.055 if state!=7 else maxf(.025,float(spec.windup)*.4))
+	fx.set_process(false)
 	board.tiles.append({"at":Vector2(5+hero*360,50+state*237),"viewport":viewport,"label":"H%d %s"%[hero,label],"expected":expected,"fx":fx,"state":state,"actor":actor})
 func run() -> void:
 	DirAccess.make_dir_recursive_absolute(OUT)
 	root.size=Vector2i(1440,1950); root.content_scale_size=root.size
-	for weapon in range(21)+range(600,648):
+	var selected: Array=range(600,648) if "--run-only" in OS.get_cmdline_user_args() else range(21)+range(600,648)
+	for weapon in selected:
 		var board := Board.new(); board.weapon=weapon; root.add_child(board)
 		for state in 8:
 			for hero in 4: make_tile(board,weapon,hero,state)
@@ -118,5 +125,5 @@ func run() -> void:
 		board.queue_free(); await process_frame; await process_frame
 		print("FULL VISUAL weapon ",weapon," captured")
 	var file := FileAccess.open(OUT+"coverage.json",FileAccess.WRITE); file.store_string(JSON.stringify({"weapons":records,"checks":checks,"failures":failures},"\t")); file.close()
-	print("FULL WEAPON VISUAL ",checks," checks, ",failures," failures; 69 weapons x 4 heroes x 8 states")
+	print("FULL WEAPON VISUAL ",checks," checks, ",failures," failures; ",selected.size()," weapons x 4 heroes x 8 states")
 	quit(1 if failures else 0)
