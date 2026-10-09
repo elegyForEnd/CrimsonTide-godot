@@ -257,6 +257,7 @@ var damage_tween: Tween
 # The pre-raid camp is a separate 3D map with its own camera and storm. It is
 # created once and switched on and off, so walking into it never rebuilds it.
 var camp: Control
+var story_screen: Control
 # Set for one frame when the hidden ending recruits somebody, so the report can
 # announce the unlock that this run just earned.
 var recruited := ""
@@ -387,6 +388,9 @@ func _ready() -> void:
 	if profile.data.fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	show_account()
+	if "--preview-story" in OS.get_cmdline_user_args():
+		go_story("user://story-preview.json")
+		print("STORY_READY quests=%d act=%d stage=%d npc_asset=%s" % [story_screen.campaign.content.quests.size(),story_screen.campaign.state.act,story_screen.campaign.state.stage,ResourceLoader.exists("res://assets/story/npc-atlas-v1.png")])
 	# A deterministic screenshot/smoke path, separate from normal player saves.
 	if "--preview-camp" in OS.get_cmdline_user_args():
 		session.solo(config())
@@ -830,6 +834,7 @@ func background(dim: float = 0.0) -> void:
 		rect(page,Vector2.ZERO,Vector2(1440,900),Color(0.02,0.03,0.06,dim))
 
 func new_page(name_value: String) -> void:
+	if story_screen and is_instance_valid(story_screen): story_screen.set_active(false)
 	clear_damage_feedback()
 	if name_value!="game" and not session.online:
 		session.cancel_ultimate(session.my_id())
@@ -973,6 +978,19 @@ func go_camp() -> void:
 	# own line instead of the shared toast band.
 	if camp.has_method("say"):
 		camp.say("营地 · 南侧闸门进入搜打撤，东侧紫色传送门进入魔境闯关。走近按 E 或 Space。")
+
+func go_story(save_path: String = "") -> void:
+	if session.online: session.disconnect_room()
+	new_page("story")
+	if story_screen==null or not is_instance_valid(story_screen):
+		story_screen=preload("res://scripts/story_screen.gd").new()
+		story_screen.name="StoryCampaign"
+		root.add_child(story_screen)
+		story_screen.sound=sound
+		story_screen.exit_requested.connect(show_title)
+	var account_slot := "user://story-%s.json" % str(profile.data.name).sha256_text().substr(0,16)
+	story_screen.start(account_slot if save_path=="" else save_path)
+	sound.set_scene("camp")
 
 
 ## The camp raises these and this scene performs them, so the camp can never fork
@@ -1256,8 +1274,8 @@ func show_title() -> void:
 	motto.add_theme_font_override("font",title_font)
 	motto.add_theme_constant_override("line_spacing",12)
 	ornament(page,Vector2(74,498),Vector2(40,287),"rail",Color("9b5c65"))
-	var entries := ["开始游戏","创建 / 加入房间","设置","制作组","退出游戏"]
-	var actions: Array[Callable]=[go_camp,show_p2p_rooms,show_settings,show_credits,func(): get_tree().quit()]
+	var entries := ["故事模式 · 血月尽头","远征与魔境","创建 / 加入房间","设置","制作组","退出游戏"]
+	var actions: Array[Callable]=[func(): go_story(),go_camp,show_p2p_rooms,show_settings,show_credits,func(): get_tree().quit()]
 	for i in entries.size():
 		var b := button(page,entries[i],Vector2(74,493+i*50),Vector2(445,50),actions[i]) as GothicButton
 		b.menu=true
@@ -1697,6 +1715,7 @@ func _notification(what: int) -> void:
 		session.action("attack_cancel")
 
 func _input(event: InputEvent) -> void:
+	if page_name=="story": return
 	if event is InputEventMouseMotion and event.device==-2:
 		pass
 	elif controller.handle(self,event):
@@ -1895,6 +1914,7 @@ func index_at(slot: String, cell: Vector2i) -> int:
 	return -1
 
 func _unhandled_input(event: InputEvent) -> void:
+	if page_name=="story": return
 	if event is InputEventMouseButton and event.device==-2 and controller.pointer_mode(self): return
 	if event.is_action_pressed("pause"):
 		# Esc first puts the units in hand back where they came from: cancelling a

@@ -315,3 +315,9 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 ### 2026-10-09 RB/RT 与 B 长短按
 
 `tests/controller_layout.gd`：30 项 / 0 失败；两种模式 RB 立即普通攻击、RT 点按恰好一次重击与长按蓄满、B 短按松开闪避、长按奔跑不闪避、停止奔跑、面板/失焦取消、已有魔境 A 跳跃。`tests/controller.gd` 更新为 36 项 / 0 失败；`tests/weapon_hold_attack.gd` 原有键鼠蓄力机制 1056 项 / 0 失败。按键与长短按阈值同步于 `CONTROLLER.md`。
+
+### 2026-10-10 故事连续地图与分层探索
+
+`tests/story_geography.gd` 647项、`story_campaign.gd` 180项、`story_integration.gd` 12项、`story_visual.gd` 10项，合计849项、0失败。覆盖六幕连续野外、实际任务点与NPC通路、楼梯高度、双向分层入口与12层可选洞窟、寻路、宝箱去重、探索与传送激活保存、73任务和角色装备、进屋隐藏/离开恢复屋顶、缩放投影。OpenGL实际截图覆盖各幕营地和首图、楼梯、洞口、地下层、书库、墓室、女王和地图。最新独立EXE导出完成，标题故事入口冒烟检查退出0，日志 `STORY_READY quests=73 act=1 stage=0 npc_asset=true`。未人工连续游玩完整六幕。
+
+集成测试保留原 rogue_build_preview 的UI锚点警告。路牌全量审计仍有46项既有DRIFT、无WRONG；本轮新故事锚点按实际行号添加，没有把旧工程锚点审计报告成全绿。

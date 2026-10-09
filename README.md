@@ -8,6 +8,8 @@ Boss 招式与独立高清特效重做见 [BOSS-REWORK.md](BOSS-REWORK.md)。
 
 # 血潮守望 · Crimson Tide
 
+RPG故事模式连续地图重做版：运行 `dist/CrimsonTide-Story.exe`，标题选择「故事模式 · 血月尽头」。六幕独立营地连到大片野外，包含可探索支路、12层额外洞窟、可激活传送阵、楼梯高差与进屋遮挡。[实现与剩余差异](docs/rpg/IMPLEMENTATION.md)、[重制版地编研究](docs/rpg/D2R-ENVIRONMENT-RESEARCH.md)、[详细计划](docs/rpg/RPG-MODE-PLAN.md)、[长篇剧情](docs/rpg/STORY.md)、[任务索引](docs/rpg/QUESTS.md)。
+
 > **新人 / 新 AI 参与开发，请先读 [项目工作指引 PROJECT-GUIDE.md](PROJECT-GUIDE.md)**：它按功能域列出每处代码在哪个文件哪一行（含架构链路、数值常量表、测试体系与已知坑），可直接定位要改的地方，不必遍历整个项目；交接前的更新规范见该文件 §12。
 
 特效在原有角色专属 ImageGen 素材上接入 74 张新的透明方图，区分具体武器和三段攻击，并保留攻击后摇输入缓冲；详见 [特效重做说明](VFX-REWORK.md)。

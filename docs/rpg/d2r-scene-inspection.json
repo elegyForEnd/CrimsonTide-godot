@@ -1,0 +1,3587 @@
+{
+  "root": "F:\\game\\D2R",
+  "build": "69270",
+  "index_entries": 143291,
+  "file_count": 170703,
+  "scene_count": 2099,
+  "extensions": {
+    ".exe": 2,
+    ".dll": 3,
+    "": 17,
+    ".bin": 249,
+    ".d2": 11,
+    ".dcx": 1,
+    ".cof": 3513,
+    ".dcc": 21739,
+    ".json": 7867,
+    ".py": 1,
+    ".mht": 1,
+    ".txt": 722,
+    ".template": 2,
+    ".dc6": 2550,
+    ".dat": 100,
+    ".flac": 31781,
+    ".pl2": 16,
+    ".ds1": 2276,
+    ".dt1": 263,
+    ".dn1": 1,
+    ".webm": 27,
+    ".exr": 1,
+    ".model": 58735,
+    ".texture": 30874,
+    ".particles": 1828,
+    ".skeleton": 713,
+    ".animations": 449,
+    ".timelines": 268,
+    ".frontend": 7,
+    ".physics": 3030,
+    ".ibls": 29,
+    ".sh3": 29,
+    ".dds": 63,
+    ".cloth": 545,
+    ".sprite": 2604,
+    ".params": 34,
+    ".ttf": 10,
+    ".otf": 1,
+    ".key": 9,
+    ".map": 5,
+    ".tbl": 157,
+    ".bat": 6,
+    ".rsp": 8,
+    ".dh6": 35,
+    ".fnt": 4,
+    ".srt": 79,
+    ".pcx": 4,
+    ".rsrc": 9,
+    ".$$$": 3,
+    ".pif": 3,
+    ".tga": 11,
+    ".dh5": 5,
+    ".h": 2,
+    ".rtf": 1
+  },
+  "scenes": {
+    "data/data/hd/env/preset/act1/town/towne1.json": {
+      "bytes": 1847025,
+      "sha256": "a05ace7e6789774f4a262c99945972974f109a20eb84b7fb0c83c5c38ec2fe2a",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 1639,
+      "types": {
+        "Preset": 1,
+        "Entity": 1640,
+        "TransformDefinitionComponent": 1639,
+        "ModelPlatformTierComponent": 687,
+        "PhysicsBodyDefinitionComponent": 408,
+        "PhysicsFixtureDefinition": 408,
+        "PhysicsBoxDefinition": 343,
+        "ModelDefinitionComponent": 1414,
+        "ModelVariationDefinitionComponent": 59,
+        "ModelVariationEntry": 531,
+        "PhysicsFileDefinition": 65,
+        "AudioEmitterComponent": 171,
+        "TerrainDefinitionComponent": 2,
+        "TerrainStampDefinitionComponent": 19,
+        "PrefabPlacementDefinitionComponent": 32,
+        "PhysicsClothDefinitionComponent": 1,
+        "SkeletonDefinitionComponent": 3,
+        "TerrainDecalDefinitionComponent": 1,
+        "PhysicsPartialRagdollDefinitionComponent": 2,
+        "VfxDefinitionComponent": 105,
+        "WallTransparencyComponent": 254,
+        "SpotLightDefinitionComponent": 1
+      },
+      "asset_count": 1317,
+      "assets": [
+        "data/hd/env/biome/act1_outdoors.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn01.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn02.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn03.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn04.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn05.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel01.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel02.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel03.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub01.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_beech/act1_tree_beech02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_birch/act1_tree_birch01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_dead/act1_tree_deadstump01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm04.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm05.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple04.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple05.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 190.0,
+            "y": 0.0,
+            "z": 62.0
+          }
+        },
+        {
+          "position": {
+            "x": 207.5,
+            "y": 0.0,
+            "z": 291.5
+          }
+        },
+        {
+          "position": {
+            "x": 217.5,
+            "y": 0.0,
+            "z": 61.5
+          }
+        },
+        {
+          "position": {
+            "x": 327.5,
+            "y": 0.0,
+            "z": 61.5
+          }
+        },
+        {
+          "position": {
+            "x": 477.5,
+            "y": 0.0,
+            "z": 291.5
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition253",
+          "center": {
+            "x": -6.822051,
+            "y": 7.913243,
+            "z": 1.453589
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 6.172194,
+            "y": 9.080615,
+            "z": 5.411525
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "palisade_corner02_Alchemy_Runtime_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act1/outdoors/act1_outdoors_palisade/palisade_corner02.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "town_riverbed01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_town_riverbed01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.409,
+          "stompB": 0.768,
+          "snapOptions": 0,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 2,
+          "layerIndexG": 9,
+          "layerIndexB": 2
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "act1_ivy_hanging04_133_components_WallTransparencyComponent",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        }
+      },
+      "local_height_range": [
+        -12.56534,
+        15.48437
+      ],
+      "nonzero_local_height_count": 1070
+    },
+    "data/data/hd/env/preset/act1/town/townetrans.json": {
+      "bytes": 189693,
+      "sha256": "4bb5535d7d1fd44eff407e61039c3b2959315086ee2eb481e392c78685c594d5",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 57,
+      "types": {
+        "Preset": 1,
+        "Entity": 58,
+        "TransformDefinitionComponent": 58,
+        "PhysicsBodyDefinitionComponent": 57,
+        "PhysicsFixtureDefinition": 57,
+        "PhysicsBoxDefinition": 54,
+        "ModelDefinitionComponent": 32,
+        "AudioEmitterComponent": 22,
+        "ModelVariationDefinitionComponent": 25,
+        "ModelVariationEntry": 225,
+        "ModelPlatformTierComponent": 31,
+        "TerrainDefinitionComponent": 2,
+        "PhysicsFileDefinition": 3,
+        "TerrainStampDefinitionComponent": 1
+      },
+      "asset_count": 331,
+      "assets": [
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn01.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn04.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_birch/act1_tree_birch01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm04.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm05.model",
+        "data/hd/env/foliage/act1/model/act1_trees_linden/act1_tree_linden01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple05.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple06.model",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn01_ALB.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn01_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn01_NRM.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn01_ORM.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_B.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 6.0,
+            "y": 0.0,
+            "z": 12.0
+          }
+        },
+        {
+          "position": {
+            "x": 8.5,
+            "y": 0.0,
+            "z": 375.0
+          }
+        },
+        {
+          "position": {
+            "x": 39.0,
+            "y": 0.0,
+            "z": 36.0
+          }
+        },
+        {
+          "position": {
+            "x": 23.0,
+            "y": 0.0,
+            "z": 394.5
+          }
+        },
+        {
+          "position": {
+            "x": 55.0,
+            "y": 0.0,
+            "z": 414.0
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition005",
+          "center": {
+            "x": -0.715395,
+            "y": 9.193776,
+            "z": -0.6002598
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 7.977003,
+            "y": 10.45461,
+            "z": 7.356888
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "model",
+          "filename": "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "dirt_patch04_01_components_TerrainStampDefinitionComponent",
+          "mask": "data/hd/env/texture/terrain/stamp/expansion/snowpatchlg_8_STAMP.texture",
+          "stomp": 0.0,
+          "stompG": 0.5,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 7,
+          "layerIndexG": 4,
+          "layerIndexB": 0
+        }
+      },
+      "local_height_range": [
+        -0.9558543,
+        0.04935896
+      ],
+      "nonzero_local_height_count": 2
+    },
+    "data/data/hd/env/preset/act1/town/townn1.json": {
+      "bytes": 1161998,
+      "sha256": "226afa61172ff6ac0937f84ea811557cc83481d26feb09b7652b72069cac782a",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 856,
+      "types": {
+        "Preset": 1,
+        "Entity": 857,
+        "TransformDefinitionComponent": 857,
+        "PhysicsBodyDefinitionComponent": 276,
+        "PhysicsFixtureDefinition": 276,
+        "PhysicsBoxDefinition": 272,
+        "ModelDefinitionComponent": 664,
+        "ModelPlatformTierComponent": 210,
+        "AudioEmitterComponent": 121,
+        "PhysicsFileDefinition": 4,
+        "ModelVariationDefinitionComponent": 63,
+        "ModelVariationEntry": 567,
+        "TerrainDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 32,
+        "TerrainStampDefinitionComponent": 11,
+        "VfxDefinitionComponent": 77,
+        "WallTransparencyComponent": 288,
+        "SpotLightDefinitionComponent": 1
+      },
+      "asset_count": 1195,
+      "assets": [
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn01.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn02.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn04.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn05.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel01.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel02.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel03.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub01.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_beech/act1_tree_beech02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_birch/act1_tree_birch01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_dead/act1_tree_deadstump01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm04.model",
+        "data/hd/env/foliage/act1/model/act1_trees_elm/act1_tree_elm05.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple04.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple05.model",
+        "data/hd/env/foliage/act1/model/act1_trees_maple/act1_tree_maple06.model",
+        "data/hd/env/foliage/act1/model/act1_trees_oak/act1_tree_oak01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_oak/act1_tree_oak02.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 165.0,
+            "y": 0.0,
+            "z": 36.5
+          }
+        },
+        {
+          "position": {
+            "x": 263.5,
+            "y": 0.0,
+            "z": 36.0
+          }
+        },
+        {
+          "position": {
+            "x": 354.5,
+            "y": 0.0,
+            "z": 177.5
+          }
+        },
+        {
+          "position": {
+            "x": 344.5,
+            "y": 0.0,
+            "z": 37.0
+          }
+        },
+        {
+          "position": {
+            "x": 125.5,
+            "y": 0.0,
+            "z": 207.0
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition130",
+          "center": {
+            "x": -0.3651967,
+            "y": 2.111465,
+            "z": -0.9185853
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 3.388254,
+            "y": 2.667444,
+            "z": 3.399705
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "l_bottom_cap02_Alchemy_Runtime_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act1/outdoors/act1_outdoors_stonewalls/l_bottom_cap02.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "riverbank_half01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_outdoors_riverbank_half01_STAMP.texture",
+          "stomp": 0.575,
+          "stompG": 0.701,
+          "stompB": 0.288,
+          "snapOptions": 7,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 3,
+          "layerIndexG": 9,
+          "layerIndexB": 2
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "act1_ivy_climbing01_44_components_WallTransparencyComponent",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        }
+      },
+      "local_height_range": [
+        -12.56534,
+        17.67743
+      ],
+      "nonzero_local_height_count": 473
+    },
+    "data/data/hd/env/preset/act1/outdoors/bridgel.json": {
+      "bytes": 74630,
+      "sha256": "6a390baef35e327e8d131a9b09592b52f6f752a95d35648dd227b9fe25cbe6a1",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 73,
+      "types": {
+        "Preset": 1,
+        "Entity": 74,
+        "TransformDefinitionComponent": 74,
+        "TerrainDefinitionComponent": 2,
+        "ModelDefinitionComponent": 66,
+        "PhysicsBodyDefinitionComponent": 13,
+        "PhysicsFixtureDefinition": 13,
+        "PhysicsFileDefinition": 4,
+        "ModelPlatformTierComponent": 16,
+        "PhysicsBoxDefinition": 9,
+        "TerrainDecalDefinitionComponent": 1,
+        "TerrainStampDefinitionComponent": 1,
+        "AudioEmitterComponent": 3,
+        "PrefabPlacementDefinitionComponent": 1,
+        "VfxDefinitionComponent": 2
+      },
+      "asset_count": 147,
+      "assets": [
+        "data/hd/env/biome/act1_outdoors.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub01.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub02.model",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_orm.texture",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump01.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump02.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump04.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump05.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_tall01.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_tall02.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_climbing02.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_hanging02.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_hanging04.model",
+        "data/hd/env/foliage/global/model/act1_weeds/act1_weeds01.model",
+        "data/hd/env/foliage/global/model/act1_weeds/act1_weeds03.model",
+        "data/hd/env/foliage/global/model/act1_weeds/act1_weeds05.model",
+        "data/hd/env/foliage/global/model/act1_weeds/act1_weeds06.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": 11.0,
+            "y": 0.0,
+            "z": 52.0
+          }
+        },
+        {
+          "position": {
+            "x": -6.661338e-16,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": 35.8103,
+            "y": -1.859536,
+            "z": 61.2002525
+          }
+        },
+        {
+          "position": {
+            "x": 33.68384,
+            "y": 0.0,
+            "z": 32.5088158
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "terrain_ModelDefinitionComponent",
+          "filename": "data/hd/env/preset/act1/outdoors/bridgel/terrain.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition",
+          "center": {
+            "x": -0.3754573,
+            "y": 1.281519,
+            "z": 0.007993937
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 3.379176,
+            "y": 1.923503,
+            "z": 3.081839
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "riverbank_bridge01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_outdoors_riverbank_bridge01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.339,
+          "stompB": 1.0,
+          "snapOptions": 7,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 2,
+          "layerIndexG": 2,
+          "layerIndexB": 9
+        }
+      },
+      "local_height_range": [
+        -3.0,
+        4.499512
+      ],
+      "nonzero_local_height_count": 39
+    },
+    "data/data/hd/env/preset/act1/outdoors/bridges.json": {
+      "bytes": 206859,
+      "sha256": "99d7ec5cc33f13456e1782efbdc4c1cdeee1bcc84ae7f20ec5caf82ca4c65153",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 162,
+      "types": {
+        "Preset": 1,
+        "Entity": 163,
+        "TransformDefinitionComponent": 163,
+        "PhysicsBodyDefinitionComponent": 45,
+        "PhysicsFixtureDefinition": 45,
+        "PhysicsBoxDefinition": 41,
+        "ModelVariationDefinitionComponent": 10,
+        "ModelVariationEntry": 90,
+        "ModelPlatformTierComponent": 60,
+        "ModelDefinitionComponent": 143,
+        "TerrainDefinitionComponent": 2,
+        "PhysicsFileDefinition": 4,
+        "TerrainStampDefinitionComponent": 1,
+        "AudioEmitterComponent": 14,
+        "PrefabPlacementDefinitionComponent": 1,
+        "VfxDefinitionComponent": 5
+      },
+      "asset_count": 286,
+      "assets": [
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn03.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn04.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_hawthorn/act1_bush_hawthorn05.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel01.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub01.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub02.model",
+        "data/hd/env/foliage/act1/model/act1_trees_oak/act1_tree_oak01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_oak/act1_tree_oak02.model",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn03_ALB.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn03_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn03_NRM.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn03_ORM.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn04_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn05_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn05_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn05_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_hawthorn05_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_orm.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 93.0,
+            "y": 0.0,
+            "z": 14.5
+          }
+        },
+        {
+          "position": {
+            "x": 93.0,
+            "y": 0.0,
+            "z": 74.5
+          }
+        },
+        {
+          "position": {
+            "x": 43.0,
+            "y": 0.0,
+            "z": 14.5
+          }
+        },
+        {
+          "position": {
+            "x": 53.0,
+            "y": 0.0,
+            "z": 14.5
+          }
+        },
+        {
+          "position": {
+            "x": 63.0,
+            "y": 0.0,
+            "z": 14.5
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition036",
+          "center": {
+            "x": -5.212446,
+            "y": 2.797871,
+            "z": -1.132988
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 5.600276,
+            "y": 3.396874,
+            "z": 2.511448
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "r_top_cap01_Alchemy_Runtime_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act1/outdoors/act1_outdoors_stonewalls/r_top_cap01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "riverbank_bridge01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_outdoors_riverbank_bridge01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.339,
+          "stompB": 1.0,
+          "snapOptions": 7,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 2,
+          "layerIndexG": 2,
+          "layerIndexB": 9
+        }
+      },
+      "local_height_range": [
+        -3.0,
+        7.936275
+      ],
+      "nonzero_local_height_count": 83
+    },
+    "data/data/hd/env/preset/act1/outdoors/bridgeu.json": {
+      "bytes": 73250,
+      "sha256": "9ce45c7f163ecfe7f278d2bc9e65257f6b9848e5ee3ecabc4db425041ac63cc7",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 71,
+      "types": {
+        "Preset": 1,
+        "Entity": 72,
+        "TransformDefinitionComponent": 72,
+        "TerrainDefinitionComponent": 2,
+        "ModelDefinitionComponent": 60,
+        "PhysicsBodyDefinitionComponent": 9,
+        "PhysicsFixtureDefinition": 9,
+        "PhysicsFileDefinition": 4,
+        "TerrainStampDefinitionComponent": 1,
+        "TerrainDecalDefinitionComponent": 1,
+        "ModelPlatformTierComponent": 26,
+        "PhysicsBoxDefinition": 5,
+        "PrefabPlacementDefinitionComponent": 3,
+        "AudioEmitterComponent": 3,
+        "VfxDefinitionComponent": 4
+      },
+      "asset_count": 171,
+      "assets": [
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub01.model",
+        "data/hd/env/foliage/act1/model/act1_shrubs/act1_shrub02.model",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_orm.texture",
+        "data/hd/env/foliage/global/model/act1_daisies/act1_daisy03.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump01.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump02.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_clump04.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_tall01.model",
+        "data/hd/env/foliage/global/model/act1_grassclumps/act1_grass_tall02.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_climbing02.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_graveyard_hanging04.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_hanging01.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_hanging02.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_hanging03.model",
+        "data/hd/env/foliage/global/model/act1_ivy/act1_ivy_hanging04.model",
+        "data/hd/env/foliage/global/model/act1_weeds/act1_weeds01.model",
+        "data/hd/env/foliage/global/model/act1_weeds/act1_weeds02.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": 39.20838,
+            "y": 0.0,
+            "z": 45.0
+          }
+        },
+        {
+          "position": {
+            "x": 35.04938,
+            "y": -5.967813e-14,
+            "z": 73.0253
+          }
+        },
+        {
+          "position": {
+            "x": 44.18926,
+            "y": -0.139623731,
+            "z": 33.07874
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "terrain_ModelDefinitionComponent",
+          "filename": "data/hd/env/preset/act1/outdoors/bridgeu/terrain.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "riverbank_bridge01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_outdoors_riverbank_bridge01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.339,
+          "stompB": 0.668,
+          "snapOptions": 7,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 2,
+          "layerIndexG": 2,
+          "layerIndexB": 9
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition001",
+          "center": {
+            "x": -0.3754573,
+            "y": 1.281519,
+            "z": 0.007993937
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 3.379176,
+            "y": 1.923503,
+            "z": 3.081839
+          }
+        }
+      },
+      "local_height_range": [
+        -3.00672388,
+        2.653534
+      ],
+      "nonzero_local_height_count": 54
+    },
+    "data/data/hd/env/preset/act1/graveyard/gravey.json": {
+      "bytes": 2308355,
+      "sha256": "9b647df087036e34fbbac98395be4034251e5d0552740e2e55f0844d833374bc",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 2089,
+      "types": {
+        "Preset": 1,
+        "Entity": 2090,
+        "TransformDefinitionComponent": 2024,
+        "ModelPlatformTierComponent": 2088,
+        "PhysicsBodyDefinitionComponent": 378,
+        "PhysicsFixtureDefinition": 378,
+        "PhysicsBoxDefinition": 343,
+        "ModelDefinitionComponent": 1885,
+        "PhysicsFileDefinition": 35,
+        "AudioEmitterComponent": 17,
+        "ModelVariationDefinitionComponent": 72,
+        "ModelVariationEntry": 582,
+        "TerrainDefinitionComponent": 2,
+        "TerrainStampDefinitionComponent": 1,
+        "VfxDefinitionComponent": 62,
+        "DecalDefinitionComponent": 38,
+        "TransformVariationDefinitionComponent": 66,
+        "PhysicsPartialRagdollDefinitionComponent": 3,
+        "SkeletonDefinitionComponent": 3,
+        "PrefabPlacementDefinitionComponent": 31,
+        "SpotLightDefinitionComponent": 1
+      },
+      "asset_count": 727,
+      "assets": [
+        "data/hd/character/common/common_hair1_FLOW.texture",
+        "data/hd/character/common/common_hair1_HRT.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_weapons_ALB.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_weapons_NRM.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_weapons_ORM.texture",
+        "data/hd/character/npc/navi/textures/navi_hair_ALB.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel01.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel02.model",
+        "data/hd/env/foliage/act1/model/act1_bushes_witchhazel/act1_bush_witchhazel03.model",
+        "data/hd/env/foliage/act1/model/act1_trees_dead/act1_tree_dead01.model",
+        "data/hd/env/foliage/act1/model/act1_trees_oak/act1_tree_oak04.model",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub01_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_shrub02_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_witchhazel01_B.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_witchhazel01_alb.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_witchhazel01_nrm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_witchhazel01_orm.texture",
+        "data/hd/env/foliage/act1/texture/act1_bush_witchhazel02_B.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 206.0,
+            "y": 0.0218023974,
+            "z": 114.5
+          }
+        },
+        {
+          "position": {
+            "x": 136.0,
+            "y": 0.0,
+            "z": 124.0
+          }
+        },
+        {
+          "position": {
+            "x": 113.0,
+            "y": 0.0,
+            "z": 68.0
+          }
+        },
+        {
+          "position": {
+            "x": 134.0,
+            "y": 0.0,
+            "z": 278.0
+          }
+        },
+        {
+          "position": {
+            "x": 213.0,
+            "y": 0.0,
+            "z": 174.616
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition024",
+          "center": {
+            "x": 0.3125424,
+            "y": -0.7421769,
+            "z": -0.3254628
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 4.144909,
+            "y": 1.864514,
+            "z": 3.020256
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "coffin02_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act1/graveyard/act1_graveyard_props/coffin02.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": true,
+          "terrainBlendEnableYUpBlend": true,
+          "terrainBlendMode": 3
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "graveyard_layout01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_graveyard_layout01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 1.0,
+          "stompB": 0.472,
+          "snapOptions": 0,
+          "biomeName": "act1_outdoors",
+          "layerIndexR": 2,
+          "layerIndexG": 4,
+          "layerIndexB": 3
+        }
+      },
+      "local_height_range": [
+        -8.290565,
+        50.0
+      ],
+      "nonzero_local_height_count": 1570
+    },
+    "data/data/hd/env/preset/prop_palette/act1/graveyard.json": {
+      "bytes": 257102,
+      "sha256": "556642dbad364ce1bf4331f502e963165b35e8bf170af00688ef50dafc0545e1",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 230,
+      "types": {
+        "Preset": 1,
+        "Entity": 231,
+        "TransformDefinitionComponent": 231,
+        "TerrainDefinitionComponent": 2,
+        "ModelDefinitionComponent": 231,
+        "PhysicsBodyDefinitionComponent": 56,
+        "PhysicsFixtureDefinition": 56,
+        "PhysicsFileDefinition": 12,
+        "PhysicsBoxDefinition": 44,
+        "ModelPlatformTierComponent": 86
+      },
+      "asset_count": 599,
+      "assets": [
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_armor_ALB.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_armor_NRM.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_armor_ORM.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_weapons_ALB.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_weapons_NRM.texture",
+        "data/hd/character/enemy/corruptrogue1/textures/corruptrogue_weapons_ORM.texture",
+        "data/hd/character/enemy/fallen1/textures/fallen_armormed_alb.texture",
+        "data/hd/character/enemy/fallen1/textures/fallen_armormed_nrm.texture",
+        "data/hd/character/enemy/fallen1/textures/fallen_armormed_orm.texture",
+        "data/hd/character/enemy/skeleton1/textures/skeleton_armordes_ALB.texture",
+        "data/hd/character/enemy/skeleton1/textures/skeleton_armordes_NRM.texture",
+        "data/hd/character/enemy/skeleton1/textures/skeleton_armordes_ORM.texture",
+        "data/hd/env/biome/act1_outdoors.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone01.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone02.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone03.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone04.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone05.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone06.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone07.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone08.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone09.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone10.model",
+        "data/hd/env/model/act1/graveyard/act1_graveyard_headstones/headstone11.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": -94.8931351,
+            "y": 0.0,
+            "z": 95.892334
+          }
+        },
+        {
+          "position": {
+            "x": -86.74308,
+            "y": 0.0,
+            "z": 95.892334
+          }
+        },
+        {
+          "position": {
+            "x": -78.37929,
+            "y": 0.0,
+            "z": 95.892334
+          }
+        },
+        {
+          "position": {
+            "x": -69.30918,
+            "y": 0.0,
+            "z": 95.892334
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "terrain_ModelDefinitionComponent",
+          "filename": "data/hd/env/preset/prop_palette/act1/graveyard/terrain.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition016",
+          "center": {
+            "x": -0.6468185,
+            "y": 0.2903055,
+            "z": -1.054678
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 1.511387,
+            "y": 0.4028578,
+            "z": 2.1353
+          }
+        }
+      },
+      "local_height_range": [
+        0.0,
+        0.0
+      ],
+      "nonzero_local_height_count": 0
+    },
+    "data/data/hd/env/preset/act1/catacomb/catedown.json": {
+      "bytes": 581086,
+      "sha256": "313966e4337899c44f7f5cc03c8c9097f18c35f45dda6b549663e306422b2df0",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 170,
+      "types": {
+        "Preset": 1,
+        "Entity": 171,
+        "TransformDefinitionComponent": 171,
+        "PhysicsBodyDefinitionComponent": 65,
+        "PhysicsFixtureDefinition": 65,
+        "PhysicsBoxDefinition": 62,
+        "ModelVariationDefinitionComponent": 13,
+        "ModelVariationEntry": 1027,
+        "WallTransparencyComponent": 55,
+        "ModelDefinitionComponent": 118,
+        "PhysicsFileDefinition": 3,
+        "TerrainDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 4,
+        "TerrainDecalDefinitionComponent": 11,
+        "ModelPlatformTierComponent": 60,
+        "VfxDefinitionComponent": 18,
+        "DecalDefinitionComponent": 5,
+        "TerrainStampDefinitionComponent": 1,
+        "AudioEmitterComponent": 5,
+        "PointLightDefinitionComponent": 1
+      },
+      "asset_count": 552,
+      "assets": [
+        "data/hd/env/biome/act1_catacombs.texture",
+        "data/hd/env/model/act1/barracks/act1_barracks_furniture/cabinet04.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones01.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones03.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones05.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones06.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones09.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_egress/stairs03.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/corner_column01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar_cap01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/wall01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/wall_theme01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/wall_vault01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips03.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips05.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips06.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips07.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips08.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips11.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_bloodstreak01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_booksground02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_booksground03.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 72.5,
+            "y": 0.0,
+            "z": 57.5
+          }
+        },
+        {
+          "position": {
+            "x": 12.5,
+            "y": 0.0,
+            "z": 107.5
+          }
+        },
+        {
+          "position": {
+            "x": 72.5,
+            "y": 0.0,
+            "z": 17.5
+          }
+        },
+        {
+          "position": {
+            "x": 72.5,
+            "y": 0.0,
+            "z": 27.5
+          }
+        },
+        {
+          "position": {
+            "x": 72.5,
+            "y": 0.0,
+            "z": 37.5
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition051",
+          "center": {
+            "x": 0.01193345,
+            "y": 7.430867,
+            "z": 0.0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 1.683848,
+            "y": 7.430868,
+            "z": 5.87323
+          }
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "wall01_WallTransparency",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "model",
+          "filename": "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "bloodpuddle_large03_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_catacombs_blood_puddle_large03_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.8,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act1_catacomb",
+          "layerIndexR": 3,
+          "layerIndexG": 3,
+          "layerIndexB": 4294967295
+        }
+      },
+      "local_height_range": [
+        -3.30643988,
+        10.25599
+      ],
+      "nonzero_local_height_count": 77
+    },
+    "data/data/hd/env/preset/act1/catacomb/catedown2.json": {
+      "bytes": 609140,
+      "sha256": "4ee53658aa892328b098f2474d19feda02ea925e2a1648090220fb7d034d0cb4",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 80,
+      "types": {
+        "Preset": 1,
+        "Entity": 81,
+        "TransformDefinitionComponent": 81,
+        "PhysicsBodyDefinitionComponent": 51,
+        "PhysicsFixtureDefinition": 51,
+        "PhysicsBoxDefinition": 48,
+        "ModelVariationDefinitionComponent": 17,
+        "ModelVariationEntry": 1343,
+        "WallTransparencyComponent": 44,
+        "ModelDefinitionComponent": 35,
+        "PhysicsFileDefinition": 3,
+        "TerrainDefinitionComponent": 2,
+        "TerrainDecalDefinitionComponent": 1,
+        "PrefabPlacementDefinitionComponent": 6,
+        "DecalDefinitionComponent": 5,
+        "TerrainStampDefinitionComponent": 2,
+        "ModelPlatformTierComponent": 1,
+        "VfxDefinitionComponent": 15,
+        "AudioEmitterComponent": 2
+      },
+      "asset_count": 549,
+      "assets": [
+        "data/hd/env/biome/act1_catacombs.texture",
+        "data/hd/env/model/act1/barracks/act1_barracks_furniture/cabinet04.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones01.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones03.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones04.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones05.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones09.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_egress/stairs03.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_props/gore02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/door01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar_cap01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/wall01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/wall_vault01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips03.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips05.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips06.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips07.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips08.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips11.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_bloodstreak01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_booksground02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_booksground03.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 82.5,
+            "y": 0.0,
+            "z": 27.5
+          }
+        },
+        {
+          "position": {
+            "x": 22.5,
+            "y": 0.0,
+            "z": 57.5
+          }
+        },
+        {
+          "position": {
+            "x": 22.5,
+            "y": 0.0,
+            "z": 67.5
+          }
+        },
+        {
+          "position": {
+            "x": 82.5,
+            "y": 0.0,
+            "z": 67.5
+          }
+        },
+        {
+          "position": {
+            "x": 82.5,
+            "y": 0.0,
+            "z": 57.5
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition033",
+          "center": {
+            "x": 0.01193345,
+            "y": 7.430867,
+            "z": 0.0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 1.683848,
+            "y": 7.430868,
+            "z": 5.87323
+          }
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "wall01_WallTransparency",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "model",
+          "filename": "data/hd/env/model/act1/catacomb/act1_catacomb_walls/door01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "bloodpuddle_large01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_catacombs_blood_puddle_large01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.8,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act1_catacomb",
+          "layerIndexR": 3,
+          "layerIndexG": 3,
+          "layerIndexB": 4294967295
+        }
+      },
+      "local_height_range": [
+        -11.44981,
+        10.39225
+      ],
+      "nonzero_local_height_count": 16
+    },
+    "data/data/hd/env/preset/act1/catacomb/catewup.json": {
+      "bytes": 440815,
+      "sha256": "118001cd58a93e70ee9716fceca881f2a6ff5cf5a7ecb3d36a5bb4b7cc9d9d55",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 92,
+      "types": {
+        "Preset": 1,
+        "Entity": 93,
+        "TransformDefinitionComponent": 93,
+        "PhysicsBodyDefinitionComponent": 67,
+        "PhysicsFixtureDefinition": 67,
+        "PhysicsBoxDefinition": 65,
+        "ModelVariationDefinitionComponent": 10,
+        "ModelVariationEntry": 790,
+        "WallTransparencyComponent": 57,
+        "ModelDefinitionComponent": 59,
+        "TerrainDefinitionComponent": 2,
+        "PhysicsFileDefinition": 2,
+        "TerrainDecalDefinitionComponent": 1,
+        "PrefabPlacementDefinitionComponent": 4,
+        "ModelPlatformTierComponent": 4,
+        "DecalDefinitionComponent": 5,
+        "TerrainStampDefinitionComponent": 2,
+        "VfxDefinitionComponent": 12,
+        "AudioEmitterComponent": 4
+      },
+      "asset_count": 534,
+      "assets": [
+        "data/hd/env/biome/act1_catacombs.texture",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones03.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones04.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones05.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones06.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones07.model",
+        "data/hd/env/model/act1/barracks/act1_barracks_props/bones08.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_egress/stairs02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_props/gore02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_props/gore03.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_props/gore04.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/corner_column01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/door01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/pillar_cap01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls/wall01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips01.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips02.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips03.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips05.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips06.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips07.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips08.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_blooddrips11.model",
+        "data/hd/env/model/act1/catacomb/act1_catacomb_walls_staged/wall_bloodstreak01.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 32.5,
+            "y": 0.0,
+            "z": 27.5
+          }
+        },
+        {
+          "position": {
+            "x": 92.5,
+            "y": 0.0,
+            "z": 57.5
+          }
+        },
+        {
+          "position": {
+            "x": 107.5,
+            "y": 0.0,
+            "z": 22.5
+          }
+        },
+        {
+          "position": {
+            "x": 117.5,
+            "y": 0.0,
+            "z": 22.5
+          }
+        },
+        {
+          "position": {
+            "x": 7.5,
+            "y": 0.0,
+            "z": 22.5
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition056",
+          "center": {
+            "x": 0.01193345,
+            "y": 7.430867,
+            "z": 0.0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 1.683848,
+            "y": 7.430868,
+            "z": 5.87323
+          }
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "wall01_WallTransparency",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "model",
+          "filename": "data/hd/env/model/act1/catacomb/act1_catacomb_walls/door01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "bloodpuddle_large01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act1/act1_catacombs_blood_puddle_large01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.8,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act1_catacomb",
+          "layerIndexR": 3,
+          "layerIndexG": 3,
+          "layerIndexB": 4294967295
+        }
+      },
+      "local_height_range": [
+        0.0,
+        0.08903493
+      ],
+      "nonzero_local_height_count": 3
+    },
+    "data/data/hd/env/preset/act2/town/lutn.json": {
+      "bytes": 5506801,
+      "sha256": "b5cb99601173a2722d543110e2acc0d49dfb7b90189f18483a48c72817d75c21",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 5443,
+      "types": {
+        "Preset": 1,
+        "Entity": 5444,
+        "TransformDefinitionComponent": 5435,
+        "ModelDefinitionComponent": 4830,
+        "PhysicsBodyDefinitionComponent": 1467,
+        "PhysicsFixtureDefinition": 1521,
+        "PhysicsFileDefinition": 702,
+        "ModelPlatformTierComponent": 3062,
+        "PhysicsBoxDefinition": 819,
+        "AudioEmitterComponent": 133,
+        "ModelVariationDefinitionComponent": 47,
+        "ModelVariationEntry": 121,
+        "TerrainDefinitionComponent": 2,
+        "PhysicsClothDefinitionComponent": 120,
+        "SkeletonDefinitionComponent": 204,
+        "PhysicsPartialRagdollDefinitionComponent": 84,
+        "DecalDefinitionComponent": 296,
+        "TerrainStampDefinitionComponent": 135,
+        "VisualDataBoxDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 12,
+        "VfxDefinitionComponent": 90,
+        "FadeTargetComponent": 3,
+        "WallTransparencyComponent": 20,
+        "AudioEnvironmentOverrideComponent": 2,
+        "TransformVariationDefinitionComponent": 9,
+        "TileBiomeOverride": 71
+      },
+      "asset_count": 1571,
+      "assets": [
+        "data/hd/character/common/common_hair1_FLOW.texture",
+        "data/hd/character/common/common_hair1_HRT.texture",
+        "data/hd/character/common/common_hair2_FLOW.texture",
+        "data/hd/character/common/common_hair2_HRT.texture",
+        "data/hd/character/common/common_ktint.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_SSS.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinghvy_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinghvy_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinghvy_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinglit_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinglit_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinglit_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothingmed_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothingmed_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothingmed_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_hair_set1brown_ALB.texture",
+        "data/hd/character/npc/act2male/textures/act2male_hair_set2brown_ALB.texture",
+        "data/hd/character/npc/act2male/textures/act2male_hair_set2grey_ALB.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_SSS.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_orm.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 421.5,
+            "y": 0.0,
+            "z": 202.0
+          }
+        },
+        {
+          "position": {
+            "x": 421.5,
+            "y": 0.0,
+            "z": 322.0
+          }
+        },
+        {
+          "position": {
+            "x": 421.5,
+            "y": 0.0,
+            "z": 562.0
+          }
+        },
+        {
+          "position": {
+            "x": 408.0,
+            "y": 0.0,
+            "z": 290.0
+          }
+        },
+        {
+          "position": {
+            "x": 421.5,
+            "y": 0.0,
+            "z": 82.0
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "wall04_Alchemy_Runtime_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act2/town/act2_town_docks/wall04.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition538",
+          "center": {
+            "x": -2.509663,
+            "y": -0.01796776,
+            "z": -4.213193
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 4.206954,
+            "y": 0.4364166,
+            "z": 4.825272
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "grass01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act2/act2_town_grass01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.145,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act2_town",
+          "layerIndexR": 8,
+          "layerIndexG": 3,
+          "layerIndexB": 8
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "wall01_WallTransparency",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        }
+      },
+      "local_height_range": [
+        -46.6418533,
+        36.8315277
+      ],
+      "nonzero_local_height_count": 3467
+    },
+    "data/data/hd/env/preset/act2/town/lutw.json": {
+      "bytes": 5911270,
+      "sha256": "e307493db06fa8b65873ba65ff076a63ad0572df45a68a82622809d6248ad2f4",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 5642,
+      "types": {
+        "Preset": 1,
+        "Entity": 5643,
+        "ModelDefinitionComponent": 5038,
+        "TransformDefinitionComponent": 5637,
+        "ModelPlatformTierComponent": 5640,
+        "PhysicsBodyDefinitionComponent": 1407,
+        "PhysicsFixtureDefinition": 1456,
+        "PhysicsBoxDefinition": 771,
+        "PhysicsFileDefinition": 685,
+        "AudioEmitterComponent": 124,
+        "WallTransparencyComponent": 20,
+        "TerrainDefinitionComponent": 2,
+        "ModelVariationDefinitionComponent": 42,
+        "ModelVariationEntry": 111,
+        "PhysicsClothDefinitionComponent": 129,
+        "SkeletonDefinitionComponent": 215,
+        "PhysicsPartialRagdollDefinitionComponent": 86,
+        "TransformVariationDefinitionComponent": 6,
+        "TerrainStampDefinitionComponent": 134,
+        "FadeTargetComponent": 5,
+        "DecalDefinitionComponent": 278,
+        "VisualDataBoxDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 15,
+        "VfxDefinitionComponent": 102,
+        "AudioEnvironmentOverrideComponent": 2,
+        "TileBiomeOverride": 44
+      },
+      "asset_count": 1543,
+      "assets": [
+        "data/hd/character/common/common_hair1_FLOW.texture",
+        "data/hd/character/common/common_hair1_HRT.texture",
+        "data/hd/character/common/common_hair2_FLOW.texture",
+        "data/hd/character/common/common_hair2_HRT.texture",
+        "data/hd/character/common/common_ktint.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_SSS.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_body_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinghvy_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinghvy_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinghvy_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinglit_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinglit_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothinglit_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothingmed_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothingmed_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_clothingmed_orm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_hair_set1brown_ALB.texture",
+        "data/hd/character/npc/act2male/textures/act2male_hair_set2brown_ALB.texture",
+        "data/hd/character/npc/act2male/textures/act2male_hair_set2grey_ALB.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_SSS.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_alb.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_nrm.texture",
+        "data/hd/character/npc/act2male/textures/act2male_headOld_orm.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 44.0,
+            "y": -0.21383,
+            "z": 214.0
+          }
+        },
+        {
+          "position": {
+            "x": 118.0,
+            "y": 0.0,
+            "z": 177.0
+          }
+        },
+        {
+          "position": {
+            "x": 169.0,
+            "y": 0.22358,
+            "z": 226.5
+          }
+        },
+        {
+          "position": {
+            "x": 120.0,
+            "y": 0.0,
+            "z": 230.0
+          }
+        },
+        {
+          "position": {
+            "x": 108.0,
+            "y": 0.0,
+            "z": 82.0
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "building01_components_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act2/town/act2_town_building_adobe/building01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition278",
+          "center": {
+            "x": -7.001395,
+            "y": 16.34468,
+            "z": -17.89663
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 11.78217,
+            "y": 16.78608,
+            "z": 21.22686
+          }
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "door02_WallTransparency",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "grass01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act2/act2_town_grass01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.145,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act2_town",
+          "layerIndexR": 8,
+          "layerIndexG": 3,
+          "layerIndexB": 8
+        }
+      },
+      "local_height_range": [
+        -46.6418533,
+        36.8315277
+      ],
+      "nonzero_local_height_count": 3662
+    },
+    "data/data/hd/env/preset/act2/town/transn1.json": {
+      "bytes": 334522,
+      "sha256": "1d7821281e8bfb2f80b432e8e6b73f69ccdb406445922bd7920d7d5e718a3af1",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 255,
+      "types": {
+        "Preset": 1,
+        "Entity": 256,
+        "TransformDefinitionComponent": 256,
+        "PhysicsBodyDefinitionComponent": 164,
+        "PhysicsFixtureDefinition": 164,
+        "PhysicsBoxDefinition": 65,
+        "ModelDefinitionComponent": 225,
+        "PhysicsFileDefinition": 99,
+        "ModelPlatformTierComponent": 102,
+        "TerrainDefinitionComponent": 2,
+        "TerrainStampDefinitionComponent": 7,
+        "DecalDefinitionComponent": 9,
+        "ModelVariationDefinitionComponent": 2,
+        "ModelVariationEntry": 4,
+        "PrefabPlacementDefinitionComponent": 8,
+        "VfxDefinitionComponent": 5
+      },
+      "asset_count": 421,
+      "assets": [
+        "data/hd/env/biome/act2_outdoors.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act2/model/act2_bushes/act2_bush01.model",
+        "data/hd/env/foliage/act2/model/act2_bushes/act2_bush02.model",
+        "data/hd/env/foliage/act2/model/act2_bushes/act2_bush04.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus01.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus02.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus03.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus04.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus05.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus06.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus07.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus08.model",
+        "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus09.model",
+        "data/hd/env/foliage/act2/model/act2_trees_dead/act2_tree_dead01.model",
+        "data/hd/env/foliage/act2/texture/act2_bush01_a_alb.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush01_a_nrm.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush01_a_orm.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush01_b_alb.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush01_b_nrm.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush01_b_orm.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush03_e_alb.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush03_e_nrm.texture",
+        "data/hd/env/foliage/act2/texture/act2_bush03_e_orm.texture",
+        "data/hd/env/foliage/act2/texture/act2_cactus01_a_alb.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 503.5,
+            "y": 0.0,
+            "z": 33.5
+          }
+        },
+        {
+          "position": {
+            "x": 71.0,
+            "y": 0.0,
+            "z": 40.5
+          }
+        },
+        {
+          "position": {
+            "x": 94.0,
+            "y": 0.0,
+            "z": 42.0
+          }
+        },
+        {
+          "position": {
+            "x": 52.5,
+            "y": 0.0,
+            "z": 12.0
+          }
+        },
+        {
+          "position": {
+            "x": 83.5,
+            "y": 0.0,
+            "z": 44.0
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition043",
+          "center": {
+            "x": 0.9668067,
+            "y": 5.875857,
+            "z": -0.4253163
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 3.8218,
+            "y": 6.364128,
+            "z": 5.366068
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "act2_cactus06_ModelDefinitionComponent",
+          "filename": "data/hd/env/foliage/act2/model/act2_trees_cactus/act2_cactus06.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "rocky_base01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act2/act2_outdoors_cliffedge01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 1.0,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act2_outdoors",
+          "layerIndexR": 4294967295,
+          "layerIndexG": 4294967295,
+          "layerIndexB": 0
+        }
+      },
+      "local_height_range": [
+        -3.903332,
+        6.529538
+      ],
+      "nonzero_local_height_count": 47
+    },
+    "data/data/hd/env/preset/act2/sewer/sewedown.json": {
+      "bytes": 220457,
+      "sha256": "74be15475851d15f14671ebf40605322b4c4d6be003159bece95591275039a5e",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 150,
+      "types": {
+        "Preset": 1,
+        "Entity": 151,
+        "TransformDefinitionComponent": 151,
+        "ModelPlatformTierComponent": 150,
+        "PhysicsBodyDefinitionComponent": 79,
+        "PhysicsFixtureDefinition": 79,
+        "PhysicsBoxDefinition": 49,
+        "ModelVariationDefinitionComponent": 28,
+        "ModelVariationEntry": 70,
+        "ModelDefinitionComponent": 91,
+        "PhysicsFileDefinition": 30,
+        "TerrainDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 14,
+        "VfxDefinitionComponent": 13,
+        "AudioEmitterComponent": 4,
+        "DecalDefinitionComponent": 1,
+        "TerrainStampDefinitionComponent": 3,
+        "PointLightDefinitionComponent": 1
+      },
+      "asset_count": 365,
+      "assets": [
+        "data/hd/env/biome/act2_sewer.texture",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_deadends/deadend_back01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/chains01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris04.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris05.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/corner02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/medium01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/short01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_stairs/stairs_down01.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 70.0,
+            "y": 0.0,
+            "z": 72.0
+          }
+        },
+        {
+          "position": {
+            "x": 52.0,
+            "y": 0.0,
+            "z": 17.563797
+          }
+        },
+        {
+          "position": {
+            "x": 67.5122,
+            "y": 0.0,
+            "z": 22.0
+          }
+        },
+        {
+          "position": {
+            "x": 32.0,
+            "y": 0.0,
+            "z": 91.21573
+          }
+        },
+        {
+          "position": {
+            "x": 32.0,
+            "y": 0.0,
+            "z": 99.28497
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition009",
+          "center": {
+            "x": -1.428343,
+            "y": 5.921966,
+            "z": 0.01891685
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 5.788667,
+            "y": 5.97459,
+            "z": 1.425246
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "cap01_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act2/sewer/act2_sewer_walls/cap01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "sewer_mud02_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act2/act2_outdoor_noise01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 1.0,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act2_sewer",
+          "layerIndexR": 4294967295,
+          "layerIndexG": 4294967295,
+          "layerIndexB": 2
+        }
+      },
+      "local_height_range": [
+        -4.87017632,
+        8.0
+      ],
+      "nonzero_local_height_count": 45
+    },
+    "data/data/hd/env/preset/act2/sewer/seweup.json": {
+      "bytes": 326497,
+      "sha256": "24f647c5e88f800a65c03ce58278e40d3119d815b0e892a6e79504992d237ae8",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 236,
+      "types": {
+        "Preset": 1,
+        "Entity": 237,
+        "TransformDefinitionComponent": 237,
+        "ModelPlatformTierComponent": 237,
+        "PhysicsBodyDefinitionComponent": 110,
+        "PhysicsFixtureDefinition": 120,
+        "PhysicsBoxDefinition": 73,
+        "ModelDefinitionComponent": 162,
+        "ModelVariationDefinitionComponent": 46,
+        "ModelVariationEntry": 113,
+        "PhysicsFileDefinition": 47,
+        "TerrainDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 7,
+        "DecalDefinitionComponent": 4,
+        "VfxDefinitionComponent": 12,
+        "AudioEmitterComponent": 8,
+        "TerrainStampDefinitionComponent": 2,
+        "PointLightDefinitionComponent": 4
+      },
+      "asset_count": 356,
+      "assets": [
+        "data/hd/env/biome/act2_sewer.texture",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/chains01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/chains02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris04.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/corner02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/short01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar04.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_stairs/stairs_up01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_walls/cap01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_walls/corner01.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 12.0,
+            "y": 0.0,
+            "z": 100.0
+          }
+        },
+        {
+          "position": {
+            "x": 50.0,
+            "y": 0.0,
+            "z": 12.0
+          }
+        },
+        {
+          "position": {
+            "x": 20.4027,
+            "y": 0.0,
+            "z": 107.7249
+          }
+        },
+        {
+          "position": {
+            "x": 107.5122,
+            "y": 0.0,
+            "z": 19.9815
+          }
+        },
+        {
+          "position": {
+            "x": 10.0,
+            "y": 0.0,
+            "z": 10.0
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition024",
+          "center": {
+            "x": -3.981974,
+            "y": 3.377593,
+            "z": 1.967473
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 2.223728,
+            "y": 3.403149,
+            "z": 2.342494
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "cap01_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act2/sewer/act2_sewer_walls/cap01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "sewer_puddle02_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/expansion/snowpatchlg_1_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 1.0,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act2_sewer",
+          "layerIndexR": 4294967295,
+          "layerIndexG": 0,
+          "layerIndexB": 4
+        }
+      },
+      "local_height_range": [
+        -6.435438,
+        8.0
+      ],
+      "nonzero_local_height_count": 88
+    },
+    "data/data/hd/env/preset/act2/sewer/sewndown.json": {
+      "bytes": 216191,
+      "sha256": "a6dbfc7a08978336cd6743f1f5a90e6de56c8f9da23dea06d33b6d42c929509f",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 151,
+      "types": {
+        "Preset": 1,
+        "Entity": 152,
+        "TransformDefinitionComponent": 152,
+        "ModelPlatformTierComponent": 152,
+        "ModelDefinitionComponent": 105,
+        "PhysicsBodyDefinitionComponent": 69,
+        "PhysicsFixtureDefinition": 69,
+        "PhysicsFileDefinition": 22,
+        "PhysicsBoxDefinition": 47,
+        "ModelVariationDefinitionComponent": 24,
+        "ModelVariationEntry": 62,
+        "TerrainDefinitionComponent": 2,
+        "VfxDefinitionComponent": 11,
+        "AudioEmitterComponent": 6,
+        "PhysicsClothDefinitionComponent": 1,
+        "SkeletonDefinitionComponent": 1,
+        "PrefabPlacementDefinitionComponent": 6,
+        "TerrainStampDefinitionComponent": 3,
+        "PointLightDefinitionComponent": 1
+      },
+      "asset_count": 365,
+      "assets": [
+        "data/hd/env/biome/act2_sewer.texture",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_archs/arch_half03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_deadends/deadend_front01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_debris/debris05.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/corner02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/long03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_fences/short01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar02.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar03.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_pillars/pillar04.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_stairs/stairs_down01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_walls/cap01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_walls/corner01.model",
+        "data/hd/env/model/act2/sewer/act2_sewer_walls/corner02.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 36.0,
+            "y": 0.1655009,
+            "z": 52.0
+          }
+        },
+        {
+          "position": {
+            "x": 30.0,
+            "y": 0.0,
+            "z": 30.0
+          }
+        },
+        {
+          "position": {
+            "x": 56.0,
+            "y": 0.0,
+            "z": 112.0
+          }
+        },
+        {
+          "position": {
+            "x": 40.4027,
+            "y": 0.0,
+            "z": 87.7249
+          }
+        },
+        {
+          "position": {
+            "x": 109.5451,
+            "y": 0.0,
+            "z": 68.5794
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "model",
+          "filename": "data/hd/env/model/act2/sewer/act2_sewer_stairs/stairs_down01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition018",
+          "center": {
+            "x": -1.610329,
+            "y": 3.401456,
+            "z": -1.367728
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 2.980643,
+            "y": 3.536164,
+            "z": 3.071612
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "sewer_mud02_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act2/act2_outdoor_noise01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 1.0,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act2_sewer",
+          "layerIndexR": 4294967295,
+          "layerIndexG": 4294967295,
+          "layerIndexB": 2
+        }
+      },
+      "local_height_range": [
+        -3.204566,
+        8.0
+      ],
+      "nonzero_local_height_count": 52
+    },
+    "data/data/hd/env/preset/act3/docktown/docktown3.json": {
+      "bytes": 4648308,
+      "sha256": "2a780ba6a2532c9e4779393bd9d7ce13b9e2db561dab6bd6118122d42b82b072",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 4989,
+      "types": {
+        "Preset": 1,
+        "Entity": 4990,
+        "TransformDefinitionComponent": 4990,
+        "TerrainDefinitionComponent": 2,
+        "ModelDefinitionComponent": 4424,
+        "PhysicsBodyDefinitionComponent": 928,
+        "PhysicsFixtureDefinition": 928,
+        "PhysicsFileDefinition": 398,
+        "PhysicsBoxDefinition": 530,
+        "ModelPlatformTierComponent": 2936,
+        "AudioEmitterComponent": 130,
+        "PhysicsPartialRagdollDefinitionComponent": 9,
+        "SkeletonDefinitionComponent": 66,
+        "FadeTargetComponent": 2,
+        "VisualDataBoxDefinitionComponent": 2,
+        "DecalDefinitionComponent": 69,
+        "PhysicsClothDefinitionComponent": 57,
+        "VfxDefinitionComponent": 244,
+        "TerrainStampDefinitionComponent": 41,
+        "AudioEnvironmentOverrideComponent": 2,
+        "PrefabPlacementDefinitionComponent": 154,
+        "PhysicsPartialRagdollJointSettings": 5,
+        "TerrainDecalDefinitionComponent": 3,
+        "SpotLightDefinitionComponent": 11,
+        "PointLightDefinitionComponent": 7,
+        "TileBiomeOverride": 17
+      },
+      "asset_count": 1853,
+      "assets": [
+        "data/hd/character/common/common_hair1_ALB.texture",
+        "data/hd/character/common/common_hair1_FLOW.texture",
+        "data/hd/character/common/common_hair1_HRT.texture",
+        "data/hd/character/common/common_ktint.texture",
+        "data/hd/character/enemy/bonefetish1/textures/bonefetish_body_alb.texture",
+        "data/hd/character/enemy/bonefetish1/textures/bonefetish_body_nrm.texture",
+        "data/hd/character/enemy/bonefetish1/textures/bonefetish_body_orm.texture",
+        "data/hd/character/enemy/fetish1/textures/Fetish_alb.texture",
+        "data/hd/character/enemy/fetish1/textures/Fetish_armor_ALB.texture",
+        "data/hd/character/enemy/fetish1/textures/Fetish_armor_NRM.texture",
+        "data/hd/character/enemy/fetish1/textures/Fetish_armor_ORM.texture",
+        "data/hd/character/enemy/fetish1/textures/Fetish_nrm.texture",
+        "data/hd/character/enemy/fetish1/textures/Fetish_orm.texture",
+        "data/hd/character/enemy/skeleton1/textures/skeleton_armordes_ALB.texture",
+        "data/hd/character/enemy/skeleton1/textures/skeleton_armordes_NRM.texture",
+        "data/hd/character/enemy/skeleton1/textures/skeleton_armordes_ORM.texture",
+        "data/hd/env/biome/act3_docktown.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act3/model/act3_bushes/palm_bush01.model",
+        "data/hd/env/foliage/act3/model/act3_trees_banyan/banyan_tree01.model",
+        "data/hd/env/foliage/act3/model/act3_trees_banyan/banyan_tree02.model",
+        "data/hd/env/foliage/act3/model/act3_trees_banyan/banyan_tree03.model",
+        "data/hd/env/foliage/act3/model/act3_trees_banyan/banyan_tree04.model",
+        "data/hd/env/foliage/act3/model/act3_trees_banyan/banyan_tree05.model",
+        "data/hd/env/foliage/act3/model/act3_trees_cypress/act3_tree_cypress01.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": 280.5,
+            "y": -5.006165e-07,
+            "z": 169.0
+          }
+        },
+        {
+          "position": {
+            "x": 277.8695,
+            "y": -0.1324551,
+            "z": 118.2034
+          }
+        },
+        {
+          "position": {
+            "x": 282.425476,
+            "y": 2.50308233e-07,
+            "z": 94.97157
+          }
+        },
+        {
+          "position": {
+            "x": 302.557,
+            "y": 2.50308233e-07,
+            "z": 94.97157
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "terrain_ModelDefinitionComponent",
+          "filename": "data/hd/env/preset/act3/docktown/docktown3/terrain.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition375",
+          "center": {
+            "x": -14.23196,
+            "y": 19.47636,
+            "z": -10.46177
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 15.34607,
+            "y": 19.8001,
+            "z": 20.42471
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "dirt_patch01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act3/act3_docktown_dirt01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.023,
+          "stompB": 0.6,
+          "snapOptions": 0,
+          "biomeName": "act3_docktown",
+          "layerIndexR": 0,
+          "layerIndexG": 2,
+          "layerIndexB": 1
+        }
+      },
+      "local_height_range": [
+        -25.0,
+        50.0
+      ],
+      "nonzero_local_height_count": 4762
+    },
+    "data/data/hd/env/preset/prop_palette/act3/docktown.json": {
+      "bytes": 394112,
+      "sha256": "a2406c8832ea9235ff1e70144d6207d9bd9f07a0cfb48acf2a10850d61e12e25",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 404,
+      "types": {
+        "Preset": 1,
+        "Entity": 405,
+        "TransformDefinitionComponent": 405,
+        "TerrainDefinitionComponent": 2,
+        "ModelDefinitionComponent": 399,
+        "PhysicsBodyDefinitionComponent": 44,
+        "PhysicsFixtureDefinition": 44,
+        "PhysicsFileDefinition": 17,
+        "ModelPlatformTierComponent": 300,
+        "PhysicsBoxDefinition": 27,
+        "AudioEmitterComponent": 3,
+        "SkeletonDefinitionComponent": 13,
+        "PhysicsClothDefinitionComponent": 13,
+        "TerrainStampDefinitionComponent": 1,
+        "DecalDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 3
+      },
+      "asset_count": 518,
+      "assets": [
+        "data/hd/env/biome/act3_docktown.texture",
+        "data/hd/env/biome/test.texture",
+        "data/hd/env/foliage/act3/model/act3_trees_banyan/banyan_tree02.model",
+        "data/hd/env/foliage/act3/model/act3_trees_cypress/act3_tree_cypress01.model",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_banyan02_B.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_banyan02_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_banyan02_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_banyan02_orm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_cypress01_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_cypress01_b.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_cypress01_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_canopy_cypress01_orm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_trunk_banyan02_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_trunk_banyan02_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_trunk_banyan02_orm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_trunk_cypress01_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_trunk_cypress01_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_trunk_cypress01_orm.texture",
+        "data/hd/env/foliage/global/model/act3_ferns/act3_fern01.model",
+        "data/hd/env/foliage/global/model/act3_ferns/act3_fern02.model",
+        "data/hd/env/foliage/global/model/act3_ferns/act3_fern03.model",
+        "data/hd/env/foliage/global/model/act3_ferns/act3_fern04.model",
+        "data/hd/env/foliage/global/model/act3_ferns/act3_fern05.model",
+        "data/hd/env/foliage/global/model/act3_ivy/act3_ivy_climbing02.model",
+        "data/hd/env/foliage/global/model/act3_ivy/act3_ivy_hanging01.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "position": {
+            "x": -50.9816933,
+            "y": 0.0,
+            "z": 66.38631
+          }
+        },
+        {
+          "position": {
+            "x": -50.9816933,
+            "y": 0.0,
+            "z": 62.38631
+          }
+        },
+        {
+          "position": {
+            "x": -50.9816933,
+            "y": 0.0,
+            "z": 58.38631
+          }
+        },
+        {
+          "position": {
+            "x": -50.9816933,
+            "y": 0.0,
+            "z": 54.38631
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "terrain_ModelDefinitionComponent",
+          "filename": "data/hd/env/preset/prop_palette/act3/docktown/terrain.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition015",
+          "center": {
+            "x": -3.470048,
+            "y": 2.505002,
+            "z": -0.7205784
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 4.014246,
+            "y": 2.607765,
+            "z": 0.9813029
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "dirt_patch01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/act3/act3_docktown_dirt01_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 0.023,
+          "stompB": 0.6,
+          "snapOptions": 0,
+          "biomeName": "act3_docktown",
+          "layerIndexR": 0,
+          "layerIndexG": 2,
+          "layerIndexB": 1
+        }
+      },
+      "local_height_range": [
+        -9.590276,
+        9.064162
+      ],
+      "nonzero_local_height_count": 218
+    },
+    "data/data/hd/env/preset/act3/kurast/bridge.json": {
+      "bytes": 1211915,
+      "sha256": "9b17d0f0a79f33762c620cc12f2d6980b44c5339e119203957cefb794169e982",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 867,
+      "types": {
+        "Preset": 1,
+        "Entity": 868,
+        "ModelDefinitionComponent": 708,
+        "TransformDefinitionComponent": 868,
+        "PhysicsBodyDefinitionComponent": 417,
+        "PhysicsFixtureDefinition": 417,
+        "PhysicsFileDefinition": 360,
+        "ModelPlatformTierComponent": 689,
+        "PhysicsBoxDefinition": 57,
+        "WallTransparencyComponent": 123,
+        "FadeTargetComponent": 99,
+        "TerrainDefinitionComponent": 2,
+        "ModelVariationDefinitionComponent": 61,
+        "ModelVariationEntry": 329,
+        "AudioEmitterComponent": 5,
+        "VisualDataBoxDefinitionComponent": 2,
+        "PrefabPlacementDefinitionComponent": 66,
+        "AudioEnvironmentOverrideComponent": 2,
+        "TerrainStampDefinitionComponent": 3,
+        "ObjectMountPointComponent": 5,
+        "TerrainDecalDefinitionComponent": 14,
+        "DecalDefinitionComponent": 1,
+        "SpotLightDefinitionComponent": 5,
+        "PointLightDefinitionComponent": 1,
+        "TileBiomeOverride": 232
+      },
+      "asset_count": 570,
+      "assets": [
+        "data/hd/env/biome/act3_kurast.texture",
+        "data/hd/env/foliage/act3/model/act3_trees_root/act3_tree_roots01.model",
+        "data/hd/env/foliage/act3/texture/act3_bush_fern02_B.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_fern02_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_fern02_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_fern02_orm.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_palm01_B.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_palm01_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_palm01_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_bush_palm01_orm.texture",
+        "data/hd/env/foliage/act3/texture/act3_dungeon_roots_alb.texture",
+        "data/hd/env/foliage/act3/texture/act3_dungeon_roots_nrm.texture",
+        "data/hd/env/foliage/act3/texture/act3_dungeon_roots_orm.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_a_ALB.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_a_NRM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_a_ORM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_b_ALB.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_b_NRM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_b_ORM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_c_ALB.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_c_NRM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots01_c_ORM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots02_ALB.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots02_NRM.texture",
+        "data/hd/env/foliage/act3/texture/act3_tree_roots02_ORM.texture"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 379.5,
+            "y": 0.0,
+            "z": 57.0
+          }
+        },
+        {
+          "position": {
+            "x": 380.0,
+            "y": 0.0,
+            "z": 67.5
+          }
+        },
+        {
+          "position": {
+            "x": 380.0,
+            "y": 0.0,
+            "z": 77.5
+          }
+        },
+        {
+          "position": {
+            "x": 380.0,
+            "y": 0.0,
+            "z": 87.5
+          }
+        },
+        {
+          "position": {
+            "x": 379.5,
+            "y": 0.0,
+            "z": 87.5
+          }
+        }
+      ],
+      "component_samples": {
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "act3_kurast_walls_wall_stone01_components_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act3/kurast/act3_kurast_walls/wall_elevation_stone01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        },
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition046",
+          "center": {
+            "x": 0.03116786,
+            "y": 6.301797,
+            "z": -0.02398086
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 1.898498,
+            "y": 6.311069,
+            "z": 1.254682
+          }
+        },
+        "WallTransparencyComponent": {
+          "type": "WallTransparencyComponent",
+          "name": "pillar01_WallTransparency",
+          "drawOrder": 0,
+          "wallTileLocalCoord": {
+            "x": -1,
+            "y": -1
+          }
+        },
+        "TerrainStampDefinitionComponent": {
+          "type": "TerrainStampDefinitionComponent",
+          "name": "mud_puddle01_TerrainStampDefinition",
+          "mask": "data/hd/env/texture/terrain/stamp/expansion/snowpatchlg_inv_6_STAMP.texture",
+          "stomp": 1.0,
+          "stompG": 1.0,
+          "stompB": 1.0,
+          "snapOptions": 0,
+          "biomeName": "act3_kurast",
+          "layerIndexR": 7,
+          "layerIndexG": 4294967295,
+          "layerIndexB": 6
+        }
+      },
+      "local_height_range": [
+        -8.545222,
+        41.0
+      ],
+      "nonzero_local_height_count": 704
+    },
+    "data/data/hd/env/preset/act4/diab/bridge1.json": {
+      "bytes": 572154,
+      "sha256": "af148aec1dc035b68bf56171be71205b3cd74e77d2c5766c8ebdc7f4901af706",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 470,
+      "types": {
+        "Preset": 1,
+        "Entity": 471,
+        "TransformDefinitionComponent": 471,
+        "PhysicsBodyDefinitionComponent": 346,
+        "PhysicsFixtureDefinition": 346,
+        "PhysicsBoxDefinition": 237,
+        "ModelDefinitionComponent": 403,
+        "PhysicsFileDefinition": 109,
+        "TerrainDefinitionComponent": 2,
+        "ModelPlatformTierComponent": 57,
+        "SpotLightDefinitionComponent": 22,
+        "PrefabPlacementDefinitionComponent": 6,
+        "VfxDefinitionComponent": 39,
+        "ObjectMountPointComponent": 1
+      },
+      "asset_count": 187,
+      "assets": [
+        "data/hd/env/biome/act4_lava.texture",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks02.model",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks03.model",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_stairs/stairs01.model",
+        "data/hd/env/model/act4/diab/act4_diab_stairs/stairs_bridge01.model",
+        "data/hd/env/model/act4/diab/act4_diab_stairs/stairs_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_stairs/stairs_half01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_end_cap01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_end_cap02.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_inner_cap01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_large01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_small01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_small02.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_support01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris04.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris_obelisk01.model",
+        "data/hd/env/model/act4/lava/act4_lava_river_flow/diab_bridge1.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_off.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava02_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava02_med.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 34.96358,
+            "y": -2.795041,
+            "z": 25.06439
+          }
+        },
+        {
+          "position": {
+            "x": 74.2902,
+            "y": -2.795041,
+            "z": 24.34591
+          }
+        },
+        {
+          "position": {
+            "x": 74.28657,
+            "y": -2.895041,
+            "z": 185.0938
+          }
+        },
+        {
+          "position": {
+            "x": 215.6535,
+            "y": -1.864577,
+            "z": 96.13802
+          }
+        },
+        {
+          "position": {
+            "x": 131.112,
+            "y": 2.5,
+            "z": 224.562
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition",
+          "center": {
+            "x": 0.4521985,
+            "y": 6.858371,
+            "z": 0.2578378
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 6.237631,
+            "y": 7.366976,
+            "z": 6.026469
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "act4_lava_props_obelisk_a01_Alchemy_Runtime_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act4/lava/act4_lava_props/debris_obelisk01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        }
+      },
+      "local_height_range": [
+        -35.0,
+        2.95
+      ],
+      "nonzero_local_height_count": 462
+    },
+    "data/data/hd/env/preset/act4/diab/bridge2.json": {
+      "bytes": 700069,
+      "sha256": "d22dd43f8eb2b18e94a4883a6bf90f5e252ba0b51da23161a06ef9bb2d720269",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 575,
+      "types": {
+        "Preset": 1,
+        "Entity": 576,
+        "TransformDefinitionComponent": 576,
+        "PhysicsBodyDefinitionComponent": 433,
+        "PhysicsFixtureDefinition": 433,
+        "PhysicsBoxDefinition": 310,
+        "ModelDefinitionComponent": 489,
+        "PhysicsFileDefinition": 123,
+        "TerrainDefinitionComponent": 2,
+        "ModelPlatformTierComponent": 56,
+        "SpotLightDefinitionComponent": 31,
+        "PrefabPlacementDefinitionComponent": 9,
+        "VfxDefinitionComponent": 47
+      },
+      "asset_count": 164,
+      "assets": [
+        "data/hd/env/biome/act4_lava.texture",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks02.model",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks03.model",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_stairs/stairs_bridge01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_end_cap01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_end_cap02.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_large01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_small01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_support01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris02.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris03.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris04.model",
+        "data/hd/env/model/act4/lava/act4_lava_river_flow/diab_bridge2.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava02_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava02_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava03_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava04_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava04_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava04_off.model",
+        "data/hd/env/model/global/prop/act4/mesa/act4_mesa_rubbles_props/small_rubble_cluster01.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 35.94315,
+            "y": 1.65,
+            "z": 171.1618
+          }
+        },
+        {
+          "position": {
+            "x": 45.94315,
+            "y": 1.65,
+            "z": 171.1618
+          }
+        },
+        {
+          "position": {
+            "x": 33.81186,
+            "y": 1.65,
+            "z": 44.16187
+          }
+        },
+        {
+          "position": {
+            "x": 35.2118721,
+            "y": 2.5,
+            "z": 164.561768
+          }
+        },
+        {
+          "position": {
+            "x": 115.191765,
+            "y": 2.5,
+            "z": 128.561768
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition148",
+          "center": {
+            "x": 1.760023,
+            "y": -1.405259,
+            "z": -0.05239058
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 2.363608,
+            "y": 3.692289,
+            "z": 3.137918
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "model",
+          "filename": "data/hd/env/model/act4/diab/act4_diab_walls/wall_support01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        }
+      },
+      "local_height_range": [
+        -32.5,
+        2.95
+      ],
+      "nonzero_local_height_count": 564
+    },
+    "data/data/hd/env/preset/act4/diab/bridge3.json": {
+      "bytes": 630713,
+      "sha256": "8104f50c92cc16c5152f4d21063276ab81d9685adc1886403ea3fb052b55ddb8",
+      "top_keys": [
+        "dependencies",
+        "type",
+        "name",
+        "entities",
+        "terrain",
+        "biomeFilename",
+        "perTileBiomeOverrides",
+        "specialTiles"
+      ],
+      "entity_count": 502,
+      "types": {
+        "Preset": 1,
+        "Entity": 503,
+        "TransformDefinitionComponent": 503,
+        "PhysicsBodyDefinitionComponent": 406,
+        "PhysicsFixtureDefinition": 406,
+        "PhysicsBoxDefinition": 275,
+        "ModelDefinitionComponent": 432,
+        "PhysicsFileDefinition": 131,
+        "TerrainDefinitionComponent": 2,
+        "SpotLightDefinitionComponent": 36,
+        "PrefabPlacementDefinitionComponent": 7,
+        "VfxDefinitionComponent": 28,
+        "ModelPlatformTierComponent": 26
+      },
+      "asset_count": 183,
+      "assets": [
+        "data/hd/env/biome/act4_lava.texture",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks02.model",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks03.model",
+        "data/hd/env/model/act4/diab/act4_diab_props/rocks_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_stairs/stairs_bridge01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_corner01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_end_cap01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_end_cap02.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_large01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_small01.model",
+        "data/hd/env/model/act4/diab/act4_diab_walls/wall_support01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris02.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris03.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris04.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/debris_obelisk01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/edge_float_piece01.model",
+        "data/hd/env/model/act4/lava/act4_lava_props/edge_float_piece02.model",
+        "data/hd/env/model/act4/lava/act4_lava_river_flow/diab_bridge3.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava01_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava02_low.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava02_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava03_med.model",
+        "data/hd/env/model/global/prop/act4/lava/act4_lava_lava_kits/lava04_low.model"
+      ],
+      "transform_samples": [
+        {
+          "position": {
+            "x": 185.8619,
+            "y": -1.8,
+            "z": 216.0619
+          }
+        },
+        {
+          "position": {
+            "x": 115.2119,
+            "y": 2.5,
+            "z": 104.5619
+          }
+        },
+        {
+          "position": {
+            "x": 193.5119,
+            "y": 1.65,
+            "z": 35.06186
+          }
+        },
+        {
+          "position": {
+            "x": 116.1119,
+            "y": 1.65,
+            "z": 111.1619
+          }
+        },
+        {
+          "position": {
+            "x": 195.2119,
+            "y": 2.5,
+            "z": 174.5619
+          }
+        }
+      ],
+      "component_samples": {
+        "PhysicsBoxDefinition": {
+          "type": "PhysicsBoxDefinition",
+          "name": "PhysicsBoxDefinition",
+          "center": {
+            "x": 0.4521985,
+            "y": 6.858371,
+            "z": 0.2578378
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "extents": {
+            "x": 6.237631,
+            "y": 7.366976,
+            "z": 6.026469
+          }
+        },
+        "ModelDefinitionComponent": {
+          "type": "ModelDefinitionComponent",
+          "name": "act4_lava_props_obelisk_a01_Alchemy_Runtime_ModelDefinitionComponent",
+          "filename": "data/hd/env/model/act4/lava/act4_lava_props/debris_obelisk01.model",
+          "visibleLayers": 1,
+          "lightMask": 19,
+          "shadowMask": 3,
+          "ghostShadows": false,
+          "floorModel": false,
+          "terrainBlendEnableYUpBlend": false,
+          "terrainBlendMode": 1
+        }
+      },
+      "local_height_range": [
+        -35.0,
+        2.5
+      ],
+      "nonzero_local_height_count": 493
+    }
+  },
+  "errors": []
+}

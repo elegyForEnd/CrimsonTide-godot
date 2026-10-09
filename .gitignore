@@ -19,3 +19,8 @@ __pycache__/
 *.blend1
 # Build executables and editor backups
 *.exe
+output/map-research-deps/
+output/map-format-sources/
+output/reference-map-inspection.json
+output/story-*.err
+output/casc-research/

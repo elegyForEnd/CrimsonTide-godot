@@ -40,11 +40,13 @@ D:\dsh\Game\
    ├─ project.godot            ← 引擎配置（主场景 boot.tscn，无 autoload）
    ├─ scenes\                  ← 仅 2 个场景：boot.tscn（开场）、main.tscn（空壳根节点）
    ├─ scripts\                 ← 全部游戏逻辑（112 个 .gd / 3.77 万行，UI/逻辑均由代码构建）
+   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
    ├─ shaders\                 ← hero_hair_motion.gdshader（仅离线烘帧用）
    ├─ assets\                  ← 全部美术/音频/模型资源（见 §8.4）
    ├─ tests\                   ← 213 个 GDScript 回归测试（2.36 万行）+ 6 个 Python 测试
    ├─ tools\                   ← 147 个素材/音频/索引/门禁脚本（Python 为主，另有 GD 预览/烘焙）
+   ├─ docs\rpg\               ← 故事计划/全文/任务、实现范围、本地MPQ/CASC地图研究
    ├─ server\                  ← Python 标准库房间服务器（app.py）+ Godot 房间进程（room.gd）
    ├─ pv\ output\              ← 宣传片；生成产物/性能探针/报告（非游戏资源）
    ├─ DEPRECATED-…09-25\       ← 已废弃的角色动画归档（.gdignore，勿动）
@@ -86,6 +88,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 **反向注入模式**：session 的子模块（roguelike/expedition/Boss 模块等）拿参数 `s`（=session 自身）反向读写 `s.players / s.enemies / s.raid / s.ruins`——改这些模块时经常需要同时看 session.gd 的对应字段。
 
 ### 3.3 模式开关
+
+故事入口为 `main.gd` 的独立 `story` 页面：`story_screen` → `story_campaign` → `story_map` / `story_region`，由 `story_world` / `story_environment` 显示。它使用独立战役存档，当前是单人及两名AI伙伴，不加入TideSession的联机或结算生命周期。
 
 `session.gd:228 select_mode()` 分派 `campaign`（搜打撤）与 `rogue`（魔境）。两模式共用：
 - 同一个 `TideSession`（session.gd:78-82 同时持有 roguelike/expedition/mini_bosses/wild_bosses/dragon_boss 实例）；
@@ -381,6 +385,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | home_ground.gdshader / home_water.gdshader | 家园草地/水面 | camp_site.gd:463 / camp_site.gd:605 |
 | particle_glow_batch.gdshader | MultiMesh 粒子双圆光晕 | particle_glow_batch.gd:3 |
 | scene_asset.gdshader | 场景道具着色（叶片染色/空置灰化） | scene_assets.gd:4 |
+| story_ground.gdshader / story_stone.gdshader / story_water.gdshader | 故事连续地面混合、石木建筑与微弱河面波纹 | `story_environment.gd:3 GROUND`、`story_environment.gd:4 STONE`、`story_environment.gd:5 WATER` |
 | storm_bolt.gdshader / storm_sky.gdshader | 营地闪电带/雷暴天幕 | camp_site.gd:18 / camp_site.gd:17 |
 | stylized_texture.gdshader | 武器主体直通原图着色；厚度来自14张重新生成的原图，移除旧扩边 shader | stylized_vfx.gd:41 |
 | weapon_edge_glow.gdshader | 饱和色边缘辉光与亮芯（局部透明边缘采样） | stylized_vfx.gd:35 |
@@ -438,9 +443,22 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 已画出来 | 魔境战场：主人索敌圈 300、灵体索敌圈 166.7 / 射程 150 / 停靠 127.5、主人点名目标、角色地形判定 15、怪物半径、灵体→目标连线；F9 收文字 |
 | 待做批次 | 营地（设施交互圈 + "半径/实时距离"文字，`camp_site.gd:1556` 与 `camp_screen.gd:738 site.project()` 是入口）、肉鸽房型地面多边形、搜打撤 3D、UI 热区——清单见工作区上一层 `任务.md` |
 
+### S. 故事模式与连续探索地图
+
+| 功能 | 文件与配套检查 |
+|---|---|
+| 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:145 route()`；tests/story_geography.gd |
+| 地形、楼梯、房屋与碰撞 | `story_region.gd:26 build()`、`story_region.gd:181 height_at()`、`story_region.gd:208 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
+| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:27 build()`，`story_world.gd:58 sync_story()`；tests/story_visual.gd |
+| 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:308 activate_waypoint()`、`story_campaign.gd:327 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
+| 探索地图、UI与输入 | `story_screen.gd:356 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
+| 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
+
 ## 5. 「我要改 X」速查表
 
 ### 玩法规则类
+
+故事地图、任务与NPC → §4.S；连续区域/门洞改 story_map/region，3D场景改 story_environment/world，传送与战役规则改 story_campaign，面板改 story_screen/atlas。不要把故事币、经验或任务写进远征结算。
 
 | 需求 | 主要文件 | 配套（测试/文档/工具） |
 |---|---|---|
@@ -638,6 +656,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 | 文档 | 主题 | 主要对应代码 |
 |---|---|---|
 | README.md | 总览/启动/操作/存档 | 全局 |
+| [docs/rpg/README.md](docs/rpg/README.md)、IMPLEMENTATION.md、MAP-IMPLEMENTATION-RESEARCH.md、D2R-ENVIRONMENT-RESEARCH.md、RPG-MODE-PLAN.md、STORY.md、QUESTS.md（均在 docs/rpg/） | RPG连续地图重做版：PV背景、六幕营地、南门首图、40主线/24支线/9个人线；本地MPQ/CASC场景研究，连续野外、分层副本、激活传送阵与探索 | main.gd独立story页面；story_campaign/map/region/environment/world/screen/atlas负责运行。范围和剩余差异见IMPLEMENTATION；TideSession模式仍为expedition/roguelike |
 | EXPEDITION.md / ROGUELIKE.md | 远征/闯关玩法与验证 | expedition.gd / roguelike.gd |
 | ATTACK-TELEGRAPH.md | 攻击前摇提示（预警可读性、时长与美术口径） | scripts/attack_telegraph.gd |
 | output/ROGUE-CONTRACTS.md、output/CONTRACT-CHANGELOG.md、output/ROGUELIKE-EXPANSION-SUMMARY.md、output/R*.md（26 份） | 肉鸽扩展（图谱/事件/诅咒/每日/成长/房间 UI）的契约、变更记录、逐项验收报告与执行计划 | scripts/rogue_graph.gd、rogue_events.gd、rogue_curses.gd、rogue_daily.gd、rogue_growth.gd、rogue_room_ui.gd 等 |
@@ -799,6 +818,9 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-10 | （本地故事实现提交） | 只读解析本地D2R的IDX/BLTE/TVFS，检查23个HD场景样本；补读旧包关卡出口表。故事地图改为每幕连续野外与双向分层副本，另加12层可选洞窟；统一高度、楼梯、进屋屋顶隐藏、前景遮挡、地面混合、河岸、区域地标、寻路、探索图与传送阵激活。战役180、地图647、集成12、图形10检查无失败；独立EXE已重导出，详见docs/rpg/IMPLEMENTATION.md与D2R-ENVIRONMENT-RESEARCH.md。 |
+| 2026-10-09 | （本轮文字设计，未提交） | 新增 docs/rpg/ 四份RPG设计文档：按用户PV背景与开局向下出营要求，设计六幕独立营地、40主线、24支线、9个人线及可组合结局；README与§10添加入口。仅文档，尚未新增 story 运行模式。任务编号、标题、依赖无环及本地链接检查通过。 |
+| 2026-10-09 | （故事基础实现，未提交） | 只读解析用户本地MPQ地图：36个DS1、16个DT1与六张配置表。新增独立story页面及战役、地图、显示、UI模块，编译73任务全文，接入营地服务、三人战斗、装备专精、存档／战前恢复；原创NPC图集由内置image_gen生成。导出dist/CrimsonTide-Story.exe。规则510、集成12、图形6、原营地32与模式10检查无失败；剩余制作差异见docs/rpg/IMPLEMENTATION.md。 |
 | 2026-10-08 | （本轮文档） | **把合并轮踩到的 4 类可规避坑写进规范**：§11 追加 50–53——**50** `verify_anchors --fix` 的去重门（`tools/verify_anchors.py:334` 只改全文唯一锚点，合并后 DRIFT 卡住不再下降是常态，改按 `--json` 报告做**全文替换**清零，`--fix` 死循环到不了 0）；**51** `--fix` 写出的 `.bak` 是临时产物勿提交（上游 `8252812` 曾误入库，已移除并 `.gitignore` 加 `*.bak`）；**52** git 网络命令的 stdout 别接管道（`| Select-Object` 会假死），`job_kill` 留下的 `git`/`git-remote-https` 子进程会卡住后续 fetch，先 `Stop-Process` 再重跑；**53** 两个 CRLF stat-cache 幽灵文件（`scripts/rogue_backdrop.gd`、`tests/direct_fallback.gd`）常年显示 ` M`，永远不要 add——这是禁止 `git add .` 最现实的实例。§12.7 结论同步补"合并后 --fix 修不干净是常态"的指引；上一层工作区 `AGENTS.md` 薄壳加对应硬规则（只放规则 + 指回本节）。锚点全量复跑 DRIFT 0 / WRONG 0。 |
 | 2026-10-08 | 1681f7b / 741ab38 / d5badcd | **合并上游 `origin/master`（10 提交 dac2149，镜像试炼 + 武器美术 + 肉鸽修复）与本地 R.1/文档链**：①3 处内容冲突保留双方功能——`scripts/main.gd` 把镜像试炼分支（origin）与 R.1 救援者近身提示循环（HEAD）并成 `elif rogue_combat` 内 if/else + 其后独立 `if p.status=="active"`；`tests/rogue_hooks_roguelike.gd` 取 origin 刷新卡 value-only 复用断言（HEAD 断言的超集，实测 **178 checks / 0 failures**）；`PROJECT-GUIDE.md` 19 冲突块逐一合并，两处 origin 独有描述（§5 attack() 战技携带 attack_kind/width/radius、§11.6 特效挂点 `weapon_effect_socket` + `mechanic_contact`/`draw_mechanic`）按合并后代码回填。②R.1 表整体保留 HEAD 的"已修/已对齐"（本地 c130864 已把半径落进合并后的 session/battlefield/camp_activities），丢弃 origin 侧旧"待修"快照。③合并后全量重锚：`verify_anchors --fix` 三轮 + 手工补 26 处被去重门挡掉的重复锚点，**756 锚点 → OK 494 / DRIFT 0 / WRONG 0 / HINT 262（退出码 0）**。④清理：移除上游误入库的 `PROJECT-GUIDE.md.bak`（8252812 带入），`.gitignore` 加 `*.bak` 防复发。⑤`main.gd` / 测试脚本均 `--check-only` 解析通过。**未跑全量门禁**（`run_all_tests.ps1` / `run_rogue_gate.ps1`），留待 M2 一并跑。 |
 | 2026-10-07 | （本批未提交） | 69 把武器逐页人工核对与完整方向 GPU 矩阵；ImageGen 再绘重刃 v3/震地 v2，锤类改为冲击环；战技前摇与精确出手姿势修复；新增全量测试、69 页预览与 WEAPON-FULL-AUDIT.md，同步 §4、§11 与验证记录 |

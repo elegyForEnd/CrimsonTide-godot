@@ -1,0 +1,6314 @@
+{
+  "root": "F:\\game\\Diablo II 1.13C原版懒人包",
+  "tables": {
+    "levels": 138,
+    "lvlwarp": 89,
+    "lvlprest": 1092,
+    "objects": 574
+  },
+  "regions": [
+    {
+      "id": 0,
+      "name": "Null",
+      "size": [
+        "0",
+        "0"
+      ],
+      "type": "0",
+      "level_type": "0",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 1,
+      "name": "Act 1 - Town",
+      "size": [
+        "56",
+        "40"
+      ],
+      "type": "2",
+      "level_type": "1",
+      "waypoint": "0",
+      "links": []
+    },
+    {
+      "id": 2,
+      "name": "Act 1 - Wilderness 1",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 3,
+          "destination": "8",
+          "warp": "0"
+        },
+        {
+          "slot": 4,
+          "destination": "8",
+          "warp": "1"
+        },
+        {
+          "slot": 5,
+          "destination": "8",
+          "warp": "2"
+        },
+        {
+          "slot": 6,
+          "destination": "8",
+          "warp": "3"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Act 1 - Wilderness 2",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "1",
+      "links": [
+        {
+          "slot": 3,
+          "destination": "9",
+          "warp": "0"
+        },
+        {
+          "slot": 4,
+          "destination": "9",
+          "warp": "1"
+        },
+        {
+          "slot": 5,
+          "destination": "9",
+          "warp": "2"
+        },
+        {
+          "slot": 6,
+          "destination": "9",
+          "warp": "3"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Act 1 - Wilderness 3",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "2",
+      "links": [
+        {
+          "slot": 3,
+          "destination": "10",
+          "warp": "0"
+        },
+        {
+          "slot": 4,
+          "destination": "10",
+          "warp": "1"
+        },
+        {
+          "slot": 5,
+          "destination": "10",
+          "warp": "2"
+        },
+        {
+          "slot": 6,
+          "destination": "10",
+          "warp": "3"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Act 1 - Wilderness 4",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "3",
+      "links": [
+        {
+          "slot": 3,
+          "destination": "10",
+          "warp": "0"
+        },
+        {
+          "slot": 4,
+          "destination": "10",
+          "warp": "1"
+        },
+        {
+          "slot": 5,
+          "destination": "10",
+          "warp": "2"
+        },
+        {
+          "slot": 6,
+          "destination": "10",
+          "warp": "3"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Act 1 - Wilderness 5",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "4",
+      "links": [
+        {
+          "slot": 2,
+          "destination": "20",
+          "warp": "10"
+        },
+        {
+          "slot": 3,
+          "destination": "11",
+          "warp": "0"
+        },
+        {
+          "slot": 4,
+          "destination": "11",
+          "warp": "1"
+        },
+        {
+          "slot": 5,
+          "destination": "11",
+          "warp": "2"
+        },
+        {
+          "slot": 6,
+          "destination": "11",
+          "warp": "3"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Act 1 - Wilderness 6",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 3,
+          "destination": "12",
+          "warp": "0"
+        },
+        {
+          "slot": 4,
+          "destination": "12",
+          "warp": "1"
+        },
+        {
+          "slot": 5,
+          "destination": "12",
+          "warp": "2"
+        },
+        {
+          "slot": 6,
+          "destination": "12",
+          "warp": "3"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Act 1 - Cave 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "2",
+          "warp": "4"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Act 1 - Cave 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "3",
+          "warp": "4"
+        },
+        {
+          "slot": 4,
+          "destination": "13",
+          "warp": "5"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Act 1 - Cave 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "4",
+          "warp": "4"
+        },
+        {
+          "slot": 1,
+          "destination": "5",
+          "warp": "4"
+        },
+        {
+          "slot": 4,
+          "destination": "14",
+          "warp": "5"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Act 1 - Cave 4",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "6",
+          "warp": "4"
+        },
+        {
+          "slot": 4,
+          "destination": "15",
+          "warp": "5"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Act 1 - Cave 5",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "7",
+          "warp": "4"
+        },
+        {
+          "slot": 4,
+          "destination": "16",
+          "warp": "5"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Act 1 - Cave 2 Treasure",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "9",
+          "warp": "4"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Act 1 - Cave 3 Treasure",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "10",
+          "warp": "4"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Act 1 - Cave 4 Treasure",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "11",
+          "warp": "4"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Act 1 - Cave 5 Treasure",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "3",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "12",
+          "warp": "4"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Act 1 - Graveyard",
+      "size": [
+        "40",
+        "48"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "18",
+          "warp": "6"
+        },
+        {
+          "slot": 1,
+          "destination": "19",
+          "warp": "7"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Act 1 - Crypt 1 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "17",
+          "warp": "8"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Act 1 - Crypt 2 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "17",
+          "warp": "8"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Act 1 - Tower 2",
+      "size": [
+        "8",
+        "8"
+      ],
+      "type": "2",
+      "level_type": "2",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "6",
+          "warp": "11"
+        },
+        {
+          "slot": 1,
+          "destination": "21",
+          "warp": "12"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Act 1 - Crypt 3 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "20",
+          "warp": "8"
+        },
+        {
+          "slot": 1,
+          "destination": "22",
+          "warp": "9"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Act 1 - Crypt 3 B",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "21",
+          "warp": "8"
+        },
+        {
+          "slot": 1,
+          "destination": "23",
+          "warp": "9"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Act 1 - Crypt 3 C",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "22",
+          "warp": "8"
+        },
+        {
+          "slot": 1,
+          "destination": "24",
+          "warp": "9"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Act 1 - Crypt 3 D",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "23",
+          "warp": "8"
+        },
+        {
+          "slot": 1,
+          "destination": "25",
+          "warp": "9"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Act 1 - Crypt 3 E",
+      "size": [
+        "30",
+        "30"
+      ],
+      "type": "2",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "24",
+          "warp": "8"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Act 1 - Monastery",
+      "size": [
+        "64",
+        "18"
+      ],
+      "type": "2",
+      "level_type": "5",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "27",
+          "warp": "-1"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Act 1 - Courtyard 1",
+      "size": [
+        "56",
+        "40"
+      ],
+      "type": "2",
+      "level_type": "6",
+      "waypoint": "5",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "26",
+          "warp": "-1"
+        },
+        {
+          "slot": 1,
+          "destination": "28",
+          "warp": "-1"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Act 1 - Barracks",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "7",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "27",
+          "warp": "-1"
+        },
+        {
+          "slot": 1,
+          "destination": "29",
+          "warp": "14"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Act 1 - Jail 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "8",
+      "waypoint": "6",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "28",
+          "warp": "13"
+        },
+        {
+          "slot": 1,
+          "destination": "30",
+          "warp": "14"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Act 1 - Jail 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "8",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "29",
+          "warp": "13"
+        },
+        {
+          "slot": 1,
+          "destination": "31",
+          "warp": "14"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Act 1 - Jail 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "8",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "30",
+          "warp": "13"
+        },
+        {
+          "slot": 1,
+          "destination": "32",
+          "warp": "13"
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Act 1 - Courtyard 2",
+      "size": [
+        "18",
+        "20"
+      ],
+      "type": "2",
+      "level_type": "6",
+      "waypoint": "7",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "31",
+          "warp": "14"
+        },
+        {
+          "slot": 1,
+          "destination": "33",
+          "warp": "-1"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "name": "Act 1 - Cathedral",
+      "size": [
+        "28",
+        "34"
+      ],
+      "type": "2",
+      "level_type": "9",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "32",
+          "warp": "-1"
+        },
+        {
+          "slot": 1,
+          "destination": "34",
+          "warp": "15"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Act 1 - Catacombs 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "10",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "33",
+          "warp": "16"
+        },
+        {
+          "slot": 1,
+          "destination": "35",
+          "warp": "18"
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Act 1 - Catacombs 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "10",
+      "waypoint": "8",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "34",
+          "warp": "17"
+        },
+        {
+          "slot": 1,
+          "destination": "36",
+          "warp": "18"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Act 1 - Catacombs 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "10",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "35",
+          "warp": "17"
+        },
+        {
+          "slot": 1,
+          "destination": "37",
+          "warp": "18"
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Act 1 - Catacombs 4",
+      "size": [
+        "22",
+        "31"
+      ],
+      "type": "2",
+      "level_type": "10",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "36",
+          "warp": "17"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Act 1 - Tristram",
+      "size": [
+        "43",
+        "48"
+      ],
+      "type": "2",
+      "level_type": "11",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 39,
+      "name": "Act 1 - Moo Moo Farm",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "2",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 40,
+      "name": "Act 2 - Town",
+      "size": [
+        "56",
+        "56"
+      ],
+      "type": "2",
+      "level_type": "12",
+      "waypoint": "9",
+      "links": [
+        {
+          "slot": 2,
+          "destination": "47",
+          "warp": "19"
+        },
+        {
+          "slot": 3,
+          "destination": "47",
+          "warp": "20"
+        },
+        {
+          "slot": 4,
+          "destination": "50",
+          "warp": "24"
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Act 2 - Desert 1",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "55",
+          "warp": "33"
+        },
+        {
+          "slot": 1,
+          "destination": "55",
+          "warp": "34"
+        },
+        {
+          "slot": 2,
+          "destination": "55",
+          "warp": "35"
+        },
+        {
+          "slot": 3,
+          "destination": "55",
+          "warp": "36"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Act 2 - Desert 2",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "11",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "56",
+          "warp": "33"
+        },
+        {
+          "slot": 1,
+          "destination": "56",
+          "warp": "34"
+        },
+        {
+          "slot": 2,
+          "destination": "56",
+          "warp": "35"
+        },
+        {
+          "slot": 3,
+          "destination": "56",
+          "warp": "36"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Act 2 - Desert 3",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "13",
+      "links": [
+        {
+          "slot": 4,
+          "destination": "62",
+          "warp": "47"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Act 2 - Desert 4",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "14",
+      "links": [
+        {
+          "slot": 2,
+          "destination": "65",
+          "warp": "50"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Act 2 - Desert 5",
+      "size": [
+        "32",
+        "32"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "58",
+          "warp": "37"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Act 2 - Valley of the Kings",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "17",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "66",
+          "warp": "38"
+        },
+        {
+          "slot": 2,
+          "destination": "67",
+          "warp": "39"
+        },
+        {
+          "slot": 3,
+          "destination": "68",
+          "warp": "40"
+        },
+        {
+          "slot": 4,
+          "destination": "69",
+          "warp": "41"
+        },
+        {
+          "slot": 5,
+          "destination": "70",
+          "warp": "42"
+        },
+        {
+          "slot": 6,
+          "destination": "71",
+          "warp": "43"
+        },
+        {
+          "slot": 7,
+          "destination": "72",
+          "warp": "44"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Act 2 - Sewer 1 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "13",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "40",
+          "warp": "22"
+        },
+        {
+          "slot": 1,
+          "destination": "40",
+          "warp": "21"
+        },
+        {
+          "slot": 2,
+          "destination": "48",
+          "warp": "23"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Act 2 - Sewer 1 B",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "13",
+      "waypoint": "10",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "47",
+          "warp": "22"
+        },
+        {
+          "slot": 2,
+          "destination": "49",
+          "warp": "23"
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Act 2 - Sewer 1 C",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "13",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "48",
+          "warp": "22"
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Act 2 - Harem",
+      "size": [
+        "16",
+        "19"
+      ],
+      "type": "2",
+      "level_type": "14",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "40",
+          "warp": "25"
+        },
+        {
+          "slot": 2,
+          "destination": "51",
+          "warp": "28"
+        },
+        {
+          "slot": 3,
+          "destination": "51",
+          "warp": "29"
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "name": "Act 2 - Corrupt Harem 1",
+      "size": [
+        "100",
+        "100"
+      ],
+      "type": "1",
+      "level_type": "14",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "50",
+          "warp": "26"
+        },
+        {
+          "slot": 1,
+          "destination": "50",
+          "warp": "27"
+        },
+        {
+          "slot": 2,
+          "destination": "52",
+          "warp": "28"
+        },
+        {
+          "slot": 3,
+          "destination": "52",
+          "warp": "29"
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "name": "Act 2 - Basement 1",
+      "size": [
+        "100",
+        "100"
+      ],
+      "type": "1",
+      "level_type": "15",
+      "waypoint": "15",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "51",
+          "warp": "26"
+        },
+        {
+          "slot": 1,
+          "destination": "51",
+          "warp": "27"
+        },
+        {
+          "slot": 2,
+          "destination": "53",
+          "warp": "32"
+        },
+        {
+          "slot": 3,
+          "destination": "53",
+          "warp": "32"
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "name": "Act 2 - Basement 2",
+      "size": [
+        "100",
+        "100"
+      ],
+      "type": "1",
+      "level_type": "15",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "52",
+          "warp": "30"
+        },
+        {
+          "slot": 1,
+          "destination": "52",
+          "warp": "31"
+        },
+        {
+          "slot": 2,
+          "destination": "54",
+          "warp": "32"
+        },
+        {
+          "slot": 3,
+          "destination": "54",
+          "warp": "32"
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "name": "Act 2 - Basement 3",
+      "size": [
+        "100",
+        "100"
+      ],
+      "type": "1",
+      "level_type": "15",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "53",
+          "warp": "30"
+        },
+        {
+          "slot": 1,
+          "destination": "53",
+          "warp": "31"
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "name": "Act 2 - Tomb 1 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "41",
+          "warp": "45"
+        },
+        {
+          "slot": 4,
+          "destination": "59",
+          "warp": "46"
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "name": "Act 2 - Tomb 2 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "42",
+          "warp": "45"
+        },
+        {
+          "slot": 4,
+          "destination": "57",
+          "warp": "46"
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "name": "Act 2 - Tomb 2 B",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "12",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "56",
+          "warp": "45"
+        },
+        {
+          "slot": 4,
+          "destination": "60",
+          "warp": "46"
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "name": "Act 2 - Tomb 3 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "45",
+          "warp": "45"
+        },
+        {
+          "slot": 4,
+          "destination": "61",
+          "warp": "46"
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "name": "Act 2 - Tomb 1 Treasure",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "55",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Act 2 - Tomb 2 Treasure",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "57",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Act 2 - Tomb 3 Treasure",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "58",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "name": "Act 2 - Lair 1 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "18",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "43",
+          "warp": "48"
+        },
+        {
+          "slot": 1,
+          "destination": "63",
+          "warp": "49"
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "name": "Act 2 - Lair 1 B",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "18",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "62",
+          "warp": "48"
+        },
+        {
+          "slot": 1,
+          "destination": "64",
+          "warp": "49"
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "name": "Act 2 - Lair 1 Treasure",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "18",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "63",
+          "warp": "48"
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "name": "Act 2 - Sewer 2 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "13",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "44",
+          "warp": "22"
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "name": "Act 2 - Tomb Tal 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "name": "Act 2 - Tomb Tal 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "name": "Act 2 - Tomb Tal 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "name": "Act 2 - Tomb Tal 4",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "name": "Act 2 - Tomb Tal 5",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "name": "Act 2 - Tomb Tal 6",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "name": "Act 2 - Tomb Tal 7",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "46",
+          "warp": "45"
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "name": "Act 2 - Duriel's Lair",
+      "size": [
+        "32",
+        "47"
+      ],
+      "type": "2",
+      "level_type": "17",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 74,
+      "name": "Act 2 - Arcane",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "19",
+      "waypoint": "16",
+      "links": []
+    },
+    {
+      "id": 75,
+      "name": "Act 3 - Town",
+      "size": [
+        "64",
+        "48"
+      ],
+      "type": "2",
+      "level_type": "20",
+      "waypoint": "18",
+      "links": []
+    },
+    {
+      "id": 76,
+      "name": "Act 3 - Jungle 1",
+      "size": [
+        "64",
+        "192"
+      ],
+      "type": "3",
+      "level_type": "21",
+      "waypoint": "19",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "84",
+          "warp": "51"
+        },
+        {
+          "slot": 1,
+          "destination": "85",
+          "warp": "51"
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "name": "Act 3 - Jungle 2",
+      "size": [
+        "64",
+        "192"
+      ],
+      "type": "3",
+      "level_type": "21",
+      "waypoint": "20",
+      "links": []
+    },
+    {
+      "id": 78,
+      "name": "Act 3 - Jungle 3",
+      "size": [
+        "64",
+        "192"
+      ],
+      "type": "3",
+      "level_type": "21",
+      "waypoint": "21",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "86",
+          "warp": "53"
+        },
+        {
+          "slot": 1,
+          "destination": "88",
+          "warp": "54"
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "name": "Act 3 - Kurast 1",
+      "size": [
+        "80",
+        "64"
+      ],
+      "type": "3",
+      "level_type": "22",
+      "waypoint": "22",
+      "links": []
+    },
+    {
+      "id": 80,
+      "name": "Act 3 - Kurast 2",
+      "size": [
+        "80",
+        "64"
+      ],
+      "type": "3",
+      "level_type": "22",
+      "waypoint": "23",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "92",
+          "warp": "57"
+        },
+        {
+          "slot": 1,
+          "destination": "92",
+          "warp": "57"
+        },
+        {
+          "slot": 2,
+          "destination": "94",
+          "warp": "61"
+        },
+        {
+          "slot": 3,
+          "destination": "95",
+          "warp": "61"
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "name": "Act 3 - Kurast 3",
+      "size": [
+        "80",
+        "64"
+      ],
+      "type": "3",
+      "level_type": "22",
+      "waypoint": "24",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "92",
+          "warp": "57"
+        },
+        {
+          "slot": 1,
+          "destination": "92",
+          "warp": "57"
+        },
+        {
+          "slot": 2,
+          "destination": "96",
+          "warp": "61"
+        },
+        {
+          "slot": 3,
+          "destination": "97",
+          "warp": "61"
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "name": "Act 3 - Kurast 4",
+      "size": [
+        "48",
+        "16"
+      ],
+      "type": "3",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 2,
+          "destination": "98",
+          "warp": "61"
+        },
+        {
+          "slot": 3,
+          "destination": "99",
+          "warp": "61"
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "name": "Act 3 - Travincal",
+      "size": [
+        "64",
+        "64"
+      ],
+      "type": "3",
+      "level_type": "22",
+      "waypoint": "25",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "100",
+          "warp": "64"
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "name": "Act 3 - Spider 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "23",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "76",
+          "warp": "52"
+        }
+      ]
+    },
+    {
+      "id": 85,
+      "name": "Act 3 - Spider 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "23",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "76",
+          "warp": "52"
+        }
+      ]
+    },
+    {
+      "id": 86,
+      "name": "Act 3 - Dungeon 1 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "24",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "87",
+          "warp": "56"
+        },
+        {
+          "slot": 1,
+          "destination": "78",
+          "warp": "55"
+        }
+      ]
+    },
+    {
+      "id": 87,
+      "name": "Act 3 - Dungeon 1 B",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "24",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "90",
+          "warp": "56"
+        },
+        {
+          "slot": 1,
+          "destination": "86",
+          "warp": "55"
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "name": "Act 3 - Dungeon 2 A",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "24",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "89",
+          "warp": "56"
+        },
+        {
+          "slot": 1,
+          "destination": "78",
+          "warp": "55"
+        }
+      ]
+    },
+    {
+      "id": 89,
+      "name": "Act 3 - Dungeon 2 B",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "24",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "91",
+          "warp": "56"
+        },
+        {
+          "slot": 1,
+          "destination": "88",
+          "warp": "55"
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "name": "Act 3 - Dungeon 1 Treasure",
+      "size": [
+        "40",
+        "40"
+      ],
+      "type": "2",
+      "level_type": "24",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "87",
+          "warp": "55"
+        }
+      ]
+    },
+    {
+      "id": 91,
+      "name": "Act 3 - Dungeon 2 Treasure",
+      "size": [
+        "40",
+        "40"
+      ],
+      "type": "2",
+      "level_type": "24",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "89",
+          "warp": "55"
+        }
+      ]
+    },
+    {
+      "id": 92,
+      "name": "Act 3 - Sewer 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "25",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "80",
+          "warp": "58"
+        },
+        {
+          "slot": 1,
+          "destination": "80",
+          "warp": "59"
+        },
+        {
+          "slot": 2,
+          "destination": "81",
+          "warp": "58"
+        },
+        {
+          "slot": 3,
+          "destination": "81",
+          "warp": "59"
+        },
+        {
+          "slot": 4,
+          "destination": "93",
+          "warp": "60"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "name": "Act 3 - Sewer 2",
+      "size": [
+        "18",
+        "22"
+      ],
+      "type": "2",
+      "level_type": "25",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "92",
+          "warp": "58"
+        }
+      ]
+    },
+    {
+      "id": 94,
+      "name": "Act 3 - Temple 1",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "80",
+          "warp": "62"
+        },
+        {
+          "slot": 1,
+          "destination": "80",
+          "warp": "63"
+        }
+      ]
+    },
+    {
+      "id": 95,
+      "name": "Act 3 - Temple 2",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "80",
+          "warp": "62"
+        },
+        {
+          "slot": 1,
+          "destination": "80",
+          "warp": "63"
+        }
+      ]
+    },
+    {
+      "id": 96,
+      "name": "Act 3 - Temple 3",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "81",
+          "warp": "62"
+        },
+        {
+          "slot": 1,
+          "destination": "81",
+          "warp": "63"
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "name": "Act 3 - Temple 4",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "81",
+          "warp": "62"
+        },
+        {
+          "slot": 1,
+          "destination": "81",
+          "warp": "63"
+        }
+      ]
+    },
+    {
+      "id": 98,
+      "name": "Act 3 - Temple 5",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "82",
+          "warp": "62"
+        },
+        {
+          "slot": 1,
+          "destination": "82",
+          "warp": "63"
+        }
+      ]
+    },
+    {
+      "id": 99,
+      "name": "Act 3 - Temple 6",
+      "size": [
+        "24",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "82",
+          "warp": "62"
+        },
+        {
+          "slot": 1,
+          "destination": "82",
+          "warp": "63"
+        }
+      ]
+    },
+    {
+      "id": 100,
+      "name": "Act 3 - Mephisto 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "101",
+          "warp": "67"
+        },
+        {
+          "slot": 1,
+          "destination": "101",
+          "warp": "68"
+        },
+        {
+          "slot": 2,
+          "destination": "83",
+          "warp": "65"
+        },
+        {
+          "slot": 3,
+          "destination": "83",
+          "warp": "66"
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Act 3 - Mephisto 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "22",
+      "waypoint": "26",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "102",
+          "warp": "67"
+        },
+        {
+          "slot": 1,
+          "destination": "102",
+          "warp": "68"
+        },
+        {
+          "slot": 2,
+          "destination": "100",
+          "warp": "65"
+        },
+        {
+          "slot": 3,
+          "destination": "100",
+          "warp": "66"
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Act 3 - Mephisto 3",
+      "size": [
+        "41",
+        "29"
+      ],
+      "type": "2",
+      "level_type": "22",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 2,
+          "destination": "101",
+          "warp": "65"
+        },
+        {
+          "slot": 3,
+          "destination": "101",
+          "warp": "66"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Act 4 - Town",
+      "size": [
+        "32",
+        "24"
+      ],
+      "type": "2",
+      "level_type": "26",
+      "waypoint": "27",
+      "links": []
+    },
+    {
+      "id": 104,
+      "name": "Act 4 - Mesa 1",
+      "size": [
+        "80",
+        "64"
+      ],
+      "type": "3",
+      "level_type": "27",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 105,
+      "name": "Act 4 - Mesa 2",
+      "size": [
+        "64",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "27",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 106,
+      "name": "Act 4 - Mesa 3",
+      "size": [
+        "80",
+        "64"
+      ],
+      "type": "3",
+      "level_type": "27",
+      "waypoint": "28",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "107",
+          "warp": "69"
+        }
+      ]
+    },
+    {
+      "id": 107,
+      "name": "Act 4 - Lava 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "28",
+      "waypoint": "29",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "106",
+          "warp": "70"
+        },
+        {
+          "slot": 1,
+          "destination": "108",
+          "warp": "-1"
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "name": "Act 4 - Diablo 1",
+      "size": [
+        "120",
+        "120"
+      ],
+      "type": "3",
+      "level_type": "28",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "107",
+          "warp": "-1"
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Act 5 - Town",
+      "size": [
+        "40",
+        "40"
+      ],
+      "type": "2",
+      "level_type": "29",
+      "waypoint": "30",
+      "links": []
+    },
+    {
+      "id": 110,
+      "name": "Act 5 - Siege 1",
+      "size": [
+        "240",
+        "48"
+      ],
+      "type": "3",
+      "level_type": "30",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 111,
+      "name": "Act 5 - Barricade 1",
+      "size": [
+        "-1",
+        "-1"
+      ],
+      "type": "3",
+      "level_type": "31",
+      "waypoint": "31",
+      "links": []
+    },
+    {
+      "id": 112,
+      "name": "Act 5 - Barricade 2",
+      "size": [
+        "-1",
+        "-1"
+      ],
+      "type": "3",
+      "level_type": "31",
+      "waypoint": "32",
+      "links": [
+        {
+          "slot": 2,
+          "destination": "113",
+          "warp": "71"
+        }
+      ]
+    },
+    {
+      "id": 113,
+      "name": "Act 5 - Ice Cave 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "33",
+      "waypoint": "33",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "112",
+          "warp": "73"
+        },
+        {
+          "slot": 1,
+          "destination": "115",
+          "warp": "74"
+        },
+        {
+          "slot": 2,
+          "destination": "114",
+          "warp": "75"
+        }
+      ]
+    },
+    {
+      "id": 114,
+      "name": "Act 5 - Ice Cave 1A",
+      "size": [
+        "64",
+        "64"
+      ],
+      "type": "1",
+      "level_type": "33",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "113",
+          "warp": "73"
+        }
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Act 5 - Ice Cave 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "33",
+      "waypoint": "34",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "113",
+          "warp": "73"
+        },
+        {
+          "slot": 1,
+          "destination": "117",
+          "warp": "74"
+        },
+        {
+          "slot": 2,
+          "destination": "116",
+          "warp": "75"
+        }
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Act 5 - Ice Cave 2A",
+      "size": [
+        "32",
+        "32"
+      ],
+      "type": "1",
+      "level_type": "33",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "115",
+          "warp": "73"
+        }
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Act 5 - Barricade Snow",
+      "size": [
+        "128",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "31",
+      "waypoint": "36",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "115",
+          "warp": "72"
+        },
+        {
+          "slot": 2,
+          "destination": "118",
+          "warp": "71"
+        }
+      ]
+    },
+    {
+      "id": 118,
+      "name": "Act 5 - Ice Cave 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "33",
+      "waypoint": "37",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "117",
+          "warp": "73"
+        },
+        {
+          "slot": 1,
+          "destination": "120",
+          "warp": "74"
+        },
+        {
+          "slot": 2,
+          "destination": "119",
+          "warp": "75"
+        }
+      ]
+    },
+    {
+      "id": 119,
+      "name": "Act 5 - Ice Cave 3A",
+      "size": [
+        "32",
+        "32"
+      ],
+      "type": "1",
+      "level_type": "33",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "118",
+          "warp": "73"
+        }
+      ]
+    },
+    {
+      "id": 120,
+      "name": "Act 5 - Mountain Top",
+      "size": [
+        "20",
+        "28"
+      ],
+      "type": "2",
+      "level_type": "31",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "118",
+          "warp": "79"
+        },
+        {
+          "slot": 1,
+          "destination": "128",
+          "warp": "80"
+        }
+      ]
+    },
+    {
+      "id": 121,
+      "name": "Act 5 - Temple Entrance",
+      "size": [
+        "22",
+        "27"
+      ],
+      "type": "2",
+      "level_type": "31",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 1,
+          "destination": "122",
+          "warp": "76"
+        }
+      ]
+    },
+    {
+      "id": 122,
+      "name": "Act 5 - Temple 1",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "1",
+      "level_type": "32",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "121",
+          "warp": "78"
+        },
+        {
+          "slot": 1,
+          "destination": "123",
+          "warp": "77"
+        }
+      ]
+    },
+    {
+      "id": 123,
+      "name": "Act 5 - Temple 2",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "1",
+      "level_type": "32",
+      "waypoint": "35",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "122",
+          "warp": "78"
+        },
+        {
+          "slot": 1,
+          "destination": "124",
+          "warp": "77"
+        }
+      ]
+    },
+    {
+      "id": 124,
+      "name": "Act 5 - Temple Boss",
+      "size": [
+        "84",
+        "84"
+      ],
+      "type": "2",
+      "level_type": "32",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "123",
+          "warp": "78"
+        }
+      ]
+    },
+    {
+      "id": 125,
+      "name": "Act 5 - Hell 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "35",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 126,
+      "name": "Act 5 - Hell 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "35",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 127,
+      "name": "Act 5 - Hell 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "35",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 128,
+      "name": "Act 5 - Baal Temple 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "34",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "120",
+          "warp": "81"
+        },
+        {
+          "slot": 1,
+          "destination": "129",
+          "warp": "82"
+        }
+      ]
+    },
+    {
+      "id": 129,
+      "name": "Act 5 - Baal Temple 2",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "34",
+      "waypoint": "38",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "128",
+          "warp": "81"
+        },
+        {
+          "slot": 1,
+          "destination": "130",
+          "warp": "82"
+        }
+      ]
+    },
+    {
+      "id": 130,
+      "name": "Act 5 - Baal Temple 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "34",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "129",
+          "warp": "81"
+        },
+        {
+          "slot": 1,
+          "destination": "131",
+          "warp": "82"
+        }
+      ]
+    },
+    {
+      "id": 131,
+      "name": "Act 5 - Throne Room",
+      "size": [
+        "40",
+        "52"
+      ],
+      "type": "2",
+      "level_type": "34",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "130",
+          "warp": "81"
+        },
+        {
+          "slot": 1,
+          "destination": "132",
+          "warp": "82"
+        }
+      ]
+    },
+    {
+      "id": 132,
+      "name": "Act 5 - World Stone",
+      "size": [
+        "55",
+        "55"
+      ],
+      "type": "2",
+      "level_type": "34",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "131",
+          "warp": "81"
+        }
+      ]
+    },
+    {
+      "id": 133,
+      "name": "Act 5 - Pandemonium 1",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "4",
+      "waypoint": "255",
+      "links": [
+        {
+          "slot": 0,
+          "destination": "17",
+          "warp": "8"
+        }
+      ]
+    },
+    {
+      "id": 134,
+      "name": "Act 5 - Pandemonium 2",
+      "size": [
+        "80",
+        "80"
+      ],
+      "type": "3",
+      "level_type": "16",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 135,
+      "name": "Act 5 - Pandemonium 3",
+      "size": [
+        "200",
+        "200"
+      ],
+      "type": "1",
+      "level_type": "35",
+      "waypoint": "255",
+      "links": []
+    },
+    {
+      "id": 136,
+      "name": "Act 5 - Pandemonium Finale",
+      "size": [
+        "43",
+        "48"
+      ],
+      "type": "2",
+      "level_type": "11",
+      "waypoint": "255",
+      "links": []
+    }
+  ],
+  "warp_definitions": [
+    {
+      "Name": "Act 1 Wilderness to Cave Cliff L",
+      "Id": "0",
+      "SelectX": "-90",
+      "SelectY": "-100",
+      "SelectDX": "90",
+      "SelectDY": "110",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "-1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Wilderness to Cave Cliff R",
+      "Id": "1",
+      "SelectX": "-15",
+      "SelectY": "-90",
+      "SelectDX": "90",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "3",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Wilderness to Cave Floor L",
+      "Id": "2",
+      "SelectX": "-60",
+      "SelectY": "-60",
+      "SelectDX": "85",
+      "SelectDY": "100",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "-1",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Wilderness to Cave Floor R",
+      "Id": "3",
+      "SelectX": "-25",
+      "SelectY": "-60",
+      "SelectDX": "85",
+      "SelectDY": "100",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "1",
+      "OffsetY": "-1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Cave Up",
+      "Id": "4",
+      "SelectX": "-30",
+      "SelectY": "-120",
+      "SelectDX": "120",
+      "SelectDY": "150",
+      "ExitWalkX": "3",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "5",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Cave Down",
+      "Id": "5",
+      "SelectX": "-25",
+      "SelectY": "-75",
+      "SelectDX": "80",
+      "SelectDY": "100",
+      "ExitWalkX": "3",
+      "ExitWalkY": "5",
+      "OffsetX": "1",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Graveyard to Crypt 1",
+      "Id": "6",
+      "SelectX": "-90",
+      "SelectY": "-110",
+      "SelectDX": "110",
+      "SelectDY": "140",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "5",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Graveyard to Crypt 2",
+      "Id": "7",
+      "SelectX": "-70",
+      "SelectY": "-90",
+      "SelectDX": "90",
+      "SelectDY": "120",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "5",
+      "OffsetY": "2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Crypt Up",
+      "Id": "8",
+      "SelectX": "-10",
+      "SelectY": "-90",
+      "SelectDX": "60",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Crypt Down",
+      "Id": "9",
+      "SelectX": "-30",
+      "SelectY": "-90",
+      "SelectDX": "60",
+      "SelectDY": "110",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Wilderness to Tower",
+      "Id": "10",
+      "SelectX": "-10",
+      "SelectY": "-50",
+      "SelectDX": "150",
+      "SelectDY": "80",
+      "ExitWalkX": "3",
+      "ExitWalkY": "5",
+      "OffsetX": "-4",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Tower to Wilderness",
+      "Id": "11",
+      "SelectX": "-50",
+      "SelectY": "-130",
+      "SelectDX": "60",
+      "SelectDY": "140",
+      "ExitWalkX": "5",
+      "ExitWalkY": "3",
+      "OffsetX": "4",
+      "OffsetY": "-2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Tower to Crypt",
+      "Id": "12",
+      "SelectX": "-50",
+      "SelectY": "-90",
+      "SelectDX": "80",
+      "SelectDY": "110",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "2",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Jail Up",
+      "Id": "13",
+      "SelectX": "-50",
+      "SelectY": "-110",
+      "SelectDX": "110",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Jail Down",
+      "Id": "14",
+      "SelectX": "-40",
+      "SelectY": "-80",
+      "SelectDX": "210",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "-1",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Cathedral To Catacombs",
+      "Id": "15",
+      "SelectX": "-30",
+      "SelectY": "-110",
+      "SelectDX": "85",
+      "SelectDY": "130",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "3",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Catacombs to Cathedral",
+      "Id": "16",
+      "SelectX": "-35",
+      "SelectY": "-130",
+      "SelectDX": "90",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "7",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Catacombs Up",
+      "Id": "17",
+      "SelectX": "-50",
+      "SelectY": "-110",
+      "SelectDX": "110",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 1 Catacombs Down",
+      "Id": "18",
+      "SelectX": "-60",
+      "SelectY": "-80",
+      "SelectDX": "210",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "-1",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "1"
+    },
+    {
+      "Name": "Act 2 Town to Sewer Trap",
+      "Id": "19",
+      "SelectX": "-10",
+      "SelectY": "-10",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Town to Sewer Dock",
+      "Id": "20",
+      "SelectX": "-25",
+      "SelectY": "-95",
+      "SelectDX": "70",
+      "SelectDY": "130",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "-2",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Sewer Dock to Town",
+      "Id": "21",
+      "SelectX": "20",
+      "SelectY": "-80",
+      "SelectDX": "65",
+      "SelectDY": "140",
+      "ExitWalkX": "-5",
+      "ExitWalkY": "0",
+      "OffsetX": "10",
+      "OffsetY": "-2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Sewer Up",
+      "Id": "22",
+      "SelectX": "-25",
+      "SelectY": "-160",
+      "SelectDX": "100",
+      "SelectDY": "180",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Sewer Down",
+      "Id": "23",
+      "SelectX": "-65",
+      "SelectY": "-55",
+      "SelectDX": "150",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "-5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Town to Harem",
+      "Id": "24",
+      "SelectX": "-120",
+      "SelectY": "-20",
+      "SelectDX": "150",
+      "SelectDY": "130",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "5",
+      "OffsetY": "2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Harem to Town",
+      "Id": "25",
+      "SelectX": "-35",
+      "SelectY": "-70",
+      "SelectDX": "95",
+      "SelectDY": "130",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "0",
+      "OffsetY": "-2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Harem Up 1",
+      "Id": "26",
+      "SelectX": "-25",
+      "SelectY": "-150",
+      "SelectDX": "80",
+      "SelectDY": "180",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "4",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Harem Up 2",
+      "Id": "27",
+      "SelectX": "-40",
+      "SelectY": "-160",
+      "SelectDX": "80",
+      "SelectDY": "180",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "0",
+      "OffsetY": "5",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Harem Down 1",
+      "Id": "28",
+      "SelectX": "-20",
+      "SelectY": "-40",
+      "SelectDX": "170",
+      "SelectDY": "100",
+      "ExitWalkX": "-5",
+      "ExitWalkY": "5",
+      "OffsetX": "-3",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Harem Down 2",
+      "Id": "29",
+      "SelectX": "-50",
+      "SelectY": "-20",
+      "SelectDX": "160",
+      "SelectDY": "85",
+      "ExitWalkX": "-5",
+      "ExitWalkY": "0",
+      "OffsetX": "-1",
+      "OffsetY": "-3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Basement Up 1",
+      "Id": "30",
+      "SelectX": "-25",
+      "SelectY": "-100",
+      "SelectDX": "60",
+      "SelectDY": "125",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Basement Up 2",
+      "Id": "31",
+      "SelectX": "-40",
+      "SelectY": "-100",
+      "SelectDX": "60",
+      "SelectDY": "125",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "0",
+      "OffsetY": "2",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Basement Down",
+      "Id": "32",
+      "SelectX": "-30",
+      "SelectY": "-30",
+      "SelectDX": "170",
+      "SelectDY": "90",
+      "ExitWalkX": "-5",
+      "ExitWalkY": "5",
+      "OffsetX": "-3",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb L 1",
+      "Id": "33",
+      "SelectX": "-70",
+      "SelectY": "-140",
+      "SelectDX": "80",
+      "SelectDY": "160",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb L 2",
+      "Id": "34",
+      "SelectX": "-50",
+      "SelectY": "-120",
+      "SelectDX": "90",
+      "SelectDY": "150",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb R 1",
+      "Id": "35",
+      "SelectX": "-30",
+      "SelectY": "-140",
+      "SelectDX": "80",
+      "SelectDY": "160",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "6",
+      "OffsetY": "2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb R 2",
+      "Id": "36",
+      "SelectX": "0",
+      "SelectY": "-140",
+      "SelectDX": "100",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "1",
+      "OffsetY": "2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Viper",
+      "Id": "37",
+      "SelectX": "-30",
+      "SelectY": "-140",
+      "SelectDX": "80",
+      "SelectDY": "160",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "4",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 1",
+      "Id": "38",
+      "SelectX": "-40",
+      "SelectY": "-190",
+      "SelectDX": "90",
+      "SelectDY": "210",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 2",
+      "Id": "39",
+      "SelectX": "-40",
+      "SelectY": "-210",
+      "SelectDX": "50",
+      "SelectDY": "230",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "-1",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 3",
+      "Id": "40",
+      "SelectX": "-30",
+      "SelectY": "-100",
+      "SelectDX": "60",
+      "SelectDY": "140",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "0",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 4",
+      "Id": "41",
+      "SelectX": "-90",
+      "SelectY": "-140",
+      "SelectDX": "70",
+      "SelectDY": "160",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "-1",
+      "OffsetY": "-5",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 5",
+      "Id": "42",
+      "SelectX": "-10",
+      "SelectY": "-110",
+      "SelectDX": "60",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "-2",
+      "OffsetY": "-3",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 6",
+      "Id": "43",
+      "SelectX": "0",
+      "SelectY": "-130",
+      "SelectDX": "90",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "-1",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Tomb Tal 7",
+      "Id": "44",
+      "SelectX": "-10",
+      "SelectY": "-210",
+      "SelectDX": "70",
+      "SelectDY": "240",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "-3",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Tomb Up",
+      "Id": "45",
+      "SelectX": "-30",
+      "SelectY": "-115",
+      "SelectDX": "75",
+      "SelectDY": "145",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Tomb Down",
+      "Id": "46",
+      "SelectX": "-45",
+      "SelectY": "-120",
+      "SelectDX": "85",
+      "SelectDY": "145",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "0",
+      "OffsetY": "2",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Lair",
+      "Id": "47",
+      "SelectX": "-10",
+      "SelectY": "-60",
+      "SelectDX": "90",
+      "SelectDY": "90",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "-2",
+      "OffsetY": "2",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Lair Up",
+      "Id": "48",
+      "SelectX": "-20",
+      "SelectY": "-70",
+      "SelectDX": "80",
+      "SelectDY": "85",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "1",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Lair Down",
+      "Id": "49",
+      "SelectX": "-115",
+      "SelectY": "-10",
+      "SelectDX": "160",
+      "SelectDY": "70",
+      "ExitWalkX": "0",
+      "ExitWalkY": "-5",
+      "OffsetX": "-3",
+      "OffsetY": "-5",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 2 Desert to Sewer Trap",
+      "Id": "50",
+      "SelectX": "-10",
+      "SelectY": "-10",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Jungle to Spider",
+      "Id": "51",
+      "SelectX": "-60",
+      "SelectY": "-70",
+      "SelectDX": "70",
+      "SelectDY": "90",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "0",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Spider to Jungle",
+      "Id": "52",
+      "SelectX": "10",
+      "SelectY": "-100",
+      "SelectDX": "80",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "4",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Jungle to Dungeon Fort",
+      "Id": "53",
+      "SelectX": "-15",
+      "SelectY": "-70",
+      "SelectDX": "70",
+      "SelectDY": "110",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Jungle to Dungeon Hole",
+      "Id": "54",
+      "SelectX": "-130",
+      "SelectY": "-10",
+      "SelectDX": "170",
+      "SelectDY": "100",
+      "ExitWalkX": "0",
+      "ExitWalkY": "-5",
+      "OffsetX": "-4",
+      "OffsetY": "-6",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Dungeon Up",
+      "Id": "55",
+      "SelectX": "-10",
+      "SelectY": "-100",
+      "SelectDX": "90",
+      "SelectDY": "130",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "3",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Dungeon Down",
+      "Id": "56",
+      "SelectX": "-40",
+      "SelectY": "-20",
+      "SelectDX": "170",
+      "SelectDY": "100",
+      "ExitWalkX": "-5",
+      "ExitWalkY": "0",
+      "OffsetX": "-4",
+      "OffsetY": "-1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Kurast to Sewer",
+      "Id": "57",
+      "SelectX": "-60",
+      "SelectY": "-40",
+      "SelectDX": "120",
+      "SelectDY": "90",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Sewer Up L",
+      "Id": "58",
+      "SelectX": "-75",
+      "SelectY": "-110",
+      "SelectDX": "100",
+      "SelectDY": "150",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Sewer Up R",
+      "Id": "59",
+      "SelectX": "-25",
+      "SelectY": "-110",
+      "SelectDX": "100",
+      "SelectDY": "150",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "6",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Sewer Down",
+      "Id": "60",
+      "SelectX": "-10",
+      "SelectY": "-10",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Kurast to Temple",
+      "Id": "61",
+      "SelectX": "-10",
+      "SelectY": "-10",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Temple Up L",
+      "Id": "62",
+      "SelectX": "-50",
+      "SelectY": "-110",
+      "SelectDX": "80",
+      "SelectDY": "140",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "2",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Temple Up R",
+      "Id": "63",
+      "SelectX": "-30",
+      "SelectY": "-110",
+      "SelectDX": "80",
+      "SelectDY": "140",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Travincal to Mephisto",
+      "Id": "64",
+      "SelectX": "-10",
+      "SelectY": "-10",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "5",
+      "ExitWalkY": "5",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Mephisto Up L",
+      "Id": "65",
+      "SelectX": "-65",
+      "SelectY": "-150",
+      "SelectDX": "125",
+      "SelectDY": "180",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Mephisto Up R",
+      "Id": "66",
+      "SelectX": "-60",
+      "SelectY": "-150",
+      "SelectDX": "125",
+      "SelectDY": "180",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Mephisto Down L",
+      "Id": "67",
+      "SelectX": "-65",
+      "SelectY": "-150",
+      "SelectDX": "125",
+      "SelectDY": "180",
+      "ExitWalkX": "5",
+      "ExitWalkY": "0",
+      "OffsetX": "1",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 3 Mephisto Down R",
+      "Id": "68",
+      "SelectX": "-60",
+      "SelectY": "-150",
+      "SelectDX": "125",
+      "SelectDY": "180",
+      "ExitWalkX": "0",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 4 Mesa to Lava",
+      "Id": "69",
+      "SelectX": "-60",
+      "SelectY": "-40",
+      "SelectDX": "150",
+      "SelectDY": "160",
+      "ExitWalkX": "-5",
+      "ExitWalkY": "0",
+      "OffsetX": "2",
+      "OffsetY": "2",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 4 Lava to Mesa",
+      "Id": "70",
+      "SelectX": "-90",
+      "SelectY": "-50",
+      "SelectDX": "160",
+      "SelectDY": "120",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "0",
+      "OffsetY": "0",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Expansion",
+      "Id": "",
+      "SelectX": "",
+      "SelectY": "",
+      "SelectDX": "",
+      "SelectDY": "",
+      "ExitWalkX": "",
+      "ExitWalkY": "",
+      "OffsetX": "",
+      "OffsetY": "",
+      "LitVersion": "",
+      "Tiles": "",
+      "Direction": "",
+      "Beta": ""
+    },
+    {
+      "Name": "Act 5 Barricade Down Wall",
+      "Id": "71",
+      "SelectX": "-70",
+      "SelectY": "-80",
+      "SelectDX": "80",
+      "SelectDY": "100",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "2",
+      "OffsetY": "6",
+      "LitVersion": "1",
+      "Tiles": "4",
+      "Direction": "l",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Barricade Down Wall",
+      "Id": "71",
+      "SelectX": "-15",
+      "SelectY": "-90",
+      "SelectDX": "70",
+      "SelectDY": "100",
+      "ExitWalkX": "-1",
+      "ExitWalkY": "5",
+      "OffsetX": "6",
+      "OffsetY": "2",
+      "LitVersion": "1",
+      "Tiles": "4",
+      "Direction": "r",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Barricade Down Floor",
+      "Id": "72",
+      "SelectX": "-20",
+      "SelectY": "-120",
+      "SelectDX": "75",
+      "SelectDY": "100",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "2",
+      "OffsetY": "2",
+      "LitVersion": "1",
+      "Tiles": "4",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Ice Caves Up",
+      "Id": "73",
+      "SelectX": "-60",
+      "SelectY": "-110",
+      "SelectDX": "90",
+      "SelectDY": "115",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "0",
+      "OffsetY": "5",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "l",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Ice Caves Up",
+      "Id": "73",
+      "SelectX": "-10",
+      "SelectY": "-120",
+      "SelectDX": "100",
+      "SelectDY": "120",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "5",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "r",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Ice Caves Down",
+      "Id": "74",
+      "SelectX": "-60",
+      "SelectY": "-110",
+      "SelectDX": "90",
+      "SelectDY": "115",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "0",
+      "OffsetY": "5",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "l",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Ice Caves Down",
+      "Id": "74",
+      "SelectX": "-20",
+      "SelectY": "-110",
+      "SelectDX": "90",
+      "SelectDY": "115",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "4",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "r",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Ice Caves Down Floor",
+      "Id": "75",
+      "SelectX": "-5",
+      "SelectY": "-110",
+      "SelectDX": "80",
+      "SelectDY": "110",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "6",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Temple Entrance",
+      "Id": "76",
+      "SelectX": "0",
+      "SelectY": "-110",
+      "SelectDX": "95",
+      "SelectDY": "100",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Temple Down",
+      "Id": "77",
+      "SelectX": "0",
+      "SelectY": "-70",
+      "SelectDX": "140",
+      "SelectDY": "80",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "-2",
+      "OffsetY": "3",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Temple Up",
+      "Id": "78",
+      "SelectX": "-20",
+      "SelectY": "-110",
+      "SelectDX": "100",
+      "SelectDY": "110",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "3",
+      "OffsetY": "0",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Mountain Top To Ice",
+      "Id": "79",
+      "SelectX": "-40",
+      "SelectY": "-110",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Mountain Top To Baal",
+      "Id": "80",
+      "SelectX": "-20",
+      "SelectY": "-110",
+      "SelectDX": "0",
+      "SelectDY": "0",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "2",
+      "OffsetY": "1",
+      "LitVersion": "0",
+      "Tiles": "2",
+      "Direction": "b",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Baal Temple Up",
+      "Id": "81",
+      "SelectX": "-70",
+      "SelectY": "-110",
+      "SelectDX": "95",
+      "SelectDY": "115",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "1",
+      "OffsetY": "4",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "l",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Baal Temple Up",
+      "Id": "81",
+      "SelectX": "-20",
+      "SelectY": "-110",
+      "SelectDX": "80",
+      "SelectDY": "115",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "4",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "r",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Baal Temple Down",
+      "Id": "82",
+      "SelectX": "-70",
+      "SelectY": "-110",
+      "SelectDX": "95",
+      "SelectDY": "115",
+      "ExitWalkX": "5",
+      "ExitWalkY": "2",
+      "OffsetX": "1",
+      "OffsetY": "4",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "l",
+      "Beta": "0"
+    },
+    {
+      "Name": "Act 5 Baal Temple Down",
+      "Id": "82",
+      "SelectX": "-20",
+      "SelectY": "-110",
+      "SelectDX": "80",
+      "SelectDY": "115",
+      "ExitWalkX": "2",
+      "ExitWalkY": "5",
+      "OffsetX": "4",
+      "OffsetY": "1",
+      "LitVersion": "1",
+      "Tiles": "2",
+      "Direction": "r",
+      "Beta": "0"
+    }
+  ],
+  "samples": {
+    "act1/town/towns1.ds1": {
+      "version": 18,
+      "width": 57,
+      "height": 41,
+      "act": 1,
+      "files": [
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\treegroups.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\stonewall.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\town\\floor.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\bridge.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\barracks\\warp.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\river.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\town\\objects.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\town\\fence.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\objects.dt1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 370,
+          "unique": 60
+        },
+        "orientation0": {
+          "nonzero": 370,
+          "unique": 9
+        },
+        "wall1": {
+          "nonzero": 21,
+          "unique": 19
+        },
+        "orientation1": {
+          "nonzero": 21,
+          "unique": 3
+        },
+        "floor0": {
+          "nonzero": 2337,
+          "unique": 133
+        },
+        "shadow": {
+          "nonzero": 2,
+          "unique": 2
+        }
+      },
+      "objects": [
+        {
+          "type": 2,
+          "id": 1,
+          "x": 138,
+          "y": 114,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 185,
+          "y": 105,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 4,
+          "x": 144,
+          "y": 189,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 149,
+          "y": 190,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 161,
+          "y": 185,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 154,
+          "y": 126,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 192,
+          "y": 182,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 77,
+          "y": 172,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 148,
+          "y": 97,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 213,
+          "y": 117,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 201,
+          "y": 188,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 102,
+          "y": 106,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 176,
+          "y": 186,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 198,
+          "y": 96,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 13,
+          "x": 212,
+          "y": 98,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 192,
+          "y": 101,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 0,
+          "x": 98,
+          "y": 177,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 171,
+          "y": 104,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 4,
+          "x": 128,
+          "y": 171,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 88,
+          "y": 119,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 4,
+          "x": 101,
+          "y": 126,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 33,
+          "x": 119,
+          "y": 137,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 3,
+          "x": 183,
+          "y": 152,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 196,
+          "y": 156,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 4,
+          "x": 157,
+          "y": 173,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 132,
+          "y": 170,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 99,
+          "y": 164,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 13,
+          "x": 76,
+          "y": 146,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 96,
+          "y": 138,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 116,
+          "y": 129,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 4,
+          "x": 173,
+          "y": 146,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 4,
+          "x": 101,
+          "y": 152,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 8,
+          "x": 94,
+          "y": 112,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 201,
+          "y": 136,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 91,
+          "y": 180,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 2,
+          "x": 137,
+          "y": 137,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 52,
+          "x": 119,
+          "y": 94,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 102,
+          "x": 126,
+          "y": 124,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 140,
+          "y": 152,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 7,
+          "x": 126,
+          "y": 130,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 5,
+          "x": 155,
+          "y": 131,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 110,
+          "x": 144,
+          "y": 136,
+          "flags": 0
+        }
+      ],
+      "sha256": "7fe60de36c8a39c23deb16eccf59605664971aaae4de2c8bd775abe66c267f0b",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 1967,
+          "1": 120,
+          "14": 105,
+          "3": 7,
+          "2": 116,
+          "12": 13,
+          "10": 3,
+          "7": 2,
+          "15": 4
+        },
+        "orientation1": {
+          "0": 2316,
+          "14": 6,
+          "15": 15
+        }
+      }
+    },
+    "act1/town/townstrans.ds1": {
+      "version": 18,
+      "width": 57,
+      "height": 9,
+      "act": 1,
+      "files": [
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\objects.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\town\\fence.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\town\\floor.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\river.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\stonewall.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\treegroups.dt1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 73,
+          "unique": 25
+        },
+        "orientation0": {
+          "nonzero": 73,
+          "unique": 7
+        },
+        "wall1": {
+          "nonzero": 2,
+          "unique": 3
+        },
+        "orientation1": {
+          "nonzero": 2,
+          "unique": 2
+        },
+        "floor0": {
+          "nonzero": 513,
+          "unique": 84
+        },
+        "shadow": {
+          "nonzero": 0,
+          "unique": 1
+        }
+      },
+      "objects": [],
+      "sha256": "e8187c25cf50aa15a611ecf3ef5934d8bfc0e8484f12569d83ff0d204098276d",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 440,
+          "14": 13,
+          "2": 39,
+          "3": 1,
+          "6": 1,
+          "12": 2,
+          "1": 17
+        },
+        "orientation1": {
+          "0": 511,
+          "14": 2
+        }
+      }
+    },
+    "act1/graveyard/gravey.ds1": {
+      "version": 18,
+      "width": 25,
+      "height": 33,
+      "act": 1,
+      "files": [
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\stonewall.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\graveyard\\graveyrd.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\barracks\\warp.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\outdoors\\objects.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\town\\floor.tg1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 242,
+          "unique": 53
+        },
+        "orientation0": {
+          "nonzero": 242,
+          "unique": 11
+        },
+        "wall1": {
+          "nonzero": 1,
+          "unique": 2
+        },
+        "orientation1": {
+          "nonzero": 1,
+          "unique": 2
+        },
+        "floor0": {
+          "nonzero": 825,
+          "unique": 52
+        },
+        "shadow": {
+          "nonzero": 10,
+          "unique": 11
+        }
+      },
+      "objects": [
+        {
+          "type": 2,
+          "id": 1,
+          "x": 56,
+          "y": 114,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 67,
+          "y": 73,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 64,
+          "y": 133,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 6,
+          "y": 91,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 60,
+          "y": 29,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 56,
+          "y": 51,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 66,
+          "y": 98,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 111,
+          "y": 81,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 12,
+          "x": 48,
+          "y": 74,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 60,
+          "y": 40,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 64,
+          "y": 141,
+          "flags": 0
+        }
+      ],
+      "sha256": "ea3199bbc5913394dbea549f62bd37c6f776c9dc69ef4a0881150860b08b4ccf",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 583,
+          "12": 118,
+          "2": 49,
+          "3": 4,
+          "6": 6,
+          "5": 15,
+          "1": 30,
+          "8": 13,
+          "10": 1,
+          "7": 3,
+          "14": 3
+        },
+        "orientation1": {
+          "0": 824,
+          "10": 1
+        }
+      }
+    },
+    "act2/town/lutn.ds1": {
+      "version": 18,
+      "width": 57,
+      "height": 57,
+      "act": 2,
+      "files": [
+        "\\d2\\data\\global\\tiles\\act2\\palace\\palace.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\canal.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\guard.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\walls.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\shop.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\tavern.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\build.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\gate.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\outdoors\\palm.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\wagon.dt1",
+        "\\d2\\data\\global\\tiles\\act1\\barracks\\warp.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\ground.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\outdoors\\mesa.dt1",
+        "\\d2\\data\\global\\tiles\\act2\\town\\curbs.dt1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 484,
+          "unique": 110
+        },
+        "orientation0": {
+          "nonzero": 484,
+          "unique": 13
+        },
+        "wall1": {
+          "nonzero": 130,
+          "unique": 66
+        },
+        "orientation1": {
+          "nonzero": 130,
+          "unique": 8
+        },
+        "wall2": {
+          "nonzero": 94,
+          "unique": 70
+        },
+        "orientation2": {
+          "nonzero": 94,
+          "unique": 7
+        },
+        "wall3": {
+          "nonzero": 36,
+          "unique": 37
+        },
+        "orientation3": {
+          "nonzero": 36,
+          "unique": 2
+        },
+        "floor0": {
+          "nonzero": 3249,
+          "unique": 269
+        },
+        "floor1": {
+          "nonzero": 209,
+          "unique": 23
+        },
+        "shadow": {
+          "nonzero": 332,
+          "unique": 23
+        }
+      },
+      "objects": [
+        {
+          "type": 1,
+          "id": 24,
+          "x": 73,
+          "y": 152,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 20,
+          "x": 130,
+          "y": 86,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 125,
+          "y": 69,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 139,
+          "y": 40,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 25,
+          "x": 143,
+          "y": 74,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 26,
+          "x": 174,
+          "y": 104,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 93,
+          "x": 82,
+          "y": 164,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 93,
+          "x": 82,
+          "y": 145,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 107,
+          "y": 192,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 132,
+          "y": 177,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 163,
+          "y": 184,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 147,
+          "y": 210,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 21,
+          "x": 121,
+          "y": 73,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 117,
+          "x": 143,
+          "y": 30,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 119,
+          "x": 143,
+          "y": 32,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 12,
+          "x": 148,
+          "y": 28,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 61,
+          "y": 90,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 87,
+          "y": 117,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 130,
+          "y": 125,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 115,
+          "y": 80,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 37,
+          "y": 82,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 149,
+          "y": 67,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 151,
+          "y": 126,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 183,
+          "y": 148,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 185,
+          "y": 61,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 99,
+          "y": 137,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 97,
+          "y": 68,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 105,
+          "y": 60,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 8,
+          "x": 96,
+          "y": 127,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 0,
+          "x": 37,
+          "y": 57,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 0,
+          "x": 146,
+          "y": 200,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 88,
+          "y": 26,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 11,
+          "x": 213,
+          "y": 78,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 10,
+          "x": 113,
+          "y": 107,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 49,
+          "y": 61,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 10,
+          "x": 69,
+          "y": 84,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 7,
+          "x": 57,
+          "y": 146,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 7,
+          "x": 57,
+          "y": 150,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 16,
+          "x": 148,
+          "y": 191,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 17,
+          "x": 71,
+          "y": 148,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 118,
+          "x": 141,
+          "y": 30,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 195,
+          "y": 36,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 195,
+          "y": 66,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 195,
+          "y": 131,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 195,
+          "y": 161,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 195,
+          "y": 201,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 150,
+          "y": 53,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 126,
+          "y": 53,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 158,
+          "y": 31,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 151,
+          "y": 102,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 130,
+          "y": 73,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 108,
+          "y": 100,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 87,
+          "y": 52,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 94,
+          "x": 107,
+          "y": 52,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 86,
+          "y": 14,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 31,
+          "y": 44,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 8,
+          "x": 28,
+          "y": 48,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 9,
+          "x": 30,
+          "y": 96,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 95,
+          "x": 27,
+          "y": 108,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 181,
+          "y": 206,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 208,
+          "y": 123,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 146,
+          "y": 156,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 96,
+          "y": 192,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 50,
+          "y": 68,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 22,
+          "x": 118,
+          "y": 96,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 209,
+          "y": 28,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 123,
+          "y": 33,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 1,
+          "x": 131,
+          "y": 44,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 23,
+          "x": 160,
+          "y": 30,
+          "flags": 0
+        }
+      ],
+      "sha256": "a3af9ef82b4e6a62de12601f90d8940a53c5e6188ec96fbf747520bd35434712",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 2765,
+          "7": 26,
+          "14": 84,
+          "3": 13,
+          "2": 136,
+          "5": 21,
+          "1": 100,
+          "6": 29,
+          "12": 39,
+          "8": 1,
+          "10": 8,
+          "11": 1,
+          "15": 26
+        },
+        "orientation1": {
+          "0": 3119,
+          "10": 6,
+          "5": 5,
+          "1": 38,
+          "12": 2,
+          "6": 2,
+          "2": 12,
+          "15": 65
+        },
+        "orientation2": {
+          "0": 3155,
+          "15": 61,
+          "14": 11,
+          "2": 7,
+          "7": 3,
+          "1": 11,
+          "5": 1
+        },
+        "orientation3": {
+          "0": 3213,
+          "15": 36
+        }
+      }
+    },
+    "act3/docktown/docktown3.ds1": {
+      "version": 18,
+      "width": 65,
+      "height": 49,
+      "act": 3,
+      "files": [
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\shack.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\docks.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\ruinflr.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\boat.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\bridge.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\market.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\pyramid.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\ruinwall.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\docktown\\huts.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\barracks\\warp.tg1",
+        "\\d2\\data\\global\\tiles\\act3\\jungle\\trees.tg1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 329,
+          "unique": 99
+        },
+        "orientation0": {
+          "nonzero": 329,
+          "unique": 10
+        },
+        "wall1": {
+          "nonzero": 20,
+          "unique": 15
+        },
+        "orientation1": {
+          "nonzero": 20,
+          "unique": 6
+        },
+        "wall2": {
+          "nonzero": 9,
+          "unique": 8
+        },
+        "orientation2": {
+          "nonzero": 9,
+          "unique": 3
+        },
+        "floor0": {
+          "nonzero": 3185,
+          "unique": 433
+        },
+        "floor1": {
+          "nonzero": 4,
+          "unique": 2
+        },
+        "shadow": {
+          "nonzero": 176,
+          "unique": 69
+        }
+      },
+      "objects": [
+        {
+          "type": 2,
+          "id": 90,
+          "x": 116,
+          "y": 80,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 15,
+          "x": 221,
+          "y": 111,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 86,
+          "x": 181,
+          "y": 156,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 6,
+          "x": 229,
+          "y": 119,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 0,
+          "x": 139,
+          "y": 63,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 0,
+          "x": 115,
+          "y": 173,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 218,
+          "y": 65,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 0,
+          "x": 139,
+          "y": 109,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 148,
+          "y": 7,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 204,
+          "y": 134,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 229,
+          "y": 148,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 246,
+          "y": 133,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 247,
+          "y": 109,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 215,
+          "y": 96,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 253,
+          "y": 76,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 123,
+          "y": 84,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 140,
+          "y": 85,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 159,
+          "y": 92,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 148,
+          "y": 164,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 110,
+          "x": 219,
+          "y": 38,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 109,
+          "x": 122,
+          "y": 165,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 105,
+          "y": 31,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 106,
+          "y": 36,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 102,
+          "y": 31,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 104,
+          "y": 26,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 100,
+          "y": 26,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 121,
+          "y": 142,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 126,
+          "y": 142,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 123,
+          "y": 139,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 127,
+          "y": 138,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 127,
+          "y": 132,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 126,
+          "y": 135,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 131,
+          "y": 38,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 132,
+          "y": 35,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 136,
+          "y": 35,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 135,
+          "y": 31,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 6,
+          "x": 229,
+          "y": 118,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 7,
+          "x": 228,
+          "y": 118,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 34,
+          "x": 141,
+          "y": 57,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 71,
+          "y": 40,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 155,
+          "y": 60,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 128,
+          "y": 64,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 146,
+          "y": 98,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 237,
+          "y": 87,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 219,
+          "y": 71,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 245,
+          "y": 136,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 236,
+          "y": 131,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 227,
+          "y": 100,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 217,
+          "y": 100,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 3,
+          "x": 213,
+          "y": 128,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 220,
+          "y": 140,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 2,
+          "x": 132,
+          "y": 184,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 1,
+          "x": 159,
+          "y": 49,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 8,
+          "x": 111,
+          "y": 165,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 133,
+          "y": 33,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 127,
+          "y": 33,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 128,
+          "y": 36,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 103,
+          "y": 34,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 99,
+          "y": 28,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 102,
+          "y": 28,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 105,
+          "y": 37,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 125,
+          "y": 138,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 127,
+          "y": 134,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 116,
+          "y": 142,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 118,
+          "y": 147,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 119,
+          "y": 145,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 123,
+          "y": 143,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 107,
+          "x": 125,
+          "y": 129,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 216,
+          "y": 38,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 140,
+          "y": 22,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 25,
+          "x": 225,
+          "y": 136,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 25,
+          "x": 146,
+          "y": 60,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 25,
+          "x": 30,
+          "y": 93,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 89,
+          "y": 30,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 126,
+          "y": 52,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 111,
+          "y": 97,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 108,
+          "x": 128,
+          "y": 150,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 0,
+          "x": 148,
+          "y": 40,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 96,
+          "x": 115,
+          "y": 80,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 86,
+          "x": 83,
+          "y": 43,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 86,
+          "x": 231,
+          "y": 58,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 6,
+          "x": 83,
+          "y": 8,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 7,
+          "x": 118,
+          "y": 85,
+          "flags": 0
+        },
+        {
+          "type": 1,
+          "id": 4,
+          "x": 33,
+          "y": 90,
+          "flags": 0
+        }
+      ],
+      "sha256": "bfcb465d83cfa38482c6aa6ad0e398cf13eed4d79f9038918b6b760bf25b08cd",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 2856,
+          "3": 8,
+          "2": 90,
+          "1": 84,
+          "14": 103,
+          "12": 13,
+          "7": 20,
+          "5": 2,
+          "10": 3,
+          "6": 6
+        },
+        "orientation1": {
+          "0": 3165,
+          "1": 4,
+          "2": 12,
+          "5": 1,
+          "6": 2,
+          "14": 1
+        },
+        "orientation2": {
+          "0": 3176,
+          "10": 4,
+          "2": 5
+        }
+      }
+    },
+    "act1/catacomb/catedown.ds1": {
+      "version": 18,
+      "width": 13,
+      "height": 13,
+      "act": 1,
+      "files": [
+        "\\d2\\data\\global\\tiles\\act1\\barracks\\inviswal.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\barracks\\warp.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\catacomb\\dwnstr.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\catacomb\\basewalls.tg1",
+        "\\d2\\data\\global\\tiles\\act1\\catacomb\\floor.tg1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 45,
+          "unique": 3
+        },
+        "orientation0": {
+          "nonzero": 45,
+          "unique": 8
+        },
+        "floor0": {
+          "nonzero": 110,
+          "unique": 7
+        },
+        "shadow": {
+          "nonzero": 0,
+          "unique": 1
+        }
+      },
+      "objects": [
+        {
+          "type": 2,
+          "id": 17,
+          "x": 114,
+          "y": 19,
+          "flags": 0
+        },
+        {
+          "type": 2,
+          "id": 17,
+          "x": 33,
+          "y": 33,
+          "flags": 0
+        }
+      ],
+      "sha256": "a90c0398d3f1c7f0a949633f39ac24c887695b3dfbc88b4402d31a2df062f89e",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 124,
+          "3": 3,
+          "2": 25,
+          "5": 1,
+          "1": 12,
+          "10": 1,
+          "6": 2,
+          "7": 1
+        }
+      }
+    },
+    "act1/catacomb/catewup.ds1": {
+      "version": 16,
+      "width": 13,
+      "height": 13,
+      "act": 1,
+      "files": [
+        "\\D2\\DATA\\GLOBAL\\TILES\\ACT1\\CATACOMB\\upstr.tg1",
+        "\\D2\\DATA\\GLOBAL\\TILES\\ACT1\\CATACOMB\\basewalls.tg1",
+        "\\D2\\DATA\\GLOBAL\\TILES\\ACT1\\CATACOMB\\floor.tg1"
+      ],
+      "layers": {
+        "wall0": {
+          "nonzero": 42,
+          "unique": 5
+        },
+        "orientation0": {
+          "nonzero": 42,
+          "unique": 9
+        },
+        "floor0": {
+          "nonzero": 169,
+          "unique": 3
+        },
+        "shadow": {
+          "nonzero": 0,
+          "unique": 1
+        }
+      },
+      "objects": [
+        {
+          "type": 2,
+          "id": 17,
+          "x": 26,
+          "y": 10,
+          "flags": 0
+        }
+      ],
+      "sha256": "58af42d861de0fbed6af0459c383be63935354385e1efd22c6cd83f7d6c7532c",
+      "orientation_counts": {
+        "orientation0": {
+          "0": 127,
+          "3": 2,
+          "2": 25,
+          "11": 2,
+          "5": 2,
+          "8": 4,
+          "1": 2,
+          "7": 1,
+          "6": 4
+        }
+      }
+    }
+  },
+  "note": "TXT config and DS1 samples; not a disassembly or validation of patched runtime BIN generation."
+}
