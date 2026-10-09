@@ -119,6 +119,26 @@ static func alone(s, p: Dictionary, distance: float = 320.0) -> bool:
 		if ally.id!=p.id and ally.connected and ally.status=="active" and ally.p.distance_to(p.p)<=distance: return false
 	return true
 
+## Charged releases remain attacks and inherit existing attack build hooks.
+static func charge_stats(p: Dictionary) -> Dictionary:
+	var result := {"speed":0.0,"damage":0.0}
+	var family := Catalog.weapon_family(int(p.weapon))
+	for id in p.get("build_talents",{}):
+		var entry := Content.entry(str(id))
+		if int(entry.get("charge_family",family))!=family: continue
+		var level := int(p.build_talents[id])
+		for key in ["speed","damage"]:
+			var values: Array=entry.get("charge_"+key,[])
+			if level>0 and not values.is_empty(): result[key]+=float(values[mini(level,values.size())-1])
+	for item in p.get("equipped",{}).get("gear",[]):
+		result.damage+=float(Content.entry(str(item.get("build_id",""))).get("charge_damage",0.0))
+	if engraving(p,14): result.speed+=.08
+	var heavy_core := core(p,4)
+	if family==2 and heavy_core>0: result.damage+=.08 if heavy_core==1 else .12
+	result.speed=minf(.4,float(result.speed))
+	result.damage=minf(.5,float(result.damage))
+	return result
+
 static func stat(s, p: Dictionary, name: String) -> float:
 	match name:
 		"hp": return r(p,65,[12,20,28])+r(p,89,[10,16,22])+(10 if gear(p,24) and s.players.size()==1 else 0)
@@ -153,7 +173,7 @@ static func interval(s, p: Dictionary) -> float:
 static func conditional_defense(s, p: Dictionary) -> float:
 	var low: bool=p.hp<p.max_hp*.35
 	var value: float=(.15 if gear(p,2) and low else 0)+(r(p,68,[.05,.08,.11]) if low else 0)
-	if p.pending_strike and Catalog.weapon_family(int(p.weapon))==2: value+=r(p,11,[.05,.08,.11])
+	if (p.pending_strike or p.get("weapon_hold",{}).get("shown",false)) and Catalog.weapon_family(int(p.weapon))==2: value+=r(p,11,[.05,.08,.11])
 	if p.mana>=p.max_mana*.7: value+=r(p,54,[.06,.1])
 	if not p.get("build_summons",[]).is_empty(): value+=r(p,87,[.04,.07])+(.06 if gear(p,19) else 0)
 	if gear(p,22) and p.channel>0: value+=.15

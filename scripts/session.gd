@@ -1,5 +1,6 @@
 class_name TideSession
 extends Node
+const WeaponHold = preload("res://scripts/weapon_hold_attack.gd")
 const BossChoreography = preload("res://scripts/boss_choreography.gd")
 const BossTactics = preload("res://scripts/boss_tactics.gd")
 const BossPresentation = preload("res://scripts/boss_presentation.gd")
@@ -1619,7 +1620,7 @@ func input_packet(packet: Dictionary) -> void:
 		return
 	if not packet.move.is_finite() or not packet.aim.is_finite():
 		return
-	inputs[id]={"move":packet.move.limit_length(1),"aim":packet.aim.normalized(),"fire":bool(packet.get("fire",false)),"interact":bool(packet.get("interact",false)),"sprint":bool(packet.get("sprint",false)),"flask_held":bool(packet.get("flask_held",false))}
+	inputs[id]={"move":packet.move.limit_length(1),"aim":packet.aim.normalized(),"fire":bool(packet.get("fire",false)),"fire_blocked":bool(packet.get("fire_blocked",false)),"interact":bool(packet.get("interact",false)),"sprint":bool(packet.get("sprint",false)),"flask_held":bool(packet.get("flask_held",false))}
 	if packet.get("aim_point") is Vector2 and packet.aim_point.is_finite(): inputs[id]["aim_point"]=packet.aim_point
 
 @rpc("authority","call_remote","reliable",2)
@@ -1684,6 +1685,14 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 	if kind=="raid_choice":
 		expedition.choose(self,id,str(payload.get("choice","")))
 		return
+	if kind=="attack_cancel":
+		WeaponHold.cancel(self,p); return
+	if kind in ["attack_press","attack_release"]:
+		if payload.get("aim") is Vector2 and payload.aim.is_finite(): p.aim=payload.aim.normalized()
+		if kind=="attack_press": WeaponHold.begin(self,p)
+		else: WeaponHold.release(self,p)
+		return
+	if kind in ["dash","jump","reload","skill","weapon_art","heal"]: WeaponHold.cancel(self,p)
 	if roguelike.active(self):
 		if kind=="break_combo": p.build_inputs=[]; return
 		if kind=="heal":
@@ -3150,6 +3159,7 @@ func simulate(dt: float) -> void:
 			RogueActions.tail(self,p,dt)
 		for key in ["attack","skill","dash","invuln","combo_timeout","cast_time","art_cd"]:
 			p[key]=maxf(0,p[key]-dt)
+		if p.status!="active": WeaponHold.cancel(self,p)
 		if p.status=="down":
 			p.bleed-=dt
 			if p.bleed<=0:
@@ -3214,9 +3224,8 @@ func simulate(dt: float) -> void:
 			elif p.swing_time<=0 and p.attack<=0 and p.cast_time<=0 and (buffered.kind!="skill" or p.height<=0):
 				p.erase("build_pending_action"); perform(id,str(buffered.kind))
 		p["attack_buffer"]=maxf(0,float(p.get("attack_buffer",0))-dt)
-		if bool(cmd.get("fire",false)):
-			attack(p)
-		elif float(p.get("attack_buffer",0))>0 and int(p.get("buffer_weapon",-1))==int(p.weapon) and p.attack<=0 and p.swing_time<=0:
+		WeaponHold.tick(self,p,cmd,dt)
+		if not p.has("weapon_hold") and float(p.get("attack_buffer",0))>0 and int(p.get("buffer_weapon",-1))==int(p.weapon) and p.attack<=0 and p.swing_time<=0:
 			attack(p)
 
 		interact(p,bool(cmd.get("interact",false)) and p.dodge_time<=0 and not pending_ultimates.has(id),dt)
@@ -3442,16 +3451,19 @@ func attack(p: Dictionary) -> void:
 		p.pending_strike=false
 		release_strike(p)
 
-func release_weapon_art(p: Dictionary) -> bool:
-	if roguelike.active(self): return RogueActions.start_art(self,p)
-	if not authority() or p.status!="active" or p.art_cd>0 or p.reload>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or pending_ultimates.has(int(p.id)):
+func release_weapon_art(p: Dictionary, charged: Dictionary = {}) -> bool:
+	if roguelike.active(self): return RogueActions.start_art(self,p,charged)
+	if not authority() or p.status!="active" or (charged.is_empty() and p.art_cd>0) or p.reload>0 or p.attack>0 or p.swing_time>0 or p.cast_time>0 or p.dodge_time>0 or pending_ultimates.has(int(p.id)):
 		return false
-	var move := WeaponArts.of(int(p.weapon))
+	var move := WeaponArts.of(int(p.weapon)) if charged.is_empty() else charged
+	if not charged.is_empty() and Catalog.weapon_family(int(p.weapon))==0 and p.ammo<=0:
+		reload_player(p); return false
 	if roguelike.active(self) and (p.flask_time>0 or (p.height>0 and p.air_art)): return false
 	if not spend_mana(p,RogueBuild.mana_cost(self,p,float(move.mana),"art") if roguelike.active(self) else float(move.mana)):
 		if int(p.id)==my_id(): message.emit("蓝量不足：%s需要 %d 蓝量。" % [move.name,move.mana])
 		return false
-	p.art_cd=float(move.cooldown)
+	if charged.is_empty(): p.art_cd=float(move.cooldown)
+	elif Catalog.weapon_family(int(p.weapon))==0: p.ammo-=1
 	# T1-c (2026-06 死代码清理)：这里原本还重复了一份「roguelike 技能冷却公式」，但函数开头
 	# （:2963）已经 `if roguelike.active(self): return RogueActions.start_art(self,p)`，所以下面的
 	# `if roguelike.active(self):` 分支**永远不可达**（`p.art_cd` 的重复赋值、`build_art_base`、
@@ -3461,26 +3473,32 @@ func release_weapon_art(p: Dictionary) -> bool:
 	# 删掉后本函数的非 roguelike 路径逐字不变：`build_ctx` 仍为 `{}`（与原先不可达块执行时一致）。
 	var build_ctx: Dictionary={}
 	build_ctx["vfx"]=weapon_visual_state(p)
-	p.cast_time=0.35
+	if not charged.is_empty(): build_ctx["charged"]=true
+	p.cast_time=float(move.get("recovery",.35))
 	p["build_strike_kind"]=str(move.kind)
-	p.attack=maxf(p.attack,0.35)
+	p.attack=maxf(p.attack,p.cast_time)
 	p.channel=0.0
 	var aim: Vector2=p.aim.normalized()
 	if aim.length_squared()<0.1: aim=Vector2.RIGHT
+	if not charged.is_empty():
+		p.swing_total=p.cast_time; p.swing_time=p.cast_time
+		p.strike_aim=aim; p.pending_strike=false
+		p["build_strike_windup"]=0.0
 	var family := Catalog.weapon_family(int(p.weapon))
 	var damage := weapon_damage(p)*float(move.damage)
 	var reach := float(move.reach)
 	var kind := str(move.kind)
 	var spell := str(move.get("spell",Catalog.weapon(int(p.weapon)).get("spell","star")))
-	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name})
+	broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name,"charged":not charged.is_empty()})
 	if kind=="volley":
 		var count := int(move.get("count",3))
 		var speed := float(Catalog.weapon(int(p.weapon)).get("speed",850.0))
 		var pellet_hits: Dictionary = {}
 		for i in count:
-			var direction := aim.rotated((i-(count-1)*0.5)*0.12)
+			var direction := aim.rotated((i-(count-1)*0.5)*float(move.get("spread",.12)))
 			var shot := {"p":p.p+direction*23,"v":direction*speed,"life":reach/speed,"damage":damage,"build_context":build_ctx,"owner":p.id,"weapon":family,"weapon_index":int(p.weapon),"spell":spell,"knock":20.0,"remaining":int(move.get("pierce",1)),"hit_ids":[]}
 			if spell=="scatter": shot["pellet_hits"]=pellet_hits
+			shot["charged"]=not charged.is_empty()
 			shot["ground_origin"]=p.p
 			bullets.append(shot)
 		return true
@@ -3488,9 +3506,9 @@ func release_weapon_art(p: Dictionary) -> bool:
 	if kind=="burst":
 		# Keep the impact on the caster's side of walls.
 		center=ruins.move(p.p,aim*reach)
-		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",180)),"id":p.id,"weapon_index":int(p.weapon)})
+		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",180)),"id":p.id,"weapon_index":int(p.weapon),"charged":not charged.is_empty()})
 	elif kind=="beam":
-		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"spell":spell,"id":p.id,"weapon_index":int(p.weapon)})
+		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"spell":spell,"id":p.id,"weapon_index":int(p.weapon),"charged":not charged.is_empty()})
 	for e in enemies:
 		if e.hp<=0 or not ruins.clear_line(p.p,e.p): continue
 		var delta: Vector2=e.p-p.p
@@ -3501,6 +3519,7 @@ func release_weapon_art(p: Dictionary) -> bool:
 		if hit:
 			var push: Vector2=(e.p-center).normalized()
 			var force := 55.0 if family in [1,2] else 25.0
+			if not charged.is_empty(): force=maxf(force,float(Catalog.weapon(int(p.weapon)).knock)*1.25)
 			if move.has("pull"):
 				push=(center-e.p).normalized()
 				force=minf(float(move.pull),e.p.distance_to(center))
@@ -4084,6 +4103,7 @@ func spell_burst(b: Dictionary, at: Vector2) -> void:
 		if spell=="vortex" and e.hp>0 and not e.get("rogue_guardian",false):
 			e.p=ruins.move(e.p,pull*(35 if roguelike.active(self) else 42))
 	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"radius":radius,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
+	burst_data["charged"]=bool(b.get("charged",false))
 	if b.get("build_context",{}).has("vfx"): burst_data["vfx"]=b.build_context.vfx
 	broadcast_combat(burst_data)
 
@@ -4101,6 +4121,7 @@ func spell_chain(b: Dictionary, first: Dictionary) -> void:
 		if nearest.is_empty():
 			break
 		var arc_data := {"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain","id":int(b.owner),"weapon_index":int(b.get("weapon_index",6))}
+		arc_data["charged"]=bool(b.get("charged",false))
 		if b.get("build_context",{}).has("vfx"): arc_data["vfx"]=b.build_context.vfx
 		broadcast_combat(arc_data)
 		var direction: Vector2=(nearest.p-from.p).normalized()

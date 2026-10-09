@@ -258,7 +258,35 @@ static func ranged_pose_frame(p: Dictionary) -> int:
 	if elapsed+.00001<hit: return 1
 	return 2 if elapsed-hit<minf(.10,maxf(.001,total-hit)*.45) else 3
 
+func charge_frame(p: Dictionary) -> Dictionary:
+	var hold: Dictionary=p.get("weapon_hold",{})
+	var elapsed := maxf(0.0,float(hold.get("time",0))-.18)
+	var duration := maxf(.01,float(hold.get("full_time",.8))-.18)
+	var progress := clampf(elapsed/duration,0.0,1.0)
+	var key := weapon_atlases.atlas_key(int(p.hero),int(p.weapon))
+	var atlas: Dictionary=weapon_atlases.manifest.get(key,{})
+	var count := weapon_atlases.count(int(p.hero),int(p.weapon),"art")
+	var contact := int(atlas.get("contact_frames",{}).get("art",2))
+	var preparations := maxi(1,mini(count,contact))
+	# Play only anticipation keys; contact/recovery belong to releasing the button.
+	var phase := mini(preparations-1,int(progress*preparations*1.7))
+	var pose := weapon_atlases.frame(int(p.hero),int(p.weapon),"art",phase,walk_height(int(p.hero)))
+	if pose.is_empty():
+		pose=ranged_frame(int(p.hero),int(p.weapon),mini(1,phase)) if Catalog.weapon_family(int(p.weapon))==0 else attack_frame(int(p.hero),maxi(1,Catalog.weapon_family(int(p.weapon))),mini(1,phase))
+	pose=pose.duplicate()
+	# Subtle breathing around the planted foot keeps the held pose alive.
+	var breath := 1.0+sin(elapsed*TAU*1.2)*.006*progress
+	var rect: Rect2=pose.rect
+	pose.rect=Rect2(CharacterMetrics.FOOT_OFFSET+(rect.position-CharacterMetrics.FOOT_OFFSET)*Vector2(1,breath),rect.size*Vector2(1,breath))
+	for marker in ["socket","grip"]:
+		if pose.has(marker): pose[marker]=Vector2(pose[marker])*Vector2(1,breath)
+	pose["charge_progress"]=progress
+	pose["charge_pose"]=true
+	return pose
+
 func equipped_attack_frame(p: Dictionary) -> Dictionary:
+	if p.has("weapon_hold") and p.weapon_hold.get("shown",false) and p.swing_time<=0:
+		return charge_frame(p)
 	var phase := ranged_pose_frame(p) if Catalog.weapon_family(int(p.weapon))==0 else attack_pose_frame(p)
 	var state := "art" if str(p.get("build_strike_kind",""))!="" else "attack"
 	var held: Dictionary=weapon_atlases.frame(int(p.hero),int(p.weapon),state,weapon_atlases.attack_index(p,state),walk_height(int(p.hero)))

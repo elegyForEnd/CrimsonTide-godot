@@ -1611,7 +1611,7 @@ func _process(dt: float) -> void:
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
 	var blocked: bool=inventory_open or modal or field.map_open or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
-	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint"),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
+	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim(),"fire_blocked":blocked or mouse_over_button(),"fire":not blocked and Input.is_action_pressed("fire") and not mouse_over_button(),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and Input.is_action_pressed("sprint"),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
 	if session.roguelike.active(session): session.local_input["aim_point"]=mouse_point()+rogue_field.camera_offset()
 	time_ui+=dt
 	if time_ui>0.1:
@@ -1657,7 +1657,15 @@ func bag_mouse_live() -> bool:
 
 # Dragging lives on the overlay: item bodies ignore the mouse, so the pointer is
 # hit-tested against whichever grid is underneath it.
+func _notification(what: int) -> void:
+	if what==NOTIFICATION_WM_WINDOW_FOCUS_OUT and is_instance_valid(session) and session.running:
+		session.action("attack_cancel")
+
 func _input(event: InputEvent) -> void:
+	# Release precedes GUI consumption, so a button cannot swallow a held attack.
+	if page_name=="game" and event.is_action_released("fire"):
+		if inventory_open or modal or field.map_open or mouse_over_button(): session.action("attack_cancel")
+		else: session.action("attack_release",{"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim()})
 	if page_name=="game" and session.roguelike.active(session): return
 	if not event is InputEventMouseButton:
 		return
@@ -1962,7 +1970,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if field.map_open:
 		return
-	if session.roguelike.active(session) and event.is_action_pressed("fire") and not event.is_echo(): session.action("attack")
+	if event.is_action_pressed("fire") and not event.is_echo():
+		session.action("attack_press",{"aim":rogue_field.aim() if session.roguelike.active(session) else field.aim()})
 	for action in ["reload","skill","dash","weapon_art","jump"]:
 		if event.is_action_pressed(action) and not event.is_echo():
 			session.action(action)
@@ -4487,7 +4496,7 @@ func show_help() -> void:
 	var at := modal_box("守夜手册",Vector2(1060,720))
 	var left := at+Vector2(36,100)
 	label(overlay,"01  /  活着带回去",left,23,GOLD)
-	label(overlay,"WASD 移动 · 鼠标瞄准与左键攻击 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取单件 / 搜索宝箱；H = 搜索附近的多件掉落包\n[1] [2] [3] 直接使用对应格道具 / 换装；[F] 也可使用当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
+	label(overlay,"WASD 移动 · 鼠标瞄准 · 左键点按 / 长按蓄力，松开出招 · 空格闪避 · Q 技能 · R 装填\n开局只有角色的临时武器，不能切换；捡到武器后装备，才能换用更强的武器\nF 短按 = 拾取单件 / 搜索宝箱；H = 搜索附近的多件掉落包\n[1] [2] [3] 直接使用对应格道具 / 换装；[F] 也可使用当前格\nE 长按 = 救援倒地队友 / 进出王城城门 / 独立撤离 / 点亮晨钟封印\nTAB 背包与口袋 · M 战术地图 · ESC 菜单",left+Vector2(0,51),17,INK,Vector2(480,240)).add_theme_constant_override("line_spacing",7)
 	label(overlay,"02  /  搜刮要慢慢来",left+Vector2(0,318),23,GOLD)
 	var risk := label(overlay,"对着物资箱按 [F] 搜索，附近多件掉落包按 [H] 搜索。物品按品质逐件浮出，未搜索的卡片呈灰色。\n\n用鼠标把搜出的物品拖进背包或次元口袋即可拿走；按 [TAB] 关掉。深处教堂的箱子是 5×5，普通箱子是 4×4。\n\n单击选中物品，双击或拖到右侧装备栏即可穿上：武器进武器槽，护甲 / 瞄具 / 轻靴按部位进对应槽，背包拖到背包槽即可换装。\n\n背包内按 [R]（或右键）旋转物品；拖出有效网格和装备槽后松开，就会丢到地上。地面单件物品按 [F] 拾取。",left+Vector2(0,361),17,MUTED,Vector2(462,262))
 	risk.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -4523,7 +4532,7 @@ func show_rogue_setup() -> void:
 	rogue_icon(page,rogue_field.art.item_icons[8],Vector2(816,453),Vector2(80,80))
 	label(page,"开局免费三选一白色武器，保留角色自带武器作后备。不同角色有初始属性；永久分配完整保留。",Vector2(82,551),21,INK,Vector2(1260,66))
 	label(page,"每局保底18修为 / 8锻造点。打怪获得局内经验，每级+2属性点；宝箱概率掉落额外属性灵晶。\nTab → 构筑：天赋、加点、锻造、连招手册和全部素材图鉴。",Vector2(82,628),21,GOLD,Vector2(1260,70))
-	label(page,"WASD移动 · 左键攻击 · 右键战技 · Space闪避 · C跃起 · Q奥义 · F血瓶 · E救援/出口\n种子 / 每日挑战与灰烬成长树见下方两个入口：同一条种子必得同一座魔境，灰烬只在局外消费。",Vector2(82,722),18,MUTED,Vector2(1260,72))
+	label(page,"WASD移动 · 左键点按普攻 / 长按蓄力，松开释放 · 右键战技 · Space闪避 · C跃起 · Q奥义 · F血瓶 · E救援/出口\n种子 / 每日挑战与灰烬成长树见下方两个入口：同一条种子必得同一座魔境，灰烬只在局外消费。",Vector2(82,722),18,MUTED,Vector2(1260,72))
 	# R7: the third and fourth slots of the bottom row are the two new魔境 entries —
 	# the run seed / daily challenge, and the ash growth tree.
 	var seed_button := button(page,RogueUi.seed_button_text(rogue_seed_pending,rogue_daily_pending),Vector2(330,813),Vector2(300,56),show_rogue_seed_page)

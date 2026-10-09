@@ -82,13 +82,22 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	var family := Catalog.weapon_family(p.weapon)
 	var frame := CharacterFrames.attack_pose_frame(p)
 	var aim: Vector2=p.strike_aim if p.swing_time>0 else p.aim
-	var tip := frames.equipped_weapon_tip(p)*Vector2(-1 if aim.x<0 else 1,1)
-	var origin: Vector2=p.p-camera_offset()+CharacterMetrics.FOOT_OFFSET*HERO_SCALE-Vector2(0,float(p.get("height",0)))
 	var pose := frames.equipped_attack_frame(p)
+	if p.swing_time<=0 and p.cast_time<=0 and p.motion in ["walk","run"]:
+		pose=frames.held_motion_frame(p,p.motion,float(move_phases.get(p.id,0)),p.dodge_time)
+	var tip: Vector2=Vector2(pose.get("socket",frames.equipped_weapon_tip(p)))*Vector2(-1 if aim.x<0 else 1,1)
+	var origin: Vector2=p.p-camera_offset()+CharacterMetrics.FOOT_OFFSET*HERO_SCALE-Vector2(0,float(p.get("height",0)))
+	if p.has("weapon_hold"):
+		tip=preload("res://scripts/weapon_held_glow.gd").charge_anchor(pose)*Vector2(-1 if aim.x<0 else 1,1)
 	var grip: Vector2=Vector2(pose.get("grip",pose.get("socket",Vector2.ZERO)))*Vector2(-1 if aim.x<0 else 1,1)
-	var stroke_pivot: Vector2=origin+grip*HERO_SCALE
-	var stroke_tip: Vector2=stroke_pivot+aim.normalized()*tip.distance_to(grip)*HERO_SCALE
-	return {"tip":origin+tip*HERO_SCALE,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"aim":aim.normalized(),
+	var mount := CharacterMetrics.aimed_mount(origin,grip*HERO_SCALE,tip*HERO_SCALE,aim)
+	var stroke_pivot: Vector2=mount.pivot
+	var stroke_tip: Vector2=mount.tip
+	var charge_points: Array[Vector2]=[]
+	if p.has("weapon_hold"):
+		for site in preload("res://scripts/weapon_held_glow.gd").charge_sites(pose):
+			charge_points.append(origin+site*HERO_SCALE*Vector2(-1 if aim.x<0 else 1,1))
+	return {"charge_points":charge_points,"tip":origin+tip*HERO_SCALE,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":aim.normalized(),
 		"grip":origin+grip*HERO_SCALE,"blade_axis":(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":p.swing_time>0 or p.cast_time>0}
 
 func _process(dt: float) -> void:
@@ -262,6 +271,7 @@ func _draw() -> void:
 				pose=frames.held_jump_frame(actor,float(actor.get("height_velocity",0)),float(actor.height))
 			elif actor.get("build_landing_time",0)>0:
 				pose=frames.held_jump_frame(actor,-200,0,float(actor.build_landing_time))
+			elif actor.has("weapon_hold") and actor.weapon_hold.get("shown",false) and actor.motion not in ["walk","run"]: pose=frames.equipped_attack_frame(actor)
 			elif Idle.active(actor): pose=frames.held_idle_frame(actor.hero,actor.weapon,float(idle.sample(actor).time))
 			else: pose=frames.held_motion_frame(actor,actor.motion,float(move_phases.get(actor.id,0)),actor.dodge_time)
 			var facing_aim: Vector2=actor.strike_aim if actor.swing_time>0 else actor.aim
@@ -278,6 +288,7 @@ func _draw() -> void:
 				for glint in preload("res://scripts/weapon_held_glow.gd").samples(pose,clock):
 					draw_texture_rect(glint.texture,glint.rect,false,glint.tint)
 			draw_set_transform(-camera_offset())
+			preload("res://scripts/weapon_hold_attack.gd").draw_bar(self,actor,at+Vector2(0,-118))
 			# [2026-06 禁用] 这段"新武器手持贴图叠加绘制"会把 weapons-*-v1.png 图集里的
 			# 青色尖刺剪影画到角色手上，与旧立绘自带的武器美术冲突。用户要求保留旧立绘、
 			# 不再显示该叠加。用 `false and` 短路守卫整块绘制（可逆：去掉 `false and ` 即恢复）。

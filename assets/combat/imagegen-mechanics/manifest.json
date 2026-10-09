@@ -1900,6 +1900,1180 @@
       ],
       "sha256": "f5385500d0822a18f2f1a76e8a2c739f0bb455949d4706f7ad58e2e11a52d735",
       "motion": "overhead impact; grounded fragments; no shockwave ring"
+    },
+    "identity_600_compact_v2": {
+      "file": "identity_600_compact_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-94409500-0437-4b18-8add-85788dc44557.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        123,
+        377,
+        1189,
+        953
+      ],
+      "sha256": "753a54af656a585354fb7468430884ec8507e946cf57d520679666ccb2f61aa8",
+      "motion": "Compact thick crimson single-handed slash; return mirrors the arc, finisher expands slightly."
+    },
+    "identity_610_cut_v2": {
+      "file": "identity_610_cut_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-99c50925-5355-453d-af78-8dd5558d4459.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        334,
+        187,
+        1063,
+        1106
+      ],
+      "sha256": "3e75cd5c2e3d28b34d7ca076e1e91eb31ba425b5de7e28ed68d8e371bcbbb663",
+      "use": "mouse-aimed blade cut; right-facing original",
+      "generator": "built-in ImageGen; unchanged original RGBA"
+    },
+    "identity_612_cut_v2": {
+      "file": "identity_612_cut_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-282fe3f5-1a95-424e-8767-9c3cc5826408.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        280,
+        27,
+        991,
+        1238
+      ],
+      "sha256": "cfc0e4d205f6c43766be5f239e5092fb564c14fc7bd5fb9c962b0323cafae5fc",
+      "use": "mouse-aimed blade cut; right-facing original",
+      "generator": "built-in ImageGen; unchanged original RGBA"
+    },
+    "identity_618_cut_v2": {
+      "file": "identity_618_cut_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-573cf8a8-6eee-4f2f-a7eb-7a527b1dd914.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        231,
+        37,
+        1088,
+        1230
+      ],
+      "sha256": "907556a37527ca3f60561bf37bd39e690ec783bd7a437094bbfd74413a4126f6",
+      "use": "mouse-aimed blade cut; right-facing original",
+      "generator": "built-in ImageGen; unchanged original RGBA"
+    },
+    "identity_623_cut_v2": {
+      "file": "identity_623_cut_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-a03a105d-b8f4-48b6-8293-fb78670c5416.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        331,
+        19,
+        941,
+        1196
+      ],
+      "sha256": "56882995273ff1a4dc0b9e46dff75bb284bbe455a7fec0fc87990f9e2927298b",
+      "use": "mouse-aimed blade cut; right-facing original",
+      "generator": "built-in ImageGen; unchanged original RGBA"
+    },
+    "audit_637_burst_v2": {
+      "file": "audit_637_burst_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-3e834830-282f-4185-b6ac-2cd01ab4ae22.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        40,
+        119,
+        1217,
+        1099
+      ],
+      "sha256": "e89a93ce938f80e033c415666cd09f5667e2c48d26b67dee5302bf5a48f17307",
+      "use": "area burst",
+      "generator": "built-in ImageGen; unchanged original RGBA"
+    },
+    "audit_639_burst_v2": {
+      "file": "audit_639_burst_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-4f040709-1cf2-4629-9d11-1d40b687fd24.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        82,
+        32,
+        1203,
+        1228
+      ],
+      "sha256": "eb415621a121ad07d7d8eea3696147d4fdcb926074105d6915f393d8e704bb5b",
+      "use": "area burst",
+      "generator": "built-in ImageGen; unchanged original RGBA"
+    },
+    "charged_600_v1": {
+      "file": "charged_600_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-058c6b1e-87bf-46b2-bc71-8562d22b4a7e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        35,
+        35,
+        1223,
+        1213
+      ],
+      "sha256": "7d42e9865cfe2d5e1c35bc4e189ab0e533ae7f24279fa677cb6720c45a07842a",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "58f588f6e898f9906e50bf3a4de3e20f808a9a90986b3e771147e35e7a2a4420",
+      "design": "A charged crimson sword circular countercut: TWO opposing thick curved blade crescents make a broken circular orbit, each tip sheds short thornlike blood sparks, broad transparent empty center for a character, never a solid donut.",
+      "palette": "deep crimson, ruby red, antique gold edge, white cutting core",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_601_v1": {
+      "file": "charged_601_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-1440cc0e-010e-4f5a-96d6-58d43a8cc393.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        59,
+        428,
+        1218,
+        862
+      ],
+      "sha256": "f5280255a2c806b4dc11151d44584dca4465eff052ec1bd8886ed45dbe15ffd7",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "170baab75d079b0013f401219aa4b1364b6c281a90a9450f213783eccaac443a",
+      "design": "A raven-beak rapier charged thrust: one long silver tapered beak spear of energy pointing RIGHT, three swept feather barbs close behind its point, a very thin straight trailing line, no blade sweep.",
+      "palette": "ivory silver, muted midnight violet, pale lavender edge",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_603_v1": {
+      "file": "charged_603_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-8f25ef86-8581-402d-bb41-9517445e681e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        40,
+        480,
+        1223,
+        786
+      ],
+      "sha256": "97523083c5a1a853fafecf37984db5d901034add113be295b963969e35667c65",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "adb4e40358abad35d24e0ff3ee64f07606a3dbfa10ca45855654002cff8e2bd0",
+      "design": "Twin bloodthorn blades charged lunge: two PARALLEL jagged piercing slash streaks traveling RIGHT with converging thorn teeth and a small blood-crystal spearpoint ahead, thin narrow horizontal silhouette.",
+      "palette": "ruby red, dark garnet, white hot cutting rims",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_604_v1": {
+      "file": "charged_604_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-d1d080fa-8118-444d-bbe7-21616e66d229.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        28,
+        488,
+        1234,
+        825
+      ],
+      "sha256": "7e73c4a95dd012d87df4c1b7a2f7e998987e283b945c4c0891cc6cd49b4a1d6c",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "b1d703651d231e12d733f9deb49d03432af2a07c3ffcb0ce207574ef570318ba",
+      "design": "Silver moon rapier charged thrust: elegant needle of moonlight pointing RIGHT, long narrow spear core with three tiny crescent notches cut into its side and drifting silver petal shards, straight accurate trajectory.",
+      "palette": "silver white, icy pale blue, subdued moon lavender",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_605_v1": {
+      "file": "charged_605_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-0f44a29b-6bcc-41ec-8f90-338a59dc4c2e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        48,
+        395,
+        1206,
+        839
+      ],
+      "sha256": "8d679e3f07ea0c6b6a577dbfccfd0a1990a3cb653d144fa85ed6cc1aa593ed6b",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "3a70bd320b370cb0d9351b8bee843c41a8956b6fc2c8e57cbf6f38553003107a",
+      "design": "Candle-shadow dagger charged stab: a SHORT compact candleflame shaped spear-point traveling RIGHT; hook-like black smoke behind its amber blade edge, two waxlike ember drops, sharp dagger rather than huge fireball.",
+      "palette": "warm amber, antique gold, smoke charcoal, ivory hot tip",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_606_v1": {
+      "file": "charged_606_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-98e24f94-2f06-4dab-806e-919812779c44.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        24,
+        394,
+        1225,
+        869
+      ],
+      "sha256": "8c9005d806795d63671e4a65d12016eff1f6970b998b1bd088022c181d1f4ca4",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "14564ecf2d1576ca1e3d0f3d6f003a67a6661c80f5459eab22e2bef95d13046b",
+      "design": "Starfrost sword charged thrust: a long crystalline icicle lance pointing RIGHT, hexagonal star-fracture at its shoulder, icy angular splinters trailing along the thrust line, narrow penetrating footprint.",
+      "palette": "glacial cyan, frosted white, steel blue",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_607_v1": {
+      "file": "charged_607_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-cb9933ae-7c4a-4078-98d5-8c2370369f0f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        35,
+        401,
+        1224,
+        883
+      ],
+      "sha256": "a7c49aa1453ac5149246f4290976081f0ab4ca7c9276bb06ca6505e3265511e7",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "3e7abd7632abfd548b24e68b10d3fa4662e3e434a75d91893e621febaa5b624a",
+      "design": "Electric saber charged dash thrust: three sharply bent lightning prongs converge into ONE saber-point aimed RIGHT, broken segmented zigzag wake and a tiny electrical fork behind, narrow linear attack not round blast.",
+      "palette": "periwinkle blue, electric lavender, white hot sparks",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_602_v1": {
+      "file": "charged_602_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-42d2fb2a-e6f7-41a1-a59a-f036565860ab.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        154,
+        150,
+        1131,
+        1097
+      ],
+      "sha256": "fadbe237b17c79a738a5369a2954e531f0041b1bf8de1833cc7feac7480900c7",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "a1c5479887291165fec91a0c4d4ef7392eeeff67ba0a12a878703f0bc010dd62",
+      "design": "Three separated rose scimitar crescents around a clear empty center",
+      "palette": "pearl rose, ivory, muted gold",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_608_v1": {
+      "file": "charged_608_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-e0ad2827-b963-40e7-bf66-659da8215c1e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        105,
+        433,
+        1177,
+        853
+      ],
+      "sha256": "c800a6535d2aa384be0fd0ccc7b13dab80071083fe7f734545ccb701fd36f7f4",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "c3b6385a4067ae81a557be764b05d18e55fe018351de7786f5ec67d4895c7d08",
+      "design": "Oathbreaking gold piercing lance with broken seal-chain fragments",
+      "palette": "antique gold, ivory, crimson accents",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_609_v1": {
+      "file": "charged_609_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-467df2d7-6e23-4372-b8e0-f704b774da31.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        137,
+        134,
+        1130,
+        1085
+      ],
+      "sha256": "9b5fece5fb9d521b8125b315958dca0b4ebf0734b473de13c642bb4ea24961bc",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "7384f53db8dc0d5c4b72f909a1a30a97d1b9ed2c07afd022578dc51e192efb13",
+      "design": "Broken mirrorflower glass crescents and reflective shards",
+      "palette": "rose pearl, lilac, silver",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_610_v1": {
+      "file": "charged_610_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-0c610e73-666b-4e97-8ac3-09abe6b10a85.png",
+      "size": [
+        1774,
+        887
+      ],
+      "ink": [
+        192,
+        236,
+        1587,
+        623
+      ],
+      "sha256": "071cfbd09d2a04bede991810ef6c28a540a58b0b0219a1af78b790b5e8b668f0",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "110f043e2c81e42867a863dc2afcca09b2f49b65e189acb3a028bf83d53435a0",
+      "design": "Funeralbell jade sound-thrust and staggered angular bell plates",
+      "palette": "jade, silver, aged brass",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_611_v1": {
+      "file": "charged_611_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-c4240b98-e7f3-4140-bd33-136abcb0476a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        85,
+        421,
+        1200,
+        856
+      ],
+      "sha256": "257462fcff856ce7acc3d22043a74efd60d0af6accfc18d860bcffa414a36c7c",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "bc0bc96964455dc5ff7844ff74e9eac66a314b9b1fa31d3127032ae4e1fc1dba",
+      "design": "Obsidian execution lance with rectangular fracture chips",
+      "palette": "obsidian black, amethyst, white",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_612_v1": {
+      "file": "charged_612_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-f7779160-ca0e-449e-9d21-1964e497532a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        218,
+        113,
+        1136,
+        1143
+      ],
+      "sha256": "c0da08f4b15842129a3743da857aa7247bb7abe5bf67ffb58fa23ae10d6cbf68",
+      "payload": "release",
+      "plane": "overhead",
+      "alpha_sha256": "2061abfb387e04848e2ccf62e2274f3f3530c66f0989410788a8102ffd9176ad",
+      "design": "Broad descending dawn blade plane with sun-tooth impact",
+      "palette": "dawn gold, amber, ivory",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_613_v1": {
+      "file": "charged_613_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-bf5ad259-97b5-44ee-bb77-a551ff17a638.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        178,
+        167,
+        1134,
+        1123
+      ],
+      "sha256": "cdf0c91e8a928d44ac7e18a908c021862e7c238d019b0b5dfcf59e2c45a85d3a",
+      "payload": "release",
+      "plane": "diagonal",
+      "alpha_sha256": "eb3c5486e7f860dc0508352ad279f1a887ff120fb9d8cfd5a4bcd461df1aa868",
+      "design": "Two thick steep water-blade lips with foam teeth",
+      "palette": "sea cyan, teal, foam ivory",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_614_v1": {
+      "file": "charged_614_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-ba6bb509-8763-49aa-ba35-50dcb35433dd.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        156,
+        184,
+        1120,
+        1099
+      ],
+      "sha256": "6d9bc1268e95d9377f05e1eed6afea61320bfa8d363c2fbf7dcf0da6e937a657",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "76e9881d259f916b7937d1cebd6e90fa8ed4d45331fdb3f2043197ef487eddc3",
+      "design": "Uneven stone rupture star and molten fissures, no ripple ring",
+      "palette": "ochre stone, warm gold",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_615_v1": {
+      "file": "charged_615_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-8d351169-109a-48de-bd48-1b1f99828255.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        110,
+        129,
+        1155,
+        1126
+      ],
+      "sha256": "b7d5e404cb1d8f81f18d9428cd6cadd249185d42a2d57d41b010ad6a1e635848",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "5f3f584546c2f87a75ce759885c32b00f72cf3f977b01a5a58732e88f65da9a5",
+      "design": "Furnace slam with five outward lava-rock wedges",
+      "palette": "molten amber, basalt, white",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_616_v1": {
+      "file": "charged_616_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-54265f24-d40d-4c83-a029-6d074dbd24ba.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        53,
+        111,
+        1218,
+        1145
+      ],
+      "sha256": "b9143c33855178b6b316c0c4cfbfce0c8ba03cb0513a811dbf3d44a32a114982",
+      "payload": "release",
+      "plane": "diagonal",
+      "alpha_sha256": "0a2d60a14d074b039e556a5575f2b620b4811e3b5dc0ecc4c3284c38f4af8906",
+      "design": "Frostbone battle axe: HEAVY jagged ice axe-edge descending diagonally to RIGHT, hooked crescent cutting lip, bone-like frost struts, four squat broken ice spikes at the lower end. A dense chop, not a saber ribbon.",
+      "palette": "ice cyan, white, grey blue",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_617_v1": {
+      "file": "charged_617_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-3d03214d-3361-457b-85ad-1ea71b76d1e0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        209,
+        76,
+        1192,
+        1187
+      ],
+      "sha256": "b1c0042bc1941f39c84ac6a670a7b87adadc3b21ab2336d69c21f23295bb1e32",
+      "payload": "release",
+      "plane": "diagonal",
+      "alpha_sha256": "f59e8138a3283f7b6dad8f1ea8c243deaa55ccded48a87f7544cbe24f12904c3",
+      "design": "Thunderbone greatsword: tall diagonal thunder guillotine descending RIGHT, dense solid blade core with branching rib-shaped electrical barbs to ONE side, three floating charged stone chunks.",
+      "palette": "storm blue violet, steel silver, white lightning",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_618_v1": {
+      "file": "charged_618_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-9c49a226-1ed6-4fa2-b026-1e71a1bdfd19.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        68,
+        99,
+        1185,
+        1153
+      ],
+      "sha256": "4c333f2c5d1bf0d30c71120211e519cb71b647c5f9fe0faefae9b9740c1796b4",
+      "payload": "release",
+      "plane": "overhead",
+      "alpha_sha256": "e85af7dd372b5ac43b2af8c4a7e2dd69e3814600e856778f14f9c0b7009be57f",
+      "design": "Bloodprison execution blade: broad short squared guillotine-shaped descending red-black slash, four thorn teeth along its BACK edge, sharp lower RIGHT point, heavy splintered blood crystals. No swoosh ring.",
+      "palette": "garnet red, black crimson, white razor core",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_619_v1": {
+      "file": "charged_619_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-18efa3fc-f57e-4b27-b79f-fedab5375349.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        93,
+        114,
+        1222,
+        1123
+      ],
+      "sha256": "378dfdcde613a70b4c09019846b9dc43414bc5109757df626d9501f2c1ca5b72",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "2221b12156f2d3753c1954ea21e12b76820b257d84256efb8c9809e354b410ba",
+      "design": "Starfall stone maul: violet-white meteor core fractures into seven THICK uneven grey crystal rock plates spreading radially, short fallen comet fragment above center, hard gemstone facets and little star chips. No halo.",
+      "palette": "grey lavender stone, sapphire white, muted violet",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_620_v1": {
+      "file": "charged_620_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-f80c5092-77d3-4bfd-93bf-60d0c4749f51.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        130,
+        133,
+        1184,
+        1127
+      ],
+      "sha256": "532eefbb11085f07ad08cd0df2faf907202f520039d1e1843f93db546f4a758e",
+      "payload": "release",
+      "plane": "diagonal",
+      "alpha_sha256": "a8dabc590557363d409df045ce7bc630f3b422c058430c5f0c794650f9b627cd",
+      "design": "Ember bulwark blade: massive squared angular amber cleave wedge, flat shield-shaped back and hooked lower cutting corner toward RIGHT, three ember slits through dense wedge and metal-slag fragments. No thin ribbon.",
+      "palette": "bronze, charcoal, ember orange",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_621_v1": {
+      "file": "charged_621_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-9f835c3a-d938-420d-98cd-452294fafe52.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        29,
+        366,
+        1227,
+        909
+      ],
+      "sha256": "9dafa4bc04c5956b26213551f0edd8a11de232bcd9937dcbc2140ee051fd8c0d",
+      "payload": "release",
+      "plane": "right",
+      "alpha_sha256": "8185f41551ae1dea201b812094cc8cd928b8765eac0fe173455d0269518711e5",
+      "design": "Storm battle halberd: LONG narrow mint wind spear shaft running LEFT to RIGHT ending in a FORKED HALBERD HOOK, short angular secondary axe arc above point and three razor leaf chips. No broad wave.",
+      "palette": "mint green, jade white, deep teal",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_624_v1": {
+      "file": "charged_624_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-794679a7-e324-4857-9254-dc9a0870bd7e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        79,
+        511,
+        1181,
+        756
+      ],
+      "sha256": "510b389e6b601a5c61c5e602514e74a5f46acb7c8abb5644a323d5000185aa70",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "3926d57904d5167bde9e1e35e8cb8fd92d43bfef2fadb0d6c808dffdd0a2d42f",
+      "design": "Nightwatch rifle: ONE RIGHT-facing armor-piercing brass jacketed pointed bullet with white energy tip, TWO short parallel silver tracers behind, compact ballistic core and faint powder specks.",
+      "palette": "brass gold, pale silver, ivory",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_625_v1": {
+      "file": "charged_625_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-3602cd4c-2883-43c9-9590-cb54727fa49d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        111,
+        351,
+        1177,
+        923
+      ],
+      "sha256": "4a8e1ccf13e7ec11383b75756b658a7be3861a1a6827ff7e565fd54c78b2b199",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "5a67ada566eceea994e6e48f85c1581b4dea309b85daf48787f8435a87db329d",
+      "design": "Duskfeather longbow: ONE long RIGHT-facing sharp silver arrowhead and dark fletching; its wake forms TWO swept feather lobes, accurate thin shaft with a few dusk motes.",
+      "palette": "dusk lavender, feather ivory, moss green",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_626_v1": {
+      "file": "charged_626_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-c1091fb2-dfd6-4b07-a05c-fe3923cea8a9.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        50,
+        479,
+        1190,
+        773
+      ],
+      "sha256": "7ccb371e788906087b35add55ceaeb0b868eb51655a9c1b50d63b0c22552c18c",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "045cd2b4f72ede5baa6e109d08abfd7f59f62a522e5f3c2d9ad200fb57f58151",
+      "design": "Bloodthorn repeating crossbow: ONE RIGHT-facing ruby barb-tipped bolt, three jagged BACKWARD thorn teeth around its shaft and compact blood crystal wake.",
+      "palette": "ruby red, dark garnet, ivory tip",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_627_v1": {
+      "file": "charged_627_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-db0e4fcd-9304-4214-96ad-2ba361e3e02a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        133,
+        432,
+        1160,
+        775
+      ],
+      "sha256": "ca7c8f5314d4f9426566545f5b1dfb6bef77c8ed8d6a76ded80b06faaacda160",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "e09281e71c7011c9047f3dfeec4a02efe532ad8106f112e08d7d44a804fb7342",
+      "design": "Embercrow fire gun: ONE RIGHT-facing hot brass lead shot with HOOKED ember-feather wake like a raven tail, two little charcoal shards, linear scorching projectile NOT a fireball.",
+      "palette": "molten orange, copper brass, charcoal",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_636_v1": {
+      "file": "charged_636_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-a98d8d6b-f561-4173-bd8b-aa8f7cf65e12.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        43,
+        476,
+        1204,
+        807
+      ],
+      "sha256": "4694e776fa26b6a570e8985b3c2b56b6647244e167ca0bcbc56ebc2491ba35e1",
+      "payload": "beam",
+      "plane": "right",
+      "alpha_sha256": "4e809810a08cfb5ea935e66bb1ff7e24dd6f73c53ac1b358fc671d83e5e34dfa",
+      "design": "Starlight staff: ONE continuous narrow horizontal LEFT-to-RIGHT cyan-white beam, bright origin LEFT, FOUR spaced small diamond star facets INSIDE its straight core, tapered forward tip RIGHT. No detached star badges.",
+      "palette": "silver white, pale cyan",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_622_v1": {
+      "file": "charged_622_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-b8a5bab7-f2b0-4002-b1c3-3e43f9b64418.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        57,
+        72,
+        1211,
+        1184
+      ],
+      "sha256": "972b817668e3ca1fe3b3966acce64da9c697f98120bd4fbbac3d5c0083c6e933",
+      "payload": "release",
+      "plane": "radial",
+      "alpha_sha256": "a274918f2c363351bfb562d84a6f80ae8b3cf1398a2b97ec279329813e240208",
+      "design": "Underworld ritual scythe: three long sickle-shaped soul blades rotate around a LARGE EMPTY center, each hooked tip carries ONE ghost flame, broken asymmetrical circular coverage and separated soul chips, not continuous donut.",
+      "palette": "deep violet, ghost lavender, mint soul cores",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_623_v1": {
+      "file": "charged_623_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-729370ff-1d07-46a4-9dc3-66351957a575.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        82,
+        87,
+        1207,
+        1136
+      ],
+      "sha256": "c1c476b5668218b9f66ae2b17d708fce7bef2f311a71d1fcf3bec7944d7f40a9",
+      "payload": "release",
+      "plane": "overhead",
+      "alpha_sha256": "2c62b4836a8b3f1234bf4d80bb6dd050c47116f6eec0ed9c9ab5955c2a7c0e0f",
+      "design": "Nameless king greatsword: tall steep ivory execution cleave directed toward RIGHT, crown-shaped triple tooth at upper shoulder, dense antique gold plane, five thin regal crest chips, majestic HARD geometric edges.",
+      "palette": "warm ivory, muted antique gold, dark bronze",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_628_v1": {
+      "file": "charged_628_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-57c9c0a4-5e25-4e3f-962d-31b715be6026.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        93,
+        459,
+        1190,
+        804
+      ],
+      "sha256": "f88f98c5fcdaee771cce278518e4a5d2fac6a782235ef3764d38873a3d9903bc",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "45ee5a0d6004c22c8a3af09f4e2d5db44e407025617d933e2b43b04dbd5b8832",
+      "design": "Frostmoon hunting bow: ONE long RIGHT-facing triangular ice arrowhead, translucent faceted shaft and split CRESCENT fletching, three tiny frost flakes at rear.",
+      "palette": "ice cyan, moon silver, pale blue",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_629_v1": {
+      "file": "charged_629_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-41d86d15-f851-4775-afcc-d904aacdbadb.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        62,
+        300,
+        1196,
+        961
+      ],
+      "sha256": "eb883feca552deb92e78da9edcb9da8e71c977229e16faaf5824a99ea8d1b066",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "723d41d4b4affb687eac1de5cff3765655548cb41e5422fdd5157e71b433fa68",
+      "design": "Thunderwing carbine: ONE RIGHT-facing pointed bullet within TWO asymmetric WING-SHAPED lightning fins, white straight core and segmented tiny zigzag wake.",
+      "palette": "electric violet blue, silver white, indigo",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_630_v1": {
+      "file": "charged_630_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-8fed82f0-80dd-47dc-8817-12f2b74fffb2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        39,
+        548,
+        1210,
+        738
+      ],
+      "sha256": "e24a9682927d04bbc3e24a3a1ed2e37b56d6c812501bb3acf3227ac73c8ee29f",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "8fb3ddf890c3d1f6aa4067dcdb647d5ab17369091292fea95829b710c0594aed",
+      "design": "Obsidian sniper rifle: ONE long thin obsidian-black RIGHT-facing needle slug, a sharp diamond point, smooth violet rim and ONE hairline luminous trailing streak. Absolutely no detached chips or cracks.",
+      "palette": "obsidian black, violet, white razor edge",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_637_v1": {
+      "file": "charged_637_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-7782ceae-8b71-457f-9c76-8960b860bee0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        73,
+        157,
+        1179,
+        1141
+      ],
+      "sha256": "23fa607c9a7a7e2e04543ed7b93ff0c02ad28f9eb05d1b08e8a37f6ba6f6e38d",
+      "payload": "burst",
+      "plane": "radial",
+      "alpha_sha256": "0b7d6fcca4391c155530dc0f3c4d504cd2751093178035610f5626b5aebe1a15",
+      "design": "Redmeteor staff: central angular molten meteor fragment impacts a dark BROKEN crater, FIVE irregular fiery wedges and ash chunks erupt outward, low flames on jagged lava seams, circular damage footprint. No vortex, halo or backdrop.",
+      "palette": "lava red orange, basalt black, amber white",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_638_v1": {
+      "file": "charged_638_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-ed26254b-2c6c-422f-9f2d-9365e5f1ef38.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        64,
+        525,
+        1191,
+        765
+      ],
+      "sha256": "4ee54d99fd53c4ba1cd5b9ead8bd20af7f7a4c1cf93cb5f9399b0d368fe5d7cb",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "e9d9732fa1ec7c12ee66d2b15dc9c943da87b6053b66ec17ad4537aaa54059dd",
+      "design": "Frostneedle short staff: ONE RIGHT-facing slender triple-faceted ice crystal spear, ONE central point, small hexagonal shoulder near LEFT tail, a few tiny needle slivers, extreme straight narrow flight silhouette.",
+      "palette": "frost cyan, ice white, sapphire shadows",
+      "style": "independent decorated original",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_631_v1": {
+      "file": "charged_631_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-d43b18a4-df6c-4a9e-89b5-4bff13e320fe.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        43,
+        518,
+        1202,
+        790
+      ],
+      "sha256": "2fee7b3953f36570271bc095dbe01a322241fac3eede8838d26fbd5ae9d6b997",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "dfdedf28a59e5dbf027b111e90ddfe91dfbddb11deca86af955897e0c89448f3",
+      "design": "Mirrorrail twin pistols: ONE polished pearlescent RIGHT-facing diamond bullet, TWO clean parallel reflective rail streaks flow smoothly behind its pointed core. Continuous smooth surfaces, no shards.",
+      "palette": "pearl pink lilac and silver white",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_632_v1": {
+      "file": "charged_632_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-928f8747-7849-452a-9077-12c7d608690e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        51,
+        465,
+        1205,
+        781
+      ],
+      "sha256": "c87b7e7ae91947f3a042dc432cadb45dd227043b0c805fc0eac233ee3d606d97",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "0613c311adef2b6cd721c9d6ccbaa7f30522cfb4a97f66301243282d66b3c0d4",
+      "design": "Windchaser shortbow: ONE light RIGHT-facing LEAF-shaped arrowhead with a slender jade shaft and TWO continuous swept WIND RIBBONS braided behind the tail. No loose leaves or specks.",
+      "palette": "jade green, mint white, teal",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_633_v1": {
+      "file": "charged_633_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-9289e87f-c162-49e7-ab8e-83eec0ba2168.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        55,
+        432,
+        1185,
+        823
+      ],
+      "sha256": "dc0e77fdc7350d899a10c3ae606c512e42a178ee216065fad3217f68c7b266b2",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "745db141df7cd50a692f5b90321a24ad23c1b165ded852b7ee6783c05d0038d9",
+      "design": "Oathbreaker armor-piercing rifle: ONE heavy RIGHT-facing golden WEDGE penetrator with THREE clean long ivory incision streaks along its core and a SHORT dense straight tapered wake. No peeling plates or broken fragments.",
+      "palette": "antique brass, bronze, ivory white",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_634_v1": {
+      "file": "charged_634_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-2fa0cb5b-aa8f-4920-9c23-29a357227824.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        69,
+        439,
+        1195,
+        798
+      ],
+      "sha256": "17ac5807191d2254d4b6a136100e52be15745353a80917336f60db83006cf49b",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "b1e0b31f9ba9cd955b858b76b6ecfa92d5375c5cea5c3b6244fb495bf73303a2",
+      "design": "Funeralbell crossbow: ONE thin RIGHT-facing mint DIAMOND-headed spirit bolt, TWO gentle curved SOUND STREAKS near its long smooth tail, soft ghostly core. No physical bell plates, rings or tiny decorations.",
+      "palette": "mint jade, soft aged gold accent, white tip",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_635_v1": {
+      "file": "charged_635_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-2c38dfbb-727c-4d45-b49f-44e15f5ee684.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        140,
+        448,
+        1146,
+        823
+      ],
+      "sha256": "6f47fa468e4cd43a7000cacfd95f210c485a089721f0fcf7e32d6b774ab81a56",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "3e1fc879d8376e0f1e305afd24214f50f9b39fb0654372074af0af567e5f8420",
+      "design": "Dawn signal gun: ONE SHORT bright RIGHT-facing gold-white flare pellet with a rounded luminous SUN CORE transitioning into THREE clean short trailing rays. Compact, not a radial badge, no detached specks.",
+      "palette": "sun gold, amber, ivory",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_639_v1": {
+      "file": "charged_639_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-75ad4772-8126-4331-b82c-769643fcb3f2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        119,
+        60,
+        1174,
+        1205
+      ],
+      "sha256": "607500712981176ba39a5d21f92d9df1bfc2cbbb86219bc742eb225d6a0f5a1d",
+      "payload": "burst",
+      "plane": "radial",
+      "alpha_sha256": "1f7542b86abd56a6c469ec55103d1d502f2fdcb24d3db791ee3cc8aad32e4287",
+      "design": "Thundercall staff: SIX UNEVEN forked lightning branches spread radially from compact white core, bold clean zigzag lines with smooth luminous inner cores, empty gaps between branches. No floating stones, crystals or debris.",
+      "palette": "electric blue violet, white",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_640_v1": {
+      "file": "charged_640_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-bf0d014c-d7c6-46a0-945a-677ecfccc733.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        64,
+        462,
+        1208,
+        836
+      ],
+      "sha256": "81d08ec6d71f555ba02cfa7831343ceee2923a8bd6346e3e1ee43c88bb1201d5",
+      "payload": "beam",
+      "plane": "right",
+      "alpha_sha256": "36f52daf67ad2e451fade24bbe977070a37fb1ea2f5eeb59a01199fcf354d72f",
+      "design": "Moonarc staff: continuous horizontal LEFT-to-RIGHT silver violet beam, a thin bright core inside TWO flowing crescent-shaped outer RAILS, clean long taper to RIGHT. Smooth light ribbons, no decorative notches, small moons or fragments.",
+      "palette": "moon silver, muted lilac, pale white blue",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_641_v1": {
+      "file": "charged_641_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-f531e8c6-c555-4d45-bb82-830ac323e878.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        99,
+        424,
+        1173,
+        863
+      ],
+      "sha256": "3e20714eb3dd848ae237bc2e03038f4206a76c56f407f4cfca4f39a79f1ab291",
+      "payload": "beam",
+      "plane": "right",
+      "alpha_sha256": "2e0c1ec424777bd9f03ce4b9203655ae455e9f67b836ca18cecf4d8d852d819a",
+      "design": "Dawn prism staff: continuous horizontal LEFT-to-RIGHT ivory beam made of THREE converging smooth prism light lanes, broad simple triangular gold outer contour and sharp RIGHT tip. NO segmented tiles or diamond-pattern decorations.",
+      "palette": "ivory white, champagne gold, pale amber",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_642_v1": {
+      "file": "charged_642_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-0857f5e0-d41a-4814-9aa2-8ad5d590ac59.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        39,
+        437,
+        1228,
+        852
+      ],
+      "sha256": "fabef8ad997c54bbbabdd79997810c676c04841721d98cbcf64a820cfc3ec4ec",
+      "payload": "projectile",
+      "plane": "right",
+      "alpha_sha256": "49f4ea2a548e69400e8348aadc2ff655d9699dde8f47108184fa8668ea190e51",
+      "design": "Emberfeather staff: ONE RIGHT-facing long narrow flame FEATHER with only FIVE LARGE clearly separated flowing barbs along a smooth thin quill, hooked orange tip, continuous flame contours. No tiny featherlets, embers or grain.",
+      "palette": "amber orange, white ivory, dark plum rim",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_643_v1": {
+      "file": "charged_643_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-21cdeb3b-a531-4d38-ba4d-7f7663f60759.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        92,
+        99,
+        1166,
+        1160
+      ],
+      "sha256": "20941b8a891be9c631d383f20ebe774fbbd6bd6bf66096b8c33b8c41a47d3fdc",
+      "payload": "burst",
+      "plane": "radial",
+      "alpha_sha256": "4bde05300f69baa31569e14aae9697910e2757a4ea69468b3622eebbb2b24822",
+      "design": "Voidvortex staff: FOUR LARGE smooth violet hooked energy arms curl INWARD toward a compact empty black center, strong asymmetric spiral silhouette, continuous translucent gradients and empty gaps. No crystal debris or tiled pattern.",
+      "palette": "deep violet, amethyst smooth light, black core",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_644_v1": {
+      "file": "charged_644_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-800ab3ad-6692-4579-891b-067b452a92c8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        29,
+        476,
+        1225,
+        787
+      ],
+      "sha256": "49c5c00dc84684608f1ba3ccc48648ceacb13b3fd1a4b46e01f538dfb2908a16",
+      "payload": "beam",
+      "plane": "right",
+      "alpha_sha256": "a3db46d4b65dff355414be4e6d2a14e52eb91387e212921eea82517c0ace2083",
+      "design": "Eclipse spear staff: continuous horizontal LEFT-to-RIGHT narrow BLACK CRIMSON spear beam with ONE dense uninterrupted elongated spine and TWO smooth white-red razor edge lines, long taper to RIGHT. No broken ribs, scales or chips.",
+      "palette": "burgundy black, crimson, silver white",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_645_v1": {
+      "file": "charged_645_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-c2e00674-1b2f-459d-b5c9-f04cf5a33cc1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        64,
+        44,
+        1201,
+        1130
+      ],
+      "sha256": "5fe823f97fe18f57f8187c43cde30a4f2d6c93ee45a428a5fa962fd07c5940fc",
+      "payload": "burst",
+      "plane": "radial",
+      "alpha_sha256": "52bd4712ecc2c30079cf938c0f8cc9ed357ad1fc55320f50e932b9eadcf7fd8d",
+      "design": "Bloodpact staff: FIVE LARGE crimson thorn-shaped flame blades radiate from a SIMPLE smooth ruby center, separated thick tapered sweeping contours. No crystals, droplets, granular blood or scattered flakes.",
+      "palette": "deep garnet, blood red, rose white tips",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_646_v1": {
+      "file": "charged_646_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-918f5704-cb23-4b7e-b6ec-f459fcc65aac.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        103,
+        98,
+        1189,
+        1148
+      ],
+      "sha256": "0134a400e1647cd1c52760ccab95ae286c86c5995aef3a652f9ced885e00f875",
+      "payload": "burst",
+      "plane": "radial",
+      "alpha_sha256": "ecc51cb18d18f56612b70662e15088a0e2bee5c966df1c099d8c11220b7dcb68",
+      "design": "Underworld summoning staff: THREE distinct smooth pale GHOSTFLAMES curl outward from a simple violet luminous core, each has ONE long hooked silhouette and clean wispy taper. No crystal nucleus, shards, faces, symbols or tiny specks.",
+      "palette": "ghost mint white, violet, indigo",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "charged_647_v1": {
+      "file": "charged_647_v1_clean.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a11517-33ed-7641-b95f-4d40ef475dbd\\exec-dd484837-d091-4451-9ce9-56ac9715ae01.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        80,
+        36,
+        1174,
+        1192
+      ],
+      "sha256": "491d7b737f6409218ee0c80859ed62e9fb26846de9dc053f2a10cff431f7d468",
+      "payload": "burst",
+      "plane": "radial",
+      "alpha_sha256": "7f4e7d279ca5bfc732cdd400d6d7b1cbbe8e8fc6c0e3b16f7e9edd93f64123a8",
+      "design": "Morningbell wish staff: FOUR large separated angular gold light rays with TWO long clean curved chime ribbons around a SIMPLE luminous jade diamond center. A readable sonic burst, not a ring. No physical bell plates, tiles or sparks.",
+      "palette": "jade white, aged gold light, mint turquoise",
+      "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
+      "generator": "built-in ImageGen; unchanged original transparent RGBA"
     }
   }
 }

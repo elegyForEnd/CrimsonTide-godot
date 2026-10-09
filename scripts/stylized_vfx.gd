@@ -8,6 +8,7 @@ var effects: Array[Dictionary] = []
 var shards: Array[Dictionary] = []
 var particles=preload("res://scripts/combat_particles.gd").new()
 var light: Node2D
+var charged_ground: Node2D
 var density := 1.0
 const Motion = preload("res://scripts/effect_motion.gd")
 const Library = preload("res://scripts/vfx_library.gd")
@@ -36,12 +37,20 @@ func _ready() -> void:
 	light.material=glow
 	add_child(light)
 	light.draw.connect(draw_light)
+	charged_ground=Node2D.new()
+	var ground_material := ShaderMaterial.new()
+	ground_material.shader=preload("res://resources/charged_ground_clearance.gdshader")
+	charged_ground.material=ground_material
+	add_child(charged_ground)
+	charged_ground.draw.connect(func(): draw_pass(charged_ground,false,true))
 	var painted := ShaderMaterial.new()
 	painted.shader=preload("res://resources/stylized_texture.gdshader")
 	material=painted
 
 func reset() -> void:
 	effects.clear()
+	current_charged=false
+	current_weapon_art=false
 	current_identity={}
 	current_stage=0
 	current_route=-1
@@ -51,6 +60,7 @@ func reset() -> void:
 	particles.reset()
 	queue_redraw()
 	if light: light.queue_redraw()
+	if charged_ground: charged_ground.queue_redraw()
 
 func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 		life: float, reverse: float = 1.0, delay: float = 0.0, priority: int = 1) -> bool:
@@ -77,7 +87,7 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 			effect["socket_local"]=get_global_transform().affine_inverse()*socket.get("stroke_tip",socket.tip)
 			effect["socket_aim"]=socket.aim
 			effect["socket_axis"]=socket.get("blade_axis",Vector2.ZERO)
-			if socket.has("grip"): effect["socket_grip"]=get_global_transform().affine_inverse()*socket.grip
+			if socket.has("grip"): effect["socket_grip"]=get_global_transform().affine_inverse()*socket.get("stroke_pivot",socket.grip)
 	effects.append(effect)
 	return true
 
@@ -89,10 +99,13 @@ func uses_weapon_socket(effect: Dictionary) -> bool:
 func emit_mechanic(kind: String, role: String, at: Vector2, aim: Vector2, color: Color, radius: float, life: float, reverse: float=1.0, delay: float=0.0) -> bool:
 	if not emit(kind,at,aim,color,radius,life,reverse,delay): return false
 	effects.back()["art_role"]=role
+	effects.back()["charged"]=current_charged
 	if not current_identity.is_empty() and kind in ["slash","lance","spin","muzzle","cast","echo","route"]:
 		effects.back()["art_source"]=ImageArt.release_source(int(current_identity.weapon),role,current_stage,current_weapon_art)
+		if current_charged: effects.back().art_source=ImageArt.charged_source(int(current_identity.weapon),"release",effects.back().art_source)
 	if not current_identity.is_empty() and kind in ["beam","detonation","chain"]:
 		effects.back()["art_source"]=ImageArt.payload_source(int(current_identity.weapon),"beam" if kind=="beam" else "burst" if kind=="detonation" else "projectile",role)
+		if current_charged: effects.back().art_source=ImageArt.charged_source(int(current_identity.weapon),"beam" if kind=="beam" else "burst" if kind=="detonation" else "projectile",effects.back().art_source)
 	if kind=="beam" and socket_provider.is_valid():
 		var socket: Dictionary=socket_provider.call(current_source)
 		if not socket.is_empty() and absf(get_global_transform().determinant())>.000001:
@@ -115,9 +128,11 @@ func shatter(at: Vector2, aim: Vector2, color: Color, count: int, power: float =
 			"color":color,"size":(4.0+fposmod(phase*9.0,8.0))*sqrt(power)})
 
 var current_weapon_art := false
+var current_charged := false
 
 func event(data: Dictionary, hero: int = 0) -> void:
 	current_weapon_art=data.has("attack_kind")
+	current_charged=bool(data.get("charged",false))
 	current_source=int(data.get("id",-1))
 	var at: Vector2=data.p
 	var aim: Vector2=data.get("aim",Vector2.RIGHT)
@@ -145,14 +160,32 @@ func event(data: Dictionary, hero: int = 0) -> void:
 		var mark := str(current_source)+":"+str(data.get("enemy_id",-1))
 		if particles.clock-float(impact_marks.get(mark,-10))<.075: return
 		impact_marks[mark]=particles.clock
-	if data.kind in ["windup","necromancer-cast","strike"]: cancel_charge(current_source)
+	if data.kind in ["windup","necromancer-cast","strike","hold_charge","hold_cancel"]: cancel_charge(current_source)
 	particle_event(data,weapon_emitter,aim,color,exact_weapon,reach)
 	match str(data.kind):
+		"hold_charge":
+			current_texture=Library.weapon_key(exact_weapon,"charge")
+			if emit_mechanic("charge",Mechanics.cast_role(exact_weapon) if weapon==3 else "motion_thrust",at-Vector2(0,28),aim,color,24,30.0):
+				effects.back()["hold_time"]=float(data.get("hold_time",.6))
+		"hold_ready":
+			if ImageArt.clean_charged(exact_weapon):
+				for fx in effects:
+					if fx.source==current_source and fx.kind=="charge": fx["ready_at"]=float(fx.age)
+			else: particles.burst(weapon_emitter,aim,color,str(current_identity.get("style","spark")),8,.55,PI)
+		"hold_cancel":
+			pass
 		"strike":
 			var finishing := int(data.get("combo",0))==2
 			var stroke := WeaponVfx.stroke(current_stage,weapon,int(current_identity.detail))
 			var role := Mechanics.strike_role(exact_weapon,data)
 			if weapon not in [1,2]:
+				if current_charged:
+					if ImageArt.clean_charged(exact_weapon): return
+					# New ranged paintings belong to their actual payload, not the hand.
+					current_texture="hit_flash"
+					emit("impact",weapon_emitter,aim,color,14,.12)
+					shatter(weapon_emitter,aim,color,5,.55)
+					return
 				# A release flash is small. Actual projectiles/beam/burst own the attack.
 				emit_mechanic("muzzle" if weapon==0 else "cast",role,anchor,aim,color,(30 if weapon==0 else 27)*float(stroke.scale),.22)
 				combo_route_fx(anchor,aim,color,minf(reach,120))
@@ -166,7 +199,8 @@ func event(data: Dictionary, hero: int = 0) -> void:
 				if emit_mechanic("spin",role,at,aim,color,reach,float(stroke.life),reverse): effects.back()["height"]=float(data.get("height",0))
 			else:
 				emit_mechanic("slash",role,anchor,aim,color,reach,float(stroke.life),reverse)
-			if finishing and not Mechanics.body_centered(role) and role!="motion_thrust":
+			if bool(data.get("charged",false)): shatter(weapon_emitter,aim,color,9 if heavy else 6,.85)
+			if finishing and not current_charged and not Mechanics.body_centered(role) and role!="motion_thrust":
 				emit_mechanic("echo",role,anchor,aim,color,reach*.78,.24,-reverse,.065)
 			combo_route_fx(anchor,aim,color,minf(reach,180))
 			shatter(weapon_emitter,aim,color,5 if heavy else 3,.6)
@@ -206,7 +240,7 @@ func event(data: Dictionary, hero: int = 0) -> void:
 			if emit_mechanic(form,Mechanics.burst_role(exact_weapon,spell) if form=="detonation" else Mechanics.beam_role(spell) if form=="beam" else "projectile_lightning",at,aim,color,length,.42 if form=="detonation" else .28):
 				effects.back()["beam_width"]=float(data.get("width",30))
 				effects.back()["height"]=float(data.get("height",0))
-			particles.burst(at,aim,color,str(current_identity.style),10,.9,PI if form=="detonation" else .6)
+			if not current_charged or not ImageArt.clean_charged(exact_weapon): particles.burst(at,aim,color,str(current_identity.style),10,.9,PI if form=="detonation" else .6)
 		"skill":
 			current_identity={}
 			current_hero=clampi(int(data.get("hero",hero)),0,3)
@@ -236,6 +270,31 @@ func combo_route_fx(at: Vector2, aim: Vector2, color: Color, radius: float) -> v
 
 func advance(dt: float) -> void:
 	if socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
+		for fx in effects:
+			if fx.kind!="charge": continue
+			var live: Dictionary=socket_provider.call(int(fx.source))
+			if not live.is_empty():
+				fx.p=get_global_transform().affine_inverse()*live.tip
+				fx["socket_local"]=fx.p
+				if fx.has("hold_time"):
+					var sites: Array=[]
+					for point in live.get("charge_points",[live.tip]): sites.append(get_global_transform().affine_inverse()*Vector2(point))
+					if sites.is_empty(): sites.append(fx.p)
+					var source := "charge:"+str(fx.source)
+					particles.follow_charge(source,sites)
+					var progress := clampf(float(fx.age)/maxf(.01,float(fx.hold_time)),0.0,1.0)
+					fx["particle_credit"]=float(fx.get("particle_credit",0))+dt*lerpf(45.0,150.0,progress)
+					for n in mini(12,int(fx.particle_credit)):
+						fx.particle_credit-=1.0
+						var phase: float=particles.rng.randf()
+						var target: Vector2=sites[mini(sites.size()-1,int(phase*sites.size()))]
+						var radial := Vector2.from_angle(particles.rng.randf()*TAU)
+						var start: Vector2=target+radial*particles.rng.randf_range(8,18+progress*12)
+						var color := Color(fx.color).lerp(Color.WHITE,.3+progress*.3)
+						particles.spawn(start,-radial*38+radial.orthogonal()*30,color,"charge",.8+progress,source,target,true)
+						particles.particles.back()["weapon_charge"]=true
+						particles.particles.back()["site_phase"]=phase
+	if socket_provider.is_valid() and absf(get_global_transform().determinant())>.000001:
 		for key in particles.emitters.keys():
 			if not str(key).begins_with("charge:"): continue
 			var socket: Dictionary=socket_provider.call(int(str(key).get_slice(":",1)))
@@ -254,15 +313,18 @@ func advance(dt: float) -> void:
 			s.v*=exp(-dt*4.5)
 	queue_redraw()
 	if light: light.queue_redraw()
+	if charged_ground: charged_ground.queue_redraw()
 
 func diamond(target: CanvasItem, extent: Vector2, color: Color) -> void:
 	target.draw_colored_polygon(PackedVector2Array([Vector2(-extent.x,0),Vector2(0,-extent.y),
 		Vector2(extent.x,0),Vector2(0,extent.y)]),color)
 
-func draw_pass(target: CanvasItem, additive: bool) -> void:
+func draw_pass(target: CanvasItem, additive: bool, ground_only: bool = false) -> void:
 	if absf(get_global_transform().determinant())<.000001: return
 	for fx in effects:
 		if fx.age<0: continue
+		var ground_fx: bool=fx.get("art_source","") in ["charged_614_v1","charged_615_v1","charged_619_v1"]
+		if ground_fx!=ground_only: continue
 		if fx.has("art_role"):
 			draw_mechanic(target,fx,additive)
 			continue
@@ -271,6 +333,9 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 		var birth := Motion.coverage(float(fx.age),float(fx.life),float(profile.birth))
 		var fade := smoothstep(0.0,.025,float(fx.age))*pow(1.0-t,1.25)
 		if fx.kind=="charge": fade=smoothstep(0.0,.12,t)*(1.0-smoothstep(.85,1.0,t))
+		if fx.has("hold_time"):
+			t=clampf(float(fx.age)/maxf(.01,float(fx.hold_time)),0,1)
+			fade=smoothstep(0,.08,float(fx.age))*(.88+.12*sin(float(fx.age)*12))
 		var r: float=fx.radius
 		var kind: String=fx.kind
 		var extent := Vector2.ONE*r*2
@@ -358,7 +423,7 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 			var extra_size := extra.get_size()*minf(extent.x/extra.get_width(),extent.y/extra.get_height())
 			Motion.draw(target,extra,Rect2(-extra_size*.5,extra_size),birth,"sweep" if kind in ["slash","spin"] else "forward",Color(fx.color,opacity*(.14 if additive else .48)))
 		target.draw_set_transform(Vector2.ZERO)
-	if not additive: return
+	if not additive or ground_only: return
 	for s in shards:
 		var fade: float=pow(1.0-s.age/s.life,1.4)
 		target.draw_set_transform(s.p,s.v.angle())
@@ -368,10 +433,13 @@ func draw_pass(target: CanvasItem, additive: bool) -> void:
 func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 	var role: String=fx.art_role
 	var source: String=fx.get("art_source",ImageArt.mechanic_source(role))
-	var authored := source.begins_with("weapon_") or source.begins_with("identity_") or source.begins_with("authored_")
+	var authored := source.begins_with("weapon_") or source.begins_with("identity_") or source.begins_with("authored_") or source.begins_with("audit_") or source.begins_with("charged_")
 	var t := clampf(float(fx.age)/float(fx.life),0,1)
 	# Hold a crisp luminous attack through its contact, then fade during recovery.
 	var fade := smoothstep(0,.008,float(fx.age))*(1-smoothstep(.56,1.0,t))
+	if fx.has("hold_time"):
+		t=clampf(float(fx.age)/maxf(.01,float(fx.hold_time)),0,1)
+		fade=smoothstep(0,.08,float(fx.age))*(.88+.12*sin(float(fx.age)*12))
 	var upgrade: Dictionary=fx.get("upgrade",{})
 	var light_gain := clampi(int(upgrade.get("forge",0)),0,5)*.008+clampi(int(upgrade.get("quality",0)),0,5)*.004
 	var tint := Color(fx.color)
@@ -381,11 +449,53 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 	if authored: tint=Color.WHITE # Each original has its own materials and palette.
 	tint.a=fade*(.14+light_gain if additive else .94)
 	if fx.kind=="echo": tint.a*=.36
-	var r: float=fx.radius
+	if fx.kind=="charge":
+		var point: Vector2=get_global_transform()*fx.p
+		var held: Dictionary={}
+		if socket_provider.is_valid():
+			held=socket_provider.call(int(fx.source))
+			if not held.is_empty():
+				point=held.tip
+				fx["socket_local"]=get_global_transform().affine_inverse()*point
+		var progress := t if fx.has("hold_time") else t*.6
+		var energy := smoothstep(0.0,1.0,progress)
+		var breath := 1.0+sin(float(fx.age)*9)*.035*energy
+		var sites: Array=held.get("charge_points",[point])
+		if sites.is_empty(): sites=[point]
+		if sites.size()>1:
+			var line := PackedVector2Array()
+			for site in sites: line.append(get_global_transform().affine_inverse()*Vector2(site))
+			target.draw_set_transform(Vector2.ZERO)
+			var veil := Color(fx.color).lerp(Color.WHITE,.3)
+			veil.a=lerpf(.1,.55,energy)*(.8 if additive else 1.0)
+			target.draw_polyline(line,Color(veil,veil.a*.3),lerpf(3.0,8.0,energy),true)
+			target.draw_polyline(line,veil,lerpf(.8,2.1,energy),true)
+		var color := Color(fx.color).lerp(Color.WHITE,.15+.45*energy)
+		color.a=smoothstep(0,.06,float(fx.age))*lerpf(.12,.72,energy)*breath*(.75 if additive else 1.0)
+		var radius := lerpf(4.0,10.0,energy)
+		for site in sites:
+			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(0,site))
+			target.draw_texture_rect(preload("res://scripts/weapon_held_glow.gd").surface_light(),Rect2(-Vector2.ONE*radius,Vector2.ONE*radius*2),false,color)
+		# A broader glow grows around the blade, rather than flooding the character.
+		var size := Vector2.ONE*float(fx.radius)*lerpf(.65,1.8,energy)
+		var halo := Color(color); halo.a*=.45
+		target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(0,point))
+		target.draw_texture_rect(preload("res://scripts/weapon_held_glow.gd").surface_light(),Rect2(-size*.5,size),false,halo)
+		target.draw_set_transform(Vector2.ZERO)
+		return
+	# Restore a readable attack silhouette; release flashes/charges stay compact.
+	var r: float=fx.radius*(1.22 if role.begins_with("motion_") and fx.kind!="charge" else 1.0)
 	var bounds := Vector2(r*1.8,r*1.5)
 	var angle: float=fx.aim.angle()
 	var at: Vector2=fx.p
 	var stroke := Mechanics.heavy_stroke(int(fx.get("identity",{}).get("weapon",-1)),role) if fx.has("identity") else {}
+	if source.begins_with("charged_"):
+		var plane: String=ImageArt.mechanics.get(source,{}).get("plane","")
+		stroke={} if plane=="radial" else {"plane":plane,"angle":0.0,"aspect":Vector2(1.4,1.8) if plane=="overhead" else Vector2(1.8,1.4)} if plane in ["overhead","diagonal"] else {}
+	if source in ["identity_612_cut_v2","identity_618_cut_v2","identity_623_cut_v2"]:
+		# These originals already paint a descending plane facing right.
+		# Rotate by mouse aim once; the old sweep correction would tilt it twice.
+		stroke={"plane":"overhead","angle":0.0,"aspect":Vector2(1.25,1.8)}
 	if stroke.get("plane","")=="drop":
 		# Downward weight and grounded fragments, instead of a spinning shockwave.
 		bounds=Vector2(stroke.aspect)*r
@@ -408,8 +518,7 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 			var tip: Vector2=get_global_transform()*fx.socket_local
 			var blade_length := grip.distance_to(tip)
 			if blade_length>4:
-				bounds=Vector2.ONE*blade_length*2
-				body_pose=Transform2D(angle,grip)
+				bounds=Vector2.ONE*maxf(r,blade_length)*2
 		target.draw_set_transform_matrix(get_global_transform().affine_inverse()*body_pose)
 	elif fx.kind in ["beam","chain"]:
 		var start: Vector2=get_global_transform()*fx.beam_start_local if fx.has("beam_start_local") else get_global_transform()*at-Vector2(0,float(fx.get("height",0))+24 if fx.kind=="beam" else 24)
@@ -442,13 +551,19 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 		elif role in ["muzzle_fire","release_bow"]: bounds=Vector2(r*2,r*1.2)
 		elif role.begins_with("cast_"): bounds=Vector2.ONE*r*1.7
 		if not stroke.is_empty(): bounds=Vector2(stroke.aspect)*r
+		if source=="identity_600_compact_v2":
+			var width := minf(r*1.15,125.0)*(1.08 if int(fx.stage)==2 else 1.0)
+			bounds=Vector2(width,width*.70)
 		if fx.kind=="lance": bounds.x*=[.78,.90,1.0][clampi(int(fx.stage),0,2)]
 		if fx.kind=="charge":
 			tint.a*=smoothstep(0,.1,t)*.42
 			bounds*=.5+t*.5
 		if not socket.is_empty():
 			angle=socket.aim.angle()
-			if not stroke.is_empty(): angle+=float(stroke.angle)*(1 if socket.aim.x>=0 else -1)
+			# This compact arc is painted bowing downward; its outward edge owns
+			# the attack direction, not the line between its two tapered ends.
+			if source=="identity_600_compact_v2": angle-=PI*.5
+			if not stroke.is_empty(): angle+=clampf(float(stroke.angle),-PI*.12,PI*.12)*(1 if socket.aim.x>=0 else -1)
 			var offset := Vector2.ZERO
 			if fx.kind=="route":
 				tint.a*=.55
@@ -456,16 +571,32 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 				elif int(fx.route)==2: angle-=PI*.45; offset=Vector2(0,-r*.25)
 				elif int(fx.route)==3: offset=Vector2(-r*.3,r*.55); bounds*=.72
 			var mirror := Vector2(1,float(fx.reverse))
-			if authored and ImageArt.distinct_stage(int(fx.identity.weapon),int(fx.stage)): mirror.y=1
+			if source=="identity_600_compact_v2": mirror=Vector2(float(fx.reverse),1)
+			if authored and source!="identity_600_compact_v2" and ImageArt.distinct_stage(int(fx.identity.weapon),int(fx.stage)): mirror.y=1
 			var contact := ImageArt.mechanic_contact(role,bounds,source) if fx.kind!="charge" else Vector2.ZERO
-			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(angle,mirror,0,socket.tip+offset.rotated(angle)-(contact*mirror).rotated(angle)))
+			var release: Vector2=socket.tip+offset.rotated(angle)-(contact*mirror).rotated(angle)
+			if role.begins_with("motion_") and fx.kind!="charge" and fx.has("socket_grip"):
+				# Fixed-facing blade contacts cannot position a freely aimed slash.
+				# Center its painted body ahead of the virtual hand, along mouse aim.
+				var pivot: Vector2=get_global_transform()*fx.socket_grip
+				release=pivot+socket.aim.normalized()*maxf(pivot.distance_to(socket.tip)*.65,bounds.x*.22)+offset.rotated(angle)
+				if source.begins_with("charged_") and role=="motion_thrust": release=pivot+socket.aim.normalized()*bounds.x*.5
+			target.draw_set_transform_matrix(get_global_transform().affine_inverse()*Transform2D(angle,mirror,0,release))
 		else:
-			if not stroke.is_empty(): angle+=float(stroke.angle)*(1 if fx.aim.x>=0 else -1)
-			target.draw_set_transform(at,angle,Vector2(1,float(fx.reverse)))
-	ImageArt.stamp_mechanic(target,source,bounds,tint)
+			if source=="identity_600_compact_v2": angle-=PI*.5
+			if not stroke.is_empty(): angle+=clampf(float(stroke.angle),-PI*.12,PI*.12)*(1 if fx.aim.x>=0 else -1)
+			var mirror := Vector2(float(fx.reverse),1) if source=="identity_600_compact_v2" else Vector2(1,float(fx.reverse))
+			if source.begins_with("charged_") and role=="motion_thrust": at+=fx.aim*bounds.x*.5
+			target.draw_set_transform(at,angle,mirror)
+	if source.begins_with("charged_") and role=="motion_thrust":
+		# The narrow thrust painting spans the actual forward reach, rather than
+		# shrinking a decorated shoulder until the attack becomes a tiny arrow.
+		var art := ImageArt.mechanic_texture(source)
+		if art: target.draw_texture_rect_region(art,Rect2(-bounds*.5,bounds),ImageArt.mechanic_ink(source),tint)
+	else: ImageArt.stamp_mechanic(target,source,bounds,tint)
 	# Preserve the weapon's primary silhouette in all three stages. A faint,
 	# fitted counter-cut/finishing wake supports it without widening hit reach.
-	if authored and not role.begins_with("motion_") and fx.kind in ["cast","muzzle"]:
+	if authored and not source.begins_with("charged_") and not role.begins_with("motion_") and fx.kind in ["cast","muzzle"]:
 		var extra := ImageArt.overlay(int(fx.identity.weapon),int(fx.stage))
 		if extra:
 			var extra_size := extra.get_size()*minf(bounds.x/extra.get_width(),bounds.y/extra.get_height())*.72
@@ -487,6 +618,7 @@ func particle_event(data: Dictionary, at: Vector2, aim: Vector2, color: Color, w
 			if life>0: particles.start(source,at,aim,color,style,"gather",life,32 if weapon>=3 else 23,32)
 		"strike":
 			particles.stop(source)
+			if data.get("charged",false) and ImageArt.clean_charged(weapon): return
 			var finishing := int(data.get("combo",0))==2
 			particles.burst(at,aim,color,style,7 if finishing else 4,.85 if finishing else .6,.9)
 			if int(data.get("weapon",0)) in [1,2]:

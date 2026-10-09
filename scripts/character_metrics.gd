@@ -7,6 +7,14 @@ extends RefCounted
 const SOURCE_SIZE := Vector2(1448,1086)
 const HEAD_PIXELS := 26.0
 const FOOT_OFFSET := Vector2(0,16)
+
+## Rotate lateral hand reach toward mouse aim while preserving its height.
+static func aimed_mount(origin: Vector2, grip: Vector2, tip: Vector2, aim: Vector2) -> Dictionary:
+	var direction := aim.normalized() if aim.length_squared()>.001 else Vector2.RIGHT
+	var center := origin+Vector2(0,grip.y)
+	var pivot := center+direction*absf(grip.x)
+	return {"center":center,"pivot":pivot,"tip":pivot+direction*tip.distance_to(grip)}
+
 const ATTACK = [
 	[
 		[Vector3(195,335,78),Vector3(550,335,87),Vector3(902,335,83),Vector3(1285,335,86)],

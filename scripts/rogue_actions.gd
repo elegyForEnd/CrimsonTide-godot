@@ -10,32 +10,40 @@ static func height_hit(player_height: float, tag: String) -> bool:
 		"all": return player_height<=200
 	return player_height<=100
 
-static func start_art(s, p: Dictionary) -> bool:
-	if not s.authority() or p.status!="active" or s.raid.phase!="rogue_combat" or p.art_cd>0 or p.reload>0 or p.swing_time>0 or p.attack>0 or p.cast_time>0 or p.dodge_time>0 or p.flask_time>0 or (p.height>0 and p.air_art) or s.pending_ultimates.has(p.id): return false
-	var move: Dictionary=WeaponArts.of(int(p.weapon)).duplicate(true)
+static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
+	if not s.authority() or p.status!="active" or s.raid.phase!="rogue_combat" or (charged.is_empty() and p.art_cd>0) or p.reload>0 or p.swing_time>0 or p.attack>0 or p.cast_time>0 or p.dodge_time>0 or p.flask_time>0 or (p.height>0 and p.air_art) or s.pending_ultimates.has(p.id): return false
+	var move: Dictionary=WeaponArts.of(int(p.weapon)).duplicate(true) if charged.is_empty() else charged.duplicate(true)
 	var family := Catalog.weapon_family(int(p.weapon))
-	var cost := Build.mana_cost(s,p,float(move.mana),"art")
+	if not charged.is_empty() and family==0 and p.ammo<=0:
+		s.reload_player(p); return false
+	var cost := Build.mana_cost(s,p,float(move.mana),"art" if charged.is_empty() else "attack")
 	if not s.spend_mana(p,cost): return false
 	# A2 (R9 hook 8): CU09「迟滞」的 `cooldown`（CAPS 锁在 [0,0.60]，正=冷却更久）乘进技能冷却。
 	# 无诅咒时乘数恒为 1.0，数值与接线前逐位相同。
-	p.art_cd=maxf(3,float(move.cooldown)*(1.0-Build.stat(s,p,"art_cdr"))*(1.15 if Build.rank(p,64)>0 else 1.0)*(1.0+maxf(0.0,Build.hook_mod(s,p,"cooldown"))))
-	p["build_art_base"]=p.art_cd
-	Build.action_event(s,p,"S")
-	var ctx := Build.context(s,p,"art")
+	if charged.is_empty():
+		p.art_cd=maxf(3,float(move.cooldown)*(1.0-Build.stat(s,p,"art_cdr"))*(1.15 if Build.rank(p,64)>0 else 1.0)*(1.0+maxf(0.0,Build.hook_mod(s,p,"cooldown"))))
+		p["build_art_base"]=p.art_cd
+		Build.action_event(s,p,"S")
+	else:
+		if family==0: p.ammo-=1
+		Build.action_event(s,p,"A")
+	var ctx := Build.context(s,p,"art" if charged.is_empty() else "attack")
+	if not charged.is_empty(): ctx["charged"]=true
 	var windup: float={1:.35,2:.5,0:.30,3:.45}.get(family,.35)
 	if p.height>0:
 		p.air_art=true
 		if Build.core(p,10)>0: windup=maxf(.25,windup*(.95 if Build.core(p,10)==1 else .92))
-	windup=maxf(.25,windup*(1-Build.buff(p,"art_windup",s.elapsed)))
-	p.build_buffs.erase("art_windup")
+	if not charged.is_empty(): windup=.12
+	if charged.is_empty(): windup=maxf(.25,windup*(1-Build.buff(p,"art_windup",s.elapsed)))
+	if charged.is_empty(): p.build_buffs.erase("art_windup")
 	var route: int=int(ctx.get("route",-1))
 	if route==1 and family==3: ctx["target_origin"]=aim_point(s,p,p.aim,float(move.reach))
-	if route==1 and family==2: move.kind="cone"; move.reach=240.0; move.radius=float(move.get("radius",170))*.8
-	if route==2 and family==1: move.kind="thrust"; move.reach=200.0
+	if charged.is_empty() and route==1 and family==2: move.kind="cone"; move.reach=240.0; move.radius=float(move.get("radius",170))*.8
+	if charged.is_empty() and route==2 and family==1: move.kind="thrust"; move.reach=200.0
 	if route==3 and family==0 and p.height>35: windup=maxf(windup,.35)
-	var split: bool=(family in [1,2,3] and route in [2,3]) or int(ctx.get("hero_route",-1))==0 and p.hero==2
+	var split: bool=charged.is_empty() and ((family in [1,2,3] and route in [2,3]) or int(ctx.get("hero_route",-1))==0 and p.hero==2)
 	p["build_pending_art"]={"move":move,"ctx":ctx,"aim":p.aim.normalized(),"origin":p.p,"damage":s.weapon_damage(p)*float(move.damage),"remaining":windup,"split":split}
-	p.cast_time=windup+(.35 if split else .12)
+	p.cast_time=windup+(float(move.get("recovery",.35)) if not charged.is_empty() else .35 if split else .12)
 	p.attack=p.cast_time
 	p.swing_time=p.cast_time
 	p.swing_total=p.cast_time
@@ -45,7 +53,8 @@ static func start_art(s, p: Dictionary) -> bool:
 	p["build_strike_windup"]=windup
 	p["build_strike_kind"]=str(move.kind)
 	s.broadcast_combat({"kind":"windup","p":p.p,"aim":p.aim,"weapon":family,"weapon_index":p.weapon,"windup":windup,"id":p.id,"combo":2,"vfx":ctx.get("vfx",{})})
-	for key in ["hammer_cost","rotation","relay"]: p.build_buffs.erase(key)
+	if charged.is_empty():
+		for key in ["hammer_cost","rotation","relay"]: p.build_buffs.erase(key)
 	return true
 
 static func tick(s, p: Dictionary, dt: float) -> void:
@@ -60,7 +69,7 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 	p.erase("build_pending_art")
 	var ratio := .7 if pending.split else 1.0
 	resolve_art(s,p,pending,ratio)
-	if not pending.split: p.swing_time=minf(p.swing_time,.12)
+	if not pending.split and not pending.move.get("charged",false): p.swing_time=minf(p.swing_time,.12)
 	if pending.split:
 		p["build_pending_art_tail"]={"remaining":.24,"pending":pending}
 
@@ -100,6 +109,7 @@ static func projectile(s, p: Dictionary, aim: Vector2, damage: float, reach: flo
 	var speed := float(Catalog.weapon(int(p.weapon)).get("speed",850))
 	var shot := {"p":p.p+aim*23,"v":aim*speed,"life":reach/speed,"damage":damage,"owner":p.id,"weapon":int(ctx.family),"weapon_index":int(p.weapon),"spell":spell,"knock":float(Catalog.weapon(int(p.weapon)).knock),"remaining":pierce,"hit_ids":[],"build_context":ctx,"build_attenuation":attenuation,"height":float(p.height),"height_velocity":(20-float(p.height))/maxf(.1,reach/speed)}
 	if spell=="scatter": shot["pellet_hits"]=pellets
+	shot["charged"]=bool(ctx.get("charged",false))
 	shot["ground_origin"]=p.p
 	s.bullets.append(shot)
 
@@ -115,7 +125,7 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 	var reach: float=move.reach
 	if family==3 and int(ctx.get("route",-1))==1:
 		aim=(art_target(s,p,pending)-p.p).normalized()
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name,"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name,"charged":bool(move.get("charged",false)),"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
 	if kind=="volley":
 		var count: int=int(move.get("count",3))
 		var pellets: Dictionary={}
@@ -124,11 +134,11 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 			var pierce: int=int(move.get("pierce",1))
 			var next: float=clampf(.65+(.05 if Build.core(p,8)==1 else .08 if Build.core(p,8)==2 else 0),0,.8)
 			var decay: Array=[1.0,next,next] if pierce>1 else []
-			projectile(s,p,aim.rotated((i-(count-1)*.5)*.12),damage*weight,reach,spell,ctx,pierce,decay,pellets)
+			projectile(s,p,aim.rotated((i-(count-1)*.5)*float(move.get("spread",.12))),damage*weight,reach,spell,ctx,pierce,decay,pellets)
 		return
 	var center: Vector2=art_target(s,p,pending) if kind=="burst" else p.p
-	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",100)),"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
-	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"height":float(p.height),"spell":spell,"id":p.id,"weapon_index":p.weapon,"vfx":ctx.get("vfx",{})})
+	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",100)),"id":p.id,"weapon_index":p.weapon,"charged":bool(move.get("charged",false)),"vfx":ctx.get("vfx",{})})
+	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"height":float(p.height),"spell":spell,"id":p.id,"weapon_index":p.weapon,"charged":bool(move.get("charged",false)),"vfx":ctx.get("vfx",{})})
 	var index := 0
 	for e in ordered_targets(s,p.p):
 		if index>=(3 if family in [2,3] else 5): break
@@ -140,7 +150,8 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 			"burst": hit=s.enemy_bodies.attack_hit(e,center,aim,float(move.get("radius",100)),s.elapsed,true,"circle") and s.ruins.clear_line(center,e.p)
 		if not hit: continue
 		var falloff: float=1.0 if index==0 else .65
-		s.damage_enemy(e,damage*falloff,p.id,delta.normalized(),25,family,p.weapon,ctx)
+		var force := maxf(25,float(Catalog.weapon(int(p.weapon)).knock)*1.25) if move.get("charged",false) else 25.0
+		s.damage_enemy(e,damage*falloff,p.id,delta.normalized(),force,family,p.weapon,ctx)
 		if int(ctx.get("route",-1))==2 and family==1 and not e.get("rogue_guardian",false) and s.elapsed>=float(e.get("build_cc_until",0)):
 			e["build_cc_until"]=s.elapsed+Build.cc_interval(p)
 			e["height"]=18.0 if e.get("build_elite",false) else 35.0

@@ -93,6 +93,14 @@ func move(key: String, at: Vector2, aim: Vector2=Vector2.ZERO) -> void:
 	if aim.length_squared()>.01: emitters[key].aim=aim.normalized()
 	for particle in source_particles.get(key,[]):
 		if particle.gather: particle.target=at
+func follow_charge(key: String, points: Array) -> void:
+	if points.is_empty(): return
+	for particle in source_particles.get(key,[]):
+		if not particle.get("weapon_charge",false): continue
+		var target: Vector2=points[mini(points.size()-1,int(float(particle.site_phase)*points.size()))]
+		var delta: Vector2=target-particle.target
+		particle.p+=delta; particle.previous+=delta; particle.target=target
+
 func stop(key: String, clear_gather: bool=true) -> void:
 	draw_dirty=true
 	emitters.erase(key)
@@ -191,6 +199,10 @@ func draw_particles(target: CanvasItem, glow: bool) -> void:
 			geometry_batch.flush(target)
 			target.draw_circle(screen,size*(.7+t),Color(color,color.a*.12))
 			target.draw_circle(pose*Vector2(size*.4,0),size*.6,Color(color,color.a*.08))
+		elif style=="charge":
+			geometry_batch.flush(target)
+			target.draw_circle(screen,size*.55,color)
+			target.draw_line(pose*Vector2(-size*1.8,0),screen,Color(color,fade*.55),1.0,true)
 		elif style in ["ice","star","stone"]:
 			var points := PackedVector2Array([Vector2(-size,0),Vector2(0,-size*.60),Vector2(size,0),Vector2(0,size*.60)])
 			if style=="stone": points=PackedVector2Array([Vector2(-size,size*.3),Vector2(-size*.2,-size*.65),Vector2(size,size*.5)])

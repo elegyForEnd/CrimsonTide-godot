@@ -59,8 +59,15 @@ func run() -> void:
 					var mount: Dictionary=host.weapon_effect_socket(1)
 					var ray: Vector2=mount.stroke_tip-mount.stroke_pivot
 					check(ray.normalized().dot(mount.aim.normalized())>.999,"Mouse aim owns virtual strike tip in both renderers")
-					check(Vector2(mount.grip).distance_to(mount.stroke_pivot)<.01,"Strike starts from equipped grip")
+					var hand_reach: Vector2=mount.stroke_pivot-mount.stroke_center
+					check(absf(hand_reach.cross(mount.aim))<.01 and hand_reach.dot(mount.aim)>=0,"Release pivot is on the aimed side of the body centerline")
 					check(absf(ray.length()-Vector2(mount.tip).distance_to(mount.grip))<.01,"Virtual blade preserves original equipped length")
+	# A sideways hand must move onto the centerline for vertical releases.
+	for direction in [Vector2.UP,Vector2.DOWN,Vector2.LEFT,Vector2.RIGHT]:
+		var mount := CharacterMetrics.aimed_mount(Vector2(100,200),Vector2(24,-50),Vector2(74,-50),direction)
+		var center := Vector2(100,150)
+		check((Vector2(mount.pivot)-center).normalized().dot(direction)>.999,"Hand reach rotates with all four aim directions")
+		check(Vector2(mount.tip).distance_to(center+direction*74)<.01,"Vertical releases lose the atlas lateral offset")
 	p.hero=0; p.weapon=613; p.aim=Vector2.UP; p.strike_aim=Vector2.UP
 	field.combat.reset()
 	field.combat.stylized.event({"kind":"strike","id":1,"p":p.p,"aim":p.strike_aim,"weapon_index":613,"weapon":2,"combo":0,"reach":Catalog.weapon(613).reach})

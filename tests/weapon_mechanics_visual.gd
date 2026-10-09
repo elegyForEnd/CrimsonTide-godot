@@ -60,7 +60,7 @@ func run() -> void:
 		check(bounds.size.x<100 and bounds.size.y<70,"One projectile never becomes a broad wave")
 	projectile.queue_free(); await process_frame
 	var fx := FX.new(); viewport.add_child(fx)
-	fx.socket_provider=func(_id): return {"tip":Vector2(330,210),"aim":Vector2.RIGHT,"active":true}
+	fx.socket_provider=func(_id): return {"tip":Vector2(330,210),"grip":Vector2(280,210),"aim":Vector2.RIGHT,"active":true}
 	fx.event({"kind":"strike","p":Vector2(210,210),"aim":Vector2.RIGHT,"weapon":1,"weapon_index":602,"reach":75,"combo":0,"id":1})
 	fx.particles.reset(); fx.shards.clear(); fx.advance(.05)
 	var img: Image=await capture(viewport)
@@ -77,6 +77,23 @@ func run() -> void:
 	img=await capture(viewport)
 	var bright := bright_pixels(img)
 	check(bright>50,"Slash keeps a strong visible red core through its contact frame")
+	for stage in 3:
+		check(preload("res://scripts/weapon_image_art.gd").release_source(600,"motion_slash",stage)=="identity_600_compact_v2","All crimson sword combo stages retire the long ribbon")
+	# Read the rendered pixels, not just mount metadata: vertical cuts must move
+	# above/below the torso and retain a readable original painted silhouette.
+	for weapon in [600,610,612,613,618,621,623]:
+		for direction in [Vector2.RIGHT,Vector2.DOWN,Vector2.LEFT,Vector2.UP]:
+			fx.reset()
+			var center := Vector2(210,210)
+			var mount := CharacterMetrics.aimed_mount(center,Vector2(24,0),Vector2(74,0),direction)
+			fx.socket_provider=func(_id): return {"tip":center+Vector2(74,0),"grip":center+Vector2(24,0),"stroke_pivot":mount.pivot,"stroke_tip":mount.tip,"aim":direction,"active":true}
+			fx.event({"kind":"strike","p":center,"aim":direction,"weapon":Catalog.weapon_family(weapon),"weapon_index":weapon,"reach":80,"combo":0,"id":1})
+			fx.particles.reset(); fx.shards.clear(); fx.advance(.065)
+			img=await capture(viewport)
+			var painted := visible_bounds(img)
+			var offset := Vector2(painted.get_center())-center
+			check(offset.dot(direction)>20 and absf(offset.cross(direction))<14,"Rendered attack body lies ahead in each mouse direction")
+			check(maxi(painted.size.x,painted.size.y)>90,"Melee painted body has a readable extent")
 	fx.reset()
 	fx.event({"kind":"spell_burst","p":Vector2(110,300),"aim":Vector2.RIGHT,"weapon_index":637,"spell":"meteor","radius":60,"id":1})
 	fx.particles.reset(); fx.shards.clear(); fx.advance(.07)
