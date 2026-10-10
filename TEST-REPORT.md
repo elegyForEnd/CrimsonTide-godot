@@ -400,3 +400,16 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - v6单文件3493534630字节；直接从内嵌PCK载入30个副本的房间数据/地面/有效GI/全部道具模型，PACKED_EXPLORATION_READY dungeons=30 quests=73 explicit_json=true；内嵌PCK临时预览PASS。实际发布版Forward+进入第一幕洞窟、Compatibility进入第五幕船坞、Forward+进入第一幕室外，均STORY_READY quests=73且正常退出0，未出现脚本/资源错误。洞窟和GL标准错误为空；Forward+室外退出仍报告已知7个Texture RID警告。日志exploration-release-{forward,gl,outdoor}-verified.log；dist/Start-Compatibility.cmd与两个预览脚本指向v6，旧版本保留。
 
 - 最终路牌补齐植被缓存契约后789锚点OK515/DRIFT0/WRONG0/HINT274，git diff --cached --check通过；参考原始JSON、离线工具依赖及日志错误流加入明确忽略目录，PV提示词保持未跟踪且未修改。没有参考原资源进入提交或发布包。
+
+## 2026-10-10 副本空间类型与边界语言（v7）
+
+- 替换30副本的统一15房间格状骨架：22种空间类型、30份不同地面/空洞轮廓、13种包络，每区10—14功能空间，实际可走面积3705.0—9102.5平方米。墓甬道、天然岩腔、城堡庭院/翼楼、十字中殿、环形塔廊、扇形剧场、设备大厅及水槽跨桥采用不同结构。材料与模型仍使用已有原创库，未把模块复用包装成新雕刻资产。
+- 新增逐边edge_styles、X/Y高差轴、水平槽水与外围基岩；看台缓升至舞台，庭院摆放调整为活动组合。逻辑数据、地板、碰撞、导航、分区敌群和探索图同源；新模型缓存带layout_family/layout_revision标记。19室外与6营地延续已有场景。
+- 逻辑真实行走2646项0失败（story-identity-story_exploration.log），空间类型159/0（story-identity-logic-final.log），地图地理与全部层间入口748/0（story-identity-geography.log），战役180/0、集成12/0、CLI临时预览PASS。集成仍有既有rogue_build_preview锚点警告。旧测试的固定15房、80×108包络及四段高差断言改为新内容契约；剧场的共享座位模型明确进入许可清单。实际行走检查继续逐一走到每个功能空间与玩法目标。
+- 30场LightmapGI实际重新烘焙，exploration-bake.log确认BAKE_BATCH all complete count=30，标准错误为空。打包和发布包检查另记下方。烘焙工具支持-DungeonsOnly，保留19室外/6营地已有GI；原PV文件保持未跟踪且未修改。
+- 未运行全仓库门禁、长时间帧率/显存/加载验收或完整人工战斗录像；不声称4K60或商业重制美术质量。塔型为单地图环廊，未新增跨层桥、五层高塔剧情、解谜或专属Boss动作。制作范围见docs/rpg/DUNGEON-IDENTITIES.md。
+
+- 最终地板/GI/地编/真实移动/植被缓存8529/0（story-identity-packed-story_exploration.log）；空间类型与实际边样式2725/0（story-identity-spatial-packed.log），含水面水平度、基岩不覆盖通路检查；后五幕缓存34362/0（story-identity-later-packed-final.log）、旧堡/矿洞465/0、建筑铺地1105/0。补光仅修改两场明确无静态GI用户的外围/中央岩体材质，保留烘焙地板；BEDROCK_MATERIAL_PATCH两场各3处确认GI_preserved=true。
+- Forward+与Compatibility最终各12张3840×2160图片，各48项0失败（story-identity-{forward,compat}-grounded.log），两者标准错误为空。检查实际空间色差、正确缓存加载和队伍站在可走地面；手工检查洞腔、庭院、剧场、水槽截图。24张图片逐文件检查尺寸无异常。正常游戏相机尺度未变，比较照片使用48米视野，方便观察空间结构；不是运行性能统计。
+- v7导出3497014376字节。内嵌PCK检查PACKED_IDENTITIES_READY dungeons=30 quests=73 model_identities=8408 forward_and_compat=true；8408为4204处摆放在普通/兼容两份缓存中的身份检查。包内CLI临时试玩PASS，原预览保存禁用/55个传送目的地保持。对应story-identity-{pck-final,pck-preview}.log。具体地图试玩脚本与兼容入口指向v7，旧EXE保留。
+- 实际v7发布版Forward+进入第一幕旧堡、Compatibility进入第五幕船坞，均STORY_READY quests=73、正确幕/关、正常退出0，标准错误为空（story-identity-release-{castle,shipyard-compat}.log）。没有遗留本轮Godot/试玩进程；路牌789锚点OK515/DRIFT0/WRONG0/HINT274。副本场景改动仅涉及30区，未重写19室外与六营地缓存。

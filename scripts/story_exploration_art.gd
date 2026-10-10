@@ -70,11 +70,12 @@ static func entries(region) -> Array:
 static func height(region, p: Vector2) -> float:
 	var s: Dictionary=region.exploration_plan
 	var level := 0.0
+	var coordinate: float=p.x if s.get("grade_axis","y")=="x" else p.y
 	for band in s.grade_bands:
-		if p.y<band.start: break
-		if p.y>=band.end: level=band.to; continue
-		var t: float=(p.y-float(band.start))/float(band.end-band.start)
-		if band.kind=="stairs": t=floorf((p.y-float(band.start))/50.0)*50.0/float(band.end-band.start)
+		if coordinate<band.start: break
+		if coordinate>=band.end: level=band.to; continue
+		var t: float=(coordinate-float(band.start))/float(band.end-band.start)
+		if band.kind=="stairs": t=floorf((coordinate-float(band.start))/50.0)*50.0/float(band.end-band.start)
 		else: t=smoothstep(0,1,t)
 		level=lerpf(band.from,band.to,t); break
 	if s.natural:

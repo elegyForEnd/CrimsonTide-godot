@@ -16,9 +16,11 @@ Forward+ 开场美术升级版：运行 `dist/CrimsonTide-ForwardPlus-4K.exe`，
 
 室内铺地修正版：最新试玩 `dist/CrimsonTide-ForwardPlus-v4.exe`，修正城堡、墓室、礼拜堂和书库复用野外地面的遗漏；独立室内PBR与铺装分区同步台阶、台基，保留天然洞窟岩土。[材质分流与验证](docs/rpg/INTERIOR-FLOORS.md)。
 
-第二至第六幕美术扩展版：最新试玩 `dist/CrimsonTide-ForwardPlus-v5.exe`。五套新区域模块覆盖五个营地和40个地图区域：84个新Blender模型、17套新2K PBR、15份地形、45场实际GI烘焙。额外副本改为铸造厂、蓄水机房、测星站、霜骨祭坛、温室、面具藏馆、干船坞、泵房、圣物库和星仪室；原地图ID与73个任务保持一致。[制作范围与编辑方式](docs/rpg/ACTS-2-6-ART.md)。长时间性能验收继续暂缓。
+第二至第六幕美术扩展版（v5历史记录）：试玩 `dist/CrimsonTide-ForwardPlus-v5.exe`。五套新区域模块覆盖五个营地和40个地图区域：84个新Blender模型、17套新2K PBR、15份地形、45场实际GI烘焙。额外副本改为铸造厂、蓄水机房、测星站、霜骨祭坛、温室、面具藏馆、干船坞、泵房、圣物库和星仪室；原地图ID与73个任务保持一致。[制作范围与编辑方式](docs/rpg/ACTS-2-6-ART.md)。长时间性能验收继续暂缓。
 
-副本探索与地形重做版：最新试玩 `dist/CrimsonTide-ForwardPlus-v6.exe`，`Preview-Dungeons.cmd`可直接进入六幕副本临时试玩。30个室内区域改为80×108米包络、15个功能空间、环路与奖励侧室，34个新Blender模块补充地编；19个室外区域改为不规则轮廓、宽缓坡肩与岩脊。独立高台改为贯通空间的高程变化，地面、通行、导航、敌群与探索图同步。[真实参考范围、制作与验收](docs/rpg/DUNGEON-EXPLORATION.md)。长时间跑分继续暂缓。
+副本探索与地形重做版（v6历史记录）：试玩 `dist/CrimsonTide-ForwardPlus-v6.exe`。30个室内区域改为80×108米包络、15个功能空间、环路与奖励侧室，34个新Blender模块补充地编；19个室外区域改为不规则轮廓、宽缓坡肩与岩脊。独立高台改为贯通空间的高程变化，地面、通行、导航、敌群与探索图同步。[真实参考范围、制作与验收](docs/rpg/DUNGEON-EXPLORATION.md)。长时间跑分继续暂缓。
+
+副本空间类型重做版：最新试玩 `dist/CrimsonTide-ForwardPlus-v7.exe`。30个副本采用22种空间类型，墓甬道、岩腔、庭院翼楼、扇形剧场、环形塔廊和跨槽船坞分别制作通路、边界和高差；10—14处功能空间，真实可走面积约3705—9103平方米。重新生成对应可编辑场景与GI，保留地图ID、73任务和原存档入口；预览脚本支持选择幕和具体地图。[制作范围与质量边界](docs/rpg/DUNGEON-IDENTITIES.md)。模型继续使用已有原创库；长时间跑分仍暂缓。
 
 RPG故事模式连续地图重做版：运行 `dist/CrimsonTide-Story.exe`，标题选择「故事模式 · 血月尽头」。六幕独立营地连到大片野外，包含可探索支路、12层额外洞窟、可激活传送阵、楼梯高差与进屋遮挡。[实现与剩余差异](docs/rpg/IMPLEMENTATION.md)、[重制版地编研究](docs/rpg/D2R-ENVIRONMENT-RESEARCH.md)、[详细计划](docs/rpg/RPG-MODE-PLAN.md)、[长篇剧情](docs/rpg/STORY.md)、[任务索引](docs/rpg/QUESTS.md)。
 

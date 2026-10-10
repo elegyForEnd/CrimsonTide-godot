@@ -48,12 +48,13 @@ static func atmosphere(world) -> void:
 	var act: int=world.campaign.state.act
 	if act<2: return
 	var p := Art.palette(act)
+	var open_sky: bool=world.campaign.map.regions[world.campaign.map.stage].exploration_plan.get("sky_open",false)
 	for child in world.get_children():
 		if child is DirectionalLight3D:
-			child.light_color=Color(p.sun); child.light_energy=.72 if world.campaign.map.layer==0 else .26
+			child.light_color=Color(p.sun); child.light_energy=.72 if world.campaign.map.layer==0 else .56 if open_sky else .26
 		elif child is WorldEnvironment:
 			child.environment.ambient_light_color=Color(p.ambient)
-			child.environment.ambient_light_energy=.34 if world.campaign.map.layer==0 else .28
+			child.environment.ambient_light_energy=.34 if world.campaign.map.layer==0 or open_sky else .28
 			child.environment.background_color=Color("151a21")
 static func feature_lights(builder, r, parent: Node3D) -> void:
 	if not r.exploration_plan.is_empty(): return

@@ -70,7 +70,8 @@ func run() -> void:
 			light.light_bake_mode=Light3D.BAKE_DYNAMIC
 			light.shadow_enabled=false
 		var moon := DirectionalLight3D.new(); moon.name="BakeMoon"; moon.rotation_degrees=Vector3(-52,-35,0)
-		moon.light_color=Color("b7c8e4"); moon.light_energy=.24 if campaign.map.regions[stage].indoor else .63
+		var open_sky: bool=campaign.map.regions[stage].exploration_plan.get("sky_open",false)
+		moon.light_color=Color("b7c8e4"); moon.light_energy=.56 if open_sky else .24 if campaign.map.regions[stage].indoor else .63
 		moon.light_bake_mode=Light3D.BAKE_DYNAMIC; moon.add_to_group("editor_only",true); authored.add_child(moon)
 		if act>=2: moon.light_color=Color(preload("res://scripts/story_act_art.gd").palette(act).sun)
 		var gi := LightmapGI.new(); gi.name="BakedIndirectLight"

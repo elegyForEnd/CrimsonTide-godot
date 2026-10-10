@@ -39,13 +39,14 @@ func build_story(c) -> void:
 		quest_models.clear(); quest_signature=""
 		environment_builder.build(self)
 		focus=c.hero_at
+		var open_sky: bool=c.map.regions[c.map.stage].exploration_plan.get("sky_open",false)
 		for child in get_children():
 			if child is DirectionalLight3D:
 				child.rotation_degrees=Vector3(-52,-35,0)
-				child.light_color=Color("b7c8e4"); child.light_energy=.63 if c.map.layer==0 else .20
+				child.light_color=Color("b7c8e4"); child.light_energy=.63 if c.map.layer==0 else .56 if open_sky else .20
 			if child is WorldEnvironment:
 				child.environment.ambient_light_color=Color("829ab7")
-				child.environment.ambient_light_energy=.28 if c.map.layer==0 else .16
+				child.environment.ambient_light_energy=.28 if c.map.layer==0 or open_sky else .16
 				if c.map.layout=="crypt": child.environment.ambient_light_energy=.26
 				child.environment.background_color=Color("171b20")
 	preload("res://scripts/story_regional_environment.gd").atmosphere(self)

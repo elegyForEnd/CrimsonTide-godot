@@ -30,12 +30,15 @@ func run() -> void:
 			c.enter(a,stage)
 			if r.indoor:
 				dungeon_count+=1
-				check(r.extent.x>=8000 and r.extent.y>=10800,"expanded playable envelope")
-				check(r.exploration_plan.chambers.size()==15,"fifteen named functional spaces")
-				check(r.floor_voids.size()>=2,"loops retain central solid rock/service voids")
-				check(r.dressing.size()>=100,"actual dense functional dressing")
+				check(r.exploration_plan.area_m2>=3500,"large connected playable area")
+				check(r.exploration_plan.chambers.size()>=8,"named functional spaces follow each typology")
+				check(r.exploration_plan.get("layout_revision",0)==2,"identity layout replaces the old chamber lattice")
+				check(r.dressing.size()>=60,"functional dressing exists in actual space")
 				check(r.stairs.is_empty(),"no isolated block terrace remains")
-				check(r.height_at(Vector2(4000,7600))-r.height_at(r.spawn)>90,"connected whole-region height changes")
+				var profile: Array=r.exploration_plan.grade_bands
+				var variation := 0.0
+				for band in profile: variation=maxf(variation,absf(float(band.to)-float(band.from)))
+				check(variation>=50,"height profile belongs to this dungeon's circulation")
 				for room in r.exploration_plan.chambers:
 					var target: Array=room.get("visit",room.center)
 					var p := Vector2(target[0],target[1])
@@ -47,7 +50,7 @@ func run() -> void:
 						var p: Vector2=(hole[triangles[0]]+hole[triangles[1]]+hole[triangles[2]])/3
 						check(not r.walkable(p,1),"central rock/service void is genuinely blocked")
 				for e in c.enemies: check(c.map.walkable(e.p),"encounter on reachable physical ground")
-				check(c.enemies.size()>=30,"encounters continue throughout expanded chambers")
+				check(c.enemies.size()>=20,"encounters continue throughout functional spaces")
 				if "--packed" in OS.get_cmdline_user_args():
 					var stem := "opening-%d" % stage if a==1 else "act%d-%d" % [a,stage]
 					var suffix := "-compat" if RenderingServer.get_current_rendering_method()=="gl_compatibility" else ""
@@ -56,6 +59,7 @@ func run() -> void:
 					check(gi.light_data!=null,"updated actual GI bake exists")
 					gi.light_data=null; gi.free()
 					var floor_node: MeshInstance3D=scene.get_node("AuthoredDungeonFloor")
+					check(floor_node.get_meta("exploration_revision",0)==2 and floor_node.get_meta("layout_family","")==r.exploration_plan.layout_family,"packed geometry identifies its authored typology")
 					var arrays: Array=floor_node.mesh.surface_get_arrays(0)
 					var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]; var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
 					var outside := 0; var faces := 0
@@ -96,6 +100,8 @@ func photos() -> void:
 	var screen=Screen.new(); root.add_child(screen); screen.campaign.save_enabled=false
 	screen.start("user://exploration-photo-unused.json"); screen.set_physics_process(false); screen.photo_mode=true; screen.hud.hide()
 	var shots: Array=[[1,7,3],[1,7,7],[1,8,3],[1,9,7],[2,7,3],[2,7,7],[3,7,7],[4,7,7],[5,7,7],[6,7,7],[1,1,-1],[3,1,-1]]
+	var identity_photos: bool="--identity-photos" in OS.get_cmdline_user_args()
+	if identity_photos: shots=[[1,8,1],[1,7,3],[1,9,1],[1,6,3],[2,7,2],[2,8,3],[3,5,2],[3,7,3],[4,6,3],[4,7,2],[5,7,3],[6,7,3]]
 	for shot in shots:
 		var selected := 0
 		var selected_stage := -1
@@ -110,9 +116,14 @@ func photos() -> void:
 		var p := Vector2(3350,1350)
 		if shot[2]>=0:
 			var room: Dictionary=r.exploration_plan.chambers[shot[2]]
-			p=Vector2(room.center[0],room.center[1])+Vector2(-430,-230)
-		screen.campaign.hero_at=r.origin+p; screen.campaign.enemies=[]; screen.world.zoom=22
-		for i in 3: screen.campaign.allies[i]=screen.campaign.hero_at+Vector2(0,900+i*100)
+			p=Vector2(room.center[0],room.center[1])+Vector2(-430,-230) if not identity_photos else Vector2(room.visit[0],room.visit[1])
+		screen.campaign.hero_at=r.origin+p; screen.campaign.enemies=[]; screen.world.zoom=48 if identity_photos else 22
+		for i in 3:
+			var ally_at: Vector2=screen.campaign.hero_at+Vector2(0,900+i*100)
+			if not screen.campaign.map.walkable(ally_at): ally_at=screen.campaign.hero_at+Vector2((i-1)*70,-100)
+			if not screen.campaign.map.walkable(ally_at): ally_at=screen.campaign.hero_at
+			screen.campaign.allies[i]=ally_at
+		check(screen.campaign.map.walkable(screen.campaign.hero_at) and screen.campaign.allies.all(func(at): return screen.campaign.map.walkable(at)),"photo party stands on actual walkable ground")
 		for i in 24: screen.world.build_story(screen.campaign); screen.world.sync_story(root.size,.016); await process_frame
 		await RenderingServer.frame_post_draw
 		var suffix := "-compat" if RenderingServer.get_current_rendering_method()=="gl_compatibility" else ""
@@ -123,7 +134,7 @@ func photos() -> void:
 				var colour := picture.get_pixel(x*240,y*200)
 				colours[Vector3i(int(colour.r*60),int(colour.g*60),int(colour.b*60))]=true
 		check(colours.size()>12,"rendered scene has spatial detail, not a uniform occluding plane")
-		picture.save_png("res://build/exploration-%d-%d-room%d%s.png" % [shot[0],shot[1],shot[2],suffix])
+		picture.save_png("res://build/%s-%d-%d-room%d%s.png" % ["identity" if identity_photos else "exploration",shot[0],shot[1],shot[2],suffix])
 		check(screen.world.scenery.find_child("AuthoredDungeonFloor",true,false)!=null if shot[2]>=0 else screen.world.scenery.find_child("ErodedRegionEdge",true,false)!=null,"actual new scene loaded")
 	screen.queue_free(); await process_frame
 	preload("res://scripts/story_floor_palette.gd").cache.clear()

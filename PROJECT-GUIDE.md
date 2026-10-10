@@ -460,6 +460,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 建筑室内地面材质 | story_floor_palette.gd、resources/story_interior_floor.gdshader；城堡/墓室/书库/礼拜堂分流，自然洞窟保留岩土；tools/patch_story_interior_floors.gd仅替换地面/台阶/台基，tests/story_architectural_floors.gd；docs/rpg/INTERIOR-FLOORS.md |
 | 第二至第六幕美术/副本 | `scripts/story_act_art.gd:14 configure()`、`scripts/story_act_art.gd:6 terrain()`；story-later-acts.json / story-later-terrain.json；`scripts/story_regional_environment.gd:4 ground()`、`scripts/story_regional_environment.gd:24 walls()`；独立acts-2-6-master.blend、scenes/story/act*-*.tscn；`tests/story_later_acts.gd:12 run()`、tools/Bake-Later-Acts.ps1；docs/rpg/ACTS-2-6-ART.md |
 | 副本规模、环路、分区高差、室外非矩形边界 | story_exploration_art.configure / contains / height、story_exploration_environment.terrain / walls / outdoor_edge；story-exploration.json同步模型、通行、导航、敌群、探索图；独立dungeon-master.blend与34新模块；tests/story_exploration.gd；⚠️布局修改后必须更新缓存场景并重烘静态地面 |
+| 副本空间类型与边界语言 | story-exploration.json的layout_family / grade_axis / edge_styles / void_surface；story_exploration_environment.surrounding_geology与墙/栏杆/拱廊/断墙；30区22类型、10—14功能空间，DUNGEON-IDENTITIES.md；tests/story_dungeon_identity.gd和tools/verify_story_dungeon_release.gd检查真实缓存及发布包 |
 | 植被缓存与无头制作 | `scripts/story_ground_cover.gd:6 _ready()`；source_mesh / source_transforms保留CPU数据，prepare_capture清空GPU缓冲；story_environment.cover_batch、tools/patch_story_ground_cover.gd；⚠️不得序列化Dummy渲染器的MultiMesh实例缓冲，可能产生遮住整幅画面的巨面 |
 | 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:78 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
@@ -480,6 +481,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 第二至第六幕美术/不同题材副本 → story_act_art / story_regional_environment / story-later-acts.json / story-later-terrain.json。新模型改acts-2-6-master.blend，export_story_models.py带--source局部导出；新场景改act*-*.tscn后用Bake-Later-Acts.ps1。JSON占地/轮廓与缓存场景成对更新，不可只改一边；地图ID、任务、传送存档不随美术改名。
 
 副本空旷、方形边界、独立高台 → story-exploration.json与story_exploration_art / story_exploration_environment。30副本、19室外区域共享轮廓与高程；动布局必须更新对应场景/GI/兼容缓存。Build-Exploration-Scenes.ps1与Bake-Exploration-Scenes.ps1支持按幕制作；Preview-Dungeons.cmd打开v6临时副本试玩。
+
+副本像同一套房间换位置 → DUNGEON-IDENTITIES.md与author_dungeon_identities.py（首次制作，禁止自动重放）；正常编辑story-exploration.json。墓甬道/岩腔/庭院翼楼/环塔/扇形剧场/设备大厅/船坞跨槽分别组织；grade_axis控制X/Y高差，edge_styles逐段控制墙/断墙/栏杆/拱廊/岩壁/开放边。Build/Bake-Exploration-Scenes.ps1加-DungeonsOnly只更新30区；Preview-Dungeons.cmd打开v7并可选择具体地图。保留地图ID、任务和存档入口。
 
 营地家具与进屋遮挡 → story-opening-dressing.json / story_set_dressing.gd / story_region / story_environment；带footprint的家具移动时同步JSON与可编辑场景。相机方向墙为Side组，固定烘焙排除Side/Front/Roof。prepare_reveal与reveal都要处理MeshInstance3D根本身，不能只遍历子节点。新增模块在master编辑后可指定export_story_models.py --assets局部导出。
 
@@ -682,7 +685,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 | README.md | 总览/启动/操作/存档 | 全局 |
 | docs/rpg/ACTS-2-6-ART.md | 五幕独立美术、84新模型、17套材质、45区烘焙、不同题材副本与临时试玩 | story_act_art / story_regional_environment / story-later-acts.json / story-later-terrain.json；tests/story_later_acts / story_regional_scene_models |
 | docs/rpg/DUNGEON-EXPLORATION.md | 30副本15功能空间、环路、多段高程，19室外有机轮廓，34新模块；25旧版/33重制版实际模板研究 | story_exploration_art / story_exploration_environment / story-exploration.json；tests/story_exploration |
-| [docs/rpg/README.md](docs/rpg/README.md)、IMPLEMENTATION.md、MAP-IMPLEMENTATION-RESEARCH.md、D2R-ENVIRONMENT-RESEARCH.md、RPG-MODE-PLAN.md、STORY.md、QUESTS.md（均在 docs/rpg/） | RPG连续地图重做版：PV背景、六幕营地、南门首图、40主线/24支线/9个人线；本地MPQ/CASC场景研究，连续野外、分层副本、激活传送阵与探索 | main.gd独立story页面；story_campaign/map/region/environment/world/screen/atlas负责运行。范围和剩余差异见IMPLEMENTATION；TideSession模式仍为expedition/roguelike |
+| [docs/rpg/README.md](docs/rpg/README.md)、IMPLEMENTATION.md、DUNGEON-IDENTITIES.md、MAP-IMPLEMENTATION-RESEARCH.md、D2R-ENVIRONMENT-RESEARCH.md、RPG-MODE-PLAN.md、STORY.md、QUESTS.md（均在 docs/rpg/） | RPG连续地图重做版：PV背景、六幕营地、南门首图、40主线/24支线/9个人线；本地MPQ/CASC场景研究，连续野外、分层副本、激活传送阵与探索；v7各副本按空间类型重做 | main.gd独立story页面；story_campaign/map/region/environment/world/screen/atlas负责运行。范围和剩余差异见IMPLEMENTATION；TideSession模式仍为expedition/roguelike |
 | EXPEDITION.md / ROGUELIKE.md | 远征/闯关玩法与验证 | expedition.gd / roguelike.gd |
 | ATTACK-TELEGRAPH.md | 攻击前摇提示（预警可读性、时长与美术口径） | scripts/attack_telegraph.gd |
 | output/ROGUE-CONTRACTS.md、output/CONTRACT-CHANGELOG.md、output/ROGUELIKE-EXPANSION-SUMMARY.md、output/R*.md（26 份） | 肉鸽扩展（图谱/事件/诅咒/每日/成长/房间 UI）的契约、变更记录、逐项验收报告与执行计划 | scripts/rogue_graph.gd、rogue_events.gd、rogue_curses.gd、rogue_daily.gd、rogue_growth.gd、rogue_room_ui.gd 等 |
@@ -844,6 +847,7 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-10 | 见同批提交 | v7重做30副本为空间类型驱动的布局：22类型、不同包络/空间数/高差轴/边界语言，庭院、甬道、岩腔、环塔、扇形剧场与水槽跨桥；新增真实轮廓图集、缓存/发布身份验证与具体地图试玩。更新§4.S/§5/§10；模型库与73任务保留，长跑暂缓。 |
 | 2026-10-10 | 见同批提交 | 重做30副本与19室外轮廓，34新Blender模块；共用房间图/空洞/高程/碰撞/敌群/探索图，补全49区GI与临时副本试玩；保留地图ID和73任务，长时间跑分暂缓。详见DUNGEON-EXPLORATION.md及TEST-REPORT。 |
 | 2026-10-10 | 见同批提交 | 二至六幕84个新模型、17套新PBR、15份地形、45个可编辑区域与GI烘焙，十种额外副本题材；跨幕释放美术缓存与独立临时试玩入口；地图ID/73任务保持一致，详见ACTS-2-6-ART.md及TEST-REPORT。 |
 | 2026-10-10 | （本轮Forward+提交） | 默认Forward+、三档画质与超分；开场Blender模块/PBR/地形、实际GI烘焙、曲岸碰撞、遮挡淡出、人物融合与区域缓存。原始验收和范围见TEST-REPORT、FORWARDPLUS-ART-PIPELINE.md；保留用户PV与旧试玩。 |
