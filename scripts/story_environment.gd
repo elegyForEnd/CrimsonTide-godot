@@ -6,6 +6,7 @@ const WATER = preload("res://resources/story_water.gdshader")
 const Floors=preload("res://scripts/story_floor_palette.gd")
 const Regional=preload("res://scripts/story_regional_environment.gd")
 const Exploration=preload("res://scripts/story_exploration_environment.gd")
+const Surfaces=preload("res://scripts/story_surface_geometry.gd")
 var kit = preload("res://scripts/story_asset_kit.gd").new()
 var world
 var roofs: Array=[]
@@ -14,6 +15,7 @@ var chunks: Array=[]
 var lights: Array=[]
 var cache_models: Array=[]
 var authoring := false
+var authoring_stage := -1
 var pending_paths: Dictionary={}
 const SLICE := "res://scenes/story/"
 func scene_path(stage: int, act: int = 1) -> String:
@@ -40,7 +42,7 @@ func build(w) -> void:
 		var chunk := Node3D.new(); world.scenery.add_child(chunk)
 		chunks.append({"node":chunk,"rect":Rect2(r.origin,r.extent)})
 		chunks[-1]["region"]=r
-		if authoring or Rect2(r.origin,r.extent).grow(2000).has_point(world.campaign.hero_at): populate_chunk(r,chunk)
+		if (authoring and (authoring_stage<0 or authoring_stage==s)) or (not authoring and Rect2(r.origin,r.extent).grow(3200).has_point(world.campaign.hero_at)): populate_chunk(r,chunk)
 	if not authoring and DisplayServer.get_name()!="headless":
 		for s in world.campaign.map.outdoor+([7,9] if world.campaign.map.act==1 else [7,8]):
 			var preload_path := scene_path(s,world.campaign.map.act)
@@ -159,7 +161,7 @@ func terrain(r) -> void:
 		for x in range(-margin,int(r.extent.x)+margin,step):
 			var center := Vector2(x+step*.5,y+step*.5)
 			if r.indoor and r.floor_polygon.is_empty() and not room_at(r,center): continue
-			if r.submerged(center): continue
+
 			var pieces: Array[Rect2]=[Rect2(x,y,step,step)]
 			if r.act>=2:
 				for building in r.buildings: pieces=cut_rectangles(pieces,building.rect)
@@ -176,15 +178,13 @@ func terrain(r) -> void:
 					for outside in connector_parts: pieces=cut_rectangles(pieces,outside)
 			for piece in pieces:
 				var vertices: Array[Vector2]=rect_vertices(piece)
-				if not r.floor_polygon.is_empty():
+				if not r.floor_polygon.is_empty() or not Surfaces.waters(r).is_empty():
 					vertices=[]
-					var quad := PackedVector2Array([piece.position,Vector2(piece.end.x,piece.position.y),piece.end,Vector2(piece.position.x,piece.end.y)])
-					for polygon in preload("res://scripts/story_exploration_art.gd").floor_pieces(r,quad):
+					for polygon in Surfaces.land_pieces(r,Surfaces.rectangle(piece)):
 						var indices := Geometry2D.triangulate_polygon(polygon)
 						for i in range(0,indices.size(),3):
 							var a: Vector2=polygon[indices[i]]; var b: Vector2=polygon[indices[i+1]]; var c: Vector2=polygon[indices[i+2]]
-							if (b-a).cross(c-a)<0: vertices.append_array([a,c,b])
-							else: vertices.append_array([a,b,c])
+							vertices.append_array([a,c,b] if (b-a).cross(c-a)<0 else [a,b,c])
 				for p in vertices:
 					var path: float=1.0-smoothstep(55,150,r.path_distance(p))
 					for b in r.buildings:
@@ -192,11 +192,13 @@ func terrain(r) -> void:
 					st.set_color(Color(1,1,1,path)); st.set_uv(p/100)
 					st.add_vertex(world.point(p+r.origin,r.base_height_at(p)))
 	st.generate_normals()
-	world.mesh_node(st.commit(),Vector3.ZERO,mat)
+	var floor_mesh: MeshInstance3D=world.mesh_node(st.commit(),Vector3.ZERO,mat)
+	floor_mesh.name="AuthoredOutdoorFloor"; floor_mesh.set_meta("surface_revision",1)
 	for shoreline in r.shorelines: curved_river(r,shoreline)
+	if r.stage==0: Surfaces.apron(self,r,mat)
 	if not r.indoor and r.stage>0:
 		if not r.floor_polygon.is_empty():
-			Exploration.outdoor_edge(self,r); return
+			Surfaces.apron(self,r,mat); Exploration.outdoor_edge(self,r); return
 		# Rough stone ridges enclose sectors while leaving exit spans clear.
 		var rng := RandomNumberGenerator.new(); rng.seed=r.act*311+r.stage*53
 		for i in range(0,int(r.extent.x),180):
@@ -222,15 +224,31 @@ func cut_rectangles(input: Array[Rect2], hole: Rect2) -> Array[Rect2]:
 	return output
 
 func connector_ground(rect: Rect2, material: Material) -> void:
-	var pieces: Array[Rect2]=[rect]
-	for stage in world.campaign.map.outdoor:
-		var r=world.campaign.map.regions[stage]
-		pieces=cut_rectangles(pieces,Rect2(r.origin,r.extent))
 	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for piece in pieces:
-		for p in rect_vertices(piece):
-			st.set_normal(Vector3.UP); st.set_color(Color(1,1,1,.9)); st.set_uv(p/100); st.add_vertex(world.point(p))
-	if not pieces.is_empty(): world.mesh_node(st.commit(),Vector3.ZERO,material)
+	var sides := SurfaceTool.new(); sides.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for y in range(int(rect.position.y),int(rect.end.y),50):
+		for x in range(int(rect.position.x),int(rect.end.x),50):
+			var cell := Rect2(Vector2(x,y),Vector2(minf(50,rect.end.x-x),minf(50,rect.end.y-y)))
+			for piece in Surfaces.connector_pieces(world.campaign.map,Surfaces.rectangle(cell)):
+				Surfaces.append(st,piece,func(p): return world.campaign.map.height_at(p),Vector2.ZERO,true)
+				# The raised connection has a real side and underside, rather than a
+				# paper-thin deck through which the black backdrop can be seen.
+				Surfaces.append(sides,piece,func(p): return Surfaces.apron_height(world.campaign.map,p)-20)
+				for i in piece.size():
+					var a: Vector2=piece[i]; var b: Vector2=piece[(i+1)%piece.size()]
+					var outer := (is_equal_approx(a.x,rect.position.x) and is_equal_approx(b.x,rect.position.x)) or (is_equal_approx(a.x,rect.end.x) and is_equal_approx(b.x,rect.end.x)) or (is_equal_approx(a.y,rect.position.y) and is_equal_approx(b.y,rect.position.y)) or (is_equal_approx(a.y,rect.end.y) and is_equal_approx(b.y,rect.end.y))
+					if not outer: continue
+					var points: Array[Vector3]=[world.point(a,world.campaign.map.height_at(a)),world.point(b,world.campaign.map.height_at(b)),world.point(b,Surfaces.apron_height(world.campaign.map,b)-20),world.point(a,Surfaces.apron_height(world.campaign.map,a)-20)]
+					for k in [0,1,2,0,2,3]: sides.set_uv(Vector2(points[k].x+points[k].z,points[k].y)*.45); sides.add_vertex(points[k])
+	st.generate_normals()
+	var mesh: MeshInstance3D=world.mesh_node(st.commit(),Vector3.ZERO,material)
+	mesh.name="ConnectedRoadSurface"; mesh.set_meta("surface_revision",1)
+	mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
+	sides.generate_normals()
+	var bank_material: StandardMaterial3D=kit.pbr("rock" if world.campaign.map.act==1 else "a%d_ground" % world.campaign.map.act).duplicate()
+	bank_material.cull_mode=BaseMaterial3D.CULL_DISABLED
+	var banks: MeshInstance3D=world.mesh_node(sides.commit(),Vector3.ZERO,bank_material)
+	banks.name="ConnectedRoadBanks"; banks.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
 
 func dungeon_walls(r) -> void:
 	if not r.exploration_plan.is_empty():
@@ -448,9 +466,10 @@ func entrance(door: Dictionary) -> void:
 	for i in (6 if world.campaign.map.act==1 else 0): block(Rect2(p+Vector2(-90,-120+i*20),Vector2(180,20)),6,3+i*2,kit.pbr("masonry"))
 
 func sync(focus: Vector2, dt: float = 0.0) -> void:
+	if authoring: return # Offline capture must not stream or fade another region.
 	for chunk in chunks:
-		if chunk.rect.grow(2000).has_point(focus) and chunk.node.get_child_count()==0: populate_chunk(chunk.region,chunk.node)
-		elif not chunk.rect.grow(3500).has_point(focus) and chunk.node.get_child_count()>0:
+		if chunk.rect.grow(3200).has_point(focus) and chunk.node.get_child_count()==0: populate_chunk(chunk.region,chunk.node)
+		elif not chunk.rect.grow(4400).has_point(focus) and chunk.node.get_child_count()>0:
 			for child in chunk.node.get_children(): chunk.node.remove_child(child); child.queue_free()
 	roofs=roofs.filter(func(item): return is_instance_valid(item.roof) and item.roof.is_inside_tree())
 	occluders=occluders.filter(func(item): return is_instance_valid(item.node) and item.node.is_inside_tree())
@@ -512,27 +531,7 @@ func camp_details(r) -> void:
 		for at in [Vector2(350,250),Vector2(1820,220),Vector2(1750,1730)]: world.prop("dungeon/rubble_large",at,Vector3(190,90,130),Color("a497a1"))
 
 func river(r, rect: Rect2) -> void:
-	var shape := rect
-	var surface := ShaderMaterial.new(); surface.shader=WATER
-	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var horizontal: bool=rect.size.x>rect.size.y
-	var length: float=rect.size.x if horizontal else rect.size.y
-	var count := maxi(1,int(ceil(length/80)))
-	var bank_mat := stone(Color("5c5b4c"))
-	for i in count:
-		var p0: float=float(i)/count
-		var p1: float=float(i+1)/count
-		var wobble0 := sin(i*1.61+float(r.stage))*30
-		var wobble1 := sin((i+1)*1.61+float(r.stage))*30
-		var a := Vector2(rect.position.x+p0*rect.size.x,rect.position.y+wobble0) if horizontal else Vector2(rect.position.x+wobble0,rect.position.y+p0*rect.size.y)
-		var b := Vector2(rect.position.x+p1*rect.size.x,rect.position.y+wobble1) if horizontal else Vector2(rect.position.x+wobble1,rect.position.y+p1*rect.size.y)
-		var offset := Vector2(0,rect.size.y) if horizontal else Vector2(rect.size.x,0)
-		for p in [a,b,b+offset,a,b+offset,a+offset]: st.set_normal(Vector3.UP); st.add_vertex(world.point(p+r.origin,-14))
-		for p in [a,a+offset]:
-			var size := Vector2(length/count+4,70) if horizontal else Vector2(70,length/count+4)
-			block(Rect2(p+r.origin-size*.5,size),28,-24,bank_mat)
-			if i%2==0: world.prop("medieval/rock_single_A",p+r.origin,Vector3(90,38,55),Color("a8a493"),Color.WHITE,i*.4,-12)
-	world.mesh_node(st.commit(),Vector3.ZERO,surface)
+	curved_river(r,Surfaces.rectangle(rect))
 
 func dungeon_details(r) -> void:
 	var stone_mat := stone(Color("7b7568"))
@@ -679,15 +678,32 @@ func register_authored(root: Node3D, region) -> void:
 		if node.is_in_group("editor_only"): node.queue_free()
 
 func curved_river(r, polygon: PackedVector2Array) -> void:
-	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var triangles := Geometry2D.triangulate_polygon(polygon)
-	for index in triangles:
-		st.set_normal(Vector3.UP); st.add_vertex(world.point(r.origin+polygon[index],-25))
+	var surface := SurfaceTool.new(); surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var banks := SurfaceTool.new(); banks.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var level := INF
+	for p in polygon: level=minf(level,r.base_height_at(p)-45)
+	for piece in Geometry2D.intersect_polygons(polygon,Surfaces.outline(r)):
+		Surfaces.append(surface,piece,func(_p): return level,r.origin)
+		for i in piece.size():
+			var a: Vector2=piece[i]; var b: Vector2=piece[(i+1)%piece.size()]
+			# Split at ground-grid crossings so the bank rim shares floor vertices.
+			var stops: Array[float]=[0,1]
+			var step := 50 if r.act==1 and r.stage==1 else 100
+			for axis in 2:
+				if is_equal_approx(a[axis],b[axis]): continue
+				for value in range(int(ceil(minf(a[axis],b[axis])/step))*step,int(maxf(a[axis],b[axis])),step):
+					var t: float=(value-a[axis])/(b[axis]-a[axis])
+					if t>0 and t<1: stops.append(t)
+			stops.sort()
+			for j in range(stops.size()-1):
+				var start := a.lerp(b,stops[j]); var end := a.lerp(b,stops[j+1])
+				var points: Array[Vector3]=[world.point(r.origin+start,r.base_height_at(start)),world.point(r.origin+end,r.base_height_at(end)),world.point(r.origin+end,level-20),world.point(r.origin+start,level-20)]
+				for k in [0,1,2,0,2,3]: banks.set_uv(Vector2(points[k].x+points[k].z,points[k].y)*.45); banks.add_vertex(points[k])
+	surface.generate_normals(); banks.generate_normals()
 	var material := ShaderMaterial.new(); material.shader=WATER
-	world.mesh_node(st.commit(),Vector3.ZERO,material)
-	for i in range(0,polygon.size(),3):
-		var p: Vector2=polygon[i]
-		kit.instance("rock_formation",world.scenery,world.point(r.origin+p,-27),Vector3(.38,.20,.38),i*.83)
+	var mesh: MeshInstance3D=world.mesh_node(surface.commit(),Vector3.ZERO,material); mesh.name="MatchedWaterSurface"; mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; mesh.set_meta("water_world_space",true)
+	var bank_material: StandardMaterial3D=kit.pbr("soil" if r.act==1 else "a%d_ground" % r.act).duplicate(); bank_material.cull_mode=BaseMaterial3D.CULL_DISABLED
+	var bank_mesh: MeshInstance3D=world.mesh_node(banks.commit(),Vector3.ZERO,bank_material); bank_mesh.name="MatchedWaterBanks"; bank_mesh.set_meta("surface_revision",1)
 
 func authored_details(r) -> void:
 	if r.stage==0:

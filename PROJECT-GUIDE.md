@@ -452,7 +452,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
 | 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
-| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:33 build()`，`story_world.gd:94 sync_story()`；tests/story_visual.gd |
+| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:94 sync_story()`；tests/story_visual.gd |
 | Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:46 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
@@ -460,6 +460,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 建筑室内地面材质 | story_floor_palette.gd、resources/story_interior_floor.gdshader；城堡/墓室/书库/礼拜堂分流，自然洞窟保留岩土；tools/patch_story_interior_floors.gd仅替换地面/台阶/台基，tests/story_architectural_floors.gd；docs/rpg/INTERIOR-FLOORS.md |
 | 第二至第六幕美术/副本 | `scripts/story_act_art.gd:14 configure()`、`scripts/story_act_art.gd:6 terrain()`；story-later-acts.json / story-later-terrain.json；`scripts/story_regional_environment.gd:4 ground()`、`scripts/story_regional_environment.gd:24 walls()`；独立acts-2-6-master.blend、scenes/story/act*-*.tscn；`tests/story_later_acts.gd:12 run()`、tools/Bake-Later-Acts.ps1；docs/rpg/ACTS-2-6-ART.md |
 | 副本规模、环路、分区高差、室外非矩形边界 | story_exploration_art.configure / contains / height、story_exploration_environment.terrain / walls / outdoor_edge；story-exploration.json同步模型、通行、导航、敌群、探索图；独立dungeon-master.blend与34新模块；tests/story_exploration.gd；⚠️布局修改后必须更新缓存场景并重烘静态地面 |
+| 室外地面、桥头、岸线与非通行背景 | story_surface_geometry.land_pieces / connector_pieces / apron / apron_height；story_environment.connector_ground / curved_river；tests/story_boundary_surfaces.gd覆盖实际普通/兼容网格、世界偏移和移动轮廓保护；BOUNDARY-SURFACES.md。⚠️Packed数组平移前必须duplicate；静态地面/岸壁改动要重烘，禁将衬底写入固定GI |
 | 副本空间类型与边界语言 | story-exploration.json的layout_family / grade_axis / edge_styles / void_surface；story_exploration_environment.surrounding_geology与墙/栏杆/拱廊/断墙；30区22类型、10—14功能空间，DUNGEON-IDENTITIES.md；tests/story_dungeon_identity.gd和tools/verify_story_dungeon_release.gd检查真实缓存及发布包 |
 | 植被缓存与无头制作 | `scripts/story_ground_cover.gd:6 _ready()`；source_mesh / source_transforms保留CPU数据，prepare_capture清空GPU缓冲；story_environment.cover_batch、tools/patch_story_ground_cover.gd；⚠️不得序列化Dummy渲染器的MultiMesh实例缓冲，可能产生遮住整幅画面的巨面 |
 | 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:78 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
@@ -779,6 +780,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 ---
 
+室外边界修复工具契约：Build-Exploration-Scenes / Bake-Exploration-Scenes支持-OutdoorsOnly（19区）；patch_story_boundary_aprons只修改25场中GI禁用的背景/水面，保存后重打兼容缓存。原营地10米地面余量不得与新衬底同面叠放；地图衔接要使用多边形而非区域包络。最新边界试玩为Preview-Boundaries.cmd和dist/CrimsonTide-ForwardPlus-v8.exe。
+
 ## 12. 路牌维护规范（做完一个功能、交接前必做）
 
 > 这份文件是「下一个人 / 下一个 AI」的唯一入口。代码变了而路牌没改，比没有路牌更糟：它会把后来者精准地指到错误的位置。
@@ -844,6 +847,9 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-10（同批提交）：v8修复六幕19区/六营地的可见边界、连接路封边和水面偏移。新增共享多边形几何与真实缓存接缝测试，19区陆地/岸壁重烘，25区GI禁用背景安全更新；任务/存档/小树非实体保持。制作说明BOUNDARY-SURFACES.md，长时间跑分暂缓。
+
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|

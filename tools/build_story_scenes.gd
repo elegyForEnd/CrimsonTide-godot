@@ -30,7 +30,8 @@ func run() -> void:
 		if "--camp-only" in OS.get_cmdline_user_args() and stage!=0: continue
 		var path := "res://scenes/story/"+("opening-%d" % stage if act==1 else "act%d-%d" % [act,stage])+".tscn"
 		if FileAccess.file_exists(path) and not "--replace-generated" in OS.get_cmdline_user_args(): print("PRESERVED ",path); continue
-		campaign.enter(act,stage); world.geometry_key=""; world.build_story(campaign)
+		campaign.enter(act,stage); world.environment_builder.authoring_stage=stage
+		world.geometry_key=""; world.build_story(campaign)
 		if "--cache-outdoors" in OS.get_cmdline_user_args() and campaign.map.regions[stage].indoor: continue
 		await process_frame
 		var source: Node3D=world.environment_builder.chunks[0].node
@@ -63,7 +64,7 @@ func run() -> void:
 					converted.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,mesh.mesh.surface_get_arrays(i))
 					converted.surface_set_material(i,mesh.get_active_material(i))
 				var unwrap_error := converted.lightmap_unwrap(Transform3D.IDENTITY,.24)
-				if unwrap_error!=OK: push_error("UV2 unwrap failed "+str(unwrap_error)); quit(1); return
+				if unwrap_error!=OK: push_error("UV2 unwrap failed "+str(unwrap_error)+" "+path+" "+str(authored.get_path_to(mesh))); quit(1); return
 				uv_cache[key]=converted
 			mesh.mesh=uv_cache[key]; mesh.gi_mode=GeometryInstance3D.GI_MODE_STATIC
 		for light in authored.find_children("*","OmniLight3D",true,false):

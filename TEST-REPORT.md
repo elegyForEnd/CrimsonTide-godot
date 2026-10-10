@@ -413,3 +413,13 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - Forward+与Compatibility最终各12张3840×2160图片，各48项0失败（story-identity-{forward,compat}-grounded.log），两者标准错误为空。检查实际空间色差、正确缓存加载和队伍站在可走地面；手工检查洞腔、庭院、剧场、水槽截图。24张图片逐文件检查尺寸无异常。正常游戏相机尺度未变，比较照片使用48米视野，方便观察空间结构；不是运行性能统计。
 - v7导出3497014376字节。内嵌PCK检查PACKED_IDENTITIES_READY dungeons=30 quests=73 model_identities=8408 forward_and_compat=true；8408为4204处摆放在普通/兼容两份缓存中的身份检查。包内CLI临时试玩PASS，原预览保存禁用/55个传送目的地保持。对应story-identity-{pck-final,pck-preview}.log。具体地图试玩脚本与兼容入口指向v7，旧EXE保留。
 - 实际v7发布版Forward+进入第一幕旧堡、Compatibility进入第五幕船坞，均STORY_READY quests=73、正确幕/关、正常退出0，标准错误为空（story-identity-release-{castle,shipyard-compat}.log）。没有遗留本轮Godot/试玩进程；路牌789锚点OK515/DRIFT0/WRONG0/HINT274。副本场景改动仅涉及30区，未重写19室外与六营地缓存。
+
+## 2026-10-10 地形边界、桥头与岸线（v8）
+
+- 19室外静态陆地/岸壁重新生成并实际烘焙；exploration-bake.log确认all complete count=19。25场（包含六营地）的非通行衬底与水面安全更新，检查无静态GI用户，原营地GI保留。30个副本轮廓、任务及存档没有改动；小树继续非实体。
+- 部分淹水网格精确裁切，道路按真实区域轮廓扣除重叠部分，补齐侧面/下封面；水面移到区域世界位置，岸线按地面网格交点采样。修复Packed数组别名造成道路计算误改移动轮廓的问题；修改前必须duplicate。背景覆盖最大21米正常视野及倾斜投影，邻区32米预载/44米卸载。
+- 最终普通与GL缓存各881项0失败，真实接缝顶点10878个；检查实际高度、无地表叠面、背景排除固定GI、水面世界位置、桥头覆盖、营地背景及轮廓保护（boundary-packed-final.log、boundary-packed-compat-final.log）。最终源码生成六幕代表场景36/0（boundary-generated.log）；表面互斥/小树73/0、地图地理748/0。探索/缓存/实际通行8529/0，后五幕34362/0，原始日志boundary-exploration.log / boundary-later-acts.log。
+- 制作中检出UV2展开状态、未索引Mesh测试及局部水面偏移问题；室外按单场进程展开，生成期间不流送/淡出邻区，索引测试支持未索引网格。中间照片也检出未封闭道路侧面、背景范围不足及营地虚拟边缘抢占原野高度，修正后重新更新背景/兼容缓存并核验真实接点。中间失败日志不作为最终验收数据。
+- Forward+与Compatibility最终各10张3840×2160实机图，在正常最大21米视野检查六幕边缘，各20/0（boundary-forward-final.log、boundary-compat-final.log）；人工检查第一幕连接桥头及第五幕岸线。截图build/boundary-<act>-<stage>.png和-compat.png。两轮截图退出仍有既有7个Texture RID警告；不宣称全工程零警告。
+- v8导出3533042066字节；内嵌PCK实际网格881/0（boundary-pck-geometry.log），包内同时核验30副本/8408摆放身份/73任务及19室外+六营地的两套缓存（boundary-pck-release.log）。实际EXE Forward+第一幕道路、GL第五幕海岸均STORY_READY、退出0（boundary-release-forward.log / boundary-release-compat.log）。Forward+退出有既有7个Texture RID警告，GL冒烟标准错误为空。
+- Preview-Boundaries.cmd、旧副本/后五幕预览与dist兼容入口指向v8；旧EXE保留。预览保存禁用，PV提示词保持原样。路牌789锚点OK515/DRIFT0/WRONG0/HINT274。未运行长时间跑分、全仓库门禁或完整人工六幕流程；不声明4K60、加载时间/显存达标或商业重制美术质量。

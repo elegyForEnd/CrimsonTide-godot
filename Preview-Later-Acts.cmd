@@ -8,7 +8,7 @@ if errorlevel 1 goto launch
 exit /b 1
 :launch
 set /a "storyPreviewAct=%errorlevel%+1"
-set "storyPreviewExe=CrimsonTide-ForwardPlus-v7.exe"
-if not exist "%storyPreviewExe%" set "storyPreviewExe=dist\CrimsonTide-ForwardPlus-v7.exe"
+set "storyPreviewExe=CrimsonTide-ForwardPlus-v8.exe"
+if not exist "%storyPreviewExe%" set "storyPreviewExe=dist\CrimsonTide-ForwardPlus-v8.exe"
 if not exist "%storyPreviewExe%" exit /b 1
 start "Crimson Tide Art Preview" "%storyPreviewExe%" -- --preview-story --story-act=%storyPreviewAct% --story-stage=0

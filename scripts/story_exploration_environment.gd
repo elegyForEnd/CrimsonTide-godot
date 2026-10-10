@@ -185,8 +185,6 @@ static func void_structures(builder, r) -> void:
 		mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; mesh.set_meta("blocked_core",true)
 static func outdoor_edge(builder, r) -> void:
 	var group := Node3D.new(); group.name="ErodedRegionEdge"; builder.world.scenery.add_child(group)
-	var stone: StandardMaterial3D=builder.kit.pbr("rock" if r.act==1 else "a%d_ground" % r.act)
-	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var boundary: PackedVector2Array=r.floor_polygon
 	for i in boundary.size():
 		var a: Vector2=boundary[i]; var b: Vector2=boundary[(i+1)%boundary.size()]
@@ -195,9 +193,6 @@ static func outdoor_edge(builder, r) -> void:
 		# Curved bank skirt hides the grid edge. Height varies with the actual shoulder.
 		var n := (b-a).normalized().orthogonal()
 		if r.floor_contains(middle+n*10): n=-n
-		var h0: float=r.height_at(a); var h1: float=r.height_at(b)
-		var verts: Array[Vector3]=[builder.world.point(r.origin+a,h0-2),builder.world.point(r.origin+b,h1-2),builder.world.point(r.origin+b+n*110,h1-140),builder.world.point(r.origin+a+n*110,h0-140)]
-		for k in [0,1,2,0,2,3]: st.set_uv(Vector2(verts[k].x+verts[k].z,verts[k].y)); st.add_vertex(verts[k])
 		var count := maxi(1,int(a.distance_to(b)/180))
 		for j in count:
 			var p := a.lerp(b,(j+.5)/count)
@@ -206,4 +201,3 @@ static func outdoor_edge(builder, r) -> void:
 			var node: Node3D=builder.kit.instance(model,group,builder.world.point(r.origin+p+n*140,r.height_at(p)-20),Vector3(1.2,.65+.2*sin(i*2+j),.70),-(b-a).angle()+.2*sin(i+j))
 			builder.kit.prepare_reveal(node); node.set_meta("occluder",{"p":r.origin+p,"height":180.0})
 			builder.occluders.append({"node":node,"p":r.origin+p,"height":180.0})
-	st.generate_normals(); builder.world.mesh_node(st.commit(),Vector3.ZERO,stone)

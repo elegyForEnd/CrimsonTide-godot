@@ -35,7 +35,7 @@ func _initialize() -> void:
 			for surface in mesh.mesh.get_surface_count():
 				var arrays: Array=mesh.mesh.surface_get_arrays(surface)
 				var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
-				var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
+				var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX]!=null else PackedInt32Array()
 				if indices.is_empty():
 					for i in vertices.size(): indices.append(i)
 				for i in range(0,indices.size(),3):
