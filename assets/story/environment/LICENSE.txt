@@ -1,0 +1,18 @@
+Original Blender meshes: created for the Crimson Tide project, October 2026.
+Editable master: art/story-environment/opening-master.blend
+Export-only tool: tools/export_story_models.py
+
+Offline PBR texture palette: Poly Haven, CC0 1.0 Universal.
+License statement: https://polyhaven.com/license
+Legal code: https://creativecommons.org/publicdomain/zero/1.0/
+The assets may be used and redistributed commercially under CC0.
+Exact asset pages, individual authors, upstream file URLs and checksums are
+recorded in material-sources.json. No live API is called by the game.
+
+Powered by Poly Haven (asset preparation tool only).
+Original architectural concept reference generated with the built-in ImageGen
+tool; reference is kept in the source-art directory and is not a game screenshot.
+
+Licensed vegetation: Poly Haven tree_small_02 and fern_02, CC0-1.0.
+Original pages/authors/URLs/checksums: vegetation-sources.json.
+Runtime models are normalized and simplified derivatives; their license remains CC0.

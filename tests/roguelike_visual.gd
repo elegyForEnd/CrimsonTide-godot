@@ -34,15 +34,15 @@ func run() -> void:
 	app.rogue_weapon=1
 	app.start_rogue()
 	app.session.set_physics_process(false)
-	assert(app.profile.data.coins==60,"Preparations deduct coins once on launch")
+	assert(app.profile.data.coins==160,"Current free preparation preserves coins")
 	assert(app.session.players[1].rogue_rerolls==2,"Purchased refresh cards in run")
 	app.start_rogue()
-	assert(app.profile.data.coins==60,"Duplicate launch click cannot charge twice")
+	assert(app.profile.data.coins==160,"Duplicate launch click cannot charge twice")
 	app.profile.data.coins=0
 	app.show_rogue_setup()
 	var seed_before: int=app.session.seed_value
 	app.start_rogue()
-	assert(app.session.seed_value==seed_before,"Insufficient funds do not relaunch")
+	assert(app.page_name=="rogue_game" or app.session.running,"Free launch remains available with zero coins")
 	print("ROGUE VISUAL / UI CHECKS PASS")
 	app.queue_free()
 	await process_frame

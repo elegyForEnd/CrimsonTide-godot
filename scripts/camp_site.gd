@@ -699,6 +699,9 @@ func _build_lighting() -> void:
 	env.glow_hdr_threshold = 0.7
 	world_environment = WorldEnvironment.new()
 	world_environment.environment = env
+	camp_camera.environment=env
+	world_environment.add_to_group("quality_environment")
+	if has_node("/root/GraphicsQuality"): get_node("/root/GraphicsQuality").configure(env)
 	add_child(world_environment)
 
 

@@ -1,0 +1,371 @@
+{
+  "provider": "Poly Haven",
+  "license_page": "https://polyhaven.com/license",
+  "normal_convention": "OpenGL +Y",
+  "orm_channels": "R=AO, G=roughness, B=metallic",
+  "assets": [
+    {
+      "role": "paving",
+      "slug": "cobblestone_floor_08",
+      "page": "https://polyhaven.com/a/cobblestone_floor_08",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "paving_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/cobblestone_floor_08/cobblestone_floor_08_diff_2k.png",
+          "md5": "8511c8ed19d1f962e1c453f3f42e688c",
+          "sha256": "6811316df3e4b1552066937a3605b8cdff98461bb271bc6e1927f21c85b97ba2",
+          "bytes": 7656774,
+          "map": "Diffuse"
+        },
+        {
+          "file": "paving_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/cobblestone_floor_08/cobblestone_floor_08_nor_gl_2k.png",
+          "md5": "318cd72ed7ec5a9cb6a274aa4175181d",
+          "sha256": "cdff801186a47be267f3b0e5c531255704cfdf1c484e88da5c701305c0c30ab5",
+          "bytes": 8380430,
+          "map": "nor_gl"
+        },
+        {
+          "file": "paving_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/cobblestone_floor_08/cobblestone_floor_08_arm_2k.png",
+          "md5": "82707c49d8c9f7caf186482434f73f9e",
+          "sha256": "06079567071f93aed7de1e537d0fd5e1c73442264e269637e4cb1b35f1ec5c6b",
+          "bytes": 5405230,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "soil",
+      "slug": "forest_ground_04",
+      "page": "https://polyhaven.com/a/forest_ground_04",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "Photography, Processing",
+        "Rico Cilliers": "Minor adjustment"
+      },
+      "files": [
+        {
+          "file": "soil_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_ground_04/forest_ground_04_diff_2k.png",
+          "md5": "93972c83249ae015111c8da714e6162c",
+          "sha256": "e8c273851a153e751a3664891ba5cbb28713f0cf98aca442291ab7b27b79900e",
+          "bytes": 9338911,
+          "map": "Diffuse"
+        },
+        {
+          "file": "soil_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_ground_04/forest_ground_04_nor_gl_2k.png",
+          "md5": "c7bf8a98de1dee39cb6028e06b8bdd37",
+          "sha256": "c0a6d53d29a88a1afb31964d08a32e228db615ebef0f90ff7af0d69d1f46a06c",
+          "bytes": 9987026,
+          "map": "nor_gl"
+        },
+        {
+          "file": "soil_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_ground_04/forest_ground_04_arm_2k.png",
+          "md5": "85449b5940ae70ddc7fb73a6aecd7543",
+          "sha256": "0b3c1662f7935939019bb027d1022201875b55e54a0f375b20c8f3572eda0731",
+          "bytes": 6575224,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "masonry",
+      "slug": "old_stone_wall_02",
+      "page": "https://polyhaven.com/a/old_stone_wall_02",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Charlotte Baglioni": "All"
+      },
+      "files": [
+        {
+          "file": "masonry_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/old_stone_wall_02/old_stone_wall_02_diff_2k.png",
+          "md5": "a26a38a792557828248b551d14786566",
+          "sha256": "0d0f6422775b87611b804030a951f3674699a2e64c6e66837f8fd5f8c7b58f60",
+          "bytes": 22603719,
+          "map": "Diffuse"
+        },
+        {
+          "file": "masonry_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/old_stone_wall_02/old_stone_wall_02_nor_gl_2k.png",
+          "md5": "ef8726df221e9524df4c31ee7ab5be81",
+          "sha256": "99306a66dccace63f5af767256640c35035e2b2f3c12093a3afaf72472e0dff6",
+          "bytes": 22892061,
+          "map": "nor_gl"
+        },
+        {
+          "file": "masonry_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/old_stone_wall_02/old_stone_wall_02_arm_2k.png",
+          "md5": "85175f9a165624f2ce33cce9598bfcc7",
+          "sha256": "d7cba93745b7d98cb913f7e27fe9cb1b9ec3b0bd62c3874b9a8b00ffc0f7abf9",
+          "bytes": 15125229,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "timber",
+      "slug": "weathered_brown_planks",
+      "page": "https://polyhaven.com/a/weathered_brown_planks",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dimitrios Savva": "Photography",
+        "Rico Cilliers": "Processing"
+      },
+      "files": [
+        {
+          "file": "timber_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/weathered_brown_planks/weathered_brown_planks_diff_2k.png",
+          "md5": "16a39f77380ac5ec40a08e8911a56821",
+          "sha256": "3c121aef3a753b1c9d8e0fef2fe4ff81fb83dcedd477723417cd5c6a1db2e161",
+          "bytes": 25542963,
+          "map": "Diffuse"
+        },
+        {
+          "file": "timber_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/weathered_brown_planks/weathered_brown_planks_nor_gl_2k.png",
+          "md5": "b7fa266208d57c10c329349037744311",
+          "sha256": "60934139dbb2c6612987f4fe8bf0988ff7d6cb2130428541e85cd647d5306915",
+          "bytes": 25416458,
+          "map": "nor_gl"
+        },
+        {
+          "file": "timber_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/weathered_brown_planks/weathered_brown_planks_arm_2k.png",
+          "md5": "796c589040d5992ed7003a50c97db5cc",
+          "sha256": "54d75851f8e531daf53b7edde22bd6fd6673a68973d40384f445624a17ac3eb3",
+          "bytes": 17227055,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "slate",
+      "slug": "roof_slates_02",
+      "page": "https://polyhaven.com/a/roof_slates_02",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "slate_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/roof_slates_02/roof_slates_02_diff_2k.png",
+          "md5": "9dfce62ccfd1ef34cf5a4f3593c1af8b",
+          "sha256": "44c123415e298d050e0b22d0c5d570c51424013c5510e4de185e01a8536a9fa5",
+          "bytes": 24443134,
+          "map": "Diffuse"
+        },
+        {
+          "file": "slate_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/roof_slates_02/roof_slates_02_nor_gl_2k.png",
+          "md5": "dd7a5ad674b3590c26abd25c6f8927ea",
+          "sha256": "0109114db94d8498cd964da410308152bcbda52cadc264eaa89601d37dbc64b4",
+          "bytes": 23806907,
+          "map": "nor_gl"
+        },
+        {
+          "file": "slate_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/roof_slates_02/roof_slates_02_arm_2k.png",
+          "md5": "a93a056735c1f9f2f67c25d5cfbc27d4",
+          "sha256": "f29dd87ab6480a7edd47f563831745dd63ea543569faf0a66c60c290eaa0892f",
+          "bytes": 17339988,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "rock",
+      "slug": "rock_face_03",
+      "page": "https://polyhaven.com/a/rock_face_03",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dario Barresi": "Photography",
+        "Rico Cilliers": "Processing"
+      },
+      "files": [
+        {
+          "file": "rock_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rock_face_03/rock_face_03_diff_2k.png",
+          "md5": "98cae14bd2f598f849f9e998f9f7e607",
+          "sha256": "09c30549220c8297c06eabcb25d272fcc1b514548be712221bd9d47f010def8b",
+          "bytes": 22809381,
+          "map": "Diffuse"
+        },
+        {
+          "file": "rock_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rock_face_03/rock_face_03_nor_gl_2k.png",
+          "md5": "6f2f635fb9890cb545806dfb4fc9f50a",
+          "sha256": "53044f276b4f1c3041b91c7d4767bda0d75cb4b2d237f08b64eb4e95ee456a93",
+          "bytes": 23159678,
+          "map": "nor_gl"
+        },
+        {
+          "file": "rock_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rock_face_03/rock_face_03_arm_2k.png",
+          "md5": "35b7e33c0bd96ba6ebf786df30cc7b39",
+          "sha256": "8b306caf9c78d7293cc2baf4caa6214612e1f0be70660771b85cbb3faafe9c2d",
+          "bytes": 17501637,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "mud",
+      "slug": "muddy_tracks",
+      "page": "https://polyhaven.com/a/muddy_tracks",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Amal Kumar": "All"
+      },
+      "files": [
+        {
+          "file": "mud_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/muddy_tracks/muddy_tracks_diff_2k.png",
+          "md5": "883ab7955b49cbb9d2c79e62d45be9e1",
+          "sha256": "20b5e54d2a05320cad5ce23de24ba6ad330872b314875109a94f4c37179d259e",
+          "bytes": 24995948,
+          "map": "Diffuse"
+        },
+        {
+          "file": "mud_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/muddy_tracks/muddy_tracks_nor_gl_2k.png",
+          "md5": "7dad67c79cc10fd840928a7b1d1fd6e4",
+          "sha256": "db55423f311d2fdfa86b80e7d6e2bbf23c134edfcdd45a4cbdf45788583203f5",
+          "bytes": 27236010,
+          "map": "nor_gl"
+        },
+        {
+          "file": "mud_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/muddy_tracks/muddy_tracks_arm_2k.png",
+          "md5": "56f0cc7f5af3f57a95fc6adaef4d3f35",
+          "sha256": "4381aed33b8ff7f09d5ec51f28a98ccb452e3e3515311f5d6d1970269619ed9b",
+          "bytes": 16081531,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "iron",
+      "slug": "rusty_metal_04",
+      "page": "https://polyhaven.com/a/rusty_metal_04",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Amal Kumar": "All"
+      },
+      "files": [
+        {
+          "file": "iron_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rusty_metal_04/rusty_metal_04_diff_2k.png",
+          "md5": "fd94b4a30767d01fbf3593703f1df888",
+          "sha256": "d9eee52d385f8ebefd1f86bd96b224775d805c650eff8b20e65fd2bb9fd5a2f1",
+          "bytes": 25663437,
+          "map": "Diffuse"
+        },
+        {
+          "file": "iron_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rusty_metal_04/rusty_metal_04_nor_gl_2k.png",
+          "md5": "bfdc50724e48e42ed170efb473ce1161",
+          "sha256": "e29386e08affdb512887e54ac527303ccb7d1f7e5abf5620681fb5f49d1c0b6d",
+          "bytes": 21918173,
+          "map": "nor_gl"
+        },
+        {
+          "file": "iron_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rusty_metal_04/rusty_metal_04_arm_2k.png",
+          "md5": "dfa5a6f8c4896c174bcf4f80a682fd26",
+          "sha256": "8837ef054d0ce51107ec6acd71bee884b6dad046ae72f56cf713c11519754d61",
+          "bytes": 21121234,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "cloth",
+      "slug": "denim_fabric",
+      "page": "https://polyhaven.com/a/denim_fabric",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "cloth_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/denim_fabric/denim_fabric_diff_2k.png",
+          "md5": "2d51a4b1d1ad6099ddef94cb64e9d70c",
+          "sha256": "463ef83890dc3b6f2a9fa41cb0a1b63d3cf18e3909333f94f80816e59fe660e5",
+          "bytes": 11391647,
+          "map": "Diffuse"
+        },
+        {
+          "file": "cloth_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/denim_fabric/denim_fabric_nor_gl_2k.png",
+          "md5": "a2d6a04f2c7cc9d0c5ba033534c638d0",
+          "sha256": "9b4fc458a4da376b635b6194247ed3aa7d58fcd21a8c534e9fa6c9bb9189ad48",
+          "bytes": 6282901,
+          "map": "nor_gl"
+        },
+        {
+          "file": "cloth_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/denim_fabric/denim_fabric_arm_2k.png",
+          "md5": "62e52f7b36812dfa0a3f353f82cde1fd",
+          "sha256": "4082b4257c219764c6f1f04cff415fe17975ba1e0514c08099d233929d231233",
+          "bytes": 13765019,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "bark",
+      "slug": "bark_brown_02",
+      "page": "https://polyhaven.com/a/bark_brown_02",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "bark_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_02/bark_brown_02_diff_2k.png",
+          "md5": "c2d57e5293da1d365ac395cae19b1d9b",
+          "sha256": "e2c2563e4149bf06386f8e8db590d5c2d7e8f2459e3e08132fe616acb2d07085",
+          "bytes": 8514206,
+          "map": "Diffuse"
+        },
+        {
+          "file": "bark_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_02/bark_brown_02_nor_gl_2k.png",
+          "md5": "24bbfca9cae988a4a753cb42123cab3f",
+          "sha256": "d37078fc9b058f60b9445e53f8fef7c74caf8065b325a07521152b6033229456",
+          "bytes": 9323032,
+          "map": "nor_gl"
+        },
+        {
+          "file": "bark_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_02/bark_brown_02_arm_2k.png",
+          "md5": "b56615d5f886b6fcc8fefc44d7994e45",
+          "sha256": "00e5e5633f77f0f8d15884fc243818988a1bda1ab71ed888df64f6bbba9486fd",
+          "bytes": 6086265,
+          "map": "arm"
+        }
+      ]
+    }
+  ]
+}

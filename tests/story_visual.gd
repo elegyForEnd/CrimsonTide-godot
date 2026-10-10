@@ -10,8 +10,8 @@ func _initialize() -> void:
 	call_deferred("run")
 func capture(name: String) -> void:
 	for i in 3: screen_ref.campaign.allies[i]=screen_ref.campaign.hero_at+Vector2((i-1)*75,-75)
-	await process_frame
-	await process_frame
+	# Allow the authored 0.25 second roof reveal to complete before capture.
+	for i in 20: await process_frame
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png("res://build/story-"+name+".png")
 func run() -> void:
@@ -29,7 +29,7 @@ func run() -> void:
 	check(south.y>middle.y,"south movement projects toward bottom of screen")
 	check(screen.heading.text.contains("雷霆要塞"),"opening camp HUD")
 	await capture("camp")
-	screen.campaign.hero_at=Vector2(850,580)
+	screen.campaign.hero_at=screen.campaign.map.npc_at[0]
 	screen.interact()
 	check(screen.modal,"NPC opens actual dialogue panel")
 	await capture("npc")
@@ -47,7 +47,7 @@ func run() -> void:
 	await capture("stairs")
 	check(absf(screen.world.sprites[0].position.y-(screen.campaign.map.height_at(screen.campaign.hero_at)+2)*.01)<.01,"sprite stands at the stair height")
 	screen.campaign.enter(1,0)
-	screen.campaign.hero_at=Vector2(640,500); screen.world.focus=screen.campaign.hero_at
+	screen.campaign.hero_at=screen.campaign.map.regions[0].buildings[0].rect.get_center(); screen.world.focus=screen.campaign.hero_at
 	await capture("interior")
 	var roof_hidden := false
 	for item in screen.world.environment_builder.roofs:

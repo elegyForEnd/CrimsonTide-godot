@@ -21,6 +21,7 @@ var journal_open := false
 var sound: TideSound
 var music_signature := ""
 var move_target := Vector2.INF
+var photo_mode := false
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -132,7 +133,7 @@ func _process(dt: float) -> void:
 	if not active: return
 	screen_time+=dt; toast_time=maxf(0,toast_time-dt); message.visible=toast_time>0
 	world.sync_story(size,dt)
-	var screen_point := get_global_mouse_position()
+	var screen_point := get_global_transform_with_canvas()*get_local_mouse_position()
 	aim=world.unproject(screen_point)-campaign.hero_at
 	var target := nearest()
 	hint.text="[E] "+str(target.get("label","")) if not target.is_empty() and not modal else ""
@@ -196,7 +197,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index==MOUSE_BUTTON_WHEEL_UP: world.zoom=clampf(world.zoom-1,11,21)
 		elif event.button_index==MOUSE_BUTTON_WHEEL_DOWN: world.zoom=clampf(world.zoom+1,11,21)
 		elif event.button_index==MOUSE_BUTTON_RIGHT:
-			var destination: Vector2=world.unproject(get_global_mouse_position())
+			var destination: Vector2=world.unproject(get_global_transform_with_canvas()*get_local_mouse_position())
 			if campaign.map.walkable(destination): move_target=destination; campaign.routes.erase("player")
 	if not active or not event is InputEventKey or not event.pressed or event.echo: return
 	if event.keycode==KEY_ESCAPE:
@@ -379,6 +380,9 @@ func show_endings() -> void:
 func show_menu() -> void:
 	var back := panel("故事模式 · 暂停")
 	button(back,"继续守望",Vector2(350,160),Vector2(300,48),close_panel)
+	button(back,"画面设置",Vector2(350,580),Vector2(300,44),func():
+		var settings := panel("画面设置")
+		preload("res://scripts/graphics_settings_ui.gd").build(settings,get_node("/root/GraphicsQuality"),Vector2(180,125)))
 	if "A6-M06" in campaign.state.completed and not "E-M01" in campaign.state.completed:
 		button(back,"破冠后的选择",Vector2(350,520),Vector2(300,48),show_final_choice)
 	button(back,"保存并返回标题",Vector2(350,245),Vector2(300,48),func(): campaign.save_campaign(); close_panel(); set_active(false); exit_requested.emit())
@@ -388,6 +392,7 @@ func show_menu() -> void:
 	text_block(back,"战役自动保存，任务、装备与其他模式分开。\n\n六幕均有独立营地。靠近NPC按 E；南门连续步行进入野外。M 查看地图，E 进入副本或激活传送阵。\n\n1/2/3更换操作角色，另外两位伙伴会跟随并协助战斗。",Vector2(110,365),Vector2(800,220))
 
 func _draw() -> void:
+	if photo_mode: return
 	if not active or world==null or campaign.state.is_empty(): return
 	for e in campaign.enemies:
 		if e.hp<=0: continue

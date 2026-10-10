@@ -29,7 +29,7 @@ func run() -> void:
 	screen.campaign.hero_at=Vector2(1100,2510)
 	for i in 100: screen.campaign.update(0.02,Vector2.UP)
 	check(screen.campaign.state.stage==0,"walking back north returns to camp")
-	screen.campaign.hero_at=Vector2(1500,590); screen.interact()
+	screen.campaign.hero_at=screen.campaign.map.npc_at[1]; screen.interact()
 	check(screen.modal,"healer interaction opens services")
 	screen.close_panel()
 	app.show_title()

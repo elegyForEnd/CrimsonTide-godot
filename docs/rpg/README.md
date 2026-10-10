@@ -5,6 +5,7 @@
 故事模式已接入连续地图重做版，见[启动、实现范围与剩余差异](IMPLEMENTATION.md)。[地图研究](MAP-IMPLEMENTATION-RESEARCH.md)记录制作前对本地资源包的实际解析。
 
 - [重制版3D地编研究与连续地图重做](D2R-ENVIRONMENT-RESEARCH.md)
+- [Forward+ 开场样板与美术生产流程](FORWARDPLUS-ART-PIPELINE.md)
 - [详细玩法与开发计划](RPG-MODE-PLAN.md)
 - [完整长篇剧情《血月尽头，仍有黎明》](STORY.md)
 - [主线、支线、角色线与NPC索引](QUESTS.md)

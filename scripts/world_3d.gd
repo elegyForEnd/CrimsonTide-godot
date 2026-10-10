@@ -72,6 +72,11 @@ func _ready() -> void:
 	environment.environment.ambient_light_color=Color("9bacc9")
 	environment.environment.ambient_light_energy=0.5
 	add_child(environment)
+	view_camera.environment=environment.environment
+	environment.add_to_group("quality_environment")
+	if has_node("/root/GraphicsQuality"): get_node("/root/GraphicsQuality").configure(environment.environment)
+	sun.directional_shadow_max_distance=40.0
+	sun.shadow_bias=.035; sun.shadow_normal_bias=.65
 
 static func point(p: Vector2, height: float = 0.0) -> Vector3:
 	return Vector3(p.x*UNIT,height*UNIT,p.y*UNIT)

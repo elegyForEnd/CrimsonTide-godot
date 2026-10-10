@@ -27,6 +27,8 @@ func run() -> void:
 	app.rogue_field._process(0)
 	app.toast_time=0
 	var combat=s.roguelike.combat
+	# Node routes no longer guarantee a guardian in area 5; explicitly initialize one.
+	combat.setup_boss(boss,1,s)
 	combat.begin_skill(s,boss,0,s.players[1])
 	combat.update(s,boss,boss.boss_windup+.08)
 	combat.tick(s,boss.boss_windup+.08)

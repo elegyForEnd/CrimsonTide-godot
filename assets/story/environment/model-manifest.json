@@ -1,0 +1,496 @@
+{
+  "source": "art/story-environment/opening-master.blend",
+  "exporter": "tools/export_story_models.py",
+  "models": [
+    {
+      "name": "anvil",
+      "file": "anvil.glb",
+      "triangles": 252,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "arcade_broken",
+      "file": "arcade_broken.glb",
+      "triangles": 1340,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "arcade_intact",
+      "file": "arcade_intact.glb",
+      "triangles": 1836,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "bookshelf",
+      "file": "bookshelf.glb",
+      "triangles": 4536,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "buttress_broken",
+      "file": "buttress_broken.glb",
+      "triangles": 1944,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "buttress_intact",
+      "file": "buttress_intact.glb",
+      "triangles": 2592,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "canopy",
+      "file": "canopy.glb",
+      "triangles": 288,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cargo",
+      "file": "cargo.glb",
+      "triangles": 2052,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cave_ceiling",
+      "file": "cave_ceiling.glb",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cave_portal",
+      "file": "cave_portal.glb",
+      "triangles": 2272,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cave_wall",
+      "file": "cave_wall.glb",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "chimney_broken",
+      "file": "chimney_broken.glb",
+      "triangles": 432,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "chimney_intact",
+      "file": "chimney_intact.glb",
+      "triangles": 648,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cliff",
+      "file": "cliff.glb",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dead_tree",
+      "file": "dead_tree.glb",
+      "triangles": 252,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "eaves_broken",
+      "file": "eaves_broken.glb",
+      "triangles": 36,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "eaves_intact",
+      "file": "eaves_intact.glb",
+      "triangles": 36,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "exposed_frame_broken",
+      "file": "exposed_frame_broken.glb",
+      "triangles": 108,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "exposed_frame_intact",
+      "file": "exposed_frame_intact.glb",
+      "triangles": 108,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "forest_tree",
+      "file": "forest_tree.glb",
+      "triangles": 3404,
+      "meshes": 2,
+      "vendor": false
+    },
+    {
+      "name": "forge",
+      "file": "forge.glb",
+      "triangles": 648,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "foundation_broken",
+      "file": "foundation_broken.glb",
+      "triangles": 864,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "foundation_intact",
+      "file": "foundation_intact.glb",
+      "triangles": 864,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "gothic_window_broken",
+      "file": "gothic_window_broken.glb",
+      "triangles": 1908,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "gothic_window_intact",
+      "file": "gothic_window_intact.glb",
+      "triangles": 1944,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "grass_tuft",
+      "file": "grass_tuft.glb",
+      "triangles": 48,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "handcart",
+      "file": "handcart.glb",
+      "triangles": 2556,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "iron_door_broken",
+      "file": "iron_door_broken.glb",
+      "triangles": 1188,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "iron_door_intact",
+      "file": "iron_door_intact.glb",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "iron_grille_broken",
+      "file": "iron_grille_broken.glb",
+      "triangles": 1908,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "iron_grille_intact",
+      "file": "iron_grille_intact.glb",
+      "triangles": 1944,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "pointed_arch_broken",
+      "file": "pointed_arch_broken.glb",
+      "triangles": 1268,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "pointed_arch_intact",
+      "file": "pointed_arch_intact.glb",
+      "triangles": 1764,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "ridge_broken",
+      "file": "ridge_broken.glb",
+      "triangles": 72,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "ridge_intact",
+      "file": "ridge_intact.glb",
+      "triangles": 72,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "rock_formation",
+      "file": "rock_formation.glb",
+      "triangles": 1304,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "roof_beam_broken",
+      "file": "roof_beam_broken.glb",
+      "triangles": 72,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "roof_beam_intact",
+      "file": "roof_beam_intact.glb",
+      "triangles": 72,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "rope_coil",
+      "file": "rope_coil.glb",
+      "triangles": 1200,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "rubble",
+      "file": "rubble.glb",
+      "triangles": 2052,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "rubble_pile_broken",
+      "file": "rubble_pile_broken.glb",
+      "triangles": 960,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "rubble_pile_intact",
+      "file": "rubble_pile_intact.glb",
+      "triangles": 960,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "ruin_column_broken",
+      "file": "ruin_column_broken.glb",
+      "triangles": 36,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "ruin_column_intact",
+      "file": "ruin_column_intact.glb",
+      "triangles": 36,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "service_0",
+      "file": "service_0.glb",
+      "triangles": 16608,
+      "meshes": 3,
+      "vendor": false
+    },
+    {
+      "name": "service_1",
+      "file": "service_1.glb",
+      "triangles": 17134,
+      "meshes": 3,
+      "vendor": false
+    },
+    {
+      "name": "service_2",
+      "file": "service_2.glb",
+      "triangles": 14466,
+      "meshes": 3,
+      "vendor": false
+    },
+    {
+      "name": "service_3",
+      "file": "service_3.glb",
+      "triangles": 18018,
+      "meshes": 3,
+      "vendor": false
+    },
+    {
+      "name": "service_4",
+      "file": "service_4.glb",
+      "triangles": 16610,
+      "meshes": 3,
+      "vendor": false
+    },
+    {
+      "name": "service_5",
+      "file": "service_5.glb",
+      "triangles": 19878,
+      "meshes": 3,
+      "vendor": false
+    },
+    {
+      "name": "slate_roof_broken",
+      "file": "slate_roof_broken.glb",
+      "triangles": 550,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "slate_roof_intact",
+      "file": "slate_roof_intact.glb",
+      "triangles": 654,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "south_gate",
+      "file": "south_gate.glb",
+      "triangles": 4680,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "stained_window_broken",
+      "file": "stained_window_broken.glb",
+      "triangles": 1908,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "stained_window_intact",
+      "file": "stained_window_intact.glb",
+      "triangles": 2052,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "stairs_broken",
+      "file": "stairs_broken.glb",
+      "triangles": 648,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "stairs_intact",
+      "file": "stairs_intact.glb",
+      "triangles": 864,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "stone_wall_broken",
+      "file": "stone_wall_broken.glb",
+      "triangles": 1944,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "stone_wall_intact",
+      "file": "stone_wall_intact.glb",
+      "triangles": 2592,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "tool_rack",
+      "file": "tool_rack.glb",
+      "triangles": 540,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "tree_root",
+      "file": "tree_root.glb",
+      "triangles": 216,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "wall_corner_broken",
+      "file": "wall_corner_broken.glb",
+      "triangles": 2592,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "wall_corner_intact",
+      "file": "wall_corner_intact.glb",
+      "triangles": 3240,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "wall_section",
+      "file": "wall_section.glb",
+      "triangles": 972,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "window_sill_broken",
+      "file": "window_sill_broken.glb",
+      "triangles": 1908,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "window_sill_intact",
+      "file": "window_sill_intact.glb",
+      "triangles": 1944,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "wood_door_broken",
+      "file": "wood_door_broken.glb",
+      "triangles": 648,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "wood_door_intact",
+      "file": "wood_door_intact.glb",
+      "triangles": 972,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "woodland_fern",
+      "file": "woodland_fern.glb",
+      "triangles": 6232,
+      "meshes": 1,
+      "vendor": true
+    },
+    {
+      "name": "woodland_tree",
+      "file": "woodland_tree.glb",
+      "triangles": 142998,
+      "meshes": 1,
+      "vendor": true
+    }
+  ]
+}

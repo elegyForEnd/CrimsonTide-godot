@@ -39,8 +39,12 @@ func run() -> void:
 			await capture("combat-h%d-w%d" % [hero,weapon])
 		p.swing_time=0.0
 		p.skill=0.0
+		# Physics is frozen in this fixture, so mana does not regenerate between heroes.
+		p.mana=p.max_mana
 		app.field.combat.reset()
 		app.session.perform(1,"skill")
+		if not app.ultimate.active:
+			push_error("Ultimate preview failed to start for hero %d" % hero); quit(1); return
 		await app.ultimate.ended
 		await create_timer(0.23).timeout
 		await capture("combat-skill-%d" % hero)

@@ -4561,6 +4561,11 @@ func show_settings() -> void:
 	)
 	label(overlay,"手柄：左摇杆移动 / 右摇杆瞄准；菜单十字键选择，A确认，B返回；右摇杆光标",at+Vector2(37,483),15,MUTED)
 	label(overlay,"成长自动保存；标题页「账号 / 存档」可设置云同步。",at+Vector2(37,520),15,MUTED)
+	button(overlay,"画面质量 / 超分辨率",at+Vector2(37,558),Vector2(665,42),show_graphics_settings)
+
+func show_graphics_settings() -> void:
+	var at := modal_box("画面设置",Vector2(740,620))
+	preload("res://scripts/graphics_settings_ui.gd").build(overlay,get_node("/root/GraphicsQuality"),at+Vector2(40,115))
 
 func set_music_volume(value: float) -> void:
 	var bus := AudioServer.get_bus_index("Music")

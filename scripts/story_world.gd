@@ -17,6 +17,11 @@ const TONES := [Color("617065"),Color("77727d"),Color("627184"),Color("766579"),
 var environment_builder = preload("res://scripts/story_environment.gd").new()
 var geometry_key := ""
 var zoom := 15.0
+const CONTACT_SHADOW = preload("res://resources/story_contact_shadow.gdshader")
+var contact_shadows: Array[MeshInstance3D]=[]
+var contact_material: ShaderMaterial
+func _exit_tree() -> void:
+	environment_builder.release_resources()
 
 func build_story(c) -> void:
 	campaign=c
@@ -32,10 +37,10 @@ func build_story(c) -> void:
 		for child in get_children():
 			if child is DirectionalLight3D:
 				child.rotation_degrees=Vector3(-52,-35,0)
-				child.light_color=Color("e6d5b0"); child.light_energy=.75 if c.map.layer==0 else .20
+				child.light_color=Color("b7c8e4"); child.light_energy=.63 if c.map.layer==0 else .20
 			if child is WorldEnvironment:
-				child.environment.ambient_light_color=Color("9ba7b6")
-				child.environment.ambient_light_energy=.48 if c.map.layer==0 else .28
+				child.environment.ambient_light_color=Color("829ab7")
+				child.environment.ambient_light_energy=.28 if c.map.layer==0 else .16
 				child.environment.background_color=Color("171b20")
 	sync_story(Vector2(1440,900),0)
 
@@ -54,15 +59,42 @@ func unproject(screen: Vector2) -> Vector2:
 func submit_sprite(texture: Texture2D, rect: Rect2, region: Rect2, tint: Color, pose: Transform2D) -> void:
 	super.submit_sprite(texture,rect,region,tint,pose)
 	sprites[used-1].position.y=(campaign.map.height_at(pose.origin)+2)*UNIT
+	if contact_material==null:
+		contact_material=ShaderMaterial.new(); contact_material.shader=CONTACT_SHADOW
+	if used>contact_shadows.size():
+		var shadow := MeshInstance3D.new(); var plane := PlaneMesh.new(); plane.size=Vector2.ONE
+		shadow.mesh=plane; shadow.material_override=contact_material
+		shadow.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(shadow); contact_shadows.append(shadow)
+	var shadow: MeshInstance3D=contact_shadows[used-1]
+	shadow.visible=true; shadow.position=point(pose.origin,campaign.map.height_at(pose.origin)+1.5)
+	shadow.scale=Vector3(maxf(.35,rect.size.x*UNIT*.65),1,maxf(.25,rect.size.x*UNIT*.38))
+	var p := pose.origin
+	var slope_x: float=(campaign.map.height_at(p+Vector2(8,0))-campaign.map.height_at(p-Vector2(8,0)))/16.0
+	var slope_z: float=(campaign.map.height_at(p+Vector2(0,8))-campaign.map.height_at(p-Vector2(0,8)))/16.0
+	shadow.rotation=Vector3(-atan(slope_z),0,atan(slope_x))
+	var tone := Color("e4eaf3") if campaign.map.layer==0 else Color("c7cfdf")
+	for light in environment_builder.lights:
+		if not light.visible: continue
+		var distance := Vector2(light.global_position.x,light.global_position.z).distance_to(p*UNIT)
+		if distance<light.omni_range: tone=tone.lerp(Color("ffecd5"),clampf((1.0-distance/light.omni_range)*.25,0,.25))
+	sprites[used-1].modulate=tint*tone
+
+func end_sprites() -> void:
+	super.end_sprites()
+	for i in range(used,contact_shadows.size()): contact_shadows[i].hide()
 
 func sync_story(screen: Vector2, dt: float) -> void:
 	if campaign==null: return
+	if focus.distance_to(campaign.hero_at)>1000:
+		focus=campaign.hero_at
+		if has_node("/root/GraphicsQuality"): get_node("/root/GraphicsQuality").reset_history()
 	focus=focus.lerp(campaign.hero_at,1.0-exp(-8.0*dt)) if dt>0 else campaign.hero_at
 	view_camera.size=zoom
 	var target := point(focus,campaign.map.height_at(focus))
 	view_camera.position=target+Vector3(12,24,19)
 	view_camera.look_at(target)
-	environment_builder.sync(focus)
+	environment_builder.sync(focus,dt)
 	begin_sprites()
 	for i in 3:
 		var data: Dictionary
@@ -122,4 +154,5 @@ func sync_quest_objects() -> void:
 			model="dungeon/table_long_decorated_A"; dimensions=Vector3(100,60,70)
 		elif "修" in text or "关闭" in text or "校准" in text:
 			model="dungeon/pillar_decorated"; dimensions=Vector3(60,90,60)
-		quest_models[node.id]=prop(model,node.p,dimensions,Color("b9ad96"),Color.WHITE,0,campaign.map.height_at(node.p))
+		var visual_at: Vector2=node.p+Vector2(80,-70)
+		quest_models[node.id]=prop(model,visual_at,dimensions,Color("b9ad96"),Color.WHITE,0,campaign.map.height_at(visual_at))

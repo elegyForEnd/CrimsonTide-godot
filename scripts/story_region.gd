@@ -21,14 +21,18 @@ var chests: Array=[]
 var ports: Array[Vector2]=[]
 var noise := FastNoiseLite.new()
 var npc_at: Array=[]
+var shorelines: Array[PackedVector2Array]=[]
+var terrain_samples: Dictionary={}
 const NPC_AT := [Vector2(850,580),Vector2(1500,590),Vector2(630,1020),Vector2(1640,1040),Vector2(730,1430),Vector2(1530,1440)]
 
 func build(a: int, s: int, shape: String, inside: bool) -> void:
 	act=a; stage=s; layout=shape; indoor=inside
 	noise.seed=a*301+s*71; noise.frequency=0.0011; noise.fractal_octaves=3
+	load_authored_terrain()
 	if s==0:
 		extent=Vector2(2200,2000); spawn=Vector2(1100,850); waypoint=Vector2(1100,1150)
 		npc_at=NPC_AT.duplicate()
+		if a==1: npc_at=[Vector2(720,410),Vector2(1570,470),Vector2(600,960),Vector2(1590,1040),Vector2(650,1460),Vector2(1530,1570)]
 		if a==2: npc_at=[Vector2(820,440),Vector2(1540,490),Vector2(520,980),Vector2(1690,1030),Vector2(770,1500),Vector2(1530,1460)]
 		elif a==3: npc_at=[Vector2(760,540),Vector2(1400,490),Vector2(490,1020),Vector2(1750,1170),Vector2(790,1500),Vector2(1580,1480)]
 		elif a==4: npc_at=[Vector2(820,530),Vector2(1560,510),Vector2(530,1070),Vector2(1670,1040),Vector2(750,1530),Vector2(1460,1450)]
@@ -51,12 +55,21 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 			for at in [Vector2(220,290),Vector2(1850,240)]: add_prop("nature/tree_3",at,Vector3(230,390,210),true)
 		elif a==5: water=[Rect2(0,0,240,2000)]
 		camp_landmarks()
+		if a==1:
+			for b in buildings:
+				var role: int=b.role
+				var key: String=["cargo","canopy","anvil","bookshelf","cargo","handcart"][role]
+				var at: Vector2=b.rect.get_center()+Vector2(-b.rect.size.x*.5-65,35)
+				add_prop("kit/"+key,at,Vector3(90,120,100),true)
+				if role in [2,4,5]: add_prop("kit/rope_coil",b.door+Vector2(-115,70),Vector3(60,15,60))
+				if role==2: add_prop("kit/tool_rack",b.rect.get_center()+Vector2(105,-35),Vector3(100,125,35),true)
+		load_authored_terrain()
 		return
 	anchors=[Vector2(1700,1700),Vector2(3100,2850),Vector2(2400,4080)]
 	side_anchors=[Vector2(900,1200),Vector2(3900,2450),Vector2(900,3800)]
 	if a==1 and s==4: anchors=[Vector2(2400,3150),Vector2(3450,3900),Vector2(3450,3900)]
 	if indoor:
-		build_dungeon(); return
+		build_dungeon(); load_authored_terrain(); return
 	var bend := -1.0 if (a+s)%2==0 else 1.0
 	trails=[PackedVector2Array([spawn,Vector2(2400+bend*450,980),anchors[0],Vector2(2400-bend*600,2200),anchors[1],Vector2(2400+bend*350,3500),anchors[2],Vector2(2400,4800)]),PackedVector2Array([anchors[0],side_anchors[0],side_anchors[2],anchors[2]]),PackedVector2Array([anchors[0],Vector2(3800,1600),side_anchors[1],anchors[1]])]
 	var shift := Vector2.ZERO if a==1 and s==1 else Vector2(float((a+s)%3-1)*260,float(s%3)*180)
@@ -86,6 +99,48 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 		var h := rng.randf_range(260,420) if kind<5 else rng.randf_range(70,180)
 		if key=="medieval/waterplant_A": h=rng.randf_range(60,125)
 		add_prop(key,at,Vector3(h*.65,h,h*.55),true,rng.randf()*TAU)
+	if a==1 and s==1: opening_details()
+	load_authored_terrain()
+
+func load_authored_terrain() -> void:
+	if act!=1 or stage not in [0,1,7]: return
+	var path := "res://resources/story-terrain-%d.json" % stage
+	if not FileAccess.file_exists(path): return
+	terrain_samples=JSON.parse_string(FileAccess.get_file_as_string(path))
+	shorelines.clear()
+	for points in terrain_samples.get("shorelines",[]):
+		var poly := PackedVector2Array()
+		for p in points: poly.append(Vector2(p[0],p[1]))
+		shorelines.append(poly)
+
+func authored_height(p: Vector2) -> float:
+	var spacing: float=terrain_samples.spacing
+	var width: int=terrain_samples.width
+	var x := clampf(p.x/spacing,0,width-1); var y := clampf(p.y/spacing,0,int(terrain_samples.depth)-1)
+	var ix := mini(int(x),width-2); var iy := mini(int(y),int(terrain_samples.depth)-2)
+	var values: Array=terrain_samples.heights
+	return lerpf(lerpf(float(values[iy*width+ix]),float(values[iy*width+ix+1]),x-ix),lerpf(float(values[(iy+1)*width+ix]),float(values[(iy+1)*width+ix+1]),x-ix),y-iy)
+
+func submerged(p: Vector2) -> bool:
+	for poly in shorelines:
+		if Geometry2D.is_point_in_polygon(p,poly): return true
+	for rect in water:
+		if rect.has_point(p): return true
+	return false
+
+func opening_details() -> void:
+	for p in [Vector2(760,1510),Vector2(660,1690),Vector2(950,1850),Vector2(2100,1200),Vector2(2350,1550),Vector2(2210,1740),Vector2(3350,2140),Vector2(3580,2380),Vector2(3300,2540)]:
+		if not submerged(p): add_prop("nature/tree_1",p,Vector3(240,420,240),true,p.x*.013)
+	# Roadside landmarks share the same collision authority as the other props.
+	for p in [Vector2(1420,820),Vector2(1280,2420),Vector2(3510,3290)]:
+		add_prop("story/rubble",p,Vector3(140,60,90))
+		for offset in [-140,140]:
+			add_prop("story/pier",p+Vector2(offset,-75),Vector3(40,115 if offset<0 else 180,40),true)
+	for y in [650,850,1050]: add_prop("story/fence",Vector2(2810,y),Vector3(14,75,160),true)
+	for p in [Vector2(1200,700),Vector2(3650,3500),Vector2(880,3000)]: add_prop("kit/handcart",p,Vector3(110,100,150),true)
+	for p in [Vector2(1240,2280),Vector2(1060,2300)]: add_prop("kit/tool_rack",p,Vector3(100,125,45),true)
+	add_prop("kit/arcade_broken",Vector2(1350,2450),Vector3(200,230,140),true)
+	for p in [Vector2(720,1150),Vector2(610,3540),Vector2(4040,2500)]: add_prop("kit/tree_root",p,Vector3(120,30,120))
 
 func camp_landmarks() -> void:
 	match act:
@@ -157,6 +212,7 @@ func dungeon_furniture() -> void:
 		if not near: add_prop(item.key,item.p,item.size,true)
 
 func add_prop(key: String, at: Vector2, size: Vector3, blocking: bool = false, angle: float = 0.0) -> void:
+	if (key.begins_with("nature/tree") or "tree_dead" in key or key=="kit/woodland_tree") and size.y<=450: blocking=false
 	props.append({"key":key,"p":at,"size":size,"angle":angle,"blocking":blocking})
 	if blocking: obstacles.append(Rect2(at-Vector2(size.x,size.z)*.32,Vector2(size.x,size.z)*.64))
 
@@ -167,6 +223,10 @@ func path_distance(p: Vector2) -> float:
 	return best
 
 func clear_placement(p: Vector2, margin: float) -> bool:
+	if submerged(p): return false
+	for poly in shorelines:
+		for i in poly.size():
+			if Geometry2D.get_closest_point_to_segment(p,poly[i],poly[(i+1)%poly.size()]).distance_to(p)<margin+40: return false
 	if path_distance(p)<margin+110: return false
 	for at in anchors+side_anchors+[waypoint,spawn]+chests+ports:
 		if p.distance_to(at)<margin+160: return false
@@ -184,6 +244,10 @@ func height_at(p: Vector2) -> float:
 		if item.rect.has_point(p):
 			var progress: float=(p.y-item.rect.position.y)/item.rect.size.y
 			return item.top*(1.0-progress if item.north else progress)
+	return base_height_at(p)
+
+func base_height_at(p: Vector2) -> float:
+	if not terrain_samples.is_empty(): return authored_height(p)
 	if indoor or stage==0: return 0.0
 	var edge := minf(minf(p.x,extent.x-p.x),minf(p.y,extent.y-p.y))
 	return noise.get_noise_2d(p.x,p.y)*48.0*smoothstep(0,350,edge)*smoothstep(80,420,path_distance(p))
@@ -197,6 +261,10 @@ func walkable(p: Vector2, radius: float = 24.0) -> bool:
 		if not in_room: return false
 	for rect in obstacles+water:
 		if rect.grow(radius).has_point(p): return false
+	for poly in shorelines:
+		if Geometry2D.is_point_in_polygon(p,poly): return false
+		for i in poly.size():
+			if Geometry2D.get_closest_point_to_segment(p,poly[i],poly[(i+1)%poly.size()]).distance_to(p)<radius: return false
 	for item in buildings:
 		for wall in building_walls(item.rect):
 			if wall.grow(radius).has_point(p): return false

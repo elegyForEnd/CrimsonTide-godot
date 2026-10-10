@@ -12,6 +12,13 @@ output/imagegen/
 *.tmp
 # verify_anchors.py --fix 每次会写出 PROJECT-GUIDE.md.bak 备份，属临时产物，勿入库。
 *.bak
+output/graphics-*.err
+output/story-*.err
+output/benchmark-*.err
+output/vegetation-*.err
+output/bake-*.err
+output/*-final*.err
+output/plan-forwardplus-probe.err
 
 server/data/
 __pycache__/
