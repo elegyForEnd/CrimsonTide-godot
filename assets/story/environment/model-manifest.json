@@ -24,6 +24,20 @@
       "vendor": false
     },
     {
+      "name": "archive_lectern",
+      "file": "archive_lectern.glb",
+      "triangles": 1332,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "archive_scrolls",
+      "file": "archive_scrolls.glb",
+      "triangles": 576,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "bookshelf",
       "file": "bookshelf.glb",
       "triangles": 4536,
@@ -45,6 +59,13 @@
       "vendor": false
     },
     {
+      "name": "candle_cluster",
+      "file": "candle_cluster.glb",
+      "triangles": 540,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "canopy",
       "file": "canopy.glb",
       "triangles": 288,
@@ -55,6 +76,13 @@
       "name": "cargo",
       "file": "cargo.glb",
       "triangles": 2052,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cargo_shelves",
+      "file": "cargo_shelves.glb",
+      "triangles": 2484,
       "meshes": 1,
       "vendor": false
     },
@@ -150,6 +178,13 @@
       "vendor": false
     },
     {
+      "name": "forge_bellows",
+      "file": "forge_bellows.glb",
+      "triangles": 936,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "foundation_broken",
       "file": "foundation_broken.glb",
       "triangles": 864,
@@ -192,6 +227,20 @@
       "vendor": false
     },
     {
+      "name": "inn_counter",
+      "file": "inn_counter.glb",
+      "triangles": 2484,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "inn_table",
+      "file": "inn_table.glb",
+      "triangles": 1260,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "iron_door_broken",
       "file": "iron_door_broken.glb",
       "triangles": 1188,
@@ -216,6 +265,13 @@
       "name": "iron_grille_intact",
       "file": "iron_grille_intact.glb",
       "triangles": 1944,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "medicine_cabinet",
+      "file": "medicine_cabinet.glb",
+      "triangles": 3060,
       "meshes": 1,
       "vendor": false
     },
@@ -313,43 +369,43 @@
     {
       "name": "service_0",
       "file": "service_0.glb",
-      "triangles": 16608,
-      "meshes": 3,
+      "triangles": 16068,
+      "meshes": 4,
       "vendor": false
     },
     {
       "name": "service_1",
       "file": "service_1.glb",
-      "triangles": 17134,
-      "meshes": 3,
+      "triangles": 16594,
+      "meshes": 4,
       "vendor": false
     },
     {
       "name": "service_2",
       "file": "service_2.glb",
-      "triangles": 14466,
-      "meshes": 3,
+      "triangles": 13926,
+      "meshes": 4,
       "vendor": false
     },
     {
       "name": "service_3",
       "file": "service_3.glb",
-      "triangles": 18018,
-      "meshes": 3,
+      "triangles": 17478,
+      "meshes": 4,
       "vendor": false
     },
     {
       "name": "service_4",
       "file": "service_4.glb",
-      "triangles": 16610,
-      "meshes": 3,
+      "triangles": 15276,
+      "meshes": 4,
       "vendor": false
     },
     {
       "name": "service_5",
       "file": "service_5.glb",
-      "triangles": 19878,
-      "meshes": 3,
+      "triangles": 19338,
+      "meshes": 4,
       "vendor": false
     },
     {
@@ -451,6 +507,27 @@
       "vendor": false
     },
     {
+      "name": "ward_cot",
+      "file": "ward_cot.glb",
+      "triangles": 1404,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "watch_map_table",
+      "file": "watch_map_table.glb",
+      "triangles": 1548,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "weapon_stand",
+      "file": "weapon_stand.glb",
+      "triangles": 1404,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "window_sill_broken",
       "file": "window_sill_broken.glb",
       "triangles": 1908,
@@ -475,6 +552,13 @@
       "name": "wood_door_intact",
       "file": "wood_door_intact.glb",
       "triangles": 972,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "wood_stool",
+      "file": "wood_stool.glb",
+      "triangles": 252,
       "meshes": 1,
       "vendor": false
     },

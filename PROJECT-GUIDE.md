@@ -449,10 +449,11 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件与配套检查 |
 |---|---|
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:145 route()`；tests/story_geography.gd |
-| 地形、楼梯、房屋与碰撞 | `story_region.gd:26 build()`、`story_region.gd:181 height_at()`、`story_region.gd:208 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
-| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:27 build()`，`story_world.gd:58 sync_story()`；tests/story_visual.gd |
+| 地形、楼梯、房屋与碰撞 | `story_region.gd:30 build()`、`story_region.gd:245 height_at()`、`story_region.gd:286 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
+| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:33 build()`，`story_world.gd:87 sync_story()`；tests/story_visual.gd |
 | Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:46 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
+| 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
 | 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:308 activate_waypoint()`、`story_campaign.gd:327 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
 | 探索地图、UI与输入 | `story_screen.gd:356 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
@@ -465,6 +466,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 故事地图、任务与NPC → §4.S；连续区域/门洞改 story_map/region，3D场景改 story_environment/world，传送与战役规则改 story_campaign，面板改 story_screen/atlas。不要把故事币、经验或任务写进远征结算。
 
 故事美术、画质与闪烁 → graphics_quality/settings_ui、story_asset_kit/environment；模型改opening-master.blend后只导出，地编改scenes/story/*.tscn后运行Bake-Opening.ps1。楼梯/平台由结构网格画顶面，基础地形必须裁去同一区域；小树阻挡在story_region.add_prop统一处理。
+
+营地家具与进屋遮挡 → story-opening-dressing.json / story_set_dressing.gd / story_region / story_environment；带footprint的家具移动时同步JSON与可编辑场景。相机方向墙为Side组，固定烘焙排除Side/Front/Roof。prepare_reveal与reveal都要处理MeshInstance3D根本身，不能只遍历子节点。新增模块在master编辑后可指定export_story_models.py --assets局部导出。
 
 | 需求 | 主要文件 | 配套（测试/文档/工具） |
 |---|---|---|
@@ -826,6 +829,7 @@ git status --porcelain
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
 | 2026-10-10 | （本轮Forward+提交） | 默认Forward+、三档画质与超分；开场Blender模块/PBR/地形、实际GI烘焙、曲岸碰撞、遮挡淡出、人物融合与区域缓存。原始验收和范围见TEST-REPORT、FORWARDPLUS-ART-PIPELINE.md；保留用户PV与旧试玩。 |
+| 2026-10-10 | （本轮开场续作） | 12类室内家具、44处场所摆放、共享占地数据与室内台基高度；拆分前景Side墙、修正淡出漏掉根网格；增量场景编辑、指定模型导出、烘焙互斥及文件更新校验。更新§4.S/§5与生产说明；长时间性能验收继续暂缓。 |
 | 2026-10-10 | （本地故事实现提交） | 只读解析本地D2R的IDX/BLTE/TVFS，检查23个HD场景样本；补读旧包关卡出口表。故事地图改为每幕连续野外与双向分层副本，另加12层可选洞窟；统一高度、楼梯、进屋屋顶隐藏、前景遮挡、地面混合、河岸、区域地标、寻路、探索图与传送阵激活。战役180、地图647、集成12、图形10检查无失败；独立EXE已重导出，详见docs/rpg/IMPLEMENTATION.md与D2R-ENVIRONMENT-RESEARCH.md。 |
 | 2026-10-09 | （本轮文字设计，未提交） | 新增 docs/rpg/ 四份RPG设计文档：按用户PV背景与开局向下出营要求，设计六幕独立营地、40主线、24支线、9个人线及可组合结局；README与§10添加入口。仅文档，尚未新增 story 运行模式。任务编号、标题、依赖无环及本地链接检查通过。 |
 | 2026-10-09 | （故事基础实现，未提交） | 只读解析用户本地MPQ地图：36个DS1、16个DT1与六张配置表。新增独立story页面及战役、地图、显示、UI模块，编译73任务全文，接入营地服务、三人战斗、装备专精、存档／战前恢复；原创NPC图集由内置image_gen生成。导出dist/CrimsonTide-Story.exe。规则510、集成12、图形6、原营地32与模式10检查无失败；剩余制作差异见docs/rpg/IMPLEMENTATION.md。 |

@@ -48,7 +48,7 @@ func run() -> void:
 			if mesh.material_override is ShaderMaterial and mesh.material_override.shader==world.environment_builder.WATER:
 				mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; continue
 			if mesh.material_override==null and mesh.mesh==null: continue
-			var hide_group: bool=mesh.name.begins_with("Roof") or mesh.name.begins_with("Front") or mesh.get_parent().name.begins_with("Roof") or mesh.get_parent().name.begins_with("Front")
+			var hide_group: bool=mesh.name.begins_with("Roof") or mesh.name.begins_with("Front") or mesh.name.begins_with("Side") or mesh.get_parent().name.begins_with("Roof") or mesh.get_parent().name.begins_with("Front")
 			if hide_group or mesh.get_parent().has_meta("licensed_tree") or mesh.get_parent().name.begins_with("woodland_tree"):
 				mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; continue
 			var key := str(mesh.mesh.get_instance_id())

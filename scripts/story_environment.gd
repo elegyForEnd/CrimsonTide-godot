@@ -102,7 +102,24 @@ func populate_chunk(r, chunk: Node3D) -> void:
 	if r.act==1:
 		ground_cover(r)
 		if r.stage in [0,1,7]: authored_details(r)
+		crafted_details(r,chunk)
 	world.scenery=saved
+
+func crafted_details(r, parent: Node3D) -> void:
+	var group := Node3D.new(); group.name="CraftedSetDressing"; parent.add_child(group)
+	group.set_meta("dressing_revision",1)
+	for item in r.dressing:
+		var values: Array=item.get("scale",[1,1,1])
+		var p: Vector2=item.position
+		var node: Node3D=kit.instance(item.model,group,world.point(r.origin+p,r.height_at(p)),Vector3(values[0],values[1],values[2]))
+		node.name=item.id; node.set_meta("dressing_id",item.id)
+		if item.has("footprint"): node.set_meta("movement_footprint",item.rect)
+		if item.model in ["watch_map_table","archive_lectern","inn_table","candle_cluster"] or item.id=="forge_hearth":
+			var light := OmniLight3D.new(); light.name="WorkLight"; node.add_child(light)
+			light.position=Vector3(0,.95,0); light.light_color=Color("ffc083")
+			light.light_energy=.32 if item.id!="forge_hearth" else .60
+			light.omni_range=1.65; light.shadow_enabled=false; light.light_bake_mode=Light3D.BAKE_DYNAMIC
+			lights.append(light)
 
 func terrain(r) -> void:
 	var mat := ShaderMaterial.new(); mat.shader=GROUND
@@ -221,8 +238,10 @@ func house(r, b: Dictionary) -> void:
 		var node: Node3D=kit.instance("service_%d" % role,world.scenery,world.point(rect.get_center()))
 		var roof: Node3D=node.find_child("Roof*",true,false); var front: Node3D=node.find_child("Front*",true,false)
 		kit.prepare_reveal(roof); kit.prepare_reveal(front)
+		var side: Node3D=node.find_child("Side*",true,false)
+		if side: kit.prepare_reveal(side)
 		node.set_meta("building_rect",rect)
-		roofs.append({"roof":roof,"front":front,"rect":rect,"amount":1.0,"inside":false})
+		roofs.append({"roof":roof,"front":front,"side":side,"rect":rect,"amount":1.0,"inside":false})
 		return
 	var mat := stone(Color("69665b") if r.act!=6 else Color("5e5661"),r.act in [3,5])
 	var h: float=b.height
@@ -316,6 +335,7 @@ func sync(focus: Vector2, dt: float = 0.0) -> void:
 		var target := 0.0 if inside else 1.0
 		item.amount=move_toward(float(item.get("amount",1.0)),target,dt*4.0) if dt>0 else target
 		kit.reveal(item.roof,0.0 if item.get("ruined",false) else item.amount); kit.reveal(item.front,item.amount)
+		if item.get("side")!=null: kit.reveal(item.side,item.amount)
 	for item in occluders:
 		var distance: float=item.p.distance_to(focus)
 		# Reveal the character behind a foreground tree or tall wall; collision stays.
@@ -503,7 +523,10 @@ func register_authored(root: Node3D) -> void:
 			node.material_override.set_shader_parameter("earth",Color("c7c8bd")); node.material_override.set_shader_parameter("road",Color("d5d3cd"))
 		if node.has_meta("building_rect"):
 			var roof: Node3D=node.find_child("Roof*",true,false); var front: Node3D=node.find_child("Front*",true,false)
-			roofs.append({"roof":roof,"front":front,"rect":node.get_meta("building_rect"),"amount":1.0,"inside":false})
+			var side: Node3D=node.find_child("Side*",true,false)
+			kit.prepare_reveal(roof); kit.prepare_reveal(front)
+			if side: kit.prepare_reveal(side)
+			roofs.append({"roof":roof,"front":front,"side":side,"rect":node.get_meta("building_rect"),"amount":1.0,"inside":false})
 		elif node.has_meta("reveal_roof_rect") and not node.get_parent().has_meta("building_rect"):
 			for front in root.find_children("*","Node3D",true,false):
 				if front.has_meta("reveal_front_rect") and front.get_meta("reveal_front_rect")==node.get_meta("reveal_roof_rect"):
@@ -529,8 +552,6 @@ func authored_details(r) -> void:
 	if r.stage==0:
 		for b in r.buildings:
 			var rect: Rect2=b.rect
-			var model: String="forge" if b.role==2 else "cargo" if b.role==4 else "bookshelf" if b.role==3 else "rope_coil"
-			kit.instance(model,world.scenery,world.point(rect.get_center()+Vector2(-25,-35)),Vector3.ONE*.65)
 			# Small worn aprons organize each workplace instead of paving the whole camp.
 			block(Rect2(rect.position+r.origin-Vector2(12,12),rect.size+Vector2(24,24)),5,-2,kit.pbr("paving",Color("a4a9a8")))
 		for y in range(230,1720,150):

@@ -51,6 +51,9 @@ func surface(name: String) -> Material:
 			mat.uv1_triplanar=true
 		"Iron": mat=pbr("iron",Color("9e9fa1"))
 		"Cloth": mat=pbr("cloth",Color("713141"))
+		"Linen": mat=pbr("cloth",Color("dad1b4"))
+		"Paper":
+			mat=StandardMaterial3D.new(); mat.albedo_color=Color("b6a478"); mat.roughness=.96
 		"Leaf":
 			mat=ShaderMaterial.new(); mat.shader=FOLIAGE
 		_:
@@ -77,7 +80,7 @@ func instance(model: String, parent: Node3D, at: Vector3, scale: Vector3 = Vecto
 
 func prepare_reveal(root: Node3D) -> void:
 	if RenderingServer.get_current_rendering_method()=="gl_compatibility": return
-	for mesh in root.find_children("*","MeshInstance3D",true,false):
+	for mesh in mesh_nodes(root):
 		mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
 		for i in mesh.mesh.get_surface_count():
 			var original: Material=mesh.get_active_material(i)
@@ -104,12 +107,17 @@ func prepare_reveal(root: Node3D) -> void:
 func reveal(root: Node3D, amount: float) -> void:
 	root.visible=amount>.001
 	if RenderingServer.get_current_rendering_method()=="gl_compatibility": return
-	for mesh in root.find_children("*","MeshInstance3D",true,false):
+	for mesh in mesh_nodes(root):
 		var supported := false
 		for i in mesh.mesh.get_surface_count():
 			var mat: Material=mesh.get_active_material(i)
 			if mat is ShaderMaterial and "instance uniform float reveal" in mat.shader.code: supported=true; break
 		if supported: mesh.set_instance_shader_parameter("reveal",amount)
+
+func mesh_nodes(root: Node3D) -> Array:
+	var found: Array=root.find_children("*","MeshInstance3D",true,false)
+	if root is MeshInstance3D: found.push_front(root)
+	return found
 
 func grass_mesh() -> Mesh:
 	if not scenes.has("grass_tuft"): scenes["grass_tuft"]=load(BASE+"models/grass_tuft.glb")

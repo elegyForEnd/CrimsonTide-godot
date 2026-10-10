@@ -1,0 +1,56 @@
+{
+  "revision": 1,
+  "units": "100 logic units = 1 metre; offsets relative to building centre when role is present",
+  "regions": {
+    "0": [
+      {"id":"watch_chart","role":0,"model":"watch_map_table","at":[0,-53],"scale":[0.8,1,0.8],"footprint":[88,38],"inside":true},
+      {"id":"watch_weapons","role":0,"model":"weapon_stand","at":[-78,3],"scale":[0.65,0.8,0.65],"footprint":[61,27],"inside":true},
+      {"id":"watch_seat","role":0,"model":"wood_stool","at":[78,30],"scale":[0.8,0.8,0.8],"footprint":[24,24],"inside":true},
+      {"id":"ward_bed","role":1,"model":"ward_cot","at":[80,-6],"scale":[1,1,1],"footprint":[64,136],"inside":true},
+      {"id":"ward_medicine","role":1,"model":"medicine_cabinet","at":[-61,-65],"scale":[0.85,0.85,0.85],"footprint":[65,26],"inside":true},
+      {"id":"ward_seat","role":1,"model":"wood_stool","at":[-70,29],"scale":[0.8,0.8,0.8],"footprint":[24,24],"inside":true},
+      {"id":"forge_hearth","role":2,"model":"forge","at":[-84,-31],"scale":[0.55,0.6,0.55],"footprint":[69,60],"inside":true},
+      {"id":"forge_anvil","role":2,"model":"anvil","at":[90,-10],"scale":[0.8,0.8,0.8],"footprint":[52,38],"inside":true},
+      {"id":"forge_bellows","role":2,"model":"forge_bellows","at":[-85,33],"scale":[0.75,0.75,0.75],"footprint":[35,48],"inside":true},
+      {"id":"archive_reading","role":3,"model":"archive_lectern","at":[0,-57],"scale":[0.85,0.85,0.85],"footprint":[77,38],"inside":true},
+      {"id":"archive_scrolls","role":3,"model":"archive_scrolls","at":[-81,6],"scale":[0.58,0.85,0.8],"footprint":[47,26],"inside":true},
+      {"id":"archive_books","role":3,"model":"bookshelf","at":[81,-2],"scale":[0.38,0.75,0.7],"footprint":[38,31],"inside":true},
+      {"id":"store_shelves","role":4,"model":"cargo_shelves","at":[0,-56],"scale":[1,1,0.8],"footprint":[106,27],"inside":true},
+      {"id":"store_crates","role":4,"model":"cargo","at":[-96,7],"scale":[0.48,0.6,0.48],"footprint":[51,43],"inside":true},
+      {"id":"store_barrel","role":4,"model":"cargo","at":[101,27],"scale":[0.4,0.48,0.4],"footprint":[42,36],"inside":true},
+      {"id":"inn_bar","role":5,"model":"inn_counter","at":[0,-62],"scale":[0.9,0.9,0.8],"footprint":[116,41],"inside":true},
+      {"id":"inn_table","role":5,"model":"inn_table","at":[-93,14],"scale":[0.68,0.8,0.75],"footprint":[49,42],"inside":true},
+      {"id":"inn_seat","role":5,"model":"wood_stool","at":[92,30],"scale":[0.85,0.85,0.85],"footprint":[26,26],"inside":true},
+      {"id":"watch_supplies","role":0,"model":"cargo","at":[-183,64],"scale":[0.65,0.8,0.65]},
+      {"id":"watch_spares","role":0,"model":"weapon_stand","at":[180,20],"scale":[0.8,1,0.8]},
+      {"id":"ward_linen","role":1,"model":"cargo","at":[-191,20],"scale":[0.5,0.65,0.5]},
+      {"id":"forge_tools","role":2,"model":"tool_rack","at":[-228,-76],"scale":[0.65,0.75,0.65]},
+      {"id":"forge_scrap","role":2,"model":"rubble","at":[213,56],"scale":[0.32,0.16,0.32]},
+      {"id":"archive_returns","role":3,"model":"archive_scrolls","at":[180,44],"scale":[0.65,0.65,0.65]},
+      {"id":"store_loading","role":4,"model":"handcart","at":[-204,-49],"scale":[0.7,0.7,0.7]},
+      {"id":"store_rope","role":4,"model":"rope_coil","at":[194,68],"scale":[0.7,0.7,0.7]},
+      {"id":"inn_outdoor_table","role":5,"model":"inn_table","at":[213,45],"scale":[1,1,1]},
+      {"id":"inn_outdoor_seat_a","role":5,"model":"wood_stool","at":[211,94],"scale":[1,1,1]},
+      {"id":"inn_outdoor_seat_b","role":5,"model":"wood_stool","at":[263,43],"scale":[1,1,1]},
+      {"id":"gate_supply_cart","model":"handcart","at":[815,1670],"scale":[0.75,0.75,0.75]},
+      {"id":"gate_supply_crates","model":"cargo","at":[770,1600],"scale":[0.7,0.7,0.7]},
+      {"id":"gate_rope","model":"rope_coil","at":[833,1760],"scale":[0.8,0.8,0.8]}
+    ],
+    "1": [
+      {"id":"road_watch_supplies","model":"cargo","at":[2630,250],"scale":[0.7,0.7,0.7]},
+      {"id":"road_fallen_tools","model":"forge_bellows","at":[1420,2450],"scale":[0.9,0.9,0.9]},
+      {"id":"road_forgotten_rope","model":"rope_coil","at":[1350,2500],"scale":[0.8,0.8,0.8]},
+      {"id":"cave_abandoned_crates","model":"cargo","at":[725,2060],"scale":[0.65,0.65,0.65]},
+      {"id":"cave_abandoned_cart","model":"handcart","at":[698,2290],"scale":[0.8,0.8,0.8]}
+    ],
+    "7": [
+      {"id":"cave_wall_lip_a","model":"cliff","at":[900,1010],"scale":[0.7,0.45,0.4]},
+      {"id":"cave_wall_lip_b","model":"rock_formation","at":[1130,1090],"scale":[0.45,0.5,0.45]},
+      {"id":"cave_store","model":"cargo_shelves","at":[780,1380],"scale":[0.8,0.8,0.8]},
+      {"id":"cave_broken_support","model":"roof_beam_broken","at":[1090,1580],"scale":[0.8,0.8,0.8]},
+      {"id":"cave_lost_rope","model":"rope_coil","at":[990,1440],"scale":[0.8,0.8,0.8]},
+      {"id":"cave_supply_candle","model":"candle_cluster","at":[866,1395],"scale":[1,1,1]},
+      {"id":"cave_rubble_b","model":"rubble","at":[3210,2610],"scale":[0.45,0.25,0.45]}
+    ]
+  }
+}

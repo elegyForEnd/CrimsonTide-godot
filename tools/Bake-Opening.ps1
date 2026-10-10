@@ -1,7 +1,11 @@
 param([int[]]$Stages = @(0,1,7))
 $ErrorActionPreference='Stop'
+$bakeMutex=[Threading.Mutex]::new($false,'Local\CrimsonTideOpeningBake')
+try { $hasBakeLock=$bakeMutex.WaitOne(0) } catch [Threading.AbandonedMutexException] { $hasBakeLock=$true }
+if(-not $hasBakeLock){ throw 'Another opening bake is running. Wait for it to finish.' }
 $sceneRoot=Split-Path $PSScriptRoot -Parent
 $bakeExe=Join-Path $sceneRoot 'Godot_v4.7.2-stable_win64_console.exe'
+try {
 foreach($stage in $Stages){
     $scenePath="res://scenes/story/opening-$stage.tscn"
     $outLog=Join-Path $sceneRoot "output/bake-final-$stage.log"
@@ -23,3 +27,8 @@ foreach($stage in $Stages){
     }
 }
 & $bakeExe --headless --path $sceneRoot --script res://tools/pack_compatibility_scenes.gd
+if($LASTEXITCODE -ne 0){ throw 'Compatibility cache packing failed.' }
+} finally {
+$bakeMutex.ReleaseMutex()
+$bakeMutex.Dispose()
+}

@@ -23,6 +23,10 @@ func bake_opening() -> void:
 	EditorInterface.set_main_screen_editor("3D")
 	EditorInterface.edit_node(gi)
 	for i in 10: await get_tree().process_frame
+	if not scene.is_inside_tree() or not gi.is_inside_tree() or EditorInterface.get_edited_scene_root()!=scene:
+		push_error("BAKE_BATCH failed: edited scene changed before bake"); return
+	var bake_path := scene.scene_file_path.get_basename()+".lmbake"
+	var previous_time := FileAccess.get_modified_time(bake_path)
 	var buttons := EditorInterface.get_base_control().find_children("*","Button",true,false)
 	var bake_button: Button
 	for button in buttons:
@@ -43,8 +47,9 @@ func bake_opening() -> void:
 				dialog.hide(); break
 	for i in 300:
 		await get_tree().process_frame
-		if gi.light_data!=null: break
-	if gi.light_data==null: push_error("BAKE_BATCH failed "+scene.scene_file_path); return
+		if gi.light_data!=null and FileAccess.get_modified_time(bake_path)>previous_time: break
+	if gi.light_data==null or FileAccess.get_modified_time(bake_path)<=previous_time:
+		push_error("BAKE_BATCH failed: bake resource was not updated "+scene.scene_file_path); return
 	EditorInterface.mark_scene_as_unsaved()
 	EditorInterface.save_scene()
 	var packed := PackedScene.new()

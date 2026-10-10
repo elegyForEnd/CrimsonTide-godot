@@ -23,6 +23,8 @@ var noise := FastNoiseLite.new()
 var npc_at: Array=[]
 var shorelines: Array[PackedVector2Array]=[]
 var terrain_samples: Dictionary={}
+var dressing: Array=[]
+const Dressing=preload("res://scripts/story_set_dressing.gd")
 const NPC_AT := [Vector2(850,580),Vector2(1500,590),Vector2(630,1020),Vector2(1640,1040),Vector2(730,1430),Vector2(1530,1440)]
 
 func build(a: int, s: int, shape: String, inside: bool) -> void:
@@ -64,12 +66,13 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 				if role in [2,4,5]: add_prop("kit/rope_coil",b.door+Vector2(-115,70),Vector3(60,15,60))
 				if role==2: add_prop("kit/tool_rack",b.rect.get_center()+Vector2(105,-35),Vector3(100,125,35),true)
 		load_authored_terrain()
+		dressing=Dressing.entries(self)
 		return
 	anchors=[Vector2(1700,1700),Vector2(3100,2850),Vector2(2400,4080)]
 	side_anchors=[Vector2(900,1200),Vector2(3900,2450),Vector2(900,3800)]
 	if a==1 and s==4: anchors=[Vector2(2400,3150),Vector2(3450,3900),Vector2(3450,3900)]
 	if indoor:
-		build_dungeon(); load_authored_terrain(); return
+		build_dungeon(); load_authored_terrain(); dressing=Dressing.entries(self); return
 	var bend := -1.0 if (a+s)%2==0 else 1.0
 	trails=[PackedVector2Array([spawn,Vector2(2400+bend*450,980),anchors[0],Vector2(2400-bend*600,2200),anchors[1],Vector2(2400+bend*350,3500),anchors[2],Vector2(2400,4800)]),PackedVector2Array([anchors[0],side_anchors[0],side_anchors[2],anchors[2]]),PackedVector2Array([anchors[0],Vector2(3800,1600),side_anchors[1],anchors[1]])]
 	var shift := Vector2.ZERO if a==1 and s==1 else Vector2(float((a+s)%3-1)*260,float(s%3)*180)
@@ -101,6 +104,7 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 		add_prop(key,at,Vector3(h*.65,h,h*.55),true,rng.randf()*TAU)
 	if a==1 and s==1: opening_details()
 	load_authored_terrain()
+	dressing=Dressing.entries(self)
 
 func load_authored_terrain() -> void:
 	if act!=1 or stage not in [0,1,7]: return
@@ -239,6 +243,10 @@ func clear_placement(p: Vector2, margin: float) -> bool:
 	return true
 
 func height_at(p: Vector2) -> float:
+	# The 6 cm foundation is the actual interior floor, including the threshold.
+	if act==1 and stage==0:
+		for building in buildings:
+			if building.rect.has_point(p): return 6.0
 	for item in stairs:
 		if item.terrace.has_point(p): return item.top
 		if item.rect.has_point(p):
@@ -261,6 +269,8 @@ func walkable(p: Vector2, radius: float = 24.0) -> bool:
 		if not in_room: return false
 	for rect in obstacles+water:
 		if rect.grow(radius).has_point(p): return false
+	for item in dressing:
+		if item.has("footprint") and item.rect.grow(radius).has_point(p): return false
 	for poly in shorelines:
 		if Geometry2D.is_point_in_polygon(p,poly): return false
 		for i in poly.size():
