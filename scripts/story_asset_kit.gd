@@ -82,6 +82,7 @@ func prepare_reveal(root: Node3D) -> void:
 	if RenderingServer.get_current_rendering_method()=="gl_compatibility": return
 	for mesh in mesh_nodes(root):
 		mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
+		var converted := false
 		for i in mesh.mesh.get_surface_count():
 			var original: Material=mesh.get_active_material(i)
 			if not original is StandardMaterial3D or not original.albedo_texture: continue
@@ -103,6 +104,9 @@ func prepare_reveal(root: Node3D) -> void:
 				mat.set_shader_parameter("alpha_cut",original.transparency!=BaseMaterial3D.TRANSPARENCY_DISABLED)
 				materials[key]=mat
 			mesh.set_surface_override_material(i,materials[key])
+			converted=true
+		# A node-level override otherwise masks all newly assigned fade surfaces.
+		if converted: mesh.material_override=null
 
 func reveal(root: Node3D, amount: float) -> void:
 	root.visible=amount>.001

@@ -3,7 +3,7 @@ extends RefCounted
 const DATA_PATH := "res://resources/story-opening-dressing.json"
 static var source: Dictionary={}
 static func entries(region) -> Array:
-	if region.act!=1 or region.stage not in [0,1,7]: return []
+	if region.act!=1: return []
 	if source.is_empty(): source=JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
 	var result: Array=[]
 	for raw in source.regions.get(str(region.stage),[]):

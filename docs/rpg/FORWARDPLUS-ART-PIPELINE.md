@@ -4,7 +4,7 @@
 
 ## 实际运行与画质
 
-最新独立试玩为 `dist/CrimsonTide-ForwardPlus-v2.exe`，营地选择故事模式；旧版试玩保留。独立包兼容入口为同目录Start-Compatibility.cmd。
+最新独立试玩为 `dist/CrimsonTide-ForwardPlus-v3.exe`，标题选择故事模式；旧版试玩保留。独立包兼容入口为同目录Start-Compatibility.cmd。
 
 源码默认 Forward+ / Vulkan；设置→画面设置提供高画质、标准、兼容三档和FSR2、FSR1、原生分辨率。默认FSR2的3D内部比例0.67，界面按输出分辨率绘制。兼容渲染需重启，独立入口为根目录 `Start-Compatibility.cmd`。切图或大距离传送时重置时间超分历史。
 
@@ -12,11 +12,11 @@
 
 高画质使用ACES固定曝光、月光实时阴影、局部暖光、适量SSAO、ReflectionProbe、SSR和局部地面体积雾。标准档关闭SSR与体积雾；烘焙间接光与主要材质保留。SDFGI未作为正式默认。
 
-雷霆要塞、风铃原野与落叶洞窟有实际LightmapGI资源、EXR纹理及可编辑场景。屋顶/正面与植被不作为固定烘焙遮挡，摄像机裁切不留下屋顶暗影。水面使用不透明浅水材质，因此可参与SSR；透明人物和特效不以SSR作为正确反射的保证。
+雷霆要塞、风铃原野、落叶洞窟与灰棘旧堡有实际LightmapGI资源、EXR纹理及可编辑场景。屋顶/正面与植被不作为固定烘焙遮挡，摄像机裁切不留下屋顶暗影。水面使用不透明浅水材质，因此可参与SSR；透明人物和特效不以SSR作为正确反射的保证。
 
 ## 模型与材质资产
 
-- 80个原创GLB：六类服务建筑、自然基础资产、21组完整/破损结构模块、13类生活/自然模块及12类室内家具。瞭望塔、钟楼尖顶、锻炉烟道、档案塔、仓库斜棚和酒馆廊台区分服务建筑。
+- 96个原创GLB：六类服务建筑、自然基础资产、21组完整/破损结构模块、13类生活/自然模块及12类室内家具，新增16个室外/洞窟/城堡模块。瞭望塔、钟楼尖顶、锻炉烟道、档案塔、仓库斜棚和酒馆廊台区分服务建筑。
 - 两个经过归一化、减面和合批的CC0植被模型：Poly Haven树木和蕨类。树木按树干、枝条、叶片分别保留轮廓，约14.3万三角，蕨类6232三角；地表植被按16米空间网格分组MultiMesh，避免整图一批全部提交。布局中的树木读取当前GLB，因此继续编辑master后不会停留在旧缓存网格。
 - 十套2K PBR材质，共30张颜色、OpenGL法线、ORM贴图；ORM为R遮蔽/G粗糙度/B金属。岩石、树皮、铁件和布料使用独立贴图。
 - 门洞维持既有可走尺寸；导出检查闭合部件面朝向，开放叶片单独做实机检查。损坏拱门和屋面实际移除结构件，未用纹理代替轮廓破损。
@@ -32,7 +32,7 @@
 
 模型导出支持 `-- --assets=service_0,ward_cot`，只更新指定集合，并合并其清单，其他模型文件不重写。新增家具已保存于master；`author_story_interiors.py`和`refine_story_sidewalls.py`为带修订保护的一次性作者工具，不能用于覆盖以后编辑。
 
-`resources/story-opening-dressing.json`保存44处开场补充摆放，其中18处室内家具同时声明移动占地。`story_set_dressing.gd`将建筑局部偏移转换为区域坐标，逻辑和场景读取同一数据。若移动带碰撞的家具，必须同步这份数据，再更新场景与烘焙。`patch_story_workplaces.gd`只追加补充组，保护已有地形和摆放；`--refresh-buildings`仅刷新营地六栋建筑模型，保留根变换。当前人工场景已有补充组，默认再次执行会保留它。
+`resources/story-opening-dressing.json`保存111处开场补充摆放，其中18处营地室内家具同时声明移动占地。`story_set_dressing.gd`将建筑局部偏移转换为区域坐标，逻辑和场景读取同一数据。若移动带碰撞的家具，必须同步这份数据，再更新场景与烘焙。`patch_story_workplaces.gd`只追加补充组，保护已有地形和摆放；`--refresh-buildings`仅刷新营地六栋建筑模型，保留根变换。当前人工场景已有补充组，默认再次执行会保留它。
 
 ```powershell
 & 'C:\Program Files\Blender Foundation\Blender 4.5\blender.exe' --background --python tools/export_story_models.py

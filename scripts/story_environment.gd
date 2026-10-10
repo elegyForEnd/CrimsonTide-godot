@@ -38,8 +38,8 @@ func build(w) -> void:
 		chunks.append({"node":chunk,"rect":Rect2(r.origin,r.extent)})
 		chunks[-1]["region"]=r
 		if authoring or Rect2(r.origin,r.extent).grow(2000).has_point(world.campaign.hero_at): populate_chunk(r,chunk)
-	if not authoring:
-		for s in world.campaign.map.outdoor+[7]:
+	if not authoring and world.campaign.map.act==1 and DisplayServer.get_name()!="headless":
+		for s in world.campaign.map.outdoor+[7,9]:
 			var preload_path := scene_path(s)
 			if ResourceLoader.exists(preload_path) and ResourceLoader.load_threaded_get_status(preload_path)==ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 				ResourceLoader.load_threaded_request(preload_path); pending_paths[preload_path]=true
@@ -53,7 +53,8 @@ func build(w) -> void:
 			connector_ground(r,mat)
 	else:
 		var p: Vector2=world.campaign.map.spawn
-		world.prop("halloween/arch",p+Vector2(0,-90),Vector3(420,290,80),Color("918c84"))
+		if world.campaign.map.layout=="castle": kit.instance("castle_gateway",world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
+		else: world.prop("halloween/arch",p+Vector2(0,-90),Vector3(420,290,80),Color("918c84"))
 		for i in 7: block(Rect2(p+Vector2(-150,-210+i*35),Vector2(300,35)),10,7*(6-i),stone(Color("6e685f")))
 	for door in world.campaign.map.entrances():
 		if door.kind=="entrance": entrance(door)
@@ -111,9 +112,13 @@ func crafted_details(r, parent: Node3D) -> void:
 	for item in r.dressing:
 		var values: Array=item.get("scale",[1,1,1])
 		var p: Vector2=item.position
-		var node: Node3D=kit.instance(item.model,group,world.point(r.origin+p,r.height_at(p)),Vector3(values[0],values[1],values[2]))
+		var node: Node3D=kit.instance(item.model,group,world.point(r.origin+p,r.height_at(p)+float(item.get("height",0))),Vector3(values[0],values[1],values[2]),float(item.get("angle",0)))
 		node.name=item.id; node.set_meta("dressing_id",item.id)
 		if item.has("footprint"): node.set_meta("movement_footprint",item.rect)
+		if item.get("reveal",false):
+			kit.prepare_reveal(node)
+			node.set_meta("occluder",{"p":r.origin+p,"height":float(item.get("occlusion_height",250))})
+			occluders.append({"node":node,"p":r.origin+p,"height":float(item.get("occlusion_height",250))})
 		if item.model in ["watch_map_table","archive_lectern","inn_table","candle_cluster"] or item.id=="forge_hearth":
 			var light := OmniLight3D.new(); light.name="WorkLight"; node.add_child(light)
 			light.position=Vector3(0,.95,0); light.light_color=Color("ffc083")
@@ -139,7 +144,7 @@ func terrain(r) -> void:
 	for y in range(-margin,int(r.extent.y)+margin,step):
 		for x in range(-margin,int(r.extent.x)+margin,step):
 			var center := Vector2(x+step*.5,y+step*.5)
-			if r.indoor and not room_at(r,center): continue
+			if r.indoor and r.floor_polygon.is_empty() and not room_at(r,center): continue
 			if r.submerged(center): continue
 			var pieces: Array[Rect2]=[Rect2(x,y,step,step)]
 			for item in r.stairs:
@@ -154,8 +159,19 @@ func terrain(r) -> void:
 					connector_parts=cut_rectangles(connector_parts,Rect2(Vector2.ZERO,r.extent))
 					for outside in connector_parts: pieces=cut_rectangles(pieces,outside)
 			for piece in pieces:
-				for p in rect_vertices(piece):
+				var vertices: Array[Vector2]=rect_vertices(piece)
+				if not r.floor_polygon.is_empty():
+					vertices=[]
+					var quad := PackedVector2Array([piece.position,Vector2(piece.end.x,piece.position.y),piece.end,Vector2(piece.position.x,piece.end.y)])
+					for polygon in Geometry2D.intersect_polygons(quad,r.floor_polygon):
+						var indices := Geometry2D.triangulate_polygon(polygon)
+						for i in range(0,indices.size(),3):
+							var a: Vector2=polygon[indices[i]]; var b: Vector2=polygon[indices[i+1]]; var c: Vector2=polygon[indices[i+2]]
+							if (b-a).cross(c-a)<0: vertices.append_array([a,c,b])
+							else: vertices.append_array([a,b,c])
+				for p in vertices:
 					var path: float=1.0-smoothstep(55,150,r.path_distance(p))
+					if r.layout=="castle" and (p.y>2750 or p.y<1300 or p.x<1750 or p.x>4650): path=1.0
 					for b in r.buildings:
 						if b.rect.grow(16).has_point(p): path=1.0
 					st.set_color(Color(1,1,1,path)); st.set_uv(p/100)
@@ -173,9 +189,7 @@ func terrain(r) -> void:
 				else: world.prop("medieval/rock_single_B",r.origin+p,Vector3(240,rng.randf_range(120,240),170),Color("827e72"),Color.WHITE,rng.randf()*TAU,-30)
 
 func room_at(r, p: Vector2) -> bool:
-	for rect in r.rooms:
-		if rect.has_point(p): return true
-	return false
+	return r.floor_contains(p)
 
 func rect_vertices(rect: Rect2) -> Array[Vector2]:
 	var a := rect.position; var b := Vector2(rect.end.x,rect.position.y); var c := rect.end; var d := Vector2(rect.position.x,rect.end.y)
@@ -202,6 +216,10 @@ func connector_ground(rect: Rect2, material: Material) -> void:
 	if not pieces.is_empty(): world.mesh_node(st.commit(),Vector3.ZERO,material)
 
 func dungeon_walls(r) -> void:
+	if not r.floor_polygon.is_empty():
+		cave_shell(r); dungeon_lights(r); return
+	if r.layout=="castle":
+		castle_shell(r); dungeon_lights(r); return
 	var mat: Material=kit.pbr("masonry",Color("aab0ba")) if r.act==1 else stone(Color("69665f"))
 	# Extract exposed edges of the union, so overlapping rooms have open joins.
 	for y in range(0,4800,100):
@@ -224,12 +242,92 @@ func dungeon_walls(r) -> void:
 				block(Rect2(at-size*.5-Vector2.ONE*5,size+Vector2.ONE*10),12,190,stone(Color("878174")))
 				if (x+y)%400==0:
 					world.prop("dungeon/column",at,Vector3(52,230,52),Color("a49d8a"))
+	dungeon_lights(r)
+
+func dungeon_lights(r) -> void:
 	for at in r.anchors+r.side_anchors:
 		var light := OmniLight3D.new(); light.position=world.point(r.origin+at,180)
 		light.light_color=Color("ffd094"); light.light_energy=1.2; light.omni_range=5.5
 		world.scenery.add_child(light); lights.append(light)
 		world.prop("dungeon/torch_lit",r.origin+at+Vector2(130,-90),Vector3(25,130,25),Color.WHITE,Color.WHITE,0,r.height_at(at))
 	dungeon_details(r)
+
+func cave_shell(r) -> void:
+	var boundary: PackedVector2Array=r.floor_polygon
+	var group := Node3D.new(); group.name="CaveRockShell"; world.scenery.add_child(group)
+	group.set_meta("shared_boundary",true)
+	var mat: StandardMaterial3D=kit.pbr("rock",Color("b2bcc6")).duplicate()
+	mat.cull_mode=BaseMaterial3D.CULL_DISABLED
+	for i in boundary.size():
+		var a: Vector2=boundary[i]; var b: Vector2=boundary[(i+1)%boundary.size()]
+		# Leave the surface return opening unobstructed.
+		if maxf(a.y,b.y)<5: continue
+		var d := (b-a).normalized(); var n := d.orthogonal()
+		if r.floor_contains((a+b)*.5+n*8): n=-n
+		var h0 := 270+48*sin(i*.67); var h1 := 270+48*sin((i+1)*.67)
+		var points: Array[Vector3]=[world.point(r.origin+a,-8),world.point(r.origin+b,-8),world.point(r.origin+b+n*65,-8),world.point(r.origin+a+n*65,-8),world.point(r.origin+a+n*12,h0),world.point(r.origin+b+n*12,h1),world.point(r.origin+b+n*92,h1+22),world.point(r.origin+a+n*92,h0+22)]
+		var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		# Rock face and sloping exposed ceiling rim; use two-sided geology only here.
+		for face in [[0,1,5,4],[4,5,6,7],[3,7,6,2],[0,4,7,3],[1,2,6,5]]:
+			for index in [face[0],face[1],face[2],face[0],face[2],face[3]]:
+				st.set_uv(Vector2(points[index].x,points[index].y)*.5); st.add_vertex(points[index])
+		st.generate_normals()
+		var mesh := MeshInstance3D.new(); mesh.mesh=st.commit(); mesh.material_override=mat; group.add_child(mesh)
+		var at: Vector2=r.origin+(a+b)*.5
+		mesh.set_meta("occluder",{"p":at,"height":h0}); kit.prepare_reveal(mesh)
+		occluders.append({"node":mesh,"p":at,"height":h0})
+		if i%5==0:
+			var rock: Node3D=kit.instance("strata_outcrop",group,world.point(r.origin+(a+b)*.5+n*45,-15),Vector3(.45,.9,.7),-atan2(d.y,d.x))
+			rock.set_meta("occluder",{"p":at,"height":200.0}); kit.prepare_reveal(rock)
+			occluders.append({"node":rock,"p":at,"height":200.0})
+		if i%11==0: kit.instance("cave_stalactites",group,world.point(r.origin+(a+b)*.5+n*20,h0-65),Vector3(.7,.7,.7))
+
+func castle_shell(r) -> void:
+	var group := Node3D.new(); group.name="CastleArchitecture"; world.scenery.add_child(group)
+	# Merge collinear boundaries before placing modules, preserving brick density.
+	var lines: Dictionary={}
+	for y in range(0,int(r.extent.y),100):
+		for x in range(0,int(r.extent.x),100):
+			var p := Vector2(x+50,y+50)
+			if not room_at(r,p): continue
+			for d in [Vector2.LEFT,Vector2.RIGHT,Vector2.UP,Vector2.DOWN]:
+				if room_at(r,p+d*100) or (y==0 and d==Vector2.UP): continue
+				var at: Vector2=p+d*50
+				var key := "%d:%d:%d" % [int(d.x),int(d.y),int(at.x if d.x!=0 else at.y)]
+				if not lines.has(key): lines[key]={"d":d,"line":at.x if d.x!=0 else at.y,"starts":[]}
+				lines[key].starts.append(y if d.x!=0 else x)
+	var count := 0
+	for entry in lines.values():
+		entry.starts.sort()
+		var starts: Array=entry.starts; var cursor := 0
+		while cursor<starts.size():
+			var first: float=starts[cursor]; var last: float=first+100; cursor+=1
+			while cursor<starts.size() and starts[cursor]==last: last+=100; cursor+=1
+			var begin := first
+			while begin<last:
+				var length := minf(300,last-begin)
+				var at := Vector2(entry.line,begin+length*.5) if entry.d.x!=0 else Vector2(begin+length*.5,entry.line)
+				at+=r.origin
+				var node: Node3D=kit.instance("castle_wall_broken" if count%13==0 else "castle_wall",group,world.point(at),Vector3(length/300,1,1),PI*.5 if entry.d.x!=0 else 0)
+				node.set_meta("occluder",{"p":at,"height":325.0}); kit.prepare_reveal(node)
+				occluders.append({"node":node,"p":at,"height":325.0})
+				if count%2==0: kit.instance("castle_buttress",group,world.point(at+entry.d*50),Vector3(.7,1,.7),PI*.5 if entry.d.x!=0 else 0)
+				begin+=length; count+=1
+	for p in [Vector2(1570,1410),Vector2(4830,1410),Vector2(710,2180),Vector2(5690,2180),Vector2(2510,5300),Vector2(3890,5300)]:
+		var tower: Node3D=kit.instance("castle_tower",group,world.point(p+r.origin),Vector3.ONE)
+		tower.set_meta("occluder",{"p":p+r.origin,"height":540.0}); kit.prepare_reveal(tower)
+		occluders.append({"node":tower,"p":p+r.origin,"height":540.0})
+	kit.instance("castle_gateway",group,world.point(r.origin+Vector2(3200,1250)))
+	for y in [2950,3750,4400]:
+		var vault: Node3D=kit.instance("castle_vault",group,world.point(r.origin+Vector2(3200,y)),Vector3(.85,1,.85))
+		vault.set_meta("occluder",{"p":r.origin+Vector2(3200,y),"height":550.0}); kit.prepare_reveal(vault)
+		occluders.append({"node":vault,"p":r.origin+Vector2(3200,y),"height":550.0})
+	for at in [Vector2(2800,1100),Vector2(3600,1100),Vector2(1600,1700),Vector2(4800,1700),Vector2(950,3100),Vector2(5450,3100),Vector2(2700,3000),Vector2(3700,3000),Vector2(2700,4200),Vector2(3700,4200),Vector2(2800,6100),Vector2(3600,6100)]:
+		var base: float=r.height_at(at)
+		kit.instance("road_shrine",group,world.point(r.origin+at,base))
+		var light := OmniLight3D.new(); light.position=world.point(r.origin+at,base+150)
+		light.light_color=Color("ffd19a"); light.light_energy=.8; light.omni_range=4.2
+		light.light_bake_mode=Light3D.BAKE_DYNAMIC; group.add_child(light); lights.append(light)
 
 func house(r, b: Dictionary) -> void:
 	var rect: Rect2=Rect2(b.rect.position+r.origin,b.rect.size)
@@ -284,6 +382,10 @@ func stairway(r, item: Dictionary) -> void:
 	var rect: Rect2=Rect2(item.rect.position+r.origin,item.rect.size)
 	var terrace: Rect2=Rect2(item.terrace.position+r.origin,item.terrace.size)
 	var mat: Material=kit.pbr("masonry",Color("cec4ae")) if r.act==1 else stone(Color("797167"))
+	if mat is StandardMaterial3D:
+		var tiled: StandardMaterial3D=mat.duplicate()
+		tiled.uv1_triplanar=true; tiled.uv1_world_triplanar=true; tiled.uv1_scale=Vector3.ONE*.55
+		mat=tiled
 	block(terrace,item.top,0,mat)
 	for i in 14:
 		var h: float=item.top*((14-i)/14.0 if item.north else (i+1)/14.0)
@@ -309,7 +411,12 @@ func waypoint(p: Vector2, base: float) -> void:
 func entrance(door: Dictionary) -> void:
 	var p: Vector2=door.p
 	if world.campaign.map.act==1:
-		kit.instance("cave_portal",world.scenery,world.point(p+Vector2(0,-100)))
+		if door.get("architecture","")=="castle":
+			kit.instance("castle_gateway",world.scenery,world.point(p+Vector2(0,-100)))
+			for offset in [-380,380]:
+				kit.instance("castle_tower",world.scenery,world.point(p+Vector2(offset,-170)),Vector3(1.2,1.2,1.2))
+				kit.instance("castle_wall",world.scenery,world.point(p+Vector2(offset,-310)),Vector3(1.5,1.2,1))
+		else: kit.instance("cave_portal",world.scenery,world.point(p+Vector2(0,-100)))
 	else: world.prop("halloween/arch",p+Vector2(0,-100),Vector3(400,300,85),Color("91887c"))
 	if world.campaign.map.act!=1:
 		var black: StandardMaterial3D=world.material(Color("111319"))
@@ -416,7 +523,7 @@ func dungeon_details(r) -> void:
 		for i in 8:
 			var a := i*TAU/8
 			world.prop("dungeon/column",p+Vector2(cos(a)*280,sin(a)*190),Vector3(52,160,52),Color("bab3a2"),Color.WHITE,0,r.height_at(p-r.origin))
-	elif r.layout=="mine":
+	elif r.layout=="mine" and not (r.act==1 and r.stage==7):
 		for y in range(800,3500,350):
 			var at := Vector2(2400,y)
 			if not room_at(r,at): continue
@@ -436,12 +543,6 @@ func dungeon_details(r) -> void:
 			if room_at(r,p): world.prop("dungeon/banner_red",p+r.origin,Vector3(100,200,20),Color("9f8982"))
 	if r.act==1 and r.stage==7:
 		# Exposed rock and supports distinguish the first optional cave from a hall.
-		for y in range(850,3350,400):
-			var at := Vector2(2400,y)
-			if not room_at(r,at): continue
-			for x in [2080,2720]:
-				block(Rect2(r.origin+Vector2(x,y),Vector2(20,30)),210,0,kit.pbr("timber"))
-			block(Rect2(r.origin+Vector2(2080,y),Vector2(660,30)),25,210,kit.pbr("timber"))
 		for p in r.side_anchors:
 			kit.instance("rock_formation",world.scenery,world.point(r.origin+p+Vector2(180,-110)),Vector3(1.3,1.1,1.0))
 
@@ -532,6 +633,7 @@ func register_authored(root: Node3D) -> void:
 				if front.has_meta("reveal_front_rect") and front.get_meta("reveal_front_rect")==node.get_meta("reveal_roof_rect"):
 					roofs.append({"roof":node,"front":front,"rect":node.get_meta("reveal_roof_rect"),"amount":1.0,"inside":false})
 		if node.has_meta("occluder"):
+			kit.prepare_reveal(node)
 			var entry: Dictionary=node.get_meta("occluder").duplicate(); entry.node=node; occluders.append(entry)
 		if node.has_meta("story_cache"): cache_models.append({"node":node,"id":node.get_meta("story_cache")})
 		if node is Light3D and not node is DirectionalLight3D: lights.append(node)

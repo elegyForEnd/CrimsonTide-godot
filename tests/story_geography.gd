@@ -38,7 +38,8 @@ func run() -> void:
 			for node in c.objective_nodes(): check(c.map.walkable(node.p) and reached(seen,node.p),"actual task object reached "+node.id)
 		for door in c.map.portals:
 			if not c.map.regions[door.source].indoor: check(reached(seen,door.p),"dungeon entrance reachable %d:%d" % [a,door.stage])
-		for s in range(1,9):
+		for s in c.map.regions:
+			if s==0: continue
 			if not c.map.regions[s].indoor: continue
 			c.enter(a,s); seen=reach(c.map,c.hero_at)
 			for p in c.map.anchors+c.map.side_anchors+c.map.regions[s].chests+[c.map.waypoint]: check(reached(seen,p),"dungeon rooms joined %d:%d %s" % [a,s,p])

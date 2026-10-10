@@ -19,6 +19,10 @@ func run() -> void:
 	world=World.new(); root.add_child(world)
 	world.environment_builder.authoring=true
 	var stages: Array=[0,1,7]
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--stages="):
+			stages=[]
+			for value in arg.trim_prefix("--stages=").split(","): stages.append(int(value))
 	if "--cache-outdoors" in OS.get_cmdline_user_args(): stages=range(1,9)
 	for stage in stages:
 		if "--camp-only" in OS.get_cmdline_user_args() and stage!=0: continue
@@ -44,11 +48,11 @@ func run() -> void:
 		for item in world.environment_builder.cache_models:
 			if authored.is_ancestor_of(item.node): item.node.set_meta("story_cache",item.id)
 		for mesh in authored.find_children("*","MeshInstance3D",true,false):
-			if stage not in [0,1,7]: continue
+			if stage not in [0,1,7,9]: continue
 			if mesh.material_override is ShaderMaterial and mesh.material_override.shader==world.environment_builder.WATER:
 				mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; continue
 			if mesh.material_override==null and mesh.mesh==null: continue
-			var hide_group: bool=mesh.name.begins_with("Roof") or mesh.name.begins_with("Front") or mesh.name.begins_with("Side") or mesh.get_parent().name.begins_with("Roof") or mesh.get_parent().name.begins_with("Front")
+			var hide_group: bool=mesh.gi_mode==GeometryInstance3D.GI_MODE_DISABLED or mesh.name.begins_with("Roof") or mesh.name.begins_with("Front") or mesh.name.begins_with("Side") or mesh.get_parent().name.begins_with("Roof") or mesh.get_parent().name.begins_with("Front")
 			if hide_group or mesh.get_parent().has_meta("licensed_tree") or mesh.get_parent().name.begins_with("woodland_tree"):
 				mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; continue
 			var key := str(mesh.mesh.get_instance_id())
@@ -68,6 +72,8 @@ func run() -> void:
 		moon.light_color=Color("b7c8e4"); moon.light_energy=.63 if stage!=7 else .20
 		moon.light_bake_mode=Light3D.BAKE_DYNAMIC; moon.add_to_group("editor_only",true); authored.add_child(moon)
 		var gi := LightmapGI.new(); gi.name="BakedIndirectLight"
+		var previous_bake := path.get_basename()+".lmbake"
+		if ResourceLoader.exists(previous_bake): gi.light_data=load(previous_bake)
 		gi.quality=LightmapGI.BAKE_QUALITY_MEDIUM
 		gi.environment_mode=LightmapGI.ENVIRONMENT_MODE_CUSTOM_COLOR
 		gi.environment_custom_color=Color("829ab7"); gi.environment_custom_energy=.20 if stage!=7 else .12

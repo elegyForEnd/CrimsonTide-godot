@@ -27,18 +27,20 @@ func configure(a: int, shapes: Array) -> void:
 	var last := 0; var order := 0
 	for s in range(1,shapes.size()+1):
 		var shape: String=shapes[s-1]
-		var inside: bool=shape in ["hall","library","crypt","cathedral","mine","chapel"]
+		var inside: bool=shape in ["hall","library","crypt","cathedral","mine","chapel","castle"]
 		var r=Region.new(); r.build(a,s,shape,inside); regions[s]=r
 		if inside:
 			var source: int=s-1 if s>1 and regions[s-1].indoor else last
 			if s==7: source=1
+			if a==1 and shape=="castle": source=2
 			var parent=regions[source]
 			var at: Vector2=parent.origin+(Vector2(900,2200) if s==7 else parent.anchors[-1]+Vector2(0,160) if parent.indoor else Vector2(3100,3300) if source>0 else Vector2(1100,1600))
+			if shape=="castle": at=parent.origin+Vector2(1050,2100)
 			var count := 0
 			for door in portals:
 				if door.source==source: count+=1
 			at+=Vector2(-count*650,0)
-			portals.append({"source":source,"stage":s,"p":at,"label":"进入遗迹","kind":"entrance"})
+			portals.append({"source":source,"stage":s,"p":at,"label":"进入灰棘旧堡" if shape=="castle" else "进入遗迹","kind":"entrance","architecture":shape})
 			parent.ports.append(at-parent.origin)
 			parent.trails.append(PackedVector2Array([parent.anchors[-1] if source>0 else parent.spawn,at-parent.origin]))
 		else:

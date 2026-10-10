@@ -64,7 +64,7 @@ func load_campaign(save_path: String = "") -> void:
 			save_enabled=false
 			notice.emit("战役存档无法读取；原文件已保留，当前游玩不会覆盖它。")
 	state.act=clampi(int(state.act),1,6)
-	state.stage=clampi(int(state.stage),0,8)
+	state.stage=clampi(int(state.stage),0,content.acts[int(state.act)-1].maps.size())
 	state.hero=clampi(int(state.hero),0,2)
 	for id in state.steps: state.steps[id]=int(state.steps[id])
 	if state.kits.size()!=3: state.kits=new_state().kits
@@ -84,7 +84,8 @@ func valid_save(value: Variant) -> bool:
 	if not value.get("completed") is Array or not value.get("steps") is Dictionary or not value.get("gear") is Dictionary: return false
 	for field in ["act","stage","hero","xp","coins","potions"]:
 		if not value.get(field) is float and not value.get(field) is int: return false
-	if int(value.act)<1 or int(value.act)>6 or int(value.stage)<0 or int(value.stage)>8: return false
+	if int(value.act)<1 or int(value.act)>6 or int(value.stage)<0: return false
+	if int(value.stage)>content.acts[int(value.act)-1].maps.size(): return false
 	for field in ["completed","accepted"]:
 		if not value.get(field,[]) is Array: return false
 		for id in value.get(field,[]):

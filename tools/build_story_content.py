@@ -68,6 +68,8 @@ def main():
         for j,name in enumerate(exploration[i]):
             act['maps'].append({'id':f'a{i+1}_explore_{j+1}','name':name,'layout':'mine' if j==0 else 'crypt','optional':True})
     endings={}
+    acts[0]['maps'].append({'id':'a1_castle_1','name':'灰棘旧堡','layout':'castle','optional':True,
+        'description':'穿过门庭与废弃驻军庭院，探索军械西翼、书记东翼、拱顶大厅和升高的领主厅；取回遗落物资，击败守堡者后由传送阵返回。'})
     em = list(re.finditer(r'^### 结局([一二三]) · (.+)$',text,re.M))
     for i,m in enumerate(em):
         end=em[i+1].start() if i+1<len(em) else text.index('## 六地的后日谈',m.end())

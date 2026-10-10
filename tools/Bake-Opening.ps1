@@ -8,6 +8,7 @@ $bakeExe=Join-Path $sceneRoot 'Godot_v4.7.2-stable_win64_console.exe'
 try {
 foreach($stage in $Stages){
     $scenePath="res://scenes/story/opening-$stage.tscn"
+    if(-not (Test-Path -LiteralPath (Join-Path $sceneRoot "scenes/story/opening-$stage.tscn"))){ throw "Bake scene does not exist: $scenePath. Pass -Stages @(0,1,7,9)." }
     $outLog=Join-Path $sceneRoot "output/bake-final-$stage.log"
     $errLog=Join-Path $sceneRoot "output/bake-final-$stage.err"
     $bakeProcess=Start-Process -FilePath $bakeExe -WorkingDirectory $sceneRoot -ArgumentList @('--editor','--single-window','--path','.',"scenes/story/opening-$stage.tscn",'--','--bake-opening',"--bake-scene=$scenePath") -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru

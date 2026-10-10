@@ -3,54 +3,1461 @@
   "units": "100 logic units = 1 metre; offsets relative to building centre when role is present",
   "regions": {
     "0": [
-      {"id":"watch_chart","role":0,"model":"watch_map_table","at":[0,-53],"scale":[0.8,1,0.8],"footprint":[88,38],"inside":true},
-      {"id":"watch_weapons","role":0,"model":"weapon_stand","at":[-78,3],"scale":[0.65,0.8,0.65],"footprint":[61,27],"inside":true},
-      {"id":"watch_seat","role":0,"model":"wood_stool","at":[78,30],"scale":[0.8,0.8,0.8],"footprint":[24,24],"inside":true},
-      {"id":"ward_bed","role":1,"model":"ward_cot","at":[80,-6],"scale":[1,1,1],"footprint":[64,136],"inside":true},
-      {"id":"ward_medicine","role":1,"model":"medicine_cabinet","at":[-61,-65],"scale":[0.85,0.85,0.85],"footprint":[65,26],"inside":true},
-      {"id":"ward_seat","role":1,"model":"wood_stool","at":[-70,29],"scale":[0.8,0.8,0.8],"footprint":[24,24],"inside":true},
-      {"id":"forge_hearth","role":2,"model":"forge","at":[-84,-31],"scale":[0.55,0.6,0.55],"footprint":[69,60],"inside":true},
-      {"id":"forge_anvil","role":2,"model":"anvil","at":[90,-10],"scale":[0.8,0.8,0.8],"footprint":[52,38],"inside":true},
-      {"id":"forge_bellows","role":2,"model":"forge_bellows","at":[-85,33],"scale":[0.75,0.75,0.75],"footprint":[35,48],"inside":true},
-      {"id":"archive_reading","role":3,"model":"archive_lectern","at":[0,-57],"scale":[0.85,0.85,0.85],"footprint":[77,38],"inside":true},
-      {"id":"archive_scrolls","role":3,"model":"archive_scrolls","at":[-81,6],"scale":[0.58,0.85,0.8],"footprint":[47,26],"inside":true},
-      {"id":"archive_books","role":3,"model":"bookshelf","at":[81,-2],"scale":[0.38,0.75,0.7],"footprint":[38,31],"inside":true},
-      {"id":"store_shelves","role":4,"model":"cargo_shelves","at":[0,-56],"scale":[1,1,0.8],"footprint":[106,27],"inside":true},
-      {"id":"store_crates","role":4,"model":"cargo","at":[-96,7],"scale":[0.48,0.6,0.48],"footprint":[51,43],"inside":true},
-      {"id":"store_barrel","role":4,"model":"cargo","at":[101,27],"scale":[0.4,0.48,0.4],"footprint":[42,36],"inside":true},
-      {"id":"inn_bar","role":5,"model":"inn_counter","at":[0,-62],"scale":[0.9,0.9,0.8],"footprint":[116,41],"inside":true},
-      {"id":"inn_table","role":5,"model":"inn_table","at":[-93,14],"scale":[0.68,0.8,0.75],"footprint":[49,42],"inside":true},
-      {"id":"inn_seat","role":5,"model":"wood_stool","at":[92,30],"scale":[0.85,0.85,0.85],"footprint":[26,26],"inside":true},
-      {"id":"watch_supplies","role":0,"model":"cargo","at":[-183,64],"scale":[0.65,0.8,0.65]},
-      {"id":"watch_spares","role":0,"model":"weapon_stand","at":[180,20],"scale":[0.8,1,0.8]},
-      {"id":"ward_linen","role":1,"model":"cargo","at":[-191,20],"scale":[0.5,0.65,0.5]},
-      {"id":"forge_tools","role":2,"model":"tool_rack","at":[-228,-76],"scale":[0.65,0.75,0.65]},
-      {"id":"forge_scrap","role":2,"model":"rubble","at":[213,56],"scale":[0.32,0.16,0.32]},
-      {"id":"archive_returns","role":3,"model":"archive_scrolls","at":[180,44],"scale":[0.65,0.65,0.65]},
-      {"id":"store_loading","role":4,"model":"handcart","at":[-204,-49],"scale":[0.7,0.7,0.7]},
-      {"id":"store_rope","role":4,"model":"rope_coil","at":[194,68],"scale":[0.7,0.7,0.7]},
-      {"id":"inn_outdoor_table","role":5,"model":"inn_table","at":[213,45],"scale":[1,1,1]},
-      {"id":"inn_outdoor_seat_a","role":5,"model":"wood_stool","at":[211,94],"scale":[1,1,1]},
-      {"id":"inn_outdoor_seat_b","role":5,"model":"wood_stool","at":[263,43],"scale":[1,1,1]},
-      {"id":"gate_supply_cart","model":"handcart","at":[815,1670],"scale":[0.75,0.75,0.75]},
-      {"id":"gate_supply_crates","model":"cargo","at":[770,1600],"scale":[0.7,0.7,0.7]},
-      {"id":"gate_rope","model":"rope_coil","at":[833,1760],"scale":[0.8,0.8,0.8]}
+      {
+        "id": "watch_chart",
+        "role": 0,
+        "model": "watch_map_table",
+        "at": [
+          0,
+          -53
+        ],
+        "scale": [
+          0.8,
+          1,
+          0.8
+        ],
+        "footprint": [
+          88,
+          38
+        ],
+        "inside": true
+      },
+      {
+        "id": "watch_weapons",
+        "role": 0,
+        "model": "weapon_stand",
+        "at": [
+          -78,
+          3
+        ],
+        "scale": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "footprint": [
+          61,
+          27
+        ],
+        "inside": true
+      },
+      {
+        "id": "watch_seat",
+        "role": 0,
+        "model": "wood_stool",
+        "at": [
+          78,
+          30
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ],
+        "footprint": [
+          24,
+          24
+        ],
+        "inside": true
+      },
+      {
+        "id": "ward_bed",
+        "role": 1,
+        "model": "ward_cot",
+        "at": [
+          80,
+          -6
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "footprint": [
+          64,
+          136
+        ],
+        "inside": true
+      },
+      {
+        "id": "ward_medicine",
+        "role": 1,
+        "model": "medicine_cabinet",
+        "at": [
+          -61,
+          -65
+        ],
+        "scale": [
+          0.85,
+          0.85,
+          0.85
+        ],
+        "footprint": [
+          65,
+          26
+        ],
+        "inside": true
+      },
+      {
+        "id": "ward_seat",
+        "role": 1,
+        "model": "wood_stool",
+        "at": [
+          -70,
+          29
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ],
+        "footprint": [
+          24,
+          24
+        ],
+        "inside": true
+      },
+      {
+        "id": "forge_hearth",
+        "role": 2,
+        "model": "forge",
+        "at": [
+          -84,
+          -31
+        ],
+        "scale": [
+          0.55,
+          0.6,
+          0.55
+        ],
+        "footprint": [
+          69,
+          60
+        ],
+        "inside": true
+      },
+      {
+        "id": "forge_anvil",
+        "role": 2,
+        "model": "anvil",
+        "at": [
+          90,
+          -10
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ],
+        "footprint": [
+          52,
+          38
+        ],
+        "inside": true
+      },
+      {
+        "id": "forge_bellows",
+        "role": 2,
+        "model": "forge_bellows",
+        "at": [
+          -85,
+          33
+        ],
+        "scale": [
+          0.75,
+          0.75,
+          0.75
+        ],
+        "footprint": [
+          35,
+          48
+        ],
+        "inside": true
+      },
+      {
+        "id": "archive_reading",
+        "role": 3,
+        "model": "archive_lectern",
+        "at": [
+          0,
+          -57
+        ],
+        "scale": [
+          0.85,
+          0.85,
+          0.85
+        ],
+        "footprint": [
+          77,
+          38
+        ],
+        "inside": true
+      },
+      {
+        "id": "archive_scrolls",
+        "role": 3,
+        "model": "archive_scrolls",
+        "at": [
+          -81,
+          6
+        ],
+        "scale": [
+          0.58,
+          0.85,
+          0.8
+        ],
+        "footprint": [
+          47,
+          26
+        ],
+        "inside": true
+      },
+      {
+        "id": "archive_books",
+        "role": 3,
+        "model": "bookshelf",
+        "at": [
+          81,
+          -2
+        ],
+        "scale": [
+          0.38,
+          0.75,
+          0.7
+        ],
+        "footprint": [
+          38,
+          31
+        ],
+        "inside": true
+      },
+      {
+        "id": "store_shelves",
+        "role": 4,
+        "model": "cargo_shelves",
+        "at": [
+          0,
+          -56
+        ],
+        "scale": [
+          1,
+          1,
+          0.8
+        ],
+        "footprint": [
+          106,
+          27
+        ],
+        "inside": true
+      },
+      {
+        "id": "store_crates",
+        "role": 4,
+        "model": "cargo",
+        "at": [
+          -96,
+          7
+        ],
+        "scale": [
+          0.48,
+          0.6,
+          0.48
+        ],
+        "footprint": [
+          51,
+          43
+        ],
+        "inside": true
+      },
+      {
+        "id": "store_barrel",
+        "role": 4,
+        "model": "cargo",
+        "at": [
+          101,
+          27
+        ],
+        "scale": [
+          0.4,
+          0.48,
+          0.4
+        ],
+        "footprint": [
+          42,
+          36
+        ],
+        "inside": true
+      },
+      {
+        "id": "inn_bar",
+        "role": 5,
+        "model": "inn_counter",
+        "at": [
+          0,
+          -62
+        ],
+        "scale": [
+          0.9,
+          0.9,
+          0.8
+        ],
+        "footprint": [
+          116,
+          41
+        ],
+        "inside": true
+      },
+      {
+        "id": "inn_table",
+        "role": 5,
+        "model": "inn_table",
+        "at": [
+          -93,
+          14
+        ],
+        "scale": [
+          0.68,
+          0.8,
+          0.75
+        ],
+        "footprint": [
+          49,
+          42
+        ],
+        "inside": true
+      },
+      {
+        "id": "inn_seat",
+        "role": 5,
+        "model": "wood_stool",
+        "at": [
+          92,
+          30
+        ],
+        "scale": [
+          0.85,
+          0.85,
+          0.85
+        ],
+        "footprint": [
+          26,
+          26
+        ],
+        "inside": true
+      },
+      {
+        "id": "watch_supplies",
+        "role": 0,
+        "model": "cargo",
+        "at": [
+          -183,
+          64
+        ],
+        "scale": [
+          0.65,
+          0.8,
+          0.65
+        ]
+      },
+      {
+        "id": "watch_spares",
+        "role": 0,
+        "model": "weapon_stand",
+        "at": [
+          180,
+          20
+        ],
+        "scale": [
+          0.8,
+          1,
+          0.8
+        ]
+      },
+      {
+        "id": "ward_linen",
+        "role": 1,
+        "model": "cargo",
+        "at": [
+          -191,
+          20
+        ],
+        "scale": [
+          0.5,
+          0.65,
+          0.5
+        ]
+      },
+      {
+        "id": "forge_tools",
+        "role": 2,
+        "model": "tool_rack",
+        "at": [
+          -228,
+          -76
+        ],
+        "scale": [
+          0.65,
+          0.75,
+          0.65
+        ]
+      },
+      {
+        "id": "forge_scrap",
+        "role": 2,
+        "model": "rubble",
+        "at": [
+          213,
+          56
+        ],
+        "scale": [
+          0.32,
+          0.16,
+          0.32
+        ]
+      },
+      {
+        "id": "archive_returns",
+        "role": 3,
+        "model": "archive_scrolls",
+        "at": [
+          180,
+          44
+        ],
+        "scale": [
+          0.65,
+          0.65,
+          0.65
+        ]
+      },
+      {
+        "id": "store_loading",
+        "role": 4,
+        "model": "handcart",
+        "at": [
+          -204,
+          -49
+        ],
+        "scale": [
+          0.7,
+          0.7,
+          0.7
+        ]
+      },
+      {
+        "id": "store_rope",
+        "role": 4,
+        "model": "rope_coil",
+        "at": [
+          194,
+          68
+        ],
+        "scale": [
+          0.7,
+          0.7,
+          0.7
+        ]
+      },
+      {
+        "id": "inn_outdoor_table",
+        "role": 5,
+        "model": "inn_table",
+        "at": [
+          213,
+          45
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "inn_outdoor_seat_a",
+        "role": 5,
+        "model": "wood_stool",
+        "at": [
+          211,
+          94
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "inn_outdoor_seat_b",
+        "role": 5,
+        "model": "wood_stool",
+        "at": [
+          263,
+          43
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "gate_supply_cart",
+        "model": "handcart",
+        "at": [
+          815,
+          1670
+        ],
+        "scale": [
+          0.75,
+          0.75,
+          0.75
+        ]
+      },
+      {
+        "id": "gate_supply_crates",
+        "model": "cargo",
+        "at": [
+          770,
+          1600
+        ],
+        "scale": [
+          0.7,
+          0.7,
+          0.7
+        ]
+      },
+      {
+        "id": "gate_rope",
+        "model": "rope_coil",
+        "at": [
+          833,
+          1760
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      {
+        "id": "camp_drain_0",
+        "model": "drain_channel",
+        "at": [
+          220,
+          670
+        ]
+      },
+      {
+        "id": "camp_drain_1",
+        "model": "drain_channel",
+        "at": [
+          1970,
+          780
+        ]
+      },
+      {
+        "id": "camp_drain_2",
+        "model": "drain_channel",
+        "at": [
+          280,
+          1180
+        ]
+      },
+      {
+        "id": "camp_drain_3",
+        "model": "drain_channel",
+        "at": [
+          2000,
+          1500
+        ]
+      },
+      {
+        "id": "camp_supply_wagon_0",
+        "model": "broken_wagon",
+        "at": [
+          430,
+          1650
+        ],
+        "footprint": [
+          150,
+          140
+        ]
+      },
+      {
+        "id": "camp_supply_wagon_1",
+        "model": "broken_wagon",
+        "at": [
+          1900,
+          1620
+        ],
+        "footprint": [
+          150,
+          140
+        ]
+      },
+      {
+        "id": "south_gate_shrine",
+        "model": "road_shrine",
+        "at": [
+          840,
+          1720
+        ]
+      },
+      {
+        "id": "smith_coal_ridge",
+        "model": "strata_outcrop",
+        "at": [
+          220,
+          1040
+        ],
+        "scale": [
+          0.45,
+          0.35,
+          0.4
+        ]
+      }
     ],
     "1": [
-      {"id":"road_watch_supplies","model":"cargo","at":[2630,250],"scale":[0.7,0.7,0.7]},
-      {"id":"road_fallen_tools","model":"forge_bellows","at":[1420,2450],"scale":[0.9,0.9,0.9]},
-      {"id":"road_forgotten_rope","model":"rope_coil","at":[1350,2500],"scale":[0.8,0.8,0.8]},
-      {"id":"cave_abandoned_crates","model":"cargo","at":[725,2060],"scale":[0.65,0.65,0.65]},
-      {"id":"cave_abandoned_cart","model":"handcart","at":[698,2290],"scale":[0.8,0.8,0.8]}
+      {
+        "id": "road_watch_supplies",
+        "model": "cargo",
+        "at": [
+          2630,
+          250
+        ],
+        "scale": [
+          0.7,
+          0.7,
+          0.7
+        ]
+      },
+      {
+        "id": "road_fallen_tools",
+        "model": "forge_bellows",
+        "at": [
+          1420,
+          2450
+        ],
+        "scale": [
+          0.9,
+          0.9,
+          0.9
+        ]
+      },
+      {
+        "id": "road_forgotten_rope",
+        "model": "rope_coil",
+        "at": [
+          1350,
+          2500
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      {
+        "id": "cave_abandoned_crates",
+        "model": "cargo",
+        "at": [
+          725,
+          2060
+        ],
+        "scale": [
+          0.65,
+          0.65,
+          0.65
+        ]
+      },
+      {
+        "id": "cave_abandoned_cart",
+        "model": "handcart",
+        "at": [
+          698,
+          2290
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      {
+        "id": "convoy_marker",
+        "model": "road_shrine",
+        "at": [
+          1650,
+          1050
+        ]
+      },
+      {
+        "id": "convoy_broken_axle",
+        "model": "broken_wagon",
+        "at": [
+          1450,
+          850
+        ],
+        "angle": 0.45,
+        "footprint": [
+          155,
+          180
+        ]
+      },
+      {
+        "id": "convoy_spill",
+        "model": "cargo",
+        "at": [
+          1250,
+          980
+        ],
+        "scale": [
+          0.7,
+          0.7,
+          0.7
+        ]
+      },
+      {
+        "id": "convoy_rope",
+        "model": "rope_coil",
+        "at": [
+          1350,
+          1080
+        ]
+      },
+      {
+        "id": "logging_trunk",
+        "model": "fallen_oak",
+        "at": [
+          650,
+          3050
+        ],
+        "angle": 0.3
+      },
+      {
+        "id": "logging_tools",
+        "model": "tool_rack",
+        "at": [
+          790,
+          3190
+        ]
+      },
+      {
+        "id": "logging_wagon",
+        "model": "broken_wagon",
+        "at": [
+          620,
+          3280
+        ],
+        "angle": -0.55,
+        "footprint": [
+          150,
+          165
+        ]
+      },
+      {
+        "id": "logging_rope",
+        "model": "rope_coil",
+        "at": [
+          800,
+          3310
+        ]
+      },
+      {
+        "id": "field_strata_0",
+        "model": "strata_outcrop",
+        "at": [
+          600,
+          1850
+        ],
+        "angle": 0.3,
+        "scale": [
+          1.1,
+          0.65,
+          0.85
+        ]
+      },
+      {
+        "id": "field_strata_1",
+        "model": "strata_outcrop",
+        "at": [
+          520,
+          2000
+        ],
+        "angle": 0.49,
+        "scale": [
+          1.1,
+          0.9,
+          0.85
+        ]
+      },
+      {
+        "id": "field_strata_2",
+        "model": "strata_outcrop",
+        "at": [
+          610,
+          2200
+        ],
+        "angle": 0.6799999999999999,
+        "scale": [
+          1.1,
+          1.15,
+          0.85
+        ]
+      },
+      {
+        "id": "field_strata_3",
+        "model": "strata_outcrop",
+        "at": [
+          3890,
+          1900
+        ],
+        "angle": 0.8700000000000001,
+        "scale": [
+          1.1,
+          0.65,
+          0.85
+        ]
+      },
+      {
+        "id": "field_strata_4",
+        "model": "strata_outcrop",
+        "at": [
+          3990,
+          2100
+        ],
+        "angle": 1.06,
+        "scale": [
+          1.1,
+          0.9,
+          0.85
+        ]
+      },
+      {
+        "id": "field_strata_5",
+        "model": "strata_outcrop",
+        "at": [
+          4080,
+          2250
+        ],
+        "angle": 1.25,
+        "scale": [
+          1.1,
+          1.15,
+          0.85
+        ]
+      },
+      {
+        "id": "field_strata_6",
+        "model": "strata_outcrop",
+        "at": [
+          4010,
+          2760
+        ],
+        "angle": 1.4400000000000002,
+        "scale": [
+          1.1,
+          0.65,
+          0.85
+        ]
+      },
+      {
+        "id": "cave_waymark",
+        "model": "road_shrine",
+        "at": [
+          1130,
+          2170
+        ]
+      },
+      {
+        "id": "cave_drain",
+        "model": "drain_channel",
+        "at": [
+          1070,
+          2360
+        ],
+        "angle": 0.8
+      },
+      {
+        "id": "cave_fallen_tree",
+        "model": "fallen_oak",
+        "at": [
+          590,
+          2510
+        ],
+        "angle": 0.9
+      }
     ],
     "7": [
-      {"id":"cave_wall_lip_a","model":"cliff","at":[900,1010],"scale":[0.7,0.45,0.4]},
-      {"id":"cave_wall_lip_b","model":"rock_formation","at":[1130,1090],"scale":[0.45,0.5,0.45]},
-      {"id":"cave_store","model":"cargo_shelves","at":[780,1380],"scale":[0.8,0.8,0.8]},
-      {"id":"cave_broken_support","model":"roof_beam_broken","at":[1090,1580],"scale":[0.8,0.8,0.8]},
-      {"id":"cave_lost_rope","model":"rope_coil","at":[990,1440],"scale":[0.8,0.8,0.8]},
-      {"id":"cave_supply_candle","model":"candle_cluster","at":[866,1395],"scale":[1,1,1]},
-      {"id":"cave_rubble_b","model":"rubble","at":[3210,2610],"scale":[0.45,0.25,0.45]}
+      {
+        "id": "cave_wall_lip_a",
+        "model": "cliff",
+        "at": [
+          900,
+          1010
+        ],
+        "scale": [
+          0.7,
+          0.45,
+          0.4
+        ]
+      },
+      {
+        "id": "cave_wall_lip_b",
+        "model": "rock_formation",
+        "at": [
+          1130,
+          1090
+        ],
+        "scale": [
+          0.45,
+          0.5,
+          0.45
+        ]
+      },
+      {
+        "id": "cave_store",
+        "model": "cargo_shelves",
+        "at": [
+          780,
+          1380
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      {
+        "id": "cave_broken_support",
+        "model": "roof_beam_broken",
+        "at": [
+          1090,
+          1580
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      {
+        "id": "cave_lost_rope",
+        "model": "rope_coil",
+        "at": [
+          990,
+          1440
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      },
+      {
+        "id": "cave_supply_candle",
+        "model": "candle_cluster",
+        "at": [
+          866,
+          1395
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "id": "cave_rubble_b",
+        "model": "rubble",
+        "at": [
+          3210,
+          2610
+        ],
+        "scale": [
+          0.45,
+          0.25,
+          0.45
+        ]
+      },
+      {
+        "id": "mine_arch_0",
+        "model": "mine_support",
+        "at": [
+          2400,
+          900
+        ],
+        "angle": 0,
+        "reveal": true,
+        "occlusion_height": 255
+      },
+      {
+        "id": "mine_arch_1",
+        "model": "mine_support",
+        "at": [
+          1940,
+          1290
+        ],
+        "angle": 0.3,
+        "reveal": true,
+        "occlusion_height": 255
+      },
+      {
+        "id": "mine_arch_2",
+        "model": "mine_support",
+        "at": [
+          1080,
+          1890
+        ],
+        "angle": 0,
+        "reveal": true,
+        "occlusion_height": 255
+      },
+      {
+        "id": "mine_arch_3",
+        "model": "mine_support",
+        "at": [
+          2350,
+          3040
+        ],
+        "angle": 0.3,
+        "reveal": true,
+        "occlusion_height": 255
+      },
+      {
+        "id": "mining_face",
+        "model": "strata_outcrop",
+        "at": [
+          470,
+          2450
+        ],
+        "angle": 1.3,
+        "scale": [
+          0.6,
+          0.7,
+          0.6
+        ]
+      },
+      {
+        "id": "mining_cargo",
+        "model": "cargo",
+        "at": [
+          580,
+          2550
+        ],
+        "scale": [
+          0.65,
+          0.65,
+          0.65
+        ],
+        "footprint": [
+          85,
+          90
+        ]
+      },
+      {
+        "id": "mine_broken_wagon",
+        "model": "broken_wagon",
+        "at": [
+          3040,
+          2850
+        ],
+        "angle": 0.45,
+        "footprint": [
+          140,
+          170
+        ]
+      },
+      {
+        "id": "mine_deep_lamp",
+        "model": "candle_cluster",
+        "at": [
+          2820,
+          3200
+        ]
+      }
+    ],
+    "2": [
+      {
+        "id": "castle_approach_marker",
+        "model": "road_shrine",
+        "at": [
+          1400,
+          1990
+        ]
+      },
+      {
+        "id": "castle_abandoned_wagon",
+        "model": "broken_wagon",
+        "at": [
+          1540,
+          2240
+        ],
+        "angle": -0.3,
+        "footprint": [
+          150,
+          155
+        ]
+      },
+      {
+        "id": "castle_approach_banner",
+        "model": "castle_banner",
+        "at": [
+          650,
+          1890
+        ],
+        "reveal": true
+      },
+      {
+        "id": "castle_road_cargo",
+        "model": "cargo",
+        "at": [
+          1700,
+          2320
+        ]
+      },
+      {
+        "id": "castle_road_rubble",
+        "model": "rubble",
+        "at": [
+          580,
+          2290
+        ],
+        "scale": [
+          1.2,
+          1.2,
+          1.2
+        ]
+      }
+    ],
+    "9": [
+      {
+        "id": "court_dry_fountain",
+        "model": "castle_fountain",
+        "at": [
+          2080,
+          1900
+        ],
+        "footprint": [
+          250,
+          250
+        ]
+      },
+      {
+        "id": "court_ruined_cart",
+        "model": "broken_wagon",
+        "at": [
+          4500,
+          1700
+        ],
+        "angle": 0.7,
+        "footprint": [
+          160,
+          170
+        ]
+      },
+      {
+        "id": "court_supply_crates",
+        "model": "cargo",
+        "at": [
+          4350,
+          1900
+        ],
+        "footprint": [
+          110,
+          110
+        ]
+      },
+      {
+        "id": "arsenal_rack_0",
+        "model": "weapon_stand",
+        "at": [
+          820,
+          2640
+        ],
+        "footprint": [
+          110,
+          65
+        ]
+      },
+      {
+        "id": "arsenal_crate_0",
+        "model": "cargo",
+        "at": [
+          1540,
+          2640
+        ],
+        "scale": [
+          0.65,
+          0.65,
+          0.65
+        ],
+        "footprint": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "arsenal_rack_1",
+        "model": "weapon_stand",
+        "at": [
+          820,
+          3090
+        ],
+        "footprint": [
+          110,
+          65
+        ]
+      },
+      {
+        "id": "arsenal_crate_1",
+        "model": "cargo",
+        "at": [
+          1540,
+          3090
+        ],
+        "scale": [
+          0.65,
+          0.65,
+          0.65
+        ],
+        "footprint": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "arsenal_rack_2",
+        "model": "weapon_stand",
+        "at": [
+          820,
+          3540
+        ],
+        "footprint": [
+          110,
+          65
+        ]
+      },
+      {
+        "id": "arsenal_crate_2",
+        "model": "cargo",
+        "at": [
+          1540,
+          3540
+        ],
+        "scale": [
+          0.65,
+          0.65,
+          0.65
+        ],
+        "footprint": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "arsenal_war_table",
+        "model": "watch_map_table",
+        "at": [
+          1120,
+          3930
+        ],
+        "footprint": [
+          135,
+          95
+        ]
+      },
+      {
+        "id": "clerk_shelf_0",
+        "model": "bookshelf",
+        "at": [
+          5520,
+          2690
+        ],
+        "footprint": [
+          120,
+          60
+        ]
+      },
+      {
+        "id": "clerk_lectern_0",
+        "model": "archive_lectern",
+        "at": [
+          4850,
+          2690
+        ],
+        "footprint": [
+          105,
+          60
+        ]
+      },
+      {
+        "id": "clerk_shelf_1",
+        "model": "bookshelf",
+        "at": [
+          5520,
+          3170
+        ],
+        "footprint": [
+          120,
+          60
+        ]
+      },
+      {
+        "id": "clerk_lectern_1",
+        "model": "archive_lectern",
+        "at": [
+          4850,
+          3170
+        ],
+        "footprint": [
+          105,
+          60
+        ]
+      },
+      {
+        "id": "clerk_shelf_2",
+        "model": "bookshelf",
+        "at": [
+          5520,
+          3700
+        ],
+        "footprint": [
+          120,
+          60
+        ]
+      },
+      {
+        "id": "clerk_lectern_2",
+        "model": "archive_lectern",
+        "at": [
+          4850,
+          3700
+        ],
+        "footprint": [
+          105,
+          60
+        ]
+      },
+      {
+        "id": "clerk_scrolls",
+        "model": "archive_scrolls",
+        "at": [
+          5510,
+          3950
+        ],
+        "footprint": [
+          100,
+          50
+        ]
+      },
+      {
+        "id": "hall_banner_0_0",
+        "model": "castle_banner",
+        "at": [
+          2700,
+          3200
+        ],
+        "reveal": true
+      },
+      {
+        "id": "hall_banner_0_1",
+        "model": "castle_banner",
+        "at": [
+          3700,
+          3200
+        ],
+        "reveal": true
+      },
+      {
+        "id": "hall_banner_1_0",
+        "model": "castle_banner",
+        "at": [
+          2700,
+          4000
+        ],
+        "reveal": true
+      },
+      {
+        "id": "hall_banner_1_1",
+        "model": "castle_banner",
+        "at": [
+          3700,
+          4000
+        ],
+        "reveal": true
+      },
+      {
+        "id": "lord_throne",
+        "model": "castle_throne",
+        "at": [
+          3200,
+          6190
+        ],
+        "footprint": [
+          190,
+          170
+        ]
+      },
+      {
+        "id": "lord_candles_0",
+        "model": "candle_cluster",
+        "at": [
+          2700,
+          6080
+        ]
+      },
+      {
+        "id": "lord_standard_0",
+        "model": "castle_banner",
+        "at": [
+          2700,
+          6260
+        ],
+        "reveal": true
+      },
+      {
+        "id": "lord_candles_1",
+        "model": "candle_cluster",
+        "at": [
+          3700,
+          6080
+        ]
+      },
+      {
+        "id": "lord_standard_1",
+        "model": "castle_banner",
+        "at": [
+          3700,
+          6260
+        ],
+        "reveal": true
+      },
+      {
+        "id": "west_gallery_debris",
+        "model": "rubble",
+        "at": [
+          1680,
+          4320
+        ],
+        "scale": [
+          1.1,
+          0.7,
+          0.8
+        ]
+      },
+      {
+        "id": "east_gallery_cargo",
+        "model": "cargo",
+        "at": [
+          4630,
+          4380
+        ],
+        "scale": [
+          0.8,
+          0.8,
+          0.8
+        ]
+      }
     ]
   }
 }

@@ -45,6 +45,13 @@
       "vendor": false
     },
     {
+      "name": "broken_wagon",
+      "file": "broken_wagon.glb",
+      "triangles": 3780,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "buttress_broken",
       "file": "buttress_broken.glb",
       "triangles": 1944,
@@ -87,6 +94,69 @@
       "vendor": false
     },
     {
+      "name": "castle_banner",
+      "file": "castle_banner.glb",
+      "triangles": 792,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_buttress",
+      "file": "castle_buttress.glb",
+      "triangles": 540,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_fountain",
+      "file": "castle_fountain.glb",
+      "triangles": 648,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_gateway",
+      "file": "castle_gateway.glb",
+      "triangles": 5040,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_throne",
+      "file": "castle_throne.glb",
+      "triangles": 2232,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_tower",
+      "file": "castle_tower.glb",
+      "triangles": 3296,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_vault",
+      "file": "castle_vault.glb",
+      "triangles": 2016,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_wall",
+      "file": "castle_wall.glb",
+      "triangles": 5184,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "castle_wall_broken",
+      "file": "castle_wall_broken.glb",
+      "triangles": 4968,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "cave_ceiling",
       "file": "cave_ceiling.glb",
       "triangles": 560,
@@ -97,6 +167,13 @@
       "name": "cave_portal",
       "file": "cave_portal.glb",
       "triangles": 2272,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "cave_stalactites",
+      "file": "cave_stalactites.glb",
+      "triangles": 288,
       "meshes": 1,
       "vendor": false
     },
@@ -136,6 +213,13 @@
       "vendor": false
     },
     {
+      "name": "drain_channel",
+      "file": "drain_channel.glb",
+      "triangles": 1740,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "eaves_broken",
       "file": "eaves_broken.glb",
       "triangles": 36,
@@ -160,6 +244,13 @@
       "name": "exposed_frame_intact",
       "file": "exposed_frame_intact.glb",
       "triangles": 108,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "fallen_oak",
+      "file": "fallen_oak.glb",
+      "triangles": 496,
       "meshes": 1,
       "vendor": false
     },
@@ -276,6 +367,13 @@
       "vendor": false
     },
     {
+      "name": "mine_support",
+      "file": "mine_support.glb",
+      "triangles": 1764,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "pointed_arch_broken",
       "file": "pointed_arch_broken.glb",
       "triangles": 1268,
@@ -300,6 +398,13 @@
       "name": "ridge_intact",
       "file": "ridge_intact.glb",
       "triangles": 72,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "road_shrine",
+      "file": "road_shrine.glb",
+      "triangles": 2772,
       "meshes": 1,
       "vendor": false
     },
@@ -468,6 +573,13 @@
       "name": "stone_wall_intact",
       "file": "stone_wall_intact.glb",
       "triangles": 2592,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "strata_outcrop",
+      "file": "strata_outcrop.glb",
+      "triangles": 1840,
       "meshes": 1,
       "vendor": false
     },

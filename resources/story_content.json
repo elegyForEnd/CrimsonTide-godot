@@ -56,6 +56,13 @@
           "name": "旧守望墓室",
           "layout": "crypt",
           "optional": true
+        },
+        {
+          "id": "a1_castle_1",
+          "name": "灰棘旧堡",
+          "layout": "castle",
+          "optional": true,
+          "description": "穿过门庭与废弃驻军庭院，探索军械西翼、书记东翼、拱顶大厅和升高的领主厅；取回遗落物资，击败守堡者后由传送阵返回。"
         }
       ],
       "boss": "赤月葬钟主教",

@@ -12,13 +12,20 @@ func bake_opening() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--bake-scene="): requested=arg.trim_prefix("--bake-scene=")
 	for i in 60: await get_tree().process_frame
-	if not requested.is_empty(): EditorInterface.open_scene_from_path(requested)
+	# Scene restoration and EXR imports can replace the edited root. Wait for
+	# filesystem work to settle, and don't reopen a scene already restored.
+	while EditorInterface.get_resource_filesystem().is_scanning(): await get_tree().create_timer(.25).timeout
+	var current := EditorInterface.get_edited_scene_root()
+	if not requested.is_empty() and (current==null or current.scene_file_path!=requested): EditorInterface.open_scene_from_path(requested)
 	for i in 180:
 		await get_tree().process_frame
 		var edited := EditorInterface.get_edited_scene_root()
 		if edited!=null and edited.is_inside_tree() and (requested.is_empty() or edited.scene_file_path==requested): break
 	var scene := EditorInterface.get_edited_scene_root()
 	if scene==null: push_error("BAKE_BATCH no open scene"); return
+	for i in 12: await get_tree().create_timer(.1).timeout
+	if EditorInterface.get_edited_scene_root()!=scene or not scene.is_inside_tree():
+		push_error("BAKE_BATCH failed: scene restoration is not stable"); return
 	var gi: LightmapGI=scene.get_node("BakedIndirectLight")
 	EditorInterface.set_main_screen_editor("3D")
 	EditorInterface.edit_node(gi)

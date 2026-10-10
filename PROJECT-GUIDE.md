@@ -448,14 +448,15 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 功能 | 文件与配套检查 |
 |---|---|
-| 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:145 route()`；tests/story_geography.gd |
-| 地形、楼梯、房屋与碰撞 | `story_region.gd:30 build()`、`story_region.gd:245 height_at()`、`story_region.gd:286 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
+| 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
+| 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:316 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
 | 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:33 build()`，`story_world.gd:87 sync_story()`；tests/story_visual.gd |
 | Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:46 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
+| 不规则洞窟与旧堡副本 | story_region.floor_contains/build_castle、story_environment.cave_shell/castle_shell；story-cave-footprint.json统一地面/移动/寻路/探索图；OUTDOOR-CASTLE.md、tests/story_outdoor_castle.gd；第九区存档上限从章节地图数量读取 |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
-| 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:308 activate_waypoint()`、`story_campaign.gd:327 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
+| 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:328 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
 | 探索地图、UI与输入 | `story_screen.gd:356 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
 | 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
 
@@ -464,6 +465,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 ### 玩法规则类
 
 故事地图、任务与NPC → §4.S；连续区域/门洞改 story_map/region，3D场景改 story_environment/world，传送与战役规则改 story_campaign，面板改 story_screen/atlas。不要把故事币、经验或任务写进远征结算。
+
+洞窟轮廓与旧堡 → story-cave-footprint.json / story_region.floor_contains、build_castle / story_environment.cave_shell、castle_shell；地面/移动/探索图必须共享边界，新增区域须同时更新内容编译器和存档区域校验。新增模块在master编辑，已有室外场景用patch_story_outdoors增量追加。
 
 故事美术、画质与闪烁 → graphics_quality/settings_ui、story_asset_kit/environment；模型改opening-master.blend后只导出，地编改scenes/story/*.tscn后运行Bake-Opening.ps1。楼梯/平台由结构网格画顶面，基础地形必须裁去同一区域；小树阻挡在story_region.add_prop统一处理。
 
@@ -863,6 +866,8 @@ git status --porcelain
 | 2026-10-08 | （本轮未提交） | **肉鸽实测三 bug（用户图文报告）**：①**遗落宝藏/游商房"第二个假宝箱"**——`rogue_field.gd` 原在 `room in ["shop","treasure"]` 时把房间标识宝箱/营火贴图（`art.item_icons[11/15]`）画在世界中心 `Vector2(720,lane_center)`，与真 `reward_chest`（能按 E、有交互圈）并排，被误认成第二个无法交互的宝箱。**用户拍板：把该标识移到顶栏标题左侧**。改：删掉 `rogue_field.gd` 世界中心那段（talent 神龛保留）；`main.gd` HUD 新增 `hud.room_marker`（`rogue_icon`，标题 x=550 左侧 518,19，26×26），在 `_update_hud` 肉鸽分支按 `room` 显隐并切 treasure=11/shop=15 图标。②**行囊右键"回收此物品"点不动**——非 bug，是设计：`rogue_sell` 只在 `phase=="rogue_shop"` 生效（`rogue_inventory.gd:302` 按钮门 + `roguelike.gd:1345` 服务端门）。**用户拍板：保留游商限制，但把禁用态做明显**。改：`rogue_inventory.gd` 非游商时把按钮文字改成"回收 · 需到游商处"（原来只有 tooltip + 轻微变灰，看不出是被条件挡住）。③**冥潮仪镰右键圆斩特效与判定框不符**——判定是以角色为心、半径=reach(170) 的整圆，但 `stylized_vfx.gd:406-412` 把圆重定心到握把、缩成刀刃长。**用户拍板：本轮只登记、暂不改**（近战特效原点=角色、与判定普遍不重合是系统性问题）。新增 §11.54 已知缺口 + §4.K 刀光行加 ⚠️ 说明。测试：`rogue_inventory` 34/0、`rogue_room_chests` 75/0、`inventory_panels` 28/0；三脚本 `--check-only` 均 exit 0。 |
 
 | 2026-10-09 | （本轮未提交） | 魔境战斗密度与数值重平衡：节点图统一安排战斗/圣坛/补给/后段特殊分支，移除会话二次覆盖。200 种子×5 层平均战斗 4.102→6.304、最少 3→6；普通怪数量/后期血量、血瓶清场补充、精英/首领奖励和合作人数统计同步调整。新增 `tests/rogue_map_balance.gd` 全路线与实际刷怪验收；专题和测试记录同步更新。 |
+
+| 2026-10-10 | 见同批提交 | 室外/洞窟/灰棘旧堡续作：16个Blender模块、111处共享补充摆放、不规则洞窟统一轮廓与碰撞；新增第一幕第九区旧堡，保留旧地图ID与73个任务，接入战斗/宝箱/传送/存档；实际光照烘焙与4K场景验证，长时间跑分暂缓。导航与生产契约见OUTDOOR-CASTLE.md。 |
 
 ### 12.7 最近一次全量审计（2026-10-07）
 

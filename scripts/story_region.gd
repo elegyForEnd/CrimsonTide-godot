@@ -24,6 +24,8 @@ var npc_at: Array=[]
 var shorelines: Array[PackedVector2Array]=[]
 var terrain_samples: Dictionary={}
 var dressing: Array=[]
+var floor_polygon := PackedVector2Array()
+var structural_obstacles: Array[Rect2]=[]
 const Dressing=preload("res://scripts/story_set_dressing.gd")
 const NPC_AT := [Vector2(850,580),Vector2(1500,590),Vector2(630,1020),Vector2(1640,1040),Vector2(730,1430),Vector2(1530,1440)]
 
@@ -72,7 +74,11 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 	side_anchors=[Vector2(900,1200),Vector2(3900,2450),Vector2(900,3800)]
 	if a==1 and s==4: anchors=[Vector2(2400,3150),Vector2(3450,3900),Vector2(3450,3900)]
 	if indoor:
-		build_dungeon(); load_authored_terrain(); dressing=Dressing.entries(self); return
+		build_dungeon()
+		if a==1 and s==7:
+			var cave: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://resources/story-cave-footprint.json"))
+			for p in cave.boundary: floor_polygon.append(Vector2(p[0],p[1]))
+		load_authored_terrain(); dressing=Dressing.entries(self); return
 	var bend := -1.0 if (a+s)%2==0 else 1.0
 	trails=[PackedVector2Array([spawn,Vector2(2400+bend*450,980),anchors[0],Vector2(2400-bend*600,2200),anchors[1],Vector2(2400+bend*350,3500),anchors[2],Vector2(2400,4800)]),PackedVector2Array([anchors[0],side_anchors[0],side_anchors[2],anchors[2]]),PackedVector2Array([anchors[0],Vector2(3800,1600),side_anchors[1],anchors[1]])]
 	var shift := Vector2.ZERO if a==1 and s==1 else Vector2(float((a+s)%3-1)*260,float(s%3)*180)
@@ -167,6 +173,8 @@ func camp_landmarks() -> void:
 			add_prop("halloween/crypt",Vector2(1110,150),Vector3(420,420,240),true)
 
 func build_dungeon() -> void:
+	if layout=="castle":
+		build_castle(); return
 	var shift := 240.0 if stage%2==0 else -240.0
 	rooms=[Rect2(1950,0,900,850),Rect2(1950,700,900,850),Rect2(610+shift,1140,3000,760),Rect2(700+shift,1750,1000,1640),Rect2(1550+shift,2760,2050,630),Rect2(2050,3220,850,1580),Rect2(2870+shift,1550,650,1510),Rect2(600+shift,3320,1100,960)]
 	anchors=[Vector2(1200+shift,1530),Vector2(3050+shift,2550),Vector2(2460,4170)]
@@ -195,6 +203,21 @@ func build_dungeon() -> void:
 		for y in [1030,1650,2750,3270]:
 			for x in [1500,1900,2300,2700]: add_prop("dungeon/shelf_small_candles",Vector2(x,y),Vector3(150,160,55),true)
 	dungeon_furniture()
+
+func build_castle() -> void:
+	# Gate court, great hall and two wings, connected by an encircling gallery.
+	extent=Vector2(6400,6400); spawn=Vector2(3200,350); waypoint=Vector2(3200,920)
+	rooms=[Rect2(2700,0,1000,1600),Rect2(1500,1300,3400,1700),Rect2(2500,2750,1400,2850),Rect2(650,2100,1100,2600),Rect2(4650,2100,1100,2600),Rect2(650,4100,5100,650),Rect2(1750,2050,2900,500),Rect2(2450,5200,1500,1200)]
+	anchors=[Vector2(1250,2800),Vector2(5200,3300),Vector2(3200,5820)]
+	side_anchors=[Vector2(1200,4450),Vector2(5250,4450),Vector2(3200,3400)]
+	stairs=[{"rect":Rect2(2920,4780,560,420),"top":120.0,"north":false,"terrace":Rect2(2450,5200,1500,1200)}]
+	trails=[PackedVector2Array([spawn,Vector2(3200,2100),Vector2(1200,2300),Vector2(1200,4450),Vector2(5200,4450),Vector2(5200,2300),Vector2(3200,2300),Vector2(3200,5820)])]
+	chests=[Vector2(1200,4600),Vector2(5250,4600),Vector2(3450,5800)]
+	# Footprints match the authored tower cores, vault piers and gateway piers.
+	for p in [Vector2(1570,1410),Vector2(4830,1410),Vector2(710,2180),Vector2(5690,2180),Vector2(2510,5300),Vector2(3890,5300)]: structural_obstacles.append(Rect2(p-Vector2.ONE*110,Vector2.ONE*220))
+	for y in [2950,3750,4400]:
+		for x in [3013,3387]: structural_obstacles.append(Rect2(x-22,y-22,44,44))
+	for x in [2990,3410]: structural_obstacles.append(Rect2(x-58,1250-43,116,86))
 
 func dungeon_furniture() -> void:
 	var items: Array=[]
@@ -263,11 +286,8 @@ func base_height_at(p: Vector2) -> float:
 func walkable(p: Vector2, radius: float = 24.0) -> bool:
 	if not Rect2(Vector2.ZERO,extent).has_point(p): return false
 	if indoor:
-		var in_room := false
-		for room in rooms:
-			if room.grow(-radius).has_point(p): in_room=true; break
-		if not in_room: return false
-	for rect in obstacles+water:
+		if not floor_contains(p,radius): return false
+	for rect in obstacles+water+structural_obstacles:
 		if rect.grow(radius).has_point(p): return false
 	for item in dressing:
 		if item.has("footprint") and item.rect.grow(radius).has_point(p): return false
@@ -282,6 +302,16 @@ func walkable(p: Vector2, radius: float = 24.0) -> bool:
 		var r: Rect2=item.terrace
 		if r.grow(radius).has_point(p) and not r.grow(-radius).has_point(p) and not item.rect.grow(radius+6).has_point(p): return false
 	return true
+
+func floor_contains(p: Vector2, radius: float = 0.0) -> bool:
+	if not floor_polygon.is_empty():
+		if not Geometry2D.is_point_in_polygon(p,floor_polygon): return false
+		for i in floor_polygon.size():
+			if Geometry2D.get_closest_point_to_segment(p,floor_polygon[i],floor_polygon[(i+1)%floor_polygon.size()]).distance_to(p)<radius: return false
+		return true
+	for room in rooms:
+		if room.grow(-radius).has_point(p): return true
+	return false
 
 func building_walls(r: Rect2) -> Array[Rect2]:
 	return [Rect2(r.position,Vector2(r.size.x,28)),Rect2(r.position.x,r.position.y,28,r.size.y),Rect2(r.end.x-28,r.position.y,28,r.size.y),Rect2(r.position.x,r.end.y-28,r.size.x*.5-55,28),Rect2(r.get_center().x+55,r.end.y-28,r.size.x*.5-55,28)]
