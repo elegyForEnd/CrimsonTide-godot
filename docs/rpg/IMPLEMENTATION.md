@@ -87,3 +87,5 @@ v6继续重做六幕30个副本与19个室外区域：每副本15个功能空间
 v7替换v6统一房间骨架：30副本采用22种空间类型、13种包络、10—14处功能空间；墓甬道、矿洞岩腔、庭院翼楼、扇形剧场、环塔和跨槽船坞有不同通路与边界。高差按各关程序和X/Y方向制作，水槽、基岩与可走地板分开，重新生成30场和GI。模型继续使用现有原创库，原地图ID/任务/存档入口保留；[制作、验证与未完成细节](DUNGEON-IDENTITIES.md)。最新试玩dist/CrimsonTide-ForwardPlus-v7.exe，长时间跑分继续暂缓。
 
 v8修复室外边界：19场静态陆地与岸壁重烘焙，六个营地保留GI并新增非通行背景。地面/水域精确裁切、道路侧面与下封面、水面世界偏移和背景高度统一，正常最大缩放下检查接缝；见[BOUNDARY-SURFACES.md](BOUNDARY-SURFACES.md)。最新试玩dist/CrimsonTide-ForwardPlus-v8.exe。
+
+v9最终采用实地外景：25场非通行区域加入坡地与树岩植被；南门河道、跨河桥与自然河岸分隔两张地图。连接材质和路肩渐变，六营地静态地面重烘，其他GI/任务/通行保持；制作契约见[BOUNDARY-SURFACES.md](BOUNDARY-SURFACES.md)。最新试玩dist/CrimsonTide-ForwardPlus-v9.exe。

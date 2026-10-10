@@ -48,7 +48,9 @@ func build_story(c) -> void:
 				child.environment.ambient_light_color=Color("829ab7")
 				child.environment.ambient_light_energy=.28 if c.map.layer==0 or open_sky else .16
 				if c.map.layout=="crypt": child.environment.ambient_light_energy=.26
-				child.environment.background_color=Color("171b20")
+				child.environment.background_mode=Environment.BG_COLOR
+				child.environment.background_color=Color.BLACK
+				child.environment.background_energy_multiplier=0.0
 	preload("res://scripts/story_regional_environment.gd").atmosphere(self)
 	sync_story(Vector2(1440,900),0)
 

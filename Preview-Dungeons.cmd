@@ -17,7 +17,7 @@ echo Act 6: 2 Basilica, 4 Scriptorium, 5 Necropolis, 6 Cloister, 7 Reliquary, 8 
 choice /c 23456789 /n /m "Choose a stage [2-9]; 7 = main showcase: "
 if errorlevel 9 exit /b 1
 set /a "storyPreviewStage=%errorlevel%+1"
-set "storyPreviewExe=CrimsonTide-ForwardPlus-v8.exe"
-if not exist "%storyPreviewExe%" set "storyPreviewExe=dist\CrimsonTide-ForwardPlus-v8.exe"
+set "storyPreviewExe=CrimsonTide-ForwardPlus-v9.exe"
+if not exist "%storyPreviewExe%" set "storyPreviewExe=dist\CrimsonTide-ForwardPlus-v9.exe"
 if not exist "%storyPreviewExe%" exit /b 1
 start "Crimson Tide Dungeon Preview" "%storyPreviewExe%" -- --preview-story --story-act=%storyPreviewAct% --story-stage=%storyPreviewStage%

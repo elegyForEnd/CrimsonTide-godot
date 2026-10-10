@@ -35,3 +35,7 @@ output/dungeon-reference/
 output/dungeon-tools/
 output/exploration-*.err
 output/boundary-*.err
+
+output/void-*.err
+
+output/landscape-*.err

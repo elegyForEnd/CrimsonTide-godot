@@ -1,29 +1,31 @@
-# v8 地形边界与连接修复
+# v9 实地外景、南门河道与道路衔接
 
-截图中的黑缝来自可走地形之外缺少连续地表、道路按地图矩形裁切、连接路只有顶面，以及水面与区域偏移不同步。本轮处理六幕19片室外区域和六个营地的可视边界；30个副本空间类型、地图ID、73任务、移动和存档目标保留。
+地图外侧采用真实坡地和装饰，南门两块地图之间以河道和跨河桥分隔。连接应有场景用途与材质过渡，不能以大面积空地板或一整块石板贴片代替地编。
 
-## 几何与通行契约
+## 制作范围
 
-- `scripts/story_surface_geometry.gd`统一可见陆地、水域、连接路的多边形裁切。部分淹水的网格只裁去真实水域，不再整格删除。
-- 道路按实际地形轮廓扣除重叠部分，并保留侧面与下封面；沿用逻辑高度，不做漂浮的单面纸片。
-- `BoundaryApron/ContinuousBoundaryGround`补足岩块和崖壁之外的非通行地表。与可走地面共用边界采样高度；相邻区域分配独立的背景范围，并使用统一世界高度，避免同面叠放。
-- 背景预算覆盖11—21米正常相机缩放、斜俯视投影和营地的横向偏移。营地已有10米地面余量，新衬底不覆盖它；营地的虚拟外缘不能取代邻接原野的真实边缘高度。
-- 水面与岸壁共享水域轮廓，水面保持水平并使用区域世界偏移；岸壁沿地面网格交点分段，关闭沿岸缺口。
-- PackedVector2Array赋值会共享数组；道路裁切必须先duplicate，再添加世界偏移，绝不能修改移动轮廓。
-- 小树继续没有实体碰撞。背景衬底不新增可走范围或碰撞，不把原有岩壁改成可穿越道路。
+- 六幕19片室外和六营地新增`DressedExteriorLandscape`：地表起伏、树/岩/植被组合。装饰保留在非通行区域，河岸另布置碎石和草簇；原有可走区域、任务、宝箱、传送与小树非实体规则保持。
+- `scripts/story_exterior_composition.gd`从实际边缘取高度，外侧生成坡肩、沟洼与背景丘陵；相邻场景分配独立范围，使用共同世界高度，消除同面叠放。新景观不会覆盖原地面和连接道路，不能变成新增可走区域。
+- 第一幕南门外加入曲折河道，浅沟和河岸从地面缓降，水面水平；营地与原野的背景各承担其河岸，水在桥下连续。桥有两侧矮栏、石柱、桥台和桥体侧面，原连接通行宽度保留。
+- `resources/story_connection.gdshader`采用两端的PBR材质，按长度过渡。路心与路肩分别处理，跨河段保留桥面石板，落地后过渡为原野泥路；其他连接采用各自地区材质。
+- 六营地原有向外扩张10米的静态地面裁回营地包络并完成六场GI重烘；新的有装饰外景补足实际视觉范围。室外静态地面/GI和人工道具保留。
 
-## 可编辑场景与烘焙
+## 生产与数据契约
 
-静态陆地和岸壁变化后，用`tools/Build-Exploration-Scenes.ps1 -OutdoorsOnly`生成19场，再用`tools/Bake-Exploration-Scenes.ps1 -OutdoorsOnly`烘焙。较大的室外网格每场采用独立进程进行UV2展开；authoring_stage和authoring期间的流送隔离保证只捕获指定区域。
+`tools/patch_story_exterior_landscape.gd`更新25场的非通行外景，检查它没有静态GI用户；保留静态地面、建筑与原有GI。GLB装饰必须先清除scene_file_path再赋场景owner，避免保存时重复实例化子节点。脚本只替换自身生成的外景分组；旧命令patch_story_boundary_aprons现在指向此工具。
 
-仅调整背景或未烘焙水面时，可使用`tools/patch_story_boundary_aprons.gd`。工具检查GI用户，保留人工摆放、静态地面和GI；新增衬底为GI_MODE_DISABLED。保存TSCN/SCN后重跑`tools/pack_compatibility_scenes.gd`。植被继续通过CPU source_transforms安全捕获，不能序列化Dummy渲染器的实例缓冲。
+完整源码生成由story_environment.terrain调用同一套制作函数。地面变更时才重烘；本轮六营地使用`tools/Bake-Exploration-Scenes.ps1 -CampsOnly`。烘焙编辑器保存之前调用植被prepare_capture，将CPU source_transforms作为权威数据，不保存实时MultiMesh缓冲。
 
-正常流送范围增加到32米，卸载范围44米，保证背景可见时邻区已加载。渲染设置和超分方案保持现有配置。
+`tools/pack_story_boundary_scenes.gd`可在烘焙后规范化25场植被缓存，保留GI。之后运行pack_compatibility_scenes。地图多边形做世界平移前先duplicate，不能由渲染裁切改动通行轮廓。
 
-## 验证与交付
+背景材质不套用营地石板覆盖设置。Forward+和GL保持暗色远景背景，避免尚未加载的远处空间出现浅蓝色清屏。正常流送32米预载/44米卸载保持，长时间性能验收仍暂缓。
 
-`tests/story_boundary_surfaces.gd`检查真实缓存的边缘顶点、高度、水面位置、地表互斥、连接口覆盖以及移动轮廓不被裁切修改。`--generated`执行真实场景生成；`--packed`覆盖普通和兼容资源；`--photos-only`在3840×2160、正常最大21米视野拍摄六幕十处边缘。
+## 验证与试玩
 
-试玩为`dist/CrimsonTide-ForwardPlus-v8.exe`；`Preview-Boundaries.cmd`进入第一幕道路区域，从主路向地图东侧走可检查截图中的连接位置。现有副本、后五幕及兼容启动脚本也指向v8。预览不保存战役进度。
+`tests/story_boundary_surfaces.gd -- --packed`检查实际地表接缝、水面位置、背景起伏、装饰在非通行区及GI；`--generated`执行六幕出口实际移动，检查连接材质、路肩和南门桥体；`--photos-only`包含南门、原野入口、其他连接、桥梁与六幕代表边界。
 
-原始截图保存在`build/boundary-<幕>-<区>.png`和`-compat.png`。专项结果、PCK和发布版启动验证见根目录TEST-REPORT.md。没有长时间跑分、帧率/显存达标声明；本轮修复几何接缝，没有完成全部商业级模型、材质与地编精修。
+实机照片为1920×1080、正常15米视野，两种渲染器各12张：build/landscape-<act>-<stage>.png与-compat.png。具体日志及剩余质量边界见TEST-REPORT.md。不是概念图或跑分报告。
+
+最新版`dist/CrimsonTide-ForwardPlus-v9.exe`。`Preview-Boundaries.cmd`从第一幕营地开始，沿南门向下走检查河道/桥/原野入口；预览不保存进度。副本、后五幕预览及兼容入口同步指向v9。
+
+本轮复用现有原创模型和既有许可植被，没有新增商业级雕刻模型。南门完成河道分隔，其余区域完成外侧坡地与装饰，仍可继续按各地用途精修；未宣称全部美术达到商业重制品质或4K60。

@@ -13,8 +13,9 @@ func run() -> void:
 				var exterior_stem := "res://scenes/story/"+("opening-%d" % r.stage if act==1 else "act%d-%d" % [act,r.stage])
 				for exterior_suffix in ["","-compat"]:
 					var outside: Node3D=load(exterior_stem+exterior_suffix+".scn").instantiate()
-					if not outside.has_node("BoundaryApron/ContinuousBoundaryGround"): fail("Missing scenery apron "+exterior_stem); return
-					if r.stage>0 and not outside.has_node("AuthoredOutdoorFloor"): fail("Stale outdoor land "+exterior_stem); return
+					if outside.has_node("BoundaryApron"): fail("Exterior filler returned "+exterior_stem); return
+					if not outside.has_node("DressedExteriorLandscape/SculptedExteriorGround"): fail("Missing dressed exterior landscape "+exterior_stem); return
+					if not outside.has_node("AuthoredOutdoorFloor"): fail("Stale outdoor land "+exterior_stem); return
 					for water in outside.get_children():
 						if str(water.name).begins_with("MatchedWaterSurface") and not water.get_meta("water_world_space",false): fail("Water offset mismatch "+exterior_stem); return
 					var bake: LightmapGI=outside.get_node("BakedIndirectLight")

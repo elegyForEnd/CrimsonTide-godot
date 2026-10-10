@@ -7,6 +7,7 @@ const Floors=preload("res://scripts/story_floor_palette.gd")
 const Regional=preload("res://scripts/story_regional_environment.gd")
 const Exploration=preload("res://scripts/story_exploration_environment.gd")
 const Surfaces=preload("res://scripts/story_surface_geometry.gd")
+const Exterior=preload("res://scripts/story_exterior_composition.gd")
 var kit = preload("res://scripts/story_asset_kit.gd").new()
 var world
 var roofs: Array=[]
@@ -50,13 +51,7 @@ func build(w) -> void:
 				ResourceLoader.load_threaded_request(preload_path); pending_paths[preload_path]=true
 	if world.campaign.map.layer==0:
 		for c in world.campaign.map.connectors:
-			var r: Rect2=c.rect
-			var mat := ShaderMaterial.new(); mat.shader=GROUND
-			mat.set_shader_parameter("ground_tex",load("res://assets/world/terrain-0.png")); mat.set_shader_parameter("road_tex",load("res://assets/world/terrain-2.png"))
-			mat.set_shader_parameter("earth",EARTH[world.campaign.map.act-1]); mat.set_shader_parameter("road",ROAD[world.campaign.map.act-1])
-			if world.campaign.map.act==1: physical_ground(mat,false)
-			else: Regional.ground(self,mat,world.campaign.map.regions[c.to])
-			connector_ground(r,mat)
+			connector_ground(c,connection_material(c))
 	else:
 		var p: Vector2=world.campaign.map.spawn
 		if not world.campaign.map.regions[world.campaign.map.stage].exploration_plan.is_empty(): kit.instance("d%d_portal" % world.campaign.map.act,world.scenery,world.point(p+Vector2(0,-90),world.campaign.map.height_at(p)),Vector3(.70,.70,.70))
@@ -138,7 +133,7 @@ func crafted_details(r, parent: Node3D) -> void:
 			light.omni_range=1.65; light.shadow_enabled=false; light.light_bake_mode=Light3D.BAKE_DYNAMIC
 			lights.append(light)
 
-func terrain(r) -> void:
+func ground_material(r) -> Material:
 	var mat := ShaderMaterial.new(); mat.shader=GROUND
 	mat.set_shader_parameter("ground_tex",load("res://assets/world/terrain-%d.png" % ([0,5,2,3,4,5][r.act-1] if not r.indoor else 5)))
 	mat.set_shader_parameter("road_tex",load("res://assets/world/terrain-2.png"))
@@ -151,12 +146,26 @@ func terrain(r) -> void:
 		for channel in ["albedo","normal","orm"]:
 			mat.set_shader_parameter("ground_tex" if channel=="albedo" else "ground_"+channel,load(kit.BASE+"pbr/"+soil_name+"_"+channel+".png"))
 			mat.set_shader_parameter("road_tex" if channel=="albedo" else "road_"+channel,load(kit.BASE+"pbr/"+road_name+"_"+channel+".png"))
-	if Floors.architectural(r): mat=Floors.material(r)
+	if Floors.architectural(r): return Floors.material(r)
+	return mat
+func connection_material(connection: Dictionary) -> ShaderMaterial:
+	var mat := ShaderMaterial.new(); mat.shader=preload("res://resources/story_connection.gdshader")
+	var map=world.campaign.map
+	for side in ["from","to"]:
+		var r=map.regions[connection[side]]; var ground: ShaderMaterial=ground_material(r)
+		for parameter in ["ground_tex","road_tex","ground_normal","road_normal","ground_orm","road_orm","earth","road","paving"]:
+			mat.set_shader_parameter(side+"_"+parameter,ground.get_shader_parameter(parameter))
+	mat.set_shader_parameter("start",connection.a*.01); mat.set_shader_parameter("finish",connection.b*.01)
+	mat.set_shader_parameter("stone_bridge",world.campaign.map.act==1 and connection.from==0)
+	return mat
+
+func terrain(r) -> void:
+	var mat: Material=ground_material(r)
 	if not r.exploration_plan.is_empty():
 		Exploration.terrain(self,r,mat); return
 	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var step := 50 if r.act==1 and r.stage in [0,1,7] else 100
-	var margin := 1000 if r.stage==0 else 0
+	var margin := 0
 	for y in range(-margin,int(r.extent.y)+margin,step):
 		for x in range(-margin,int(r.extent.x)+margin,step):
 			var center := Vector2(x+step*.5,y+step*.5)
@@ -195,10 +204,10 @@ func terrain(r) -> void:
 	var floor_mesh: MeshInstance3D=world.mesh_node(st.commit(),Vector3.ZERO,mat)
 	floor_mesh.name="AuthoredOutdoorFloor"; floor_mesh.set_meta("surface_revision",1)
 	for shoreline in r.shorelines: curved_river(r,shoreline)
-	if r.stage==0: Surfaces.apron(self,r,mat)
+	if r.stage==0: Exterior.build(self,r)
 	if not r.indoor and r.stage>0:
 		if not r.floor_polygon.is_empty():
-			Surfaces.apron(self,r,mat); Exploration.outdoor_edge(self,r); return
+			Exterior.build(self,r); Exploration.outdoor_edge(self,r); return
 		# Rough stone ridges enclose sectors while leaving exit spans clear.
 		var rng := RandomNumberGenerator.new(); rng.seed=r.act*311+r.stage*53
 		for i in range(0,int(r.extent.x),180):
@@ -223,32 +232,50 @@ func cut_rectangles(input: Array[Rect2], hole: Rect2) -> Array[Rect2]:
 			if remainder.has_area(): output.append(remainder)
 	return output
 
-func connector_ground(rect: Rect2, material: Material) -> void:
+func connector_ground(connection: Dictionary, material: Material) -> void:
+	var rect: Rect2=connection.rect
 	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var sides := SurfaceTool.new(); sides.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for y in range(int(rect.position.y),int(rect.end.y),50):
 		for x in range(int(rect.position.x),int(rect.end.x),50):
 			var cell := Rect2(Vector2(x,y),Vector2(minf(50,rect.end.x-x),minf(50,rect.end.y-y)))
 			for piece in Surfaces.connector_pieces(world.campaign.map,Surfaces.rectangle(cell)):
-				Surfaces.append(st,piece,func(p): return world.campaign.map.height_at(p),Vector2.ZERO,true)
+				var indices := Geometry2D.triangulate_polygon(piece)
+				for i in range(0,indices.size(),3):
+					var a: Vector2=piece[indices[i]]; var b: Vector2=piece[indices[i+1]]; var c: Vector2=piece[indices[i+2]]
+					for p in [a,c,b] if (b-a).cross(c-a)<0 else [a,b,c]:
+						var distance: float=p.distance_to(Geometry2D.get_closest_point_to_segment(p,connection.a,connection.b))
+						st.set_color(Color(1,1,1,1-smoothstep(55,150,distance))); st.set_uv(p/100)
+						st.add_vertex(world.point(p,world.campaign.map.height_at(p)))
 				# The raised connection has a real side and underside, rather than a
 				# paper-thin deck through which the black backdrop can be seen.
-				Surfaces.append(sides,piece,func(p): return Surfaces.apron_height(world.campaign.map,p)-20)
+				Surfaces.append(sides,piece,func(p): return world.campaign.map.height_at(p)-350)
 				for i in piece.size():
 					var a: Vector2=piece[i]; var b: Vector2=piece[(i+1)%piece.size()]
 					var outer := (is_equal_approx(a.x,rect.position.x) and is_equal_approx(b.x,rect.position.x)) or (is_equal_approx(a.x,rect.end.x) and is_equal_approx(b.x,rect.end.x)) or (is_equal_approx(a.y,rect.position.y) and is_equal_approx(b.y,rect.position.y)) or (is_equal_approx(a.y,rect.end.y) and is_equal_approx(b.y,rect.end.y))
 					if not outer: continue
-					var points: Array[Vector3]=[world.point(a,world.campaign.map.height_at(a)),world.point(b,world.campaign.map.height_at(b)),world.point(b,Surfaces.apron_height(world.campaign.map,b)-20),world.point(a,Surfaces.apron_height(world.campaign.map,a)-20)]
+					var points: Array[Vector3]=[world.point(a,world.campaign.map.height_at(a)),world.point(b,world.campaign.map.height_at(b)),world.point(b,world.campaign.map.height_at(b)-350),world.point(a,world.campaign.map.height_at(a)-350)]
 					for k in [0,1,2,0,2,3]: sides.set_uv(Vector2(points[k].x+points[k].z,points[k].y)*.45); sides.add_vertex(points[k])
 	st.generate_normals()
 	var mesh: MeshInstance3D=world.mesh_node(st.commit(),Vector3.ZERO,material)
-	mesh.name="ConnectedRoadSurface"; mesh.set_meta("surface_revision",1)
+	mesh.name="ConnectedRoadSurface"; mesh.set_meta("surface_revision",2)
 	mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
 	sides.generate_normals()
 	var bank_material: StandardMaterial3D=kit.pbr("rock" if world.campaign.map.act==1 else "a%d_ground" % world.campaign.map.act).duplicate()
 	bank_material.cull_mode=BaseMaterial3D.CULL_DISABLED
 	var banks: MeshInstance3D=world.mesh_node(sides.commit(),Vector3.ZERO,bank_material)
 	banks.name="ConnectedRoadBanks"; banks.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
+	if world.campaign.map.act==1 and connection.from==0:
+		var bridge := Node3D.new(); bridge.name="SouthGateBridge"; world.scenery.add_child(bridge)
+		var stone_mat: Material=kit.pbr("masonry",Color("b3b4aa"))
+		for sign_value in [-1,1]:
+			var x: float=connection.a.x+sign_value*214
+			var coping := block(Rect2(x-7,connection.a.y+35,14,connection.b.y-connection.a.y-70),16,48,stone_mat,bridge)
+			coping.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
+			for y in range(int(connection.a.y)+35,int(connection.b.y),140):
+				var post := block(Rect2(x-16,y-16,32,32),72,-8,stone_mat,bridge); post.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
+			for y in [connection.a.y,connection.b.y-60]:
+				var abutment := block(Rect2(x-22,y,44,60),115,-100,stone_mat,bridge); abutment.gi_mode=GeometryInstance3D.GI_MODE_DISABLED
 
 func dungeon_walls(r) -> void:
 	if not r.exploration_plan.is_empty():
@@ -655,7 +682,7 @@ func register_authored(root: Node3D, region) -> void:
 		if node is FogVolume and world.has_node("/root/GraphicsQuality"):
 			var graphics=world.get_node("/root/GraphicsQuality")
 			node.visible=graphics.advanced() and graphics.quality==0
-		if node is MeshInstance3D and node.material_override is ShaderMaterial and node.material_override.shader==GROUND:
+		if node is MeshInstance3D and node.material_override is ShaderMaterial and node.material_override.shader==GROUND and node.get_parent().name!="DressedExteriorLandscape":
 			if Floors.architectural(region): node.material_override=Floors.material(region)
 			elif region.act>=2: Regional.ground(self,node.material_override,region)
 			else:

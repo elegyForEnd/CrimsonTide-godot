@@ -198,6 +198,6 @@ static func outdoor_edge(builder, r) -> void:
 			var p := a.lerp(b,(j+.5)/count)
 			if r.path_distance(p)<260 or r.submerged(p): continue
 			var model := "strata_outcrop" if r.act==1 else "a%d_rock" % r.act
-			var node: Node3D=builder.kit.instance(model,group,builder.world.point(r.origin+p+n*140,r.height_at(p)-20),Vector3(1.2,.65+.2*sin(i*2+j),.70),-(b-a).angle()+.2*sin(i+j))
+			var node: Node3D=builder.kit.instance(model,group,builder.world.point(r.origin+p+n*40,r.height_at(p)-45),Vector3(1.2,.65+.2*sin(i*2+j),.70),-(b-a).angle()+.2*sin(i+j))
 			builder.kit.prepare_reveal(node); node.set_meta("occluder",{"p":r.origin+p,"height":180.0})
 			builder.occluders.append({"node":node,"p":r.origin+p,"height":180.0})

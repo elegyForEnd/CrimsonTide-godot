@@ -240,6 +240,6 @@ P2P 房间需要配置可访问的 API 和 UDP 3478 STUN 服务。对称 NAT、�
 
 手柄操作与震动设置见 [CONTROLLER.md](CONTROLLER.md)：双摇杆、扳机蓄力、面板光标与拖拽，默认强烈战斗震动。
 
-### 室外边界修复 v8
+### 实地外景与河道衔接 v9
 
-六幕19片室外及六营地补齐非通行边界地表；道路按真实轮廓对接，补齐路基侧面，水面/岸壁使用相同区域偏移和轮廓。试玩`Preview-Boundaries.cmd`及`dist/CrimsonTide-ForwardPlus-v8.exe`，详见[BOUNDARY-SURFACES.md](docs/rpg/BOUNDARY-SURFACES.md)。长时间跑分仍暂缓。
+六幕25场外侧制作坡地、树群、岩块和植被；南门通过河道与跨河桥连接原野，桥面落地后过渡为泥路。装饰位于非通行区域，原任务和小树非实体规则保持。六营地静态地面重烘GI，试玩`Preview-Boundaries.cmd`从营地南门开始；最新版`dist/CrimsonTide-ForwardPlus-v9.exe`，见[BOUNDARY-SURFACES.md](docs/rpg/BOUNDARY-SURFACES.md)。长时间跑分暂缓。

@@ -423,3 +423,14 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - Forward+与Compatibility最终各10张3840×2160实机图，在正常最大21米视野检查六幕边缘，各20/0（boundary-forward-final.log、boundary-compat-final.log）；人工检查第一幕连接桥头及第五幕岸线。截图build/boundary-<act>-<stage>.png和-compat.png。两轮截图退出仍有既有7个Texture RID警告；不宣称全工程零警告。
 - v8导出3533042066字节；内嵌PCK实际网格881/0（boundary-pck-geometry.log），包内同时核验30副本/8408摆放身份/73任务及19室外+六营地的两套缓存（boundary-pck-release.log）。实际EXE Forward+第一幕道路、GL第五幕海岸均STORY_READY、退出0（boundary-release-forward.log / boundary-release-compat.log）。Forward+退出有既有7个Texture RID警告，GL冒烟标准错误为空。
 - Preview-Boundaries.cmd、旧副本/后五幕预览与dist兼容入口指向v8；旧EXE保留。预览保存禁用，PV提示词保持原样。路牌789锚点OK515/DRIFT0/WRONG0/HINT274。未运行长时间跑分、全仓库门禁或完整人工六幕流程；不声明4K60、加载时间/显存达标或商业重制美术质量。
+
+## 2026-10-10 实地外景、南门河道与道路衔接（v9）
+
+- 采用用户最终明确的实地要求：25场（19室外+六营地）新增起伏外景和5988处树/岩/植被摆放；第一幕南门增加曲折河道、桥体、低栏、桥台和河岸装饰。原可走轮廓/73任务/传送目标保持，小树仍非实体。外景仅补足非通行空间，不覆盖连接路与原静态地面。
+- 连接材质改为两端PBR沿长度混合，路心/路肩分开；跨河段保留石板桥面，落地接泥路。营地旧地面扩张裁回包络、UV2重新展开并实际烘焙六场；exploration-bake.log确认all complete count=6。室外静态地面与GI保留；外景明确GI_MODE_DISABLED，新增植被不作为不可隐藏的烘焙遮挡。
+- 最终普通/兼容缓存几何各950项0失败，实际接点10362个（landscape-packed-final.log / landscape-packed-compat-final.log）；真实源码生成81/0（landscape-generated-final.log），含六幕出口实际移动、路肩顶点色、端点材质、南门桥体；地图地理748/0（void-geography.log），表面互斥/小树73/0，探索/缓存/真实通行8529/0（landscape-exploration-final.log）。直接卸载未进树的GL缓存仍触发Godot material=null清理诊断；实际入树的截图和游戏启动另测，不能把计数0失败写成所有错误流为空。
+- 六营地烘焙保存时发现编辑器重建MultiMesh缓冲会进入SCN，插件保存前调用prepare_capture，只保存CPU变换；配套pack_story_boundary_scenes规范化25场，最终植被缓存检查通过。新GLB装饰保存初版同时保留scene_file_path与拥有子节点，实例化产生孤立Mesh；清除GLB路径后赋owner、重建自身外景分组解决。最终实机已没有本次新增的孤立Mesh/Shader/Material/Instance泄漏；Forward+仍有既有7个Texture RID退出警告。
+- Forward+与GL最终各12次1920×1080实机拍摄，各36项0失败（landscape-{forward,compat}-photos-final.log）；正常15米视野，包含营地南门、原野入口、横向道路连接、桥、后五幕边界。补拍两种渲染器入口，各6/0；同一地图的两个机位分别保存-entry，最终24个PNG逐文件检查1920×1080。Forward+标准错误仅既有7个Texture RID退出警告，GL实机截图标准错误为空。手工检查南门河桥、第一幕横向连接、第五幕河岸；不是概念图或长时间性能报告。
+- v9最终单文件3685776242字节，导出无脚本/资源错误（landscape-export-v9.log）。包内实际网格950/0（landscape-pck-geometry.log），同时检查30副本/8408摆放身份/73任务和25份外景的双渲染缓存（landscape-pck-release.log）。批量GL缓存卸载存在上述material=null诊断；包内所有对象身份和GI检查完成。
+- 实际发布EXE Forward+及Compatibility均进入第一幕营地，STORY_READY quests=73 act=1 stage=0、退出0（landscape-release-{forward,compat}.log）。Forward+仍有既有7个Texture RID退出警告，GL发布启动标准错误为空。Preview-Boundaries从营地开始查看南门河桥，其他预览与兼容入口同步指向v9，临时预览不保存战役进度。
+- 没有全仓库门禁、长时间帧率/显存/加载验收、完整六幕人工战斗录像或商业重制质量声明。新增摆放使用现有模型库与已许可植被，未新增雕刻模型或网络下载素材。制作流程见docs/rpg/BOUNDARY-SURFACES.md。

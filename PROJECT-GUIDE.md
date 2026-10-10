@@ -375,6 +375,9 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### Q. 着色器总表（resources/ 与 shaders/）
 
+连接道路材质：resources/story_connection.gdshader，由story_environment.connection_material配置相邻区域两套PBR并沿道路混合；路心/泥土路肩使用顶点色，不能用固定满幅石板。
+
+
 | Shader | 用途 | 加载者 |
 |---|---|---|
 | blood_tide.gdshader | 世界空间血雾缩圈 | scripts/blood_tide.gd:17 |
@@ -460,7 +463,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 建筑室内地面材质 | story_floor_palette.gd、resources/story_interior_floor.gdshader；城堡/墓室/书库/礼拜堂分流，自然洞窟保留岩土；tools/patch_story_interior_floors.gd仅替换地面/台阶/台基，tests/story_architectural_floors.gd；docs/rpg/INTERIOR-FLOORS.md |
 | 第二至第六幕美术/副本 | `scripts/story_act_art.gd:14 configure()`、`scripts/story_act_art.gd:6 terrain()`；story-later-acts.json / story-later-terrain.json；`scripts/story_regional_environment.gd:4 ground()`、`scripts/story_regional_environment.gd:24 walls()`；独立acts-2-6-master.blend、scenes/story/act*-*.tscn；`tests/story_later_acts.gd:12 run()`、tools/Bake-Later-Acts.ps1；docs/rpg/ACTS-2-6-ART.md |
 | 副本规模、环路、分区高差、室外非矩形边界 | story_exploration_art.configure / contains / height、story_exploration_environment.terrain / walls / outdoor_edge；story-exploration.json同步模型、通行、导航、敌群、探索图；独立dungeon-master.blend与34新模块；tests/story_exploration.gd；⚠️布局修改后必须更新缓存场景并重烘静态地面 |
-| 室外地面、桥头、岸线与非通行背景 | story_surface_geometry.land_pieces / connector_pieces / apron / apron_height；story_environment.connector_ground / curved_river；tests/story_boundary_surfaces.gd覆盖实际普通/兼容网格、世界偏移和移动轮廓保护；BOUNDARY-SURFACES.md。⚠️Packed数组平移前必须duplicate；静态地面/岸壁改动要重烘，禁将衬底写入固定GI |
+| 室外地面、桥头、岸线与虚空边界 | story_surface_geometry.land_pieces / connector_pieces；story_exterior_composition.build / height / river_outline；story_environment.connector_ground / curved_river；tests/story_boundary_surfaces.gd覆盖实际普通/兼容网格、世界偏移和移动轮廓保护；BOUNDARY-SURFACES.md。⚠️Packed数组平移前必须duplicate；静态地面/岸壁改动要重烘，外景要有起伏/装饰；外景不覆盖通路并排除固定GI |
 | 副本空间类型与边界语言 | story-exploration.json的layout_family / grade_axis / edge_styles / void_surface；story_exploration_environment.surrounding_geology与墙/栏杆/拱廊/断墙；30区22类型、10—14功能空间，DUNGEON-IDENTITIES.md；tests/story_dungeon_identity.gd和tools/verify_story_dungeon_release.gd检查真实缓存及发布包 |
 | 植被缓存与无头制作 | `scripts/story_ground_cover.gd:6 _ready()`；source_mesh / source_transforms保留CPU数据，prepare_capture清空GPU缓冲；story_environment.cover_batch、tools/patch_story_ground_cover.gd；⚠️不得序列化Dummy渲染器的MultiMesh实例缓冲，可能产生遮住整幅画面的巨面 |
 | 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:78 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
@@ -780,7 +783,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 ---
 
-室外边界修复工具契约：Build-Exploration-Scenes / Bake-Exploration-Scenes支持-OutdoorsOnly（19区）；patch_story_boundary_aprons只修改25场中GI禁用的背景/水面，保存后重打兼容缓存。原营地10米地面余量不得与新衬底同面叠放；地图衔接要使用多边形而非区域包络。最新边界试玩为Preview-Boundaries.cmd和dist/CrimsonTide-ForwardPlus-v8.exe。
+室外外景契约：story_exterior_composition制作25场有起伏、有树岩植被的非通行实地；南门以河道/桥自然分隔。连接shader混合两端材质与路肩，桥下水面连续。patch_story_exterior_landscape仅替换自有外景分组并验证无GI用户；GLB节点清空scene_file_path后再赋owner。六营地静态地面裁回包络后必须Bake-Exploration-Scenes -CampsOnly，保存植被CPU变换再打兼容缓存。最新试玩Preview-Boundaries.cmd与dist/CrimsonTide-ForwardPlus-v9.exe。
 
 ## 12. 路牌维护规范（做完一个功能、交接前必做）
 
@@ -847,6 +850,9 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-10（同批提交）：v9采用用户最终要求的实地外景：25场制作起伏和树岩植被，南门增加河道/桥体/河岸；六营地地面裁回包络并重烘GI，连接PBR渐变/路肩保持。实际移动穿过六幕出口，新增背景起伏/非通行装饰与接缝检查。修复GLB保存重复实例化，并在烘焙保存前安全捕获MultiMesh。v9替代v8，长时间跑分暂缓。
+
 
 2026-10-10（同批提交）：v8修复六幕19区/六营地的可见边界、连接路封边和水面偏移。新增共享多边形几何与真实缓存接缝测试，19区陆地/岸壁重烘，25区GI禁用背景安全更新；任务/存档/小树非实体保持。制作说明BOUNDARY-SURFACES.md，长时间跑分暂缓。
 

@@ -1,8 +1,8 @@
-param([int[]]$Acts=@(1,2,3,4,5,6),[switch]$DungeonsOnly,[switch]$OutdoorsOnly)
+param([int[]]$Acts=@(1,2,3,4,5,6),[switch]$DungeonsOnly,[switch]$OutdoorsOnly,[switch]$CampsOnly)
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $engine=Join-Path $projectRoot 'Godot_v4.7.2-stable_win64_console.exe'
-$paths=@();foreach($act in $Acts){foreach($stage in 1..$(if($act -eq 1){9}else{8})){
+$paths=@();foreach($act in $Acts){foreach($stage in $(if($CampsOnly){@(0)}else{1..$(if($act -eq 1){9}else{8})})){
     $name=if($act -eq 1){"opening-$stage"}else{"act$act-$stage"}
     if($DungeonsOnly){
         $plans=Get-Content -LiteralPath (Join-Path $projectRoot 'resources/story-exploration.json') -Raw | ConvertFrom-Json

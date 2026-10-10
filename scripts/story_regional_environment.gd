@@ -55,7 +55,7 @@ static func atmosphere(world) -> void:
 		elif child is WorldEnvironment:
 			child.environment.ambient_light_color=Color(p.ambient)
 			child.environment.ambient_light_energy=.34 if world.campaign.map.layer==0 or open_sky else .28
-			child.environment.background_color=Color("151a21")
+			child.environment.background_color=Color.BLACK
 static func feature_lights(builder, r, parent: Node3D) -> void:
 	if not r.exploration_plan.is_empty(): return
 	if not r.indoor:

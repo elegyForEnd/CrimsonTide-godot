@@ -72,6 +72,9 @@ func bake_scene(requested: String) -> void:
 		if gi.light_data!=null and FileAccess.get_modified_time(bake_path)>previous_time: break
 	if gi.light_data==null or FileAccess.get_modified_time(bake_path)<=previous_time:
 		push_error("BAKE_BATCH failed: bake resource was not updated "+scene.scene_file_path); return
+	# Runtime/editor preview rebuilds foliage RIDs. Save the CPU source only.
+	for cover in scene.find_children("*","MultiMeshInstance3D",true,false):
+		if cover.has_method("prepare_capture"): cover.prepare_capture()
 	EditorInterface.mark_scene_as_unsaved()
 	EditorInterface.save_scene()
 	var packed := PackedScene.new()
