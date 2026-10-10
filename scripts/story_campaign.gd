@@ -181,10 +181,15 @@ func enter(a: int, s: int, from_south: bool = false) -> void:
 func spawn_region() -> void:
 	var types: Array=[[0,1,5],[6,12,13],[7,10,8],[2,8,11],[9,12,15],[4,11,16]][int(state.act)-1]
 	var region=map.regions[int(state.stage)]
-	for i in 22+int(state.act)*3:
-		var pos: Vector2=region.origin+Vector2(850+(i*467)%3200,1000+(i*631)%3150)
-		if not map.walkable(pos): continue
-		spawn_enemy(pos,types[i%3],"mob-%d" % i)
+	if not region.exploration_plan.is_empty():
+		for encounter in region.exploration_plan.encounters:
+			var pos: Vector2=region.origin+Vector2(encounter.at[0],encounter.at[1])
+			if map.walkable(pos): spawn_enemy(pos,types[int(encounter.room)%3],encounter.id)
+	else:
+		for i in 22+int(state.act)*3:
+			var pos: Vector2=region.origin+Vector2(850+(i*467)%3200,1000+(i*631)%3150)
+			if not map.walkable(pos): continue
+			spawn_enemy(pos,types[i%3],"mob-%d" % i)
 	var q := current_main()
 	if not q.is_empty() and q.id.ends_with("M06") and int(state.stage)==6 and int(q.act)==int(state.act):
 		spawn_enemy(map.anchors[-1]+Vector2(0,-230),4,"boss",true)

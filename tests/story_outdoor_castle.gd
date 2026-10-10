@@ -12,7 +12,7 @@ func run() -> void:
 	var c=Campaign.new(); c.save_enabled=false; c.state=c.new_state(); c.enter(1,7)
 	var cave=c.map.regions[7]
 	check(cave.floor_polygon.size()>100,"authored irregular cave boundary")
-	check(cave.floor_contains(Vector2(3300,4210),24),"old exploration objective still in new cave")
+	check(cave.floor_contains(cave.side_anchors[-1],24),"exploration objective sits in new deep branch")
 	check(not cave.walkable(Vector2(1600,400),1),"solid rock outside the visible cave footprint")
 	# Actually follow navigation through the branches using movement and heights.
 	for goal in cave.anchors+cave.side_anchors+cave.chests:
@@ -27,11 +27,11 @@ func run() -> void:
 	c.enter(1,2)
 	var door: Dictionary=c.map.return_door(9); c.hero_at=door.p; c.use_entrance(door)
 	check(c.state.stage==9 and c.map.layer==9,"real roadside gate enters castle")
-	check(c.map.regions[9].extent==Vector2(6400,6400),"castle has an independent large footprint")
+	check(c.map.regions[9].extent==Vector2(8000,10800),"castle has an expanded independent footprint")
 	check(c.enemies.any(func(e): return e.quest=="exploration-guardian"),"castle has actual guardian encounter")
-	check(not c.map.walkable(Vector2(2990,1250),1),"gateway masonry blocks walking")
-	check(c.map.walkable(Vector2(3200,1250)),"gateway centre is open")
-	check(not c.map.walkable(Vector2(3200,6190),1),"throne occupies its visible footprint")
+	check(not c.map.walkable(Vector2(3860,230),1),"gateway masonry blocks walking")
+	check(c.map.walkable(Vector2(4000,230)),"gateway centre is open")
+	check(not c.map.walkable(Vector2(4000,10150),1),"throne occupies its visible footprint")
 	c.hero_at=c.map.waypoint; c.activate_waypoint()
 	check("1:9" in c.state.waypoints,"castle waypoint activates")
 	var cache: Dictionary=c.nearby_chests()[0]; c.hero_at=cache.p
@@ -68,7 +68,7 @@ func run() -> void:
 						var p: Vector3=(verts[idx[i]]+verts[idx[i+1]]+verts[idx[i+2]])/3
 						triangles+=1
 						if not cave.floor_contains(Vector2(p.x,p.z)*100): outside+=1
-			check(triangles>1000 and outside==0,"rendered ground triangles match authoritative cave footprint")
+			check(triangles>1000 and outside==0,"rendered ground triangles match authoritative cave footprint: %d outside / %d total" % [outside,triangles])
 		if stage==9:
 			check(scene.has_node("CastleArchitecture"),"castle uses architecture rather than cave dressing")
 			for node in scene.get_node("CastleArchitecture").get_children():

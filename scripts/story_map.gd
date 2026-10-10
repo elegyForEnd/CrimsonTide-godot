@@ -156,7 +156,8 @@ func route(from: Vector2, to: Vector2) -> PackedVector2Array:
 		grid.update()
 		for y in grid.region.size.y:
 			for x in grid.region.size.x:
-				grid.set_point_solid(Vector2i(x,y),not r.walkable(Vector2(x,y)*60+Vector2.ONE*30))
+				# Extra clearance keeps diagonal steps away from concave wall/prop corners.
+				grid.set_point_solid(Vector2i(x,y),not r.walkable(Vector2(x,y)*60+Vector2.ONE*30,36))
 		navigation[s]=grid
 	var nav: AStarGrid2D=navigation[s]
 	var first := Vector2i((from-r.origin)/60)

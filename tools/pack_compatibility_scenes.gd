@@ -1,7 +1,9 @@
 extends SceneTree
 func _initialize() -> void:
 	var paths: Array[String]=[]
-	for stage in [0,1,2,3,4,7,9]: paths.append("res://scenes/story/opening-%d" % stage)
+	for stage in range(10):
+		var path := "res://scenes/story/opening-%d" % stage
+		if FileAccess.file_exists(path+".tscn"): paths.append(path)
 	for act in range(2,7):
 		for stage in range(9):
 			var path := "res://scenes/story/act%d-%d" % [act,stage]
@@ -18,6 +20,7 @@ func _initialize() -> void:
 					shader.code=mat.shader.code.replace("instance uniform float reveal","uniform float reveal")
 					converted.shader=shader; mesh.set_surface_override_material(i,converted)
 		for multi in node.find_children("*","MultiMeshInstance3D",true,false):
+			if multi.has_method("prepare_capture"): multi.prepare_capture()
 			if multi.material_override is ShaderMaterial:
 				var mat: ShaderMaterial=multi.material_override.duplicate(); var shader := Shader.new()
 				shader.code=mat.shader.code.replace("instance uniform float reveal","uniform float reveal"); mat.shader=shader; multi.material_override=mat

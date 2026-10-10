@@ -31,3 +31,6 @@ output/map-format-sources/
 output/reference-map-inspection.json
 output/story-*.err
 output/casc-research/
+output/dungeon-reference/
+output/dungeon-tools/
+output/exploration-*.err

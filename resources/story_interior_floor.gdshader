@@ -11,6 +11,7 @@ uniform float base_scale = .55;
 uniform float trim_scale = .5;
 uniform float dampness = 0.0;
 uniform int zoning = 0; // 0 common floor, 1 nave, 2 castle hall/dais
+uniform bool authored_zoning = false;
 uniform vec2 region_origin = vec2(0.0);
 uniform float centre_x = 24.0;
 varying vec3 world_pos;
@@ -22,6 +23,7 @@ void fragment(){
  vec2 local=world_pos.xz-region_origin;
  float x=abs(local.x-centre_x);
  float accent=0.0;
+ if(authored_zoning){ accent=COLOR.r; }
  if(zoning==1){ accent=1.0-smoothstep(1.6,1.64,x); }
  if(zoning==2){
   accent=(1.0-smoothstep(1.75,1.79,x))*step(27.5,local.y);

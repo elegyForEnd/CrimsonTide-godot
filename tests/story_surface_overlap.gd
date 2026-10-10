@@ -21,6 +21,7 @@ func _initialize() -> void:
 		if (prop.key.begins_with("nature/tree") or "tree_dead" in prop.key) and prop.size.y<=450:
 			small_trees+=1; check(not prop.blocking,"small decorative tree is not solid")
 	check(small_trees>20,"actual field contains non-blocking trees")
+	check(region.stairs.is_empty() and region.landforms.size()>=3,"floating platform removed in favour of connected landforms")
 	for stair in region.stairs:
 		check(region.height_at(stair.terrace.get_center())>120,"terrace logical elevation preserved")
 		check(region.base_height_at(stair.terrace.get_center())<stair.top,"base terrain is separate from raised platform")

@@ -32,7 +32,12 @@ func run() -> void:
 		var mat: Material=mesh.material_override
 		if mat is ShaderMaterial and mat.shader==Floors.FLOOR: authored+=1
 		check(not (mat is ShaderMaterial and mat.shader==GROUND),"packed castle has no outdoor ground")
-	check(authored>=15,"castle ground and raised floor/stairs use architectural palette")
+	check(authored>=1,"castle continuous floor and integrated stairs use architectural palette")
+	var actual_floor: MeshInstance3D=packed.get_node("AuthoredDungeonFloor")
+	var vertices: PackedVector3Array=actual_floor.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var bottom := INF; var top := -INF
+	for p in vertices: bottom=minf(bottom,p.y); top=maxf(top,p.y)
+	check(top-bottom>1.8,"actual architectural geometry includes connected level changes")
 	packed.free()
 	if DisplayServer.get_name()!="headless":
 		root.size=Vector2i(3840,2160); DisplayServer.window_set_size(root.size)

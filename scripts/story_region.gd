@@ -25,6 +25,10 @@ var shorelines: Array[PackedVector2Array]=[]
 var terrain_samples: Dictionary={}
 var dressing: Array=[]
 var floor_polygon := PackedVector2Array()
+var floor_voids: Array[PackedVector2Array]=[]
+var exploration_plan: Dictionary={}
+var landforms: Array=[]
+const Exploration=preload("res://scripts/story_exploration_art.gd")
 var structural_obstacles: Array[Rect2]=[]
 var art_theme := ""
 const ActArt=preload("res://scripts/story_act_art.gd")
@@ -82,7 +86,9 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 		if a==1 and s==7:
 			var cave: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://resources/story-cave-footprint.json"))
 			for p in cave.boundary: floor_polygon.append(Vector2(p[0],p[1]))
-		load_authored_terrain(); dressing=Dressing.entries(self); return
+		load_authored_terrain(); Exploration.configure(self)
+		dressing=Exploration.entries(self) if not exploration_plan.is_empty() else Dressing.entries(self)
+		return
 	var bend := -1.0 if (a+s)%2==0 else 1.0
 	trails=[PackedVector2Array([spawn,Vector2(2400+bend*450,980),anchors[0],Vector2(2400-bend*600,2200),anchors[1],Vector2(2400+bend*350,3500),anchors[2],Vector2(2400,4800)]),PackedVector2Array([anchors[0],side_anchors[0],side_anchors[2],anchors[2]]),PackedVector2Array([anchors[0],Vector2(3800,1600),side_anchors[1],anchors[1]])]
 	var shift := Vector2.ZERO if a==1 and s==1 else Vector2(float((a+s)%3-1)*260,float(s%3)*180)
@@ -114,6 +120,7 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 		add_prop(key,at,Vector3(h*.65,h,h*.55),true,rng.randf()*TAU)
 	if a==1 and s==1: opening_details()
 	load_authored_terrain()
+	Exploration.configure(self)
 	dressing=Dressing.entries(self)
 
 func load_authored_terrain() -> void:
@@ -289,6 +296,17 @@ func height_at(p: Vector2) -> float:
 	return base_height_at(p)
 
 func base_height_at(p: Vector2) -> float:
+	if not exploration_plan.is_empty(): return Exploration.height(self,p)
+	var base := raw_height_at(p)
+	for form in landforms:
+		var core: Rect2=form.core
+		var nearest := Vector2(clampf(p.x,core.position.x,core.end.x),clampf(p.y,core.position.y,core.end.y))
+		var weight: float=1.0-smoothstep(0,form.shoulder,p.distance_to(nearest))
+		if form.get("clear_paths",false): weight*=smoothstep(80,280,path_distance(p))
+		base=lerpf(base,form.height,weight)
+	return base
+
+func raw_height_at(p: Vector2) -> float:
 	if not terrain_samples.is_empty(): return authored_height(p)*(smoothstep(60,340,path_distance(p)) if act>=2 else 1.0)
 	if indoor or stage==0: return 0.0
 	var edge := minf(minf(p.x,extent.x-p.x),minf(p.y,extent.y-p.y))
@@ -296,8 +314,13 @@ func base_height_at(p: Vector2) -> float:
 
 func walkable(p: Vector2, radius: float = 24.0) -> bool:
 	if not Rect2(Vector2.ZERO,extent).has_point(p): return false
-	if indoor:
-		if not floor_contains(p,radius): return false
+	if indoor or not floor_polygon.is_empty():
+		if not floor_contains(p,radius):
+			var port_apron := false
+			if not indoor:
+				for port in ports:
+					if p.distance_to(port)<205-radius: port_apron=true; break
+			if not port_apron: return false
 	for rect in obstacles+water+structural_obstacles:
 		if rect.grow(radius).has_point(p): return false
 	for item in dressing:
@@ -316,7 +339,11 @@ func walkable(p: Vector2, radius: float = 24.0) -> bool:
 
 func floor_contains(p: Vector2, radius: float = 0.0) -> bool:
 	if not floor_polygon.is_empty():
-		if not Geometry2D.is_point_in_polygon(p,floor_polygon): return false
+		if not Exploration.contains(p,floor_polygon): return false
+		for hole in floor_voids:
+			if Exploration.contains(p,hole): return false
+			for i in hole.size():
+				if Geometry2D.get_closest_point_to_segment(p,hole[i],hole[(i+1)%hole.size()]).distance_to(p)<radius: return false
 		for i in floor_polygon.size():
 			if Geometry2D.get_closest_point_to_segment(p,floor_polygon[i],floor_polygon[(i+1)%floor_polygon.size()]).distance_to(p)<radius: return false
 		return true

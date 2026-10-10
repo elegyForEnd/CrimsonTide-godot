@@ -1,7 +1,8 @@
 {
   "source": "art/story-environment/opening-master.blend",
   "additional_sources": [
-    "art/story-environment/acts-2-6-master.blend"
+    "art/story-environment/acts-2-6-master.blend",
+    "art/story-environment/dungeon-master.blend"
   ],
   "exporter": "tools/export_story_models.py",
   "models": [
@@ -881,6 +882,198 @@
       "vendor": false
     },
     {
+      "name": "d1_niche",
+      "file": "d1_niche.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2160,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d1_pier",
+      "file": "d1_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 280,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d1_portal",
+      "file": "d1_portal.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 3600,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d1_retainer",
+      "file": "d1_retainer.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d2_niche",
+      "file": "d2_niche.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2376,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d2_pier",
+      "file": "d2_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 280,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d2_portal",
+      "file": "d2_portal.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 3600,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d2_retainer",
+      "file": "d2_retainer.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d3_niche",
+      "file": "d3_niche.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2160,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d3_pier",
+      "file": "d3_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 712,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d3_portal",
+      "file": "d3_portal.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 3600,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d3_retainer",
+      "file": "d3_retainer.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d4_niche",
+      "file": "d4_niche.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2076,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d4_pier",
+      "file": "d4_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1792,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d4_portal",
+      "file": "d4_portal.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 3600,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d4_retainer",
+      "file": "d4_retainer.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d5_niche",
+      "file": "d5_niche.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2340,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d5_pier",
+      "file": "d5_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 280,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d5_portal",
+      "file": "d5_portal.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 3600,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d5_retainer",
+      "file": "d5_retainer.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d6_niche",
+      "file": "d6_niche.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2160,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d6_pier",
+      "file": "d6_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 308,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d6_portal",
+      "file": "d6_portal.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 3600,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "d6_retainer",
+      "file": "d6_retainer.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1512,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
       "name": "dead_tree",
       "file": "dead_tree.glb",
       "triangles": 252,
@@ -891,6 +1084,86 @@
       "name": "drain_channel",
       "file": "drain_channel.glb",
       "triangles": 1740,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_chain_lamp",
+      "file": "dungeon_chain_lamp.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1144,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_fallen_pier",
+      "file": "dungeon_fallen_pier.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 576,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_grate",
+      "file": "dungeon_grate.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 2160,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_ossuary",
+      "file": "dungeon_ossuary.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 988,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_rail",
+      "file": "dungeon_rail.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 684,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_relief",
+      "file": "dungeon_relief.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1872,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_roots",
+      "file": "dungeon_roots.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 648,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_rubble",
+      "file": "dungeon_rubble.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1200,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_storage",
+      "file": "dungeon_storage.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 1152,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "dungeon_workbench",
+      "file": "dungeon_workbench.glb",
+      "source": "art/story-environment/dungeon-master.blend",
+      "triangles": 924,
       "meshes": 1,
       "vendor": false
     },

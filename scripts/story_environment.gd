@@ -5,6 +5,7 @@ const STONE = preload("res://resources/story_stone.gdshader")
 const WATER = preload("res://resources/story_water.gdshader")
 const Floors=preload("res://scripts/story_floor_palette.gd")
 const Regional=preload("res://scripts/story_regional_environment.gd")
+const Exploration=preload("res://scripts/story_exploration_environment.gd")
 var kit = preload("res://scripts/story_asset_kit.gd").new()
 var world
 var roofs: Array=[]
@@ -56,10 +57,11 @@ func build(w) -> void:
 			connector_ground(r,mat)
 	else:
 		var p: Vector2=world.campaign.map.spawn
-		if world.campaign.map.act>=2: kit.instance("a%d_gate" % world.campaign.map.act,world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
+		if not world.campaign.map.regions[world.campaign.map.stage].exploration_plan.is_empty(): kit.instance("d%d_portal" % world.campaign.map.act,world.scenery,world.point(p+Vector2(0,-90),world.campaign.map.height_at(p)),Vector3(.70,.70,.70))
+		elif world.campaign.map.act>=2: kit.instance("a%d_gate" % world.campaign.map.act,world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
 		elif world.campaign.map.layout=="castle": kit.instance("castle_gateway",world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
 		else: world.prop("halloween/arch",p+Vector2(0,-90),Vector3(420,290,80),Color("918c84"))
-		for i in (7 if world.campaign.map.act==1 else 0): block(Rect2(p+Vector2(-150,-210+i*35),Vector2(300,35)),10,7*(6-i),stone(Color("6e685f")))
+		for i in (7 if world.campaign.map.act==1 and world.campaign.map.regions[world.campaign.map.stage].exploration_plan.is_empty() else 0): block(Rect2(p+Vector2(-150,-210+i*35),Vector2(300,35)),10,7*(6-i),stone(Color("6e685f")))
 	for door in world.campaign.map.entrances():
 		if door.kind=="entrance": entrance(door)
 
@@ -108,7 +110,7 @@ func populate_chunk(r, chunk: Node3D) -> void:
 			chunk.add_child(light); lights.append(light)
 	if r.act==1:
 		ground_cover(r)
-		if r.stage in [0,1,7]: authored_details(r)
+		if r.stage in [0,1,7] and r.exploration_plan.is_empty(): authored_details(r)
 		crafted_details(r,chunk)
 	else:
 		crafted_details(r,chunk); Regional.wall_joints(self,r,chunk)
@@ -148,6 +150,8 @@ func terrain(r) -> void:
 			mat.set_shader_parameter("ground_tex" if channel=="albedo" else "ground_"+channel,load(kit.BASE+"pbr/"+soil_name+"_"+channel+".png"))
 			mat.set_shader_parameter("road_tex" if channel=="albedo" else "road_"+channel,load(kit.BASE+"pbr/"+road_name+"_"+channel+".png"))
 	if Floors.architectural(r): mat=Floors.material(r)
+	if not r.exploration_plan.is_empty():
+		Exploration.terrain(self,r,mat); return
 	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var step := 50 if r.act==1 and r.stage in [0,1,7] else 100
 	var margin := 1000 if r.stage==0 else 0
@@ -175,7 +179,7 @@ func terrain(r) -> void:
 				if not r.floor_polygon.is_empty():
 					vertices=[]
 					var quad := PackedVector2Array([piece.position,Vector2(piece.end.x,piece.position.y),piece.end,Vector2(piece.position.x,piece.end.y)])
-					for polygon in Geometry2D.intersect_polygons(quad,r.floor_polygon):
+					for polygon in preload("res://scripts/story_exploration_art.gd").floor_pieces(r,quad):
 						var indices := Geometry2D.triangulate_polygon(polygon)
 						for i in range(0,indices.size(),3):
 							var a: Vector2=polygon[indices[i]]; var b: Vector2=polygon[indices[i+1]]; var c: Vector2=polygon[indices[i+2]]
@@ -191,6 +195,8 @@ func terrain(r) -> void:
 	world.mesh_node(st.commit(),Vector3.ZERO,mat)
 	for shoreline in r.shorelines: curved_river(r,shoreline)
 	if not r.indoor and r.stage>0:
+		if not r.floor_polygon.is_empty():
+			Exploration.outdoor_edge(self,r); return
 		# Rough stone ridges enclose sectors while leaving exit spans clear.
 		var rng := RandomNumberGenerator.new(); rng.seed=r.act*311+r.stage*53
 		for i in range(0,int(r.extent.x),180):
@@ -227,6 +233,8 @@ func connector_ground(rect: Rect2, material: Material) -> void:
 	if not pieces.is_empty(): world.mesh_node(st.commit(),Vector3.ZERO,material)
 
 func dungeon_walls(r) -> void:
+	if not r.exploration_plan.is_empty():
+		Exploration.walls(self,r); return
 	if r.act>=2:
 		Regional.walls(self,r); return
 	if not r.floor_polygon.is_empty():
@@ -611,12 +619,13 @@ func detail_prop(r, item: Dictionary, p: Vector2) -> Node3D:
 
 func ground_cover(r) -> void:
 	if r.indoor: return
-	if r.indoor: return
 	var rng := RandomNumberGenerator.new(); rng.seed=19001+r.stage*617
+	var patches := FastNoiseLite.new(); patches.seed=731+r.stage*93; patches.frequency=.0022; patches.fractal_octaves=2
 	var transforms: Array[Transform3D]=[]
 	for i in (1200 if r.stage>0 else 260):
 		var p := Vector2(rng.randf_range(120,r.extent.x-120),rng.randf_range(120,r.extent.y-120))
-		if r.path_distance(p)<150 or not r.walkable(p,35): continue
+		if r.path_distance(p)<185 or not r.walkable(p,35): continue
+		if r.stage>0 and patches.get_noise_2d(p.x,p.y)<.08: continue
 		if r.stage==0 and p.x>420 and p.x<1780: continue
 		var size := rng.randf_range(.65,1.25)
 		var basis := Basis(Vector3.UP,rng.randf()*TAU).scaled(Vector3.ONE*size)
@@ -629,14 +638,15 @@ func ground_cover(r) -> void:
 	for group in cells.values():
 		cover_batch(kit.grass_mesh(),group,kit.surface("Leaf"))
 		var chosen: Array=[]
-		for i in range(0,group.size(),3): chosen.append(group[i])
+		for i in range(0,group.size(),4):
+			var transform: Transform3D=group[i]
+			transform.basis=transform.basis.scaled(Vector3.ONE*.48)
+			chosen.append(transform)
 		cover_batch(kit.fern_mesh(),chosen)
 
 func cover_batch(mesh: Mesh, transforms: Array, material: Material = null) -> void:
-	var multi := MultiMesh.new(); multi.transform_format=MultiMesh.TRANSFORM_3D
-	multi.mesh=mesh; multi.instance_count=transforms.size()
-	for i in transforms.size(): multi.set_instance_transform(i,transforms[i])
-	var node := MultiMeshInstance3D.new(); node.multimesh=multi; node.material_override=material
+	var node=preload("res://scripts/story_ground_cover.gd").new()
+	node.source_mesh=mesh; node.source_transforms.assign(transforms); node.material_override=material
 	node.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF; world.scenery.add_child(node)
 
 func register_authored(root: Node3D, region) -> void:

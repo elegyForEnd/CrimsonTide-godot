@@ -56,6 +56,7 @@ static func atmosphere(world) -> void:
 			child.environment.ambient_light_energy=.34 if world.campaign.map.layer==0 else .28
 			child.environment.background_color=Color("151a21")
 static func feature_lights(builder, r, parent: Node3D) -> void:
+	if not r.exploration_plan.is_empty(): return
 	if not r.indoor:
 		if r.act in [3,4,5] and RenderingServer.get_current_rendering_method()=="forward_plus" and DisplayServer.get_name()!="headless":
 			for at in [Vector2(600,1600),Vector2(700,3400)]:
@@ -73,6 +74,7 @@ static func feature_lights(builder, r, parent: Node3D) -> void:
 		light.light_energy=.65; light.omni_range=4.8; light.shadow_enabled=false
 		light.light_bake_mode=Light3D.BAKE_DISABLED; builder.lights.append(light)
 static func wall_joints(builder, r, parent: Node3D) -> void:
+	if not r.exploration_plan.is_empty(): return
 	if parent.has_node("RegionalCornerQuoins"): return
 	# The exported wall cap is 3.10m wide. Space its actual silhouette, not
 	# the nominal 3m brickwork: this removes coplanar cap overlap at each join.

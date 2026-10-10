@@ -24,7 +24,7 @@ func _draw() -> void:
 		if sector<0: continue
 		var r=map.regions[sector]
 		var local: Vector2=p+Vector2.ONE*120-r.origin
-		var inside: bool=not r.indoor or r.floor_contains(local)
+		var inside: bool=r.floor_contains(local) if not r.floor_polygon.is_empty() else not r.indoor or r.floor_contains(local)
 		if inside: draw_rect(Rect2(p*factor+shift,Vector2.ONE*240*factor),Color("727669") if r.indoor else Color("5f6d58"))
 		for trail in r.trails:
 			for i in range(trail.size()-1):

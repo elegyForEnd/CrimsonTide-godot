@@ -66,7 +66,7 @@ func run() -> void:
 	for i in 100: c.hero_at=c.map.move(c.hero_at,Vector2(0,-10))
 	check(c.map.height_at(c.hero_at)>120,"stairs climb onto terrace")
 	for i in 100: c.hero_at=c.map.move(c.hero_at,Vector2(0,10))
-	check(c.map.height_at(c.hero_at)<5,"stairs descend to ground")
+	check(c.map.height_at(c.hero_at)<45,"natural shoulder descends continuously beyond the former stair")
 	var cache: Dictionary=c.nearby_chests()[0]; c.hero_at=cache.p
 	check(c.open_cache(cache) and not c.open_cache(cache),"exploration cache reward is unique")
 	var door: Dictionary=c.map.portals[0]; c.hero_at=door.p; c.use_entrance(door)

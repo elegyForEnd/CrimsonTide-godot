@@ -36,10 +36,10 @@ func run() -> void:
 						for step_index in 90:
 							if at.distance_to(point)<8: break
 							at=c.map.move(at,(point-at).limit_length(9))
-					check(at.distance_to(target)<100,"walk actual new route with height and footprints")
+					check(at.distance_to(target)<100,"walk actual new route with height and footprints %d:%d target %s stopped %s height %s" % [act,r.stage,target,at,c.map.height_at(at)])
 			for item in r.dressing:
 				all_models[item.model]=true
-				check(item.model.begins_with("a%d_" % act),"no opening-kit visual in regional dressing")
+				check(item.model.begins_with("a%d_" % act) or item.model.begins_with("d%d_" % act) or item.model.begins_with("dungeon_"),"regional or original dungeon kit visual")
 				check(ResourceLoader.exists("res://assets/story/environment/models/"+item.model+".glb"),"real model exists")
 				if item.model.ends_with("_tree"): check(not item.has("footprint"),"small trees stay nonblocking")
 		c.map.activate(7); c.state.stage=7; c.hero_at=c.map.waypoint; c.activate_waypoint()

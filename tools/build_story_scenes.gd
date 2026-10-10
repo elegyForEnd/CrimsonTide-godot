@@ -50,7 +50,6 @@ func run() -> void:
 		for item in world.environment_builder.cache_models:
 			if authored.is_ancestor_of(item.node): item.node.set_meta("story_cache",item.id)
 		for mesh in authored.find_children("*","MeshInstance3D",true,false):
-			if act==1 and stage not in [0,1,7,9]: continue
 			if mesh.material_override is ShaderMaterial and mesh.material_override.shader==world.environment_builder.WATER:
 				mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; continue
 			if mesh.material_override==null and mesh.mesh==null: continue
@@ -71,12 +70,12 @@ func run() -> void:
 			light.light_bake_mode=Light3D.BAKE_DYNAMIC
 			light.shadow_enabled=false
 		var moon := DirectionalLight3D.new(); moon.name="BakeMoon"; moon.rotation_degrees=Vector3(-52,-35,0)
-		moon.light_color=Color("b7c8e4"); moon.light_energy=.63 if stage!=7 else .20
+		moon.light_color=Color("b7c8e4"); moon.light_energy=.24 if campaign.map.regions[stage].indoor else .63
 		moon.light_bake_mode=Light3D.BAKE_DYNAMIC; moon.add_to_group("editor_only",true); authored.add_child(moon)
 		if act>=2: moon.light_color=Color(preload("res://scripts/story_act_art.gd").palette(act).sun)
 		var gi := LightmapGI.new(); gi.name="BakedIndirectLight"
 		var previous_bake := path.get_basename()+".lmbake"
-		if ResourceLoader.exists(previous_bake): gi.light_data=load(previous_bake)
+		if ResourceLoader.exists(previous_bake) and not "--replace-generated" in OS.get_cmdline_user_args(): gi.light_data=load(previous_bake)
 		gi.quality=LightmapGI.BAKE_QUALITY_MEDIUM
 		gi.environment_mode=LightmapGI.ENVIRONMENT_MODE_CUSTOM_COLOR
 		gi.environment_custom_color=Color("829ab7"); gi.environment_custom_energy=.20 if stage!=7 else .12
@@ -89,6 +88,8 @@ func run() -> void:
 		var target := World.point(r.origin+r.extent*.5)
 		camera.position=target+Vector3(12,24,19); camera.add_to_group("editor_only",true); authored.add_child(camera); camera.look_at(target)
 		own(authored,authored)
+		for cover in authored.find_children("*","MultiMeshInstance3D",true,false):
+			if cover.has_method("prepare_capture"): cover.prepare_capture()
 		var packed := PackedScene.new(); var error := packed.pack(authored)
 		if error==OK: error=ResourceSaver.save(packed,path)
 		if error==OK: error=ResourceSaver.save(packed,path.get_basename()+".scn",ResourceSaver.FLAG_COMPRESS)

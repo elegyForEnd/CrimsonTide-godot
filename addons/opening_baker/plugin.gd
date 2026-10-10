@@ -6,7 +6,10 @@ func descendants(node: Node) -> Array:
 		found.append(child); found.append_array(descendants(child))
 	return found
 func _enter_tree() -> void:
-	if "--bake-opening" in OS.get_cmdline_user_args(): call_deferred("bake_opening")
+	if "--bake-opening" in OS.get_cmdline_user_args():
+		print("BAKE_BATCH plugin ready")
+		OS.low_processor_usage_mode=false
+		call_deferred("bake_opening")
 func bake_opening() -> void:
 	var requested := ""
 	var batch: Array[String]=[]
@@ -15,10 +18,15 @@ func bake_opening() -> void:
 		if arg.begins_with("--bake-list="):
 			for path in arg.trim_prefix("--bake-list=").split(","): batch.append(path)
 	if batch.is_empty(): batch.append(requested)
-	for path in batch: await bake_scene(path)
+	for path in batch:
+		await bake_scene(path)
+		# Batch tools save each scene, then release it rather than retaining dozens
+		# of full lightmaps and meshes as open editor tabs.
+		EditorInterface.close_scene()
+		for frame in 3: await get_tree().process_frame
 	print("BAKE_BATCH all complete count=",batch.size())
 func bake_scene(requested: String) -> void:
-	for i in 60: await get_tree().process_frame
+	for i in 4: await get_tree().process_frame
 	# Scene restoration and EXR imports can replace the edited root. Wait for
 	# filesystem work to settle, and don't reopen a scene already restored.
 	while EditorInterface.get_resource_filesystem().is_scanning(): await get_tree().create_timer(.25).timeout

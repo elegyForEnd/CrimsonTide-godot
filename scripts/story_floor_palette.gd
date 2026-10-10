@@ -28,6 +28,11 @@ static func material(region) -> ShaderMaterial:
 	mat.set_shader_parameter("trim_scale",.50)
 	mat.set_shader_parameter("dampness",settings.dampness)
 	mat.set_shader_parameter("zoning",settings.zoning)
+	if not region.exploration_plan.is_empty():
+		mat.set_shader_parameter("zoning",0); mat.set_shader_parameter("authored_zoning",true)
+		var trim_role := "crafted_metal" if region.act in [2,5] else "crafted_wood" if region.act==3 else "ceremonial_tile"
+		for channel in ["albedo","normal","orm"]: mat.set_shader_parameter("trim_"+channel,load(BASE+trim_role+"_"+channel+".png"))
+		mat.set_shader_parameter("trim_tint",Color("b7b2a7")); mat.set_shader_parameter("trim_scale",.42)
 	mat.set_shader_parameter("region_origin",region.origin*.01)
 	mat.set_shader_parameter("centre_x",region.extent.x*.005)
 	mat.set_meta("floor_role",settings.base)
