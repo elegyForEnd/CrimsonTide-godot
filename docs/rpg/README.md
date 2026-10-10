@@ -6,6 +6,7 @@
 
 - [重制版3D地编研究与连续地图重做](D2R-ENVIRONMENT-RESEARCH.md)
 - [Forward+ 开场样板与美术生产流程](FORWARDPLUS-ART-PIPELINE.md)
+- [占格行囊、人物、交易与铁匠的实际玩法](ITEMS-AND-SERVICES.md)
 - [详细玩法与开发计划](RPG-MODE-PLAN.md)
 - [完整长篇剧情《血月尽头，仍有黎明》](STORY.md)
 - [主线、支线、角色线与NPC索引](QUESTS.md)

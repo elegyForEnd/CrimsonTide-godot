@@ -16,8 +16,8 @@ static func build(parent: Control, graphics: Node, at: Vector2) -> void:
 	var restart := Button.new(); restart.text="保存画质并重启游戏"; box.add_child(restart)
 	restart.pressed.connect(func():
 		graphics.save()
-		var arguments := PackedStringArray()
-		if OS.has_feature("editor"): arguments.append_array(["--path",ProjectSettings.globalize_path("res://")])
+		var arguments: PackedStringArray=graphics.launch_arguments()
 		arguments.append_array(["--rendering-method","gl_compatibility" if graphics.quality==2 else "forward_plus"])
 		arguments.append_array(["--","--skip-intro"])
+		arguments.append_array(OS.get_cmdline_user_args())
 		if OS.create_instance(arguments)>=0: parent.get_tree().quit())

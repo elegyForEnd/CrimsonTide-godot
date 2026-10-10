@@ -5,7 +5,10 @@ signal location_changed
 signal notice(text: String)
 signal chapter_read(title: String, text: String)
 signal audio_cue(kind: String)
+signal quest_event(kind: String, id: String)
 const Map = preload("res://scripts/story_map.gd")
+const Inventory = preload("res://scripts/story_inventory.gd")
+var inventory = Inventory.new(self)
 var content: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://resources/story_content.json"))
 var state: Dictionary={}
 var map = Map.new()
@@ -36,6 +39,13 @@ var routes: Dictionary={}
 func new_state() -> Dictionary:
 	var initial := {"version":1,"act":1,"stage":0,"unlocked_act":1,"hero":0,"xp":0,"coins":100,"materials":0,"potions":5,"hp":150.0,"completed":[],"accepted":[],"steps":{},"discovered":["1:0"],"defeated":{},"visited_objects":{},"bag":[],"stash":[],"gear":{"blade":0,"armor":0,"charm":0},"kits":[{"blade":0,"armor":0,"charm":0},{"blade":0,"armor":0,"charm":0},{"blade":0,"armor":0,"charm":0}],"specialties":[[0,0,0],[0,0,0],[0,0,0]],"forged":0,"queen_rescued":false,"ending_seen":false,"final_started":false,"rescue_prepared_at_battle":false}
 
+	initial["items_revision"]=0
+	initial["item_serial"]=0
+	initial["equipment"]=[{},{},{}]
+	initial["overflow"]=[]
+	initial["buyback"]=[]
+	initial["merchant_stock"]={}
+	initial["tracked_quest"]=""
 	initial["queen_choice_made"]=false
 	initial["waypoints"]=["1:0"]
 	initial["opened_chests"]={}
@@ -74,6 +84,12 @@ func load_campaign(save_path: String = "") -> void:
 		for slot in ["blade","armor","charm"]: state.kits[i][slot]=maxi(0,int(state.kits[i].get(slot,0)))
 		if not state.specialties[i] is Array or state.specialties[i].size()!=3: state.specialties[i]=[0,0,0]
 		for rank in 3: state.specialties[i][rank]=clampi(int(state.specialties[i][rank]),0,10)
+	inventory.initialize()
+	inventory.restore_numeric()
+	if not FileAccess.file_exists(path):
+		inventory.receive(inventory.make("potion",1,0,2))
+		inventory.receive(inventory.make("scrap",1,0,4))
+		inventory.receive(inventory.make("crystal"))
 	state.gear=state.kits[int(state.hero)]
 	state.hp=clampf(float(state.hp),1,max_hp())
 	explored=state.get("explored",{}); region_enemies.clear()
@@ -95,8 +111,9 @@ func valid_save(value: Variant) -> bool:
 	for field in ["bag","stash"]:
 		if not value.get(field,[]) is Array: return false
 		for item in value.get(field,[]):
-			if not item is Dictionary or not str(item.get("slot","")) in ["blade","armor","charm"] or not item.get("name") is String: return false
-	return true
+			if not item is Dictionary or not str(item.get("slot","")) in ["blade","armor","charm","material","consumable"] or not item.get("name") is String: return false
+	if not value.get("tracked_quest","") is String or (value.get("tracked_quest","")!="" and not content.quests.has(value.tracked_quest)): return false
+	return Inventory.valid_data(value)
 
 func save_campaign() -> bool:
 	if not save_enabled: return false
@@ -114,10 +131,13 @@ func level() -> int:
 	return clampi(1+int(sqrt(maxf(0,float(state.get("xp",0))))*0.30),1,50)
 
 func max_hp() -> float:
-	return 150.0+level()*9.0+int(state.get("gear",{}).get("armor",0))*18.0+specialty(1)*8.0
+	return 150.0+level()*9.0+int(state.get("gear",{}).get("armor",0))*18.0+specialty(1)*8.0+inventory.bonus("hp")
 
-func damage() -> float:
-	return 24.0+level()*5.0+int(state.gear.blade)*11.0+int(state.forged)*6.0+int(state.gear.charm)*3.0+specialty(0)*4.0
+func damage(hero: int = -1) -> float:
+	hero=int(state.hero) if hero<0 else hero
+	inventory.initialize()
+	var kit: Dictionary=state.kits[hero]
+	return 24.0+level()*5.0+int(kit.blade)*11.0+int(state.forged)*6.0+int(kit.charm)*3.0+int(state.specialties[hero][0])*4.0+inventory.bonus("damage",hero)
 
 func specialty(index: int) -> int:
 	return int(state.get("specialties",[[0,0,0],[0,0,0],[0,0,0]])[int(state.get("hero",0))][index])
@@ -224,9 +244,23 @@ func accept(id: String) -> bool:
 	if not available(q): return false
 	if not id in state.accepted:
 		state.accepted.append(id)
+		state.tracked_quest=id
 		state.steps[id]=int(state.visited_objects.get(id,0))
 		changed.emit(); save_campaign()
+		quest_event.emit("accepted",id); audio_cue.emit("bell")
 	return true
+
+func tracked() -> Dictionary:
+	var id: String=state.get("tracked_quest","")
+	if id!="" and not id in state.completed and (id in state.accepted or current_main().get("id","")==id): return content.quests[id]
+	return current_main()
+
+func track(id: String) -> bool:
+	if not content.quests.has(id) or id in state.completed or (not id in state.accepted and current_main().get("id","")!=id): return false
+	state.tracked_quest=id; changed.emit(); save_campaign(); return true
+
+func rewards(q: Dictionary) -> Dictionary:
+	return {"xp":260+int(q.act)*140,"coins":35+int(q.act)*25,"materials":2+int(q.act),"potion":1,"equipment":int(q.act)+2 if q.kind=="main" and q.id.ends_with("M06") else 0}
 
 func step_count(q: Dictionary) -> int:
 	return int(state.steps.get(q.id,0))
@@ -265,6 +299,7 @@ func interact_object(node: Dictionary) -> bool:
 	if step_count(q)>=q.steps.size(): complete(q.id)
 	else:
 		notice.emit("%s · %d/%d" % [q.title,step_count(q),q.steps.size()]); changed.emit(); save_campaign()
+		quest_event.emit("progress",q.id)
 	audio_cue.emit("chest" if "取" in node.label or "箱" in node.label else "bell")
 	return true
 
@@ -274,17 +309,20 @@ func complete(id: String, announce: bool = true) -> bool:
 	if not available(q): return false
 	state.completed.append(id); state.accepted.erase(id)
 	state.steps[id]=q.steps.size()
-	state.xp+=260+int(q.act)*140
-	state.coins+=35+int(q.act)*25
-	state.materials+=2+int(q.act)
+	var reward := rewards(q)
+	state.xp+=reward.xp
+	state.coins+=reward.coins
+	state.materials+=reward.materials
 	state.potions=mini(15,int(state.potions)+1)
 	state.hp=max_hp()
 	if q.kind=="main" and id.ends_with("M06"):
 		state.unlocked_act=maxi(int(state.unlocked_act),mini(6,int(q.act)+1))
 		grant_equipment(int(q.act)+2,true)
 	if id=="E-M01": state.ending_seen=true
+	if state.get("tracked_quest","")==id: state.tracked_quest=""
 	changed.emit(); save_campaign()
 	if announce: chapter_read.emit(q.title,q.story+"\n\n【奖励】"+q.reward_text)
+	if announce: quest_event.emit("completed",id)
 	audio_cue.emit("loot")
 	return true
 
@@ -292,7 +330,9 @@ func south_gate() -> bool:
 	var a := int(state.act); var s := int(state.stage)
 	if s==0:
 		if a==1:
+			var intro_done: bool="P-M03" in state.completed
 			complete("P-M01",false); complete("P-M02",false); complete("P-M03",false)
+			if not intro_done: quest_event.emit("completed","P-M03")
 		enter(a,1); notice.emit("进入%s · 北侧入口可返回%s。" % [act_data().maps[0].name,act_data().camp]); return true
 	if s>=6: notice.emit("本幕尽头。回营地向地区联系人报告，使用跨幕交通。"); return false
 	var id := "A%d-M%02d" % [a,s]
@@ -355,27 +395,27 @@ func open_cache(item: Dictionary) -> bool:
 	changed.emit(); audio_cue.emit("chest"); save_campaign(); return true
 
 func grant_equipment(tier: int, fixed: bool = false) -> void:
-	var slot: String=["blade","armor","charm"][rng.randi_range(0,2)]
-	var item := {"slot":slot,"tier":tier,"name":["赤晶锋刃","晨钟护衣","守望护符"][["blade","armor","charm"].find(slot)]+" +%d" % tier}
-	if state.bag.size()<24: state.bag.append(item)
-	else: state.stash.append(item)
-	if fixed: notice.emit("章节装备已放入行囊；行囊满时自动存入仓库。")
+	inventory.initialize()
+	var bases := ["sword","staff","dagger","plate","robe","coat","ruby","frost","raven"]
+	var base: String=bases[rng.randi_range(0,bases.size()-1)]
+	var quality := 2 if fixed else (1 if rng.randf()<0.38 else 0)
+	inventory.receive(inventory.make(base,tier,quality))
+	if not fixed and rng.randf()<0.25:
+		inventory.receive(inventory.make("crystal" if rng.randf()<0.35 else "scrap",1,0,1 if base=="crystal" else 2))
+	if fixed: notice.emit("章节装备已入行囊；空间不足时入仓库或领取暂存区。")
 
 func equip(index: int) -> void:
+	inventory.initialize()
 	if index<0 or index>=state.bag.size(): return
-	var item: Dictionary=state.bag[index]
-	var previous := int(state.gear.get(item.slot,0))
-	state.gear[item.slot]=int(item.tier)
-	state.kits[int(state.hero)]=state.gear
-	state.bag.remove_at(index)
-	if previous>0: state.bag.append({"slot":item.slot,"tier":previous,"name":"卸下的%s +%d" % [item.slot,previous]})
-	state.hp=minf(state.hp,max_hp()); changed.emit(); save_campaign()
+	# Old callers may provide the original tier-only dictionary.
+	if not state.bag[index].has("uid"): state.bag[index]=inventory.normalize(state.bag[index])
+	inventory.equip("bag",str(state.bag[index].uid))
 
 func store(index: int, withdraw: bool = false) -> bool:
-	var source: Array=state.stash if withdraw else state.bag
-	var target: Array=state.bag if withdraw else state.stash
-	if index<0 or index>=source.size() or (withdraw and target.size()>=24): return false
-	target.append(source[index]); source.remove_at(index); changed.emit(); save_campaign(); return true
+	inventory.initialize()
+	var source: String="stash" if withdraw else "bag"
+	if index<0 or index>=state[source].size(): return false
+	return inventory.transfer(source,str(state[source][index].uid),"bag" if withdraw else "stash")
 
 func service(kind: String) -> bool:
 	if int(state.stage)!=0: return false
@@ -412,10 +452,12 @@ func choose_rescue(rescue: bool) -> bool:
 func switch_hero(index: int) -> void:
 	if index<0 or index>2: return
 	var old := int(state.hero)
+	inventory.initialize()
 	allies[old]=hero_at; hero_at=allies[index]; state.hero=index
 	state.gear=state.kits[index]
 	state.hp=minf(state.hp,max_hp())
 	changed.emit()
+	save_campaign()
 
 func heal() -> bool:
 	if state.potions<=0 or state.hp>=max_hp(): return false
@@ -486,7 +528,7 @@ func update(dt: float, motion: Vector2) -> void:
 			if i==state.hero: continue
 			for e in enemies:
 				if e.hp>0 and e.p.distance_to(allies[i])<350 and map.sight(allies[i],e.p):
-					hit(e,damage()*0.30); break
+					hit(e,damage(i)*0.30); break
 	for e in enemies:
 		if e.hp<=0: continue
 		e.flash=maxf(0,e.flash-dt)

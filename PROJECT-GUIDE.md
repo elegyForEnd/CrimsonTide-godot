@@ -93,6 +93,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 故事入口为 `main.gd` 的独立 `story` 页面：`story_screen` → `story_campaign` → `story_map` / `story_region`，由 `story_world` / `story_environment` 显示。它使用独立战役存档，当前是单人及两名AI伙伴，不加入TideSession的联机或结算生命周期。
 
+故事物品由 `story_inventory.gd` 权威处理，`story_items_ui.gd`、`story_item_grid.gd` 负责实际控件与原生拖拽，`story_ui_skin.gd` 使用原创材质九宫切片。不要调用远征/肉鸽的货币、装备或存储函数。v10发布采用小运行入口与补丁，挂载现有v9地图底包；正常启动Start-Story-GUI，临时试玩Preview-Inventory。
+
 `session.gd:228 select_mode()` 分派 `campaign`（搜打撤）与 `rogue`（魔境）。两模式共用：
 - 同一个 `TideSession`（session.gd:78-82 同时持有 roguelike/expedition/mini_bosses/wild_bosses/dragon_boss 实例）；
 - 库存类动作在 `session.gd:1675 perform()` 里分派：魔境把库存动作移交 `roguelike`，远征走本文件存储区；
@@ -451,12 +453,16 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### S. 故事模式与连续探索地图
 
+图形任务日志：story_quest_ui（J/人物委托/档案NPC）使用73任务真数据、分类卡片、目标进度与报酬；story_quest_fx响应campaign.quest_event，接取/推进/完成只在真实状态改变时播放，特效不发奖励。tracked/track持久保存追踪ID，HUD读取tracked；tests/story_quests_ui.gd覆盖真实鼠标、E与事件幂等。
+
+战役GUI：`story_screen.gd` 的 `show_items()` / `show_bag()` / `show_growth()`；NPC索引2/4/5分别转锻造、交易、仓库。`story_inventory.gd` 的 `move()` / `equip()` / `buy()` / `forge()` / `craft()` 是唯一规则口，`valid_data()` 校验新实例存档。三人装备镜像写回kits，伙伴伤害也读自己的装备。配套tests/story_items.gd、story_items_ui.gd；制作与操作见docs/rpg/ITEMS-AND-SERVICES.md。
+
 | 功能 | 文件与配套检查 |
 |---|---|
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
 | 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
 | 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:94 sync_story()`；tests/story_visual.gd |
-| Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:46 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
+| Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:52 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
 | 不规则洞窟与旧堡副本 | story_region.floor_contains/build_castle、story_environment.cave_shell/castle_shell；story-cave-footprint.json统一地面/移动/寻路/探索图；OUTDOOR-CASTLE.md、tests/story_outdoor_castle.gd；第九区存档上限从章节地图数量读取 |
@@ -466,10 +472,10 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 室外地面、桥头、岸线与虚空边界 | story_surface_geometry.land_pieces / connector_pieces；story_exterior_composition.build / height / river_outline；story_environment.connector_ground / curved_river；tests/story_boundary_surfaces.gd覆盖实际普通/兼容网格、世界偏移和移动轮廓保护；BOUNDARY-SURFACES.md。⚠️Packed数组平移前必须duplicate；静态地面/岸壁改动要重烘，外景要有起伏/装饰；外景不覆盖通路并排除固定GI |
 | 副本空间类型与边界语言 | story-exploration.json的layout_family / grade_axis / edge_styles / void_surface；story_exploration_environment.surrounding_geology与墙/栏杆/拱廊/断墙；30区22类型、10—14功能空间，DUNGEON-IDENTITIES.md；tests/story_dungeon_identity.gd和tools/verify_story_dungeon_release.gd检查真实缓存及发布包 |
 | 植被缓存与无头制作 | `scripts/story_ground_cover.gd:6 _ready()`；source_mesh / source_transforms保留CPU数据，prepare_capture清空GPU缓冲；story_environment.cover_batch、tools/patch_story_ground_cover.gd；⚠️不得序列化Dummy渲染器的MultiMesh实例缓冲，可能产生遮住整幅画面的巨面 |
-| 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:78 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
+| 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:82 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
 | 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:333 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
-| 探索地图、UI与输入 | `story_screen.gd:371 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
+| 探索地图、UI与输入 | `story_screen.gd:373 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
 | 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
 
 ## 5. 「我要改 X」速查表
@@ -477,6 +483,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 ### 玩法规则类
 
 故事地图、任务与NPC → §4.S；连续区域/门洞改 story_map/region，3D场景改 story_environment/world，传送与战役规则改 story_campaign，面板改 story_screen/atlas。不要把故事币、经验或任务写进远征结算。
+
+故事行囊/人物/买卖/锻造 → §4.S、story_inventory/items_ui/item_grid/ui_skin。新入口Preview-Inventory.cmd与Start-Story-GUI.cmd；补丁由pack_story_patch_launcher和build_story_patch_runtime制作，依赖v9底包，不能直接用旧v9启动来验证新GUI。
 
 洞窟轮廓与旧堡 → story-cave-footprint.json / story_region.floor_contains、build_castle / story_environment.cave_shell、castle_shell；地面/移动/探索图必须共享边界，新增区域须同时更新内容编译器和存档区域校验。新增模块在master编辑，已有室外场景用patch_story_outdoors增量追加。
 
@@ -582,6 +590,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ## 6. 数值常量速查（哪里改什么数）
 
+故事物品：story_inventory的BAG为10×6、VAULT为12×10；BASES定义十二种占格及堆叠上限。单件强化上限5，镶嵌80银币/1晶石，回购12件；打造、强化费用在craft/forge_cost，交易库存每幕独立持久。原forged全队强化保留旧档加成，新UI只强化单件。
+
 | 数值 | 位置 |
 |---|---|
 | 联机端口 24872 / 一天 300s / 缩圈 180s 开始 | session.gd:31 / :50-51 |
@@ -645,6 +655,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 ## 8. 工具链与素材管线（tools/）
 
+战役GUI素材在assets/story/items，提示词见GENERATION.md/generation-prompts.json，区域由实际像素范围定义。v10增量发布先export-patch对v9，再pack_story_patch_launcher与build_story_patch_runtime；v10.exe、Inventory-v10.pck、v9.exe需同放dist。新exe内嵌小引导包，避开旧模板禁用--main-pack的问题。
+
 | 类别 | 代表脚本 | 说明 |
 |---|---|---|
 | 构筑内容编译 | `build_rogue_content.py` | 从 ROGUE-BUILD-SYSTEM-DESIGN.md 表格编译出 `resources/rogue_build_content.json`（252 条），**改构筑表格先改 md 再重跑** |
@@ -684,6 +696,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 ## 10. 根目录文档索引（专题设计文档）
 
+战役GUI与经济：[docs/rpg/ITEMS-AND-SERVICES.md](docs/rpg/ITEMS-AND-SERVICES.md)。原创图标、框架和内部控件材质：[assets/story/items/GENERATION.md](assets/story/items/GENERATION.md)，完整提示词generation-prompts.json；只读参考表元数据reference-inventory-inspection.json。
+
 | 文档 | 主题 | 主要对应代码 |
 |---|---|---|
 | README.md | 总览/启动/操作/存档 | 全局 |
@@ -708,6 +722,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 | minimax2live2d.md | 外部素材管线笔记（参考） | tools/ |
 
 ## 11. 已知坑与注意事项（改码前必读）
+
+故事GUI契约：先复制验证整次交易/换装再提交，旧档溢出入领取暂存区；新增字段同步valid_item/restore_numeric及往返测试。图标先EXPAND_IGNORE_SIZE再设尺寸，进度条先关百分比再设高度。任务事件仅由真实转换产生，silent加载不播放，通知有上限且离开模式清空。声音总线/应用图标须装入引导包，挂载v9后恢复AudioServer布局，防止发布版bus=-1。
 
 1. **`git status` 里出现 `?? 某目录/` 时先查清再动**：这类目录没进版本库（可能是重复克隆，也可能是本机构建产物）。危害是 `git add .` 会把整个目录当成一个 gitlink 提交进来。处理：① 一切修改只在项目根做；② **禁止 `git add .`**，只 add 你真正改的文件；③ 确认无用后再删除该目录。
 2. **`STARTER_BASE=17`（catalog.gd:167）必须等于 WEAPONS.size()**，tests/systems.gd 有断言——增删野战武器后必须同步这个字面量。
@@ -787,6 +803,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 
 ## 12. 路牌维护规范（做完一个功能、交接前必做）
 
+新增存储契约：故事物品UI以唯一uid操作；先在副本上验证整次移动/换装/购买，再提交，不允许半扣款。旧档空间不足进入可领取overflow。新增实例字段需同步valid_item/restore_numeric/存档往返测试。TextureRect先设置EXPAND_IGNORE_SIZE再设尺寸，进度条先关闭百分比再设高度，避免内部图标撑破卡片。
+
 > 这份文件是「下一个人 / 下一个 AI」的唯一入口。代码变了而路牌没改，比没有路牌更糟：它会把后来者精准地指到错误的位置。
 > **强制要求：一个功能做完、只剩交接之前，必须更新本文件并提交。谁改的代码，谁更新路牌。**
 
@@ -850,6 +868,8 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-11（同批提交）：完成故事占格行囊/三人装备/属性专精/仓库/交易买卖回购/单件锻造打造分解镶嵌。原创imagegen图标、框架及九宫切片内部控件覆盖HUD/NPC/日志/地图/暂停。旧档零丢件迁移与原子事务，伙伴读独立装备。v10小运行入口挂载v9地图与物品补丁，画质重启保持入口；长跑仍暂缓。更新§3/4.S/5/6/10及本说明。
 
 2026-10-10（同批提交）：v9采用用户最终要求的实地外景：25场制作起伏和树岩植被，南门增加河道/桥体/河岸；六营地地面裁回包络并重烘GI，连接PBR渐变/路肩保持。实际移动穿过六幕出口，新增背景起伏/非通行装饰与接缝检查。修复GLB保存重复实例化，并在烘焙保存前安全捕获MultiMesh。v9替代v8，长时间跑分暂缓。
 
@@ -967,3 +987,5 @@ Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/ro
 ### 2026-10-10 第二至第六幕美术扩展
 
 独立acts-2-6-master.blend与84个新GLB、17套新PBR、15份地形、45个可编辑/烘焙区域；五种区域轮廓与十种额外副本题材。story_act_art管理共享渲染/移动数据，story_regional_environment管理新建筑/灯光，world跨幕释放缓存。原地图ID、73任务不变。专题ACTS-2-6-ART.md与tests/story_later_acts.gd同步；长时间性能验收暂缓。
+
+任务GUI补充（2026-10-11，同批提交）：四类任务卡、地点/联系人/逐项目标/报酬、营地接取与HUD持久追踪；加入接取/推进/完成的徽章、光扫、粒子、脚底短光环与音效，检查实际E流程和事件幂等。

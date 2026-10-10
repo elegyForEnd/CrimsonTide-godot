@@ -19,12 +19,18 @@ func _ready() -> void:
 	quality=clampi(int(config.get_value("graphics","quality",0)),0,2)
 	upscale=clampi(int(config.get_value("graphics","upscale",0)),0,2)
 	if quality==2 and RenderingServer.get_current_rendering_method()=="forward_plus" and not Engine.is_editor_hint() and DisplayServer.get_name()!="headless":
-		var arguments := PackedStringArray()
-		if OS.has_feature("editor"): arguments.append_array(["--path",ProjectSettings.globalize_path("res://")])
+		var arguments := launch_arguments()
 		arguments.append_array(["--rendering-method","gl_compatibility","--"])
 		arguments.append_array(OS.get_cmdline_user_args())
 		if OS.create_instance(arguments)>=0: get_tree().quit(); return
 	apply()
+func launch_arguments() -> PackedStringArray:
+	var arguments := PackedStringArray()
+	if OS.has_feature("editor"): arguments.append_array(["--path",ProjectSettings.globalize_path("res://")])
+	var current := OS.get_cmdline_args()
+	for i in current.size()-1:
+		if current[i]=="--main-pack": arguments.append_array(["--main-pack",current[i+1]])
+	return arguments
 func advanced() -> bool:
 	return RenderingServer.get_current_rendering_method()=="forward_plus" and quality<2
 func apply() -> void:

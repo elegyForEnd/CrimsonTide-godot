@@ -1,0 +1,30 @@
+{
+  "mode": "built-in image_gen",
+  "selected_assets": [
+    "inventory-atlas-v2.png",
+    "interface-sanctum-v1.png",
+    "control-materials-v1.png"
+  ],
+  "prompts": [
+    {
+      "id": "item-atlas-v1-reference",
+      "prompt": "Use case: stylized-concept. Asset type: original game inventory icon atlas for a gothic anime RPG. Create a square transparent PNG sprite sheet arranged precisely as 4 columns x 3 rows equal square cells, each cell contains ONE centered isolated richly painted item with generous transparent padding, no objects crossing cells. Row 1 left to right: red crystal longsword, silver blue magic staff, dark violet curved dagger, worn gothic steel breastplate. Row 2: white midnight-blue hooded robe, dark leather ranger coat, red crystal pendant in gold filigree, icy silver amulet. Row 3: violet raven talisman, red healing potion glass bottle, rough iron scrap pile, luminous blue crafting crystal. Orthographic inventory illustration, crafted metal textures, elegant silhouettes, restrained rim light, legible at 48 pixels, coherent premium hand-painted realistic gothic item art. All 12 objects whole, no cropping, no text, no labels, no numbers, no watermark, no outer frame. Actual transparent background.",
+      "selected": false
+    },
+    {
+      "id": "item-atlas-v2",
+      "prompt": "Repack this item atlas for game use. Preserve these exact 12 gothic item designs and transparent background. STRICT 4 columns x 3 rows of exactly equally-sized cells. Each item must fit entirely inside its own cell with at least 15% transparent margin on EVERY side. Shrink objects as necessary. Nothing may touch cell boundaries or other items. All 12 items centered. Same order: sword, staff, dagger, breastplate / robe, leather coat, red pendant, ice amulet / raven talisman, potion, iron scrap, blue crystal. No grid drawn, no text, no watermark. Flat square transparent sprite sheet. Do not enlarge objects to fill gaps.",
+      "selected": true
+    },
+    {
+      "id": "interface-sanctum-v1",
+      "prompt": "Use case: ui-mockup. Asset type: finished original game UI BACKGROUND PLATE only, with no baked controls or text, for a premium gothic anime action RPG. Wide landscape aspect ratio approximately 1296:760. Flat front-facing 2D screen composition, no perspective. Exact layout normalized: thin ornate outer border; header strip across top 0%-9%; navigation strip 10%-16%; two large recessed panel niches from y18% to89%: left niche x2%-43%, right niche x45%-98%; footer strip y94%-98%. Left niche houses character art/equipment/shop; right niche houses an inventory grid and item detail, so leave both niche interiors clean dark spacious and legible. Frame design: handcrafted tarnished brass edging over charcoal carved stone and midnight blue leather, engraved gothic tracery and restrained crimson crystal accents at corners, delicate branching arches on the two niche tops, realistic patina, craftsmanship, rich but subtle relief shadows. Material depth and tasteful highly detailed border ornament, restrained warm gold rim light. Centers are dark matte slate, gentle texture only. No text, no letters, no numbers, no grid, no inventory items, no characters, no diagrams, no actual buttons, no HUD, no watermarks. This is a functional nine-region game interface skin, not a concept scene.",
+      "selected": true
+    },
+    {
+      "id": "control-materials-v1",
+      "prompt": "Use case: stylized-concept. Asset type: original gothic RPG UI MATERIAL ATLAS of nine equal square tiles, arranged in a strict 3x3 grid. Each tile fills its exact square; all tile borders align at one third and two thirds of image dimensions. Front-facing orthographic flat 2D interface skins, no perspective. Top row: 1 empty dark worn leather inventory cell with narrow recessed bronze square frame, 2 deeper equipment socket with carved dark stone and antique gold frame, 3 normal button panel of etched blackened steel with gold beveled perimeter. Middle row: 4 selected/hover button with restrained burgundy leather and gold beveled perimeter, 5 property card with worn midnight-blue parchment and thin bronze edging, 6 tooltip panel of black velvet with very small filigree gold corners. Bottom row: 7 merchant shelf recess in aged dark wood with iron corners, 8 forge workbench recess in soot-black iron with copper edges, 9 destructive action button in deep crimson metal with silver bevel. Every panel has an empty dark flat center for code-rendered labels, icons and content. Borders confined to outer 10% for nine-slice scaling; no ornaments in central 80%. Premium hand-painted realistic material, good legibility, consistent gothic aesthetic. NO text, no letters, no numbers, no items, no characters, no interface mockup beyond the nine empty material tiles, no watermark, no visible gutters, no transparency.",
+      "selected": true
+    }
+  ]
+}

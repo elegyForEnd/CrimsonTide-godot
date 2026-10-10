@@ -2,6 +2,7 @@ extends Control
 signal exit_requested
 const Campaign = preload("res://scripts/story_campaign.gd")
 const World = preload("res://scripts/story_world.gd")
+const UISkin = preload("res://scripts/story_ui_skin.gd")
 var campaign = Campaign.new()
 var world: Node3D
 var active := false
@@ -22,6 +23,7 @@ var sound: TideSound
 var music_signature := ""
 var move_target := Vector2.INF
 var photo_mode := false
+var quest_fx: Control
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -45,14 +47,17 @@ func _ready() -> void:
 	var empty := StyleBoxFlat.new(); empty.bg_color=Color("302035"); empty.set_corner_radius_all(3)
 	theme_data.set_stylebox("background","ProgressBar",empty)
 	theme=theme_data
+	UISkin.theme_controls(theme_data)
 	world=World.new(); world.name="StoryWorld"; add_child(world)
 	hud=Control.new(); hud.size=size; hud.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(hud)
 	var top := Panel.new(); top.position=Vector2(22,18); top.size=Vector2(600,118); top.mouse_filter=Control.MOUSE_FILTER_IGNORE; hud.add_child(top)
+	top.add_theme_stylebox_override("panel",UISkin.frame(4))
 	heading=label(hud,"",Vector2(38,26),Vector2(900,33),23)
 	stats=label(hud,"",Vector2(38,63),Vector2(570,28),16)
 	hp_bar=ProgressBar.new(); hp_bar.position=Vector2(38,97); hp_bar.size=Vector2(550,15); hp_bar.show_percentage=false; hud.add_child(hp_bar)
 	objective=label(hud,"",Vector2(965,85),Vector2(450,145),18)
 	var right := Panel.new(); right.position=Vector2(952,74); right.size=Vector2(472,167); right.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	right.add_theme_stylebox_override("panel",UISkin.frame(5))
 	hud.add_child(right); hud.move_child(right,0)
 	button(hud,"任务 J",Vector2(968,24),Vector2(100,38),show_journal)
 	button(hud,"行囊 TAB",Vector2(1078,24),Vector2(115,38),show_bag)
@@ -60,13 +65,15 @@ func _ready() -> void:
 	button(hud,"菜单",Vector2(1313,24),Vector2(95,38),show_menu)
 	hint=label(hud,"",Vector2(290,720),Vector2(860,50),21); hint.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	message=label(hud,"",Vector2(280,670),Vector2(880,50),20); message.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	label(hud,"WASD 移动  ·  鼠标左键攻击  ·  E 交互  ·  空格闪避  ·  Q 技能  ·  R 协同奥义  ·  F 补给  ·  1/2/3 切换主角",Vector2(100,853),Vector2(1240,30),16)
+	label(hud,"WASD 移动  ·  鼠标左键攻击  ·  E 交互  ·  C 人物  ·  空格闪避  ·  Q 技能  ·  R 协同奥义  ·  F 补给  ·  1/2/3 切换主角",Vector2(100,853),Vector2(1240,30),16)
 	button(hud,"小队个人委托",Vector2(30,795),Vector2(180,38),show_personal)
 	button(hud,"返营路标",Vector2(30,745),Vector2(140,38),func():
 		if campaign.state.stage==0: toast("已经在营地。")
 		elif campaign.hero_at.distance_to(campaign.map.waypoint)<150: campaign.activate_waypoint(); campaign.travel(int(campaign.state.act),0)
 		else: toast("沿原路回营地，或到传送阵附近激活后旅行。"))
 	overlay=Control.new(); overlay.size=size; overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(overlay)
+	quest_fx=preload("res://scripts/story_quest_fx.gd").new(); quest_fx.screen=self; add_child(quest_fx)
+	campaign.quest_event.connect(quest_fx.show_event)
 	campaign.location_changed.connect(func(): world.build_story(campaign); refresh())
 	campaign.changed.connect(refresh)
 	campaign.notice.connect(toast)
@@ -76,6 +83,7 @@ func _ready() -> void:
 	set_active(false)
 
 func start(save_path: String = "") -> void:
+	if "--preview-items" in OS.get_cmdline_user_args() or "--preview-quests" in OS.get_cmdline_user_args(): campaign.save_enabled=false
 	campaign.load_campaign(save_path)
 	var art_preview := false
 	# Explicit art-preview launchers are transient, separate from campaign saves.
@@ -95,6 +103,29 @@ func start(save_path: String = "") -> void:
 	set_active(true)
 	refresh()
 	toast("场景试玩 · 临时进度不保存；在传送阵可选择六幕的全部区域。" if art_preview else "从营地南门向下走探索野外；M 查看地图，E 进入遗迹 / 激活传送阵。")
+	if "--preview-items" in OS.get_cmdline_user_args():
+		campaign.inventory.initialize()
+		campaign.state.coins=1800; campaign.state.materials=40; campaign.state.xp=225
+		for base in Campaign.Inventory.BASES:
+			campaign.inventory.receive(campaign.inventory.make(base,2,1 if Campaign.Inventory.BASES[base].slot in Campaign.Inventory.SLOTS else 0,3 if base in ["potion","scrap","crystal"] else 1))
+		for hero in 3:
+			for slot in Campaign.Inventory.SLOTS:
+				for item in campaign.state.bag.duplicate():
+					if campaign.inventory.can_equip("bag",item.uid,hero,slot): campaign.inventory.equip("bag",item.uid,hero,slot); break
+		for base in ["sword","plate","staff","robe","raven","frost"]: campaign.inventory.receive(campaign.inventory.make(base,2,2))
+		show_bag()
+		for argument in OS.get_cmdline_user_args():
+			if argument.begins_with("--items-shot="): capture_item_preview.call_deferred(argument.trim_prefix("--items-shot="))
+	if "--preview-quests" in OS.get_cmdline_user_args():
+		for id in ["P-M01","P-M02","P-M03","A1-M01","A1-M02"]: campaign.complete(id,false)
+		show_journal("side")
+
+func capture_item_preview(target: String) -> void:
+	for i in 24: await get_tree().process_frame
+	RenderingServer.viewport_set_update_mode(get_viewport().get_viewport_rid(),RenderingServer.VIEWPORT_UPDATE_ALWAYS)
+	RenderingServer.force_draw(false)
+	var error := get_viewport().get_texture().get_image().save_png(target)
+	print("STORY_ITEMS_READY bag=%d worn=%d shot=%s error=%d" % [campaign.state.bag.size(),campaign.state.equipment[0].size()+campaign.state.equipment[1].size()+campaign.state.equipment[2].size(),target,error])
 
 func set_active(value: bool) -> void:
 	active=value; visible=value
@@ -103,6 +134,7 @@ func set_active(value: bool) -> void:
 		world.visible=value
 		world.view_camera.current=value
 	if not value and not campaign.state.is_empty(): campaign.save_campaign()
+	if not value and is_instance_valid(quest_fx): quest_fx.clear()
 
 func label(parent: Node, text: String, at: Vector2, extent: Vector2, font_size: int = 18) -> Label:
 	var node := Label.new(); node.text=text; node.position=at; node.size=extent
@@ -113,6 +145,7 @@ func label(parent: Node, text: String, at: Vector2, extent: Vector2, font_size: 
 
 func button(parent: Node, text: String, at: Vector2, extent: Vector2, action: Callable) -> Button:
 	var node := Button.new(); node.text=text; node.position=at; node.size=extent
+	UISkin.button(node)
 	node.pressed.connect(action); parent.add_child(node); return node
 
 func refresh() -> void:
@@ -121,9 +154,9 @@ func refresh() -> void:
 	var act: Dictionary=campaign.act_data()
 	var location: String=act.camp if s.stage==0 else act.maps[int(s.stage)-1].name
 	heading.text="第%d幕 · %s  /  %s" % [s.act,act.title,location]
-	stats.text="%s  Lv.%d    银币 %d    材料 %d    药剂 %d    锻造 +%d" % [["绯月","雪璃","鸦羽"][int(s.hero)],campaign.level(),s.coins,s.materials,s.potions,s.forged]
+	stats.text="%s  Lv.%d    银币 %d    铁料 %d    药剂 %d" % [["绯月","雪璃","鸦羽"][int(s.hero)],campaign.level(),s.coins,s.materials,s.potions]
 	hp_bar.max_value=campaign.max_hp(); hp_bar.value=s.hp
-	var q := campaign.current_main()
+	var q := campaign.tracked()
 	objective.text="血潮已解除 · 可回访六地" if q.is_empty() else "【%s】\n%s\n%d/%d" % [q.title,q.description,campaign.step_count(q),q.steps.size()]
 	queue_redraw()
 
@@ -231,13 +264,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_3: campaign.switch_hero(2)
 			KEY_J: show_journal()
 			KEY_TAB: show_bag()
+			KEY_C: show_growth()
 			KEY_M: show_travel()
 	get_viewport().set_input_as_handled()
 
 func panel(title: String) -> Control:
 	close_panel(); modal=true; move_target=Vector2.INF
 	var dim := ColorRect.new(); dim.size=size; dim.color=Color(0.015,0.01,0.03,0.78); overlay.add_child(dim)
-	var back := Panel.new(); back.position=Vector2(220,125); back.size=Vector2(1000,670); overlay.add_child(back)
+	var back := Panel.new(); back.position=Vector2(220,125); back.size=Vector2(1000,670); back.add_theme_stylebox_override("panel",UISkin.frame(5)); overlay.add_child(back)
 	label(back,title,Vector2(30,18),Vector2(860,38),26)
 	button(back,"关闭",Vector2(882,20),Vector2(90,35),close_panel)
 	return back
@@ -269,12 +303,20 @@ func show_chapter(title: String, body: String) -> void:
 		elif title==campaign.content.quests["E-M01"].title and "E-M01" in campaign.state.completed: show_endings())
 
 func show_npc(index: int) -> void:
+	if index==2: show_items("forge"); return
+	if index==4: show_items("shop"); return
+	if index==5: show_bag(true); return
 	var person: String=npc_name(index)
 	var back := panel(person+" · "+["地区委托","治疗","锻造","故事资料","交易","仓库"][index])
 	var lines: Array=["南门连着原野，沿小径能找到遗迹和传送阵。人们还在等着灯亮，我会替你们保留回来的路。","先把灯放下，休息一会儿。你们不用把每一次伤都藏起来。","工具和刃都要有人照顾。带回来的材料可以强化招式，也可以重新整理专精。","记录是为了让后来的人看清发生过什么。这里保留着你们已查证的档案。","药剂一直有备货。别为了带更多东西，把回来的力气也卖掉。","放在这里的物品会保留下来。行囊满了，章节装备也会替你们收好。"]
-	label(back,"「%s」" % lines[index],Vector2(30,75),Vector2(930,60),18)
+	var sheet: Texture2D=load("res://assets/story/npc-atlas-v1.png")
+	var portrait := TextureRect.new(); portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var portrait_texture := AtlasTexture.new(); portrait_texture.atlas=sheet; var cell := sheet.get_size()/Vector2(3,2)
+	portrait_texture.region=Rect2(Vector2(index%3,int(index/3))*cell,cell); portrait.texture=portrait_texture
+	portrait.position=Vector2(30,76); portrait.size=Vector2(108,144); portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE; back.add_child(portrait)
+	label(back,"「%s」" % lines[index],Vector2(164,91),Vector2(774,113),20)
 	var column := list_area(back)
-	column.get_parent().position.y=150; column.get_parent().size.y=410
+	column.get_parent().position.y=236; column.get_parent().size.y=335
 	var q := campaign.current_main()
 	if index==0:
 		if "A6-M06" in campaign.state.completed and not "E-M01" in campaign.state.completed: row_button(column,"破冠后的选择 · 再确认女王救援",show_final_choice)
@@ -282,14 +324,9 @@ func show_npc(index: int) -> void:
 		if campaign.state.act<6 and "A%d-M06" % campaign.state.act in campaign.state.completed:
 			row_button(column,"报告本幕结果 · 乘交通前往下一幕营地",func(): close_panel(); campaign.next_act())
 	if index==1: row_button(column,"休息与补给 · 免费恢复生命，药剂至少补至5瓶",func(): campaign.service("heal"); toast("伤口已处理，晨灯仍亮着。"))
-	if index==2: row_button(column,"强化招式 +1 · %d银币、3材料（当前 +%d，上限10）" % [40+int(campaign.state.forged)*25,campaign.state.forged],func():
-		toast("强化完成。" if campaign.service("forge") else "材料或银币不足，或已达到强化上限。"))
-	if index==2: row_button(column,"角色专精 · 分配升级技能点",show_growth)
 	if index==3:
 		row_button(column,"查看地区与个人日志",show_journal)
 		row_button(column,"王国前史与三位守望者",func(): show_chapter("王国档案",campaign.content.history))
-	if index==4: row_button(column,"购买药剂 · 20银币（最多15瓶）",func(): toast("已购买一瓶药剂。" if campaign.service("trade") else "银币不足或药剂已满。"))
-	if index==5: row_button(column,"打开仓库 · 存放或取回战役装备",func(): show_bag(true))
 	for id in campaign.content.quests:
 		var optional: Dictionary=campaign.content.quests[id]
 		if optional.kind=="side" and optional.contact==person and campaign.available(optional):
@@ -300,60 +337,24 @@ func show_npc(index: int) -> void:
 
 func show_personal() -> void:
 	if campaign.state.stage!=0: toast("回营休息时，可以与伙伴展开个人委托。"); return
-	var back := panel("守望者 · 三条个人线")
-	var column := list_area(back)
-	for id in campaign.content.quests:
-		var q: Dictionary=campaign.content.quests[id]
-		if q.kind!="personal": continue
-		var unlocked: bool=campaign.available(q)
-		var text: String=q.contact+" · "+q.title+" / "+campaign.content.acts[int(q.act)-1].maps[int(q.stage)-1].name
-		text+=" · 已完成" if id in campaign.state.completed else " · 接取" if unlocked else " · 前置："+", ".join(q.requires)
-		var b := row_button(column,text,func(): campaign.accept(id); close_panel(); toast("个人委托已接取，前往指定地点。"))
-		b.disabled=not unlocked
+	show_journal("personal")
 
-func show_journal() -> void:
-	var back := panel("战役日志 · 主线 / 地区委托 / 个人故事")
-	journal_open=true
-	var column := list_area(back)
-	row_button(column,"王国前史与人物档案",func(): show_chapter("王国档案",campaign.content.history))
-	if "E-M01" in campaign.state.completed: row_button(column,"六地后日谈",func(): show_chapter("回访 · 六地的灯",campaign.content.aftermath))
-	for id in campaign.content.quests:
-		var q: Dictionary=campaign.content.quests[id]
-		if not id in campaign.state.completed and not id in campaign.state.accepted and q!=campaign.current_main(): continue
-		var done: bool=id in campaign.state.completed
-		row_button(column,("✓ " if done else "→ ")+q.title+" · "+id,func():
-			var body: String=q.story if done else q.description+"\n\n地点：第%d幕 · %s\n\n目标：\n" % [q.act,"营地" if q.stage==0 else campaign.content.acts[int(q.act)-1].maps[int(q.stage)-1].name]+"\n".join(q.steps)
-			show_chapter(q.title,body))
-	label(back,"已完成 %d / 73  ·  主线任务自动追踪。可选委托从营地NPC或小队个人委托接取。" % campaign.state.completed.size(),Vector2(30,603),Vector2(930,44),16)
+func show_journal(kind: String = "") -> void:
+	close_panel(); modal=true; journal_open=true; move_target=Vector2.INF
+	var dim := ColorRect.new(); dim.size=size; dim.color=Color(0.005,0.008,0.015,0.8); overlay.add_child(dim)
+	var ui=preload("res://scripts/story_quest_ui.gd").new(); ui.screen=self; ui.requested_filter=kind; ui.position=Vector2(72,70); overlay.add_child(ui)
+
+func show_items(tab: String = "bag") -> void:
+	close_panel(); modal=true; move_target=Vector2.INF
+	var dim := ColorRect.new(); dim.size=size; dim.color=Color(0.005,0.008,0.015,0.8); overlay.add_child(dim)
+	var ui=preload("res://scripts/story_items_ui.gd").new()
+	ui.screen=self; ui.tab=tab; ui.position=Vector2(72,70); overlay.add_child(ui)
 
 func show_bag(storage: bool = false) -> void:
-	var back := panel("战役仓库" if storage else "行囊 · 战役装备")
-	var column := list_area(back)
-	row_button(column,"装备：锋刃 +%d / 护衣 +%d / 护符 +%d · 伤害 %.0f / 生命 %.0f" % [campaign.state.gear.blade,campaign.state.gear.armor,campaign.state.gear.charm,campaign.damage(),campaign.max_hp()],func(): pass)
-	for i in campaign.state.bag.size():
-		var item: Dictionary=campaign.state.bag[i]
-		row_button(column,("存入仓库 · " if storage else "装备 · ")+item.name,func():
-			if storage: campaign.store(i)
-			else: campaign.equip(i)
-			show_bag(storage))
-	if storage:
-		for i in campaign.state.stash.size():
-			var item: Dictionary=campaign.state.stash[i]
-			row_button(column,"取回 · "+item.name,func(): campaign.store(i,true); show_bag(true))
-	else:
-		if campaign.state.stage==0: row_button(column,"整理仓库",func(): show_bag(true))
-	label(back,"行囊 %d/24 · 仓库 %d · 固定奖励只领取一次，行囊满时装备自动入库。" % [campaign.state.bag.size(),campaign.state.stash.size()],Vector2(30,603),Vector2(930,44),16)
+	show_items("stash" if storage else "bag")
 
 func show_growth() -> void:
-	var back := panel("守望者专精 · 每位角色独立配点与装备")
-	var column := list_area(back)
-	for i in 3: row_button(column,"操作角色："+["绯月","雪璃","鸦羽"][i],func(): campaign.switch_hero(i); show_growth())
-	row_button(column,"可用技能点：%d · 共用战役等级 Lv.%d" % [campaign.skill_points(),campaign.level()],func(): pass)
-	for i in 3:
-		row_button(column,["赤晶 / 晨火 / 断链 · 每级伤害 +4","守夜防护 · 每级生命 +8","相位掌控 · 每级技能冷却 -0.2秒"][i]+" · 当前 %d/10 · 学习" % campaign.specialty(i),func():
-			campaign.learn(i); show_growth())
-	row_button(column,"重置当前角色专精 · 100银币（完成第三幕祭场准备后开放）",func():
-		toast("专精已重置。" if campaign.reset_specialty() else "需要100银币并完成 A3-M05。"); show_growth())
+	show_items("character")
 
 func show_travel() -> void:
 	if campaign.hero_at.distance_to(campaign.map.waypoint)>160:

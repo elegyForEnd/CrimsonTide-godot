@@ -434,3 +434,16 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - v9最终单文件3685776242字节，导出无脚本/资源错误（landscape-export-v9.log）。包内实际网格950/0（landscape-pck-geometry.log），同时检查30副本/8408摆放身份/73任务和25份外景的双渲染缓存（landscape-pck-release.log）。批量GL缓存卸载存在上述material=null诊断；包内所有对象身份和GI检查完成。
 - 实际发布EXE Forward+及Compatibility均进入第一幕营地，STORY_READY quests=73 act=1 stage=0、退出0（landscape-release-{forward,compat}.log）。Forward+仍有既有7个Texture RID退出警告，GL发布启动标准错误为空。Preview-Boundaries从营地开始查看南门河桥，其他预览与兼容入口同步指向v9，临时预览不保存战役进度。
 - 没有全仓库门禁、长时间帧率/显存/加载验收、完整六幕人工战斗录像或商业重制质量声明。新增摆放使用现有模型库与已许可植被，未新增雕刻模型或网络下载素材。制作流程见docs/rpg/BOUNDARY-SURFACES.md。
+
+
+## 2026-10-11 · 战役GUI、占格物品与任务特效 v10
+
+- story_items：70检查/0失败，真实格子、全量拒绝/回滚、独立装备、满袋购买、回购、打造/强化/镶嵌/分解、旧档160件零丢失、ID/布局/存档恢复。output/story-items-rules-final.log。
+- 原剧情180/0与集成12/0；任务ID/73全文/进出营地/战斗/最终选择与存档保持。story-items-campaign-final.log / story-items-integration-final.log。
+- 实际界面两渲染器各54/0，鼠标拖拽、R旋转、买卖/强化/镶嵌/打造/分解取消、仓库/人物卡与14截图、1920/3840输出布局；story-items-controls-gl-final.log / story-items-controls-forward-final.log。
+- 任务两渲染器各34/0：鼠标接取、E推进/完成、多步进度无提前奖励、事件幂等、HUD与追踪保存、临时通知离开清空，7截图。story-quests-ui-gl-final.log / story-quests-ui-forward-final.log。
+- 合计438检查/0失败。GL两套界面stderr空；Forward+仍有原有7 Texture RID退出警告，集成有原rogue_build_preview的锚点尺寸警告，未称全项目零警告。
+- 内置image_gen生成原创图标、框架与九种内部控件材质，保存完整提示词；两个参考安装的四种表均只读解析成功，未导入其美术。材料与人物原画、旧模式规则保留。
+- 增量发布使用v10小引导EXE + Inventory-v10.pck + 现有v9底包。实际嵌入运行入口启动、挂载、73任务与9件装备/9件行囊检查；旧模板不支持--main-pack，故使用内嵌小引导，初始化声音总线和图标，避免音频/窗口错误。
+- 原生发布版截图与日志：build/story-items-release.png / story-items-release-forward.png，output/story-items-release-gl-final.log/.err 与 story-items-release-forward-final.log/.err。正式运行入口Start-Story-GUI.cmd；Preview-Inventory和Preview-Quests均不保存。
+- 无长时间帧率/显存测试，不声明4K60。交易是战役NPC买卖，未实现玩家之间联网交易、耐久修理或赌博。

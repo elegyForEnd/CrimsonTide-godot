@@ -243,3 +243,8 @@ P2P 房间需要配置可访问的 API 和 UDP 3478 STUN 服务。对称 NAT、�
 ### 实地外景与河道衔接 v9
 
 六幕25场外侧制作坡地、树群、岩块和植被；南门通过河道与跨河桥连接原野，桥面落地后过渡为泥路。装饰位于非通行区域，原任务和小树非实体规则保持。六营地静态地面重烘GI，试玩`Preview-Boundaries.cmd`从营地南门开始；最新版`dist/CrimsonTide-ForwardPlus-v9.exe`，见[BOUNDARY-SURFACES.md](docs/rpg/BOUNDARY-SURFACES.md)。长时间跑分暂缓。
+
+
+战役行装界面 v10（2026-10-11）：原创哥特框架和内部控件材质，10×6占格行囊、12×10仓库、三人独立装备与人物专精、真实商店买卖回购和单件打造/强化/镶嵌/分解。临时试玩双击 `Preview-Inventory.cmd`，正常游戏双击 `Start-Story-GUI.cmd` 后进入故事；v10入口、物品补丁和v9地图底包需要同放dist。操作及边界见 [ITEMS-AND-SERVICES](docs/rpg/ITEMS-AND-SERVICES.md)。
+
+任务面板已同步升级为四类图形卡片、目标进度/联系人/奖励/HUD追踪，接取、推进和完成有徽章、光扫、粒子与音效。双击 `Preview-Quests.cmd` 可临时试玩接取流程。
