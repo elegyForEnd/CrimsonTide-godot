@@ -63,13 +63,18 @@ def main():
     acts = [{'id':i+1,'title':a[0],'camp':a[1],'camp_id':'camp_'+a[2],'npcs':a[3],
              'maps':[{'id':f'a{i+1}_{j+1}','name':name,'layout':a[5][j]} for j,name in enumerate(a[4])],
              'boss':a[6],'boss_art':a[7]} for i,a in enumerate(ACTS)]
-    exploration = [('落叶洞窟','旧守望墓室'),('灰炉暗道','弃置档案库'),('空晶支坑','矿底封室'),('枯枝地穴','失镜墓廊'),('潮下岩窟','沉锚墓室'),('避难排渠','王城旧藏库')]
+    exploration = [('落叶洞窟','旧守望墓室'),('灰炉铸造厂','地下蓄水机房'),('废弃测星站','霜骨祭坛'),('失控温室','面具藏馆'),('封闭干船坞','沉锚泵房'),('封印圣物库','赤月星仪室')]
     for i,act in enumerate(acts):
         for j,name in enumerate(exploration[i]):
             act['maps'].append({'id':f'a{i+1}_explore_{j+1}','name':name,'layout':'mine' if j==0 else 'crypt','optional':True})
     endings={}
     acts[0]['maps'].append({'id':'a1_castle_1','name':'灰棘旧堡','layout':'castle','optional':True,
         'description':'穿过门庭与废弃驻军庭院，探索军械西翼、书记东翼、拱顶大厅和升高的领主厅；取回遗落物资，击败守堡者后由传送阵返回。'})
+    art=json.loads((ROOT/'resources/story-later-acts.json').read_text(encoding='utf8'))
+    for act in acts[1:]:
+        for stage,m in enumerate(act['maps'],1):
+            m['art_theme']=art['acts'][str(act['id'])]['regions'][str(stage)]['theme']
+            if m.get('optional'): m['description']='探索'+m['art_theme']+'的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。'
     em = list(re.finditer(r'^### 结局([一二三]) · (.+)$',text,re.M))
     for i,m in enumerate(em):
         end=em[i+1].start() if i+1<len(em) else text.index('## 六地的后日谈',m.end())

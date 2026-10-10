@@ -79,3 +79,5 @@ WASD移动（S沿地图南向），鼠标右键点击行走，滚轮调整视野
 `tools/inspect_reference_maps.py`只读解析本地包；依赖mpyq与dclimplode，可安装到output/map-research-deps复查。
 
 室内铺地修正已更新到v4：城堡、墓室、礼拜堂和书库使用独立建筑材质，台阶与台基同步；天然洞窟保留岩土。见[INTERIOR-FLOORS.md](INTERIOR-FLOORS.md)。地图、任务和碰撞数据不变，长时间跑分继续暂缓。
+
+第二至第六幕美术已扩展至45个区域：五套独立模块、84个新模型、17套新PBR、15份地形与45场GI烘焙。十个额外副本采用工厂/观星/温室/船坞/圣物题材，原地图ID与73个任务不变；新名称、制作与剩余质量边界见ACTS-2-6-ART.md。最新版dist/CrimsonTide-ForwardPlus-v5.exe；长时间跑分继续暂缓。

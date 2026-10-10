@@ -475,6 +475,618 @@
           "map": "arm"
         }
       ]
+    },
+    {
+      "role": "a2_ground",
+      "slug": "brick_gravel",
+      "page": "https://polyhaven.com/a/brick_gravel",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dimitrios Savva": "All"
+      },
+      "files": [
+        {
+          "file": "a2_ground_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/brick_gravel/brick_gravel_diff_2k.png",
+          "md5": "6ee6bc4f027b1932599397bc46a7eae0",
+          "sha256": "bee0b6e497aa84f07a851c45e5739dff0f9877702b7e8474d1a69a62a3227b81",
+          "bytes": 22577011,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a2_ground_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/brick_gravel/brick_gravel_nor_gl_2k.png",
+          "md5": "c3b77aafd8112cf5e77282a6ffe4aef3",
+          "sha256": "250a57914c6c8b9184093779b2dc6f2eca39a068324a5bed67a05d0ac91b73f7",
+          "bytes": 23558479,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a2_ground_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/brick_gravel/brick_gravel_arm_2k.png",
+          "md5": "553952d589144936456e98ea91b62004",
+          "sha256": "fbaf05955014aee6df788c2ee6690c5778f53bb0a4ebc216473996ca3173a85d",
+          "bytes": 17746465,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a2_wall",
+      "slug": "factory_brick",
+      "page": "https://polyhaven.com/a/factory_brick",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "a2_wall_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/factory_brick/factory_brick_diff_2k.png",
+          "md5": "41f8df9e0742ad900ac29332c616477c",
+          "sha256": "439516d720bd60283020701c9adef9b7ba1799fc55e691be4e39611fa0931094",
+          "bytes": 23343066,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a2_wall_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/factory_brick/factory_brick_nor_gl_2k.png",
+          "md5": "5e41a597f30754848136aa2e0dfa0cb2",
+          "sha256": "a92b0ee00c963a3070476806624890086ffd7909a370a4639c7ccf9b1befb057",
+          "bytes": 26982103,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a2_wall_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/factory_brick/factory_brick_arm_2k.png",
+          "md5": "1c61142f51944d5f7dc48939d6051973",
+          "sha256": "427459c249c52772895a98a735985595ff90e40c9210f1e42a4ce92f095e601c",
+          "bytes": 18529059,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a2_floor",
+      "slug": "herringbone_brick",
+      "page": "https://polyhaven.com/a/herringbone_brick",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "a2_floor_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/herringbone_brick/herringbone_brick_diff_2k.png",
+          "md5": "df6eea8ca5d4801ff43dfbd66dd84cf3",
+          "sha256": "8f228b4c5dc3f6b06018b4396e5565092d644446dba59b13242a43c98d7524aa",
+          "bytes": 22069177,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a2_floor_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/herringbone_brick/herringbone_brick_nor_gl_2k.png",
+          "md5": "19a679ca670f448339aed45d4aca8ac3",
+          "sha256": "cd319063589e56364a154b29188178aa619723e4f29e1ed719b9e9ca8e4b1a7b",
+          "bytes": 22681141,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a2_floor_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/herringbone_brick/herringbone_brick_arm_2k.png",
+          "md5": "650127631767393c5c2a5238dfb8a8fb",
+          "sha256": "e777a44aa333b6f63e8fa34636aeeb50c7a38e79bd33ffdc7d0d8a13c207b2b9",
+          "bytes": 17645268,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a3_ground",
+      "slug": "snow_02",
+      "page": "https://polyhaven.com/a/snow_02",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "a3_ground_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/snow_02/snow_02_diff_2k.png",
+          "md5": "b2b84ea0435f960b3f5d69274e1a675c",
+          "sha256": "9abe413e1740fa91564ce8111eb9cf11ae52b8de2914b884dda39c162e598289",
+          "bytes": 5321286,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a3_ground_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/snow_02/snow_02_nor_gl_2k.png",
+          "md5": "3c07c791818404722c924b951c5eb841",
+          "sha256": "719e5acd81ee61cf19506a8e0069ea297ed00d2eb71a40101c4002cf35ac2e19",
+          "bytes": 8901048,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a3_ground_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/snow_02/snow_02_arm_2k.png",
+          "md5": "af774e79a8714c40f63140514b706f0d",
+          "sha256": "e95c18cda242fce36e263413bcda8848e533b37537f445155ffe504ab8d401bb",
+          "bytes": 4485797,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a3_wall",
+      "slug": "granite_wall",
+      "page": "https://polyhaven.com/a/granite_wall",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dimitrios Savva": "All"
+      },
+      "files": [
+        {
+          "file": "a3_wall_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_wall/granite_wall_diff_2k.png",
+          "md5": "3f02054afeb8855e50cb0ff926111811",
+          "sha256": "4b0f8786b24b7c1cf52f25b0fa0d48cb68d3053941956f86fdf39eaaa7ad2fcf",
+          "bytes": 22790096,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a3_wall_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_wall/granite_wall_nor_gl_2k.png",
+          "md5": "ec45f8fffddb0b83fd8c6ff2f7d83536",
+          "sha256": "9775d21bfe58a2de462ec292aa26c50a508521a47ac6ff6b4627ff57d4639a88",
+          "bytes": 23264444,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a3_wall_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_wall/granite_wall_arm_2k.png",
+          "md5": "37cf2e2721ab25c51b2496845892b9e0",
+          "sha256": "7d5754b36284c842814aa1e0a5668922fee70685e00999118970c35099dd820c",
+          "bytes": 15904475,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a3_floor",
+      "slug": "granite_tile",
+      "page": "https://polyhaven.com/a/granite_tile",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Charlotte Baglioni": "All"
+      },
+      "files": [
+        {
+          "file": "a3_floor_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_tile/granite_tile_diff_2k.png",
+          "md5": "2d8f4192bdd5650ee6cbd08f288a5885",
+          "sha256": "65fae0f756e35484145366a1d28f4b386a7fd1c0ca7f989534b2179b7b8f5680",
+          "bytes": 22346946,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a3_floor_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_tile/granite_tile_nor_gl_2k.png",
+          "md5": "e5e72567393aa73c622857fd13f52e66",
+          "sha256": "d0ce05b54ba7a12da375583408f7a008c38d1f3dec0f3deb622c13a28340e922",
+          "bytes": 20397425,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a3_floor_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_tile/granite_tile_arm_2k.png",
+          "md5": "e3730ef3710f340a86283a48693254ed",
+          "sha256": "5c3403e8346b93545b6528c829aa01e961399c9b82f077dfaaf066188f71418c",
+          "bytes": 16738519,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a4_ground",
+      "slug": "forest_ground_05",
+      "page": "https://polyhaven.com/a/forest_ground_05",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Charlotte Baglioni": "All"
+      },
+      "files": [
+        {
+          "file": "a4_ground_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_ground_05/forest_ground_05_diff_2k.png",
+          "md5": "2d80251d15738b4456622860daa0bd17",
+          "sha256": "b07e2944c368570366ad32a8e3a0edfd4fa448e796189a5eff5dd019d300f808",
+          "bytes": 21732010,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a4_ground_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_ground_05/forest_ground_05_nor_gl_2k.png",
+          "md5": "f167f14855ce1716b55f618b024ed86d",
+          "sha256": "281204542c97335ca15d03a92d2279f9389917adf818d41828d4c43ffc358bf8",
+          "bytes": 23440100,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a4_ground_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/forest_ground_05/forest_ground_05_arm_2k.png",
+          "md5": "bda07ab79c8e63cbb5e58d18a1e455b4",
+          "sha256": "c58eb8d4ec7040569249d2a5a206675f78e9e90b143fc112e8bba0065c8af039",
+          "bytes": 16893688,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a4_wall",
+      "slug": "mossy_sandstone",
+      "page": "https://polyhaven.com/a/mossy_sandstone",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dimitrios Savva": "All"
+      },
+      "files": [
+        {
+          "file": "a4_wall_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/mossy_sandstone/mossy_sandstone_diff_2k.png",
+          "md5": "109713639b78485c49ff7b5a598562eb",
+          "sha256": "94868072861ed26a23ff6d8108f9be07c277f7902dd2e85d9526489533d47dc4",
+          "bytes": 21820015,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a4_wall_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/mossy_sandstone/mossy_sandstone_nor_gl_2k.png",
+          "md5": "bdc1dc918653144c8fc6d319316efb34",
+          "sha256": "ee953aa466ce8b0affa5faefbe7d16305102a3c04a5d01e372a4a97d85e5e150",
+          "bytes": 23104118,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a4_wall_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/mossy_sandstone/mossy_sandstone_arm_2k.png",
+          "md5": "f629232244f9212fdf5c33a1b3fdc7be",
+          "sha256": "ecce0938b0a0d64ef241e6b28704e35344d4d7c7a51ae4b72dafc3b86915789e",
+          "bytes": 16814512,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a4_floor",
+      "slug": "marble_mosaic_tiles",
+      "page": "https://polyhaven.com/a/marble_mosaic_tiles",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Amal Kumar": "All"
+      },
+      "files": [
+        {
+          "file": "a4_floor_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_mosaic_tiles/marble_mosaic_tiles_diff_2k.png",
+          "md5": "4591b4e700105b199272a36edc5363df",
+          "sha256": "7d4d3e2bfa8f8341d755e03fe0461ef29cc11e9fca3bafadfd64fe462f3d358f",
+          "bytes": 23046532,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a4_floor_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_mosaic_tiles/marble_mosaic_tiles_nor_gl_2k.png",
+          "md5": "11b296db8f26df05fc5022eb5cd13fcc",
+          "sha256": "8f876a8b3a58d912b2d5606b10a9d5eb64c5ccaeccfbdbb62e5ae0399fb650b1",
+          "bytes": 21965775,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a4_floor_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_mosaic_tiles/marble_mosaic_tiles_arm_2k.png",
+          "md5": "5bb53504aa1954c13eb34474424439fd",
+          "sha256": "afb6e0841b11d22b99d54fbefa66a25e16ad5b9e7534b70d3f55a779c491af69",
+          "bytes": 15937551,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a5_ground",
+      "slug": "coast_sand_03",
+      "page": "https://polyhaven.com/a/coast_sand_03",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "a5_ground_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/coast_sand_03/coast_sand_03_diff_2k.png",
+          "md5": "4bd6c7089860215ee107f0475d3db5cd",
+          "sha256": "e3987a4fbbf52784f01195b9ce2ba84a528f0c751bf5ee3f2f0e930436d87c47",
+          "bytes": 8714456,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a5_ground_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/coast_sand_03/coast_sand_03_nor_gl_2k.png",
+          "md5": "e86a51f011fecf0148b586a9bf38d805",
+          "sha256": "e272d48c9a86ba56f05244e1e203e948854c20a7b9959592d1465d53eb7bc41b",
+          "bytes": 10238745,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a5_ground_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/coast_sand_03/coast_sand_03_arm_2k.png",
+          "md5": "72c4bbfb4aeb01b0dfa742e9e8062eed",
+          "sha256": "e4a520e8131889dada9797975152ad5ae03c69fb869a748d7ad0324efccb1ceb",
+          "bytes": 6930724,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a5_wall",
+      "slug": "seaworn_sandstone_brick",
+      "page": "https://polyhaven.com/a/seaworn_sandstone_brick",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dimitrios Savva": "All"
+      },
+      "files": [
+        {
+          "file": "a5_wall_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/seaworn_sandstone_brick/seaworn_sandstone_brick_diff_2k.png",
+          "md5": "518949b0a1b3a297b784191503d45ddd",
+          "sha256": "f863e8d136675fd44cd38b7d66f29645f9e4cf4f392b96bdf6cf2a1f6c844087",
+          "bytes": 20653436,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a5_wall_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/seaworn_sandstone_brick/seaworn_sandstone_brick_nor_gl_2k.png",
+          "md5": "456eae587e7287b7781b4095d91a63b5",
+          "sha256": "05d7550b698fd4cd7e2531a575d0938aa3a2072529e9a89c16a15da271e0001b",
+          "bytes": 22573561,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a5_wall_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/seaworn_sandstone_brick/seaworn_sandstone_brick_arm_2k.png",
+          "md5": "a180cafffd18caa14e2057a4d7b1c458",
+          "sha256": "87958f449eec7a15a394418b53924a07c03520d98c88881df255253dda2a1683",
+          "bytes": 16346169,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a5_floor",
+      "slug": "wood_planks_grey",
+      "page": "https://polyhaven.com/a/wood_planks_grey",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "a5_floor_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/wood_planks_grey/wood_planks_grey_diff_2k.png",
+          "md5": "df56b569da7d50a195dbada81d908a59",
+          "sha256": "e0a6dfa443835f22a2e8a9475f25ca33e3e1ff8bde74b0b1e148050e7d7225a5",
+          "bytes": 22409165,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a5_floor_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/wood_planks_grey/wood_planks_grey_nor_gl_2k.png",
+          "md5": "b21bfa0d5511ed33d749ca66d3d11cbe",
+          "sha256": "c8cc509c74efa77bf9e2f09002b32dbf0cb12913494c664070d599a182fbcaf0",
+          "bytes": 20807642,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a5_floor_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/wood_planks_grey/wood_planks_grey_arm_2k.png",
+          "md5": "30dc84ae176b5b5fd46a5e6559b5ccf6",
+          "sha256": "62dd53b737524c54b29abb163ac3e7e15cb2b6e37314d7fbd2aea8e2ae25c0b3",
+          "bytes": 12471794,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a6_ground",
+      "slug": "marble_rock_02",
+      "page": "https://polyhaven.com/a/marble_rock_02",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Amal Kumar": "All"
+      },
+      "files": [
+        {
+          "file": "a6_ground_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_rock_02/marble_rock_02_diff_2k.png",
+          "md5": "5f58f9afa90c9b72a12ad2ff1f8703ed",
+          "sha256": "c6832f3e8aebfcbe9e8d48f44d84c6115c555bedbcb042ec74e7715f26976cbc",
+          "bytes": 21792162,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a6_ground_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_rock_02/marble_rock_02_nor_gl_2k.png",
+          "md5": "aa0fa3660bfadc8014ecadb2b2f2abce",
+          "sha256": "e8987950f0d9e3d4a3a7ea0415c16e20477518bf703cdbe21b764cae070c3caf",
+          "bytes": 21504073,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a6_ground_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_rock_02/marble_rock_02_arm_2k.png",
+          "md5": "ad4daee5ac698dcfefb5ae179121ce0f",
+          "sha256": "e439796bcd3062e976cba54f7a75181559f6de510e82e5cb7c3d37d952f1f2c8",
+          "bytes": 12205214,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a6_wall",
+      "slug": "white_sandstone_blocks_02",
+      "page": "https://polyhaven.com/a/white_sandstone_blocks_02",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "a6_wall_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/white_sandstone_blocks_02/white_sandstone_blocks_02_diff_2k.png",
+          "md5": "bcbcd1161f55596a21a1a5683c437475",
+          "sha256": "2c7084e2d8981445162775fd5d2da078cb7c90e772a13ecd46cd656bfd94a711",
+          "bytes": 8391142,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a6_wall_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/white_sandstone_blocks_02/white_sandstone_blocks_02_nor_gl_2k.png",
+          "md5": "396f2c8734ded312604c8b5c355548de",
+          "sha256": "fc7f5ca4376265237b9f6f21a643bd8140f89b5a1336e1bc55dc81861b89ac23",
+          "bytes": 7133722,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a6_wall_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/white_sandstone_blocks_02/white_sandstone_blocks_02_arm_2k.png",
+          "md5": "f3945d689282d991c6ddfff8f8bbae29",
+          "sha256": "5fb40e396b1dcd97682c09c8d05312aac11cb2195863b57ac3e95363582c91ce",
+          "bytes": 5047763,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "a6_floor",
+      "slug": "granite_tile_03",
+      "page": "https://polyhaven.com/a/granite_tile_03",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Charlotte Baglioni": "All"
+      },
+      "files": [
+        {
+          "file": "a6_floor_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_tile_03/granite_tile_03_diff_2k.png",
+          "md5": "3e0725faa977c0ea0f6901c0d3907663",
+          "sha256": "8fe7eb4fde80d9b324f3bf17a78fd068a618938601ada7026901abd9cc500bb0",
+          "bytes": 23298064,
+          "map": "Diffuse"
+        },
+        {
+          "file": "a6_floor_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_tile_03/granite_tile_03_nor_gl_2k.png",
+          "md5": "109895bdc48173429dcfd76041e6e8dd",
+          "sha256": "03626fabe4a753480ce00f6800b03496a18f2cdec175c5cd42c7dd662ba82eed",
+          "bytes": 21610639,
+          "map": "nor_gl"
+        },
+        {
+          "file": "a6_floor_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/granite_tile_03/granite_tile_03_arm_2k.png",
+          "md5": "39661b23eb8369a92530f3dff011737e",
+          "sha256": "27a307c700d868355161263f35db537bc449b3a9a51a56e26b27302cbd2fbad2",
+          "bytes": 15981358,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "crafted_wood",
+      "slug": "oak_wood_planks",
+      "page": "https://polyhaven.com/a/oak_wood_planks",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dimitrios Savva": "All"
+      },
+      "files": [
+        {
+          "file": "crafted_wood_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/oak_wood_planks/oak_wood_planks_diff_2k.png",
+          "md5": "87255ba16c23031c053a70558bd7372e",
+          "sha256": "57510f88ef140b0a799959fd10b1d6c528a4b85d4a52bb753df792bfad9119f2",
+          "bytes": 21150963,
+          "map": "Diffuse"
+        },
+        {
+          "file": "crafted_wood_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/oak_wood_planks/oak_wood_planks_nor_gl_2k.png",
+          "md5": "b0ac35146b797c19a06b60f3a0813c54",
+          "sha256": "6b499e196c13315cd2329414a118fb2980a3226fe0481ebc43881bf67402b42b",
+          "bytes": 20512520,
+          "map": "nor_gl"
+        },
+        {
+          "file": "crafted_wood_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/oak_wood_planks/oak_wood_planks_arm_2k.png",
+          "md5": "71c5d20e22d2994dae77a26083346105",
+          "sha256": "8da199239a4f05c3742d30a71d20bbc6960e19c84edbe80299a824f6c904b83c",
+          "bytes": 18125556,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "crafted_metal",
+      "slug": "metal_plate",
+      "page": "https://polyhaven.com/a/metal_plate",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Rob Tuytel": "All"
+      },
+      "files": [
+        {
+          "file": "crafted_metal_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/metal_plate/metal_plate_diff_2k.png",
+          "md5": "d3b4ffca928122f2428a627867b202fd",
+          "sha256": "8d56227b8c3b806107df7ffb91e439b7e383943827096ed911b29a7108ca7a01",
+          "bytes": 21404867,
+          "map": "Diffuse"
+        },
+        {
+          "file": "crafted_metal_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/metal_plate/metal_plate_nor_gl_2k.png",
+          "md5": "f73df0b0ecd4fc29c3620a5e448b1432",
+          "sha256": "287cc8492d4d85828fae6ce3a3060eae5d49717ec00cc8cd5901ad88f8e2b869",
+          "bytes": 20488988,
+          "map": "nor_gl"
+        },
+        {
+          "file": "crafted_metal_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/metal_plate/metal_plate_arm_2k.png",
+          "md5": "9b137ea97781adce129899d168f2fc9d",
+          "sha256": "383ab1e60679bab570df23f52a4e316903492421e6eafd3b07b3063a0b2cbfc1",
+          "bytes": 22810501,
+          "map": "arm"
+        }
+      ]
     }
   ]
 }

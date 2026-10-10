@@ -9,8 +9,15 @@ func _enter_tree() -> void:
 	if "--bake-opening" in OS.get_cmdline_user_args(): call_deferred("bake_opening")
 func bake_opening() -> void:
 	var requested := ""
+	var batch: Array[String]=[]
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--bake-scene="): requested=arg.trim_prefix("--bake-scene=")
+		if arg.begins_with("--bake-list="):
+			for path in arg.trim_prefix("--bake-list=").split(","): batch.append(path)
+	if batch.is_empty(): batch.append(requested)
+	for path in batch: await bake_scene(path)
+	print("BAKE_BATCH all complete count=",batch.size())
+func bake_scene(requested: String) -> void:
 	for i in 60: await get_tree().process_frame
 	# Scene restoration and EXR imports can replace the edited root. Wait for
 	# filesystem work to settle, and don't reopen a scene already restored.

@@ -77,9 +77,23 @@ func _ready() -> void:
 
 func start(save_path: String = "") -> void:
 	campaign.load_campaign(save_path)
+	var art_preview := false
+	# Explicit art-preview launchers are transient, separate from campaign saves.
+	if "--preview-story" in OS.get_cmdline_user_args():
+		var preview_act := 0; var preview_stage := 0
+		for arg in OS.get_cmdline_user_args():
+			if arg.begins_with("--story-act="): preview_act=clampi(int(arg.trim_prefix("--story-act=")),2,6)
+			if arg.begins_with("--story-stage="): preview_stage=clampi(int(arg.trim_prefix("--story-stage=")),0,8)
+		if preview_act>0:
+			art_preview=true
+			campaign.save_enabled=false; campaign.state=campaign.new_state()
+			campaign.state.unlocked_act=6; campaign.state.waypoints=["1:0"]
+			for act in range(2,7):
+				for stage in range(9): campaign.state.waypoints.append("%d:%d" % [act,stage])
+			campaign.enter(preview_act,preview_stage)
 	set_active(true)
 	refresh()
-	toast("从营地南门向下走探索野外；M 查看地图，E 进入遗迹 / 激活传送阵。")
+	toast("场景试玩 · 临时进度不保存；在传送阵可选择第二至第六幕的全部区域。" if art_preview else "从营地南门向下走探索野外；M 查看地图，E 进入遗迹 / 激活传送阵。")
 
 func set_active(value: bool) -> void:
 	active=value; visible=value

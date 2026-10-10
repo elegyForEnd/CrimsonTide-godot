@@ -4,6 +4,7 @@ const GROUND = preload("res://resources/story_ground.gdshader")
 const STONE = preload("res://resources/story_stone.gdshader")
 const WATER = preload("res://resources/story_water.gdshader")
 const Floors=preload("res://scripts/story_floor_palette.gd")
+const Regional=preload("res://scripts/story_regional_environment.gd")
 var kit = preload("res://scripts/story_asset_kit.gd").new()
 var world
 var roofs: Array=[]
@@ -14,8 +15,8 @@ var cache_models: Array=[]
 var authoring := false
 var pending_paths: Dictionary={}
 const SLICE := "res://scenes/story/"
-func scene_path(stage: int) -> String:
-	return SLICE+"opening-%d" % stage+("-compat.scn" if RenderingServer.get_current_rendering_method()=="gl_compatibility" else ".scn")
+func scene_path(stage: int, act: int = 1) -> String:
+	return SLICE+("opening-%d" % stage if act==1 else "act%d-%d" % [act,stage])+("-compat.scn" if RenderingServer.get_current_rendering_method()=="gl_compatibility" else ".scn")
 const EARTH := [Color("4b5140"),Color("55534c"),Color("4d514d"),Color("535048"),Color("394b48"),Color("45434b")]
 const ROAD := [Color("675849"),Color("767063"),Color("635d52"),Color("6a5a55"),Color("596764"),Color("655963")]
 
@@ -39,9 +40,9 @@ func build(w) -> void:
 		chunks.append({"node":chunk,"rect":Rect2(r.origin,r.extent)})
 		chunks[-1]["region"]=r
 		if authoring or Rect2(r.origin,r.extent).grow(2000).has_point(world.campaign.hero_at): populate_chunk(r,chunk)
-	if not authoring and world.campaign.map.act==1 and DisplayServer.get_name()!="headless":
-		for s in world.campaign.map.outdoor+[7,9]:
-			var preload_path := scene_path(s)
+	if not authoring and DisplayServer.get_name()!="headless":
+		for s in world.campaign.map.outdoor+([7,9] if world.campaign.map.act==1 else [7,8]):
+			var preload_path := scene_path(s,world.campaign.map.act)
 			if ResourceLoader.exists(preload_path) and ResourceLoader.load_threaded_get_status(preload_path)==ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
 				ResourceLoader.load_threaded_request(preload_path); pending_paths[preload_path]=true
 	if world.campaign.map.layer==0:
@@ -51,19 +52,21 @@ func build(w) -> void:
 			mat.set_shader_parameter("ground_tex",load("res://assets/world/terrain-0.png")); mat.set_shader_parameter("road_tex",load("res://assets/world/terrain-2.png"))
 			mat.set_shader_parameter("earth",EARTH[world.campaign.map.act-1]); mat.set_shader_parameter("road",ROAD[world.campaign.map.act-1])
 			if world.campaign.map.act==1: physical_ground(mat,false)
+			else: Regional.ground(self,mat,world.campaign.map.regions[c.to])
 			connector_ground(r,mat)
 	else:
 		var p: Vector2=world.campaign.map.spawn
-		if world.campaign.map.layout=="castle": kit.instance("castle_gateway",world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
+		if world.campaign.map.act>=2: kit.instance("a%d_gate" % world.campaign.map.act,world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
+		elif world.campaign.map.layout=="castle": kit.instance("castle_gateway",world.scenery,world.point(p+Vector2(0,-90)),Vector3(.8,.8,.8))
 		else: world.prop("halloween/arch",p+Vector2(0,-90),Vector3(420,290,80),Color("918c84"))
-		for i in 7: block(Rect2(p+Vector2(-150,-210+i*35),Vector2(300,35)),10,7*(6-i),stone(Color("6e685f")))
+		for i in (7 if world.campaign.map.act==1 else 0): block(Rect2(p+Vector2(-150,-210+i*35),Vector2(300,35)),10,7*(6-i),stone(Color("6e685f")))
 	for door in world.campaign.map.entrances():
 		if door.kind=="entrance": entrance(door)
 
 func populate_chunk(r, chunk: Node3D) -> void:
 	var saved: Node3D=world.scenery; world.scenery=chunk
-	if not authoring and r.act==1 and ResourceLoader.exists(scene_path(r.stage)):
-		var path := scene_path(r.stage)
+	if not authoring and ResourceLoader.exists(scene_path(r.stage,r.act)):
+		var path := scene_path(r.stage,r.act)
 		var packed: PackedScene=ResourceLoader.load_threaded_get(path) if ResourceLoader.load_threaded_get_status(path)==ResourceLoader.THREAD_LOAD_LOADED else load(path)
 		var authored: Node3D=packed.instantiate()
 		if DisplayServer.get_name()=="headless":
@@ -71,6 +74,8 @@ func populate_chunk(r, chunk: Node3D) -> void:
 			for node in authored.find_children("*","ReflectionProbe",true,false): node.free()
 		chunk.add_child(authored)
 		register_authored(authored,r)
+		if r.act>=2:
+			Regional.feature_lights(self,r,authored); Regional.wall_joints(self,r,authored)
 		world.scenery=saved
 		return
 	terrain(r)
@@ -95,7 +100,7 @@ func populate_chunk(r, chunk: Node3D) -> void:
 			cache_models.append({"node":holder,"id":"%d:%d:cache:%d" % [r.act,r.stage,r.chests.find(at)]})
 	if r.stage==0:
 		if r.act==1: kit.instance("south_gate",world.scenery,world.point(Vector2(1100,1790)))
-		else: world.prop("halloween/arch",Vector2(1100,1790),Vector3(390,260,55),Color("a29f95"))
+		else: kit.instance("a%d_gate" % r.act,world.scenery,world.point(Vector2(1100,1790)),Vector3(.85,.85,.85))
 		camp_details(r)
 		for at in r.npc_at:
 			var light := OmniLight3D.new(); light.position=world.point(at+Vector2(58,15),115)
@@ -105,6 +110,8 @@ func populate_chunk(r, chunk: Node3D) -> void:
 		ground_cover(r)
 		if r.stage in [0,1,7]: authored_details(r)
 		crafted_details(r,chunk)
+	else:
+		crafted_details(r,chunk); Regional.wall_joints(self,r,chunk)
 	world.scenery=saved
 
 func crafted_details(r, parent: Node3D) -> void:
@@ -133,6 +140,7 @@ func terrain(r) -> void:
 	mat.set_shader_parameter("road_tex",load("res://assets/world/terrain-2.png"))
 	mat.set_shader_parameter("earth",EARTH[r.act-1]); mat.set_shader_parameter("road",ROAD[r.act-1])
 	if r.act==1: physical_ground(mat,r.stage==0 or (r.indoor and r.stage!=7))
+	else: Regional.ground(self,mat,r)
 	if r.act==1 and r.stage in [0,1,7]:
 		var soil_name := "mud" if r.stage==0 else "rock" if r.stage==7 else "soil"
 		var road_name := "mud" if r.stage==1 else "rock" if r.stage==7 else "paving"
@@ -149,6 +157,8 @@ func terrain(r) -> void:
 			if r.indoor and r.floor_polygon.is_empty() and not room_at(r,center): continue
 			if r.submerged(center): continue
 			var pieces: Array[Rect2]=[Rect2(x,y,step,step)]
+			if r.act>=2:
+				for building in r.buildings: pieces=cut_rectangles(pieces,building.rect)
 			for item in r.stairs:
 				pieces=cut_rectangles(pieces,item.terrace); pieces=cut_rectangles(pieces,item.rect)
 			if r.stage==0:
@@ -187,7 +197,7 @@ func terrain(r) -> void:
 			for p in [Vector2(i,40),Vector2(i,r.extent.y-40),Vector2(40,i),Vector2(r.extent.x-40,i)]:
 				if r.path_distance(p)<240: continue
 				if r.act==1: kit.instance("rock_formation",world.scenery,world.point(r.origin+p,-30),Vector3(1.8,rng.randf_range(1.5,2.7),1.5),rng.randf()*TAU)
-				else: world.prop("medieval/rock_single_B",r.origin+p,Vector3(240,rng.randf_range(120,240),170),Color("827e72"),Color.WHITE,rng.randf()*TAU,-30)
+				else: kit.instance("a%d_rock" % r.act,world.scenery,world.point(r.origin+p,-30),Vector3(1.6,rng.randf_range(.8,1.5),1),rng.randf()*TAU)
 
 func room_at(r, p: Vector2) -> bool:
 	return r.floor_contains(p)
@@ -217,6 +227,8 @@ func connector_ground(rect: Rect2, material: Material) -> void:
 	if not pieces.is_empty(): world.mesh_node(st.commit(),Vector3.ZERO,material)
 
 func dungeon_walls(r) -> void:
+	if r.act>=2:
+		Regional.walls(self,r); return
 	if not r.floor_polygon.is_empty():
 		cave_shell(r); dungeon_lights(r); return
 	if r.layout=="castle":
@@ -331,6 +343,8 @@ func castle_shell(r) -> void:
 		light.light_bake_mode=Light3D.BAKE_DYNAMIC; group.add_child(light); lights.append(light)
 
 func house(r, b: Dictionary) -> void:
+	if r.act>=2:
+		Regional.house(self,r,b); return
 	var rect: Rect2=Rect2(b.rect.position+r.origin,b.rect.size)
 	if r.act==1 and r.stage==0:
 		var role: int=b.role
@@ -382,7 +396,7 @@ func house(r, b: Dictionary) -> void:
 func stairway(r, item: Dictionary) -> void:
 	var rect: Rect2=Rect2(item.rect.position+r.origin,item.rect.size)
 	var terrace: Rect2=Rect2(item.terrace.position+r.origin,item.terrace.size)
-	var mat: Material=kit.pbr("masonry",Color("cec4ae")) if r.act==1 else stone(Color("797167"))
+	var mat: Material=kit.pbr("masonry",Color("cec4ae")) if r.act==1 else kit.pbr("a%d_wall" % r.act,Color("dedbd2"))
 	if Floors.architectural(r): mat=Floors.material(r)
 	if mat is StandardMaterial3D:
 		var tiled: StandardMaterial3D=mat.duplicate()
@@ -408,7 +422,7 @@ func waypoint(p: Vector2, base: float) -> void:
 		if world.campaign.map.act==1:
 			block(Rect2(at-Vector2(22,18),Vector2(44,36)),45,base,kit.pbr("masonry",Color("bcc4ce")))
 			block(Rect2(at-Vector2(12,10),Vector2(24,20)),3,base+45,world.material(Color("6e9aa9")))
-		else: world.prop("halloween/gravestone",at,Vector3(45,65,30),Color("89887a"),Color.WHITE,i*TAU/5,base)
+		else: block(Rect2(at-Vector2(22,18),Vector2(44,36)),45,base,kit.pbr("a%d_wall" % world.campaign.map.act))
 
 func entrance(door: Dictionary) -> void:
 	var p: Vector2=door.p
@@ -419,11 +433,11 @@ func entrance(door: Dictionary) -> void:
 				kit.instance("castle_tower",world.scenery,world.point(p+Vector2(offset,-170)),Vector3(1.2,1.2,1.2))
 				kit.instance("castle_wall",world.scenery,world.point(p+Vector2(offset,-310)),Vector3(1.5,1.2,1))
 		else: kit.instance("cave_portal",world.scenery,world.point(p+Vector2(0,-100)))
-	else: world.prop("halloween/arch",p+Vector2(0,-100),Vector3(400,300,85),Color("91887c"))
+	else: kit.instance("a%d_gate" % world.campaign.map.act,world.scenery,world.point(p+Vector2(0,-100)))
 	if world.campaign.map.act!=1:
 		var black: StandardMaterial3D=world.material(Color("111319"))
 		block(Rect2(p-Vector2(120,110),Vector2(240,240)),4,-3,black)
-	for i in 6: block(Rect2(p+Vector2(-90,-120+i*20),Vector2(180,20)),6,3+i*2,kit.pbr("masonry") if world.campaign.map.act==1 else stone(Color("696458")))
+	for i in (6 if world.campaign.map.act==1 else 0): block(Rect2(p+Vector2(-90,-120+i*20),Vector2(180,20)),6,3+i*2,kit.pbr("masonry"))
 
 func sync(focus: Vector2, dt: float = 0.0) -> void:
 	for chunk in chunks:
@@ -455,6 +469,8 @@ func sync(focus: Vector2, dt: float = 0.0) -> void:
 	for light in lights: light.visible=Vector2(light.global_position.x,light.global_position.z).distance_to(focus*.01)<16
 
 func camp_details(r) -> void:
+	if r.act>=2:
+		Regional.camp(self,r); return
 	var mat: Material=kit.pbr("masonry",Color("b7bbbf")) if r.act==1 else stone(Color("666054"),r.act in [1,3,5])
 	# Outer enclosure keeps the playable border legible in the orthographic view.
 	for x in range(80,2200,180):
@@ -560,6 +576,14 @@ func physical_ground(mat: ShaderMaterial, paved: bool) -> void:
 func detail_prop(r, item: Dictionary, p: Vector2) -> Node3D:
 	if item.key.begins_with("kit/"):
 		return kit.instance(item.key.trim_prefix("kit/"),world.scenery,world.point(p,r.height_at(item.p)),Vector3.ONE,item.angle)
+	if r.act>=2:
+		var model := "rock"
+		if "tree" in item.key or "waterplant" in item.key: model="tree"
+		elif "pillar" in item.key or "arch" in item.key: model="arch"
+		elif "building" in item.key: model="hero"
+		elif "wall" in item.key: model="wall_broken"
+		var scale: Vector3=Vector3.ONE*(item.size.y/300.0 if model=="tree" else .7)
+		return kit.instance("a%d_%s" % [r.act,model],world.scenery,world.point(p,r.height_at(item.p)),scale,item.angle)
 	if r.act==1:
 		var at: Vector3=world.point(p,r.height_at(item.p))
 		if item.key=="story/rubble": return kit.instance("rubble",world.scenery,at,Vector3.ONE*.85)
@@ -624,6 +648,7 @@ func register_authored(root: Node3D, region) -> void:
 			node.visible=graphics.advanced() and graphics.quality==0
 		if node is MeshInstance3D and node.material_override is ShaderMaterial and node.material_override.shader==GROUND:
 			if Floors.architectural(region): node.material_override=Floors.material(region)
+			elif region.act>=2: Regional.ground(self,node.material_override,region)
 			else:
 				node.material_override.set_shader_parameter("earth",Color("c7c8bd")); node.material_override.set_shader_parameter("road",Color("d5d3cd"))
 		if node.has_meta("building_rect"):

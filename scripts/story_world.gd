@@ -16,6 +16,7 @@ const TONES := [Color("617065"),Color("77727d"),Color("627184"),Color("766579"),
 
 var environment_builder = preload("res://scripts/story_environment.gd").new()
 var geometry_key := ""
+var art_act := 0
 var zoom := 15.0
 const CONTACT_SHADOW = preload("res://resources/story_contact_shadow.gdshader")
 var contact_shadows: Array[MeshInstance3D]=[]
@@ -28,6 +29,10 @@ func build_story(c) -> void:
 	var signature := "%d:%d" % [c.state.act,c.map.layer]
 	if geometry_key!=signature:
 		geometry_key=signature
+		if art_act!=int(c.state.act):
+			environment_builder.release_resources()
+			preload("res://scripts/story_floor_palette.gd").cache.clear()
+			art_act=int(c.state.act)
 		if scenery:
 			remove_child(scenery); scenery.queue_free()
 		scenery=Node3D.new(); scenery.name="StoryScenery"; add_child(scenery)
@@ -43,6 +48,7 @@ func build_story(c) -> void:
 				child.environment.ambient_light_energy=.28 if c.map.layer==0 else .16
 				if c.map.layout=="crypt": child.environment.ambient_light_energy=.26
 				child.environment.background_color=Color("171b20")
+	preload("res://scripts/story_regional_environment.gd").atmosphere(self)
 	sync_story(Vector2(1440,900),0)
 
 func project(p: Vector2) -> Vector2:

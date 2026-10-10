@@ -40,6 +40,19 @@ func pbr(name: String, tint: Color = Color.WHITE, scale: float = 1.0) -> Standar
 func surface(name: String) -> Material:
 	if materials.has(name): return materials[name]
 	var mat: Material
+	if name.ends_with("Crystal"):
+		mat=StandardMaterial3D.new(); mat.albedo_color={"A2Crystal":Color("ef7f36"),"A3Crystal":Color("68bede"),"A4Crystal":Color("b573a4"),"A5Crystal":Color("6dceb8"),"A6Crystal":Color("c43459")}.get(name,Color.WHITE)
+		mat.emission_enabled=true; mat.emission=mat.albedo_color; mat.emission_energy_multiplier=.40; mat.roughness=.30; mat.metallic=.25
+		materials[name]=mat; return mat
+	if name in ["CraftWood","CraftMetal"]:
+		mat=pbr("crafted_wood" if name=="CraftWood" else "crafted_metal",Color("bdb6ac") if name=="CraftWood" else Color("7e919e"))
+		materials[name]=mat
+		return mat
+	if name.begins_with("A") and name.length()>2 and name[1].is_valid_int():
+		var role: String={"Stone":"wall","Ground":"ground","Floor":"floor"}.get(name.substr(2),"wall")
+		mat=pbr("a%s_%s" % [name[1],role],Color("e0dfd9"))
+		materials[name]=mat
+		return mat
 	match name:
 		"Masonry": mat=pbr("masonry",Color("b7bbbf"))
 		"Trim": mat=pbr("masonry",Color("e2d7bc"),1.4)
@@ -68,6 +81,7 @@ func surface(name: String) -> Material:
 func instance(model: String, parent: Node3D, at: Vector3, scale: Vector3 = Vector3.ONE, angle: float = 0) -> Node3D:
 	if not scenes.has(model): scenes[model]=load(BASE+"models/"+model+".glb")
 	var node: Node3D=scenes[model].instantiate()
+	node.set_meta("story_model",model)
 	parent.add_child(node); node.position=at; node.scale=scale; node.rotation.y=angle
 	if model in ["woodland_tree","woodland_fern"]:
 		if model=="woodland_tree": node.set_meta("licensed_tree",true)

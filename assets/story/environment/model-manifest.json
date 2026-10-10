@@ -1,7 +1,682 @@
 {
   "source": "art/story-environment/opening-master.blend",
+  "additional_sources": [
+    "art/story-environment/acts-2-6-master.blend"
+  ],
   "exporter": "tools/export_story_models.py",
   "models": [
+    {
+      "name": "a2_arch",
+      "file": "a2_arch.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1816,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_archive",
+      "file": "a2_archive.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 21828,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_detail",
+      "file": "a2_detail.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 2224,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_gate",
+      "file": "a2_gate.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4068,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_hero",
+      "file": "a2_hero.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4776,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_prop",
+      "file": "a2_prop.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1220,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_rock",
+      "file": "a2_rock.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_secondary",
+      "file": "a2_secondary.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 6308,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_service_0",
+      "file": "a2_service_0.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9676,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a2_service_1",
+      "file": "a2_service_1.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9856,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a2_service_2",
+      "file": "a2_service_2.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 15848,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a2_service_3",
+      "file": "a2_service_3.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 14012,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a2_service_4",
+      "file": "a2_service_4.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9192,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a2_service_5",
+      "file": "a2_service_5.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9516,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a2_tree",
+      "file": "a2_tree.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 288,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_wall",
+      "file": "a2_wall.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4104,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a2_wall_broken",
+      "file": "a2_wall_broken.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3504,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_arch",
+      "file": "a3_arch.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1816,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_detail",
+      "file": "a3_detail.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 140,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_gate",
+      "file": "a3_gate.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4068,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_hero",
+      "file": "a3_hero.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 2960,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_prop",
+      "file": "a3_prop.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1184,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_rock",
+      "file": "a3_rock.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_secondary",
+      "file": "a3_secondary.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4088,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_service_0",
+      "file": "a3_service_0.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 8930,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a3_service_1",
+      "file": "a3_service_1.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9970,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a3_service_2",
+      "file": "a3_service_2.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 13166,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a3_service_3",
+      "file": "a3_service_3.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 13230,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a3_service_4",
+      "file": "a3_service_4.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9306,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a3_service_5",
+      "file": "a3_service_5.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9630,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a3_tree",
+      "file": "a3_tree.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1800,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_wall",
+      "file": "a3_wall.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3996,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a3_wall_broken",
+      "file": "a3_wall_broken.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3504,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_arch",
+      "file": "a4_arch.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1816,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_detail",
+      "file": "a4_detail.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1908,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_doll_station",
+      "file": "a4_doll_station.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1476,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_gate",
+      "file": "a4_gate.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4032,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_hero",
+      "file": "a4_hero.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 2376,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_prop",
+      "file": "a4_prop.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3000,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_rock",
+      "file": "a4_rock.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_secondary",
+      "file": "a4_secondary.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1332,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_service_0",
+      "file": "a4_service_0.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 11940,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a4_service_1",
+      "file": "a4_service_1.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 12980,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a4_service_2",
+      "file": "a4_service_2.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 16176,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a4_service_3",
+      "file": "a4_service_3.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 16276,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a4_service_4",
+      "file": "a4_service_4.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 12316,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a4_service_5",
+      "file": "a4_service_5.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 12640,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a4_tree",
+      "file": "a4_tree.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 276,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_wall",
+      "file": "a4_wall.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 8532,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a4_wall_broken",
+      "file": "a4_wall_broken.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3504,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_arch",
+      "file": "a5_arch.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1816,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_beacon",
+      "file": "a5_beacon.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 416,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_detail",
+      "file": "a5_detail.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1040,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_gate",
+      "file": "a5_gate.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4032,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_hero",
+      "file": "a5_hero.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3996,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_prop",
+      "file": "a5_prop.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1924,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_rock",
+      "file": "a5_rock.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_secondary",
+      "file": "a5_secondary.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 6308,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_service_0",
+      "file": "a5_service_0.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 12664,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a5_service_1",
+      "file": "a5_service_1.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 13740,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a5_service_2",
+      "file": "a5_service_2.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 16936,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a5_service_3",
+      "file": "a5_service_3.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 17000,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a5_service_4",
+      "file": "a5_service_4.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 13076,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a5_service_5",
+      "file": "a5_service_5.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 13400,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a5_tree",
+      "file": "a5_tree.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 288,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_wall",
+      "file": "a5_wall.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4104,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a5_wall_broken",
+      "file": "a5_wall_broken.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3504,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_arch",
+      "file": "a6_arch.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 1816,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_detail",
+      "file": "a6_detail.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 12744,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_gate",
+      "file": "a6_gate.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 4032,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_hero",
+      "file": "a6_hero.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3476,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_prop",
+      "file": "a6_prop.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 2816,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_rock",
+      "file": "a6_rock.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 560,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_scriptorium",
+      "file": "a6_scriptorium.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 2692,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_secondary",
+      "file": "a6_secondary.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3940,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_service_0",
+      "file": "a6_service_0.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 9718,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a6_service_1",
+      "file": "a6_service_1.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 10794,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a6_service_2",
+      "file": "a6_service_2.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 13990,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a6_service_3",
+      "file": "a6_service_3.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 14054,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a6_service_4",
+      "file": "a6_service_4.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 10130,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a6_service_5",
+      "file": "a6_service_5.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 10454,
+      "meshes": 4,
+      "vendor": false
+    },
+    {
+      "name": "a6_tree",
+      "file": "a6_tree.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 288,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_wall",
+      "file": "a6_wall.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 8532,
+      "meshes": 1,
+      "vendor": false
+    },
+    {
+      "name": "a6_wall_broken",
+      "file": "a6_wall_broken.glb",
+      "source": "art/story-environment/acts-2-6-master.blend",
+      "triangles": 3504,
+      "meshes": 1,
+      "vendor": false
+    },
     {
       "name": "anvil",
       "file": "anvil.glb",

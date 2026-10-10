@@ -363,3 +363,20 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 地理660项0失败、故事集成12项0失败，集成只保留既有UI锚点警告；路牌782锚点DRIFT0/WRONG0。未重跑长时间性能测试或全仓库门禁。
 - 最新试玩dist/CrimsonTide-ForwardPlus-v4.exe，旧EXE保留，兼容启动脚本指向v4。制作与资源来源见docs/rpg/INTERIOR-FLOORS.md。原有PV提示词未修改。
 - v4独立包2,961,320,962字节；实际Vulkan启动故事模式STORY_READY quests=73 act=1 stage=0 npc_asset=true。内嵌PCK直接载入旧堡检查：PACKED_ARCHITECTURAL_FLOORS_READY count=16，新贴图资源在包内存在，最终日志无脚本/资源错误。
+
+## 2026-10-10 第二至第六幕独立美术扩展（v5）
+
+- 新增84个原创GLB（每幕16个基础模块和4个专用设施），模型库总计182项；合计180原创+2许可植被。独立acts-2-6-master.blend保留第一幕源文件；五幕新模型合计546628三角。17套新2K PBR/51张贴图；总计30套/90图，来源、许可、作者及校验和记录完整。
+- 覆盖五个营地与40个区域，15份室外地形高度采样；45个TSCN、45个Forward+ SCN、45个Compatibility SCN、45个实际lmbake/EXR。实际编辑器烘焙日志确认BAKE_BATCH all complete count=45；烘焙错误日志为空。
+- 逻辑专项2837/0；缓存/GI/摆放专项7053/0；Forward+连续45区渲染7158/0；Compatibility连续45区渲染7158/0。后两者包含30栋服务房屋的真实屋顶/正面/侧墙进入隐藏与退出恢复，分别生成45张3840×2160画面。原始日志output/story-later-{tests-final,packed,gpu-all45,compat-all45}.log，截图build/story-act<act>-<stage>[-compat].png。
+- 最初连续截图在第四幕后停滞，单独第五幕通过；修正story_world跨幕清空前幕kit/Floor材质/异步场景缓存后，两种渲染器连续全45区均完成。该检查没有记录正式P95/P99/独占显存，因此不把资源释放修正当成性能验收结果。
+- 配套回归：地图地理685/0、战役180/0、实际入口集成12/0、建筑铺地414/0、工作场所189/0、地表覆盖97/0；闭合网格绕序10672/0。资源内容与HEAD比较：全部地图ID和73个任务内容一致；只更新额外副本名称/美术题材。
+- 临时美术试玩检查PASS：显式预览第五幕第七区、46个传送目的地、保存禁用。正式存档入口不受该CLI路径影响。集成用例仍有既有rogue_build_preview容器锚点警告，0失败；两种美术GPU专项日志无SCRIPT ERROR/ERROR。
+- v5单文件导出（最终大小及包内验证见下方）；实际内嵌PCK重新运行7053项检查，0失败；PCK临时试玩检查PASS。发布版本启动结果另记下方。旧v4与更早EXE保留，dist/Start-Compatibility.cmd指向v5。
+- 此轮未跑全仓库门禁、未跑用户已暂缓的十分钟×三长跑；没有声称达到4K60、9GB预算或商业重制版雕刻精度。环境设施目前为场景叙事道具，未新写独立解谜/五幕Boss机制。制作/剩余边界见docs/rpg/ACTS-2-6-ART.md。
+
+- 发布EXE实际Forward+启动并退出码0：STORY_READY quests=73 act=6 stage=7 npc_asset=true；90张实机截图尺寸逐文件核对均为3840×2160。路牌788锚点OK514/DRIFT0/WRONG0/HINT274；git diff --check通过。
+
+- 最终精修增加4个房间专用设施，更新11个室内中央设施；缓存实际模型身份1654项核对通过，包内也1654/0。增量工具逐项检查GI用户路径，确认设施未被烘焙，保留45个有效GI资源。最终84新模型/182总模型/546628新三角；绕序10672/0。补充压顶宽度拼接修正、转角隅柱与同源碰撞；更新后地图685/0、缓存7053/0、集成12/0、Forward+45区7158/0，原始日志story-later-*-joins.log。
+
+- 压顶/隅柱最终版本Compatibility45区也7158/0；最终EXE为3354416448字节，内嵌缓存/GI专项7053/0、临时试玩PASS，正式Forward+发布启动/退出码0。数据与角色移动检查均不替代正式性能验收。

@@ -19,23 +19,25 @@ func run() -> void:
 	world=World.new(); root.add_child(world)
 	world.environment_builder.authoring=true
 	var stages: Array=[0,1,7]
+	var act := 1
 	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--act="): act=int(arg.trim_prefix("--act="))
 		if arg.begins_with("--stages="):
 			stages=[]
 			for value in arg.trim_prefix("--stages=").split(","): stages.append(int(value))
 	if "--cache-outdoors" in OS.get_cmdline_user_args(): stages=range(1,9)
 	for stage in stages:
 		if "--camp-only" in OS.get_cmdline_user_args() and stage!=0: continue
-		var path := "res://scenes/story/opening-%d.tscn" % stage
+		var path := "res://scenes/story/"+("opening-%d" % stage if act==1 else "act%d-%d" % [act,stage])+".tscn"
 		if FileAccess.file_exists(path) and not "--replace-generated" in OS.get_cmdline_user_args(): print("PRESERVED ",path); continue
-		campaign.enter(1,stage); world.geometry_key=""; world.build_story(campaign)
+		campaign.enter(act,stage); world.geometry_key=""; world.build_story(campaign)
 		if "--cache-outdoors" in OS.get_cmdline_user_args() and campaign.map.regions[stage].indoor: continue
 		await process_frame
 		var source: Node3D=world.environment_builder.chunks[0].node
 		if not campaign.map.regions[stage].indoor:
 			for chunk in world.environment_builder.chunks:
 				if chunk.rect.position==campaign.map.regions[stage].origin: source=chunk.node; break
-		var authored := Node3D.new(); authored.name="Opening%d" % stage; root.add_child(authored)
+		var authored := Node3D.new(); authored.name="Opening%d" % stage if act==1 else "Act%dRegion%d" % [act,stage]; root.add_child(authored)
 		for child in source.get_children(): source.remove_child(child); authored.add_child(child)
 		# Register authoritative hide groups before baking: no roof/front baked ghosts.
 		for item in world.environment_builder.roofs:
@@ -48,7 +50,7 @@ func run() -> void:
 		for item in world.environment_builder.cache_models:
 			if authored.is_ancestor_of(item.node): item.node.set_meta("story_cache",item.id)
 		for mesh in authored.find_children("*","MeshInstance3D",true,false):
-			if stage not in [0,1,7,9]: continue
+			if act==1 and stage not in [0,1,7,9]: continue
 			if mesh.material_override is ShaderMaterial and mesh.material_override.shader==world.environment_builder.WATER:
 				mesh.gi_mode=GeometryInstance3D.GI_MODE_DISABLED; continue
 			if mesh.material_override==null and mesh.mesh==null: continue
@@ -71,12 +73,15 @@ func run() -> void:
 		var moon := DirectionalLight3D.new(); moon.name="BakeMoon"; moon.rotation_degrees=Vector3(-52,-35,0)
 		moon.light_color=Color("b7c8e4"); moon.light_energy=.63 if stage!=7 else .20
 		moon.light_bake_mode=Light3D.BAKE_DYNAMIC; moon.add_to_group("editor_only",true); authored.add_child(moon)
+		if act>=2: moon.light_color=Color(preload("res://scripts/story_act_art.gd").palette(act).sun)
 		var gi := LightmapGI.new(); gi.name="BakedIndirectLight"
 		var previous_bake := path.get_basename()+".lmbake"
 		if ResourceLoader.exists(previous_bake): gi.light_data=load(previous_bake)
 		gi.quality=LightmapGI.BAKE_QUALITY_MEDIUM
 		gi.environment_mode=LightmapGI.ENVIRONMENT_MODE_CUSTOM_COLOR
 		gi.environment_custom_color=Color("829ab7"); gi.environment_custom_energy=.20 if stage!=7 else .12
+		if act>=2:
+			gi.environment_custom_color=Color(preload("res://scripts/story_act_art.gd").palette(act).ambient); gi.environment_custom_energy=.24
 		gi.generate_probes_subdiv=LightmapGI.GENERATE_PROBES_SUBDIV_8
 		authored.add_child(gi)
 		var camera := Camera3D.new(); camera.name="EditorCamera"; camera.projection=Camera3D.PROJECTION_ORTHOGONAL

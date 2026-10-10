@@ -85,44 +85,54 @@
         {
           "id": "a2_1",
           "name": "白垩外街",
-          "layout": "street"
+          "layout": "street",
+          "art_theme": "烟砖机坊"
         },
         {
           "id": "a2_2",
           "name": "坠钟广场",
-          "layout": "courtyard"
+          "layout": "courtyard",
+          "art_theme": "冷却渠工场"
         },
         {
           "id": "a2_3",
           "name": "旧审判庭",
-          "layout": "hall"
+          "layout": "hall",
+          "art_theme": "钟机裁判庭"
         },
         {
           "id": "a2_4",
           "name": "灰页书库",
-          "layout": "library"
+          "layout": "library",
+          "art_theme": "铅字档案库"
         },
         {
           "id": "a2_5",
           "name": "地下炉渠",
-          "layout": "canal"
+          "layout": "canal",
+          "art_theme": "熔炼水渠"
         },
         {
           "id": "a2_6",
           "name": "焚书礼堂",
-          "layout": "cathedral"
+          "layout": "cathedral",
+          "art_theme": "钟楼机芯殿"
         },
         {
           "id": "a2_explore_1",
-          "name": "灰炉暗道",
+          "name": "灰炉铸造厂",
           "layout": "mine",
-          "optional": true
+          "optional": true,
+          "art_theme": "封存铸造厂",
+          "description": "探索封存铸造厂的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         },
         {
           "id": "a2_explore_2",
-          "name": "弃置档案库",
+          "name": "地下蓄水机房",
           "layout": "crypt",
-          "optional": true
+          "optional": true,
+          "art_theme": "地下蓄水机房",
+          "description": "探索地下蓄水机房的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         }
       ],
       "boss": "余烬司祭·晚祷",
@@ -145,44 +155,54 @@
         {
           "id": "a3_1",
           "name": "月晶坡地",
-          "layout": "field"
+          "layout": "field",
+          "art_theme": "霜松哨坡"
         },
         {
           "id": "a3_2",
           "name": "骨鹿猎道",
-          "layout": "road"
+          "layout": "road",
+          "art_theme": "狩猎山道"
         },
         {
           "id": "a3_3",
           "name": "断星矿坑",
-          "layout": "mine"
+          "layout": "mine",
+          "art_theme": "石英矿脉"
         },
         {
           "id": "a3_4",
           "name": "流星坠谷",
-          "layout": "field"
+          "layout": "field",
+          "art_theme": "陨星裂地"
         },
         {
           "id": "a3_5",
           "name": "观星高塔",
-          "layout": "hall"
+          "layout": "hall",
+          "art_theme": "山顶观星台"
         },
         {
           "id": "a3_6",
           "name": "誓猎祭场",
-          "layout": "courtyard"
+          "layout": "courtyard",
+          "art_theme": "猎誓试炼坪"
         },
         {
           "id": "a3_explore_1",
-          "name": "空晶支坑",
+          "name": "废弃测星站",
           "layout": "mine",
-          "optional": true
+          "optional": true,
+          "art_theme": "废弃测星站",
+          "description": "探索废弃测星站的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         },
         {
           "id": "a3_explore_2",
-          "name": "矿底封室",
+          "name": "霜骨祭坛",
           "layout": "crypt",
-          "optional": true
+          "optional": true,
+          "art_theme": "霜骨祭坛",
+          "description": "探索霜骨祭坛的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         }
       ],
       "boss": "荆棘誓约猎王",
@@ -205,44 +225,54 @@
         {
           "id": "a4_1",
           "name": "蔷薇荒园",
-          "layout": "garden"
+          "layout": "garden",
+          "art_theme": "蔷薇修剪园"
         },
         {
           "id": "a4_2",
           "name": "刑偶工坊",
-          "layout": "library"
+          "layout": "library",
+          "art_theme": "人偶工房"
         },
         {
           "id": "a4_3",
           "name": "嫁衣长廊",
-          "layout": "hall"
+          "layout": "hall",
+          "art_theme": "镜月舞厅"
         },
         {
           "id": "a4_4",
           "name": "花眠庭院",
-          "layout": "garden"
+          "layout": "garden",
+          "art_theme": "凋零庭园"
         },
         {
           "id": "a4_5",
           "name": "镜墓",
-          "layout": "crypt"
+          "layout": "crypt",
+          "art_theme": "镜棺回廊"
         },
         {
           "id": "a4_6",
           "name": "倒影剧场",
-          "layout": "cathedral"
+          "layout": "cathedral",
+          "art_theme": "无观众剧院"
         },
         {
           "id": "a4_explore_1",
-          "name": "枯枝地穴",
+          "name": "失控温室",
           "layout": "mine",
-          "optional": true
+          "optional": true,
+          "art_theme": "失控温室",
+          "description": "探索失控温室的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         },
         {
           "id": "a4_explore_2",
-          "name": "失镜墓廊",
+          "name": "面具藏馆",
           "layout": "crypt",
-          "optional": true
+          "optional": true,
+          "art_theme": "面具藏馆",
+          "description": "探索面具藏馆的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         }
       ],
       "boss": "镜墓纺女·碎影",
@@ -265,44 +295,54 @@
         {
           "id": "a5_1",
           "name": "雾汐堤岸",
-          "layout": "coast"
+          "layout": "coast",
+          "art_theme": "盐蚀堤岸"
         },
         {
           "id": "a5_2",
           "name": "沉舟滩",
-          "layout": "coast"
+          "layout": "coast",
+          "art_theme": "沉船海滩"
         },
         {
           "id": "a5_3",
           "name": "潮盐工事",
-          "layout": "canal"
+          "layout": "canal",
+          "art_theme": "净水泵渠"
         },
         {
           "id": "a5_4",
           "name": "沉钟遗迹",
-          "layout": "crypt"
+          "layout": "crypt",
+          "art_theme": "潮汐祭池"
         },
         {
           "id": "a5_5",
           "name": "逆潮水道",
-          "layout": "bridge"
+          "layout": "bridge",
+          "art_theme": "逆潮闸桥"
         },
         {
           "id": "a5_6",
           "name": "归航灯塔",
-          "layout": "hall"
+          "layout": "hall",
+          "art_theme": "搁浅船坞"
         },
         {
           "id": "a5_explore_1",
-          "name": "潮下岩窟",
+          "name": "封闭干船坞",
           "layout": "mine",
-          "optional": true
+          "optional": true,
+          "art_theme": "封闭干船坞",
+          "description": "探索封闭干船坞的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         },
         {
           "id": "a5_explore_2",
-          "name": "沉锚墓室",
+          "name": "沉锚泵房",
           "layout": "crypt",
-          "optional": true
+          "optional": true,
+          "art_theme": "沉锚泵房",
+          "description": "探索沉锚泵房的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         }
       ],
       "boss": "冥潮守门者",
@@ -325,44 +365,54 @@
         {
           "id": "a6_1",
           "name": "朝圣大道",
-          "layout": "street"
+          "layout": "street",
+          "art_theme": "圣都白石阶"
         },
         {
           "id": "a6_2",
           "name": "圣血外廊",
-          "layout": "hall"
+          "layout": "hall",
+          "art_theme": "圣血圣物堂"
         },
         {
           "id": "a6_3",
           "name": "失乡庭院",
-          "layout": "courtyard"
+          "layout": "courtyard",
+          "art_theme": "破冠庭院"
         },
         {
           "id": "a6_4",
           "name": "彩窗工区",
-          "layout": "library"
+          "layout": "library",
+          "art_theme": "悬卷文库"
         },
         {
           "id": "a6_5",
           "name": "大教堂下层",
-          "layout": "crypt"
+          "layout": "crypt",
+          "art_theme": "失序仪式层"
         },
         {
           "id": "a6_6",
           "name": "王座大教堂",
-          "layout": "cathedral"
+          "layout": "cathedral",
+          "art_theme": "六翼圣座"
         },
         {
           "id": "a6_explore_1",
-          "name": "避难排渠",
+          "name": "封印圣物库",
           "layout": "mine",
-          "optional": true
+          "optional": true,
+          "art_theme": "封印圣物库",
+          "description": "探索封印圣物库的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         },
         {
           "id": "a6_explore_2",
-          "name": "王城旧藏库",
+          "name": "赤月星仪室",
           "layout": "crypt",
-          "optional": true
+          "optional": true,
+          "art_theme": "赤月星仪室",
+          "description": "探索赤月星仪室的作业区与封存设施，寻找物资、激活传送阵并通过原入口返回。"
         }
       ],
       "boss": "血潮女王·永夜月冠",

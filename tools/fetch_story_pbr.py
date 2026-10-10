@@ -26,6 +26,12 @@ PALETTE = {
     'interior_stone': 'monastery_stone_floor',
     'crypt_slab': 'slab_tiles',
     'ceremonial_tile': 'marble_tiles',
+    'a2_ground': 'brick_gravel', 'a2_wall': 'factory_brick', 'a2_floor': 'herringbone_brick',
+    'a3_ground': 'snow_02', 'a3_wall': 'granite_wall', 'a3_floor': 'granite_tile',
+    'a4_ground': 'forest_ground_05', 'a4_wall': 'mossy_sandstone', 'a4_floor': 'marble_mosaic_tiles',
+    'a5_ground': 'coast_sand_03', 'a5_wall': 'seaworn_sandstone_brick', 'a5_floor': 'wood_planks_grey',
+    'a6_ground': 'marble_rock_02', 'a6_wall': 'white_sandstone_blocks_02', 'a6_floor': 'granite_tile_03',
+    'crafted_wood': 'oak_wood_planks', 'crafted_metal': 'metal_plate',
 }
 
 

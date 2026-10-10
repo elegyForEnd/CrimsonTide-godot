@@ -41,6 +41,7 @@ D:\dsh\Game\
    ├─ scenes\                  ← 仅 2 个场景：boot.tscn（开场）、main.tscn（空壳根节点）
    ├─ scripts\                 ← 全部游戏逻辑（112 个 .gd / 3.77 万行，UI/逻辑均由代码构建）
    │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图
+   │      story_act_art / story_regional_environment ← 第二至第六幕的区域布局、独立建筑、材质与灯光
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
    ├─ shaders\                 ← hero_hair_motion.gdshader（仅离线烘帧用）
    ├─ assets\                  ← 全部美术/音频/模型资源（见 §8.4）
@@ -449,16 +450,18 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件与配套检查 |
 |---|---|
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
-| 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:316 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
-| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:33 build()`，`story_world.gd:87 sync_story()`；tests/story_visual.gd |
+| 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:327 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
+| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:33 build()`，`story_world.gd:94 sync_story()`；tests/story_visual.gd |
 | Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:46 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
 | 不规则洞窟与旧堡副本 | story_region.floor_contains/build_castle、story_environment.cave_shell/castle_shell；story-cave-footprint.json统一地面/移动/寻路/探索图；OUTDOOR-CASTLE.md、tests/story_outdoor_castle.gd；第九区存档上限从章节地图数量读取 |
 | 建筑室内地面材质 | story_floor_palette.gd、resources/story_interior_floor.gdshader；城堡/墓室/书库/礼拜堂分流，自然洞窟保留岩土；tools/patch_story_interior_floors.gd仅替换地面/台阶/台基，tests/story_architectural_floors.gd；docs/rpg/INTERIOR-FLOORS.md |
+| 第二至第六幕美术/副本 | `scripts/story_act_art.gd:14 configure()`、`scripts/story_act_art.gd:6 terrain()`；story-later-acts.json / story-later-terrain.json；`scripts/story_regional_environment.gd:4 ground()`、`scripts/story_regional_environment.gd:24 walls()`；独立acts-2-6-master.blend、scenes/story/act*-*.tscn；`tests/story_later_acts.gd:12 run()`、tools/Bake-Later-Acts.ps1；docs/rpg/ACTS-2-6-ART.md |
+| 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:78 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
 | 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:328 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
-| 探索地图、UI与输入 | `story_screen.gd:356 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
+| 探索地图、UI与输入 | `story_screen.gd:371 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
 | 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
 
 ## 5. 「我要改 X」速查表
@@ -470,6 +473,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 洞窟轮廓与旧堡 → story-cave-footprint.json / story_region.floor_contains、build_castle / story_environment.cave_shell、castle_shell；地面/移动/探索图必须共享边界，新增区域须同时更新内容编译器和存档区域校验。新增模块在master编辑，已有室外场景用patch_story_outdoors增量追加。
 
 故事美术、画质与闪烁 → graphics_quality/settings_ui、story_asset_kit/environment；模型改opening-master.blend后只导出，地编改scenes/story/*.tscn后运行Bake-Opening.ps1。楼梯/平台由结构网格画顶面，基础地形必须裁去同一区域；小树阻挡在story_region.add_prop统一处理。
+
+第二至第六幕美术/不同题材副本 → story_act_art / story_regional_environment / story-later-acts.json / story-later-terrain.json。新模型改acts-2-6-master.blend，export_story_models.py带--source局部导出；新场景改act*-*.tscn后用Bake-Later-Acts.ps1。JSON占地/轮廓与缓存场景成对更新，不可只改一边；地图ID、任务、传送存档不随美术改名。
 
 营地家具与进屋遮挡 → story-opening-dressing.json / story_set_dressing.gd / story_region / story_environment；带footprint的家具移动时同步JSON与可编辑场景。相机方向墙为Side组，固定烘焙排除Side/Front/Roof。prepare_reveal与reveal都要处理MeshInstance3D根本身，不能只遍历子节点。新增模块在master编辑后可指定export_story_models.py --assets局部导出。
 
@@ -670,6 +675,7 @@ python tests/scene_music_assets.py # 曲目清单校验
 | 文档 | 主题 | 主要对应代码 |
 |---|---|---|
 | README.md | 总览/启动/操作/存档 | 全局 |
+| docs/rpg/ACTS-2-6-ART.md | 五幕独立美术、84新模型、17套材质、45区烘焙、不同题材副本与临时试玩 | story_act_art / story_regional_environment / story-later-acts.json / story-later-terrain.json；tests/story_later_acts / story_regional_scene_models |
 | [docs/rpg/README.md](docs/rpg/README.md)、IMPLEMENTATION.md、MAP-IMPLEMENTATION-RESEARCH.md、D2R-ENVIRONMENT-RESEARCH.md、RPG-MODE-PLAN.md、STORY.md、QUESTS.md（均在 docs/rpg/） | RPG连续地图重做版：PV背景、六幕营地、南门首图、40主线/24支线/9个人线；本地MPQ/CASC场景研究，连续野外、分层副本、激活传送阵与探索 | main.gd独立story页面；story_campaign/map/region/environment/world/screen/atlas负责运行。范围和剩余差异见IMPLEMENTATION；TideSession模式仍为expedition/roguelike |
 | EXPEDITION.md / ROGUELIKE.md | 远征/闯关玩法与验证 | expedition.gd / roguelike.gd |
 | ATTACK-TELEGRAPH.md | 攻击前摇提示（预警可读性、时长与美术口径） | scripts/attack_telegraph.gd |
@@ -832,6 +838,7 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-10 | 见同批提交 | 二至六幕84个新模型、17套新PBR、15份地形、45个可编辑区域与GI烘焙，十种额外副本题材；跨幕释放美术缓存与独立临时试玩入口；地图ID/73任务保持一致，详见ACTS-2-6-ART.md及TEST-REPORT。 |
 | 2026-10-10 | （本轮Forward+提交） | 默认Forward+、三档画质与超分；开场Blender模块/PBR/地形、实际GI烘焙、曲岸碰撞、遮挡淡出、人物融合与区域缓存。原始验收和范围见TEST-REPORT、FORWARDPLUS-ART-PIPELINE.md；保留用户PV与旧试玩。 |
 | 2026-10-10 | （本轮开场续作） | 12类室内家具、44处场所摆放、共享占地数据与室内台基高度；拆分前景Side墙、修正淡出漏掉根网格；增量场景编辑、指定模型导出、烘焙互斥及文件更新校验。更新§4.S/§5与生产说明；长时间性能验收继续暂缓。 |
 | 2026-10-10 | （本地故事实现提交） | 只读解析本地D2R的IDX/BLTE/TVFS，检查23个HD场景样本；补读旧包关卡出口表。故事地图改为每幕连续野外与双向分层副本，另加12层可选洞窟；统一高度、楼梯、进屋屋顶隐藏、前景遮挡、地面混合、河岸、区域地标、寻路、探索图与传送阵激活。战役180、地图647、集成12、图形10检查无失败；独立EXE已重导出，详见docs/rpg/IMPLEMENTATION.md与D2R-ENVIRONMENT-RESEARCH.md。 |
@@ -933,3 +940,7 @@ Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/ro
 用户指定 RB 轻击、RT 重击、B 点按闪避/长按奔跑、A 跳跃。`controller.gd` 的 `handle_combat()` / `advance_gestures()` / `sprinting()` 处理独立轻重击输入与 B 的 0.25 秒阈值；`setup()` 只移除旧手柄绑定，保留键鼠。互动移到 Y，菜单继续 A 确认/B 返回。`main.gd` 的本地 `sprint` 合并手柄长按状态。
 
 `session.gd` 的 `perform()` 把 `attack_press` 的 `heavy` 意图交给 `weapon_hold_attack.gd` 的 `begin()`；重击点按按 `HEAVY_MIN_RATIO`（0.35）下限走现有重击机制，长按继续增强，键鼠普通点按不变。判定与资源消耗均由权威执行，客户端没有自行改伤害/蓄力时间。`controller_ui.gd` 同步战斗按键提示与互动/跳跃字样。新增 `tests/controller_layout.gd` 的 `run()`：两种模式真实轻重击、B 点按/长按互斥、奔跑移动、面板取消、已有魔境跳跃、失焦取消及键鼠绑定。
+
+### 2026-10-10 第二至第六幕美术扩展
+
+独立acts-2-6-master.blend与84个新GLB、17套新PBR、15份地形、45个可编辑/烘焙区域；五种区域轮廓与十种额外副本题材。story_act_art管理共享渲染/移动数据，story_regional_environment管理新建筑/灯光，world跨幕释放缓存。原地图ID、73任务不变。专题ACTS-2-6-ART.md与tests/story_later_acts.gd同步；长时间性能验收暂缓。

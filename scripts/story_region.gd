@@ -26,6 +26,8 @@ var terrain_samples: Dictionary={}
 var dressing: Array=[]
 var floor_polygon := PackedVector2Array()
 var structural_obstacles: Array[Rect2]=[]
+var art_theme := ""
+const ActArt=preload("res://scripts/story_act_art.gd")
 const Dressing=preload("res://scripts/story_set_dressing.gd")
 const NPC_AT := [Vector2(850,580),Vector2(1500,590),Vector2(630,1020),Vector2(1640,1040),Vector2(730,1430),Vector2(1530,1440)]
 
@@ -67,6 +69,7 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 				add_prop("kit/"+key,at,Vector3(90,120,100),true)
 				if role in [2,4,5]: add_prop("kit/rope_coil",b.door+Vector2(-115,70),Vector3(60,15,60))
 				if role==2: add_prop("kit/tool_rack",b.rect.get_center()+Vector2(105,-35),Vector3(100,125,35),true)
+		ActArt.configure(self)
 		load_authored_terrain()
 		dressing=Dressing.entries(self)
 		return
@@ -75,6 +78,7 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 	if a==1 and s==4: anchors=[Vector2(2400,3150),Vector2(3450,3900),Vector2(3450,3900)]
 	if indoor:
 		build_dungeon()
+		ActArt.configure(self)
 		if a==1 and s==7:
 			var cave: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://resources/story-cave-footprint.json"))
 			for p in cave.boundary: floor_polygon.append(Vector2(p[0],p[1]))
@@ -98,7 +102,7 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 			buildings.append({"rect":Rect2(at-Vector2(210,180),Vector2(420,360)),"style":a,"height":320.0,"door":at+Vector2(0,180)})
 	chests.append(side_anchors[2]+Vector2(120,0))
 	var rng := RandomNumberGenerator.new(); rng.seed=a*1000+s
-	for i in 230:
+	for i in (230 if a==1 else 0):
 		var at := Vector2(rng.randf_range(100,4700),rng.randf_range(100,4700))
 		if not clear_placement(at,160): continue
 		var kind := i%9
@@ -113,6 +117,10 @@ func build(a: int, s: int, shape: String, inside: bool) -> void:
 	dressing=Dressing.entries(self)
 
 func load_authored_terrain() -> void:
+	if act>=2:
+		art_theme=ActArt.settings(self).theme
+		terrain_samples=ActArt.terrain(self)
+		return
 	if act!=1 or stage not in [0,1,7]: return
 	var path := "res://resources/story-terrain-%d.json" % stage
 	if not FileAccess.file_exists(path): return
@@ -267,9 +275,12 @@ func clear_placement(p: Vector2, margin: float) -> bool:
 
 func height_at(p: Vector2) -> float:
 	# The 6 cm foundation is the actual interior floor, including the threshold.
-	if act==1 and stage==0:
+	if stage==0:
 		for building in buildings:
 			if building.rect.has_point(p): return 6.0
+	if act>=2 and stage>0:
+		for building in buildings:
+			if building.rect.has_point(p): return base_height_at(building.rect.get_center())+6.0
 	for item in stairs:
 		if item.terrace.has_point(p): return item.top
 		if item.rect.has_point(p):
@@ -278,7 +289,7 @@ func height_at(p: Vector2) -> float:
 	return base_height_at(p)
 
 func base_height_at(p: Vector2) -> float:
-	if not terrain_samples.is_empty(): return authored_height(p)
+	if not terrain_samples.is_empty(): return authored_height(p)*(smoothstep(60,340,path_distance(p)) if act>=2 else 1.0)
 	if indoor or stage==0: return 0.0
 	var edge := minf(minf(p.x,extent.x-p.x),minf(p.y,extent.y-p.y))
 	return noise.get_noise_2d(p.x,p.y)*48.0*smoothstep(0,350,edge)*smoothstep(80,420,path_distance(p))

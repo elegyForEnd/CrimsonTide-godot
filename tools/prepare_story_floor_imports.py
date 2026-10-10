@@ -1,7 +1,9 @@
 """Pin new PBR maps to mipmapped VRAM formats; normal/ORM remain data maps."""
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-for role in ['interior_stone','crypt_slab','ceremonial_tile']:
+import argparse
+parser=argparse.ArgumentParser(); parser.add_argument('--roles'); args=parser.parse_args()
+for role in (args.roles.split(',') if args.roles else ['interior_stone','crypt_slab','ceremonial_tile']):
     for channel in ['albedo','normal','orm']:
         p=ROOT/'assets/story/environment/pbr'/f'{role}_{channel}.png.import'
         text=p.read_text(encoding='utf-8')

@@ -1,7 +1,12 @@
 extends SceneTree
 func _initialize() -> void:
-	for stage in [0,1,2,3,4,7,9]:
-		var path := "res://scenes/story/opening-%d" % stage
+	var paths: Array[String]=[]
+	for stage in [0,1,2,3,4,7,9]: paths.append("res://scenes/story/opening-%d" % stage)
+	for act in range(2,7):
+		for stage in range(9):
+			var path := "res://scenes/story/act%d-%d" % [act,stage]
+			if FileAccess.file_exists(path+".tscn"): paths.append(path)
+	for path in paths:
 		var node: Node3D=load(path+".tscn").instantiate()
 		for fog in node.find_children("*","FogVolume",true,false): fog.free()
 		for mesh in node.find_children("*","MeshInstance3D",true,false):

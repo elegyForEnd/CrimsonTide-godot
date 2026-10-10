@@ -16,6 +16,8 @@ Forward+ 开场美术升级版：运行 `dist/CrimsonTide-ForwardPlus-4K.exe`，
 
 室内铺地修正版：最新试玩 `dist/CrimsonTide-ForwardPlus-v4.exe`，修正城堡、墓室、礼拜堂和书库复用野外地面的遗漏；独立室内PBR与铺装分区同步台阶、台基，保留天然洞窟岩土。[材质分流与验证](docs/rpg/INTERIOR-FLOORS.md)。
 
+第二至第六幕美术扩展版：最新试玩 `dist/CrimsonTide-ForwardPlus-v5.exe`。五套新区域模块覆盖五个营地和40个地图区域：84个新Blender模型、17套新2K PBR、15份地形、45场实际GI烘焙。额外副本改为铸造厂、蓄水机房、测星站、霜骨祭坛、温室、面具藏馆、干船坞、泵房、圣物库和星仪室；原地图ID与73个任务保持一致。[制作范围与编辑方式](docs/rpg/ACTS-2-6-ART.md)。长时间性能验收继续暂缓。
+
 RPG故事模式连续地图重做版：运行 `dist/CrimsonTide-Story.exe`，标题选择「故事模式 · 血月尽头」。六幕独立营地连到大片野外，包含可探索支路、12层额外洞窟、可激活传送阵、楼梯高差与进屋遮挡。[实现与剩余差异](docs/rpg/IMPLEMENTATION.md)、[重制版地编研究](docs/rpg/D2R-ENVIRONMENT-RESEARCH.md)、[详细计划](docs/rpg/RPG-MODE-PLAN.md)、[长篇剧情](docs/rpg/STORY.md)、[任务索引](docs/rpg/QUESTS.md)。
 
 > **新人 / 新 AI 参与开发，请先读 [项目工作指引 PROJECT-GUIDE.md](PROJECT-GUIDE.md)**：它按功能域列出每处代码在哪个文件哪一行（含架构链路、数值常量表、测试体系与已知坑），可直接定位要改的地方，不必遍历整个项目；交接前的更新规范见该文件 §12。
