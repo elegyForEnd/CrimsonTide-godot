@@ -3,6 +3,7 @@ extends RefCounted
 const GROUND = preload("res://resources/story_ground.gdshader")
 const STONE = preload("res://resources/story_stone.gdshader")
 const WATER = preload("res://resources/story_water.gdshader")
+const Floors=preload("res://scripts/story_floor_palette.gd")
 var kit = preload("res://scripts/story_asset_kit.gd").new()
 var world
 var roofs: Array=[]
@@ -69,7 +70,7 @@ func populate_chunk(r, chunk: Node3D) -> void:
 			for node in authored.find_children("*","LightmapGI",true,false): node.light_data=null; node.free()
 			for node in authored.find_children("*","ReflectionProbe",true,false): node.free()
 		chunk.add_child(authored)
-		register_authored(authored)
+		register_authored(authored,r)
 		world.scenery=saved
 		return
 	terrain(r)
@@ -138,6 +139,7 @@ func terrain(r) -> void:
 		for channel in ["albedo","normal","orm"]:
 			mat.set_shader_parameter("ground_tex" if channel=="albedo" else "ground_"+channel,load(kit.BASE+"pbr/"+soil_name+"_"+channel+".png"))
 			mat.set_shader_parameter("road_tex" if channel=="albedo" else "road_"+channel,load(kit.BASE+"pbr/"+road_name+"_"+channel+".png"))
+	if Floors.architectural(r): mat=Floors.material(r)
 	var st := SurfaceTool.new(); st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var step := 50 if r.act==1 and r.stage in [0,1,7] else 100
 	var margin := 1000 if r.stage==0 else 0
@@ -171,7 +173,6 @@ func terrain(r) -> void:
 							else: vertices.append_array([a,b,c])
 				for p in vertices:
 					var path: float=1.0-smoothstep(55,150,r.path_distance(p))
-					if r.layout=="castle" and (p.y>2750 or p.y<1300 or p.x<1750 or p.x>4650): path=1.0
 					for b in r.buildings:
 						if b.rect.grow(16).has_point(p): path=1.0
 					st.set_color(Color(1,1,1,path)); st.set_uv(p/100)
@@ -382,6 +383,7 @@ func stairway(r, item: Dictionary) -> void:
 	var rect: Rect2=Rect2(item.rect.position+r.origin,item.rect.size)
 	var terrace: Rect2=Rect2(item.terrace.position+r.origin,item.terrace.size)
 	var mat: Material=kit.pbr("masonry",Color("cec4ae")) if r.act==1 else stone(Color("797167"))
+	if Floors.architectural(r): mat=Floors.material(r)
 	if mat is StandardMaterial3D:
 		var tiled: StandardMaterial3D=mat.duplicate()
 		tiled.uv1_triplanar=true; tiled.uv1_world_triplanar=true; tiled.uv1_scale=Vector3.ONE*.55
@@ -613,7 +615,7 @@ func cover_batch(mesh: Mesh, transforms: Array, material: Material = null) -> vo
 	var node := MultiMeshInstance3D.new(); node.multimesh=multi; node.material_override=material
 	node.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF; world.scenery.add_child(node)
 
-func register_authored(root: Node3D) -> void:
+func register_authored(root: Node3D, region) -> void:
 	for node in root.find_children("*","Node3D",true,false):
 		if node.has_meta("licensed_tree") or node.name.begins_with("woodland_tree"):
 			kit.refresh_tree(node)
@@ -621,7 +623,9 @@ func register_authored(root: Node3D) -> void:
 			var graphics=world.get_node("/root/GraphicsQuality")
 			node.visible=graphics.advanced() and graphics.quality==0
 		if node is MeshInstance3D and node.material_override is ShaderMaterial and node.material_override.shader==GROUND:
-			node.material_override.set_shader_parameter("earth",Color("c7c8bd")); node.material_override.set_shader_parameter("road",Color("d5d3cd"))
+			if Floors.architectural(region): node.material_override=Floors.material(region)
+			else:
+				node.material_override.set_shader_parameter("earth",Color("c7c8bd")); node.material_override.set_shader_parameter("road",Color("d5d3cd"))
 		if node.has_meta("building_rect"):
 			var roof: Node3D=node.find_child("Roof*",true,false); var front: Node3D=node.find_child("Front*",true,false)
 			var side: Node3D=node.find_child("Side*",true,false)

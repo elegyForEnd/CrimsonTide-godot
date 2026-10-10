@@ -14,6 +14,8 @@ Forward+ 开场美术升级版：运行 `dist/CrimsonTide-ForwardPlus-4K.exe`，
 
 室外与城堡续作：最新试玩 `dist/CrimsonTide-ForwardPlus-v3.exe`。增加场所化室外布置、不规则落叶洞窟与16个Blender细节模块。断羽驿路西侧支线可进入「灰棘旧堡」，包含门庭、驻军庭院、军械西翼、书记东翼、拱顶大厅与升高领主厅，以及宝箱、守卫战、传送阵和双向返回。[设计和编辑方式](docs/rpg/OUTDOOR-CASTLE.md)。长时间跑分继续暂缓。
 
+室内铺地修正版：最新试玩 `dist/CrimsonTide-ForwardPlus-v4.exe`，修正城堡、墓室、礼拜堂和书库复用野外地面的遗漏；独立室内PBR与铺装分区同步台阶、台基，保留天然洞窟岩土。[材质分流与验证](docs/rpg/INTERIOR-FLOORS.md)。
+
 RPG故事模式连续地图重做版：运行 `dist/CrimsonTide-Story.exe`，标题选择「故事模式 · 血月尽头」。六幕独立营地连到大片野外，包含可探索支路、12层额外洞窟、可激活传送阵、楼梯高差与进屋遮挡。[实现与剩余差异](docs/rpg/IMPLEMENTATION.md)、[重制版地编研究](docs/rpg/D2R-ENVIRONMENT-RESEARCH.md)、[详细计划](docs/rpg/RPG-MODE-PLAN.md)、[长篇剧情](docs/rpg/STORY.md)、[任务索引](docs/rpg/QUESTS.md)。
 
 > **新人 / 新 AI 参与开发，请先读 [项目工作指引 PROJECT-GUIDE.md](PROJECT-GUIDE.md)**：它按功能域列出每处代码在哪个文件哪一行（含架构链路、数值常量表、测试体系与已知坑），可直接定位要改的地方，不必遍历整个项目；交接前的更新规范见该文件 §12。

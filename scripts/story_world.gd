@@ -41,6 +41,7 @@ func build_story(c) -> void:
 			if child is WorldEnvironment:
 				child.environment.ambient_light_color=Color("829ab7")
 				child.environment.ambient_light_energy=.28 if c.map.layer==0 else .16
+				if c.map.layout=="crypt": child.environment.ambient_light_energy=.26
 				child.environment.background_color=Color("171b20")
 	sync_story(Vector2(1440,900),0)
 

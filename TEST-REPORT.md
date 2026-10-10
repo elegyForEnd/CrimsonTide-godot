@@ -353,3 +353,13 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 范围见docs/rpg/OUTDOOR-CASTLE.md。本轮只扩展开场样板和一座独立城堡；第二至第六幕没有逐幕精制。4K截图不等于4K60验收，完整人工战斗录像、时间超分残影与长测仍未完成。
 
 - 最后校准领主厅两盏灯具及光源的台基高度，四处位置均与逻辑地面对应；旧堡重新烘焙21.1秒。无头集成禁用GPU资源的线程预载，消除DummyMesh错误RID，真实游戏继续异步预载。最终集成只保留既有UI锚点警告。
+
+## 2026-10-10 建筑室内地面分流
+
+- 修正v3的遗漏：城堡、墓室、礼拜堂/大教堂、书库不再复用野外soil/road地面混合。独立story_floor_palette和story_interior_floor shader忽略道路顶点色，采用石板、暗色磨损石板、木地板、中央礼仪带与领主厅铺砖；天然洞窟/矿坑保留岩土。
+- 新增三套完整2K PBR、九张PNG，合计十三套/39张颜色、OpenGL法线、ORM。源自Poly Haven CC0，作者、下载URL、MD5/SHA256合并至material-sources.json，所有新贴图统一mipmap和VRAM压缩。书库使用已有旧木PBR。
+- 原位修改旧堡地面、台阶和台基，保留网格/UV2/地编/碰撞；传送阵石柱保持独立材质。第九区实际重新烘焙，最终25.2秒（含编辑器启动），普通/兼容缓存同步。原有非目标区域SCN的重序列化噪声已还原。
+- tests/story_architectural_floors.gd：无头384项0失败，Forward+实机394项0失败，Compatibility实机394项0失败。覆盖六幕全部建筑布局的材质分流及PBR、旧堡实际缓存中的建筑地面/台阶；实际4K照片覆盖城堡大厅/领主厅、墓室、礼拜堂、书库。材质检查夹具不创建额外LightmapGI，最终GL日志无lightmap空RID错误。
+- 地理660项0失败、故事集成12项0失败，集成只保留既有UI锚点警告；路牌782锚点DRIFT0/WRONG0。未重跑长时间性能测试或全仓库门禁。
+- 最新试玩dist/CrimsonTide-ForwardPlus-v4.exe，旧EXE保留，兼容启动脚本指向v4。制作与资源来源见docs/rpg/INTERIOR-FLOORS.md。原有PV提示词未修改。
+- v4独立包2,961,320,962字节；实际Vulkan启动故事模式STORY_READY quests=73 act=1 stage=0 npc_asset=true。内嵌PCK直接载入旧堡检查：PACKED_ARCHITECTURAL_FLOORS_READY count=16，新贴图资源在包内存在，最终日志无脚本/资源错误。

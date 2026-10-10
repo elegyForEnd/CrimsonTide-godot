@@ -77,3 +77,5 @@ WASD移动（S沿地图南向），鼠标右键点击行走，滚轮调整视野
 `tools/inspect_d2r_scenes.py`只读解析指定重制版CASC；`tools/inspect_reference_regions.py`补查关卡出口表。
 
 `tools/inspect_reference_maps.py`只读解析本地包；依赖mpyq与dclimplode，可安装到output/map-research-deps复查。
+
+室内铺地修正已更新到v4：城堡、墓室、礼拜堂和书库使用独立建筑材质，台阶与台基同步；天然洞窟保留岩土。见[INTERIOR-FLOORS.md](INTERIOR-FLOORS.md)。地图、任务和碰撞数据不变，长时间跑分继续暂缓。

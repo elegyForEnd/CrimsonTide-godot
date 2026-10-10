@@ -455,6 +455,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
 | 不规则洞窟与旧堡副本 | story_region.floor_contains/build_castle、story_environment.cave_shell/castle_shell；story-cave-footprint.json统一地面/移动/寻路/探索图；OUTDOOR-CASTLE.md、tests/story_outdoor_castle.gd；第九区存档上限从章节地图数量读取 |
+| 建筑室内地面材质 | story_floor_palette.gd、resources/story_interior_floor.gdshader；城堡/墓室/书库/礼拜堂分流，自然洞窟保留岩土；tools/patch_story_interior_floors.gd仅替换地面/台阶/台基，tests/story_architectural_floors.gd；docs/rpg/INTERIOR-FLOORS.md |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
 | 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:328 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
 | 探索地图、UI与输入 | `story_screen.gd:356 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
@@ -868,6 +869,8 @@ git status --porcelain
 | 2026-10-09 | （本轮未提交） | 魔境战斗密度与数值重平衡：节点图统一安排战斗/圣坛/补给/后段特殊分支，移除会话二次覆盖。200 种子×5 层平均战斗 4.102→6.304、最少 3→6；普通怪数量/后期血量、血瓶清场补充、精英/首领奖励和合作人数统计同步调整。新增 `tests/rogue_map_balance.gd` 全路线与实际刷怪验收；专题和测试记录同步更新。 |
 
 | 2026-10-10 | 见同批提交 | 室外/洞窟/灰棘旧堡续作：16个Blender模块、111处共享补充摆放、不规则洞窟统一轮廓与碰撞；新增第一幕第九区旧堡，保留旧地图ID与73个任务，接入战斗/宝箱/传送/存档；实际光照烘焙与4K场景验证，长时间跑分暂缓。导航与生产契约见OUTDOOR-CASTLE.md。 |
+
+| 2026-10-10 | 见同批提交 | 建筑室内铺地修正：独立floor_palette与室内Shader，新增三套2K PBR，城堡/墓室/书库/礼拜堂与野外泥路分离；城堡台阶/台基同步材质并重烘焙，六幕材质选择与5个实机机位覆盖，见INTERIOR-FLOORS.md。 |
 
 ### 12.7 最近一次全量审计（2026-10-07）
 

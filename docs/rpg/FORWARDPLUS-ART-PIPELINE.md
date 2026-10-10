@@ -4,7 +4,7 @@
 
 ## 实际运行与画质
 
-最新独立试玩为 `dist/CrimsonTide-ForwardPlus-v3.exe`，标题选择故事模式；旧版试玩保留。独立包兼容入口为同目录Start-Compatibility.cmd。
+最新独立试玩为 `dist/CrimsonTide-ForwardPlus-v4.exe`，标题选择故事模式；旧版试玩保留。独立包兼容入口为同目录Start-Compatibility.cmd。
 
 源码默认 Forward+ / Vulkan；设置→画面设置提供高画质、标准、兼容三档和FSR2、FSR1、原生分辨率。默认FSR2的3D内部比例0.67，界面按输出分辨率绘制。兼容渲染需重启，独立入口为根目录 `Start-Compatibility.cmd`。切图或大距离传送时重置时间超分历史。
 
@@ -18,7 +18,7 @@
 
 - 96个原创GLB：六类服务建筑、自然基础资产、21组完整/破损结构模块、13类生活/自然模块及12类室内家具，新增16个室外/洞窟/城堡模块。瞭望塔、钟楼尖顶、锻炉烟道、档案塔、仓库斜棚和酒馆廊台区分服务建筑。
 - 两个经过归一化、减面和合批的CC0植被模型：Poly Haven树木和蕨类。树木按树干、枝条、叶片分别保留轮廓，约14.3万三角，蕨类6232三角；地表植被按16米空间网格分组MultiMesh，避免整图一批全部提交。布局中的树木读取当前GLB，因此继续编辑master后不会停留在旧缓存网格。
-- 十套2K PBR材质，共30张颜色、OpenGL法线、ORM贴图；ORM为R遮蔽/G粗糙度/B金属。岩石、树皮、铁件和布料使用独立贴图。
+- 十三套2K PBR材质，共39张颜色、OpenGL法线、ORM贴图；ORM为R遮蔽/G粗糙度/B金属。岩石、树皮、铁件和布料使用独立贴图。
 - 门洞维持既有可走尺寸；导出检查闭合部件面朝向，开放叶片单独做实机检查。损坏拱门和屋面实际移除结构件，未用纹理代替轮廓破损。
 
 材质来自 [Poly Haven CC0库](https://polyhaven.com/license)。植被来源为 [tree_small_02](https://polyhaven.com/a/tree_small_02) 与 [fern_02](https://polyhaven.com/a/fern_02)；作者、许可、下载地址、MD5及SHA256分别保存在material-sources.json和vegetation-sources.json。项目不读取参考游戏的美术资源。
@@ -62,3 +62,5 @@ ImageGen建筑参考与完整提示词保存在REFERENCE.md；参考图用于方
 正式性能结果、加载时间、显存及全模式回归记在TEST-REPORT；原始数据由 `tests/story_4k_benchmark.gd` 和 `tools/monitor_story_gpu.py` 输出。基线快照在build/environment-baseline-20261010.zip，旧试玩保留。
 
 当前是开场样板与生产流程升级。六幕均使用新渲染器，但第二至第六幕尚未逐幕重做资产与构图。后续扩展应复用模块、材质规格及灯光方式，仍需按各幕环境独立制作与验收；不能以渲染器切换作为整部游戏达到商业重制精度的证明。
+
+建筑室内铺地修正见[INTERIOR-FLOORS.md](INTERIOR-FLOORS.md)：城堡/墓室/书库/礼拜堂使用独立建筑材质，自然洞窟保留岩土。台阶与台基同步铺地，不再混合野外泥土与道路贴图。

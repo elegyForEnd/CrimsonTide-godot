@@ -366,6 +366,115 @@
           "map": "arm"
         }
       ]
+    },
+    {
+      "role": "interior_stone",
+      "slug": "monastery_stone_floor",
+      "page": "https://polyhaven.com/a/monastery_stone_floor",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Amal Kumar": "All"
+      },
+      "files": [
+        {
+          "file": "interior_stone_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/monastery_stone_floor/monastery_stone_floor_diff_2k.png",
+          "md5": "93888392f47c6ce4157e9ba31225a102",
+          "sha256": "fd391c50280252e0608426cb4c51d13a840fe39dbc10c67429f9e6b4fc6a61a9",
+          "bytes": 22020015,
+          "map": "Diffuse"
+        },
+        {
+          "file": "interior_stone_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/monastery_stone_floor/monastery_stone_floor_nor_gl_2k.png",
+          "md5": "ed027ecd9fbd20bac3232d7f28988723",
+          "sha256": "58beb7054326e8f41ce10ab862925041291cc8056da96d5fba43869af66e2f6d",
+          "bytes": 22928882,
+          "map": "nor_gl"
+        },
+        {
+          "file": "interior_stone_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/monastery_stone_floor/monastery_stone_floor_arm_2k.png",
+          "md5": "fd9e19fc579476e6ec93751d4cd0c4bf",
+          "sha256": "4921a7d11ab35ec81f766df6d830fa55172eeaa80c0f8801e5654cebf74acba0",
+          "bytes": 15514025,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "crypt_slab",
+      "slug": "slab_tiles",
+      "page": "https://polyhaven.com/a/slab_tiles",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Dario Barresi": "Processing",
+        "Dimitrios Savva": "Photography"
+      },
+      "files": [
+        {
+          "file": "crypt_slab_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/slab_tiles/slab_tiles_diff_2k.png",
+          "md5": "81d239a0e765d610a5fda8b6b0e1d2d0",
+          "sha256": "843baf9a88fccd65583949f1f9f1641a83e02a557b114be7a20fd8319a0e3e8f",
+          "bytes": 20483215,
+          "map": "Diffuse"
+        },
+        {
+          "file": "crypt_slab_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/slab_tiles/slab_tiles_nor_gl_2k.png",
+          "md5": "f6fc5828e3d2c9944704afc72a9429ae",
+          "sha256": "1e2eb0ba72c9883622cc71be3e971a5cbb94785a60d52d66563a65c6211af66f",
+          "bytes": 20696790,
+          "map": "nor_gl"
+        },
+        {
+          "file": "crypt_slab_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/slab_tiles/slab_tiles_arm_2k.png",
+          "md5": "2b0ca104f2a7ce861a2f1ad4667a1b38",
+          "sha256": "af0b5be47e3cec06bf1d690561f2053f12ef216270eccb32dc3a3eade089251f",
+          "bytes": 17781799,
+          "map": "arm"
+        }
+      ]
+    },
+    {
+      "role": "ceremonial_tile",
+      "slug": "marble_tiles",
+      "page": "https://polyhaven.com/a/marble_tiles",
+      "license": "CC0-1.0",
+      "resolution": "2k",
+      "authors": {
+        "Charlotte Baglioni": "All"
+      },
+      "files": [
+        {
+          "file": "ceremonial_tile_albedo.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_tiles/marble_tiles_diff_2k.png",
+          "md5": "facdc0ed3f0e0b98e890eeb29b8997ab",
+          "sha256": "3db3415d802c34244a092166ce885c761a6c624d2d3376d61d3a19a3d1f5c7f0",
+          "bytes": 22109414,
+          "map": "Diffuse"
+        },
+        {
+          "file": "ceremonial_tile_normal.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_tiles/marble_tiles_nor_gl_2k.png",
+          "md5": "20ab8be05470eaef5ebd26a275e7038d",
+          "sha256": "9acae626f9a727525744528d0c343d39a8979853c3b3995f557e74ddf481f266",
+          "bytes": 20309174,
+          "map": "nor_gl"
+        },
+        {
+          "file": "ceremonial_tile_orm.png",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/marble_tiles/marble_tiles_arm_2k.png",
+          "md5": "20898f180a1a4cc1dcea544928fca46b",
+          "sha256": "3d087c02819115988c32f6d62aea0dbdd08650d00726a8cf54ccdd972d208a1b",
+          "bytes": 16801255,
+          "map": "arm"
+        }
+      ]
     }
   ]
 }

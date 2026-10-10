@@ -8,6 +8,7 @@ import json
 import pathlib
 import time
 import urllib.request
+import argparse
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 TARGET = ROOT / 'assets/story/environment/pbr'
@@ -22,6 +23,9 @@ PALETTE = {
     'iron': 'rusty_metal_04',
     'cloth': 'denim_fabric',
     'bark': 'bark_brown_02',
+    'interior_stone': 'monastery_stone_floor',
+    'crypt_slab': 'slab_tiles',
+    'ceremonial_tile': 'marble_tiles',
 }
 
 
@@ -37,9 +41,15 @@ def request(url):
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--roles',help='Comma-separated palette roles; preserve other manifest entries')
+    args=parser.parse_args()
+    selected=args.roles.split(',') if args.roles else list(PALETTE)
+    assert set(selected)<=set(PALETTE), selected
     TARGET.mkdir(parents=True, exist_ok=True)
     assets = []
     for role, slug in PALETTE.items():
+        if role not in selected: continue
         files = json.loads(request(f'https://api.polyhaven.com/files/{slug}'))
         info = json.loads(request(f'https://api.polyhaven.com/info/{slug}'))
         maps = []
@@ -61,7 +71,11 @@ def main():
         assets.append({'role': role, 'slug': slug, 'page': f'https://polyhaven.com/a/{slug}',
                        'license': 'CC0-1.0', 'resolution': '2k',
                        'authors': info.get('authors', {}), 'files': maps})
-    (TARGET.parent / 'material-sources.json').write_text(json.dumps(
+    manifest_path=TARGET.parent/'material-sources.json'
+    if args.roles and manifest_path.exists():
+        old=json.loads(manifest_path.read_text(encoding='utf-8'))
+        assets=[asset for asset in old['assets'] if asset['role'] not in selected]+assets
+    manifest_path.write_text(json.dumps(
         {'provider': 'Poly Haven', 'license_page': 'https://polyhaven.com/license',
          'normal_convention': 'OpenGL +Y', 'orm_channels': 'R=AO, G=roughness, B=metallic',
          'assets': assets}, ensure_ascii=False, indent=2), encoding='utf-8')
