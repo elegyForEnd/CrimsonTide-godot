@@ -1,0 +1,232 @@
+第 1 段：血月降临
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact petite white-haired, red-eyed anime swordswoman with her reference bow, black-white-crimson gothic dress and ornate one-handed red crystal sword. She has no crown and no wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed lantern cleric in her dark navy and pale-cyan gothic nun outfit, with her veil, silver ornaments and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with her high ponytail, black-violet gothic armor, torn violet coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed gothic queen with her ornate black-white-crimson rose dress, red crystal crown, long red crystal sword and exactly six cathedral stained-glass blade wings.
+
+On-screen cast: only <Subject 4>, the Queen. Do not show Subjects 1, 2 or 3.
+
+summary:
+[reference generation, cinematic game PV] Establish a ruined kingdom beneath the blood moon, then reveal the source of the crimson storm. This is the opening segment of one continuous trailer. Follow the segment duration configured in the timeline.
+
+retention_analysis:
+Preserve the Queen's face, costume, proportions, crown, sword and exactly six wings from Picture 4. Replace the reference background with the cathedral setting. Animate her naturally, not as a still illustration.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, crisp drawn linework, cel-shaded characters, deep navy shadows, crimson moonlight, old gold accents, painterly gothic architecture, widescreen composition.
+[Shot 1] During the opening portion, slowly glide above a ruined royal city. Broken cathedral spires silhouette against an enormous blood-red moon. Thin crimson mist flows through wet streets; small watch fires establish scale. No characters in this establishing shot.
+[Shot 2] In the middle portion, cut inside the highest cathedral. <Subject 4> stands before a shattered rose window in a symmetrical long shot. Her exactly six stained-glass blade wings unfold slowly into a countable silhouette. Keep her body still and regal.
+[Shot 3] In the closing portion, cut to the Queen's red eye opening, with the edge of her crown visible. Her gaze is cold and unhurried. End on a restrained crimson glint and a stable close-up, suitable for a deliberate cut to the heroines in a different location. Do not fade to black.
+
+overall_soundscape:
+Cold wind, one distant cathedral bell, low stone resonance and delicate glass-wing chimes. No dialogue, singing or narration.
+
+non_diegetic_music:
+None. Generate environmental and action sounds only; the full trailer score will be added separately.
+
+constraints:
+One Queen only. Exactly six wings, no duplicate body or wing pairs. No live action, photorealism, glossy plastic 3D, morphing, gore, text, captions, logos, watermark or UI.
+第 2 段：三位守望者
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact petite white-haired, red-eyed anime swordswoman, with her reference bow, black-white-crimson gothic dress and ornate one-handed red crystal sword. No crown or wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed lantern cleric in a dark navy and pale-cyan gothic nun outfit, with her reference veil, silver ornaments and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with a high ponytail, black-violet gothic armor, torn violet coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed gothic queen with a red crystal crown, long red crystal sword and exactly six stained-glass blade wings.
+
+On-screen cast: only Subjects 1, 2 and 3. Do not show Subject 4, the Queen.
+
+summary:
+[reference generation, cinematic game PV] Introduce three distinct heroines, then send them into the frontier. Follow the duration configured for this segment.
+
+retention_analysis:
+Preserve the exact face, hair, costume, proportions and weapon of each corresponding reference. Never transfer features between identities.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, crisp linework, cel shading, deep navy shadows, crimson moonlight, old gold accents, wet stone and drifting rose petals.
+[Shot 1] Begin with a deliberate cut to an empty moonlit courtyard, a new location. A brief low view of wet cobblestones establishes the scene; then tilt up to <Subject 1> lifting her crystal sword into a ready guard. Her white hair and bow move in the wind. The Queen is absent; this is a cut, not a character transformation.
+[Shot 2] In the middle portion, use two clear portrait cuts: <Subject 2> raises her lantern beside her face, illuminating her veil with cyan light; then <Subject 3> turns toward the distant cathedral and rests one hand on her sheathed katana. Give each face a readable moment.
+[Shot 3] In the closing portion, show all three in a medium-wide rear three-quarter view: Xueli left, Feiyue center, Yayu right. They start running together through a broken courtyard arch toward screen right. Finish with a readable running formation; no final fade or title card.
+
+overall_soundscape:
+Bootsteps on wet stone, cloth movement, one soft sword resonance, a lantern chime and gathering running footsteps. No dialogue or vocals.
+
+non_diegetic_music:
+None. Environmental and action sounds only.
+
+constraints:
+Exactly three heroines in the group shot. No Queen, crown or wings. No face merging, swapped weapons, extra limbs, plastic 3D, realism, generated text, subtitles, logo, watermark or UI.
+第 3 段：深入月冠边境
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact white-haired, red-eyed petite swordswoman with her bow, black-white-crimson gothic dress and one-handed red crystal sword; no crown or wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed cleric with her navy-cyan gothic nun outfit, veil, silver ornaments and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with her high ponytail, black-violet armor, torn coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed queen with her red crystal crown, sword and exactly six stained-glass blade wings.
+
+On-screen cast: only Subjects 1, 2 and 3. Do not show Subject 4, the Queen.
+
+summary:
+[reference generation, exploration cinematic] The team crosses the Moon-Crown Frontier and searches a reliquary while the crimson storm approaches. Follow this segment's configured duration.
+
+retention_analysis:
+Preserve all three heroine identities, costumes and weapons. Reference backgrounds are replaced by the frontier and chapel.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, deep navy shadows, crimson moonlight, old gold accents, painterly blue-gray masonry and layered marsh fog.
+[Shot 1] Begin with a short continuation of the team's left-to-right running formation. A high tracking view reveals a weathered stone bridge across a misty marsh. The three run along its intact center, with Feiyue leading, Xueli following and Yayu guarding the rear. A distant wall of red mist advances slowly. Keep the motion readable and physically grounded.
+[Shot 2] In the middle portion, cut inside a ruined chapel alcove. Feiyue kneels before an old gold-trimmed reliquary and opens its lid. Xueli stands on screen left, illuminating the contents with her cyan lantern. Yayu stands on screen right watching the doorway. Establish all three roles in one stable composition.
+[Shot 3] Show a close insert of a single red blood crystal inside the chest. Feiyue takes it and places it in her belt pouch; her sword remains safely at her side. Return to the trio as they hear a distant threat and turn toward the exit. Hold their alert pose for the ending. No fade to black.
+
+overall_soundscape:
+Running footsteps, marsh wind, a chest latch, one crystal pickup chime and a distant creature call. No dialogue or vocals.
+
+non_diegetic_music:
+None. Environmental and action sounds only.
+
+constraints:
+Exactly three distinct heroines. No Queen, wings, multiplying loot, vanishing props, extra limbs, face swaps, gore, live action, glossy 3D, text, inventory panels, logo, watermark or UI.
+第 4 段：去留抉择，鸦羽迎敌
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact white-haired, red-eyed petite swordswoman with her bow, black-white-crimson dress and one-handed red crystal sword; no crown or wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed cleric with her navy-cyan gothic nun outfit, veil and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with her high ponytail, black-violet gothic armor, torn violet coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed queen with her red crystal crown, sword and exactly six stained-glass blade wings.
+
+On-screen cast: only Subjects 1, 2 and 3. Do not show Subject 4, the Queen.
+
+summary:
+[reference generation, choice and action cinematic] The heroines choose to press deeper instead of taking the extraction route, and Yayu cuts through the first enemies. Follow this segment's configured duration.
+
+retention_analysis:
+Preserve each heroine's face, hair, silhouette, clothing and signature weapon. Do not exchange their combat roles.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, deep navy shadows, crimson moonlight, old gold accents, wet gothic stone and restrained magical light.
+[Shot 1] Open with the trio holding their alert formation at the chapel doorway. Then cut to a rear view at a fork: a distant pale-gold extraction beacon glows down the left path, while a blood-lit cathedral towers beyond the right path. Feiyue briefly looks toward the beacon, then turns toward the cathedral. Her companions follow her decision without words or interface graphics.
+[Shot 2] In the middle portion, track alongside the trio advancing to screen right into the cathedral approach plaza. Two small bone-masked, ragged night creatures rush into their path. Yayu steps ahead of her teammates and settles her hand on the katana hilt. Keep enemy silhouettes distinct from the heroines.
+[Shot 3] Yayu performs one precise katana draw. A narrow violet crescent passes through the two creatures, which recoil into harmless dark ash. She lands in a controlled low stance, her katana intact and firmly held. Feiyue is visible behind her, ready to advance. Hold this resolved pose briefly at the end; no new attack in the final instant.
+
+overall_soundscape:
+A distant beacon hum, quick boots on stone, creature calls, one clean katana swish and soft ash dispersal. No speech or vocals.
+
+non_diegetic_music:
+None. Environmental and action sounds only.
+
+constraints:
+Three unique heroines, no additional allies or Queen. One katana, no weapon morphing, duplicate bodies, gore, strobing, excessive shake, photorealism, plastic 3D, text, logo, watermark or UI.
+第 5 段：绯月突进，雪璃守护
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact white-haired, red-eyed petite swordswoman with her reference bow, black-white-crimson gothic dress and ornate one-handed red crystal sword. No crown or wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed lantern cleric with her dark navy and pale-cyan nun outfit, veil, silver ornaments and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed warrior with her high ponytail, black-violet armor, torn violet coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed queen with her red crystal crown, sword and exactly six stained-glass blade wings.
+
+On-screen cast: only Subjects 1, 2 and 3. Do not show Subject 4, the Queen.
+
+summary:
+[reference generation, cooperative combat cinematic] Feiyue exploits Yayu's opening, and Xueli protects both teammates from a heavy counterattack. Follow this segment's configured duration.
+
+retention_analysis:
+Keep all three original character identities and weapons stable throughout fast movement. Feiyue fights with the red sword; Xueli channels the lantern; Yayu carries the violet-trailing katana.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, clean sakuga motion, deep navy shadows, crimson moonlight, old gold accents and the same wet cathedral approach plaza.
+[Shot 1] Briefly continue Yayu's low finishing stance with violet ash settling around her. Feiyue advances past her from left to right, taking the opening. Keep the camera axis stable and the team clearly separated.
+[Shot 2] In the middle portion, track Feiyue performing two clean one-handed sword strikes against a thorn-armored night creature: a diagonal cut followed by a rising cut. Show anticipation, contact and recovery. Crimson trails frame her silhouette without covering her face. The enemy staggers backward without gore.
+[Shot 3] A larger shadow creature slams the ground. Xueli raises her exact lantern and forms a translucent cyan-gold sanctuary around the trio. A visible ground shockwave reaches the barrier and breaks against it. Feiyue and Yayu regain stable footing in the protected space. End on a readable group composition behind the fading shield, with cyan motes suspended in the air. No fade to black.
+
+overall_soundscape:
+Two weighted sword impacts, rapid footsteps, a low ground slam and a clear resonant lantern shield bloom. No dialogue, narration or vocals.
+
+non_diegetic_music:
+None. Environmental and action sounds only.
+
+constraints:
+Exactly three heroines. No Queen or wings, no face swaps, duplicated swords, hand deformation, opaque effects hiding the action, gore, live action, glossy 3D, text, subtitles, logo, watermark or UI.
+第 6 段：血潮女王
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact petite white-haired, red-eyed anime swordswoman with her reference bow, black-white-crimson dress and ornate one-handed red crystal sword. She has no crown and no wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed lantern cleric in her navy-cyan gothic nun outfit with her cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with her high ponytail and black-violet armor.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed gothic queen with her ornate black-white-crimson rose dress, red crystal crown, long red crystal sword and exactly six cathedral stained-glass blade wings.
+
+On-screen cast: only <Subject 1>, Feiyue, and <Subject 4>, the Queen. Do not show Subjects 2 or 3.
+
+summary:
+[reference generation, boss confrontation cinematic] Feiyue confronts the Blood Tide Queen, dodges a readable ring attack, then meets her blade. Follow this segment's configured duration.
+
+retention_analysis:
+Preserve both reference identities separately despite their similar hair colors. The Queen alone owns the crown, tall regal silhouette and exactly six wings. Feiyue keeps her own face, bow and smaller sword.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, deep navy shadows, crimson moonlight, old gold accents, a vast throne cathedral with black marble and shattered stained glass.
+[Shot 1] Begin with a deliberate location cut from cyan light to a cool reflection on the throne hall floor. Tilt into an over-the-shoulder view behind Feiyue, on screen left, facing the Queen across the nave on screen right. The Queen descends slowly before the throne with six wings spread behind her. Xueli and Yayu are off-screen. Do not transform the previous cleric into the Queen.
+[Shot 2] In the middle portion, the Queen points her sword. A thin luminous crimson annulus forms on the floor around Feiyue. Show the warning before the impact. Feiyue makes one quick dodge into the safe central space, then crystal shards erupt along the surrounding ring. Keep the danger ring and the safe center easy to distinguish.
+[Shot 3] Feiyue rushes from left to right and meets the Queen's sword in a clear medium two-shot. Their blades cross at center, with their distinct faces on opposite sides. End on the locked blades and bright sparks, holding the impact for the transition. Do not show a winner or fade to black.
+
+overall_soundscape:
+Cathedral reverb, glass-wing resonance, rising crystal hum, one ring eruption and one powerful sword clash. No dialogue or vocals.
+
+non_diegetic_music:
+None. Environmental and action sounds only.
+
+constraints:
+Exactly two characters. Never merge faces or swap wing ownership. Exactly six wings on the Queen, zero on Feiyue. No extra people, duplicated weapons, gore, strobing, photorealism, glossy 3D, text, captions, logo, watermark or UI.
+第 7 段：三人终局奥义
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact petite white-haired, red-eyed swordswoman with her bow, black-white-crimson gothic dress and one-handed red crystal sword. No crown or wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed cleric with her navy-cyan gothic nun outfit, veil, silver ornaments and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with her high ponytail, black-violet armor, torn coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed queen with her red crystal crown, sword and exactly six stained-glass blade wings.
+
+On-screen cast: only Subjects 1, 2 and 3. Do not show Subject 4, the Queen.
+
+summary:
+[reference generation, ultimate ability cinematic] Three heroines rally together and unleash one coordinated final attack. Follow this segment's configured duration.
+
+retention_analysis:
+Preserve each heroine's exact reference identity and signature weapon. The Queen remains off-screen in this segment even though her reference is available as Picture 4.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, elegant sakuga, deep navy shadows, crimson moonlight, old gold accents, cathedral columns and suspended stained-glass dust.
+[Shot 1] Begin with a brief near-white field of sword sparks, then make a deliberate cut to a frontal medium-wide view of the three heroines reunited inside the cathedral: Xueli left, Feiyue center, Yayu right. This is a new shot, not a transformation of the Queen. Hold long enough to establish all three identities.
+[Shot 2] In the middle portion, slowly push closer as Feiyue raises her crystal sword, Xueli lifts her lantern and Yayu settles into a draw stance. Crimson, cyan-white and violet energy gathers around the three weapons. Keep their faces readable, their feet planted and their poses separate.
+[Shot 3] Cut wide for one coordinated release toward an off-screen threat: Feiyue sends crossing crimson moon blades forward, Xueli projects a cyan-white pillar of light, and Yayu releases one violet raven-shaped slash. The three clear motion arcs converge high above the nave into a luminous rose-window pattern. Reach the main impact before the final moment, then hold the radiant pattern as its light softens. Do not add a second attack or cut to black.
+
+overall_soundscape:
+Rising crystal resonance, drawn-blade tension, three complementary energy releases and one unified deep magical impact with a short decaying tail. No dialogue, vocals or spoken attack names.
+
+non_diegetic_music:
+None. Environmental and action sounds only.
+
+constraints:
+Exactly three heroines, no Queen or fourth person, no crown or wings. No effects covering faces, merged bodies, changing weapons, gore, strobing, realism, plastic 3D, text, subtitles, logo, watermark or UI.
+第 8 段：黎明与片尾
+subject_definitions:
+<Picture 1> defines <Subject 1>, Feiyue: the exact petite white-haired, red-eyed swordswoman with her bow, black-white-crimson gothic dress and one-handed red crystal sword. No crown or wings.
+<Picture 2> defines <Subject 2>, Xueli: the exact light-blue-haired, blue-eyed cleric with her navy-cyan gothic nun outfit, veil, silver ornaments and cathedral lantern.
+<Picture 3> defines <Subject 3>, Yayu: the exact dark-purple-haired, violet-eyed katana warrior with her high ponytail, black-violet armor, torn violet coat tails and long katana.
+<Picture 4> defines <Subject 4>, the Blood Tide Queen: the exact tall white-haired, red-eyed queen with her red crystal crown, sword and exactly six stained-glass blade wings.
+
+On-screen cast: only Subjects 1, 2 and 3. Do not show Subject 4, the Queen.
+
+summary:
+[reference generation, cinematic trailer ending] The crimson storm recedes and the three heroines watch the first light of dawn. This is the final segment. Finish within the duration assigned by the timeline; do not generate another sixty-second film.
+
+retention_analysis:
+Preserve all three character silhouettes, hair, costumes and weapons, including in the rear-view ending. Do not replace them with generic figures.
+
+detailed_description:
+Premium hand-painted 2D anime dark-fantasy game cinematic, crisp linework and painterly gothic scenery. Begin with the previous crimson, cyan and violet magical afterglow, then transition from deep navy shadows into restrained pale dawn gold. Keep the ruined architecture intact as ruins, not magically rebuilt.
+[Shot 1] Open on the soft fading rose-window light above the cathedral nave, allowing a short visual continuation of the preceding ultimate attack. Then cut to a wide exterior of the same ruined kingdom. The red storm clouds begin to separate; the blood moon recedes behind the clouds. Red particles settle slowly like rose petals.
+[Shot 2] In the middle portion, a pale-gold shaft of dawn reaches the cathedral battlements. Cut to a stable wide rear view of the three heroines standing together: Xueli left, Feiyue center, Yayu right. Feiyue and Yayu lower their weapons; Xueli holds her lantern calmly. Their hair and clothing move gently in the wind.
+[Shot 3] Hold the rear-view tableau for the remaining portion, with a spacious, quiet upper-center sky reserved for a title to be added later. Make no new cuts or attacks. During the final half-second of this segment, gently fade the whole image to black. End immediately afterward, without appended credits or an extra scene.
+
+overall_soundscape:
+The magical impact decays into soft wind, drifting petals and two distant dawn bell tones. Fade the sound gently at the end. No dialogue, narration, singing or vocals.
+
+non_diegetic_music:
+None. Environmental sounds only; the final trailer score is added separately.
+
+constraints:
+Exactly three heroines in the final tableau. No Queen, fourth person, wings, costume changes, modern objects, gore, p
