@@ -1,0 +1,29 @@
+{
+  "comparison": [
+    {
+      "requested_quality": "max",
+      "path": "art\\story-portraits\\masters\\feiyue-regular-neutral-json.png",
+      "actual_size": [
+        2160,
+        3840
+      ],
+      "response_quality": null,
+      "log_quality": "standard",
+      "output_tokens": 33408,
+      "sha256": "d727076cc109d92cf83b61f921e1905b6b2ccb1d01b75c5df5fad60ce68ffa0d"
+    },
+    {
+      "requested_quality": "high",
+      "path": "art\\story-portraits\\masters\\feiyue-regular-neutral-high.png",
+      "actual_size": [
+        2160,
+        3840
+      ],
+      "response_quality": null,
+      "log_quality": "standard",
+      "output_tokens": 16243,
+      "sha256": "b15719ed8c8be173235988c30a4d33114dd81e25258a729361bbc668ad81afd2"
+    }
+  ],
+  "conclusion": "Both native 4K PNG; both logs say standard; actual quality field not returned. Token counts differ but do not independently prove quality settings."
+}

@@ -1,0 +1,53 @@
+{
+  "provider": "Rolldek",
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "documentation": "https://www.rolldek.com/docs/#/img25",
+  "model_requested": "gpt-image-2.5-sunburst",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve / costume edit. Image 1 is the exact registered 4K full-body standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround identity reference.\nCreate the ceremony clothing variant of feiyue: Ceremonial clothing: exquisitely tailored modest high-neck gothic formal dress in the character's signature colors, fitted layered bodice, intricate fine metallic embroidery, delicate lace, graceful knee-to-calf layered skirt with tasteful long back panels, elegant matching closed boots. Preserve the original distinctive hair ornaments and existing hand-held props. No bridal white palette for all characters, large crown, new wings, massive skirt obscuring feet, exposed midriff, cleavage or outfit unrelated to her identity.\nPalette and immutable identity details: white, black, deep crimson, ruby and antique gold; keep her heart-tip purple tail visible.\nKeep the entire head, facial features, calm neutral expression, hair style, hair ornaments and hair color EXACTLY like image 1. Preserve body proportions, frontal projection, shoulder height, relaxed hand locations, original props, face center, feet baseline and original 2160x3840 registration. Design beautiful believable clothing suited to this same gothic fantasy RPG character; precise seams, lace and embroidered edges with restrained materials. Keep every silhouette safely inside the canvas.\nThe mask allows clothing changes below the neck, not identity or camera changes. No head tilt, pose variation, body resizing, extra character, giant sleeve hiding hands, weapon change, unrelated jewelry, wings or text. Match image 1's neutral diffuse lighting and anime illustration style.\nReturn ONE complete full-body character, transparent PNG alpha. No white background, ground plane, checkerboard painted into pixels, collage, label, watermark, drop shadow or glow outline. Both feet and all accessories remain visible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "references": [
+    {
+      "path": "art\\story-portraits\\masters\\feiyue-regular-neutral.png",
+      "sha256": "d727076cc109d92cf83b61f921e1905b6b2ccb1d01b75c5df5fad60ce68ffa0d"
+    },
+    {
+      "path": "assets\\feiyue.png",
+      "sha256": "05d3992575f6ee5230b946b669ebc781455ce6897145ab6065b25c724915fe24"
+    }
+  ],
+  "mask": "art\\story-portraits\\masks\\feiyue-clothing-edit.png",
+  "response": {
+    "created": 1791734110,
+    "usage": {
+      "input_tokens": 1119,
+      "output_tokens": 33500,
+      "total_tokens": 34619,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "input_tokens_details": {
+        "text_tokens": 481,
+        "image_tokens": 638
+      }
+    }
+  },
+  "quality_verified": false,
+  "actual_size": [
+    2160,
+    3840
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "sha256": "ea3cdf4021a2c9407046c34b0efd2727a01b16da01e5e7d38c1bc0f1eee2682c",
+  "seconds": 216.44
+}

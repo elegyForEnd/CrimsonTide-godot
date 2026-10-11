@@ -1,0 +1,49 @@
+{
+  "provider": "Rolldek",
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "documentation": "https://www.rolldek.com/docs/#/img25",
+  "model_requested": "gpt-image-2.5-sunburst",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve. Asset: production visual-novel full-body standing illustration, native 4K transparent PNG.\nInput image 1 is the user's authoritative character turnaround. Use ONLY the left FRONT view as the identity, pose, costume and prop reference. Produce ONE character in frontal projection, one full-body portrait, not three views, no panels and no text.\nPose and alignment: frontal gaze, no head tilt, shoulders level, relaxed upright standing, both feet visible and planted at the same height. Retain the same anatomy, hand pose and character proportions as the reference front view. On the 2160x3840 canvas, center the face approximately at x=1080, y=700; topmost hair or headdress at y=160 and bottoms of shoes at y=3680. Fit all hair, flowing dress and accessories inside safe margins.\nExpression: calm neutral, gentle attentive eyes, relaxed brows, small closed mouth, no tears or exaggerated blush.\nFinish: exquisite faithful anime illustration with delicate clean linework, precise original metal embroidery and lace, soft cel/painterly shading matching the reference, crisp hair strands, consistent neutral diffuse light. Do not turn her into a photo or 3D render.\nBackground: real fully transparent alpha, no white matte, painted checkerboard, scenery, ground, drop shadow, glow outline, vignette, lettering, border or watermark. Preserve fine alpha edges and fully opaque pale fabrics.\n\nCharacter: Xueli, the same light blue-haired cyan-eyed young adult anime woman. Preserve exactly her facial identity, long curled light-blue hair, dark navy lace veil with silver embroidery and star-shaped temple ornament, mint neck bow and flowing mint ribbons, high-neck dark navy gothic cleric dress, white layered lace, black gloves, thigh straps and tall silver-embroidered black heeled boots. She holds the original silver gothic lantern with soft cyan light low on the viewer's left, with the same chain and hand pose as the front reference. The lantern is a small prop light, not a halo lighting the entire body. No staff, crown or sword. Do not make her white-haired or change eye color.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "references": [
+    {
+      "path": "assets\\xueli.png",
+      "sha256": "78cd0bb1a88d58f65e8918af2c525ea6ba2eda8515e2df7f9dc9a9f42f4d076b"
+    }
+  ],
+  "mask": null,
+  "response": {
+    "created": 1791733692,
+    "usage": {
+      "input_tokens": 866,
+      "output_tokens": 32676,
+      "total_tokens": 33542,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "input_tokens_details": {
+        "text_tokens": 528,
+        "image_tokens": 338
+      }
+    }
+  },
+  "quality_verified": false,
+  "actual_size": [
+    2160,
+    3840
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "sha256": "79bf2bbf2f8b92dff6a24a2e117b251208e9f70808f5bb6c68e4091bd83cbe59",
+  "seconds": 141.47
+}

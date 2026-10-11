@@ -2,6 +2,19 @@ extends RefCounted
 ## Presentation scripts retain the original prose; only explicit attributions name a speaker.
 const HEROES := ["绯月","雪璃","鸦羽"]
 const MAX_PAGE := 108
+const PORTRAITS = preload("res://scripts/story_portrait_art.gd")
+const EXPRESSION_CUES := {
+	"静钟村还没有消息。":"worried","再等下去——":"determined",
+	"它会去叫更多。":"determined","老人还在这里。":"worried",
+	"你要去哪里？":"smile","我们也去。":"smile",
+	"灯在这里。":"determined","链已经断了。一起。":"determined",
+	"我们明天再去帮他们。":"determined","有些人后来没有明天。":"sad"
+}
+static func expression_for(page: Dictionary) -> String:
+	var authored: String=page.get("expression","")
+	if authored in PORTRAITS.EXPRESSIONS: return authored
+	var line: String=str(page.get("text","")).trim_prefix("“").trim_suffix("”")
+	return EXPRESSION_CUES.get(line,"neutral")
 static func actor_for(person: String, content: Dictionary) -> String:
 	var hero := HEROES.find(person)
 	if hero>=0: return "hero:%d" % hero
@@ -71,4 +84,4 @@ static func npc(index: int, person: String, act: int, hero: int) -> Array:
 			{"speaker":person,"text":"汤也不用等天亮才喝。一会儿要走路，先让腿有力气。","left":"hero:0","right":right},
 			{"speaker":"旁白","text":"岑烬把碗递过去，另一只手摊开南门的巡路图。通往静钟村的路上，最后一盏灯还没有熄灭。","left":"hero:0","right":right},
 			{"speaker":person,"text":lines[0],"left":"hero:0","right":right}]
-	return [{"speaker":person,"text":lines[index],"left":left,"right":right},{"speaker":HEROES[hero],"text":reply[index],"left":left,"right":right}]
+	return [{"speaker":person,"text":lines[index],"left":left,"right":right},{"speaker":HEROES[hero],"text":reply[index],"left":left,"right":right,"expression":["determined","smile","smile","sad","smile","smile"][index]}]

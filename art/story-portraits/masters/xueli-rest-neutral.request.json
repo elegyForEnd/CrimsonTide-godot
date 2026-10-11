@@ -1,0 +1,18 @@
+{
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve / costume edit. Image 1 is the exact registered 4K full-body standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround identity reference.\nCreate the rest clothing variant of xueli: Camp rest clothing: elegant modest comfortable long-sleeved soft linen blouse or cleric tunic, fitted waist with simple cloth belt, a softly layered knee-to-calf skirt or split overskirt, opaque stockings and comfortable low boots. Keep the character's signature colors and restrained gothic embroidery. No armor plates on the torso, no nightwear, lingerie, swimsuit, exposed midriff or new accessory characters. Preserve original hair ornaments, hair silhouette, face, gloves/hand identity and hand-held props.\nPalette and immutable identity details: dark navy, cyan/mint, white lace and fine silver; retain her dark veil and cyan lantern.\nKeep the entire head, facial features, calm neutral expression, hair style, hair ornaments and hair color EXACTLY like image 1. Preserve body proportions, frontal projection, shoulder height, relaxed hand locations, original props, face center, feet baseline and original 2160x3840 registration. Design beautiful believable clothing suited to this same gothic fantasy RPG character; precise seams, lace and embroidered edges with restrained materials. Keep every silhouette safely inside the canvas.\nThe mask allows clothing changes below the neck, not identity or camera changes. No head tilt, pose variation, body resizing, extra character, giant sleeve hiding hands, weapon change, unrelated jewelry, wings or text. Match image 1's neutral diffuse lighting and anime illustration style.\nReturn ONE complete full-body character, transparent PNG alpha. No white background, ground plane, checkerboard painted into pixels, collage, label, watermark, drop shadow or glow outline. Both feet and all accessories remain visible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "content_type": "application/json",
+  "references": [
+    "art\\story-portraits\\masters\\xueli-regular-neutral.png",
+    "assets\\xueli.png"
+  ],
+  "mask": "art\\story-portraits\\masks\\xueli-clothing-edit.png"
+}

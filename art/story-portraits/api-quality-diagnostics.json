@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-11",
+  "requested": {
+    "model": "gpt-image-2.5-sunburst",
+    "quality": "max",
+    "size": "2160x3840",
+    "background": "transparent",
+    "n": "omitted",
+    "response_format": "omitted"
+  },
+  "verified": {
+    "json_sample_size": [
+      2160,
+      3840
+    ],
+    "json_sample_alpha": [
+      0,
+      254
+    ],
+    "response_quality": "absent",
+    "log_quality": "standard",
+    "actual_quality": "unverified"
+  },
+  "records": [
+    {
+      "time": 1791731162,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    },
+    {
+      "time": 1791730341,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    },
+    {
+      "time": 1791730212,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    }
+  ]
+}

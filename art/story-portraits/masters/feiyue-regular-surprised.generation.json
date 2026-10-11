@@ -1,0 +1,53 @@
+{
+  "provider": "Rolldek",
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "documentation": "https://www.rolldek.com/docs/#/img25",
+  "model_requested": "gpt-image-2.5-sunburst",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve. Image 1 is the exact registered 4K standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround IDENTITY REFERENCE.\nEdit only the masked face region of image 1 to make feiyue's expression: Natural surprise: widened eyes, lifted brows and a small round parted mouth. Keep the same iris colors and face identity; no distorted comic eyes.\nPreserve her identity and eye colors, position of the face, head angle, scale, hairstyle, hair strands and accessories. Changes are restricted to natural facial muscles: brows, eyelids, gaze, mouth and slight cheek shading. Do not move the head, shoulders or body. Do not change costume, hands, props, lighting, tail, veil, sword or alpha silhouette.\nReturn ONE complete standing portrait on the identical 2160x3840 canvas with exactly the original registration, composition and genuine transparent background. No close-up, collage, sheet, lettering, symbols, captions, background, matte, halo or shadow.\nUse refined consistent anime linework and soft rendering exactly matching image 1. The emotion must be clearly readable in a small Galgame face, but remain tasteful and anatomically natural. Preserve all pixels outside the masked region as faithfully as possible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "references": [
+    {
+      "path": "art\\story-portraits\\masters\\feiyue-regular-neutral.png",
+      "sha256": "d727076cc109d92cf83b61f921e1905b6b2ccb1d01b75c5df5fad60ce68ffa0d"
+    },
+    {
+      "path": "assets\\feiyue.png",
+      "sha256": "05d3992575f6ee5230b946b669ebc781455ce6897145ab6065b25c724915fe24"
+    }
+  ],
+  "mask": "art\\story-portraits\\masks\\feiyue-face-edit.png",
+  "response": {
+    "created": 1791734651,
+    "usage": {
+      "input_tokens": 946,
+      "output_tokens": 32802,
+      "total_tokens": 33748,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "input_tokens_details": {
+        "text_tokens": 314,
+        "image_tokens": 632
+      }
+    }
+  },
+  "quality_verified": false,
+  "actual_size": [
+    2160,
+    3840
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "sha256": "a79a8f056269837a0ec3c56c6bd0fe59da42a26e13d20be45bdbc91d11811134",
+  "seconds": 224.12
+}

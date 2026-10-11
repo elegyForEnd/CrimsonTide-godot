@@ -1,0 +1,31 @@
+{
+  "hero": "xueli",
+  "canvas": [
+    2160,
+    3840
+  ],
+  "face_rect": [
+    915,
+    405,
+    405,
+    280
+  ],
+  "expressions": [
+    "neutral",
+    "smile",
+    "joy",
+    "shy",
+    "worried",
+    "sad",
+    "angry",
+    "determined",
+    "surprised",
+    "tired"
+  ],
+  "costumes": [
+    "regular",
+    "travel",
+    "rest",
+    "ceremony"
+  ]
+}

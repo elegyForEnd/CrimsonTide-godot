@@ -1,0 +1,1250 @@
+{
+  "items": [
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "neutral",
+      "source_sha256": "d727076cc109d92cf83b61f921e1905b6b2ccb1d01b75c5df5fad60ce68ffa0d",
+      "output": "assets/story/portraits/feiyue/body-regular.png"
+    },
+    {
+      "hero": "feiyue",
+      "costume": "travel",
+      "expression": "neutral",
+      "source_sha256": "b83c115ce93a3ba4ac36609678690b6effd3b2055b9be557244491497e0e7e06",
+      "output": "assets/story/portraits/feiyue/body-travel.png"
+    },
+    {
+      "hero": "feiyue",
+      "costume": "rest",
+      "expression": "neutral",
+      "source_sha256": "28f3c22db9c0a47411d137a011cc1ac4d31509887ff6abc577af892059e1f933",
+      "output": "assets/story/portraits/feiyue/body-rest.png"
+    },
+    {
+      "hero": "feiyue",
+      "costume": "ceremony",
+      "expression": "neutral",
+      "source_sha256": "ea3cdf4021a2c9407046c34b0efd2727a01b16da01e5e7d38c1bc0f1eee2682c",
+      "output": "assets/story/portraits/feiyue/body-ceremony.png"
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "smile",
+      "source_sha256": "edd18f466fadf122b6b467a7330504fec7d31e9915ac28c7688787b47d5860a1",
+      "output": "assets/story/portraits/feiyue/face-smile.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            962.8,
+            663.0
+          ],
+          [
+            1193.1,
+            613.9
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.8649435639381409,
+            -0.016364436596632004,
+            131.7819366455078
+          ],
+          [
+            0.016364436596632004,
+            0.8649435639381409,
+            46.88672637939453
+          ]
+        ],
+        "mouth_source": "smile"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "joy",
+      "source_sha256": "d40534ca68eb66bcc788dcd2ad0304b1fdec26c77cdb47db9ac73c185b1ada0c",
+      "output": "assets/story/portraits/feiyue/face-joy.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            940.0,
+            647.7
+          ],
+          [
+            1160.3,
+            601.2
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.904628574848175,
+            -0.01527567021548748,
+            113.2431640625
+          ],
+          [
+            0.01527567021548748,
+            0.904628574848175,
+            35.812923431396484
+          ]
+        ],
+        "mouth_source": "joy"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "shy",
+      "source_sha256": "c28cd9f3d0ffe89077ab9f9ddd23b82dad9cf23474b4f57b4ac9d3699558abce",
+      "output": "assets/story/portraits/feiyue/face-shy.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            944.8,
+            657.5
+          ],
+          [
+            1171.6,
+            605.7
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.8751545548439026,
+            -0.02924605831503868,
+            146.083251953125
+          ],
+          [
+            0.02924605831503868,
+            0.8751545548439026,
+            33.05419921875
+          ]
+        ],
+        "mouth_source": "shy"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "worried",
+      "source_sha256": "ddb044397723ce763b1cf79baaa06eef0e0b10ef94b9cda1a35a1fd22737c505",
+      "output": "assets/story/portraits/feiyue/face-worried.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            954.0,
+            659.1
+          ],
+          [
+            1183.2,
+            611.8
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.8703774213790894,
+            -0.010771604254841805,
+            130.4595184326172
+          ],
+          [
+            0.010771604254841805,
+            0.8703774213790894,
+            52.158138275146484
+          ]
+        ],
+        "mouth_source": "worried"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "sad",
+      "source_sha256": "18fa68856befa9768639bb9548b857abde49595bdac734076a4d471066b34abf",
+      "output": "assets/story/portraits/feiyue/face-sad.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            945.8,
+            661.5
+          ],
+          [
+            1167.4,
+            610.5
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.8952984809875488,
+            -0.031408946961164474,
+            127.7037124633789
+          ],
+          [
+            0.031408946961164474,
+            0.8952984809875488,
+            14.153471946716309
+          ]
+        ],
+        "mouth_source": "sad"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "angry",
+      "source_sha256": "33a4125a81d31bceec7e81fdafb3c9fc8d3dda774a3d5c0687298ea754872ddc",
+      "output": "assets/story/portraits/feiyue/face-angry.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            924.4,
+            601.2
+          ],
+          [
+            1138.3,
+            556.0
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.9316471219062805,
+            -0.015944138169288635,
+            102.07099151611328
+          ],
+          [
+            0.015944138169288635,
+            0.9316471219062805,
+            61.254974365234375
+          ]
+        ],
+        "mouth_source": "angry"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "determined",
+      "source_sha256": "f6ca801a96db01d6c6042698faa689c811c390235be2e7aa7988e9f20e676edd",
+      "output": "assets/story/portraits/feiyue/face-determined.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            916.5,
+            639.3
+          ],
+          [
+            1138.1,
+            597.3
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.9031825065612793,
+            0.003458188846707344,
+            123.722412109375
+          ],
+          [
+            -0.003458188846707344,
+            0.9031825065612793,
+            61.86485290527344
+          ]
+        ],
+        "mouth_source": "determined"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "surprised",
+      "source_sha256": "a79a8f056269837a0ec3c56c6bd0fe59da42a26e13d20be45bdbc91d11811134",
+      "output": "assets/story/portraits/feiyue/face-surprised.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            924.5,
+            660.2
+          ],
+          [
+            1149.7,
+            611.2
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.883655846118927,
+            -0.02042245678603649,
+            150.24305725097656
+          ],
+          [
+            0.02042245678603649,
+            0.883655846118927,
+            33.82984161376953
+          ]
+        ],
+        "mouth_source": "surprised"
+      }
+    },
+    {
+      "hero": "feiyue",
+      "costume": "regular",
+      "expression": "tired",
+      "source_sha256": "c3bae53178f1ce3a184ce43816575fc00db53f62160f5d719b3b3cec5d835949",
+      "output": "assets/story/portraits/feiyue/face-tired.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            962.5,
+            639.5
+          ],
+          [
+            1183.4,
+            593.2
+          ]
+        ],
+        "target_eyes": [
+          [
+            953.7,
+            636.1
+          ],
+          [
+            1153.7,
+            597.4
+          ]
+        ],
+        "matrix": [
+          [
+            0.9024609327316284,
+            -0.01396079733967781,
+            94.0093002319336
+          ],
+          [
+            0.01396079733967781,
+            0.9024609327316284,
+            45.538978576660156
+          ]
+        ],
+        "mouth_source": "tired"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "neutral",
+      "source_sha256": "79bf2bbf2f8b92dff6a24a2e117b251208e9f70808f5bb6c68e4091bd83cbe59",
+      "output": "assets/story/portraits/xueli/body-regular.png"
+    },
+    {
+      "hero": "xueli",
+      "costume": "travel",
+      "expression": "neutral",
+      "source_sha256": "7b3e5ce0f987143ac2d5ac8f3b49fe177df81376b2f4b03a34b3ecd88fafdbb0",
+      "output": "assets/story/portraits/xueli/body-travel.png"
+    },
+    {
+      "hero": "xueli",
+      "costume": "rest",
+      "expression": "neutral",
+      "source_sha256": "c831c54ec5a99f6b343577e3beefb13431ce1377bcf08bfb807a4f5a6a089942",
+      "output": "assets/story/portraits/xueli/body-rest.png"
+    },
+    {
+      "hero": "xueli",
+      "costume": "ceremony",
+      "expression": "neutral",
+      "source_sha256": "a644b1b45ae0f20c97a5afd75aabd3b744711ff7b29968e6f385305f94729b93",
+      "output": "assets/story/portraits/xueli/body-ceremony.png"
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "smile",
+      "source_sha256": "151dbeeb9e1f8afd3592c18dd342cc9d041cf53790144f0deaf9fdaffc8e0b77",
+      "output": "assets/story/portraits/xueli/face-smile.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1003.2,
+            561.1
+          ],
+          [
+            1179.0,
+            590.7
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            0.9840594530105591,
+            0.15886324644088745,
+            -71.84658813476562
+          ],
+          [
+            -0.15886324644088745,
+            0.9840594530105591,
+            117.51586151123047
+          ]
+        ],
+        "mouth_source": "shy"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "joy",
+      "source_sha256": "f4c7c95df4076766f2ae3f16991a2696eedb82a894df08b511e9fba2168647b3",
+      "output": "assets/story/portraits/xueli/face-joy.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1018.4,
+            472.5
+          ],
+          [
+            1193.4,
+            494.9
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            0.9999235272407532,
+            0.12113306671380997,
+            -71.05751037597656
+          ],
+          [
+            -0.12113306671380997,
+            0.9999235272407532,
+            161.1980438232422
+          ]
+        ],
+        "mouth_source": "joy"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "shy",
+      "source_sha256": "8f602d1b45145c498a65d90c2d30cd16bfb3e1471e1b35f767e9e6fe507af3c4",
+      "output": "assets/story/portraits/xueli/face-shy.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1009.2,
+            533.9
+          ],
+          [
+            1183.9,
+            555.7
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            1.0024203062057495,
+            0.11821845173835754,
+            -70.25946807861328
+          ],
+          [
+            -0.11821845173835754,
+            1.0024203062057495,
+            94.41383361816406
+          ]
+        ],
+        "mouth_source": "shy"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "worried",
+      "source_sha256": "734efac8a0e6ff107081293a2804fa84837f4dddd313c8110aed16c9d7190169",
+      "output": "assets/story/portraits/xueli/face-worried.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1015.8,
+            591.7
+          ],
+          [
+            1184.1,
+            600.4
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            1.0534063577651978,
+            0.047324035316705704,
+            -93.55175018310547
+          ],
+          [
+            -0.047324035316705704,
+            1.0534063577651978,
+            -64.92875671386719
+          ]
+        ],
+        "mouth_source": "worried"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "sad",
+      "source_sha256": "8a5e3fce59374935de3db6224b69055dacdb8d473b1ef97e9ffd8869d1b6720a",
+      "output": "assets/story/portraits/xueli/face-sad.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1019.3,
+            591.1
+          ],
+          [
+            1188.0,
+            604.8
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            1.047021746635437,
+            0.07791463285684586,
+            -108.78460693359375
+          ],
+          [
+            -0.07791463285684586,
+            1.047021746635437,
+            -29.176176071166992
+          ]
+        ],
+        "mouth_source": "angry"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "angry",
+      "source_sha256": "df268bc11d45972d88aabafc2e5b39dc118eeb100740ad5bf07febabaa5e5c3d",
+      "output": "assets/story/portraits/xueli/face-angry.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1013.8,
+            667.7
+          ],
+          [
+            1193.1,
+            691.3
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            0.9750646948814392,
+            0.12164822965860367,
+            -65.2451171875
+          ],
+          [
+            -0.12164822965860367,
+            0.9750646948814392,
+            -17.42373275756836
+          ]
+        ],
+        "mouth_source": "angry"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "determined",
+      "source_sha256": "bfbdfbaaed5b0d17a0e3adfe289d196bce84a208b5204cf6a0b8649e0cb4500f",
+      "output": "assets/story/portraits/xueli/face-determined.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1020.5,
+            646.2
+          ],
+          [
+            1188.3,
+            653.4
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            1.057358980178833,
+            0.038218025118112564,
+            -99.23128509521484
+          ],
+          [
+            -0.038218025118112564,
+            1.057358980178833,
+            -133.96385192871094
+          ]
+        ],
+        "mouth_source": "angry"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "surprised",
+      "source_sha256": "3dbd60ca3d87bbc213f09b9cd7574bc92d00c82c7cb885d3009050d3f1955ebd",
+      "output": "assets/story/portraits/xueli/face-surprised.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1001.9,
+            458.9
+          ],
+          [
+            1175.9,
+            467.6
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            1.01906156539917,
+            0.044056523591279984,
+            -36.71529769897461
+          ],
+          [
+            -0.044056523591279984,
+            1.01906156539917,
+            86.79289245605469
+          ]
+        ],
+        "mouth_source": "surprised"
+      }
+    },
+    {
+      "hero": "xueli",
+      "costume": "regular",
+      "expression": "tired",
+      "source_sha256": "06dab885f1e0938e26fd288fc5d47205eea7f2677ef9fad24fa7e913d09b05d6",
+      "output": "assets/story/portraits/xueli/face-tired.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1015.7,
+            601.6
+          ],
+          [
+            1192.2,
+            629.5
+          ]
+        ],
+        "target_eyes": [
+          [
+            1004.5,
+            510.3
+          ],
+          [
+            1182.2,
+            511.5
+          ]
+        ],
+        "matrix": [
+          [
+            0.9833034873008728,
+            0.14863550662994385,
+            -83.6604995727539
+          ],
+          [
+            -0.14863550662994385,
+            0.9833034873008728,
+            69.71369934082031
+          ]
+        ],
+        "mouth_source": "worried"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "neutral",
+      "source_sha256": "53a1cb43c28ce67f0494b840175baa91e927ef54274737abc6a7a7507154cf4b",
+      "output": "assets/story/portraits/yayu/body-regular.png"
+    },
+    {
+      "hero": "yayu",
+      "costume": "travel",
+      "expression": "neutral",
+      "source_sha256": "f9edc121c23e8d06c22b523d6155183d9f4d246e6be16ed916a6295cb83590a6",
+      "output": "assets/story/portraits/yayu/body-travel.png"
+    },
+    {
+      "hero": "yayu",
+      "costume": "rest",
+      "expression": "neutral",
+      "source_sha256": "fd2ef37cba17748c30074325a91b61c4ef1f79f76e31aedc3d0313ad56d3aa41",
+      "output": "assets/story/portraits/yayu/body-rest.png"
+    },
+    {
+      "hero": "yayu",
+      "costume": "ceremony",
+      "expression": "neutral",
+      "source_sha256": "1a03bd8f20620c9738b58a9f9d7fe5a12beac7e9daa34fcd7914267a4c14beda",
+      "output": "assets/story/portraits/yayu/body-ceremony.png"
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "smile",
+      "source_sha256": "8d4e740e1b1db9d679b5f326deaf8149f9597581bb91387e37e4adc566b31100",
+      "output": "assets/story/portraits/yayu/face-smile.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1067.0,
+            563.9
+          ],
+          [
+            1219.1,
+            595.5
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9229004979133606,
+            0.13059602677822113,
+            -44.777931213378906
+          ],
+          [
+            -0.13059602677822113,
+            0.9229004979133606,
+            120.92237091064453
+          ]
+        ],
+        "mouth_source": "shy"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "joy",
+      "source_sha256": "06f7b90855ff2284cf130c806710e4557531a6841a195592baaa53794fe192c9",
+      "output": "assets/story/portraits/yayu/face-joy.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1055.0,
+            477.6
+          ],
+          [
+            1208.6,
+            508.6
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9156771302223206,
+            0.12425775825977325,
+            -11.784893035888672
+          ],
+          [
+            -0.12425775825977325,
+            0.9156771302223206,
+            195.7645263671875
+          ]
+        ],
+        "mouth_source": "joy"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "shy",
+      "source_sha256": "b4f4bdf307e73c13ac1b8fc8f99b4175d484dce0c586c3c317d7f1455ad9d17a",
+      "output": "assets/story/portraits/yayu/face-shy.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1062.7,
+            505.8
+          ],
+          [
+            1212.8,
+            540.8
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9267497658729553,
+            0.15413884818553925,
+            -49.22040939331055
+          ],
+          [
+            -0.15413884818553925,
+            0.9267497658729553,
+            197.05332946777344
+          ]
+        ],
+        "mouth_source": "shy"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "worried",
+      "source_sha256": "f199df9b002a78c92fa0a99bcb2c4e84943007c290c6c1d056e13bcce94919ba",
+      "output": "assets/story/portraits/yayu/face-worried.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1068.9,
+            511.7
+          ],
+          [
+            1215.0,
+            546.9
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9492814540863037,
+            0.16505618393421173,
+            -85.54621124267578
+          ],
+          [
+            -0.16505618393421173,
+            0.9492814540863037,
+            192.6812286376953
+          ]
+        ],
+        "mouth_source": "worried"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "sad",
+      "source_sha256": "597337a5f9bbd373f72ecef4a1a156b0f84e792b0626290875c422e84c52c4d1",
+      "output": "assets/story/portraits/yayu/face-sad.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1084.7,
+            486.1
+          ],
+          [
+            1231.7,
+            522.1
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.941990852355957,
+            0.16742633283138275,
+            -89.56339263916016
+          ],
+          [
+            -0.16742633283138275,
+            0.941990852355957,
+            225.70559692382812
+          ]
+        ],
+        "mouth_source": "sad"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "angry",
+      "source_sha256": "c500de6e84d0c735b73c321f437bc266918f0e5474c8ad7e043a093ad597155a",
+      "output": "assets/story/portraits/yayu/face-angry.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1078.2,
+            574.4
+          ],
+          [
+            1228.8,
+            604.8
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9339067339897156,
+            0.1267646998167038,
+            -66.1518783569336
+          ],
+          [
+            -0.1267646998167038,
+            0.9339067339897156,
+            102.24168395996094
+          ]
+        ],
+        "mouth_source": "determined"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "determined",
+      "source_sha256": "8d45bbffa4ed7c6251af73ce4f99e6e5b0644c0f29a5c2228b58659cff14ee35",
+      "output": "assets/story/portraits/yayu/face-determined.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1035.6,
+            465.7
+          ],
+          [
+            1186.3,
+            485.8
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9501862525939941,
+            0.06502152234315872,
+            -0.693400502204895
+          ],
+          [
+            -0.06502152234315872,
+            0.9501862525939941,
+            126.83455657958984
+          ]
+        ],
+        "mouth_source": "determined"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "surprised",
+      "source_sha256": "e03466e23ef644d306699295d72604266b1bb8917c70b31852dafe6559ff8db9",
+      "output": "assets/story/portraits/yayu/face-surprised.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1040.3,
+            484.1
+          ],
+          [
+            1190.6,
+            517.6
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            0.9290479421615601,
+            0.14519697427749634,
+            -23.17840003967285
+          ],
+          [
+            -0.14519697427749634,
+            0.9290479421615601,
+            203.2963104248047
+          ]
+        ],
+        "mouth_source": "surprised"
+      }
+    },
+    {
+      "hero": "yayu",
+      "costume": "regular",
+      "expression": "tired",
+      "source_sha256": "ce72d6bb1a67369730d794ba7515d13199ec775379f3dd444a42c3a4d77e485b",
+      "output": "assets/story/portraits/yayu/face-tired.png",
+      "registration": {
+        "method": "reviewed-eye-landmarks",
+        "source_eyes": [
+          [
+            1047.2,
+            651.9
+          ],
+          [
+            1180.8,
+            672.4
+          ]
+        ],
+        "target_eyes": [
+          [
+            1013.6,
+            502.0
+          ],
+          [
+            1158.1,
+            511.3
+          ]
+        ],
+        "matrix": [
+          [
+            1.0671424865722656,
+            0.09413488954305649,
+            -165.27813720703125
+          ],
+          [
+            -0.09413488954305649,
+            1.0671424865722656,
+            -95.09212493896484
+          ]
+        ],
+        "mouth_source": "neutral"
+      }
+    }
+  ],
+  "missing": []
+}

@@ -1,0 +1,18 @@
+{
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve. Image 1 is the exact registered 4K standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround IDENTITY REFERENCE.\nEdit only the masked face region of image 1 to make xueli's expression: Resolute protective determination: steady forward gaze, firm slightly lowered brows, composed serious mouth. Distinct from anger; no smile.\nPreserve her identity and eye colors, position of the face, head angle, scale, hairstyle, hair strands and accessories. Changes are restricted to natural facial muscles: brows, eyelids, gaze, mouth and slight cheek shading. Do not move the head, shoulders or body. Do not change costume, hands, props, lighting, tail, veil, sword or alpha silhouette.\nReturn ONE complete standing portrait on the identical 2160x3840 canvas with exactly the original registration, composition and genuine transparent background. No close-up, collage, sheet, lettering, symbols, captions, background, matte, halo or shadow.\nUse refined consistent anime linework and soft rendering exactly matching image 1. The emotion must be clearly readable in a small Galgame face, but remain tasteful and anatomically natural. Preserve all pixels outside the masked region as faithfully as possible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "content_type": "application/json",
+  "references": [
+    "art\\story-portraits\\masters\\xueli-regular-neutral.png",
+    "assets\\xueli.png"
+  ],
+  "mask": "art\\story-portraits\\masks\\xueli-face-edit.png"
+}

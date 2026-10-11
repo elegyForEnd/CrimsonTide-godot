@@ -1,0 +1,36 @@
+{
+  "provider": "Rolldek",
+  "model": "gpt-image-2.5-sunburst",
+  "size": "2160x3840",
+  "quality": "max",
+  "background": "transparent",
+  "output_format": "png",
+  "n": "omitted",
+  "response_format": "omitted",
+  "docs": "https://www.rolldek.com/docs/#/img25",
+  "heroes": [
+    "feiyue",
+    "xueli",
+    "yayu"
+  ],
+  "expressions": {
+    "neutral": "平静",
+    "smile": "微笑",
+    "joy": "喜悦",
+    "shy": "害羞",
+    "worried": "担忧",
+    "sad": "悲伤",
+    "angry": "生气",
+    "determined": "坚定",
+    "surprised": "惊讶",
+    "tired": "疲惫"
+  },
+  "costumes": {
+    "regular": "常服",
+    "travel": "旅行披风",
+    "rest": "营地休息服",
+    "ceremony": "庆典礼装"
+  },
+  "composition": "body source + API-authored local face patch; shared fixed face anchors",
+  "credential_policy": "environment only; never in prompts or JSON"
+}

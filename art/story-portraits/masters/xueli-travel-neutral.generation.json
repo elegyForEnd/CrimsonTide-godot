@@ -1,0 +1,53 @@
+{
+  "provider": "Rolldek",
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "documentation": "https://www.rolldek.com/docs/#/img25",
+  "model_requested": "gpt-image-2.5-sunburst",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve / costume edit. Image 1 is the exact registered 4K full-body standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround identity reference.\nCreate the travel clothing variant of xueli: Travel overlayer: a practical weathered short hooded cloak worn with its hood DOWN over the original costume; sturdy leather travel belt, small closed field satchel, slightly reinforced boots. Preserve the original dress/armor visible beneath, every identifying bow and ornament, and original hand-held props. No large backpack blocking hair, new weapon or standing-pose change.\nPalette and immutable identity details: dark navy, cyan/mint, white lace and fine silver; retain her dark veil and cyan lantern.\nKeep the entire head, facial features, calm neutral expression, hair style, hair ornaments and hair color EXACTLY like image 1. Preserve body proportions, frontal projection, shoulder height, relaxed hand locations, original props, face center, feet baseline and original 2160x3840 registration. Design beautiful believable clothing suited to this same gothic fantasy RPG character; precise seams, lace and embroidered edges with restrained materials. Keep every silhouette safely inside the canvas.\nThe mask allows clothing changes below the neck, not identity or camera changes. No head tilt, pose variation, body resizing, extra character, giant sleeve hiding hands, weapon change, unrelated jewelry, wings or text. Match image 1's neutral diffuse lighting and anime illustration style.\nReturn ONE complete full-body character, transparent PNG alpha. No white background, ground plane, checkerboard painted into pixels, collage, label, watermark, drop shadow or glow outline. Both feet and all accessories remain visible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "references": [
+    {
+      "path": "art\\story-portraits\\masters\\xueli-regular-neutral.png",
+      "sha256": "79bf2bbf2f8b92dff6a24a2e117b251208e9f70808f5bb6c68e4091bd83cbe59"
+    },
+    {
+      "path": "assets\\xueli.png",
+      "sha256": "78cd0bb1a88d58f65e8918af2c525ea6ba2eda8515e2df7f9dc9a9f42f4d076b"
+    }
+  ],
+  "mask": "art\\story-portraits\\masks\\xueli-clothing-edit.png",
+  "response": {
+    "created": 1791735363,
+    "usage": {
+      "input_tokens": 1097,
+      "output_tokens": 32175,
+      "total_tokens": 33272,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "input_tokens_details": {
+        "text_tokens": 442,
+        "image_tokens": 655
+      }
+    }
+  },
+  "quality_verified": false,
+  "actual_size": [
+    2160,
+    3840
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "sha256": "7b3e5ce0f987143ac2d5ac8f3b49fe177df81376b2f4b03a34b3ecd88fafdbb0",
+  "seconds": 192.17
+}

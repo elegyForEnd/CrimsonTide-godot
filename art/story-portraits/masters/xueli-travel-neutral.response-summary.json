@@ -1,0 +1,30 @@
+{
+  "http_status": 200,
+  "top_level_keys": [
+    "created",
+    "data",
+    "usage"
+  ],
+  "fields": {
+    "usage": {
+      "input_tokens": 1097,
+      "output_tokens": 32175,
+      "total_tokens": 33272,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "input_tokens_details": {
+        "text_tokens": 442,
+        "image_tokens": 655
+      }
+    },
+    "created": 1791735363
+  },
+  "data_type": "list",
+  "data_entries": [
+    [
+      "url"
+    ]
+  ],
+  "error": ""
+}

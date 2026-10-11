@@ -3,6 +3,8 @@ extends Control
 signal finished
 const UISkin = preload("res://scripts/story_ui_skin.gd")
 const Data = preload("res://scripts/story_dialogue_data.gd")
+const PortraitView = preload("res://scripts/story_portrait_view.gd")
+const PortraitArt = preload("res://scripts/story_portrait_art.gd")
 const LETTERS_PER_SECOND := 32.0
 const AUTO_DELAY := 1.5
 var screen
@@ -14,9 +16,11 @@ var body: RichTextLabel
 var name_label: Label
 var page_label: Label
 var prompt: Label
-var left: TextureRect
-var right: TextureRect
+var left: Control
+var right: Control
 var portraits := ["",""]
+var portrait_emotions: Dictionary={}
+var wardrobe: Control
 var actions: VBoxContainer
 var log_view: Control
 var auto_button: Button
@@ -49,15 +53,16 @@ func _ready() -> void:
 	auto_button=button("自动",Vector2(731,822),Vector2(105,34),func(): auto=not auto; skipping=false; update_buttons())
 	skip_button=button("已读快进",Vector2(844,822),Vector2(129,34),func(): skipping=not skipping; auto=false; update_buttons())
 	log_button=button("回看",Vector2(981,822),Vector2(94,34),toggle_log)
-	button("收起对话",Vector2(1083,822),Vector2(177,34),finish)
+	button("衣装",Vector2(1083,822),Vector2(83,34),toggle_wardrobe)
+	button("收起对话",Vector2(1174,822),Vector2(112,34),finish)
 	var scroll := ScrollContainer.new(); scroll.position=Vector2(470,225); scroll.size=Vector2(525,355); scroll.name="Choices"; add_child(scroll); scroll.hide()
 	actions=VBoxContainer.new(); actions.custom_minimum_size.x=500; actions.size_flags_horizontal=Control.SIZE_EXPAND_FILL; actions.add_theme_constant_override("separation",10); scroll.add_child(actions)
 	gui_input.connect(on_gui_input)
 	if pages.is_empty(): pages=[{"speaker":"旁白","text":"灯火还在。"}]
 	show_page()
 
-func portrait(at: Vector2) -> TextureRect:
-	var node := TextureRect.new(); node.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; node.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+func portrait(at: Vector2) -> Control:
+	var node := PortraitView.new()
 	node.position=at; node.size=Vector2(480,745); node.mouse_filter=MOUSE_FILTER_IGNORE; add_child(node); return node
 
 func button(value: String, at: Vector2, extent: Vector2, action: Callable) -> Button:
@@ -91,11 +96,17 @@ func show_page() -> void:
 	if page.has("right"): portraits[1]=page.right
 	if actor!="" and not actor in portraits:
 		portraits[0 if actor.begins_with("hero:") else 1]=actor
+	if actor.begins_with("hero:"): portrait_emotions[actor]=Data.expression_for(page)
+	for side in 2:
+		var property := "left_expression" if side==0 else "right_expression"
+		if page.has(property): portrait_emotions[portraits[side]]=page[property]
 	if transition: transition.kill()
 	transition=create_tween().set_parallel(true)
 	for side in 2:
-		var node: TextureRect=left if side==0 else right
-		node.texture=texture(portraits[side]); node.visible=node.texture!=null
+		var node: Control=left if side==0 else right
+		var clothing: String=screen.dialogue_outfits.get(portraits[side],"regular")
+		if page.has("costume") and actor==portraits[side] and not screen.dialogue_outfits.has(actor): clothing=page.costume
+		node.set_actor(portraits[side],texture(portraits[side]),portrait_emotions.get(portraits[side],"neutral"),clothing)
 		var speaking: bool=portraits[side]==actor and actor!=""
 		var tone := Color(1,1,1,1) if speaking or actor=="" else Color(.52,.56,.64,.9)
 		transition.tween_property(node,"modulate",tone,.22)
@@ -110,7 +121,7 @@ func update_buttons() -> void:
 	auto_button.disabled=choosing; skip_button.disabled=choosing
 
 func _process(dt: float) -> void:
-	if done or is_instance_valid(log_view): return
+	if done or is_instance_valid(log_view) or is_instance_valid(wardrobe): return
 	elapsed+=dt
 	if choosing: return
 	var count := body.get_total_character_count()
@@ -132,7 +143,7 @@ func reveal_all() -> void:
 	revealed=body.get_total_character_count(); body.visible_characters=-1; mark_read(); prompt.text="点击 / 空格 · 下一句  ▾"; wait_time=0
 
 func advance() -> void:
-	if done or choosing or is_instance_valid(log_view): return
+	if done or choosing or is_instance_valid(log_view) or is_instance_valid(wardrobe): return
 	if revealed<body.get_total_character_count(): reveal_all(); return
 	mark_read()
 	record_page()
@@ -164,6 +175,7 @@ func choose(slot: int) -> void:
 	action.call()
 
 func toggle_log() -> void:
+	if is_instance_valid(wardrobe): toggle_wardrobe()
 	if is_instance_valid(log_view): log_view.queue_free(); log_view=null; return
 	log_view=Panel.new(); log_view.position=Vector2(285,136); log_view.size=Vector2(870,448); log_view.add_theme_stylebox_override("panel",UISkin.frame(5)); add_child(log_view)
 	screen.label(log_view,"灯下回声 · 对话回看",Vector2(27,20),Vector2(650,34),23)
@@ -178,11 +190,13 @@ func toggle_log() -> void:
 func handle_key(event: InputEventKey) -> bool:
 	if done: return false
 	if event.keycode==KEY_ESCAPE:
-		if is_instance_valid(log_view): toggle_log()
+		if is_instance_valid(wardrobe): toggle_wardrobe()
+		elif is_instance_valid(log_view): toggle_log()
 		else: finish()
 		return true
 	if event.keycode in [KEY_SPACE,KEY_ENTER,KEY_KP_ENTER]: advance(); return true
 	if event.keycode==KEY_L: toggle_log(); return true
+	if event.keycode==KEY_C: toggle_wardrobe(); return true
 	if event.keycode==KEY_A and not choosing: auto=not auto; skipping=false; update_buttons(); return true
 	return false
 
@@ -194,6 +208,30 @@ func finish() -> void:
 	if done: return
 	if revealed>=body.get_total_character_count(): record_page()
 	done=true; mark_read(); screen.save_dialogue_read(); finished.emit()
+
+func toggle_wardrobe() -> void:
+	if is_instance_valid(wardrobe): wardrobe.queue_free(); wardrobe=null; return
+	if is_instance_valid(log_view): toggle_log()
+	wardrobe=Panel.new(); wardrobe.position=Vector2(255,150); wardrobe.size=Vector2(930,395); wardrobe.add_theme_stylebox_override("panel",UISkin.frame(5)); add_child(wardrobe)
+	screen.label(wardrobe,"旅途衣装",Vector2(28,22),Vector2(500,37),26)
+	screen.label(wardrobe,"改变剧情立绘的衣装；角色的装备与属性仍在人物界面管理。",Vector2(30,65),Vector2(820,30),17)
+	screen.button(wardrobe,"返回对话",Vector2(760,24),Vector2(138,34),toggle_wardrobe)
+	for hero in 3:
+		screen.label(wardrobe,Data.HEROES[hero],Vector2(30,128+82*hero),Vector2(118,35),23)
+		for slot in 4:
+			var costume: String=PortraitArt.COSTUMES[slot]
+			var actor := "hero:%d" % hero
+			var node: Button=screen.button(wardrobe,PortraitArt.COSTUME_NAMES[slot],Vector2(155+182*slot,122+82*hero),Vector2(172,47),func(): choose_costume(actor,costume))
+			UISkin.button(node,screen.dialogue_outfits.get(actor,"regular")==costume)
+
+func choose_costume(actor: String, clothing: String) -> void:
+	if not clothing in PortraitArt.COSTUMES: return
+	screen.dialogue_outfits[actor]=clothing; screen.save_dialogue_outfits()
+	for side in 2:
+		if portraits[side]==actor:
+			var node: Control=left if side==0 else right
+			node.set_actor(actor,texture(actor),portrait_emotions.get(actor,"neutral"),clothing)
+	if is_instance_valid(wardrobe): toggle_wardrobe(); toggle_wardrobe()
 
 func _draw() -> void:
 	var gold := Color(.69,.54,.31,.64)

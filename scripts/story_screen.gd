@@ -28,6 +28,7 @@ var combat_fx: Node2D
 var dialogue: Control
 var dialogue_read: Dictionary={}
 var dialogue_history: Array=[]
+var dialogue_outfits: Dictionary={}
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -143,6 +144,7 @@ func set_active(value: bool) -> void:
 	if not value and is_instance_valid(quest_fx): quest_fx.clear()
 	if not value and is_instance_valid(combat_fx): combat_fx.reset()
 	if not value and is_instance_valid(dialogue): close_panel()
+	if not value: preload("res://scripts/story_portrait_art.gd").clear_cache()
 
 func label(parent: Node, text: String, at: Vector2, extent: Vector2, font_size: int = 18) -> Label:
 	var node := Label.new(); node.text=text; node.position=at; node.size=extent
@@ -315,6 +317,19 @@ func load_dialogue_read() -> void:
 	if data is Array:
 		for key in data:
 			if key is String and key.length()==64: dialogue_read[key]=true
+	dialogue_outfits={}
+	var wardrobe_path: String=campaign.path+".dialogue-outfits.json"
+	if FileAccess.file_exists(wardrobe_path):
+		var wardrobe_data=JSON.parse_string(FileAccess.get_file_as_string(wardrobe_path))
+		if wardrobe_data is Dictionary:
+			for hero in 3:
+				var actor := "hero:%d" % hero
+				if wardrobe_data.get(actor,"") in preload("res://scripts/story_portrait_art.gd").COSTUMES: dialogue_outfits[actor]=wardrobe_data[actor]
+
+func save_dialogue_outfits() -> void:
+	if not campaign.save_enabled: return
+	var file=FileAccess.open(campaign.path+".dialogue-outfits.json",FileAccess.WRITE)
+	if file: file.store_string(JSON.stringify(dialogue_outfits))
 
 func save_dialogue_read() -> void:
 	if not campaign.save_enabled: return

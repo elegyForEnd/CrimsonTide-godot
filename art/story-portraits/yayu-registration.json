@@ -1,0 +1,31 @@
+{
+  "hero": "yayu",
+  "canvas": [
+    2160,
+    3840
+  ],
+  "face_rect": [
+    940,
+    405,
+    345,
+    270
+  ],
+  "expressions": [
+    "neutral",
+    "smile",
+    "joy",
+    "shy",
+    "worried",
+    "sad",
+    "angry",
+    "determined",
+    "surprised",
+    "tired"
+  ],
+  "costumes": [
+    "regular",
+    "travel",
+    "rest",
+    "ceremony"
+  ]
+}

@@ -468,3 +468,17 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - Forward+仍有既有7 Texture RID退出警告；不是长时间性能/4K60验收。保留原角色和NPC岗位图，不含新表情、嘴型、全篇语音、CG，也没有改造闯关/远征的剧情系统。
 
 - 项目路牌805锚点：OK523 / DRIFT0 / WRONG0 / HINT282；git diff --check通过。本地提交白名单只包含本轮对话功能，原3D Boss实验文件仍保留为未提交工作。
+
+
+## 2026-10-12 · 三位角色4K表情与衣装 v13
+
+- 用户批准通过自定义Rolldek API以max制作。39份原始4K图组成3角色×10表情/4衣装，交付39完整2160×3840 PNG、12身体与27面部层，可独立组合120种；输入均是用户三视图，原画不覆盖。密钥只在调用进程环境里，生产结束已清会话变量；新作者记录密钥模式扫描0文件，API工具不进发布包。
+- Python共11组/0失败（portrait-python-clean-final.log）：6接口离线合同，5资产验收（完整尺寸/来源/占比，表情不改身体，衣装保留头部及脚底，27份双眼坐标注册误差<0.1像素）。测试未发付费API请求；雪璃喜悦一次下载TLS故障通过同一文件GET恢复，没有重复POST。
+- 人工逐张检查30表情与12衣装。初版雪璃/鸦羽原图脸部移动，矩形替换把领口盖到嘴部；改用人工确认双眼、分开眉眼/面颊/嘴部，保留原轮廓与领口，复用同人物有效嘴部并记录mouth_source。最终build/portrait-{hero}-expressions.png、-costumes.png实际Alpha合成无该缺陷；源图不删除或改写。原图透明区RGB看似柔光，实际Alpha叠图不会显示该背景。
+- 故事立绘Godot界面：Forward+最终280/0（portrait-ui-forward-clean.log），Compatibility280/0（portrait-ui-compat-clean.log）；每组检查120组合、实际衣装按钮、正文推进暂停、衣装/表情独立、偏好保存/恢复、不改变人物装备/金币/任务和缓存≤18，6张实景图。最终Forward+仍有既有7 Texture RID退出警告，GL无该警告。
+- 原Galgame对话210/0、战役180/0、模式集成12/0。Godot各组共962项通过，另11组Python通过；没有据此宣称全仓库、全武器旧矩阵或4K60通过。
+- v13引导与Portraits-v13.pck按六脚本/纹理导入资源白名单制作，叠加v12/v11/v9。原生发布截图验证鸦羽庆典礼装/喜悦；预览控制最初root.add_child忙碌导致键控节点未挂载，改为deferred并清退后修复，旧失败日志保留。最终捕获通过真实1/2/3、左右键输入验证角色/服装选择。
+- 接口消耗日志仍显示standard，响应不回quality，保留requested=max和未验证档位的事实，用户已经批准继续按max。无完整配音、嘴型眨眼动画或剧情CG，10个明确台词及NPC回复有表情提示，其余未逐句人工标注；Wardrobe独立文件不改装备规则。
+- 更新PROJECT-GUIDE §2/3/4.S/5/6/8/9/10/11/12，制作说明PORTRAIT-VARIANTS.md、图像源提示词及完整注册资料。此前3D Boss实验保持在未提交工作区，不纳入本次发布。
+
+- 最终v13原生Forward+与Compatibility均通过键盘切角色/衣装并截取喜悦表情，portrait-native-{forward,compat}-clean.log；GL标准错误为空，Forward+仅既有7 Texture RID警告，无本轮ObjectDB/parent-busy错误。路牌807锚点：OK525 / DRIFT0 / WRONG0 / HINT282。git diff --check通过。

@@ -40,7 +40,7 @@ D:\dsh\Game\
    ├─ project.godot            ← 引擎配置（主场景 boot.tscn，无 autoload）
    ├─ scenes\                  ← 仅 2 个场景：boot.tscn（开场）、main.tscn（空壳根节点）
    ├─ scripts\                 ← 全部游戏逻辑（112 个 .gd / 3.77 万行，UI/逻辑均由代码构建）
-   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图与Galgame对话
+   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图与Galgame对话、4K表情和衣装
    │      story_act_art / story_regional_environment ← 第二至第六幕的区域布局、独立建筑、材质与灯光
    │      story_exploration_art / story_exploration_environment ← 六幕副本房间图、空洞、多段高程、地编与室外有机边界
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
@@ -455,6 +455,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### S. 故事模式与连续探索地图
 
+2026-10-12立绘差分：story_portrait_art/view加载三位角色12张4K身体与27面部层，表情/衣装独立组合120种。完整PNG和原始API图在art/story-portraits，作者目录不导入引擎；参见docs/rpg/PORTRAIT-VARIANTS.md。
+
 Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_dialogue_ui；完整正文和明确说话人由story_dialogue_data处理。未署名引号保持旁白，不凭附近名字推断。
 
 图形任务日志：story_quest_ui（J/人物委托/档案NPC）使用73任务真数据、分类卡片、目标进度与报酬；story_quest_fx响应campaign.quest_event，接取/推进/完成只在真实状态改变时播放，特效不发奖励。tracked/track持久保存追踪ID，HUD读取tracked；tests/story_quests_ui.gd覆盖真实鼠标、E与事件幂等。
@@ -463,6 +465,7 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 | 功能 | 文件与配套检查 |
 |---|---|
+| 4K表情、衣装与原画导出 | `scripts/story_portrait_art.gd:30 layers()`、`scripts/story_portrait_view.gd:21 set_actor()`；story_dialogue_ui.toggle_wardrobe/choose_costume，story_screen.save_dialogue_outfits；tests/story_portrait_variants.gd、tests/test_portrait_layers.py；build_portrait_layers/export_portrait_variant负责注册与原图导出 |
 | Galgame章节、营地交谈与结局 | `scripts/story_screen.gd:327 show_dialogue()`、`scripts/story_screen.gd:342 show_npc()`；story_dialogue_data.chapter/npc无损拆正文，story_dialogue_ui.advance/choose控制逐字、已读快进、回看与显式选项；tests/story_dialogue.gd，docs/rpg/GALGAME-DIALOGUE.md |
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
 | 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
@@ -477,15 +480,17 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 | 室外地面、桥头、岸线与虚空边界 | story_surface_geometry.land_pieces / connector_pieces；story_exterior_composition.build / height / river_outline；story_environment.connector_ground / curved_river；tests/story_boundary_surfaces.gd覆盖实际普通/兼容网格、世界偏移和移动轮廓保护；BOUNDARY-SURFACES.md。⚠️Packed数组平移前必须duplicate；静态地面/岸壁改动要重烘，外景要有起伏/装饰；外景不覆盖通路并排除固定GI |
 | 副本空间类型与边界语言 | story-exploration.json的layout_family / grade_axis / edge_styles / void_surface；story_exploration_environment.surrounding_geology与墙/栏杆/拱廊/断墙；30区22类型、10—14功能空间，DUNGEON-IDENTITIES.md；tests/story_dungeon_identity.gd和tools/verify_story_dungeon_release.gd检查真实缓存及发布包 |
 | 植被缓存与无头制作 | `scripts/story_ground_cover.gd:6 _ready()`；source_mesh / source_transforms保留CPU数据，prepare_capture清空GPU缓冲；story_environment.cover_batch、tools/patch_story_ground_cover.gd；⚠️不得序列化Dummy渲染器的MultiMesh实例缓冲，可能产生遮住整幅画面的巨面 |
-| 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:87 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
+| 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:91 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
 | 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:333 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
-| 探索地图、UI与输入 | `story_screen.gd:403 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
+| 探索地图、UI与输入 | `story_screen.gd:418 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
 | 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
 
 ## 5. 「我要改 X」速查表
 
 武器命中/余焰/飞行尾迹：combat_finish；短时环境灯：combat_light_pool；故事攻击、Q与R的适配：story_combat_vfx；逐步揭示：weapon_image_art.reveal_mechanic。战斗规则继续在session/rogue_actions/story_campaign，表现层禁止结算伤害。
+
+人物表情/衣装差分 → story_portrait_art/view + story_dialogue_data.expression_for，资源assets/story/portraits，作者art/story-portraits；Eye注册与局部特征合成build_portrait_layers，Preview-Portraits/Start-Portraits-v13，制作与接口说明PORTRAIT-VARIANTS.md。
 
 剧情立绘/逐字/自动/已读快进/回看 → §4.S，story_dialogue_data/ui与story_screen.show_dialogue；规则、任务奖励仍走story_campaign/inventory。Preview-Dialogue直接体验；Start-Dialogue-v12使用新正式入口。
 
@@ -599,6 +604,8 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 ## 6. 数值常量速查（哪里改什么数）
 
+立绘差分：三位角色×10表情×4衣装＝120组合；原始及完整导出画布2160×3840，面部矩形每人独立，缓存上限story_portrait_art.CACHE_LIMIT=18。衣装只是剧情表现，不改装备数值。
+
 Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_PER_SECOND=32、AUTO_DELAY=1.5秒（另加每字0.025秒）；立绘过渡0.22秒，回看180条、阅读标记4096个。
 
 新命中层预算：combat_finish.MAX_CONTACTS=64、MAX_TRAILS=96；尾迹最多10点/130ms、600单位跳变清历史。combat_light_pool.CAPACITY=8，关闭实时阴影和GI烘焙。刀光接触揭示18ms、施法35ms，均不修改攻击前摇/冷却或伤害。
@@ -680,6 +687,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 | 音乐计划 | `generate_scene_music.py` + `resources/scene_music_plan.json` | 每场景一首 Suno 曲目的提示词计划与提交 |
 | 素材生成 | `generate_enemy_art.py`、`build_minimax_*`、`collectible_image_prompts.py` | ImageGen/MiniMax 提示词与图集 |
 | 地图烘焙 | `export_world_layout.gd`（GD）→ `bake_world_art.py` | **改 ruins.gd 地形后必须重跑**，否则 3D 贴图与碰撞错位 |
+| 4K立绘发布 | build_story_portrait_release.py / pack_story_portraits.gd / portrait_patch_boot.gd；六个编译表现脚本、纹理导入资源白名单，依赖v12/v11/v9；参见PORTRAIT-VARIANTS.md |
 | Galgame对话发布 | build_story_dialogue_release.py / pack_story_dialogue.gd / dialogue_patch_boot.gd；三个编译脚本及remap白名单，临时预设finally恢复，见GALGAME-DIALOGUE.md |
 | 故事美术生产 | export_story_models.py / export_story_terrain.py / Bake-Opening.ps1 | Blender只导出不覆盖，Godot编辑后重烘焙；详见FORWARDPLUS-ART-PIPELINE.md |
 | 图标/打包 | `make_icon.gd`、`package_server.py`、`fetch_export_templates.py`、`fetch_scene_assets.py` | exe 图标；服务器离线镜像包；模板/CC0 素材抓取（SHA-256 校验） |
@@ -699,7 +707,9 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 ## 9. 运行、启动与部署
 
-剧情对话最新版正式运行Start-Dialogue-v12.cmd，Preview-Dialogue.cmd使用独立APPDATA临时体验岑烬开场。v12运行文件、Dialogue-v12.pck、Combat-v11.pck和v9底包需同放dist。build_story_dialogue_release.py临时导出、恢复预设并编译三脚本；pack_story_dialogue读取导出remap/gdc白名单，不能直接用同名gd覆盖已编译旧包。
+立绘最新版正式运行Start-Portraits-v13.cmd；Preview-Portraits.cmd用独立APPDATA查看10表情与4衣装，1/2/3换人、左右换装。v13 EXE、Portraits-v13.pck和原v12/v11补丁、v9底包同放dist。作者脚本/API凭证/3D Boss实验不进发布包；原入口保留。
+
+剧情对话旧版正式运行Start-Dialogue-v12.cmd，Preview-Dialogue.cmd使用独立APPDATA临时体验岑烬开场。v12运行文件、Dialogue-v12.pck、Combat-v11.pck和v9底包需同放dist。build_story_dialogue_release.py临时导出、恢复预设并编译三脚本；pack_story_dialogue读取导出remap/gdc白名单，不能直接用同名gd覆盖已编译旧包。
 
 最新版特效正式运行Start-Combat-v11.cmd；Preview-Combat.cmd用源码真实场景自动轮播，1/2/3切故事/闯关/远征，ESC退出，独立APPDATA。v11 EXE、Combat-v11.pck和v9底包同放dist，包含v10 GUI；源码入口继续适用。
 
@@ -715,6 +725,8 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 | 存档位置 | `%APPDATA%/Godot/app_userdata/血潮守望 · Crimson Tide/profile.json` |
 
 ## 10. 根目录文档索引（专题设计文档）
+
+立绘差分：[PORTRAIT-VARIANTS.md](docs/rpg/PORTRAIT-VARIANTS.md)，包含39张完整4K PNG、120组合、源图/提示词/注册/导出、API日志限制及v13启动。
 
 剧情演出：[GALGAME-DIALOGUE.md](docs/rpg/GALGAME-DIALOGUE.md)，覆盖分镜、NPC选择、阅读记录、验证、v12依赖和官方脚本编译打包流程。
 
@@ -746,6 +758,8 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 ## 11. 已知坑与注意事项（改码前必读）
 
 v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口同时调用tag_visual_projectile；无ID旧快照跳过新尾迹。Composite Finish不得改bullet/enemy或创建伤害目标。CombatVisuals.finish在_ready中才创建，自定义Flights覆盖_ready时不能留下孤立节点。故事combat_event只在真实接受动作/命中后发出，切图与退出必须清旧残留。原69武器矩阵52518项失败已与修改前源码逐项对照，见COMBAT-FINISH.md和TEST-REPORT，不得以本轮专项通过替代全量验收。
+
+立绘契约：只在脸部局部特征替换，双眼人工注册到固定位置，衣装保留原头部并统一脚底；领口/头发不可随表情替换。衣装偏好写独立.dialogue-outfits.json，save_enabled=false禁止保存；自动/回看在衣装窗口暂停。资源有限缓存并在离开故事释放。API仅请求max，不据standard日志声称档位已验证；凭证不入文件、不重复付费POST，下载失败只恢复GET。
 
 对话契约：对话只读章节和状态；choose只响应显式选项且执行一次，自动/快进不选择。阅读页面不会再次complete/发奖励，切到其他页面清overlay/dialogue并恢复HUD。阅读标记以正文散列独立保存，预览禁存；缺省NPC美术仍为现有六岗位，并非36人新画。
 
@@ -896,6 +910,8 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-12（同批提交）：按用户API/max要求完成三角色10表情4衣装，39完整4K PNG及120分层组合。人工双眼配准、局部眉眼/面颊/嘴部合成修复蒙版裁坏领口，复用有效嘴部记录来源；衣装独立保存，真实对话/衣装控件与缓存。新增v13发布及试玩，API密钥未写入，原3D Boss实验保持未提交。同步§2/3/4.S/5/6/8/9/10/11与测试报告。
 
 2026-10-11（同批提交）：v12将73任务全文、前史、结局和六幕营地服务接入Galgame阅读，加入双立绘、逐字、自动、已读快进、回看、显式选项与独立阅读记录。任务结算仍在Campaign。新增预览和正式运行入口、三脚本白名单编译补丁，沿用v11/v9底包，不发布3D Boss实验；更新§2/3/4.S/5/6/8/9/10/11及测试报告。
 

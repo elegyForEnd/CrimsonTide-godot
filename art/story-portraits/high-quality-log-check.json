@@ -1,0 +1,30 @@
+{
+  "http": 200,
+  "success": true,
+  "records": [
+    {
+      "time": 1791732823,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    },
+    {
+      "time": 1791731162,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    },
+    {
+      "time": 1791730341,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    },
+    {
+      "time": 1791730212,
+      "model": "gpt-image-2.5-sunburst",
+      "content": "大小 2160x3840, 品质 standard, 生成数量 1",
+      "type": 2
+    }
+  ]
+}

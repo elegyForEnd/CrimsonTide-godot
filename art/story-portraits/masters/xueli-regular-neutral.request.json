@@ -1,0 +1,17 @@
+{
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve. Asset: production visual-novel full-body standing illustration, native 4K transparent PNG.\nInput image 1 is the user's authoritative character turnaround. Use ONLY the left FRONT view as the identity, pose, costume and prop reference. Produce ONE character in frontal projection, one full-body portrait, not three views, no panels and no text.\nPose and alignment: frontal gaze, no head tilt, shoulders level, relaxed upright standing, both feet visible and planted at the same height. Retain the same anatomy, hand pose and character proportions as the reference front view. On the 2160x3840 canvas, center the face approximately at x=1080, y=700; topmost hair or headdress at y=160 and bottoms of shoes at y=3680. Fit all hair, flowing dress and accessories inside safe margins.\nExpression: calm neutral, gentle attentive eyes, relaxed brows, small closed mouth, no tears or exaggerated blush.\nFinish: exquisite faithful anime illustration with delicate clean linework, precise original metal embroidery and lace, soft cel/painterly shading matching the reference, crisp hair strands, consistent neutral diffuse light. Do not turn her into a photo or 3D render.\nBackground: real fully transparent alpha, no white matte, painted checkerboard, scenery, ground, drop shadow, glow outline, vignette, lettering, border or watermark. Preserve fine alpha edges and fully opaque pale fabrics.\n\nCharacter: Xueli, the same light blue-haired cyan-eyed young adult anime woman. Preserve exactly her facial identity, long curled light-blue hair, dark navy lace veil with silver embroidery and star-shaped temple ornament, mint neck bow and flowing mint ribbons, high-neck dark navy gothic cleric dress, white layered lace, black gloves, thigh straps and tall silver-embroidered black heeled boots. She holds the original silver gothic lantern with soft cyan light low on the viewer's left, with the same chain and hand pose as the front reference. The lantern is a small prop light, not a halo lighting the entire body. No staff, crown or sword. Do not make her white-haired or change eye color.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "content_type": "application/json",
+  "references": [
+    "assets\\xueli.png"
+  ],
+  "mask": null
+}

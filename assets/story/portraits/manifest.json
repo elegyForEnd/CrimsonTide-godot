@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "canvas": [
+    2160,
+    3840
+  ],
+  "quality_requested": "max",
+  "quality_note": "Provider logs standard and omits response quality; user approved proceeding with explicit max.",
+  "expressions": {
+    "neutral": "平静",
+    "smile": "微笑",
+    "joy": "喜悦",
+    "shy": "害羞",
+    "worried": "担忧",
+    "sad": "悲伤",
+    "angry": "生气",
+    "determined": "坚定",
+    "surprised": "惊讶",
+    "tired": "疲惫"
+  },
+  "costumes": {
+    "regular": "常服",
+    "travel": "旅行披风",
+    "rest": "营地休息服",
+    "ceremony": "庆典礼装"
+  },
+  "heroes": {
+    "feiyue": {
+      "bodies": {
+        "regular": "res://assets/story/portraits/feiyue/body-regular.png",
+        "travel": "res://assets/story/portraits/feiyue/body-travel.png",
+        "rest": "res://assets/story/portraits/feiyue/body-rest.png",
+        "ceremony": "res://assets/story/portraits/feiyue/body-ceremony.png"
+      },
+      "faces": {
+        "smile": "res://assets/story/portraits/feiyue/face-smile.png",
+        "joy": "res://assets/story/portraits/feiyue/face-joy.png",
+        "shy": "res://assets/story/portraits/feiyue/face-shy.png",
+        "worried": "res://assets/story/portraits/feiyue/face-worried.png",
+        "sad": "res://assets/story/portraits/feiyue/face-sad.png",
+        "angry": "res://assets/story/portraits/feiyue/face-angry.png",
+        "determined": "res://assets/story/portraits/feiyue/face-determined.png",
+        "surprised": "res://assets/story/portraits/feiyue/face-surprised.png",
+        "tired": "res://assets/story/portraits/feiyue/face-tired.png"
+      },
+      "face_rect": [
+        850,
+        500,
+        450,
+        335
+      ],
+      "canvas": [
+        2160,
+        3840
+      ],
+      "ready": true
+    },
+    "xueli": {
+      "bodies": {
+        "regular": "res://assets/story/portraits/xueli/body-regular.png",
+        "travel": "res://assets/story/portraits/xueli/body-travel.png",
+        "rest": "res://assets/story/portraits/xueli/body-rest.png",
+        "ceremony": "res://assets/story/portraits/xueli/body-ceremony.png"
+      },
+      "faces": {
+        "smile": "res://assets/story/portraits/xueli/face-smile.png",
+        "joy": "res://assets/story/portraits/xueli/face-joy.png",
+        "shy": "res://assets/story/portraits/xueli/face-shy.png",
+        "worried": "res://assets/story/portraits/xueli/face-worried.png",
+        "sad": "res://assets/story/portraits/xueli/face-sad.png",
+        "angry": "res://assets/story/portraits/xueli/face-angry.png",
+        "determined": "res://assets/story/portraits/xueli/face-determined.png",
+        "surprised": "res://assets/story/portraits/xueli/face-surprised.png",
+        "tired": "res://assets/story/portraits/xueli/face-tired.png"
+      },
+      "face_rect": [
+        915,
+        405,
+        405,
+        280
+      ],
+      "canvas": [
+        2160,
+        3840
+      ],
+      "ready": true
+    },
+    "yayu": {
+      "bodies": {
+        "regular": "res://assets/story/portraits/yayu/body-regular.png",
+        "travel": "res://assets/story/portraits/yayu/body-travel.png",
+        "rest": "res://assets/story/portraits/yayu/body-rest.png",
+        "ceremony": "res://assets/story/portraits/yayu/body-ceremony.png"
+      },
+      "faces": {
+        "smile": "res://assets/story/portraits/yayu/face-smile.png",
+        "joy": "res://assets/story/portraits/yayu/face-joy.png",
+        "shy": "res://assets/story/portraits/yayu/face-shy.png",
+        "worried": "res://assets/story/portraits/yayu/face-worried.png",
+        "sad": "res://assets/story/portraits/yayu/face-sad.png",
+        "angry": "res://assets/story/portraits/yayu/face-angry.png",
+        "determined": "res://assets/story/portraits/yayu/face-determined.png",
+        "surprised": "res://assets/story/portraits/yayu/face-surprised.png",
+        "tired": "res://assets/story/portraits/yayu/face-tired.png"
+      },
+      "face_rect": [
+        940,
+        405,
+        345,
+        270
+      ],
+      "canvas": [
+        2160,
+        3840
+      ],
+      "ready": true
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "provider": "Rolldek",
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "documentation": "https://www.rolldek.com/docs/#/img25",
+  "model_requested": "gpt-image-2.5-sunburst",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve. Image 1 is the exact registered 4K standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround IDENTITY REFERENCE.\nEdit only the masked face region of image 1 to make xueli's expression: Genuine bright happiness: lifted cheeks, smiling eyes and a small naturally open smiling mouth with subtle teeth. No comic symbols.\nPreserve her identity and eye colors, position of the face, head angle, scale, hairstyle, hair strands and accessories. Changes are restricted to natural facial muscles: brows, eyelids, gaze, mouth and slight cheek shading. Do not move the head, shoulders or body. Do not change costume, hands, props, lighting, tail, veil, sword or alpha silhouette.\nReturn ONE complete standing portrait on the identical 2160x3840 canvas with exactly the original registration, composition and genuine transparent background. No close-up, collage, sheet, lettering, symbols, captions, background, matte, halo or shadow.\nUse refined consistent anime linework and soft rendering exactly matching image 1. The emotion must be clearly readable in a small Galgame face, but remain tasteful and anatomically natural. Preserve all pixels outside the masked region as faithfully as possible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "references": [
+    {
+      "path": "art\\story-portraits\\masters\\xueli-regular-neutral.png",
+      "sha256": "79bf2bbf2f8b92dff6a24a2e117b251208e9f70808f5bb6c68e4091bd83cbe59"
+    },
+    {
+      "path": "assets\\xueli.png",
+      "sha256": "78cd0bb1a88d58f65e8918af2c525ea6ba2eda8515e2df7f9dc9a9f42f4d076b"
+    }
+  ],
+  "mask": "art\\story-portraits\\masks\\xueli-face-edit.png",
+  "response": {
+    "usage": {
+      "input_tokens": 945,
+      "output_tokens": 32539,
+      "total_tokens": 33484,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "input_tokens_details": {
+        "text_tokens": 310,
+        "image_tokens": 635
+      }
+    },
+    "created": 1791734668
+  },
+  "quality_verified": false,
+  "actual_size": [
+    2160,
+    3840
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "sha256": "f4c7c95df4076766f2ae3f16991a2696eedb82a894df08b511e9fba2168647b3",
+  "download_recovered": true
+}

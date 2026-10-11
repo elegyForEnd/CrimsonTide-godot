@@ -1,0 +1,18 @@
+{
+  "endpoint": "https://rolldek.com/v1/images/edits",
+  "request": {
+    "model": "gpt-image-2.5-sunburst",
+    "prompt": "Use case: identity-preserve / costume edit. Image 1 is the exact registered 4K full-body standing portrait EDIT TARGET. Image 2 is the authoritative character turnaround identity reference.\nCreate the ceremony clothing variant of yayu: Ceremonial clothing: exquisitely tailored modest high-neck gothic formal dress in the character's signature colors, fitted layered bodice, intricate fine metallic embroidery, delicate lace, graceful knee-to-calf layered skirt with tasteful long back panels, elegant matching closed boots. Preserve the original distinctive hair ornaments and existing hand-held props. No bridal white palette for all characters, large crown, new wings, massive skirt obscuring feet, exposed midriff, cleavage or outfit unrelated to her identity.\nPalette and immutable identity details: black, layered violet and fine silver; retain her high ponytail, circlet and sheathed katana.\nKeep the entire head, facial features, calm neutral expression, hair style, hair ornaments and hair color EXACTLY like image 1. Preserve body proportions, frontal projection, shoulder height, relaxed hand locations, original props, face center, feet baseline and original 2160x3840 registration. Design beautiful believable clothing suited to this same gothic fantasy RPG character; precise seams, lace and embroidered edges with restrained materials. Keep every silhouette safely inside the canvas.\nThe mask allows clothing changes below the neck, not identity or camera changes. No head tilt, pose variation, body resizing, extra character, giant sleeve hiding hands, weapon change, unrelated jewelry, wings or text. Match image 1's neutral diffuse lighting and anime illustration style.\nReturn ONE complete full-body character, transparent PNG alpha. No white background, ground plane, checkerboard painted into pixels, collage, label, watermark, drop shadow or glow outline. Both feet and all accessories remain visible.\n",
+    "size": "2160x3840",
+    "quality": "max",
+    "background": "transparent",
+    "output_format": "png",
+    "input_fidelity": "high"
+  },
+  "content_type": "application/json",
+  "references": [
+    "art\\story-portraits\\masters\\yayu-regular-neutral.png",
+    "assets\\yayu.png"
+  ],
+  "mask": "art\\story-portraits\\masks\\yayu-clothing-edit.png"
+}
