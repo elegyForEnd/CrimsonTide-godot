@@ -24,6 +24,7 @@ var music_signature := ""
 var move_target := Vector2.INF
 var photo_mode := false
 var quest_fx: Control
+var combat_fx: Node2D
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -49,6 +50,7 @@ func _ready() -> void:
 	theme=theme_data
 	UISkin.theme_controls(theme_data)
 	world=World.new(); world.name="StoryWorld"; add_child(world)
+	combat_fx=preload("res://scripts/story_combat_vfx.gd").new(); combat_fx.screen=self; add_child(combat_fx)
 	hud=Control.new(); hud.size=size; hud.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(hud)
 	var top := Panel.new(); top.position=Vector2(22,18); top.size=Vector2(600,118); top.mouse_filter=Control.MOUSE_FILTER_IGNORE; hud.add_child(top)
 	top.add_theme_stylebox_override("panel",UISkin.frame(4))
@@ -135,6 +137,7 @@ func set_active(value: bool) -> void:
 		world.view_camera.current=value
 	if not value and not campaign.state.is_empty(): campaign.save_campaign()
 	if not value and is_instance_valid(quest_fx): quest_fx.clear()
+	if not value and is_instance_valid(combat_fx): combat_fx.reset()
 
 func label(parent: Node, text: String, at: Vector2, extent: Vector2, font_size: int = 18) -> Label:
 	var node := Label.new(); node.text=text; node.position=at; node.size=extent
@@ -181,6 +184,7 @@ func _process(dt: float) -> void:
 	if not active: return
 	screen_time+=dt; toast_time=maxf(0,toast_time-dt); message.visible=toast_time>0
 	world.sync_story(size,dt)
+	combat_fx.advance(dt)
 	var screen_point := get_global_transform_with_canvas()*get_local_mouse_position()
 	aim=world.unproject(screen_point)-campaign.hero_at
 	var target := nearest()
@@ -438,16 +442,11 @@ func _draw() -> void:
 		var gate: Vector2=project(Vector2(1100,1780))
 		draw_string(theme.default_font,gate,"↓ 南门 · "+campaign.act_data().maps[0].name,HORIZONTAL_ALIGNMENT_LEFT,-1,21,Color("edd49e"))
 	for e in campaign.effects:
+		if e.kind!="impact": continue # Player attacks now use the textured event-driven layer.
 		draw_set_transform_matrix(ground_transform())
 		var tone: Color=[Color("ef607f"),Color("94dbef"),Color("b99ae8")][int(e.hero)]
 		tone.a=e.time/e.total
-		if e.kind=="converge":
-			var end: Vector2=e.p.lerp(e.target,clampf((1.0-e.time/e.total)*2.0,0,1))
-			draw_line(e.p,end,tone,7.0,true)
-			draw_arc(e.target,35+(1.0-e.time/e.total)*90,0,TAU,48,tone,4.0,true)
-		elif e.kind=="attack":
-			draw_arc(e.p,e.radius*0.5,e.aim.angle()-0.8,e.aim.angle()+0.8,32,tone,6.0,true)
-		else: draw_circle(e.p,e.radius,tone,false,4.0,true)
+		draw_circle(e.p,e.radius,tone,false,4.0,true)
 		draw_set_transform_matrix(Transform2D.IDENTITY)
 
 func npc_name(index: int) -> String:

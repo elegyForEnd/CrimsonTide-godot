@@ -515,12 +515,8 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 		angle=float(fx.stage)*.25 if role=="motion_quake" else t*.7*float(fx.reverse)
 		var body_pose := get_global_transform()*Transform2D(angle,at)
 		body_pose.origin.y-=float(fx.get("height",0))
-		if role!="motion_quake" and fx.has("socket_grip") and fx.has("socket_local"):
-			var grip: Vector2=get_global_transform()*fx.socket_grip
-			var tip: Vector2=get_global_transform()*fx.socket_local
-			var blade_length := grip.distance_to(tip)
-			if blade_length>4:
-				bounds=Vector2.ONE*maxf(r,blade_length)*2
+		# Circular payload follows authoritative reach, independent of sprite blade length.
+		bounds=Vector2.ONE*float(fx.radius)*2
 		target.draw_set_transform_matrix(get_global_transform().affine_inverse()*body_pose)
 	elif fx.kind in ["beam","chain"]:
 		var start: Vector2=get_global_transform()*fx.beam_start_local if fx.has("beam_start_local") else get_global_transform()*at-Vector2(0,float(fx.get("height",0))+24 if fx.kind=="beam" else 24)
@@ -595,7 +591,12 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 		# shrinking a decorated shoulder until the attack becomes a tiny arrow.
 		var art := ImageArt.mechanic_texture(source)
 		if art: target.draw_texture_rect_region(art,Rect2(-bounds*.5,bounds),ImageArt.mechanic_ink(source),tint)
-	else: ImageArt.stamp_mechanic(target,source,bounds,tint)
+	else:
+		var form := "radial" if Mechanics.body_centered(role) or fx.kind=="detonation" else "forward" if role=="motion_thrust" or role in ["muzzle_fire","release_bow"] else "rise" if stroke.get("plane","")=="drop" else "sweep" if role.begins_with("motion_") else "center"
+		# Damage is already confirmed at release: reach the contact silhouette by
+		# 18 ms, rather than leave the real blade detached through a slow reveal.
+		var birth := .018 if role.begins_with("motion_") or role in ["muzzle_fire","release_bow"] else .035
+		ImageArt.reveal_mechanic(target,source,bounds,tint,Motion.coverage(float(fx.age),float(fx.life),birth),form,float(fx.reverse)<0)
 	# Preserve the weapon's primary silhouette in all three stages. A faint,
 	# fitted counter-cut/finishing wake supports it without widening hit reach.
 	if authored and not source.begins_with("charged_") and not role.begins_with("motion_") and fx.kind in ["cast","muzzle"]:

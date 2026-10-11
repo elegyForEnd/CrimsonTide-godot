@@ -1,5 +1,16 @@
 # 验证记录
 
+## 2026-10-11 武器/技能命中与消散升级 v11
+
+- 规则专项combat_finish 25/0：零伤害不闪、75ms去重、元素分流、64命中/96尾迹/8灯限额、真实地形抬灯、命中与灯过期、快照身份、跳变清历史、真正闯关/远征释放、表现不修改弹体、故事原伤害与冷却不变。output/combat-finish-rules-final.log。
+- GPU专项两渲染器各23/0：首帧不整张盖出、展开像素变化、完整阶段与旧原图的UV/比例/像素完全相同、圆斩不随刀长变、六材质命中→残留→清空、定制Flights生命周期不留新孤立节点。combat-finish-visual-rules-gl_compatibility-final.log / combat-finish-visual-rules-forward_plus-final.log。
+- 相关回归：weapon_mechanics429/0，combat_particles384/0，combat78/0，story_campaign180/0，story_integration12/0，weapon_mechanic_contact506/0，weapon_stroke_stability196/0；12种重刃专项0失败。合计有计数的1856检查/0失败（未把重刃无检查计数或截图计入）。对应combat-finish-*.log，接触最终日志为combat-finish-weapon_mechanic_contact-final.log。最初慢揭示造成接触失败，修正18ms展开后原506检查恢复全过。
+- 工具preview_combat_finish通过真实Campaign.attack/Session.release_strike/weapon_art/rogue_actions及damage_enemy生成画面，GL/Forward+各37张实景（故事三人普通/Q/R + 两旧模式七种武器普通/战技），日志combat-finish-scenes-gl-final.log / combat-finish-scenes-forward-final.log。截图build/combat-finish-{story,rogue,expedition}-NN.png；Forward+最后运行覆盖同名照片。预览后又把手动换hero改用真实switch_hero，防止预览三人重叠；其最终复拍记录另列于下。
+- 扩大检查发现旧69武器矩阵失败，不能宣称全工程通过：升级前后均17664释放组合+3520飞行组合、151375检查、52518失败。复制scripts并以git show HEAD还原七个改动源文件，在build/combat-finish-baseline隔离复跑；两个日志失败断言逐项相同（Real blade endpoint16976 / Actual contact pixel19545 / Visible effect15997）。升级首次矩阵还多一个孤立资源退出诊断，原因是自定义Flights覆盖_ready而新finish在字段处new；改为_ready中创建后两渲染器各23项含孤立节点检查恢复，最终日志没有新增资源诊断。旧矩阵日志combat-finish-full-matrix.log / combat-finish-full-matrix-baseline.log；未把那些失败掩盖或改掉断言。
+- 两安装只读参考检查成功：684飞弹/357技能/221技能描述，重制版4166候选路径、10份JSON、0读取错误。reference-combat-inspection.json为元数据，无参考艺术导入。内置image_gen新建RGBA六格图集，项目资源与完整提示词在assets/combat/finish。
+- 发布包：v11.exe109500332字节，Combat-v11.pck7511516字节，对现有v9地图底包增量；保留v10。export无脚本/资源错误（combat-finish-export.log）。真实v11 GL进入故事act1/stage1、9穿戴/9物品、PNG保存error0且标准错误空（combat-finish-release-gl-final.log/.err）；真实v11 Forward+普通远征入口退出0、标准错误空（combat-finish-release-forward.log/.err）。旧调试--capture写res://build的初次发布截图因目录不可写失败，改用已支持的绝对--items-shot后成功，不影响玩家启动。
+- 最终switch_hero预览复拍：combat-finish-scenes-forward-switch-final.log确认37图、failures=0；覆盖同名实景PNG。实景测试保留既有rogue_build_preview锚点尺寸警告，Forward+37图退出仍有原7 Texture RID警告。未进行长时间跑分、全Boss技能重制、全部武器挂点修复或4K60验收。
+
 ## 2026-10-07 全部69把武器逐项验收
 
 - 逐页人工查看 21 把远征、48 把闯关武器，四角色 × 八类展示项，共 2208 格；实际有特效的 1908 项独立 GPU 检查先隐藏角色，避免角色像素掩盖空特效。69 页与 coverage.json 位于 build/weapon-full-audit，浏览器索引 index.html，逐把结论见 WEAPON-FULL-AUDIT.md。

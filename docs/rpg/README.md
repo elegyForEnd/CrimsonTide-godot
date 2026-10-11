@@ -38,6 +38,8 @@ PV是凝练的预告片，以上对应不意味着把八段镜头机械延长成
 
 ## 交付边界与参考核对
 
+武器与技能表现最新实现：[COMBAT-FINISH.md](COMBAT-FINISH.md)，覆盖故事、闯关、搜打撤；新增命中材质、运动碎屑、真实弹体尾迹、技能收尾与短时光源，保留旧数值与任务。
+
 本目录保留设计稿与长篇剧情，另提供基础可玩实现。体验时长和工期仍为待检验目标。故事入口使用主场景独立的 `story` 页面，未加入TideSession的远征生命周期；TideSession模式值仍为 `expedition` 与 `roguelike`。
 
 提供的本地游戏目录已只读解析地图模板、地块库和关卡表，详细数值见地图研究；未运行它，也未声称逐关实玩。章节任务与路标规则另用[官方任务说明](https://classic.battle.net/diablo2exp/quests/basic.shtml)及[官方地图说明](https://classic.battle.net/diablo2exp/maps/)核对。计划正文不提参考作品名称。

@@ -6,6 +6,8 @@ const Motion = preload("res://scripts/effect_motion.gd")
 const Library = preload("res://scripts/vfx_library.gd")
 const WeaponVfx = preload("res://scripts/weapon_vfx.gd")
 var stylized = preload("res://scripts/stylized_vfx.gd").new()
+var finish: Node2D
+var light_pool: Node3D
 var extraction_vortex: Texture2D = preload("res://assets/world/landmarks/extraction-vortex.png")
 const SPELL_CELLS := {"meteor":0,"needle":1,"chain":2,"moon":3,"prism":4,"scatter":5,"vortex":6,"eclipse":7}
 var motes: Array = []
@@ -62,6 +64,11 @@ func _ready() -> void:
 	add_child(energy)
 	add_child(particles)
 	add_child(stylized)
+	finish=preload("res://scripts/combat_finish.gd").new(); add_child(finish)
+	if field.get("world_3d")!=null:
+		light_pool=preload("res://scripts/combat_light_pool.gd").new()
+		field.world_3d.add_child(light_pool)
+		finish.lights=light_pool.pulse
 	if field.has_method("weapon_effect_socket"):
 		stylized.socket_provider=field.weapon_effect_socket
 	spell_light=Node2D.new()
@@ -80,6 +87,8 @@ func reset() -> void:
 	flames.clear()
 	energy.reset()
 	stylized.reset()
+	if finish: finish.reset()
+	if light_pool: light_pool.reset()
 	numbers.clear()
 	trauma=0.0
 
@@ -173,6 +182,7 @@ func event(data: Dictionary) -> void:
 			var contact := get_global_transform()*at-screen_aim*radius*.65-Vector2(0,26)
 			visual_data["contact_p"]=get_global_transform().affine_inverse()*contact
 	stylized.event(visual_data,source_hero)
+	finish.event(visual_data)
 	spell_energy(data,spell,at,aim_dir)
 	match data.kind:
 		"spell_beam":
@@ -253,6 +263,12 @@ func _process(dt: float) -> void:
 		if player.status!="active" or player.dodge_time>0 or (not player.pending_strike and player.cast_time<=0 and not player.has("weapon_hold")):
 			stylized.cancel_charge(int(player.id))
 	stylized.advance(dt)
+	finish.advance(dt)
+	var nearby: Array=[]
+	for bullet in field.session.bullets:
+		if Vector2(bullet.p).distance_to(field.camera)<1100: nearby.append(bullet)
+	finish.observe(nearby,dt)
+	if light_pool: light_pool.advance(dt)
 	observe_particles(dt)
 	trauma=move_toward(trauma,0,dt*2.6)
 	if field.has_method("ground_transform"):

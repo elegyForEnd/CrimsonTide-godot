@@ -78,6 +78,15 @@ static func stamp_mechanic(target: CanvasItem, role: String, bounds: Vector2, ti
 	# Thickness comes from the original ImageGen body; fit without warping its aspect.
 	target.draw_texture_rect(art,Rect2(-ink.get_center()*scale,art.get_size()*scale),false,tint)
 
+## Progressive reveal uses the identical fitted source rectangle and contact.
+## This changes coverage only; the authored silhouette/UV/anchor stay intact.
+static func reveal_mechanic(target: CanvasItem, source: String, bounds: Vector2, tint: Color, coverage: float, form: String, reverse: bool=false) -> void:
+	var art := mechanic_texture(source)
+	if art==null: return
+	var ink := mechanic_ink(source)
+	var scale := minf(bounds.x/ink.size.x,bounds.y/ink.size.y)
+	preload("res://scripts/effect_motion.gd").draw(target,art,Rect2(-ink.get_center()*scale,art.get_size()*scale),coverage,form,tint,reverse)
+
 ## Contact in the same fitted coordinates as stamp_mechanic, cached per source.
 ## Crescents meet the blade at their luminous forward edge; thrusts start there.
 static func mechanic_contact(role: String, bounds: Vector2, painted_source: String = "") -> Vector2:

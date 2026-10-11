@@ -44,6 +44,12 @@ var map_states: Dictionary = {}
 const CITY_GATE := Vector2(3860,1880)*Ruins.MAP_SCALE
 var enemies: Array = []
 var bullets: Array = []
+var visual_projectile_serial := 0
+
+func tag_visual_projectile(shot: Dictionary) -> void:
+	# Stable presentation identity survives snapshots. Does not enter hit rules.
+	visual_projectile_serial+=1
+	shot["fx_id"]=visual_projectile_serial
 var world_drops: Array = []
 var results: Dictionary = {}
 var running := false
@@ -3529,6 +3535,7 @@ func release_weapon_art(p: Dictionary, charged: Dictionary = {}) -> bool:
 			if spell=="scatter": shot["pellet_hits"]=pellet_hits
 			shot["charged"]=not charged.is_empty()
 			shot["ground_origin"]=p.p
+			tag_visual_projectile(shot)
 			bullets.append(shot)
 		return true
 	var center: Vector2=p.p
@@ -3597,6 +3604,7 @@ func release_strike(p: Dictionary) -> void:
 				var projectile := {"p":p.p+shot_dir*23,"v":shot_dir*float(w.get("speed",850.0 if family==0 else 620.0)),"life":float(w.reach)/float(w.get("speed",850.0 if family==0 else 620.0)),"damage":damage,"build_context":build_ctx,"owner":p.id,"weapon":family,"weapon_index":int(p.weapon),"spell":spell,"knock":float(w.knock),"remaining":5 if spell=="eclipse" else 4 if spell=="moon" else 2 if spell=="arrow" else 1,"hit_ids":[]}
 				if spell=="scatter": projectile["pellet_hits"]=pellet_hits
 				projectile["ground_origin"]=p.p
+				tag_visual_projectile(projectile)
 				bullets.append(projectile)
 
 func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, knock: float, weapon: int = -1, weapon_index: int = -1, build_context: Dictionary = {}) -> void:

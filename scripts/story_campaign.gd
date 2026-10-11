@@ -6,6 +6,7 @@ signal notice(text: String)
 signal chapter_read(title: String, text: String)
 signal audio_cue(kind: String)
 signal quest_event(kind: String, id: String)
+signal combat_event(data: Dictionary)
 const Map = preload("res://scripts/story_map.gd")
 const Inventory = preload("res://scripts/story_inventory.gd")
 var inventory = Inventory.new(self)
@@ -483,22 +484,30 @@ func attack(aim: Vector2, special: int = 0) -> bool:
 	if special==1: radius=430.0
 	if special==2: radius=670.0
 	effects.append({"p":hero_at,"aim":facing,"time":0.36 if special<2 else 0.9,"total":0.36 if special<2 else 0.9,"kind":"attack","hero":state.hero,"special":special,"radius":radius})
+	combat_event.emit({"kind":"story_attack","p":hero_at,"aim":facing,"hero":int(state.hero),"id":int(state.hero),"special":special,"radius":radius})
 	if special==2:
 		var target := hero_at+facing*400
 		for e in enemies:
 			if e.hp>0 and e.boss and e.p.distance_to(hero_at)<radius: target=e.p; break
-		for i in 3: effects.append({"p":allies[i],"target":target,"aim":facing,"time":0.9,"total":0.9,"kind":"converge","hero":i,"special":2,"radius":radius})
+		for i in 3:
+			effects.append({"p":allies[i],"target":target,"aim":facing,"time":0.9,"total":0.9,"kind":"converge","hero":i,"special":2,"radius":radius})
+			combat_event.emit({"kind":"spell_arc","p":allies[i],"target":target,"aim":facing,"hero":i,"id":i,"weapon_index":[1,5,19][i],"tone":[Color("ef607f"),Color("94dbef"),Color("b99ae8")][i]})
 	for e in enemies:
 		if e.hp<=0: continue
 		var delta: Vector2=e.p-hero_at
 		var in_arc: bool=special==2 or delta.length()<80 or delta.normalized().dot(facing)>(-0.1 if special==1 else 0.25)
 		if delta.length()<=radius and in_arc and map.sight(hero_at,e.p):
-			hit(e,damage()*([1.0,2.3,5.0][special]))
+			hit(e,damage()*([1.0,2.3,5.0][special]),int(state.hero),hero_at)
 	return true
 
-func hit(e: Dictionary, amount: float) -> void:
+func hit(e: Dictionary, amount: float, source_hero: int=-1, source_at: Vector2=Vector2.INF) -> void:
 	if e.hp<=0: return
 	e.hp=maxf(0,e.hp-amount); e.flash=0.15
+	var hero := int(state.hero) if source_hero<0 else source_hero
+	combat_event.emit({"kind":"impact","p":Vector2(e.p),"enemy_id":str(e.id),"damage":amount,"heavy":amount>=damage(hero)*2,
+		"hero":hero,"id":hero,"weapon_index":[1,5,19][hero],"aim":(Vector2(e.p)-source_at).normalized() if source_at!=Vector2.INF else facing})
+	if hero==1 and source_at!=Vector2.INF:
+		combat_event.emit({"kind":"spell_arc","p":source_at,"target":Vector2(e.p),"hero":hero,"id":hero,"weapon_index":5,"aim":(Vector2(e.p)-source_at).normalized()})
 	if e.hp<=0:
 		audio_cue.emit("death")
 		state.defeated[e.id]=true
@@ -528,7 +537,8 @@ func update(dt: float, motion: Vector2) -> void:
 			if i==state.hero: continue
 			for e in enemies:
 				if e.hp>0 and e.p.distance_to(allies[i])<350 and map.sight(allies[i],e.p):
-					hit(e,damage(i)*0.30); break
+					combat_event.emit({"kind":"story_attack","p":allies[i],"aim":(Vector2(e.p)-Vector2(allies[i])).normalized(),"hero":i,"id":i,"special":0,"radius":150.0,"companion":true})
+					hit(e,damage(i)*0.30,i,allies[i]); break
 	for e in enemies:
 		if e.hp<=0: continue
 		e.flash=maxf(0,e.flash-dt)

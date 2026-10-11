@@ -8,6 +8,8 @@ Boss 招式与独立高清特效重做见 [BOSS-REWORK.md](BOSS-REWORK.md)。
 
 # 血潮守望 · Crimson Tide
 
+武器/技能特效升级（v11）：双击 **Start-Combat-v11.cmd** 正常游戏，覆盖故事、闯关和搜打撤；**Preview-Combat.cmd** 在真实场景轮播攻击，1/2/3切换模式，临时数据隔离。新增原创命中材质、碎屑运动、弹体尾迹、范围技能收尾与短时环境光。[实现、参考检查与已知边界](docs/rpg/COMBAT-FINISH.md)。v11 EXE、Combat-v11.pck、v9地图底包需一起保留。
+
 Forward+ 开场美术升级版：运行 `dist/CrimsonTide-ForwardPlus-4K.exe`，标题选择故事模式。高画质目标为4K输出60帧，提供FSR2／FSR1／原生输出和兼容启动；开场样板接入Blender模块、2K PBR、烘焙间接光、局部雾、曲岸地形与渐进遮挡。[生产流程与范围](docs/rpg/FORWARDPLUS-ART-PIPELINE.md)，验证记录见TEST-REPORT。六幕渲染统一升级，其余幕美术仍需逐幕制作。
 
 开场场景续作：最新试玩 `dist/CrimsonTide-ForwardPlus-v2.exe`。六栋建筑补齐用途各异的家具与工作灯，进屋时相机方向侧墙一起淡出；人物脚底对齐台基，家具占地接入移动判定。南门、道路与洞窟补充44处环境摆放，小树不阻挡，长时间跑分继续暂缓。

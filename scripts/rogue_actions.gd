@@ -111,6 +111,7 @@ static func projectile(s, p: Dictionary, aim: Vector2, damage: float, reach: flo
 	if spell=="scatter": shot["pellet_hits"]=pellets
 	shot["charged"]=bool(ctx.get("charged",false))
 	shot["ground_origin"]=p.p
+	s.tag_visual_projectile(shot)
 	s.bullets.append(shot)
 
 static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> void:

@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-11",
+  "files": [
+    {
+      "file": "impact-atlas-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: original dark gothic action RPG combat VFX texture atlas, six reusable individual sprites arranged in an exact 3 columns by 2 rows square grid. Actual transparent alpha background, no checkerboard baked into image. Each cell contains one isolated effect with wide transparent margin, absolutely no overlap across cells. Row 1 left: small asymmetric ivory-gold metal contact spark, 5 sharp tapered streaks with a bright tiny central impact; middle: softly feathered dark grey volumetric dust puff, low contrast believable fine wisps; right: torn ruby crimson spectral silk splash with tiny blood-petal shards, asymmetric energetic impact. Row 2 left: jagged pale cyan ice splinters and fine frost powder, distinct angular crystalline chips and transparent center; middle: ember-orange swirling hot fire impact with dark smoky cavity and fine cinders, no full circle; right: violet spectral soul wisps and pale feather-like energy shreds, hollow center and directional turbulence. High-end painted physically nuanced translucent textures with crisp focal detail and soft periphery, suited to gritty stone environments and 2D anime heroes. No characters, weapons, text, labels, frame, borders, logo, backgrounds, floors, halos that fill the cell, no similar generic glowing orb in all cells. Keep all effects centered within their own exact equal-size cells. Square atlas.",
+      "transparent_background": true,
+      "source": "exec-4df9e3dc-ed35-4202-9df8-d864d4fcc23b.png",
+      "columns": 3,
+      "rows": 2,
+      "cells": [
+        "metal",
+        "dust",
+        "crimson",
+        "frost",
+        "ember",
+        "soul"
+      ]
+    }
+  ]
+}
