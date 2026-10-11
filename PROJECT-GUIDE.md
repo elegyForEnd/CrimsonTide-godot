@@ -95,9 +95,9 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 故事物品由 `story_inventory.gd` 权威处理，`story_items_ui.gd`、`story_item_grid.gd` 负责实际控件与原生拖拽，`story_ui_skin.gd` 使用原创材质九宫切片。不要调用远征/肉鸽的货币、装备或存储函数。v10发布采用小运行入口与补丁，挂载现有v9地图底包；正常启动Start-Story-GUI，临时试玩Preview-Inventory。
 
-`session.gd:239 select_mode()` 分派 `campaign`（搜打撤）与 `rogue`（魔境）。两模式共用：
+`session.gd:247 select_mode()` 分派 `campaign`（搜打撤）与 `rogue`（魔境）。两模式共用：
 - 同一个 `TideSession`（session.gd:78-82 同时持有 roguelike/expedition/mini_bosses/wild_bosses/dragon_boss 实例）；
-- 库存类动作在 `session.gd:1686 perform()` 里分派：魔境把库存动作移交 `roguelike`，远征走本文件存储区；
+- 库存类动作在 `session.gd:1694 perform()` 里分派：魔境把库存动作移交 `roguelike`，远征走本文件存储区；
 - 魔境七子系统（abcbaaf 新增）在 `roguelike.gd:4-17` 预载：Variants / NodeGraph / Curses / Events / Rooms / Growth / Daily；
 - 背包 UI：`main.gd:3634 show_inventory()` 分支转交 `rogue_inventory.gd`（魔境）、`extraction_inventory.gd`（远征）或 `camp_pack.gd`（营地行囊）。
 
@@ -122,7 +122,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 底部道具栏（1/2/3 槽） | 绘制 `main.gd:1706 draw_hud_item_bar()`；使用规则 `main.gd:1756 apply_item_slot()` + `Catalog.slot_operable` |
 | 背包界面总入口（Tab） | `main.gd:3634 show_inventory()` → 魔境转 `rogue_inventory.gd:52 draw()`、远征转 `extraction_inventory.gd:26 draw()`、营地转 `camp_pack.gd:49 draw()` |
 | 魔境扩展的表现入口（abcbaaf 新增） | 房间面板 `main.gd:3872 rogue_room_panel()`、事件三选一 `main.gd:3837 rogue_event_panel()`、每日种子页 `main.gd:3909 show_rogue_seed_page()`、成长树 `main.gd:3980 show_growth_tree()` |
-| 拖拽子系统（拿起/落点预览/金框红框/R 旋转） | `main.gd:2245 start_drag()`、`main.gd:2222 release_drag()`、预演 `main.gd:3335 drag_target_rect()`（合法性真正判定在 `session.gd:2141 resolve_drop`）、旋转 `main.gd:2102 rotate_selected()` |
+| 拖拽子系统（拿起/落点预览/金框红框/R 旋转） | `main.gd:2245 start_drag()`、`main.gd:2222 release_drag()`、预演 `main.gd:3335 drag_target_rect()`（合法性真正判定在 `session.gd:2149 resolve_drop`）、旋转 `main.gd:2102 rotate_selected()` |
 | 双击装备/Ctrl 智能点击/一键收纳 | `main.gd:2597 double_click_equip()` / `main.gd:2096,2117 ctrl_click_item()/ctrl_click_worn()` / `main.gd:4130 auto_store_loot()` |
 | F 键兜底链（倒地自救→拾取→搜索→急救针） | `main.gd:1620-1650`；搜索窗 `main.gd:2077 open_search()` |
 | 伤害红屏/提示 toast/结算页 | `main.gd:3171 flash_damage_feedback()` / `main.gd:3234 notify()` / `main.gd:3079 on_finished()`（奖励入库+隐藏角色招募 main.gd:3083-3109） |
@@ -136,7 +136,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | **存档唯一写入点**（原子写 %APPDATA%/…/profile.json） | `scripts/profile.gd:216 save_profile()`；读档清洗 `profile.gd:53 apply_data()` |
 | 次元口袋/背包柜/**仓库**的存档形状 | `profile.gd:136 sanitize_storage()`、`profile.gd:435 sanitize_warehouse()`（⚠️ 仓库已是 **15×15 真网格容器** + `warehouse_spill` 溢出暂存，旧扁平数组自动升级）、进局负载 `profile.gd:212 storage_payload()` |
-| **穿戴装备持久化**（撤离写回 / 阵亡清空） | 存档字段 `profile.gd:497 empty_loadout()`、清洗 `profile.gd:500 sanitize_loadout()`（形状与逐槽校验在 `catalog.gd:650 clean_loadout()`）；结算取回 `session.gd:4233 saved_loadout()` |
+| **穿戴装备持久化**（撤离写回 / 阵亡清空） | 存档字段 `profile.gd:497 empty_loadout()`、清洗 `profile.gd:500 sanitize_loadout()`（形状与逐槽校验在 `catalog.gd:650 clean_loadout()`）；结算取回 `session.gd:4241 saved_loadout()` |
 | 仓库容量与「只计一次价值」 | `catalog.gd:240 WAREHOUSE_GRID=15×15`；入库 `profile.gd:399 bank_item()` / 指格入库 `profile.gd:386 bank_item_at()` / 结算批量入库 `profile.gd:450 bank_carried_items()`；累计战利品价值 `profile.gd:348 credit_loot_value()`（靠物品自带 `valued` 标记去重，见 §11.16） |
 | 家园产物作为真实掉落物（塞背包→口袋→落地） | `profile.gd:569 receive_product()`（先 `bags[0]` 再 `pocket`，返回装不下的余量）、`profile.gd:545 product_count()`（按实例 `count` 累加背包/口袋/仓库网格+溢出区）、`profile.gd:558 spend_product()`（烹饪/交易真扣实例）、`profile.gd:592 migrate_home_stock()`（一次性把旧 `home.stock` 计数迁进仓库，在 `apply_data()` 末尾 `sanitize_storage()` 之后调用） |
 | 肉鸽成长 / 每日记录的存档清洗 | `profile.gd:160 sanitize_growth()`、`profile.gd:177 sanitize_daily()`（常量 `Daily` profile.gd:17、`MAX_DAILY_RECORDS` profile.gd:21） |
@@ -152,19 +152,19 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 功能 | 文件:锚点 |
 |---|---|
-| 联机生命周期（ENet 24872、专用服务器票券） | `scripts/session.gd`：端口 session.gd:31；host/join session.gd:128/142；专用服 session.gd:179/191；票券校验 session.gd:270 validate_ticket() |
-| 动作总线（所有交互的唯一入口） | `session.gd:1686 perform()`——heal/dash/skill/bag_*/equip/use/search/pickup/raid_choice 全在这；rogue_* 由 session.gd:1618 直通 `roguelike.choose()`。⚠️ **`perform()` 开头 `if not running: return`**：营地没有权威会话，营地里的存储编辑一律走 `camp_storage.gd`（见 §4.G），不要指望 `session.action()` |
+| 联机生命周期（ENet 24872、专用服务器票券） | `scripts/session.gd`：端口 session.gd:31；host/join session.gd:128/142；专用服 session.gd:179/191；票券校验 session.gd:278 validate_ticket() |
+| 动作总线（所有交互的唯一入口） | `session.gd:1694 perform()`——heal/dash/skill/bag_*/equip/use/search/pickup/raid_choice 全在这；rogue_* 由 session.gd:1618 直通 `roguelike.choose()`。⚠️ **`perform()` 开头 `if not running: return`**：营地没有权威会话，营地里的存储编辑一律走 `camp_storage.gd`（见 §4.G），不要指望 `session.action()` |
 | 玩家数值（伤害公式/防御/抗性/掉落率/属性补正） | `session.gd:465 weapon_scaling()`、`session.gd:508 weapon_damage()`、`session.gd:441 stat_defense()`、`session.gd:455 stat_resistance()`、`session.gd:461 enemy_drop_chance()`；肉鸽补正 `rogue_equipment_stat()` session.gd:438、`rogue_damage_pool()` session.gd:469、`rogue_mods()` session.gd:477 |
 | 移动/奔跑/闪避 | `session.gd:2843 move_player()`（调用点在 session.gd:2684）、常量 session.gd:34-36（闪避时长/距离/奔跑倍率） |
-| 攻击三连击/武器技/弹丸生成 | `scripts/session.gd:3396 attack()`、`session.gd:3445 release_weapon_art()`、`session.gd:3565 release_strike()`；战技事件携带 attack_kind、width、radius，飞行弹体保留具体武器与强化快照 |
-| 伤害结算中枢（韧性/格挡/硬直/击退/hitstop） | `session.gd:3610 damage_enemy()` |
-| 弹丸飞行/链电/陨石落点 | `session.gd:4061 update_bullets()` |
+| 攻击三连击/武器技/弹丸生成 | `scripts/session.gd:3396 attack()`、`session.gd:3445 release_weapon_art()`、`session.gd:3573 release_strike()`；战技事件携带 attack_kind、width、radius，飞行弹体保留具体武器与强化快照 |
+| 伤害结算中枢（韧性/格挡/硬直/击退/hitstop） | `session.gd:3618 damage_enemy()` |
+| 弹丸飞行/链电/陨石落点 | `session.gd:4069 update_bullets()` |
 | 大招（雪璃治疗/死灵法师魂收+冥火地带全套常量） | `session.gd:2436 release_ultimate()`、死灵常量块 session.gd:2481-2498（NECROMANCER/FIRE_*/BURN_*/SOUL_REAP_*） |
 | 理智/血晶气味/威胁度/环境刷怪 | 理智+血晶气味 `session.gd:2685-2698`；威胁度公式 `session.gd:2624`；环境刷怪 `session.gd:2629-2632` |
-| **血潮缩圈**（数值） | `session.gd:3314 safe_center()`、`session.gd:3329 safe_radius()`；逐天时长真源 `session.gd:60 DAY_DURATIONS=[660,660,480]` + `:56 SHRINK_RATIO=0.6`；换算口 `session.gd:3325 day_duration()` / `:3326 shrink_start()`（缩圈从当天 60% 时刻开始，逐天不等长） |
+| **血潮缩圈**（数值） | `session.gd:3314 safe_center()`、`session.gd:3329 safe_radius()`；逐天时长真源 `session.gd:60 DAY_DURATIONS=[660,660,480]` + `:56 SHRINK_RATIO=0.6`；换算口 `session.gd:3333 day_duration()` / `:3326 shrink_start()`（缩圈从当天 60% 时刻开始，逐天不等长） |
 | 搜索容器（F 逐件浮出） | `session.gd:931-979`（`begin_search()` / `advance_search()` / `search_seconds()`） |
-| 死亡散包/撤离带入/口袋保护 | `session.gd:819 spill_storage()`、结算 `session.gd:4178 settle()`；**穿戴装备同背包**：撤离保留穿着（写回 loadout，`session.gd:4233 saved_loadout()`）、阵亡散落并清空存档 loadout |
-| 据点守军锁定/清剿宝箱 | `session.gd:3906 resolve_site_defeat()` |
+| 死亡散包/撤离带入/口袋保护 | `session.gd:819 spill_storage()`、结算 `session.gd:4186 settle()`；**穿戴装备同背包**：撤离保留穿着（写回 loadout，`session.gd:4241 saved_loadout()`）、阵亡散落并清空存档 loadout |
+| 据点守军锁定/清剿宝箱 | `session.gd:3914 resolve_site_defeat()` |
 | 王城进出（全队集合/双地图状态机/骑士奖励） | `session.gd:3702 travel_city()`、奖励 `session.gd:3755 knight_reward()` |
 | 失乡骑士 AI 与出招 | `session.gd:3754 update_knight()`、`session.gd:3852 start_knight_attack()` |
 | 隐藏结局触发（三钟+护身符+女王死） | 判定/触发 `session.gd:2772-2774`；`session.gd:2819 bells_lit()`、`session.gd:2822 seal_bell()`、`session.gd:2849 carries_amulet()`、`session.gd:2836 hidden_ending_ready()`（常量 `BELL_SEALS` session.gd:2814） |
@@ -231,11 +231,11 @@ project.godot:18  主场景 = scenes/boot.tscn
 | **营地面板的"谁在接鼠标"判据**（⚠️ 别只写 `inventory_open`） | `main.gd:1704 bag_mouse_live()` 是唯一的判据：`page_name=="game"` 且会话在魔境模式时**才**把袋控器让给 `rogue_inventory`。`raid.mode` 一旦是 roguelike 就会**整个会话保持**（从魔境回营地也是），所以判据必须绑页面：早期写法 `if session.roguelike.active(session): return` 会让"从魔境回营地后的行囊面板"整片点不动（按钮还能点，因为 Button 不走 `_input`）。`main.gd:1647 _input()` 第一句与它同源 |
 | **营地存储编辑规则**（营地无 session 权威时的唯一编辑口） | `scripts/camp_storage.gd:81 drop()`（拖拽分发）→ `:140 vault_in()` / `:164 vault_out()` / `:193 vault_move()` / `:207 vault_equip()` / `:274 socket_out()` / `:287 socket_to_vault()` / `:322 unwear_bag()`（脱下背包要先腾空，装不下就拒绝）/ `:405 stow_worn()` / `:412 stow_socket()`；**每次改动即时 `:28 persist()` 写档** |
 | **营地双击规则**（营地双击是"存储动词"，不是战斗动词） | `scripts/camp_storage.gd:635 quick_equip()` → `:503 socket_for()`（装备找自己的槽位：`bag`/`weapon`/`gearN`/`charm0-1`）→ 槽位空走 `drop()`，槽位被占走 `:519 swap_worn()`（**换下来的那件落回对方原来那格仓库格**，落不下就整体拒绝；背包换装走 `:563 swap_pack()`）；非装备走 `:485 auto_store()`（**先背包**，背包放不下才进仓库）。入口 `main.gd:2703 double_click_equip()` 在营地转到这里；**营地双击永远不填快捷栏，`[1][2][3]` 只能拖进去** |
-| **卸下规则**（双击装备位 / `Ctrl`+左键 / `F` 是一条；面板「卸」字是另一条，**故意不同**） | 分发 `main.gd:2222 take_off_worn()`（`main.gd:2202 zone_type()`/`main.gd:2209 zone_index()` 把槽位名翻成 `(type,index)`）；**手势**：营地走 `scripts/camp_storage.gd:393 stow_socket()` → `:451 take_off()`（**背包 → 仓库**），对局/肉鸽走 `session.gd:2331 unequip_stow()` → `session.gd:2810 stow_worn()`（**只认背包 + 金及以上才允许口袋**），先 `session.gd:2403 take_off_fits()` 干跑预检，不满足就 `main.gd:1176 notice_popup()` 弹中上提示、**不触发**；**面板「卸」字**：`main.gd:4181 unequip_slot()` → `session.gd:2535 unequip_item()` → `stow_equipment()`（**放不下就掉在脚边**）。⚠️ 两种兜底不同是约定，别统一，见 README「稀有度与自动收纳判定」 |
+| **卸下规则**（双击装备位 / `Ctrl`+左键 / `F` 是一条；面板「卸」字是另一条，**故意不同**） | 分发 `main.gd:2222 take_off_worn()`（`main.gd:2202 zone_type()`/`main.gd:2209 zone_index()` 把槽位名翻成 `(type,index)`）；**手势**：营地走 `scripts/camp_storage.gd:393 stow_socket()` → `:451 take_off()`（**背包 → 仓库**），对局/肉鸽走 `session.gd:2331 unequip_stow()` → `session.gd:2818 stow_worn()`（**只认背包 + 金及以上才允许口袋**），先 `session.gd:2403 take_off_fits()` 干跑预检，不满足就 `main.gd:1176 notice_popup()` 弹中上提示、**不触发**；**面板「卸」字**：`main.gd:4181 unequip_slot()` → `session.gd:2543 unequip_item()` → `stow_equipment()`（**放不下就掉在脚边**）。⚠️ 两种兜底不同是约定，别统一，见 README「稀有度与自动收纳判定」 |
 | **物品快速收纳的稀有度规则**（单一真源，⚠️ 别自己写阈值） | `catalog.gd:689 POCKET_TIER := 4` + `catalog.gd:712 high_quality()`（品质表 `catalog.gd:218 QUALITY_KEYS` = white/green/blue/purple/gold/red 0–5）：**次元口袋只对金及以上算"有地方放"**。用它的地方：`stow_worn`（手势卸下）、`stow_equipment`（换装归位）、`camp_storage.stash()`（互换落点）、`auto_store`（搜刮，**刻意例外**）。手动拖拽不受限（`main.gd:2857 is_pocket_item()` 恒 true）。规范原文见 `README.md`「稀有度与自动收纳判定」 |
 | **槽位拖拽与互换**（装备位/道具栏；营地与对局**同一条规则**） | 唯一实现在 `session.gd`：`socket_entry()` :2374（读）/ `set_socket_entry()` :2384（写）/ `clear_socket()` :2397（清）/ `swap_sockets()` :2410（槽↔槽互换）＋ `socket_wants()` :2393（只有同类槽位收）；`slot_number()` :2368 是 `slot0` 与 `slot:0` 两套拼法的唯一翻译口（直接 `substr(4)` 会把 `slot:1` 读成 0）。营地只多包一层 pack 槽例外：`scripts/camp_storage.gd:440 socket_entry()` / `:298 socket_clear()` / `:320 socket_to_socket()`。拖拽起点接线在 `main.gd:1717 _input()` 内（**装备位命中测试 :1473，必须排在网格 `grid_at()` 之前**）；松手分发 `main.gd:2893 release_drag()`（worn → `worn_equip` / `worn_drop`，**面板之外松手不掉地上**）；`main.gd:3474 held_item()` 用 `session.socket_entry()` 取手上的那件 |
 | **换装被替下的旧件落点**（对局与营地共用） | `session.gd stow_equipment()`：背包 →（金及以上才）口袋 → 都没有则 `drop_loose()` **单件落在脚边、显示成装备本身**（`ground_drop()` 形状，`F` 一按拾回；**不是可搜索的掉落包**） |
-| **堆叠搬运：左键整叠 + 右键分堆**（两种手势刻意不同，别合并） | **左键**＝整条目移动（`camp_storage.gd vault_in()`/`vault_out()`、`session.gd move_between()` 都是整条目；左键拖动 / `Ctrl`+左键 / 双击一律把堆叠物当整体）。**右键**＝分堆手势：按住即把整个条目拿在手上（`main.gd:2481 start_whole_carry()`；单件物品就是一个上限 1、不显示徽标的堆叠物，所以对装备同样成立），按住期间每次左键只在鼠标那一格放 1 个（`main.gd:2377 carry_place_one()` → `main.gd:2627 carry_seat()` → 营地 `camp_storage.gd:309 camp_carry_units()` / 对局 `session.gd:2101 carry_unit()`），松开右键把剩下的交给鼠标所在容器（`main.gd:2546 carry_finish()` → `camp_storage.gd:335 camp_carry_finish()` / `session.gd:2120 carry_finish_units()`）。落座规则单一实现：`catalog.gd:868 place_units_in()`（瞄准格 → 最近的同类未满堆 → 最近的空格），**且刻意不调 `compact_arrivals()`**，所以刚放下的那格不会被重新打包搬走（这就是"锁住那一格"）。**源容器只在单位真的落地后才被扣**，所以放不下的那部分从没离开原堆——"放回原处"因此是免费且无损的（`to==from` 直接 no-op）；只有松手在面板外才真的丢地上。取消 `main.gd:2532 cancel_carry()`（面板内空白 / Esc）只收回**还没落地**的部分；落点预检 `main.gd:2578 carry_would_place()`（在副本上干跑），手上那件由 `main.gd held_item()` 按 `drag.blank` 出图 |
+| **堆叠搬运：左键整叠 + 右键分堆**（两种手势刻意不同，别合并） | **左键**＝整条目移动（`camp_storage.gd vault_in()`/`vault_out()`、`session.gd move_between()` 都是整条目；左键拖动 / `Ctrl`+左键 / 双击一律把堆叠物当整体）。**右键**＝分堆手势：按住即把整个条目拿在手上（`main.gd:2481 start_whole_carry()`；单件物品就是一个上限 1、不显示徽标的堆叠物，所以对装备同样成立），按住期间每次左键只在鼠标那一格放 1 个（`main.gd:2377 carry_place_one()` → `main.gd:2627 carry_seat()` → 营地 `camp_storage.gd:309 camp_carry_units()` / 对局 `session.gd:2109 carry_unit()`），松开右键把剩下的交给鼠标所在容器（`main.gd:2546 carry_finish()` → `camp_storage.gd:335 camp_carry_finish()` / `session.gd:2128 carry_finish_units()`）。落座规则单一实现：`catalog.gd:868 place_units_in()`（瞄准格 → 最近的同类未满堆 → 最近的空格），**且刻意不调 `compact_arrivals()`**，所以刚放下的那格不会被重新打包搬走（这就是"锁住那一格"）。**源容器只在单位真的落地后才被扣**，所以放不下的那部分从没离开原堆——"放回原处"因此是免费且无损的（`to==from` 直接 no-op）；只有松手在面板外才真的丢地上。取消 `main.gd:2532 cancel_carry()`（面板内空白 / Esc）只收回**还没落地**的部分；落点预检 `main.gd:2578 carry_would_place()`（在副本上干跑），手上那件由 `main.gd held_item()` 按 `drag.blank` 出图 |
 | **堆叠上限：按类配置，只此一表** | `catalog.gd:734 STACK_LIMITS` 是单一真源：`medicine` 急救针 / `ammo` 弹药匣 = 3，其余可堆叠物（crystal/scrap/charm/bait/六类产物/三种种子）= 5，不在表里＝上限 1＝不可堆叠。`catalog.gd:741 max_stack()` 读它，`catalog.gd:758 stacks()` 由它派生（两者不可能分叉）。**上限只管"怎么堆"，不管"读几个"**：`catalog.gd:753 units_of_item()` 与 `profile.gd:583 product_count()` / `profile.gd:596 spend_product()` / `profile.gd:648 sell_product()` 一律用真实 count——夹到上限会让 6 件一叠只算 5 件、多出来的尾巴永远卖不掉 |
 | **降低堆叠上限不毁档** | `catalog.gd:927 split_over_limit()` 把超限堆拆成同类的另一格；仓库溢出进 `warehouse_spill`（`profile.gd:435 sanitize_warehouse()`），背包/口袋在 `profile.gd:136 sanitize_storage()` 里一次性归一（不是每次进图都重算）。`catalog.gd:638 clamp_entry()` 给 count 加了一道宽上限（`catalog.gd:748 STACK_ENTRY_CAP`），防止手改存档让拆分器去铺百万件 |
 | **旋转（中键 / R）挤位** | 中键＝旋转（`main.gd _input`，**右键已让给"拿起"**）；肉鸽面板右键是它自己的菜单（`rogue_inventory.gd`），未动。原地转得下就只转这一件（`session.gd rotate_item()` / `camp_storage.gd rotate()` 先试普通移动）；转不下时 `rotate_with_displacement()`：核心是 `catalog.gd tidy_around()`——**先给被旋转的那一件落座**，其余按 `tidy()` 的方式重排，**真正放不下的作为 spill 返回**，调用方按 **仓库 → 快捷栏 → 背包 → 地上** 消化（`session.gd slot_receive()` = 塞进第一个空快捷栏）。⚠️ **被旋转物绝不能是丢的那个**（用户硬要求），改这个函数前先看 `tests/systems.gd` 的不变量测试 |
@@ -243,10 +243,10 @@ project.godot:18  主场景 = scenes/boot.tscn
 | **营地地面掉落 + F 拾取**（内存态，不进存档） | 数据 `camp_activities.gd drops`，两种记录混放：产物 `{node,kind,units,at}`、物品 `{node,entry,at}`（**读之前必须先问 `drop.has("entry")`**，否则 `_update_markers()` 会报 `Invalid access to key 'kind'`）；掉落 `drop_item()` / `drop_entry()`、节点 `drop_node()`、上限 `GROUND_ITEM_CAP := 60` + `trim_drops()`；离开/回营地 `stash_drops()` / `restore_drops()`（由 `camp_screen.gd set_active()` 调用，**节点释放、数据保留**）；F 拾取 `camp_screen.gd KEY_F` → `pick_up_nearby()` → `item_receiver`（`main.gd ensure_camp()` 接成 `camp_accept_ground_item()`，背包 → 口袋，满了拒绝并留在原地）；地面提示文案 `camp_screen.gd _update_markers()` |
 | **背包槽拖拽 + 脱下背包的算法** | 背包槽是拖拽起点（`main.gd _input()` 内，与其余装备位同一分支）；拖到仓库走 `camp_storage.gd socket_to_vault()`（`from=="bag"`）→ `unwear_bag()`：换上 3×3 制式包（`Catalog.DEFAULT_BAG_KEY`），旧包内容按 `keep_order()` **从最珍贵的开始塞**，**塞不下的 `to_floor()`**（`static spill_sink`，`main.gd ensure_camp()` 接成 `camp_drop_on_floor()`），旧包本身按 `to_vault` 进仓库或落地。**拖到背包/口袋格或槽位一律拒绝**（`drop_on_grid`/`drop_on_socket` 的 `from=="bag"` 分支）。排序算法与 0.2 ms 预算见 `tests/camp_keep_order.gd` |
 | **搜刮箱是双向的**（背包物品 + 身上装备都能拖进去） | 拖入要把网格名翻译成容器：`main.gd release_drag()` 里 `"loot" → "loot:<_loot_index>"`（背包/口袋走 `session.gd move_between()` 的 `to.begins_with("loot:")` 分支——**这条分支曾经是死代码，没有任何调用者**；身上装备走 `session.gd move_worn_to_loot()`：`place_arrival` 落座、塞不下整段拒绝、身上那格最后才清空）。放不下 = 拒绝（红框），不落地 |
-| 拖放落点合法性/换包/旋转的权威判定 | `session.gd:2088 resolve_drop()`、`session.gd:1804 move_between()`、装备 `session.gd:2202 equip_item()`、道具栏 `session.gd:2139 slot_put()`、卸下 `session.gd:2338 clear_worn_slot()`、**落点预检 `session.gd:2440 container_accepts()`**（答"这个格子能不能放"；`session.gd:2434 container_receive()` 只答"这个容器能不能放"，两者别混用；不落一物的干跑版 `session.gd:2844 container_would_receive()`）（营地复用这些纯 `p` 变更函数，规则不会两套） |
+| 拖放落点合法性/换包/旋转的权威判定 | `session.gd:2088 resolve_drop()`、`session.gd:1804 move_between()`、装备 `session.gd:2202 equip_item()`、道具栏 `session.gd:2139 slot_put()`、卸下 `session.gd:2338 clear_worn_slot()`、**落点预检 `session.gd:2440 container_accepts()`**（答"这个格子能不能放"；`session.gd:2442 container_receive()` 只答"这个容器能不能放"，两者别混用；不落一物的干跑版 `session.gd:2852 container_would_receive()`）（营地复用这些纯 `p` 变更函数，规则不会两套） |
 | **拖拽预览逐帧跟手** | `main.gd:2503 sync_drag()`；`main.gd:1389` 有 `if page_name!="game" or not session.running: return` 的对局早退，营地必须在早退**之前**单独调用一次（`_process` 内 `if camp_pack_open: ...`），漏掉这句营地预览就会**冻在按下的位置**不跟鼠标 |
 | **营地面板不会自己重绘** | `main.gd:3634 show_inventory()` 是唯一重绘入口，而 `_process` 的签名刷新在对局早退之后，营地根本跑不到；所以**任何改了营地存储的代码都要自己 `show_inventory()`**（`double_click_equip()`、`camp_apply()`、`camp_release_drag()` 都这么做），另外 `_process` 里 `camp_signature()`（`main.gd:907`）会兜底一帧 |
-| 道具栏三插槽 | `session.gd:375`（`empty_item_slots` :341 / `item_slots` :349 / `item_slot` :358 / `set_item_slot` :364） |
+| 道具栏三插槽 | `session.gd:383`（`empty_item_slots` :383 / `item_slots` :391 / `item_slot` :400 / `set_item_slot` :406） |
 | 营地面板接线（Tab/拖拽分支/按钮） | `main.gd:886 show_camp_pack()`、`main.gd:939 toggle_camp_pack()`、`main.gd:2340 camp_release_drag()`、`main.gd:2326 cabinet_zone_at()`、`main.gd:928 camp_bank_all()`、`main.gd:1149 camp_unwear_bag()`；营地按键 `camp_screen.gd:672 KEY_TAB→pack_requested`、`camp_screen.gd:670 KEY_F 只拾取地上的产物` |
 | 交易行（网格多选出售） | `scripts/economy_screen.gd:357 sell()`（二次确认）、`:148 refresh()`（15×15 格子 + 溢出暂存行 `:179 spill_shelf()`）、`:127 click_cell()`、`:268 MarketGrid`（只负责报格子） |
 
@@ -290,7 +290,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 战场主渲染（相机跟随/震屏/角色与怪物 billboard/预警/伤害数字/夜幕） | `scripts/battlefield.gd`（_process battlefield.gd:109；角色绘制 `actor` battlefield.gd:319；怪物预警 `monster` battlefield.gd:408；特殊 Boss 立绘索引 `SPECIAL_BOSS_ART` battlefield.gd:31） |
-| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:742 weapon_effect_socket()`、`battlefield.gd:744 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
+| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:742 weapon_effect_socket()`、`battlefield.gd:756 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
 | 3D 场景层（正交相机/地砖/墙/桥/湖/宝箱开盖/billboard 池） | `scripts/world_3d.gd`（rebuild world_3d.gd:165；精灵俯视压缩补偿 world_3d.gd:254） |
 | 2D 地形底图与战术地图绘制 | `scripts/world_art.gd`（atlas world_art.gd:103；王城夜景 `city_terrain` world_art.gd:132） |
 | CC0 模型库运行时（KayKit/Quaternius，shader 着色/包围盒） | `scripts/scene_assets.gd`（registry scene_assets.gd:5；宝箱开盖 chest_state scene_assets.gd:88） |
@@ -413,7 +413,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 #### R.1 互动半径表（提示出现 = 一定能按键）
 
-> **单一真值原则**：所有战斗/魔境/搜打撤互动半径常量唯一定义在 `session.gd:89-97`（`GATE_RADIUS` 85 / `RESCUE_RADIUS` 75 / `EXIT_RADIUS` 83 / `SHRINE_RADIUS` 72 / `SEARCH_RADIUS` 80 / `DROP_RADIUS` 70 / `CHEST_RADIUS` 85 / `LOOT_RADIUS` 80 / `FORK_RADIUS` 64）；营地交互半径常量定义在 `camp_activities.gd:9-12`（`PLOT_RADIUS` 155 / `PIER_RADIUS` 240 / `DROP_RADIUS` 120 / `PIER_AT`）。提示出现的距离必须严格等于按下生效的距离。
+> **单一真值原则**：所有战斗/魔境/搜打撤互动半径常量唯一定义在 `session.gd:108-116`（`GATE_RADIUS` 85 / `RESCUE_RADIUS` 75 / `EXIT_RADIUS` 83 / `SHRINE_RADIUS` 72 / `SEARCH_RADIUS` 80 / `DROP_RADIUS` 70 / `CHEST_RADIUS` 85 / `LOOT_RADIUS` 80 / `FORK_RADIUS` 64）；营地交互半径常量定义在 `camp_activities.gd:9-12`（`PLOT_RADIUS` 155 / `PIER_RADIUS` 240 / `DROP_RADIUS` 120 / `PIER_AT`）。提示出现的距离必须严格等于按下生效的距离。
 
 | 交互 | 提示在哪 | 提示条件 | 判定在哪 | 判定条件 | 状态 |
 |---|---|---|---|---|---|
@@ -423,13 +423,13 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 栈桥 抛竿（[E]/[Space]） | `camp_screen.gd:755` | `camp_activities.gd:123 at_pier()` | `camp_activities.gd:186 cast()`、`camp_screen.gd:656` | `at_pier()`：DOCK 内且距 `PIER_AT` < `PIER_RADIUS` (240) | ✅ 同源（常量 `camp_activities.gd:9`） |
 | 家园 地面拾取（[F]） | `camp_screen.gd:667` | `has_drop_near()` ≤ `DROP_RADIUS` (120) | `camp_screen.gd:677` → `nearest_drop` / `pick_up_nearby()` | 同 `DROP_RADIUS` (120) | ✅ 同源（常量 `camp_activities.gd:10`） |
 | 搜打撤 城门（长按 E 1.5s） | `main.gd:2161` | 距 portal < `session.GATE_RADIUS` (85) 且 `can_travel()` | `session.gd:3649` | 同 `session.GATE_RADIUS` (85) + `party_at_gate()` | ✅ 同源常量 |
-| 搜打撤 城门世界标签 | `battlefield.gd:182 key_hint()` + `:201` | 相机 < 1500 且玩家 < `GATE_RADIUS` (85) 出 `[E]` | `session.gd:3649` | 玩家距城门 < `GATE_RADIUS` (85) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
+| 搜打撤 城门世界标签 | `battlefield.gd:188 key_hint()` + `:201` | 相机 < 1500 且玩家 < `GATE_RADIUS` (85) 出 `[E]` | `session.gd:3649` | 玩家距城门 < `GATE_RADIUS` (85) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
 | 搜打撤 撤离点（长按 E 4s） | `main.gd:2165` | 距 exit < `session.EXIT_RADIUS` (83) | `session.gd:3659` | 同 `session.EXIT_RADIUS` (83) | ✅ 同源常量 |
-| 搜打撤 撤离点世界标签 | `battlefield.gd:182 key_hint()` + `:218` | 相机 < 1500 且玩家 < `EXIT_RADIUS` (83) 出 `[E] 撤离` | `session.gd:3659` | 玩家 < `EXIT_RADIUS` (83) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
+| 搜打撤 撤离点世界标签 | `battlefield.gd:188 key_hint()` + `:218` | 相机 < 1500 且玩家 < `EXIT_RADIUS` (83) 出 `[E] 撤离` | `session.gd:3659` | 玩家 < `EXIT_RADIUS` (83) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
 | 搜打撤 封印（长按 E 3s） | `main.gd:2169` | 距 shrine < `session.SHRINE_RADIUS` (72) | `session.gd:3665` | 同 `session.SHRINE_RADIUS` (72) | ✅ 同源常量 |
 | 搜打撤 救援队友（长按 E 3s） | `main.gd:2158` | 距倒地队友 < `session.RESCUE_RADIUS` (75) | `session.gd:3653` | 同 `session.RESCUE_RADIUS` (75) | ✅ 同源常量 |
-| 搜打撤 箱子搜索（[F]/[H]） | `main.gd:2176`（用 `session.SEARCH_RADIUS`=80 决定显示） | 容器距玩家 < `SEARCH_RADIUS` (80) | `main.gd:1985` → `session.gd:1005 search_target` | 距离 < `SEARCH_RADIUS` (80)（中途离开宽限 `SEARCH_RANGE`=86，`session.gd:85`） | ✅ 已对齐（消除 70~80 反向不一致） |
-| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:182 key_hint()` + `:239/:264/:271` | 相机 < 1500 且玩家 < `SEARCH_RADIUS` (80) / `DROP_RADIUS` (70) 出按键 | `session.gd:974/984/1000` | 玩家 < `SEARCH_RADIUS` / `DROP_RADIUS` | ✅ 已对齐（远处纯地名，进圈才出按键） |
+| 搜打撤 箱子搜索（[F]/[H]） | `main.gd:2176`（用 `session.SEARCH_RADIUS`=80 决定显示） | 容器距玩家 < `SEARCH_RADIUS` (80) | `main.gd:1985` → `session.gd:1013 search_target` | 距离 < `SEARCH_RADIUS` (80)（中途离开宽限 `SEARCH_RANGE`=86，`session.gd:85`） | ✅ 已对齐（消除 70~80 反向不一致） |
+| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:188 key_hint()` + `:239/:264/:271` | 相机 < 1500 且玩家 < `SEARCH_RADIUS` (80) / `DROP_RADIUS` (70) 出按键 | `session.gd:974/984/1000` | 玩家 < `SEARCH_RADIUS` / `DROP_RADIUS` | ✅ 已对齐（远处纯地名，进圈才出按键） |
 | 魔境 开宝箱（[E]） | `main.gd:2096`、`main.gd:5207`、`rogue_room_ui.gd:227`、`rogue_field.gd:145` | 玩家距 chest ≤ `session.CHEST_RADIUS` (85) | `session.gd:3634` → `roguelike.gd:727 loot_interact()` | 距 chest ≤ `session.CHEST_RADIUS` (85) | ✅ 已对齐（按判定圈动态显示 [E]，远处为叙述句） |
 | 魔境 掉落拾取（[E]） | `main.gd:2096`、`rogue_field.gd:124-133` | 玩家距 drop < `session.LOOT_RADIUS` (80) 且过落地延迟/归属门 | `roguelike.gd:738` | 距离 < `session.LOOT_RADIUS` (80) | ✅ 已对齐（三道门与判定完全镜像） |
 | 魔境 分叉选路（按住 E） | `main.gd:2096/4953/5211`、`rogue_room_ui.gd:227`、`rogue_field.gd:185` | `x > fork_start` 且距 exit ≤ `session.FORK_RADIUS` (64) | `session.gd:3637` / `roguelike.gd:1346` | 同 `session.FORK_RADIUS` (64) | ✅ 已对齐（按判定圈动态显示 [E]，远处为叙述句） |
@@ -438,7 +438,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 **已修总清单（2026-10-08 落盘验收）**：
 1. **营地名牌**：650 仅管地名可见性，`camp_screen.gd:788` 圈外只画暗名；进圈（`< station.radius`）才画完整光环+下箭头+白字。
-2. **搜打撤世界标签**（`battlefield.gd:182 key_hint()`）：按玩家真实距离门控按键字样，城门 85 / 撤离 83 / 宝箱 80 / 掉落 70；1500 仅作为相机视距门控。
+2. **搜打撤世界标签**（`battlefield.gd:188 key_hint()`）：按玩家真实距离门控按键字样，城门 85 / 撤离 83 / 宝箱 80 / 掉落 70；1500 仅作为相机视距门控。
 3. **魔境提示与指路行**（`main.gd:2096/4953/5211`、`rogue_room_ui.gd:227`、`rogue_field.gd:145`）：远处统一为安全叙述句，进入判定距离（85/80/64）才出 [E] 或高亮。
 4. **宝箱 HUD**：`main.gd:2176` 由 70 修正为 `session.SEARCH_RADIUS` (80)，与判定圈严格统一。
 5. **单真值化**：9 处搜打撤/魔境半径常量收拢至 `session.gd:86-97`；营地半径常量收拢至 `camp_activities.gd:6-12`。
@@ -463,7 +463,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
 | 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
-| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:94 sync_story()`；tests/story_visual.gd |
+| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:100 sync_story()`；tests/story_visual.gd |
 | Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:52 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
@@ -506,19 +506,19 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|---|
 | 调远征三天时长/跨天恢复/黎明 Boss 数值 | expedition.gd:6-93 + session.gd:60-56（:54 逐天时长 DAY_DURATIONS、:56 缩圈比例 SHRINK_RATIO、helper day_duration()/shrink_start() :3319/:3326；prepare_day 写入 raid.day_duration expedition.gd:68） | tests/expedition*.gd；EXPEDITION.md |
 | 改主线 Boss/隐藏 Boss 招式 | boss_choreography.gd（编排）+ expedition.gd:424-614（legacy） | tests/boss_choreography.gd；BOSS-REWORK.md |
-| 调骑士数值/格挡 | boss_tactics.gd（KNIGHT_MOVES :10）+ `session.gd:4348 KNIGHT_MOVES`（招式表用在 :3845 与 :3905） | tests/boss_tactics.gd |
+| 调骑士数值/格挡 | boss_tactics.gd（KNIGHT_MOVES :10）+ `session.gd:4356 KNIGHT_MOVES`（招式表用在 :3845 与 :3905） | tests/boss_tactics.gd |
 | 加新 Boss（身份） | boss_choreography.gd `MOVES` + boss_effect_art.gd（`KEYS` :4 / `MOTIFS` :6 / `color()` 色表 :55-57，按 KEYS 索引）+ assets/bosses/imagegen/ + boss_frames.gd `SPECIAL_KEYS`（**追加表尾**，`COLORS` 在 boss_frames.gd:9）+ boss_presentation.gd cue + boss_hud.gd 颜色/阶段 | tests/boss_*；BOSS-REWORK.md |
 | 调缩圈数值/时序 | session.gd:60-56、3314-3327（safe_center/day_duration/shrink_start/safe_radius/final_radius）；逐天时长同步走 raid.day_duration | tests/balance.gd tests/expedition.gd；视觉另改 blood_tide.gdshader |
 | 调理智/气味/威胁度/刷怪 | session.gd:2624-2632、2688-2696、3247-3319 | tests/ecology.gd |
-| 改掉落（宝箱/敌人/据点/骑士） | session.gd:1323 chest_loot / 1328 enemy_loot / 3342 resolve_site_defeat / 3740 knight_reward | tests/systems.gd；BALANCE.md |
+| 改掉落（宝箱/敌人/据点/骑士） | session.gd:1331 chest_loot / 1409 enemy_loot / 3914 resolve_site_defeat / 4317 knight_reward | tests/systems.gd；BALANCE.md |
 | 加新野外怪物 | enemy_frames.gd:4-8 四表 + ecology.gd:5-19 六表 + ecology.gd update() 新分支 + assets/enemies/ 4×3 图集（脚底 210px）+ 悬浮怪名单 enemy_body.gd:44 | tests/enemies.gd、ecology.gd；ENEMY-UPDATE.md |
 | 加营地设施 | camp_site.gd:949-973 站点表 + 建模函数 + camp_screen.gd:343 分组 + main.gd:754 on_camp_station 分支 | tests/camp*.gd；HOMESTEAD.md |
 | 改家园数值（作物/鱼/料理/价格） | homestead.gd:3-17 + buy/fish_key；图标 home_art.gd | tests/homestead.gd |
 | 改种子/鱼饵买入落点（仓库→背包→落地） | `homestead.gd buy()` :77 / `plant()` :116 / `cast()` :172 + `profile.gd deposit_backpack()` :583 / `migrate_home_seeds_bait()` :720 + `home_screen.gd buy_report()` :76 | tests/homestead.gd、homestead_ui.gd、camp_activities.gd |
 | 改七属性曲线 | attributes.gd（⚠️ `clean(value, budget := 623)` attributes.gd:16 的预算要与 `point_budget` 同步） | tests/attributes.gd |
-| 改结算奖励/XP | session.gd:4178 settle()；入库 main.gd:3389 | tests/systems.gd |
+| 改结算奖励/XP | session.gd:4186 settle()；入库 main.gd:3389 | tests/systems.gd |
 | 改隐藏结局/招募墓煜 | expedition.gd:236-288 + session.gd:2750-2775（隐藏判定 :2774）+ profile.gd:27-32、81-95 + main.gd:3100-3108 | tests/hidden_ending.gd；HIDDEN-ENDING.md |
-| 改王城（布局/进出/珍藏） | royal_city.gd + `session.gd:4246 receive_results()`（portal_position :3759 / travel_city :3768） | tests/city.gd；CITY-UPDATE.md |
+| 改王城（布局/进出/珍藏） | royal_city.gd + `session.gd:4254 receive_results()`（portal_position :3759 / travel_city :3768） | tests/city.gd；CITY-UPDATE.md |
 | 改边境地图布局 | ruins.gd（⚠️ 改地形后必须重跑 `tools/export_world_layout.gd` + `tools/bake_world_art.py`，见 MAP-UPDATE.md:37-39） | tests/map.gd |
 | 改闯关流程（房间/出口/商店/奖励） | roguelike.gd | tests/roguelike*.gd、rogue_build_progression.gd |
 | 改闯关地图/换背景图/分叉口碰撞 | `rogue_map.gd` + `assets/rogue/regions/ground-manifest.json`（⚠️ 分叉口不许再退回"两条走廊并起来"的写法：`fork_junction()` 负责把路口补平成广场，见 §11.43） | tests/roguelike_routes.gd（含"岔口到两个门口无隐形墙"的全地图断言）、tests/roguelike_geometry.gd |
@@ -550,11 +550,11 @@ project.godot:18  主场景 = scenes/boot.tscn
 | **改营地存储规则**（跨区搬运、穿脱、入库/取出、脱下背包） | `scripts/camp_storage.gd`（分发 `drop()` :81，各分支见 §4.G）——**规则一律复用 session 的纯 `p` 变更函数**，不要在这里重写一遍装箱 | tests/camp_storage.gd（51 项） |
 | **改仓库尺寸/容量/溢出行为** | `catalog.gd:240 WAREHOUSE_GRID`；清洗与迁移 `profile.gd:435 sanitize_warehouse()`、溢出暂存 `profile.gd:435 spill_item()`；入库 `bank_item()`/`bank_item_at()`/`bank_carried_items()` | tests/economy.gd（含 225 格满仓、溢出、旧档迁移） |
 | **改「累计战利品价值」口径** | `profile.gd:348 credit_loot_value()` + 物品字段 `valued`（`catalog.gd:223 SAVED_ITEM_KEYS`） | tests/economy.gd `lifetime_tally()` |
-| **改装备持久化/结算语义**（撤离保留、阵亡清空） | `session.gd:4233 saved_loadout()` + `main.gd:4264 on_finished()`（写回 `profile.data.loadout`）+ `session.gd:864 spill_storage()` | tests/economy.gd `settlement()`；改完必须同步 §11.8 |
+| **改装备持久化/结算语义**（撤离保留、阵亡清空） | `session.gd:4241 saved_loadout()` + `main.gd:4264 on_finished()`（写回 `profile.data.loadout`）+ `session.gd:872 spill_storage()` | tests/economy.gd `settlement()`；改完必须同步 §11.8 |
 | **新增野战武器**（远征） | ① catalog.gd:147 WEAPONS ② catalog.gd:225 WEAPON_ICONS ③ weapon_arts.gd:6 MOVES ④ 特殊法术在 session.gd release_strike/update_bullets 加分支 ⑤ ⚠️ 若 WEAPONS.size() 变化，同步 `STARTER_BASE`（catalog.gd:176） | tests/systems.gd（STARTER_BASE 断言）、combat.gd |
-| 新增装备/背包品质 | catalog.gd:183 GEAR / :234 BAG_TIERS + 品质数组 catalog.gd:209-215 + session.gd:1309 CACHE_QUALITY_WEIGHTS | tests/systems.gd |
+| 新增装备/背包品质 | catalog.gd:183 GEAR / :234 BAG_TIERS + 品质数组 catalog.gd:209-215 + session.gd:1317 CACHE_QUALITY_WEIGHTS | tests/systems.gd |
 | 新增普通物品/藏品 | catalog.gd:17 ITEMS + 藏品分组表 :95-121（⚠️ `NEW_COLLECTIBLES` catalog.gd:115 只能追加，影响存档序号） | tests/collectibles.gd；COLLECTIBLES.md |
-| **改动物品快速收纳/落点判定**（双击装备、双击卸下、一键收纳、换装归位） | 先读 `README.md`「稀有度与自动收纳判定」：**次元口袋只对金及以上算有效空间**，单一真源 `catalog.gd:712 high_quality()`（⚠️ 禁止硬编码阈值）。落点分发 `session.gd:2861 stow_equipment()` / `session.gd:2810 stow_worn()`、营地 `scripts/camp_storage.gd:451 take_off()` / `:590 stash()` | tests/systems.gd（稀有度与口袋）、tests/camp_storage.gd `take_off_rules()` |
+| **改动物品快速收纳/落点判定**（双击装备、双击卸下、一键收纳、换装归位） | 先读 `README.md`「稀有度与自动收纳判定」：**次元口袋只对金及以上算有效空间**，单一真源 `catalog.gd:712 high_quality()`（⚠️ 禁止硬编码阈值）。落点分发 `session.gd:2861 stow_equipment()` / `session.gd:2818 stow_worn()`、营地 `scripts/camp_storage.gd:451 take_off()` / `:590 stash()` | tests/systems.gd（稀有度与口袋）、tests/camp_storage.gd `take_off_rules()` |
 | **加一条"点一下/双击做某事"的手势** | 先看 `main.gd:1717 _input` 的**分派顺序**：道具栏 → 装备位（`worn_zone_at()`，在网格之前）→ 背包柜 → 网格。手势实现完必须让面板重绘（营地要自己调 `show_inventory()`，见 §11.20） | tests/camp_pack.gd、tests/inventory_panels.gd |
 | 改拖拽/旋转/双击装备手感 | 对局内 `main.gd:2878 start_drag` / `:1733 rotate_selected` / `:2311 release_drag`；营地同一控制器但落点走 `main.gd:2424 camp_release_drag`（合法性判定在 session.gd:1883） | tests/ui.gd、tests/camp_pack.gd |
 | **改营地双击规则**（非装备进背包 / 装备换装互换 / 快捷栏只能拖入） | `scripts/camp_storage.gd:635 quick_equip()`（`socket_for` :471 → `swap_worn` :487 / `swap_pack` :531 / `auto_store` :453）；入口 `main.gd:2703 double_click_equip()` | tests/camp_storage.gd `double_click_rules()` |
@@ -601,7 +601,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 数值 | 位置 |
 |---|---|
 | 联机端口 24872 / 一天 660/660/480s（合计 30 分钟）/ 缩圈=当天×SHRINK_RATIO(0.6) | session.gd:31 / :54-56 |
-| 终圈半径 540(day1-2)/620(day3) | `session.gd:3340 final_radius()` |
+| 终圈半径 540(day1-2)/620(day3) | `session.gd:3348 final_radius()` |
 | 理智衰减/出圈掉血/气味=血晶×8/38 阈值引怪 | session.gd:2688-2696（血晶×8 :2688、理智衰减 :2690/:2693、出圈掉血 :2692、38 阈值引怪 :2696） |
 | 威胁度公式 / 环境刷怪上限 52+2n | session.gd:2624 / 2628 |
 | 搜索每件耗时 6 档 [0.55..2.4]s | `session.gd:95 SEARCH_SECONDS_BY_TIER` |
@@ -742,9 +742,9 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 3. **藏品序号只追加不插入**：`catalog.gd:124 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
 5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:350 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:747 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
+6. **特效必须走 battlefield.gd:759 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
-8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4233 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4264 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:673 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
+8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4241 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4264 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:681 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。**营地是例外但要显式**：营地 `session.running==false`，`perform()` 会直接 return，所以营地的存储编辑全部集中在 `scripts/camp_storage.gd`，并且**只调用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`）——不要在营地面板里重写一套装箱或装备规则。
 10. **存档唯一写入点是 profile.gd:216 `save_profile()`**（.tmp + rename 原子写）；其他任何地方直接写 profile.json 都是错的。
 11. `output/`、`pv/`、`DEPRECATED-*` 目录不是游戏资源（导出已排除）；`DEPRECATED-character-animations-2026-09-25` 是被否决的 12 帧动画归档，勿复用。
@@ -760,7 +760,7 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 21. **`container_receive()` 与 `container_accepts()` 回答的不是同一个问题**：前者是"这个容器能不能放下"（自己找第一个空位），后者是"**这个格子**能不能放下"。落点预览、仓库取出这类"玩家指了哪一格"的操作必须用后者，否则东西会跑到 (0,0) 去。另外**可堆叠物品（`catalog.gd:734 STACK_LIMITS`：crystal/scrap/medicine/ammo/charm/麦子类）没有第二格可指**，它的落点就是玩家瞄的那一格，别顺手把坐标清掉。
 22. **营地的双击是"存储动词"，对局的双击是"战斗动词"**：`main.gd:2703 double_click_equip()` 先分派营地/对局。营地同一个函数里**不能**填快捷栏（`[1][2][3]` 只能拖入），对局内消耗品双击进快捷栏、单击=Ctrl 智能键（消耗品用掉、装备穿上）。加新的双击行为时先问"这在营地里该干什么"。
 23. **营地没有"每帧自动重绘"，改了存储必须自己 `show_inventory()`**：`main.gd:1389` 的对局早退让 `_process` 里的签名刷新在营地永远跑不到。漏掉重绘的症状是**面板停在旧画面**——物品看着还在原处、其实状态早变了，再点那格就索引错位、拖动也摸不到东西（"卡住"）。`_process` 里 `camp_signature()` 只兜底一帧，别指望它当接口。
-24. **物品自动收纳必须过稀有度规则，且只有一个阈值**：`catalog.gd:712 high_quality()`（`POCKET_TIER := 4` = 金及以上）。**紫及以下不进次元口袋**；判定"有没有地方放"时口袋对它们不算数。旧代码里有两处刻意的例外（`session.gd:1121 auto_store()` 搜刮退袋、`session.gd:2880 stow_equipment()` 换装旧件），那是决定过的，别顺手"统一"掉。规范原文在 `README.md`「稀有度与自动收纳判定」。
+24. **物品自动收纳必须过稀有度规则，且只有一个阈值**：`catalog.gd:712 high_quality()`（`POCKET_TIER := 4` = 金及以上）。**紫及以下不进次元口袋**；判定"有没有地方放"时口袋对它们不算数。旧代码里有两处刻意的例外（`session.gd:1121 auto_store()` 搜刮退袋、`session.gd:2888 stow_equipment()` 换装旧件），那是决定过的，别顺手"统一"掉。规范原文在 `README.md`「稀有度与自动收纳判定」。
 25. **装备位（主手/护甲/瞄具/轻靴/饰品）也是拖拽起点**：`_input` 里必须先问 `worn_zone_at()` 再问 `grid_at()`——装备位不是网格，`grid_at()` 会返回空并让整段逻辑提前 return，这正是"装备栏只能点右上角卸下"的老毛病。槽位名有两套拼法（面板注册用 `slot0`、拖拽 id 用 `slot:0`），翻译只能走 `session.gd slot_number()`（直接 `substr(4)` 会把 `slot:1` 也读成 0）。
 26. **"拒绝"与"掉地上"是两种口气，同一个动词可以有两种，别擅自统一**：**手势**卸下（双击装备位 / `Ctrl`+左键 / `F`）放不下时**不触发 + 中上提示**（`main.gd:1198 notice_popup()`，装备留在身上）；**面板上的「卸」字**（`session.gd unequip_item()` → `stow_equipment()`）保留旧说法——一定把装备卸下来，放不下就**掉在脚边**。落地一律用 `session.gd:2462 drop_loose()` 的**单件**形状（地上显示成那件装备本身、`F` 拾回），**不要**包成可搜索的掉落包。**穿在身上的东西被拖拽时永远不掉地上**：松手在面板之外只提示一句。
 27. **装备位与道具栏的读写只有一份实现，在 `session.gd`**：`socket_entry()` / `set_socket_entry()` / `clear_socket()` / `swap_sockets()` / `socket_wants()` / `slot_number()`。营地（`camp_storage.gd`）只允许包一层"pack 槽"例外（背包是容器不是槽位），**不要**在营地或 UI 里再写一遍"这个槽收不收这件"——两套规则一定会在某次改动后分叉。
@@ -808,7 +808,7 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
     - **圆环战技（右键 `kind:"circle"`）异常**：判定是**以角色为圆心、半径 = `reach`** 的整圆（`enemy_body.gd:133` 用 `half=PI` 画满圆，半径取 `reach`，例如冥潮仪镰 W023 `rogue_build_content.json` 的 `art.reach=170`）；但绘制阶段 `stylized_vfx.gd:400-413` 的 `body_centered` 分支先按 `bounds=Vector2.ONE*r*2`（身体居中、半径=reach，本应与判定一致），紧接着一段 `if role!="motion_quake" and fx.has("socket_grip")…`（`:406-412`）又把圆**重新以武器握把(grip)为圆心、缩成刀刃长度 `blade_length`**——于是屏幕上是一枚又小又偏到一边的旋涡，而真正会掉血的是围绕身体的一整圈。修法（留给后人）：去掉 `:406-412` 这段 grip 重定心/缩刃，让圆斩保持身体居中 + `reach*2`。⚠️ 该分支同时服务平A的 spin 类武器（`weapon_mechanics.gd:75 body_centered()` 含 `motion_spin/motion_heavy_spin/motion_quake/motion_hammer_spin`），改动会波及平A观感，须重跑 `tests/weapon_mechanics.gd`（`:46` 断言"Full circle follows captured body center"）、`tests/weapon_heavy_strokes.gd`、`tests/weapon_full_matrix.gd`。
     - **多数近战刀光末端 ≠ 攻击范围最远处**：月牙/横扫类贴图的"刀尖"是从角色位置向外画的装饰，判定框（`attack_hit()` 的 cone/thrust 多边形）最远处与贴图末端不重合，月牙常把角色整个包住或明显短于/超出真实 reach。用户实测反馈：这类要"往角色外的方向移动很多"才能对齐实际判定。根治需要把特效末端与 `reach` 建立显式映射（当前 `mechanic_contact()` 只处理接触点、不处理 reach 对齐），属独立批次，勿与功能提交混做。
 
-55. **搜打撤逐天时长必须走 `raid.day_duration` 同步，不能只依赖 `session.duration`**（2026-10-09 三日时长改为 660/660/480s 时踩出来的规则）：`session.gd:57 var duration` 是**本地变量、不在联机快照里**（`session.gd:1615` 打包数组没有它）；房主在 `expedition.gd:69` 每天 `prepare_day` 时**同时写** `s.raid.day_duration` 与镜像 `s.duration`，客户端在快照恢复路径（`session.gd:1663` `raid=data[11]`）里靠 raid 拿到正确的当日时长。所有需要读"当天时长/缩圈起点"的代码**一律走 `session.day_duration()` / `session.shrink_start()` 两个 helper**（`session.gd:3325 / :3326`），**不要直接读 `session.duration` 或 `DAY_DURATIONS[day-1]` 硬下标**——早期版本 `duration` 恒等于 `DAY_DURATION=300`（三天等长），那时客户端读本地 `duration` 也没问题；现在三天**不等长**（Day3 只有 480s），客户端如果绕过 helper、直接读本地 `session.duration`，房主 `prepare_day(3)` 后客户端的 `duration` 变量仍然是上一次同步的 660s，缩圈半径会一路按 660 算到底、和房主不一致，**Day3 圈永远缩不满、毒圈伤害也不对**。同理 `expedition.gd:tick/spawn_boss` 与 `main.gd:update_hud` 都已改成走 helper，`SHRINK_START` 常量已删（比例改走 `SHRINK_RATIO`）。`tests/expedition_network.gd:54` 有一条客户端同步断言守卫（读 `s.day_duration()`，若同步链坏了会红）。⚠️ 未来若再加"逐天差异"字段（比如每天缩圈比例不同、每天 Boss 数量不同），一律**写进 raid、读走 helper**，别再往本地 var 上贴。
+55. **搜打撤逐天时长必须走 `raid.day_duration` 同步，不能只依赖 `session.duration`**（2026-10-09 三日时长改为 660/660/480s 时踩出来的规则）：`session.gd:57 var duration` 是**本地变量、不在联机快照里**（`session.gd:1615` 打包数组没有它）；房主在 `expedition.gd:69` 每天 `prepare_day` 时**同时写** `s.raid.day_duration` 与镜像 `s.duration`，客户端在快照恢复路径（`session.gd:1663` `raid=data[11]`）里靠 raid 拿到正确的当日时长。所有需要读"当天时长/缩圈起点"的代码**一律走 `session.day_duration()` / `session.shrink_start()` 两个 helper**（`session.gd:3333 / :3326`），**不要直接读 `session.duration` 或 `DAY_DURATIONS[day-1]` 硬下标**——早期版本 `duration` 恒等于 `DAY_DURATION=300`（三天等长），那时客户端读本地 `duration` 也没问题；现在三天**不等长**（Day3 只有 480s），客户端如果绕过 helper、直接读本地 `session.duration`，房主 `prepare_day(3)` 后客户端的 `duration` 变量仍然是上一次同步的 660s，缩圈半径会一路按 660 算到底、和房主不一致，**Day3 圈永远缩不满、毒圈伤害也不对**。同理 `expedition.gd:tick/spawn_boss` 与 `main.gd:update_hud` 都已改成走 helper，`SHRINK_START` 常量已删（比例改走 `SHRINK_RATIO`）。`tests/expedition_network.gd:54` 有一条客户端同步断言守卫（读 `s.day_duration()`，若同步链坏了会红）。⚠️ 未来若再加"逐天差异"字段（比如每天缩圈比例不同、每天 Boss 数量不同），一律**写进 raid、读走 helper**，别再往本地 var 上贴。
 
 
 ---
@@ -912,7 +912,7 @@ git status --porcelain
 | 2026-10-05 | 见同批提交 | 全量锚点审计（476 个锚点，见 §12.7）并修正 11 处错标 / 漂移；新增本§12 维护规范；README 加入口指引 |
 | 2026-10-05 | 见同批提交 | 跟随 `abcbaaf`（肉鸽扩展全量接线 + 攻击前摇，179 文件/+17267 行）全量重锚：机械修正 47 处 + 8 章节人工复核（修正 100+ 处漂移/错标）；新增 attack_telegraph、肉鸽七子系统（图谱/事件/诅咒/每日/成长/房间/变体）、房间 UI 与每日/成长页等条目；装入 `tools/verify_anchors.py`；结构数字更新为 102 脚本 / 2.95 万行 |
 | 2026-10-06 | （本批未提交） | **营地行囊 + 15×15 网格仓库 + 装备持久化**：新增 `scripts/camp_pack.gd`、`scripts/camp_storage.gd`、`scripts/item_tile.gd`、`tools/make_camp_pack_backdrop.gd`、背板占位图 `assets/ui/camp-pack-vault-v1.png`；§4.B 重写存档行并新增「装备持久化/仓库容量/只计一次价值/整备台购买」4 行，§4.C 结算与动作总线加约束，§4.G 扩成背包全家（对局面板 + 共享格子 + 营地面板 + 营地编辑规则 + 交易行网格），§4.N/§4.O 更新营地按键与整备台，§5 新增 5 行速查，§6 新增 4 行数值，§11 改写第 8/9/10 条并追加 16–19 条（valued 去重、同 provision 才能并堆、JSON float 导入、无头测试 APPDATA）；结构数字更新为 105 脚本 / 193 测试 |
-| 2026-10-06 | （本批未提交） | **营地双击规则重做 + 拖动预览冻结修复**：①营地内双击改为"存储动词"——非装备先进背包（背包放不下才进仓库），装备槽位空则穿上、被占则与身上那件互换且**换下来的落回对方原来那格仓库格**，可堆叠物沿用落点；②**营地永远不填快捷栏**（`[1][2][3]` 只能拖入），对局内保留"双击消耗品进快捷栏 / 单击=Ctrl 智能键"；③修 `main.gd:1389` 对局早退把 `sync_drag()` 挡在门外导致**营地拖拽预览冻在原地不跟鼠标**；④修 `pick_item()` 点仓库物品必崩（`session.players[...]["warehouse"]`）、`held_size()` 空物品崩、双击已在背包的物品会**复制**、`profile.data["warehouse"]` 缺失时仓库静默失效；⑤新增 `session.gd:2459 container_accepts()`（"这格能不能放"，与 `container_receive()` 区分）。§4.G 新增「营地双击规则」「拖拽预览逐帧跟手」两行并更新存储规则锚点，§5 新增 3 行速查，§11 追加 20–22 条；全量重锚 514 个锚点（386 OK / 0 DRIFT / 0 WRONG / 128 HINT） |
+| 2026-10-06 | （本批未提交） | **营地双击规则重做 + 拖动预览冻结修复**：①营地内双击改为"存储动词"——非装备先进背包（背包放不下才进仓库），装备槽位空则穿上、被占则与身上那件互换且**换下来的落回对方原来那格仓库格**，可堆叠物沿用落点；②**营地永远不填快捷栏**（`[1][2][3]` 只能拖入），对局内保留"双击消耗品进快捷栏 / 单击=Ctrl 智能键"；③修 `main.gd:1389` 对局早退把 `sync_drag()` 挡在门外导致**营地拖拽预览冻在原地不跟鼠标**；④修 `pick_item()` 点仓库物品必崩（`session.players[...]["warehouse"]`）、`held_size()` 空物品崩、双击已在背包的物品会**复制**、`profile.data["warehouse"]` 缺失时仓库静默失效；⑤新增 `session.gd:2467 container_accepts()`（"这格能不能放"，与 `container_receive()` 区分）。§4.G 新增「营地双击规则」「拖拽预览逐帧跟手」两行并更新存储规则锚点，§5 新增 3 行速查，§11 追加 20–22 条；全量重锚 514 个锚点（386 OK / 0 DRIFT / 0 WRONG / 128 HINT） |
 | 2026-10-06 | （本批未提交） | **双击装备位卸下 + 稀有度收纳规范 + 装备位拖拽**：①`_input` 里装备位命中测试**移到网格之前**（原来被 `grid_at()` 空手早退吃掉，导致"装备栏只能点右上角卸下"），双击/Ctrl+左键/F/「卸」字四条手势统一到 `take_off_worn()`；②卸下规则：**营地 背包→仓库**（`camp_storage.take_off()`）、**对局/肉鸽 只认背包 + 金及以上才允许口袋**（`session.take_off_fits()/stow_worn()`），不满足则 `notice_popup()` 提示且不触发；③写入**稀有度与自动收纳规范**（`README.md` 新增小节 + 上一层 `AGENTS.md` 硬规则）：次元口袋只对金及以上算有效空间，单一真源 `high_quality()`，并记下两处刻意例外；④换装旧件不再包成可搜索掉落包，改 `drop_loose()` 单件落地（地上显示成装备本身、`F` 拾回），`unequip_item()` 由"掉地上"改为**拒绝**；⑤营地装备位成为拖拽起点（`worn_to_socket()` 槽↔槽互换、可拖进背包/仓库），修 `slot0` vs `slot:0` 两套拼法导致的槽位读数错位；⑥修「拖拽预览冻住」「双击后画面不同步」「点仓库物品崩溃」三个 bug。§4.G 新增 5 行、§5 新增 2 行、§11 追加 23–26 条；全量重锚 |
 | 2026-10-06 | （本批未提交） | **本轮收尾：面板「卸」字回退 + 对局装备位拖拽 + 槽位规则合并**：①按用户决定**回退**面板「卸」字的"拒绝"口气，恢复"一定卸下、放不下就掉在脚边"（`unequip_slot()` / `unequip_item()` / `stow_equipment()`），手势卸下仍是"不触发 + 中上提示"，并把这条**不对称约定**写进 README 与 §11.26；②**对局也支持装备位拖拽**：会话侧新增唯一实现 `socket_entry()` / `set_socket_entry()` / `clear_socket()` / `swap_sockets()` / `socket_wants()` / `slot_number()`、`move_worn_to()`，动作 `worn_equip` / `worn_drop`；营地侧删掉自写的 socket 读写（`slot_number`/`clear_slot`/`worn_to_socket`/`zone_accepts`/`restore_zone` 全改为委托），§11 追加 27；③松手在面板之外**不掉地上**（穿在身上的东西不冒险）；④测试：`tests/systems.gd` +19（卸下两种口气、单件落地、槽位互换与拒绝、`move_worn_to` 座位与拒绝）、`tests/inventory_panels.gd` 14→23（对局装备位拖拽：进背包 / 进道具栏互换 / 面板外松手不掉地上） |
 | 2026-10-06 | （本批未提交） | **本轮第三批：丢弃区/毛玻璃 + 营地地面掉落 + 搜刮箱双向 + 脱下背包算法**：①**丢弃区**：面板登记整块背板（含木框），面板内空白松手**不再丢东西**，拖出面板才丢；进入丢弃区时把**提前渲染并缓存**的毛玻璃背板以 30% 透明度盖上（`frost_texture()` 降采样当模糊，只算一次），松手前就能看出面板已失效。②**营地地面掉落**：拖出面板的东西/脱包溢出/主动丢弃都落在营地地上，**F 拾取直接进角色背包**（满了才进口袋），上限 **60 件**（超出最旧的消失）；**离开营地只留数据、节点全释放，回营地按数据重建**，关闭游戏即丢失（不写存档）。③**搜刮箱变成双向**：修掉 `move_between()` 里那条**没有调用者的 `to="loot:"` 死分支**（现在 `release_drag()` 会把 `"loot"` 翻译成 `"loot:<引用>"`），并新增 `move_worn_to_loot()`，背包物品与身上装备都能拖进箱子，放不下只是拒绝。④**背包槽可拖 + 脱下背包算法**：不再"装不下就拒绝"，改为换上 **3×3 制式包**、内容按 `keep_order()`（**品质优先，同品质比价值÷占格**）从最珍贵开始塞，**塞不下的一律掉在营地地上**。⑤**性能**：该排序实测 **0.145 ms**（预算 0.2 ms，超了就退回"品质→单件售价"）；早期 0.463 ms 全是 `sort_custom` 回调开销，改用 `PackedInt64Array.sort()` 后达标，`tests/camp_keep_order.gd` 常驻守门。⑥测试：`camp_storage` 98、`camp_pack` 31、`camp_activities` 103、`inventory_panels` 28、`camp_keep_order` 3，全 0 失败；§11 追加 28–30 |
@@ -932,7 +932,7 @@ git status --porcelain
 
 | 2026-10-08 | 见同批提交 | Boss 出场恢复固定顺序：远征主教→猎王→女王→无名赤月→条件终局；肉鸽 BOSS_ORDER=[0,1,2,3,4]。隐藏战仅在无名赤月倒下后触发；阶段/死亡特效保留 art_key，缺省身份优先 boss_art，死亡清掉旧演出，远征死亡不叠普通怪碎片。回归与旧素材审计结果见 TEST-REPORT.md；可视测试按真实 Boss 图节点进入，避免镜中挑战面板遮挡。 |
 | 2026-10-08 | （本轮未提交） | **肉鸽实测三 bug（用户图文报告）**：①**遗落宝藏/游商房"第二个假宝箱"**——`rogue_field.gd` 原在 `room in ["shop","treasure"]` 时把房间标识宝箱/营火贴图（`art.item_icons[11/15]`）画在世界中心 `Vector2(720,lane_center)`，与真 `reward_chest`（能按 E、有交互圈）并排，被误认成第二个无法交互的宝箱。**用户拍板：把该标识移到顶栏标题左侧**。改：删掉 `rogue_field.gd` 世界中心那段（talent 神龛保留）；`main.gd` HUD 新增 `hud.room_marker`（`rogue_icon`，标题 x=550 左侧 518,19，26×26），在 `_update_hud` 肉鸽分支按 `room` 显隐并切 treasure=11/shop=15 图标。②**行囊右键"回收此物品"点不动**——非 bug，是设计：`rogue_sell` 只在 `phase=="rogue_shop"` 生效（`rogue_inventory.gd:302` 按钮门 + `roguelike.gd:1345` 服务端门）。**用户拍板：保留游商限制，但把禁用态做明显**。改：`rogue_inventory.gd` 非游商时把按钮文字改成"回收 · 需到游商处"（原来只有 tooltip + 轻微变灰，看不出是被条件挡住）。③**冥潮仪镰右键圆斩特效与判定框不符**——判定是以角色为心、半径=reach(170) 的整圆，但 `stylized_vfx.gd:406-412` 把圆重定心到握把、缩成刀刃长。**用户拍板：本轮只登记、暂不改**（近战特效原点=角色、与判定普遍不重合是系统性问题）。新增 §11.54 已知缺口 + §4.K 刀光行加 ⚠️ 说明。测试：`rogue_inventory` 34/0、`rogue_room_chests` 75/0、`inventory_panels` 28/0；三脚本 `--check-only` 均 exit 0。 |
-| 2026-10-09 | （本轮提交） | **搜打撤（三日远征）一局时长改为 30 分钟**：用户拍板"三天等比放大 + 前松后紧"——`DAY_DURATION=300/SHRINK_START=180` 两个常量替换为 `session.gd:60 DAY_DURATIONS=[660,660,480]`（Day1/Day2 各 11 分、Day3 8 分，合计 30 分钟探索+缩圈上限；黎明 Boss 战照旧不计时）与 `:56 SHRINK_RATIO=0.6`（缩圈从当天 60% 时刻开始，节奏形状与旧版完全一致）。新增唯一换算口 `session.gd:3325 day_duration()` / `:3326 shrink_start()`；**逐天时长写进随快照同步的 `raid.day_duration`**（`expedition.gd:68 prepare_day` 写入、`expedition.gd:69` 镜像 `s.duration`），`safe_radius`（:3329）/`can_travel`（:3377）/`threat`（:3150）/`expedition.tick+spawn_boss`/`main.gd` HUD 全部改走 helper；`SHRINK_START` 常量删除。⚠️ 关键约束登记为 §11.55：三天不等长后，**任何读当天时长的代码必须走 helper（raid 同步真值），直接读本地 `session.duration` 会让客户端 Day3 缩圈与房主错位**。测试同步：`tests/balance.gd` 缩圈时序段改为 396/528/659.99s 节点、`tests/systems.gd` 两处 300→660、`tests/expedition.gd` 两处 `s.SHRINK_START`→`s.shrink_start()`、`tests/expedition_network.gd` 客户端断言改读 `day_duration()`。验证：`expedition` 79/0、`systems` 除 3 项 save/load 沙箱红（`user://logs` 被拦，HEAD 基线同样红）外 10850/0、`balance` 6 项 Boss 攻击节奏红为**既有红**（路牌 2026-10-07 行已登记"旧 gear 基线同样复现"，且 `attack_output`/`update_boss` 不碰本次改动变量）。路牌：§4.B 缩圈行、§5 两行速查、§6 数值行、§11.55 新坑。 |
+| 2026-10-09 | （本轮提交） | **搜打撤（三日远征）一局时长改为 30 分钟**：用户拍板"三天等比放大 + 前松后紧"——`DAY_DURATION=300/SHRINK_START=180` 两个常量替换为 `session.gd:60 DAY_DURATIONS=[660,660,480]`（Day1/Day2 各 11 分、Day3 8 分，合计 30 分钟探索+缩圈上限；黎明 Boss 战照旧不计时）与 `:56 SHRINK_RATIO=0.6`（缩圈从当天 60% 时刻开始，节奏形状与旧版完全一致）。新增唯一换算口 `session.gd:3333 day_duration()` / `:3326 shrink_start()`；**逐天时长写进随快照同步的 `raid.day_duration`**（`expedition.gd:68 prepare_day` 写入、`expedition.gd:69` 镜像 `s.duration`），`safe_radius`（:3329）/`can_travel`（:3377）/`threat`（:3150）/`expedition.tick+spawn_boss`/`main.gd` HUD 全部改走 helper；`SHRINK_START` 常量删除。⚠️ 关键约束登记为 §11.55：三天不等长后，**任何读当天时长的代码必须走 helper（raid 同步真值），直接读本地 `session.duration` 会让客户端 Day3 缩圈与房主错位**。测试同步：`tests/balance.gd` 缩圈时序段改为 396/528/659.99s 节点、`tests/systems.gd` 两处 300→660、`tests/expedition.gd` 两处 `s.SHRINK_START`→`s.shrink_start()`、`tests/expedition_network.gd` 客户端断言改读 `day_duration()`。验证：`expedition` 79/0、`systems` 除 3 项 save/load 沙箱红（`user://logs` 被拦，HEAD 基线同样红）外 10850/0、`balance` 6 项 Boss 攻击节奏红为**既有红**（路牌 2026-10-07 行已登记"旧 gear 基线同样复现"，且 `attack_output`/`update_boss` 不碰本次改动变量）。路牌：§4.B 缩圈行、§5 两行速查、§6 数值行、§11.55 新坑。 |
 
 | 2026-10-09 | （本轮未提交） | 魔境战斗密度与数值重平衡：节点图统一安排战斗/圣坛/补给/后段特殊分支，移除会话二次覆盖。200 种子×5 层平均战斗 4.102→6.304、最少 3→6；普通怪数量/后期血量、血瓶清场补充、精英/首领奖励和合作人数统计同步调整。新增 `tests/rogue_map_balance.gd` 全路线与实际刷怪验收；专题和测试记录同步更新。 |
 
@@ -982,7 +982,7 @@ Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/ro
 
 修复状态见 `output/ROGUE-EFFECTS-FIXES-2026-10-08.md`；前面的审计清单是修复前快照。天赋界面 `scripts/rogue_build_ui.gd:19 remember_scroll()` 与 `scripts/rogue_build_ui.gd:23 restore_scroll()` 保留各页位置，先设置内容范围防止重建当帧闪回顶部，再在布局结束恢复；列表保持收藏顺序。按钮与布局回归在 `tests/rogue_build_scroll.gd:16 run()`（10项）。
 
-个人成长在 `scripts/main.gd:1298 config()` 发送，`scripts/session.gd:546 rogue_growth_mods()` 从玩家开局快照读取；公共敌人预算取队伍成长平均，个人经验、魔晶、治疗、商店及掉落各读自己的树。`scripts/session.gd:129 build_notice()` 为远程玩家发可靠个人反馈。`scripts/rogue_growth.gd:244 grant()` 将房间灰烬和基础结算一起入库，客户端在 `main.gd` 的 `on_finished()` 原report_paid守卫中支付个人可靠结果。
+个人成长在 `scripts/main.gd:1298 config()` 发送，`scripts/session.gd:554 rogue_growth_mods()` 从玩家开局快照读取；公共敌人预算取队伍成长平均，个人经验、魔晶、治疗、商店及掉落各读自己的树。`scripts/session.gd:137 build_notice()` 为远程玩家发可靠个人反馈。`scripts/rogue_growth.gd:244 grant()` 将房间灰烬和基础结算一起入库，客户端在 `main.gd` 的 `on_finished()` 原report_paid守卫中支付个人可靠结果。
 
 专项 `tests/rogue_effect_fixes.gd:17 run()`（65项）、`tests/rogue_weapon_upgrade_audit.gd:23 run()`（718项）均通过；新增真实ENet个人成长测试 `tests/rogue_growth_network_fixes.gd:17 run()`（房主9/客户端7），原构筑2人/4人联机均通过。累计27415项通过；另有修复前源码副本复现的Boss1001/6、小怪103/1既有失败，详见修复报告，不能把本轮描述为全仓库全绿。此轮未重新导出EXE。
 
