@@ -18,4 +18,4 @@
 .\Godot_v4.7.2-stable_win64_console.exe --path . --script tests/economy_ui.gd
 ```
 
-最后一条命令渲染实际界面并输出 build/warehouse.png 与 build/market.png。
+最后一条命令渲染实际界面并输出（旧截图已清理）。

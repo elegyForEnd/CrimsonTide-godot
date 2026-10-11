@@ -14,4 +14,4 @@ Use case: ui-mockup. Asset type: production game UI skin atlas, transparent PNG,
 
 Godot 4.7.2 实机渲染通过。`tests/homestead_ui.gd` 53 项检查，覆盖卡片购买、出售、烹饪、携带、卸下餐食、i 弹窗的输入恢复、面板边界以及原有地图和农事流程。另通过 homestead 64 项、camp_activities 89 项、camp_modes 10 项。
 
-实机预览位于 `build/home-overview.png`、`build/home-home_shop-panel.png`、`build/home-kitchen-panel.png`、`build/home-map-guide.png` 和 `build/home-info-home_shop.png`。
+实机预览位于（旧截图已清理）。

@@ -18,4 +18,4 @@ v4由`story_floor_palette.gd`统一选择建筑铺地，使用独立的`story_in
 
 `tools/fetch_story_pbr.py --roles interior_stone,crypt_slab,ceremonial_tile`仅更新这些贴图并合并来源清单。`prepare_story_floor_imports.py`统一mipmap与VRAM压缩，法线按数据贴图导入。`patch_story_interior_floors.gd`只修改旧堡已有地面、台阶和台基材质，保留网格、UV2、灯光、摆放与移动数据；然后重新烘焙第九区。其余建筑副本在运行时生成时采用同一材质分流。
 
-测试`story_architectural_floors.gd`覆盖六幕所有建筑布局的材质选择、PBR完整性、旧堡实际缓存的地面和台阶，以及实机城堡大厅/领主厅、墓室、礼拜堂、书库五个4K机位。截图在build/story-floor-*.png，兼容版本单独保存。仍未做长时间跑分或整部游戏美术验收。
+测试`story_architectural_floors.gd`覆盖六幕所有建筑布局的材质选择、PBR完整性、旧堡实际缓存的地面和台阶，以及实机城堡大厅/领主厅、墓室、礼拜堂、书库五个4K机位。截图在（旧截图已清理），兼容版本单独保存。仍未做长时间跑分或整部游戏美术验收。

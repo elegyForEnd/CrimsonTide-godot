@@ -35,8 +35,8 @@
 
 ## 校对入口与已运行检查
 
-- `build/weapon-600-two-page-preview.html`：动作选择、连续播放、逐帧、支撑脚标记；用项目根目录的本地 HTTP 服务打开。
-- `build/weapon-600-two-page-review.png`：Godot 实际 AtlasTexture 切帧绘制的 26 个关键帧。
+- （旧文件已清理）：动作选择、连续播放、逐帧、支撑脚标记；用项目根目录的本地 HTTP 服务打开。
+- （旧截图已清理）：Godot 实际 AtlasTexture 切帧绘制的 26 个关键帧。
 - `tests/weapon_atlas_registration.gd`：旧稿几何检查及类型路由检查；不代表旧稿美术验收通过。
 - `tests/weapon_mechanic_contact.gd`：GPU 506 项，通过；斩击在不同方向、连击阶段、释放时间贴住挂点。
 - `tests/weapon_vfx_identity.gd`：GPU 553 项，通过；不同武器和连击阶段具有不同可见像素。

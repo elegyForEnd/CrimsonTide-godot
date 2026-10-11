@@ -45,6 +45,6 @@
 
 ## 试玩与预览
 
-`build/CrimsonTide-boss-redesign.exe` 为本次独立导出。`build/boss-effects-1.png`、`boss-effects-2.png`、`boss-effects-3.png` 是三页独立美术总览。实战截图位于 build 的 boss-choreography、boss-special-choreography 和 rogue-choreography 前缀文件。
+（旧文件已清理）为本次独立导出。（旧截图已清理）`boss-effects-2.png`、`boss-effects-3.png` 是三页独立美术总览。实战截图位于 build 的 boss-choreography、boss-special-choreography 和 rogue-choreography 前缀文件。
 
 已直接加载导出的 exe 内嵌资源包验证：招式 910 项、素材 744 项、GPU 与伤害范围 38,942 项全部通过。最终产物约 938 MiB，未覆盖旧 dist 导出。

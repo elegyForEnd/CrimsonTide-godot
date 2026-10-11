@@ -9,8 +9,8 @@
 Godot_v4.7.2-stable_win64_console.exe --headless --path . --quit-after 20000 --script tests/<n>.gd
 ```
 
-原始日志：`build/triage/rogue_chest_rewards.log`、`build/triage/rogue_inventory.log`、`build/triage/rogue_equipment.log`
-一次性探针：`build/triage/probe.gd` → `build/triage/probe.log`
+原始日志：（旧文件已清理）
+一次性探针：（旧文件已清理） → （旧文件已清理）
 
 ---
 
@@ -88,7 +88,7 @@ Godot_v4.7.2-stable_win64_console.exe --headless --path . --quit-after 20000 --s
 | 证据 | 位置 |
 |---|---|
 | 三个用例原始 stdout/stderr | `build/triage/<test>.log` |
-| 一次性探针源码 / 输出 | `build/triage/probe.gd` / `build/triage/probe.log`（P1 flask=100,carried=4 / P2 GEAR 无 passive / P3 clear_room 后 drops=0 / P4 BOONS[0] / P5 箱子守卫原因） |
-| HEAD 对照副本 | `build/triage/head-roguelike.gd`、`head-session.gd`、`head-rogue_build.gd`、`head-rogue_equipment.gd` |
+| 一次性探针源码 / 输出 | （旧文件已清理）（P1 flask=100,carried=4 / P2 GEAR 无 passive / P3 clear_room 后 drops=0 / P4 BOONS[0] / P5 箱子守卫原因） |
+| HEAD 对照副本 | （旧文件已清理）`head-session.gd`、`head-rogue_build.gd`、`head-rogue_equipment.gd` |
 | 哈希对照 | `git hash-object scripts/rogue_equipment.gd` == `git rev-parse HEAD:scripts/rogue_equipment.gd` |
 | 改动区间表 | `git diff -U0 -- scripts/{session,roguelike,rogue_build}.gd \| Select-String '^@@'` |

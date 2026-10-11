@@ -35,6 +35,6 @@ M 打开地图，4 切换「怪物栖息区」，显示浅金色区块边界与�
 - `tests/ecology.gd`：多种子初始与补充刷新、物种地区限制、非法落点重试、数量限制、安全距离、新攻击前摇/命中/闪避/打断和图集加载。
 - 回归：`tests/enemies.gd`、`combat.gd`、`map.gd`、`city.gd`、`expedition.gd`、`systems.gd`。
 - `tests/ecology_network.gd`：两个独立本机进程验证六种新怪物、栖息区字段和攻击锁定落点同步；未做公网联机与长时间压力验证。
-- `tests/ecology_visual.gd`：实际 OpenGL 渲染检查。截图：`build/ecology-monsters.png`、`ecology-telegraphs.png`、`ecology-map.png`。
+- `tests/ecology_visual.gd`：实际 OpenGL 渲染检查。截图：（旧截图已清理）`ecology-telegraphs.png`、`ecology-map.png`。
 
 独立发布文件 `dist/CrimsonTide-Ecology.exe`，保留已有可执行文件。

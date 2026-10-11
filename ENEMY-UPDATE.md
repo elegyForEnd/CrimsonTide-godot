@@ -30,6 +30,6 @@
 - `tests/enemies.gd`：23 项前摇、命中、受击中断、闪避范围与受击姿势检查。
 - `tests/combat.gd`：30 项原角色战斗回归。
 - `tests/systems.gd`：459 项系统回归。
-- `tests/enemy_visual.gd`：游戏内移动、出招、战败截图；输出 `build/enemies-*.png`。
+- `tests/enemy_visual.gd`：游戏内移动、出招、战败截图；输出（旧截图已清理）。
 
 本次以上 512 项逻辑检查通过，图形截图检查通过，发布 EXE 的 headless 启动检查正常。双人联机回归在连接阶段超时（房主 roster 1、客户端 roster 0），未进入战斗，因此本次未完成实际联机验证。

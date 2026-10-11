@@ -31,10 +31,10 @@ Godot 4.7.2 / GL Compatibility：
 - `tests/energy_ring_visual.gd`：真实 GPU 渲染像素检查；安全内圈最大 alpha 为 0，环带最大 alpha 为 0.608。
 - `tests/boss_vfx_visual.gd`、`tests/slash_alignment.gd`、`tests/spells_visual.gd`：完成四位 Boss、12 个连击方向组合及 8 种法杖画面检查。
 
-预览：`build/hybrid-vfx-preview.mp4`，约 18 秒，四位 Boss 的攻击与转阶段。录制命令：
+预览：（旧文件已清理），约 18 秒，四位 Boss 的攻击与转阶段。录制命令：
 
 ```powershell
-godot --path . --script tests/hybrid_vfx_preview.gd --write-movie build/hybrid-vfx.avi --fixed-fps 30
+godot --path . --script tests/hybrid_vfx_preview.gd --write-movie （旧文件已清理） --fixed-fps 30
 ```
 
 录制场景的平均 CPU/GPU 渲染时间约为 2.99/2.26 ms（RTX 3080 Ti，1280×800）；这仅代表该预览，不代表多人满屏战斗性能。

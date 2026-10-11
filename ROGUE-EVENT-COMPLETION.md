@@ -26,4 +26,4 @@
 
 额外运行的旧回归仍有失败，未将其列为通过：`rogue_ui` 的路线总数断言将分支节点总数限制为路径长度范围；`roguelike_network` 的开局购买、武器刻印与旧奖励领取断言失败，随后超时。新双端用例独立验证了本次事件选择、镜像战斗和奖励同步。
 
-截图位于 `build/rogue-room-mirror-active.png` 和 `build/rogue-room-mirror-mist.png`。双端日志位于 `build/rogue-event-network-{host,client}.log`。
+截图位于（旧截图已清理）。双端日志位于 `build/rogue-event-network-{host,client}.log`。

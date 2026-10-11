@@ -14,18 +14,18 @@
 ## 2026-10-07 全部69把武器逐项验收
 
 - 逐页人工查看 21 把远征、48 把闯关武器，四角色 × 八类展示项，共 2208 格；实际有特效的 1908 项独立 GPU 检查先隐藏角色，避免角色像素掩盖空特效。69 页与 coverage.json 位于 build/weapon-full-audit，浏览器索引 index.html，逐把结论见 WEAPON-FULL-AUDIT.md。
-- weapon_full_matrix：17664 个释放组合（69×4角色×8方向×4阶段×2模式），每组合三个播放时刻；另3520个普攻/战技弹体组合。151375 检查，0 failures。验证真实挂点、地面投影、接触像素、可见性、细长弹体速度轴及真实战技姿势；最终日志 build/weapon-full-matrix-complete.log。
+- weapon_full_matrix：17664 个释放组合（69×4角色×8方向×4阶段×2模式），每组合三个播放时刻；另3520个普攻/战技弹体组合。151375 检查，0 failures。验证真实挂点、地面投影、接触像素、可见性、细长弹体速度轴及真实战技姿势；最终日志（旧文件已清理）。
 - 全量验收发现并修复：重刃白色主体遮挡角色；震地缺少落地冲击轮廓；巨锤/石槌误用剑刃圆斩；战技沿用上次普攻前摇；16把重武器的精确出手边界因归一化浮点比较被判回前摇。内置 ImageGen 重绘重刃 v3 和震地 v2，50张原始RGBA审计0 failures。
 - 配套复跑：weapon_mechanics 429、weapon_mechanic_contact 506、weapon_mechanics_visual 30、weapon_vfx_identity 553、weapon_stroke_stability 196、rogue_build_rules 565，全部0 failures。
-- 新版 build/CrimsonTide-WeaponTipFixed.exe 已重新导出（2084617104 字节）。通过 --main-pack 加载内嵌资源，接触像素506、机制429，共935检查，0 failures。图页测试退出无资源泄漏错误；加载主场景的矩阵仍有既有的4个ObjectDB退出警告。
+- 新版（旧文件已清理）已重新导出（2084617104 字节）。通过 --main-pack 加载内嵌资源，接触像素506、机制429，共935检查，0 failures。图页测试退出无资源泄漏错误；加载主场景的矩阵仍有既有的4个ObjectDB退出警告。
 - 项目路牌610锚点：OK405 / DRIFT0 / WRONG0 / HINT205；git diff --check 通过。
 
 ## 2026-10-07 真实剑尖、方向与素材修复
 
 - 九组共 11839 检查，0 failures：weapon_stroke_directions 6872（四角色、全部远征/闯关近战、八方向、两模式）、weapon_mechanic_contact 505（真实 GPU 接触像素）、all_weapon_mounts 2568、weapon_stroke_stability 196、weapon_mechanics 429、weapon_vfx_identity 553、weapon_contact_particles 654、weapon_vfx_progression 32、weapon_mechanics_visual 30。渲染测试使用开窗 Godot，存档全部放在工作区 .testappdata。
 - ImageGen 新生成双刃 v3、重刃终结 v2，原始 RGBA 直接复制入项目。48 张素材通过透明背景、SHA256、提示词与轮廓审计，0 failures。新素材接入后重跑接触像素、GPU 机制、武器身份与释放稳定性检查，全部通过。
-- 八动作四方向角色预览 build/weapon-mount-repaired.png 已实际渲染并逐行检查。
-- Windows 单文件 build/CrimsonTide-WeaponTipFixed.exe 导出成功（2083330232 字节）。引擎通过 --main-pack 加载该 exe 内嵌资源，接触像素 505、实际机制 429 共 934 项检查，0 failures。项目路牌 610 锚点：OK406 / DRIFT0 / WRONG0 / HINT204。
+- 八动作四方向角色预览（旧截图已清理）已实际渲染并逐行检查。
+- Windows 单文件（旧文件已清理）导出成功（2083330232 字节）。引擎通过 --main-pack 加载该 exe 内嵌资源，接触像素 505、实际机制 429 共 934 项检查，0 failures。项目路牌 610 锚点：OK406 / DRIFT0 / WRONG0 / HINT204。
 
 环境：Windows，项目内 Godot 4.7.2 stable，OpenGL Compatibility，NVIDIA RTX 3080 Ti。
 
@@ -80,26 +80,26 @@
 - 重新合成 12 条普攻发力声、9 条大招语音；其余 30 条 WAV 哈希保持一致。普攻均为短语气词，时长 0.22～0.56 秒。51 条语音的来源、波形、峰值、哈希及 CG 时长检查通过。
 - 所有普通攻击按实际角色播放发力声，包括双手剑与法杖。角色语音行为检查增至 87 项、0 失败，覆盖三角色 × 四武器的路由，以及播完报招、暂停、跳过和联机短喊。既有音频行为 138 项、0 失败。
 - 重新按语音长度构建演出音效，单人 CG 总长约 5.43 / 5.95 / 5.95 秒。113 条 WAV 与环境 OGG 的音效素材检查通过。
-- 实际 Godot 混音 33.11 秒，峰值 -3.55 dBFS，削波样本 0；左右方位与距离衰减检查通过。纯人声试听为 `build/MiniMax-Firm-Voice-Preview.mp3`，完整混音为 `build/MiniMax-Game-Preview.mp3`。以上为信号和行为检查，表演听感以实际试听为准。
-- 当前检查日志为 `build/firm-voices-test.log`、`build/firm-audio-test.log`、`build/firm-mix-test.log`。此轮未重复进行网络与全部系统规则验证。
-- 已重新导出 PCK，并从 `dist` 加载实际发布包复跑 87 项角色语音检查，0 失败；日志为 `build/firm-pack-test.log`。
+- 实际 Godot 混音 33.11 秒，峰值 -3.55 dBFS，削波样本 0；左右方位与距离衰减检查通过。纯人声试听为（旧文件已清理），完整混音为（旧文件已清理）。以上为信号和行为检查，表演听感以实际试听为准。
+- 当前检查日志为（旧文件已清理）。此轮未重复进行网络与全部系统规则验证。
+- 已重新导出 PCK，并从 `dist` 加载实际发布包复跑 87 项角色语音检查，0 失败；日志为（旧文件已清理）。
 
 ## 2026-09-22 MiniMax 日语角色语音与二次元音效
 
 - 新版音效素材检查通过：113 条 WAV 和 44 秒环境 OGG。独立语音检查：51 条 MiniMax `speech-2.8-hd` 生成的 48 kHz 单声道 WAV，校验模型、三套日语 voice_id、请求 trace_id、哈希、起止包络、过采样峰值、双语文本与奥义时间全部通过。
 - 角色语音行为：76 项、0 失败，覆盖重复限流、受伤打断、低优先级不能抢话、距离剔除、战斗事件按角色选声线、自动压低音效、语音静音、三人的完整奥义、暂停继续发声、网络短片结束不截句、跳过与换页清理。
-- 既有音频行为 138 项、系统规则 261 项全部通过。四人 ENet 房主与三个客户端事件回归结果见 `build/anime-network4-*.log`。
+- 既有音频行为 138 项、系统规则 261 项全部通过。四人 ENet 房主与三个客户端事件回归结果见（旧文件已清理）。
 - CG 图形检查 0 失败，已检查三名角色中日字幕、爆发字幕、语音设置与署名页面截图。字幕在闪光和叠加光效上方显示。
-- MiniMax 版本导出 PCK 后，在 `dist` 目录通过 `--main-pack` 加载发布资源，76 项角色语音行为检查再次全部通过；日志为 `build/minimax-pack-test.log`。便携包包含音效 / 语音来源清单和署名，不包含 API 凭据及生成缓存。
-- Godot 实际混音与语音生成分别验证，30.28 秒试听峰值 -3.93 dBFS、削波样本 0。最新混音结果记录在 `build/minimax-mix-test.log`，试听为 `build/MiniMax-Game-Preview.mp3`。此处为信号和行为验证，不将其作为真人试听评价。
+- MiniMax 版本导出 PCK 后，在 `dist` 目录通过 `--main-pack` 加载发布资源，76 项角色语音行为检查再次全部通过；日志为（旧文件已清理）。便携包包含音效 / 语音来源清单和署名，不包含 API 凭据及生成缓存。
+- Godot 实际混音与语音生成分别验证，30.28 秒试听峰值 -3.93 dBFS、削波样本 0。最新混音结果记录在（旧文件已清理），试听为（旧文件已清理）。此处为信号和行为验证，不将其作为真人试听评价。
 
 ## 2026-09-22 音效素材升级
 
 - 113 条不同的 48 kHz 立体声 WAV 与 1 条环境 OGG，共 114 条音频；起音、尾音、过采样峰值、重复文件、配方来源关联全部通过。44 秒氛围循环首尾差值为 0.001778；97 份原始素材 SHA-256 均与来源清单匹配。
 - 音频行为检查：138 项、0 失败，覆盖声部上限、优先级、距离剔除、武器切换取消装填、单人暂停 / 跳过、联机短版、移动与堵墙。新增间歇位置快照和 120 Hz 渲染的脚步回归。
-- Godot 实际混音：左右方位与距离衰减检查 0 失败。23.59 秒试听录音峰值 −8.32 dBFS，削波样本为 0；试听输出 `build/CrimsonTide-audio-preview.mp3`。
-- 本轮已有战斗 30 项、移动 83 项、系统 261 项全部通过；三角色 CG 检查 0 失败。音频素材和代码续接后另行复核，见 `build/library-*-test.log`。
-- 2 人联机已通过音效事件同步，4 人房主与三个客户端复核全部 PASS，记录见 `build/library-network4-*.log`。网络验证限本机独立进程。
+- Godot 实际混音：左右方位与距离衰减检查 0 失败。23.59 秒试听录音峰值 −8.32 dBFS，削波样本为 0；试听输出（旧文件已清理）。
+- 本轮已有战斗 30 项、移动 83 项、系统 261 项全部通过；三角色 CG 检查 0 失败。音频素材和代码续接后另行复核，见（旧文件已清理）。
+- 2 人联机已通过音效事件同步，4 人房主与三个客户端复核全部 PASS，记录见（旧文件已清理）。网络验证限本机独立进程。
 - 新版 PCK 已导出，在 `dist` 目录通过 `--main-pack` 加载，138 项音频行为检查再次全部通过；验证实际发布资源而非源码目录中的资源。测试脚本位于包外，不随包发布。
 - 声音的主观音质需要实际试听判断，信号和行为检查不代替听感评价。
 
@@ -118,7 +118,7 @@
 - **搜索窗按真实占格渲染**：物资箱里的卡片现在按物品实际尺寸占格（月蚀遗物与武器 2×2、废料 2×1、药品 1×2……），未翻开的格子保留封印占位；命中检测从单格索引改为按矩形，抓住 2×2 卡片的任意一角都能拖走，拖起时幽灵框与落点预览同样是 2×2。
 - **拖拽中按 R 的三个 bug**：贴图在放下前消失，根因是 R 触发面板重建时把常驻的拖拽幽灵框与落点预览一起 `queue_free` 了，现在重建前先摘出、重建后挂回并强制重量尺寸；2×2 遗物旋转后预览变 2×1，根因是预览尺寸沿用了拖起时的缓存值，现在每帧按当前朝向重算（2×2 旋转后仍是 2×2，只转贴图）；落位与邻格重叠与上同源，预览与落位共用 `resolve_drop`，尺寸修正后重叠消失，并新增 UI 不变量断言：任意容器内物品两两 Rect2i 不相交。
 - **换包丢数据的隐患**：`Catalog.swap_bags` 重建搬运条目时只带 kind/x/y/rot，换一次包就会把一叠晶簇压成单件、抹掉武器编号与品质、散装背包品质；现在按 `SAVED_ITEM_KEYS` 全字段搬运，系统测试新增 8 项断言覆盖堆叠数量、武器编号 / 品质、散装背包品质与换包后的网格尺寸。
-- 系统测试 458 → 466 检查、0 失败；UI 集成 0 失败。截图 build/ui-equip-sockets.png、build/ui-mouse-*.png、build/ui-loot-relic-*.png 已视觉检查：装备槽空 / 满两态、拖拽中旋转的 2×2 预览与落位、物资箱 2×2 遗物卡片与拖入口袋后的空箱均符合预期。
+- 系统测试 458 → 466 检查、0 失败；UI 集成 0 失败。截图 build/ui-equip-sockets.png、（旧截图已清理）已视觉检查：装备槽空 / 满两态、拖拽中旋转的 2×2 预览与落位、物资箱 2×2 遗物卡片与拖入口袋后的空箱均符合预期。
 
 ## 2026-09-22 背包使用、旋转与武器装备系统
 
@@ -189,7 +189,7 @@
 - 资源验证通过：固定来源哈希、三角色音色分组、十类事件覆盖、字幕一致性、48 kHz 单声道 PCM16、起音、首尾淡化、过采样峰值及大招时长。
 - Godot 角色语音：81 检查，0 失败；音效行为：138 检查，0 失败。
 - 图形大招测试：0 失败；检查了新版署名页与雪璃大招字幕截图，无截断。
-- WASAPI 实际混音：0 失败，验证左右方位和距离衰减；录音仅留在本地 build/free-voice-game-mix.wav。
+- WASAPI 实际混音：0 失败，验证左右方位和距离衰减；录音仅留在本地（旧文件已清理）。
 - 素材只做静音修剪、采样格式转换、增益和首尾淡化，不进行变调、合成或 AI 训练。源文件、条款核查缓存、旧语音与旧试听均留在忽略的 build/free-voices。
 - 主观听感尚未经人工试听评审；本轮未修改战斗或网络规则，未重复进行公网测试。
 
@@ -212,7 +212,7 @@
 ## 2026-09-22 Suno 背景音乐
 
 - 接入《营地守望》（162.90 秒）与《血潮废墟》（127.31 秒）：本地 Ogg 循环、1.8 秒场景交叉淡化、语音与奥义期间压低音乐，以及独立音乐音量设置。
-- 便携 PCK 在 `dist` 目录使用 WASAPI 复测，测试脚本位于包外：音乐 10 检查、音效 138 检查，均为 0 失败；退出无资源清理错误。日志：`build/music-pack-test.log`、`build/music-pack-audio-test.log`。
+- 便携 PCK 在 `dist` 目录使用 WASAPI 复测，测试脚本位于包外：音乐 10 检查、音效 138 检查，均为 0 失败；退出无资源清理错误。日志：（旧文件已清理）。
 - 两首成品与清单 SHA-256 一致，便携包附带的音乐清单与项目清单一致。44.1 kHz 立体声解码有效，无非有限采样或削波；营地与废墟采样峰值分别为 -6.12 dBFS、-3.50 dBFS。
 - 设置界面已检查；信号和播放行为验证不代替人工听感评审。生成提示词、接口实际返回型号、来源与制作说明见 `MUSIC.md`。
 
@@ -240,7 +240,7 @@
 - tests/roguelike_smooth_maps.gd：1065 项 / 0 失败；tests/roguelike_geometry.gd：986 项 / 0 失败；tests/roguelike_routes.gd：5220 项 / 0 失败；tests/roguelike_seven_rooms.gd：11797 项 / 0 失败（合计 19068 项）。
 - 保留战斗主路中央连续通道，避免窄图边缘装饰物占住中线；分叉回归按清单曲线行走，替换过时的固定 UV 路标。
 - 四/五层后续战斗图加宽；已完成图不重新生成。素材审计：tools/audit_rogue_final_maps.py，50/50 通过。
-- 实机预览：build/final-map-audit/gameplay-*.png；边界叠图与日志同目录；提示词与选图 SHA-256：output/rogue-final-night/。
+- 实机预览：（旧截图已清理）；边界叠图与日志同目录；提示词与选图 SHA-256：output/rogue-final-night/。
 - 导出 dist/CrimsonTide-Rogue-Night.exe，排除旧 final-night-v5/v6、safe/seven-night-v1 等未选用版本；内嵌 PCK。
 - 打包后再由控制台引擎加载 exe 内嵌资源包执行同一地图测试：1065 项 / 0 失败，确认 50 张选定地图、专用房间映射及道路数据实际存在于导出包。
 
@@ -256,8 +256,8 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 
 - 69 把具体武器统一身份编排；闯关 48 把武器不再合并到基础类别特效。三段攻击、四类派生、角色确认连招与飞行弹体使用对应形状/元素，取消重复的通用法杖光球。
 - 相关检查共 5332 项通过：weapon_vfx_identity 535（真实 GPU：48 武器像素唯一、69 武器三段差异、四类派生、角色连招、蓄力跟随/取消、闪避与清理上限）、weapon_vfx_battle 45（实际主场景事件/挂点/确认派生）、standalone_vfx 119、weapon_stroke_stability 200、all_weapon_mounts 2672、weapon_contact_particles 654、combat_particles 384、rogue_build_system 440、combat 78、spells 106、roguelike_vfx 99，均为 0 failures。
-- 编辑器导入和 Windows 导出成功；build/CrimsonTide-WeaponVFX.exe 为单文件内嵌 PCK（1,919,875,912 字节）。导出包再次运行 standalone_vfx 119、weapon_vfx_identity 535、weapon_vfx_battle 45，均为 0 failures，确认新编排与几何存在于成品中。
-- 预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png；9 张实际主场景截图 build/weapon-vfx-battle-*.png 已检查。没有更改伤害、命中范围、法力消耗与冷却。
+- 编辑器导入和 Windows 导出成功；（旧文件已清理）为单文件内嵌 PCK（1,919,875,912 字节）。导出包再次运行 standalone_vfx 119、weapon_vfx_identity 535、weapon_vfx_battle 45，均为 0 failures，确认新编排与几何存在于成品中。
+- 预览：（旧截图已清理）；9 张实际主场景截图（旧截图已清理）已检查。没有更改伤害、命中范围、法力消耗与冷却。
 - 已知基线问题：weapon_effect_direction 122 项中 6 项失败，均为旧 14 号断潮巨刃原 PNG 的朝左/朝上半平面像素占比。已从 git HEAD 恢复七个原始脚本到隔离的 build/weapon-vfx-baseline，再运行同一测试，得到完全相同的 6 项失败；不是本次新增回归。新版的实际挂点检查和具体武器像素检查通过。
 
 ## 2026-10-06 武器 ImageGen 方图与真实强化
@@ -266,7 +266,7 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 强化/品质在出手时冻结；+2/+4 核心档位、+3/+5 角色连招依据现有规则。核心只在真实机制执行后播图，旧弹丸换装后仍保留出手状态。修补飞行弹丸从快照读取强化光强；不更改命中范围、伤害倍率、冷却或解锁规则。
 - 13 组相关回归共 6100 检查，0 failures：weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553（真实 GPU；含强化光强不扩范围和十二核心两档像素差异）、weapon_vfx_battle 45、standalone_vfx 119、weapon_stroke_stability 200、all_weapon_mounts 2672、rogue_build_system 440、combat 78、spells 106、roguelike_vfx 99、weapon_contact_particles 654、combat_particles 384。
 - tools/audit_weapon_square_art.py：74 个原始 RGBA、0 failures；Godot 编辑器导入成功。最初加载检查失败是新增素材尚未完成导入，导入后通过。48 武器对照、八组三段对照、+0/+2/+3/+4/+5 实际核心触发对照及九张主场景截图已生成并检查代表性武器画面。
-- build/CrimsonTide-WeaponImageVFX.exe Windows 单文件导出成功（2,003,072,008 字节，内嵌 PCK，包含当前工作区资源）。成品中再次运行 weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553、weapon_vfx_battle 45、standalone_vfx 119，共 1467 检查、0 failures。
+- （旧文件已清理） Windows 单文件导出成功（2,003,072,008 字节，内嵌 PCK，包含当前工作区资源）。成品中再次运行 weapon_square_art 718、weapon_vfx_progression 32、weapon_vfx_identity 553、weapon_vfx_battle 45、standalone_vfx 119，共 1467 检查、0 failures。
 - 更新 PROJECT-GUIDE.md §2/§4.K/§5/§8/§10/§11/§12.6，以及 README.md、VFX-REWORK.md、WEAPON-IMAGE-VFX.md。路牌审计 441 个锚点：OK 344 / DRIFT 0 / WRONG 0 / HINT 97。
 
 ## 2026-10-07 实际武器机制与特效加厚
@@ -275,8 +275,8 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 按“太细、太弱”的反馈，在运行时加厚刀光主体、突刺与弹体亮芯，加强边缘辉光，增大枪焰/法杖出手/命中闪光，延后刀光淡出。原始图片像素不变，伤害与碰撞规则不变。
 - 本轮源码 9 组共 4621 检查，0 failures：weapon_mechanics 429、weapon_mechanics_visual 29、weapon_vfx_identity 553、weapon_stroke_stability 196、weapon_vfx_battle 41、all_weapon_mounts 2568、weapon_vfx_progression 32、weapon_contact_particles 654、standalone_vfx 119。
 - 新增 GPU 检查：同一捕获刀光、同一帧，启用加厚后的亮像素较关闭扩展增加至少 35%；箭/冰针在飞行中有至少 6 像素可见厚度；圆斩保持空心和身体中心。中心检查采用 alpha > 0.08 的可见轮廓，避免极淡辉光像素干扰测量。命中闪光检查同步为半径不超过 40、时间不超过 0.18 秒，继续检查位置、去重和碎片数量。
-- 编辑器导入和 Windows 单文件导出成功：build/CrimsonTide-WeaponMechanics.exe，2,076,241,536 字节。使用引擎 --main-pack 加载 exe 内嵌资源，在空目录运行外部测试脚本；五组共 1162 检查，0 failures（机制 429、GPU 29、身份 553、强化 32、独立特效 119）。
-- 更新并检查 build/weapon-mechanics-comparison.png、build/weapon-mechanics-motion.gif 和代表性主场景截图 build/weapon-vfx-battle-603.png；GIF 由 viewport 帧直接编码。项目路牌 609 个锚点：OK 405 / DRIFT 0 / WRONG 0 / HINT 204。
+- 编辑器导入和 Windows 单文件导出成功：（旧文件已清理），2,076,241,536 字节。使用引擎 --main-pack 加载 exe 内嵌资源，在空目录运行外部测试脚本；五组共 1162 检查，0 failures（机制 429、GPU 29、身份 553、强化 32、独立特效 119）。
+- 更新并检查（旧截图已清理）和代表性主场景截图（旧截图已清理）；GIF 由 viewport 帧直接编码。项目路牌 609 个锚点：OK 405 / DRIFT 0 / WRONG 0 / HINT 204。
 
 ## 2026-10-07 ImageGen 原图重新制作
 
@@ -284,8 +284,8 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 新图统一为 _v2，weapon_image_art.gd 的 REDRAWN 映射实际攻击及关联施法出手；原始图片直接复制，完整提示词与生成原始路径在 assets/combat/imagegen-mechanics/prompts 和 manifest.json。没有对像素加工。删除上轮 weapon_body 扩边shader，取消横截面拉厚，普通贴图按自然比例显示。
 - 本轮源码9组共4622检查，0 failures：weapon_mechanics 429、weapon_mechanics_visual 30、weapon_vfx_identity 553、weapon_stroke_stability 196、weapon_vfx_battle 41、all_weapon_mounts 2568、weapon_vfx_progression 32、weapon_contact_particles 654、standalone_vfx 119。
 - GPU原图比较不使用扩边或辉光shader：相同绘制尺寸下，旧轻刃原图亮像素140，新原图1675，通过新增的至少50%主体增量检查。实际飞行渲染中长弓箭和短弩箭可见高度6，冰针10；圆斩中心/空心/空中高度及光束相机稳定性通过。前后对照首次捕获中的白块来自预览临时纹理过早释放，已通过持续持有纹理修复；第二次绘制等待字体图集稳定，14组对照已完整检查。
-- build/CrimsonTide-WeaponImageRedraw.exe 导出成功，2,082,811,544字节；引擎从空目录以 --main-pack 加载 exe 内嵌资源，五组1163检查，0 failures（机制429、GPU30、身份553、强化32、独立特效119）。
-- 原图对照 build/weapon-imagegen-redraw.png、招式对照 build/weapon-mechanics-comparison.png、动态 build/weapon-mechanics-motion.gif 与实战截图 build/weapon-vfx-battle-603.png 已更新并检查。项目路牌609锚点：OK405 / DRIFT0 / WRONG0 / HINT204。
+- （旧文件已清理）导出成功，2,082,811,544字节；引擎从空目录以 --main-pack 加载 exe 内嵌资源，五组1163检查，0 failures（机制429、GPU30、身份553、强化32、独立特效119）。
+- 原图对照（旧截图已清理）招式对照（旧截图已清理）动态（旧截图已清理）与实战截图（旧截图已清理）已更新并检查。项目路牌609锚点：OK405 / DRIFT0 / WRONG0 / HINT204。
 
 
 ## 2026-10-08 Boss 固定顺序与特效身份修正
@@ -356,7 +356,7 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 
 - 新增16个原创Blender模块，模型库98个（96原创、2许可植被）；闭合部件朝向2541项0失败。共享补充摆放增至111处，营地/原野/驿路/洞窟/旧堡分别为40/23/5/15/28处。原有PV提示词未修改。
 - 洞窟多边形边界共享给地面裁切、洞壁、移动、寻路与探索地图；删除两套重复支撑。第一幕第九区新增64×64米灰棘旧堡，包含双向入口、东西翼、回廊、拱顶大厅、升高领主厅、三个宝箱、守堡者与可激活传送阵。存档校验和阶段上限改从实际章节地图数量读取，原有ID保留。
-- `tests/story_outdoor_castle.gd`：无头153项0失败，实际沿洞窟支路执行移动/高度判定，验证旧堡入口往返、奖励去重、存档第九区、传送往返、实际缓存中的111处摆放和洞窟地面三角面与边界一致。Forward+实机166项0失败；Compatibility实机162项0失败。输出各9张3840×2160截图，build/story-expansion-*.png和story-expansion-compat-*.png。修正GL检查夹具：LightmapGI需要有效3D场景，离树资源检查会引出lightmap空RID，接入场景后最终日志无此错误。
+- `tests/story_outdoor_castle.gd`：无头153项0失败，实际沿洞窟支路执行移动/高度判定，验证旧堡入口往返、奖励去重、存档第九区、传送往返、实际缓存中的111处摆放和洞窟地面三角面与边界一致。Forward+实机166项0失败；Compatibility实机162项0失败。输出各9张3840×2160截图，（旧截图已清理）。修正GL检查夹具：LightmapGI需要有效3D场景，离树资源检查会引出lightmap空RID，接入场景后最终日志无此错误。
 - 回归：地理660、战役180、室内189、表面互斥97、故事集成12项均0失败；模型朝向2541项0失败。未重跑全仓库门禁和长时间性能测试。782个路牌锚点：OK508 / DRIFT0 / WRONG0 / HINT274。
 - 实际烘焙营地、原野、洞窟与旧堡；最后台基材质修正后的1/7/9三区烘焙耗时24.1/19/21秒（含编辑器启动），普通和兼容缓存已更新。编辑器插件等待资源扫描和场景恢复稳定，不重复打开已恢复场景，防止烘焙中根节点被替换；未知场景的批处理参数现在立即失败。部分编辑器ReflectionProbe在关闭阶段仍报告scenario空参数，重烘焙前旧路径警告在完成后消失；最终游戏GPU日志没有脚本/资源错误，Forward+图形脚本退出仍有7个Texture RID泄漏警告。
 - 修正生成台基的贴图密度：世界坐标三向平铺，地形/平台几何与碰撞不改变。修正节点级材质覆盖遮挡淡出，运行时洞壁根网格确实使用淡出ShaderMaterial。
@@ -456,5 +456,5 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 合计438检查/0失败。GL两套界面stderr空；Forward+仍有原有7 Texture RID退出警告，集成有原rogue_build_preview的锚点尺寸警告，未称全项目零警告。
 - 内置image_gen生成原创图标、框架与九种内部控件材质，保存完整提示词；两个参考安装的四种表均只读解析成功，未导入其美术。材料与人物原画、旧模式规则保留。
 - 增量发布使用v10小引导EXE + Inventory-v10.pck + 现有v9底包。实际嵌入运行入口启动、挂载、73任务与9件装备/9件行囊检查；旧模板不支持--main-pack，故使用内嵌小引导，初始化声音总线和图标，避免音频/窗口错误。
-- 原生发布版截图与日志：build/story-items-release.png / story-items-release-forward.png，output/story-items-release-gl-final.log/.err 与 story-items-release-forward-final.log/.err。正式运行入口Start-Story-GUI.cmd；Preview-Inventory和Preview-Quests均不保存。
+- 原生发布版截图与日志：（旧截图已清理） / story-items-release-forward.png，output/story-items-release-gl-final.log/.err 与 story-items-release-forward-final.log/.err。正式运行入口Start-Story-GUI.cmd；Preview-Inventory和Preview-Quests均不保存。
 - 无长时间帧率/显存测试，不声明4K60。交易是战役NPC买卖，未实现玩家之间联网交易、耐久修理或赌博。

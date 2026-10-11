@@ -44,11 +44,11 @@ Boss 旧画面的 64 个特效帧及墓煜原有五帧火焰已拆为独立 PNG�
 ./Godot_v4.7.2-stable_win64_console.exe --path . --script tests/standalone_vfx_preview.gd
 ```
 
-`build/standalone-weapons.png` 展示全部 21 把武器；`build/standalone-heroes.png` 展示四个专属大招。`tests/slash_alignment.gd` 检查三段与四个攻击方向，`tests/roguelike_vfx_visual.gd` 捕获实际肉鸽战场。
+（旧截图已清理）展示全部 21 把武器；（旧截图已清理）展示四个专属大招。`tests/slash_alignment.gd` 检查三段与四个攻击方向，`tests/roguelike_vfx_visual.gd` 捕获实际肉鸽战场。
 
 新测试覆盖独立高清贴图、具体武器身份、缓冲实际消费、慢武器窗口、闪避取消和清理上限。战斗、法术、移动、伤害预算、Boss 特效、墓煜残留和肉鸽表现回归测试均有单独日志保存在 build 中。大招释放测试的断言通过，但该测试退出时仍报告资源未释放；运行时表现需与断言结果分开理解。
 
-可试玩导出：`build/CrimsonTide-vfx.exe`（独立内嵌 PCK，未覆盖旧 dist）。导出成功后用 Godot 控制台加载该 exe 内嵌包重跑独立特效测试，119 项通过。Boss 联机主机与客户端双进程测试通过。
+可试玩导出：（旧文件已清理）（独立内嵌 PCK，未覆盖旧 dist）。导出成功后用 Godot 控制台加载该 exe 内嵌包重跑独立特效测试，119 项通过。Boss 联机主机与客户端双进程测试通过。
 
 Boss 后续已重做为 17 种独立身份、73 个招式与 68 张原创独立图；详细范围及等比例缩放约定见 [BOSS-REWORK.md](BOSS-REWORK.md)。
 
@@ -56,7 +56,7 @@ Boss 后续已重做为 17 种独立身份、73 个招式与 68 张原创独立�
 
 原始月弧、断潮巨刃、黑铁短剑、破碎大剑的刃面朝左；现在由 vfx_library.facing_scale 按素材校正。近战三段、收尾、普通弹道和法术弹道共用方向配置，第二段只翻转挥砍上下轨迹。21 把武器仍保留独立原图。武器及角色贴图绘制也改为保持原始长宽比。
 
-weapon_effect_direction 测试 122 项通过，其中实际 GPU 渲染验证六种月牙刃在三段与四个方向始终向前，另检查贴图比例及弹道别名一致性。新版导出为 build/CrimsonTide-direction-fixed.exe。
+weapon_effect_direction 测试 122 项通过，其中实际 GPU 渲染验证六种月牙刃在三段与四个方向始终向前，另检查贴图比例及弹道别名一致性。新版导出为（旧文件已清理）。
 
 ## 全武器挂点（2026-10-03）
 
@@ -85,7 +85,7 @@ weapon_effect_direction 测试 122 项通过，其中实际 GPU 渲染验证六�
 
 浮空和生长素材抵消地面投影的压扁与剪切，保持原图比例。地面轮廓仍是攻击范围的权威显示；空中的落物和淡出余影不代表额外伤害。本次复用现有 68 张独立高清素材，重做它们的运行时演出，没有生成新素材。
 
-验证：boss_effect_staging 247 项检查；boss_damage_geometry 38942 项 CPU/GPU 检查（零不匹配）；boss_choreography 910 项检查。远征 4 位主 Boss、8 位特殊 Boss，以及肉鸽 5 位守卫的 25 个技能均完成画面捕获。分阶段预览与动画见 build/boss-staging-storyboard.png、build/boss-staging-animation.gif。
+验证：boss_effect_staging 247 项检查；boss_damage_geometry 38942 项 CPU/GPU 检查（零不匹配）；boss_choreography 910 项检查。远征 4 位主 Boss、8 位特殊 Boss，以及肉鸽 5 位守卫的 25 个技能均完成画面捕获。分阶段预览与动画见（旧截图已清理）。
 
 
 ## 2026-10-04 全战斗特效演出补齐
@@ -98,7 +98,7 @@ weapon_effect_direction 测试 122 项通过，其中实际 GPU 渲染验证六�
 
 验证：all_effect_staging 30821 项（包括 21 份图像的 GPU 显现与普通敌人全形状边界对照）；武器稳定性 199 项；八方向/双模式定位 1304 项；CPU/GPU Boss 几何 38942 项；战斗 78 项；法术 106 项；独立素材 119 项；肉鸽特效 99 项；充能与清理 9 项。21 武器、4 角色、8 法术、20 小怪均完成截图检查。旧测试相机断言适配项目已存在的纵向相机；充能断言改为检验现在实际使用的绘制层。
 
-本次继续使用既有独立图像，没有生成新图；运行时显现与连续材质已经接入游戏。武器演出预览 build/all-weapons-staged.gif；完整导出 build/CrimsonTide-all-effects-staged.exe。
+本次继续使用既有独立图像，没有生成新图；运行时显现与连续材质已经接入游戏。武器演出预览（旧截图已清理）；完整导出（旧文件已清理）。
 
 
 ## 2026-10-05 补齐动态粒子层
@@ -111,7 +111,7 @@ combat_particles.gd 是 Godot 中自行实现的 CPU 粒子模拟与批量绘制
 
 环与缺口粒子按权威几何裁剪，并给粒子本体与光晕留出几何余量，避免安全中心和缺口被装饰填满。粒子不产生伤害，也不扩大碰撞。每个模拟器限制 1400 个粒子、48 个发射通道，地图重置/打断清理来源。武器释放粒子保持世界位置；只有聚集通道跟随活跃武器或敌人。
 
-验证：combat_particles 383 项（运动、生命周期、汇聚跟随、取消、材料差异、环形安全区及预算；四角色×21武器事件）；武器稳定性 199 项；双模式八方向定位 1304 项；Boss 伤害几何 38942 项，GPU 零不匹配。预览 build/weapon-particles.gif、build/boss-particles.gif，打包 build/CrimsonTide-particles.exe。未复制苍翼的资源，使用项目既有主体图像及自有程序化粒子几何。
+验证：combat_particles 383 项（运动、生命周期、汇聚跟随、取消、材料差异、环形安全区及预算；四角色×21武器事件）；武器稳定性 199 项；双模式八方向定位 1304 项；Boss 伤害几何 38942 项，GPU 零不匹配。预览（旧截图已清理），打包（旧文件已清理）。未复制苍翼的资源，使用项目既有主体图像及自有程序化粒子几何。
 
 
 ## 2026-10-05 粒子衔接与命中收束
@@ -120,7 +120,7 @@ combat_particles.gd 是 Godot 中自行实现的 CPU 粒子模拟与批量绘制
 
 武器命中改为朝向来袭武器的敌人接触侧（屏幕空间约高于脚点 26 像素，前缘偏移按敌人碰撞半径计算），只改变视觉位置。原 44/78 半径闪光收窄为 18/28，时长 100/140 毫秒，亮度减弱；移除命中菱形、大圆环、legacy hit 和肉鸽额外命中粒子的重复叠加。轻击约 3、重击约 5 个小碎屑（火焰/岩石附带少量淡尘），沿窄角延续入射方向，粒子最大 2.5 像素基准大小、最长 220 毫秒。同一攻击者/目标 75 毫秒内的重复命中合并视觉响应，伤害计算与数字不变。
 
-验证：weapon_contact_particles 666 项检查，通过接触点、单闪光、小粒子、快速命中合并与短尾清理；combat_particles 376 项通过；武器定位稳定性 199 项通过；战斗 78 项与肉鸽特效 99 项通过。build/CrimsonTide-contact-polished.exe 包含本次调整；build/weapon-particles-polished.gif 为释放粒子预览。
+验证：weapon_contact_particles 666 项检查，通过接触点、单闪光、小粒子、快速命中合并与短尾清理；combat_particles 376 项通过；武器定位稳定性 199 项通过；战斗 78 项与肉鸽特效 99 项通过。（旧文件已清理）包含本次调整；（旧截图已清理）为释放粒子预览。
 
 
 ## 2026-10-05 — 招式与资源语义排查
@@ -147,13 +147,13 @@ rogue_actions.gd 将 combo_route 随普攻/战技广播；四类派生分别是�
 
 效果仍受 96 条特效、192 条碎屑及原粒子上限约束；地图切换清空；释放时一次捕获挂点，延迟回声不追随恢复动作。零覆盖度的刃迹不提交空多边形。原始 PNG、长宽比及既有大招素材均保留，没有生成新的位图素材。
 
-预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png、build/weapon-vfx-battle-*.png。运行 tests/weapon_vfx_preview.gd 可重新生成对照图；tests/weapon_vfx_identity.gd 做真实 GPU 像素差异检查，tests/weapon_vfx_battle.gd 覆盖实际战斗事件、挂点和角色确认派生。试玩：build/CrimsonTide-WeaponVFX.exe（单文件内嵌 PCK）。
+预览：（旧截图已清理）。运行 tests/weapon_vfx_preview.gd 可重新生成对照图；tests/weapon_vfx_identity.gd 做真实 GPU 像素差异检查，tests/weapon_vfx_battle.gd 覆盖实际战斗事件、挂点和角色确认派生。试玩：（旧文件已清理）（单文件内嵌 PCK）。
 
 ## 2026-10-06 图片素材与实际强化（替代上述程序主轮廓方案）
 
 主轮廓现使用内置 ImageGen 生成的 74 张独立透明方图，完整素材与强化口径见 WEAPON-IMAGE-VFX.md。绯红剑三段各自一张，其他武器以专属主图配合类别接斩/终结图层、动画揭示、固定挂点与少量粒子；52 个不同武器名称共用到 69 把具体武器，48 把闯关武器各自保持独立主图。长图不参与运行时。
 
-锻造只轻微提高刃缘光，命中范围和伤害规则保持现有逻辑；+2/+4 核心图在机制实际执行时播放，+3/+5 角色连招按权威确认。弹丸、爆炸、连锁与命中冻结出手时的品质/强化状态。预览 build/weapon-image-upgrades.png，试玩 build/CrimsonTide-WeaponImageVFX.exe。
+锻造只轻微提高刃缘光，命中范围和伤害规则保持现有逻辑；+2/+4 核心图在机制实际执行时播放，+3/+5 角色连招按权威确认。弹丸、爆炸、连锁与命中冻结出手时的品质/强化状态。预览（旧截图已清理），试玩（旧文件已清理）。
 
 ## 2026-10-07 按实际机制重做与辉光增强
 
@@ -161,6 +161,6 @@ rogue_actions.gd 将 combo_route 随普攻/战技广播；四类派生分别是�
 
 ### 最新：用 ImageGen 重画原图
 
-用户澄清后，重新生成14张原始透明方图，替换过细刀光/弹体及方向不清的雷弹。新图带 _v2，映射由 weapon_image_art.gd 的 REDRAWN 管理；主画面保持原始比例，上一轮主体扩边shader已移除，不再横向拉厚细长贴图。以上扩边实现仅为历史记录。14组原图对照在 build/weapon-imagegen-redraw.png，最新试玩 build/CrimsonTide-WeaponImageRedraw.exe；提示词与哈希保存在 assets/combat/imagegen-mechanics。
+用户澄清后，重新生成14张原始透明方图，替换过细刀光/弹体及方向不清的雷弹。新图带 _v2，映射由 weapon_image_art.gd 的 REDRAWN 管理；主画面保持原始比例，上一轮主体扩边shader已移除，不再横向拉厚细长贴图。以上扩边实现仅为历史记录。14组原图对照在（旧截图已清理），最新试玩（旧文件已清理）；提示词与哈希保存在 assets/combat/imagegen-mechanics。
 
-普通武器主表现改用 32 张新的 ImageGen 透明方图：刀迹/直刺/圆斩/窄扇/砸地、枪焰与弦振、11 类飞行弹体、直线光束及8类范围爆发分别选图，不再把波状武器主图同时当出手与弹丸。强化接线继续沿用。饱和色亮芯、边缘辉光、出手显示保持与终结残影增强；空中圆斩读取实际高度，光束捕获局部起点，远程派生不另画剑弧或冰晶。规则与预览见 WEAPON-MECHANICS-VFX.md；试玩 build/CrimsonTide-WeaponMechanics.exe。
+普通武器主表现改用 32 张新的 ImageGen 透明方图：刀迹/直刺/圆斩/窄扇/砸地、枪焰与弦振、11 类飞行弹体、直线光束及8类范围爆发分别选图，不再把波状武器主图同时当出手与弹丸。强化接线继续沿用。饱和色亮芯、边缘辉光、出手显示保持与终结残影增强；空中圆斩读取实际高度，光束捕获局部起点，远程派生不另画剑弧或冰晶。规则与预览见 WEAPON-MECHANICS-VFX.md；试玩（旧文件已清理）。

@@ -39,4 +39,4 @@ Quaternius 的 CC0 许可在原作者页面核实；FBX 和贴图从 `walterpall
 - 系统：10812 项通过。
 - 实际 OpenGL 渲染：八个据点、桥梁、三种宝箱状态与王庭截图；深度遮挡回归通过。
 
-截图：`build/asset-region-*.png`、`build/asset-bridge.png`、`build/asset-chests.png`、`build/asset-city.png`。日志为 `build/check-*.log`。主菜单既有音频缺失问题见 `MAP-2-5D.md`；本次图形测试使用战场场景，不将其算作完整主菜单启动验证。
+截图：（旧截图已清理）。日志为（旧文件已清理）。主菜单既有音频缺失问题见 `MAP-2-5D.md`；本次图形测试使用战场场景，不将其算作完整主菜单启动验证。

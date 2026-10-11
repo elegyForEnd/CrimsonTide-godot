@@ -80,7 +80,7 @@ home 存入现有版本 1 的 Profile，使用原有临时文件/重命名保存
 
 使用项目 Godot 4.7.2 可执行程序。无头运行 --headless --path . --script 后接测试路径。
 
-已通过：homestead（64 项）、homestead_ui（32 项）、camp（80 项）、camp_collision（33 项）、camp_occlusion（11 项）、camp_flow（25 项）、economy（78 项）、attributes（204 项）。新增 camp_activities（89 项），合计 616 项。homestead_ui 同时用真实 OpenGL 窗口运行，截图保存在 build/home-*.png。camp_visual 检查地图、导览、闸门、会议桌、菜园与湖岸的实际渲染。
+已通过：homestead（64 项）、homestead_ui（32 项）、camp（80 项）、camp_collision（33 项）、camp_occlusion（11 项）、camp_flow（25 项）、economy（78 项）、attributes（204 项）。新增 camp_activities（89 项），合计 616 项。homestead_ui 同时用真实 OpenGL 窗口运行，截图保存在（旧截图已清理）。camp_visual 检查地图、导览、闸门、会议桌、菜园与湖岸的实际渲染。
 
 营地旧测试的雷暴、五站点和旧台面高度要求已更新为新家园布局；锻炉流程测试适配当前天赋按钮文字。测试使用独立 user:// 存档。没有进行跨公网多人实机测试。完整 main 场景的测试仍会输出项目原有的第四角色四段 ultimate 音频导入缺失信息；不影响家园与此次通过的断言。
 
@@ -103,4 +103,4 @@ home 存入现有版本 1 的 Profile，使用原有临时文件/重命名保存
 
 本轮验证：home_layout 290、camp 83、camp_collision 35、camp_occlusion 11、homestead_ui 53、camp_activities 89、camp_flow 25、camp_modes 10 项断言通过，另有 camp_visual 实际 OpenGL 图形检查。连通检查覆盖 6733 个可达网格点、十个站点、实际门洞、侧墙、屋顶切换和所有场景实例的等比例缩放。部分无头流程退出仍报告 ObjectDB / 资源清理警告，断言通过；没有宣称跨公网联机已验证。
 
-实际截图：`build/camp-hearthhaven.png`、`build/home-castle-courtyard-overview.png`、`build/home-library-interior.png`、`build/camp-guide.png`。修改作用于源码，旧 `dist` 可执行程序未重新导出。
+实际截图：`build/camp-hearthhaven.png`、（旧截图已清理）`build/camp-guide.png`。修改作用于源码，旧 `dist` 可执行程序未重新导出。

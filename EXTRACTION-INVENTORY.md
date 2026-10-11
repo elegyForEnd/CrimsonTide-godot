@@ -8,7 +8,7 @@
 
 实现：scripts/extraction_inventory.gd 绘制界面并注册原拖拽系统使用的 grids、equip_zones、slot_zone_rects；scripts/extraction_inventory_socket.gd 使用真实裁剪矩形加载内置 ImageGen 生成的格子图集。资源和完整提示词记录位于 assets/ui/extraction-inventory-generation.json。
 
-验证：tests/extraction_inventory.gd 在真实 GPU 界面执行 53 项检查，覆盖六容量布局、口袋位置、真实鼠标滚轮、底部物品选择、滚动命中坐标、裁剪外点击保护、普通 TAB 无宝箱、悬停、旋转、拖拽装备、Ctrl 收回、快捷道具、未搜索与已揭示物品、拾取与关闭；0 failures。tests/systems.gd 10812 项通过，tests/rogue_inventory.gd 使用 GPU 执行 29 项通过。截图位于 build/extraction-inventory-*.png。
+验证：tests/extraction_inventory.gd 在真实 GPU 界面执行 53 项检查，覆盖六容量布局、口袋位置、真实鼠标滚轮、底部物品选择、滚动命中坐标、裁剪外点击保护、普通 TAB 无宝箱、悬停、旋转、拖拽装备、Ctrl 收回、快捷道具、未搜索与已揭示物品、拾取与关闭；0 failures。tests/systems.gd 10812 项通过，tests/rogue_inventory.gd 使用 GPU 执行 29 项通过。截图位于（旧截图已清理）。
 
 既有 tests/ui.gd 的营地启动按钮与旧布局断言已过时；本次使用直接启动隔离远征存档的专项交互测试验证新界面。
 

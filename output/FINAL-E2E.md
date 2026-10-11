@@ -4,7 +4,7 @@
 - 结果：**106 checks / 0 failures / 2 KNOWN-GAP**
 - 门禁：`& .\tools\run_rogue_gate.ps1` → **23 PASS, 0 judged-FAIL, 4 EXEMPT**（exit 0）
 - 引擎：`Godot_v4.7.2-stable_win64_console.exe --headless --path . --quit-after 4000 --script tests/final_e2e_roguelike.gd`
-- 原始日志：`build/v2-verify/final-e2e.txt`、`build/v2-verify/gate-run.txt`（`build/` 在 gitignore 内）
+- 原始日志：（旧文件已清理）（`build/` 在 gitignore 内）
 - **测量时点：2026-10-05 20:35–20:40，工作树里仍有写者**（见下）
 
 > ⚠ **测量时点在飞**：门禁脚本自己的写者检测在 20:35:03 报出 8 个文件在 5 分钟内被写过
@@ -86,7 +86,7 @@
 ## 四、我没能验证的部分（诚实清单）
 
 1. **联机多进程**：`roguelike_network` / `rogue_build_network` 单跑是 NO-SUMMARY，需要 `-- --server --four`；我**没有**跑。因此"非房主带种子开局""变数在客户端不重抽""灰烬只在房主侧结算"这些联机性质**未验证**。
-2. **像素级观感**：本轮是 headless，没有出图。`bullet_visual` 的消费我是用"内核恒 36px / 外壳单调增长"的数值 + 既有自检工具证明的，**不是**看图证明；弹幕是否"一眼能看出差别"需人工看截图（已有 `build/enemy-bullets-readability*.png`）。
+2. **像素级观感**：本轮是 headless，没有出图。`bullet_visual` 的消费我是用"内核恒 36px / 外壳单调增长"的数值 + 既有自检工具证明的，**不是**看图证明；弹幕是否"一眼能看出差别"需人工看截图（已有（旧截图已清理））。
 3. **`daily` 落盘闭环**：因为 `profile.gd` 还没有该键，我只能用注入字典证明"机制对"，**无法**验证真实存档里写入→`save_profile()`→再读回环。
 4. **成长树节点的战斗效果**（如 `hunt_instinct` 的我方伤害 +4%）：`power()` 的数值合成有 R12 的 6886 条断言，但**没有**任何一条"成长树 → 实际伤害数值"的端到端断言；在 GAP-1 修好前也测不出来。
 5. **`rogue_skin` 与身体立绘的回退**（R14 已知局限）：新守层者的特效/招式名按身份走，但身体立绘按楼层取帧。需要人眼确认图标/立绘是否明显错配。

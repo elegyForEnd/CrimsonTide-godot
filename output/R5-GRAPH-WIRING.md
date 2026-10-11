@@ -178,7 +178,7 @@ ok / ok / ok / ok        （四条测试脚本均无 ERROR）
 
 - 调用点 `scripts/roguelike.gd:205-211`：`fresh`（换层/首层）→ `Variants.roll(s)` → `variants_seen.append`，仍在 `exit_choices()` 之前。
 - `scripts/rogue_variants.gd:269 static func roll(s)` → `:275 pick(s.rng,floor,seen)`；`:244 static func pick(rng,…)` → `:245 var roll_value := rng.randf()`（首句、无条件）⇒ **恰好 1 次 `s.rng.randf()`**。
-- **实测**（探针 `build/r5/rng_probe.gd`，用"全新 RNG 从 `seed=value+71` 逐次比对原始 `state`"计数 `launch(false,813)` 的消耗）：
+- **实测**（探针（旧文件已清理），用"全新 RNG 从 `seed=value+71` 逐次比对原始 `state`"计数 `launch(false,813)` 的消耗）：
   - 正常代码：`draws_consumed_by_launch=1178`，`variant=surge serial=1`
   - 把 `:209` 临时换成 `pass`：`draws_consumed_by_launch=1177`，`serial=0`
   ⇒ 变数抽取**确实多消耗 1 次**；这条 `pass` 仅存在约 2 分钟用于取数并已还原（`git diff` 现为 `+ Variants.roll(s)`）。
@@ -192,8 +192,8 @@ ok / ok / ok / ok        （四条测试脚本均无 ERROR）
 
 ## 7. 已知问题（不是本轮引入，交棒后需处理）
 
-1. **`tests/roguelike.gd` TIMEOUT + 3 failures**（日志 `build/r5b/roguelike.err.txt`）：
-   - `:21 "Starting purchases applied"`：探针 `build/r5/starter_probe.gd` 实测
+1. **`tests/roguelike.gd` TIMEOUT + 3 failures**（日志（旧文件已清理））：
+   - `:21 "Starting purchases applied"`：探针（旧文件已清理）实测
      `solo({"rogue_rerolls":2,"rogue_weapon":1})` 后 `rerolls=3`、`weapon=600`（既不是 2 也不是 1）
      ⇒ **开局武器/重掷的配置项被别的轮次的接线覆盖**（成长树/开局经济方向），与本轮改动无关（本轮未碰该路径）。
    - `:65 "Unexpected phase"` + `:66` + `:67` `Out of bounds get index '1'`：循环首轮 `raid.phase=="rogue_prepare"`

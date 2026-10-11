@@ -6,11 +6,11 @@
 
 51 条日语合成语音使用 MiniMax `speech-2.8-hd`：绯月采用 MiniMax 文字设计的原创甜美元气女声，整套 17 条统一使用新声线；雪璃使用 `Japanese_GracefulMaiden`，鸦羽使用 `Japanese_ColdQueen`。每人有四条普攻发力声，闪避 / 受伤各两条，治疗、倒地、奥义咏唱、奥义招式名和联机短喊各一条；另保留重击 / 施法备用台词。四种武器的普通攻击统一只触发短促语气词。发声有间隔、优先级和距离剔除；同一人不会同时喊两句。说话时自动降低战斗 / 演出音效 5 dB，静音语音后不再压低音效。设置提供独立语音音量，兼容旧存档。
 
-大招的咏唱、完整报招和联机短喊共九条使用新 MiniMax 合成，报招按尾音上扬的方向选取表演。保留模型原生的音高变化，已移除本地 PSOLA 升调。所有角色语音恢复最初的 0.19 RMS 母带目标，撤销报招后半段 4 dB 增益；峰值保护继续保留。绯月新音色设计描述在 `tools/feiyue_voice_design.json`，选定表演参数在 `tools/voice_performance.json`。纯人声试听为 `build/MiniMax-Sweet-Cast-Preview.mp3`。
+大招的咏唱、完整报招和联机短喊共九条使用新 MiniMax 合成，报招按尾音上扬的方向选取表演。保留模型原生的音高变化，已移除本地 PSOLA 升调。所有角色语音恢复最初的 0.19 RMS 母带目标，撤销报招后半段 4 dB 增益；峰值保护继续保留。绯月新音色设计描述在 `tools/feiyue_voice_design.json`，选定表演参数在 `tools/voice_performance.json`。纯人声试听为（旧文件已清理）。
 
 三名角色奥义：绯月「紅き月よ、我が刃に宿れ！ / 奥義、紅蓮月華！」，雪璃「星の祝福よ、この夜を照らせ！ / 聖域展開、暁の祈り！」，鸦羽「終焉を告げる、黒き翼よ！ / 禁式解放、夜鴉断罪！」。游戏中的招式名同步为红莲月华、拂晓之祈、夜鸦断罪，技能效果与冷却保留。单人 CG 按完整台词时长播放，时长记录在语音清单；联机画面保持 0.85 秒，简短喊招自然播完，不暂停战场。主动跳过或离开战斗会停止语音。中日字幕位于光效上方。
 
-语音构建脚本 `tools/prepare_minimax_voices.py` 从环境变量或隐藏输入读取密钥，通过 API 生成并缓存，随后转为本地 WAV；`tools/prepare_anime_audio.py` 根据语音长度重制演出音效。游戏运行时不联网合成。语音并非真人配音，也不属于 CC0，使用遵循相应 MiniMax 服务条款。请求配方、voice_id、情绪参数、trace_id 和文件哈希记录在语音清单；凭据不写入工程。运行包不包含凭据、API 缓存或语音引擎。当前试听为 `build/MiniMax-Game-Preview.mp3`，来自 Godot 实际混音。先前 VOICEVOX 版本保存在未打包的构建备份中。
+语音构建脚本 `tools/prepare_minimax_voices.py` 从环境变量或隐藏输入读取密钥，通过 API 生成并缓存，随后转为本地 WAV；`tools/prepare_anime_audio.py` 根据语音长度重制演出音效。游戏运行时不联网合成。语音并非真人配音，也不属于 CC0，使用遵循相应 MiniMax 服务条款。请求配方、voice_id、情绪参数、trace_id 和文件哈希记录在语音清单；凭据不写入工程。运行包不包含凭据、API 缓存或语音引擎。当前试听为（旧文件已清理），来自 Godot 实际混音。先前 VOICEVOX 版本保存在未打包的构建备份中。
 
 ## 音效素材库重制（上一版）
 
@@ -20,9 +20,9 @@
 
 新增实际移动脚步、奔跑、闪避落地、装备切换、装填与上膛、治疗、燃烧血晶、开箱、敌方施法、死亡和界面翻页音。脚步依据实际位移和步频触发，堵墙、传送修正和倒地不触发。换武器与倒地会停止装填声，闪避会取消法杖聚能声。战斗声音具有左右定位和距离衰减，界面、环境、大招和战斗分总线混音，保留最高 24 个战斗声部；低优先级脚步不会挤掉受伤提示，多目标命中限制叠加数量，总线限制峰值。
 
-`tools/prepare_library_audio.py` 在 `build/audio-remaster/` 生成素材；原始下载位于 `build/audio-library/`，未打包。`tests/audio.gd` 验证播放、并发、移动、取消、CG 和联机短版；`tests/audio_mix.gd` 录制 Godot 实际混音并测量左右声道与距离衰减，输出 `build/library-game-mix.wav`。另运行战斗、移动及 CG 回归，音频检查涵盖起音、尾音、过采样峰值和循环接缝。试听与自动检查各有用途，自动检查不代表主观音质评价。
+`tools/prepare_library_audio.py` 在 `build/audio-remaster/` 生成素材；原始下载位于 `build/audio-library/`，未打包。`tests/audio.gd` 验证播放、并发、移动、取消、CG 和联机短版；`tests/audio_mix.gd` 录制 Godot 实际混音并测量左右声道与距离衰减，输出（旧文件已清理）。另运行战斗、移动及 CG 回归，音频检查涵盖起音、尾音、过采样峰值和循环接缝。试听与自动检查各有用途，自动检查不代表主观音质评价。
 
-续接修复：脚步计时保留物理帧、联机位置快照之间的短暂间隔，只在收到实际位移时发声，停顿超过 0.2 秒会清除累计步距。覆盖 120 Hz 渲染 / 60 Hz 物理更新、间歇网络位置更新、过期位置不发声等场景。试听文件 `build/CrimsonTide-audio-preview.mp3` 来自 Godot 实际混音，依次包含单手剑连击、重剑、枪械、法杖、移动与交互、三角色奥义。
+续接修复：脚步计时保留物理帧、联机位置快照之间的短暂间隔，只在收到实际位移时发声，停顿超过 0.2 秒会清除累计步距。覆盖 120 Hz 渲染 / 60 Hz 物理更新、间歇网络位置更新、过期位置不发声等场景。试听文件（旧文件已清理）来自 Godot 实际混音，依次包含单手剑连击、重剑、枪械、法杖、移动与交互、三角色奥义。
 
 ## Suno 音频替换（已停用，历史记录）
 
@@ -38,11 +38,11 @@
 
 Q 技能成功释放后播放当前角色专属 CG：绯月血色剑光、雪璃冰蓝法阵、鸦羽紫焰夜鸦。插画推镜叠加旋转法阵、流光、粒子、冲击波、短闪光和爆发音效。单人演出 2.6 秒并暂停战场；任意键或点击跳过，自动恢复。联机只在施法者客户端展示 0.85 秒短版，不暂停网络或其他玩家，保留原有技能结算和冷却。此次为插画分层动态演出，不是逐帧角色动画视频。
 
-插画使用内置 image_gen 生成，项目素材：`assets/combat/ultimate-cg.png`，完整提示词：`assets/combat/ultimate-prompt.txt`。`tests/ultimate.gd` 验证实际技能触发、冷却、单人暂停与恢复、联机短版、跳过按键不穿透、自动结束，并输出三个角色截图到 `build/ultimate-0.png` 至 `build/ultimate-2.png`。
+插画使用内置 image_gen 生成，项目素材：`assets/combat/ultimate-cg.png`，完整提示词：`assets/combat/ultimate-prompt.txt`。`tests/ultimate.gd` 验证实际技能触发、冷却、单人暂停与恢复、联机短版、跳过按键不穿透、自动结束，并输出三个角色截图到（旧截图已清理）至（旧截图已清理）。
 
 ## 单手剑连段刀光偏移修复（追加）
 
-反向挥斩之前向 `draw_texture_rect_region` 传入负高度矩形，翻转时会偏离预期中心。现改为正尺寸矩形配合绘制变换镜像，两层刀光都围绕各自原定中心翻转。`tests/slash_alignment.gd` 覆盖三个连段、四个朝向，截图输出到 `build/slash-alignment.png`。
+反向挥斩之前向 `draw_texture_rect_region` 传入负高度矩形，翻转时会偏离预期中心。现改为正尺寸矩形配合绘制变换镜像，两层刀光都围绕各自原定中心翻转。`tests/slash_alignment.gd` 覆盖三个连段、四个朝向，截图输出到（旧截图已清理）。
 
 ## 角色体型校准（追加）
 
@@ -58,7 +58,7 @@ Q 技能成功释放后播放当前角色专属 CG：绯月血色剑光、雪璃
 
 新增素材位于 `assets/combat/attack-clean-0.png`、`attack-clean-1.png`、`attack-clean-2.png`，以及 `movement-0.png`、`movement-1.png`、`movement-2.png`。提示词完整记录见 `assets/combat/movement-prompts.json`，均使用内置 imagegen，以原角色图为身份参考。
 
-`tests/movement.gd`：83 项移动行为与 72 帧透明边界检查通过；`tests/animation_visual.gd` 生成全部姿势总览 `build/animation-frames.png`；`tests/ui.gd` 增加走路、奔跑、空格闪避和回到待机的实际状态切换检查。
+`tests/movement.gd`：83 项移动行为与 72 帧透明边界检查通过；`tests/animation_visual.gd` 生成全部姿势总览（旧截图已清理）；`tests/ui.gd` 增加走路、奔跑、空格闪避和回到待机的实际状态切换检查。
 
 2026-09-22。三名角色均可使用三种新武器，保留原步枪。绯月默认单手剑，雪璃默认法杖，鸦羽默认双手剑。战斗中按 1 / 2 / 3 / 4 切换；攻击前摇、收招与施法期间禁止换武器。
 
@@ -97,7 +97,7 @@ Q 技能保留角色规则：绯月向前连续血刃；雪璃治疗法阵、光
 - `tests/systems.gd`：261 项原有规则通过。
 - `tests/combat.gd`：前摇伤害、换武器锁、实际命中、弹道、击退、命中停顿、墙体遮挡、背后扇形排除、非法武器、技能与倒地打断。
 - `tests/ui.gd`：原 UI 流程及 1～4 键真实输入事件。
-- `tests/combat_visual.gd`：9 组武器动作、3 组技能截图，输出到 `build/combat-*.png`，已人工查看刀光、重劈和治疗技能。
+- `tests/combat_visual.gd`：9 组武器动作、3 组技能截图，输出到（旧截图已清理），已人工查看刀光、重劈和治疗技能。
 - `tests/network.gd`：本机 2 / 4 人进程通过，新增远端战斗事件与换武器快照验证。尚未实测公网延迟环境。
 
 运行示例：`Godot_v4.7.2-stable_win64_console.exe --headless --path . --script tests/combat.gd`。画面验证省略 `--headless` 并使用 `tests/combat_visual.gd`。

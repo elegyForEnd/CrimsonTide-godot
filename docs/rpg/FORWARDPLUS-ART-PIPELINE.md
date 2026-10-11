@@ -61,7 +61,7 @@ ImageGen建筑参考与完整提示词保存在REFERENCE.md；参考图用于方
 
 ## 验收记录与范围
 
-正式性能结果、加载时间、显存及全模式回归记在TEST-REPORT；原始数据由 `tests/story_4k_benchmark.gd` 和 `tools/monitor_story_gpu.py` 输出。基线快照在build/environment-baseline-20261010.zip，旧试玩保留。
+正式性能结果、加载时间、显存及全模式回归记在TEST-REPORT；原始数据由 `tests/story_4k_benchmark.gd` 和 `tools/monitor_story_gpu.py` 输出。基线快照在（旧文件已清理），旧试玩保留。
 
 当前已覆盖六幕：v5提供后五幕独立资产与45个区域，v6继续重做30个副本和19个室外区域的空间/高程/地编。后续应继续按区域精修模型、材质和构图；不能以渲染器切换或区域数量作为整部游戏达到商业重制精度的证明。最新范围与临时试玩见[DUNGEON-EXPLORATION.md](DUNGEON-EXPLORATION.md)。
 
