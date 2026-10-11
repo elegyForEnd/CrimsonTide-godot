@@ -29,10 +29,14 @@ GraphicsQuality="*res://scripts/graphics_quality.gd"
 
 [display]
 
+; 窗口模式（全屏/窗口）与窗口尺寸**不在这里定**：它们由 autoload
+; `scripts/graphics_quality.gd` 在 `_ready()` 里按 `scripts/window_settings.gd`
+; 应用（首次下载默认全屏，之后继承玩家在设置页的选择/拖出来的尺寸）。
+; 这里保留的是"还没跑到 autoload 的那一瞬间"的兜底窗口尺寸，改它只影响那一瞬间。
 window/size/viewport_width=1440
 window/size/viewport_height=900
-window/size/window_width_override=1280
-window/size/window_height_override=800
+window/size/window_width_override=1600
+window/size/window_height_override=900
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

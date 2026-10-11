@@ -39,3 +39,7 @@ output/boundary-*.err
 output/void-*.err
 
 output/landscape-*.err
+
+# AI/会话的工作记忆（跨压缩、跨会话的项目状态副本），属本机工作产物，勿入库。
+important_view*.md
+.dsh/memory/
