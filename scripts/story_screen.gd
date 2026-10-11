@@ -71,7 +71,7 @@ func _ready() -> void:
 	button(hud,"小队个人委托",Vector2(30,795),Vector2(180,38),show_personal)
 	button(hud,"返营路标",Vector2(30,745),Vector2(140,38),func():
 		if campaign.state.stage==0: toast("已经在营地。")
-		elif campaign.hero_at.distance_to(campaign.map.waypoint)<150: campaign.activate_waypoint(); campaign.travel(int(campaign.state.act),0)
+		elif campaign.hero_at.distance_to(campaign.map.waypoint)<campaign.WAYPOINT_BUTTON: campaign.activate_waypoint(); campaign.travel(int(campaign.state.act),0)
 		else: toast("沿原路回营地，或到传送阵附近激活后旅行。"))
 	overlay=Control.new(); overlay.size=size; overlay.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(overlay)
 	quest_fx=preload("res://scripts/story_quest_fx.gd").new(); quest_fx.screen=self; add_child(quest_fx)
@@ -214,7 +214,7 @@ func sync_music() -> void:
 		sound.music.select_cue()
 
 func nearest() -> Dictionary:
-	var best := 125.0
+	var best: float = campaign.PROMPT_RADIUS
 	var found: Dictionary={}
 	for door in campaign.map.entrances():
 		if door.p.distance_to(campaign.hero_at)<best:
@@ -361,7 +361,7 @@ func show_growth() -> void:
 	show_items("character")
 
 func show_travel() -> void:
-	if campaign.hero_at.distance_to(campaign.map.waypoint)>160:
+	if campaign.hero_at.distance_to(campaign.map.waypoint)>campaign.WAYPOINT_USE:
 		show_atlas()
 		return
 	campaign.activate_waypoint()

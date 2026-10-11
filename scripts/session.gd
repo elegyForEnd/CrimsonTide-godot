@@ -114,6 +114,12 @@ const DROP_RADIUS := 70.0      # 搜打撤 拾取 / 搜刮地面掉落与背包�
 const CHEST_RADIUS := 85.0     # 魔境 开宝箱（[E]）
 const LOOT_RADIUS := 80.0      # 魔境 拾取掉落（[E]）
 const FORK_RADIUS := 64.0      # 魔境 分叉选路（按住 E；还需已过 ruins.fork_start）
+# 敌人 AI 的索敌/近战判定半径（2026-10-11 从 update_enemies()/update_knight() 的内联字面量
+# 收拢：开发者判定框覆盖层 `scripts/dev_ranges.gd` 必须与 AI 读同一处）。
+const ENEMY_SEEK_BASE := 440.0        # type0-3 索敌基准，再加 threat*ENEMY_SEEK_PER_THREAT
+const ENEMY_SEEK_PER_THREAT := 300.0
+const KNIGHT_SEEK := 780.0            # type4 失乡骑士索敌
+const ENEMY_MELEE_HIT := 58.0         # type0-3 近战接触帧命中半径
 
 func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_peer_left)
@@ -3946,6 +3952,10 @@ func append_chest(chest: Dictionary) -> void:
 		if search_reference(p)>=ruins.chests.size(): p.search_ref+=1
 	ruins.chests.append(chest)
 
+## 普通怪（type0-3）的索敌半径：随血潮威胁等级增长。AI 与开发者判定框共用这一处。
+func enemy_seek_radius() -> float:
+	return ENEMY_SEEK_BASE + threat * ENEMY_SEEK_PER_THREAT
+
 func update_enemies(dt: float) -> void:
 	if roguelike.active(self) and raid.phase!="rogue_combat": return
 	for e in enemies:
@@ -4001,11 +4011,11 @@ func update_enemies(dt: float) -> void:
 				if e.type==1:
 					broadcast_audio("enemy-cast",e)
 					bullets.append(rogue_enemy_bolt({"p":e.p,"v":e.attack_aim*245,"life":2.0,"damage":Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]),"owner":0}))
-				elif not victim.is_empty() and victim.status=="active" and e.p.distance_to(victim.p)<58 and ruins.clear_line(e.p,victim.p):
+				elif not victim.is_empty() and victim.status=="active" and e.p.distance_to(victim.p)<ENEMY_MELEE_HIT and ruins.clear_line(e.p,victim.p):
 					hurt(victim,Ecology.damage(e,Ecology.ATTACK_DAMAGE[e.type]))
 			continue
 		var target: Dictionary={}
-		var best := 440.0+threat*300
+		var best := enemy_seek_radius()
 		for p in players.values():
 			if p.status!="active":
 				continue
@@ -4378,7 +4388,7 @@ func update_knight(e: Dictionary, dt: float) -> void:
 						hurt(p,Ecology.damage(e,float(spec.damage[strike])))
 		return
 	var target: Dictionary={}
-	var best := 780.0
+	var best := KNIGHT_SEEK
 	for p in players.values():
 		if p.status=="active" and p.p.distance_to(e.p)<best:
 			best=p.p.distance_to(e.p)

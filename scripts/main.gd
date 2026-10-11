@@ -76,6 +76,7 @@ var session: TideSession
 var sound: TideSound
 var rogue_field: Control
 var dev_ranges                            # 开发者模式判定框总览（`scripts/dev_ranges.gd`）
+var dev_ranges_mounted := false           # 只有开发者模式挂过覆盖层，`dev_panel_hover()` 的前置判断
 var rogue_panel: Control
 var rogue_signature := ""
 var rogue_panel_context := ""
@@ -300,12 +301,10 @@ func _ready() -> void:
 	rogue_field.session=session
 	rogue_field.visible=false
 	root.add_child(rogue_field)
-	# 开发者模式（环境变量 CRIMSON_DEV_RANGES，见 开发者模式启动.cmd）才创建判定框总览。
-	# 只读覆盖层：正式游玩时这一段根本不执行，`scripts/dev_ranges.gd` 见工作区上一层 任务.md。
-	if DevRanges.enabled():
-		dev_ranges=DevRanges.new()
-		dev_ranges.main=self
-		rogue_field.add_child(dev_ranges)
+	# 开发者模式（环境变量 CRIMSON_DEV_RANGES，见 开发者模式启动.cmd / KAIFAZHEMOSHI.md）才创建
+	# 判定框总览。只读覆盖层：正式游玩时这一段根本不执行，连节点都不建（路牌 §11.48）。
+	attach_dev_ranges(rogue_field,DevRanges.Mode.ROGUE)
+	attach_dev_ranges(field,DevRanges.Mode.EXPEDITION)
 	var serif := FontVariation.new()
 	serif.base_font=load("res://assets/NotoSerifSC.ttf")
 	serif.variation_embolden=0.55
@@ -417,6 +416,15 @@ func _ready() -> void:
 	if "--preview-game" in OS.get_cmdline_user_args():
 		session.solo(config())
 		session.launch(false,1729)
+	# 魔境（闯关）预览：直接开一局闯关，给开发者判定框覆盖层出图/试手感用（正式游玩不经过这里）。
+	if "--preview-rogue" in OS.get_cmdline_user_args():
+		var rogue_config := config()
+		rogue_config["mode"]="roguelike"
+		session.solo(rogue_config)
+		session.launch(false,1729)
+		var rogue_preview: Dictionary=session.players.get(session.my_id(),{})
+		if not rogue_preview.is_empty() and not rogue_preview.rogue_selection.is_empty():
+			session.perform(rogue_preview.id,"rogue_selection_take",{"id":rogue_preview.rogue_selection.id,"version":rogue_preview.rogue_selection.version,"index":0})
 	# Fills both containers so the dual-grid panel can be inspected without playing.
 	if "--preview-bag" in OS.get_cmdline_user_args():
 		session.solo(config())
@@ -436,7 +444,9 @@ func _ready() -> void:
 	if "--capture" in OS.get_cmdline_user_args():
 		await get_tree().create_timer(2.0).timeout
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://build/preview-"+page_name+".png")
+		# 魔境和搜打撤都落在 game 页，文件名按预览入口区分，免得互相覆盖。
+		var shot := "rogue" if "--preview-rogue" in OS.get_cmdline_user_args() else page_name
+		get_viewport().get_texture().get_image().save_png("res://build/preview-"+shot+".png")
 		get_tree().quit()
 
 func set_online_busy(value: bool) -> void:
@@ -915,6 +925,23 @@ func camp_drop_on_floor(entry: Dictionary) -> void:
 	camp.activities.drop_entry(entry,Vector2(randf_range(-42,42),randf_range(-30,30)))
 
 ## Builds the camp once, then only ever toggles it.
+## 开发者判定框覆盖层（`scripts/dev_ranges.gd`）：每个表现层宿主各挂一份，投影由宿主提供。
+## 没有 `CRIMSON_DEV_RANGES` 时直接返回——正式游玩零节点、零可见、零行为影响；同一宿主
+## 重复调用安全（挂过就跳过）。四个宿主：魔境 rogue_field / 搜打撤 field / 营地 camp / 故事 story_screen。
+func attach_dev_ranges(host: Node, host_mode: int) -> void:
+	if not DevRanges.enabled() or host == null or not is_instance_valid(host):
+		return
+	if host.has_meta("dev_ranges"):
+		return
+	var overlay := DevRanges.new()
+	overlay.main=self
+	overlay.mode=host_mode
+	host.add_child(overlay)
+	host.set_meta("dev_ranges",overlay)
+	dev_ranges_mounted=true
+	if host_mode==DevRanges.Mode.ROGUE:
+		dev_ranges=overlay
+
 func ensure_camp() -> Control:
 	if camp and not camp.is_queued_for_deletion():
 		return camp
@@ -934,6 +961,8 @@ func ensure_camp() -> Control:
 	camp.pack_requested.connect(toggle_camp_pack)
 	camp.notice_requested.connect(notice_popup)
 	# The camp floor hands a picked-up item to the same containers a raid loots into.
+	if DevRanges.enabled():
+		attach_dev_ranges(camp,DevRanges.Mode.CAMP)
 	if camp.activities:
 		camp.activities.item_receiver=func(entry: Dictionary) -> bool:
 			return camp_accept_ground_item(entry)
@@ -988,6 +1017,7 @@ func go_story(save_path: String = "") -> void:
 		root.add_child(story_screen)
 		story_screen.sound=sound
 		story_screen.exit_requested.connect(show_title)
+		attach_dev_ranges(story_screen,DevRanges.Mode.STORY)
 	var account_slot := "user://story-%s.json" % str(profile.data.name).sha256_text().substr(0,16)
 	story_screen.start(account_slot if save_path=="" else save_path)
 	sound.set_scene("camp")
@@ -1661,7 +1691,8 @@ func _process(dt: float) -> void:
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
 	var blocked: bool=inventory_open or modal or field.map_open or (controller.active and controller.pointer_mode(self)) or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
-	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim()),"fire_blocked":blocked or (not controller.active and mouse_over_button()),"fire":not blocked and Input.is_action_pressed("fire") and (controller.active or not mouse_over_button()),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and (Input.is_action_pressed("sprint") or controller.sprinting()),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
+	var dev_hover: bool=dev_panel_hover()
+	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim()),"fire_blocked":blocked or dev_hover or (not controller.active and mouse_over_button()),"fire":not blocked and not dev_hover and Input.is_action_pressed("fire") and (controller.active or not mouse_over_button()),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and (Input.is_action_pressed("sprint") or controller.sprinting()),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
 	if session.roguelike.active(session):
 		session.local_input["aim_point"]=session.players.get(session.my_id(),{}).get("p",Vector2.ZERO)+controller.direction*600.0 if controller.active else mouse_point()+rogue_field.camera_offset()
 	time_ui+=dt
@@ -1694,6 +1725,17 @@ func _process(dt: float) -> void:
 func mouse_over_button() -> bool:
 	var hovered := get_viewport().gui_get_hovered_control()
 	return hovered is Button
+
+## 开发者覆盖层（判定框总览）的面板是否吃掉了这次点击。勾选框本身是 Button（上面那个函数
+## 已经能认），但面板的空白处/滚动条不是，不挡的话"点一下面板"会顺带蓄力一刀。正式游玩时
+## 这个分组里一个节点都没有，函数恒为 false（见路牌 §11.48）。
+func dev_panel_hover() -> bool:
+	if not dev_ranges_mounted:
+		return false
+	for node in get_tree().get_nodes_in_group("dev_ranges"):
+		if node.has_method("captures_mouse") and node.captures_mouse():
+			return true
+	return false
 
 ## Is the bag controller listening to the mouse on this page? The rogue mode drives its own
 ## bag (`rogue_inventory.gd`), so this controller steps aside — but only **on the raid page**.

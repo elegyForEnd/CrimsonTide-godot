@@ -13,6 +13,34 @@ const Inventory = preload("res://scripts/story_inventory.gd")
 ## then the corpse fades out. Spawning is unaffected: `state.defeated` alone decides
 ## that, so a faded corpse never comes back.
 const CORPSE_LINGER := 10.0
+## 故事模式判定半径的单一真值（2026-10-11 从内联字面量收拢：开发者判定框覆盖层
+## `scripts/dev_ranges.gd` 的 STORY 批次必须读这里，别在别处再抄一份副本）。
+## ⚠️ 已知不同源（本轮只登记、不改数值，等用户拍板再统一）：
+##   · 提示门控 PROMPT_RADIUS(125) 与使用判定 OBJECT_USE(110) / CACHE_USE(130) /
+##     ENTRANCE_USE(150) / WAYPOINT_USE(160) 不一致 —— 110<d≤125 时提示出现但按 E 无效（待修）
+##   · 传送阵 HUD 按钮 WAYPOINT_BUTTON(150) 与激活/旅行 WAYPOINT_USE(160) 不一致
+##   · 传送阵视觉盘 120 / 立柱 147（story_environment.gd）与激活 160 不一致
+const PROMPT_RADIUS := 125.0
+const OBJECT_USE := 110.0
+const CACHE_USE := 130.0
+const ENTRANCE_USE := 150.0
+const WAYPOINT_USE := 160.0
+const WAYPOINT_BUTTON := 150.0
+const THREAT_BLOCK := 260.0
+const ENEMY_SLEEP := 900.0
+const ENEMY_CHASE := [300.0, 80.0]
+const ENEMY_STRIKE := [650.0, 120.0]
+const ENEMY_AOE := [380.0, 100.0]
+const ENEMY_SEPARATION := 95.0
+const ENEMY_RADIUS_INIT := 80.0
+const ALLY_SEEK := 350.0
+const ALLY_EVENT := 150.0
+const ALLY_FOLLOW := 80.0
+const HERO_ATTACK := [200.0, 580.0, 245.0]
+const HERO_SPECIAL := [430.0, 670.0]
+const HERO_MELEE_HIT := 80.0
+const BOSS_RING_INNER := 100.0
+const BOSS_CROSS_ARM := 65.0
 var inventory = Inventory.new(self)
 var content: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://resources/story_content.json"))
 var state: Dictionary={}
@@ -234,7 +262,7 @@ func spawn_enemy(pos: Vector2, type: int, id: String, boss: bool = false) -> voi
 	if id=="A3-S03": art="frostbone-dragon"
 	if id=="A5-S03": art="moon-leviathan"
 	if id=="exploration-guardian": art="earthsplitter" if state.act%2==1 else "thorn-huntsman"
-	enemies.append({"id":unique,"quest":id,"p":pos,"type":type,"hp":hp,"maxhp":hp,"boss":boss,"art":art,"cd":1.4+float(enemies.size()%4)*0.3,"windup":0.0,"target":pos,"shape":"circle","radius":80.0,"phase":0,"flash":0.0,"corpse_time":CORPSE_LINGER})
+	enemies.append({"id":unique,"quest":id,"p":pos,"type":type,"hp":hp,"maxhp":hp,"boss":boss,"art":art,"cd":1.4+float(enemies.size()%4)*0.3,"windup":0.0,"target":pos,"shape":"circle","radius":ENEMY_RADIUS_INIT,"phase":0,"flash":0.0,"corpse_time":CORPSE_LINGER})
 
 func ensure_encounter() -> void:
 	var q := current_main()
@@ -293,11 +321,11 @@ func objective_nodes() -> Array:
 	return result
 
 func interact_object(node: Dictionary) -> bool:
-	if hero_at.distance_to(node.p)>110: return false
+	if hero_at.distance_to(node.p)>OBJECT_USE: return false
 	var q: Dictionary=content.quests[node.id]
 	if not available(q) or step_count(q)!=node.step: return false
 	for e in enemies:
-		if e.hp>0 and (e.p.distance_to(node.p)<260 or (e.boss and node.step>=q.steps.size()-1)):
+		if e.hp>0 and (e.p.distance_to(node.p)<THREAT_BLOCK or (e.boss and node.step>=q.steps.size()-1)):
 			notice.emit("先解除附近威胁，再进行「%s」。" % node.label); return false
 	state.steps[q.id]=node.step+1
 	state.visited_objects[q.id]=node.step+1
@@ -351,13 +379,13 @@ func next_act() -> bool:
 	enter(a+1,0); return true
 
 func travel(a: int, s: int) -> bool:
-	if hero_at.distance_to(map.waypoint)>160 or not "%d:%d" % [a,s] in state.get("waypoints",["1:0"]): return false
+	if hero_at.distance_to(map.waypoint)>WAYPOINT_USE or not "%d:%d" % [a,s] in state.get("waypoints",["1:0"]): return false
 	enter(a,s); hero_at=map.waypoint+Vector2(0,100)
 	for i in 3: allies[i]=hero_at+Vector2((i-1)*50,65)
 	location_changed.emit(); return true
 
 func activate_waypoint() -> void:
-	if hero_at.distance_to(map.waypoint)>160: return
+	if hero_at.distance_to(map.waypoint)>WAYPOINT_USE: return
 	if not state.has("waypoints"): state["waypoints"]=["1:0"]
 	if not key() in state.waypoints: state.waypoints.append(key()); notice.emit("传送阵已激活，可在任意已激活传送阵之间旅行。")
 	save_campaign(); changed.emit()
@@ -376,7 +404,7 @@ func change_sector(s: int) -> void:
 	notice.emit("进入 "+(act_data().camp if s==0 else act_data().maps[s-1].name))
 
 func use_entrance(door: Dictionary) -> void:
-	if hero_at.distance_to(door.p)>150: return
+	if hero_at.distance_to(door.p)>ENTRANCE_USE: return
 	if door.kind=="exit":
 		var destination: Dictionary=map.return_door(int(state.stage))
 		if destination.is_empty(): return
@@ -394,7 +422,7 @@ func nearby_chests() -> Array:
 	return result
 
 func open_cache(item: Dictionary) -> bool:
-	if hero_at.distance_to(item.p)>130 or state.get("opened_chests",{}).has(item.id): return false
+	if hero_at.distance_to(item.p)>CACHE_USE or state.get("opened_chests",{}).has(item.id): return false
 	if not state.has("opened_chests"): state["opened_chests"]={}
 	state.opened_chests[item.id]=true; state.coins+=30+int(state.act)*12; grant_equipment(int(state.act))
 	changed.emit(); audio_cue.emit("chest"); save_campaign(); return true
@@ -484,9 +512,9 @@ func attack(aim: Vector2, special: int = 0) -> bool:
 		if state.hero==2: hero_at=map.move(hero_at,facing*180.0)
 	if special==2: ultimate_cd=24.0
 	audio_cue.emit("magic" if state.hero==1 else "slash")
-	var radius: float=200.0 if state.hero==0 else 580.0 if state.hero==1 else 245.0
-	if special==1: radius=430.0
-	if special==2: radius=670.0
+	var radius: float=float(HERO_ATTACK[clampi(int(state.hero),0,2)])
+	if special==1: radius=HERO_SPECIAL[0]
+	if special==2: radius=HERO_SPECIAL[1]
 	effects.append({"p":hero_at,"aim":facing,"time":0.36 if special<2 else 0.9,"total":0.36 if special<2 else 0.9,"kind":"attack","hero":state.hero,"special":special,"radius":radius})
 	combat_event.emit({"kind":"story_attack","p":hero_at,"aim":facing,"hero":int(state.hero),"id":int(state.hero),"special":special,"radius":radius})
 	if special==2:
@@ -499,7 +527,7 @@ func attack(aim: Vector2, special: int = 0) -> bool:
 	for e in enemies:
 		if e.hp<=0: continue
 		var delta: Vector2=e.p-hero_at
-		var in_arc: bool=special==2 or delta.length()<80 or delta.normalized().dot(facing)>(-0.1 if special==1 else 0.25)
+		var in_arc: bool=special==2 or delta.length()<HERO_MELEE_HIT or delta.normalized().dot(facing)>(-0.1 if special==1 else 0.25)
 		if delta.length()<=radius and in_arc and map.sight(hero_at,e.p):
 			hit(e,damage()*([1.0,2.3,5.0][special]),int(state.hero),hero_at)
 	return true
@@ -535,14 +563,14 @@ func update(dt: float, motion: Vector2) -> void:
 	for i in 3:
 		if i==state.hero: continue
 		var target := hero_at+Vector2(-90 if i==1 else 90,-95)
-		if allies[i].distance_to(target)>80: allies[i]=map.move(allies[i],steer("ally-%d" % i,allies[i],target)*300*dt)
+		if allies[i].distance_to(target)>ALLY_FOLLOW: allies[i]=map.move(allies[i],steer("ally-%d" % i,allies[i],target)*300*dt)
 	# Companions contribute steadily; their attacks do not bypass geometry.
 	if int(clock*2)!=int((clock-dt)*2):
 		for i in 3:
 			if i==state.hero: continue
 			for e in enemies:
-				if e.hp>0 and e.p.distance_to(allies[i])<350 and map.sight(allies[i],e.p):
-					combat_event.emit({"kind":"story_attack","p":allies[i],"aim":(Vector2(e.p)-Vector2(allies[i])).normalized(),"hero":i,"id":i,"special":0,"radius":150.0,"companion":true})
+				if e.hp>0 and e.p.distance_to(allies[i])<ALLY_SEEK and map.sight(allies[i],e.p):
+					combat_event.emit({"kind":"story_attack","p":allies[i],"aim":(Vector2(e.p)-Vector2(allies[i])).normalized(),"hero":i,"id":i,"special":0,"radius":ALLY_EVENT,"companion":true})
 					hit(e,damage(i)*0.30,i,allies[i]); break
 	for e in enemies:
 		if e.hp<=0:
@@ -553,31 +581,31 @@ func update(dt: float, motion: Vector2) -> void:
 			continue
 		e.flash=maxf(0,e.flash-dt)
 		var distance: float=e.p.distance_to(hero_at)
-		if distance>900: continue
+		if distance>ENEMY_SLEEP: continue
 		if e.windup>0:
 			e.windup-=dt
 			if e.windup<=0:
 				var diff: Vector2=hero_at-e.target
 				var caught: bool=diff.length()<e.radius
-				if e.shape=="ring": caught=diff.length()>100 and diff.length()<e.radius
-				if e.shape=="cross": caught=(absf(diff.x)<65 or absf(diff.y)<65) and diff.length()<e.radius
+				if e.shape=="ring": caught=diff.length()>BOSS_RING_INNER and diff.length()<e.radius
+				if e.shape=="cross": caught=(absf(diff.x)<BOSS_CROSS_ARM or absf(diff.y)<BOSS_CROSS_ARM) and diff.length()<e.radius
 				if caught and hurt_time<=0 and dodge_time<=0:
 					state.hp-=maxf(3,(25 if e.boss else 9)+int(state.act)*4-int(state.gear.armor)*2)
 					hurt_time=0.55; changed.emit()
 					effects.append({"p":e.target,"time":0.3,"total":0.3,"kind":"impact","radius":e.radius,"hero":0,"special":0,"aim":Vector2.RIGHT})
 		else:
 			e.cd-=dt
-			if distance>(300 if e.boss else 80):
+			if distance>(ENEMY_CHASE[0] if e.boss else ENEMY_CHASE[1]):
 				var direction: Vector2=steer(e.id,e.p,hero_at)
 				for other in enemies:
 					if other==e or other.hp<=0: continue
 					var separation: Vector2=e.p-other.p
-					if separation.length()<95 and separation.length()>0.1: direction+=separation.normalized()*(1.0-separation.length()/95)*2.0
+					if separation.length()<ENEMY_SEPARATION and separation.length()>0.1: direction+=separation.normalized()*(1.0-separation.length()/ENEMY_SEPARATION)*2.0
 				e.p=map.move(e.p,direction.limit_length(1.0)*(65 if e.boss else 105)*dt)
-			if e.cd<=0 and distance<(650 if e.boss else 120):
+			if e.cd<=0 and distance<(ENEMY_STRIKE[0] if e.boss else ENEMY_STRIKE[1]):
 				e.cd=2.8 if e.boss else 1.7
 				e.windup=1.15 if e.boss else 0.55
-				e.target=hero_at; e.radius=380.0 if e.boss else 100.0
+				e.target=hero_at; e.radius=ENEMY_AOE[0] if e.boss else ENEMY_AOE[1]
 				if e.boss:
 					e.phase=mini(2,int((1.0-e.hp/e.maxhp)*3))
 					e.shape=["circle","ring","cross"][(int(clock/2)+int(e.phase))%3]

@@ -141,6 +141,12 @@ func project(p: Vector2) -> Vector2:
 	return camp_camera.unproject_position(point(p))
 
 
+## 带地面高度的投影（开发者覆盖层用）：与 `project()` 同一个点，但抬到脚下那块石板
+## （`ground_height()`）的顶面上。家园有台阶/台基，用 `project()` 画的圈会整块沉下去。
+func project_ground(p: Vector2) -> Vector2:
+	return camp_camera.unproject_position(point(p, ground_height(p)))
+
+
 func unproject(screen: Vector2) -> Vector2:
 	var hit: Variant = Plane(Vector3.UP, 0).intersects_ray(
 		camp_camera.project_ray_origin(screen), camp_camera.project_ray_normal(screen))
