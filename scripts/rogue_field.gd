@@ -250,8 +250,10 @@ func _draw() -> void:
 		var texture: Texture2D=art.boss_animation(int(corpse.get("boss_art",corpse.floor)),11,int(corpse.floor)).texture
 		var h := 255.0
 		var w: float=h*texture.get_width()/texture.get_height()
+		# 只有最后 CORPSE_FADE 秒淡出，之前保持满不透明；旧尸体条目缺 fade 时按 2 秒兜底。
+		var fade: float=clampf(corpse.time/maxf(0.01,float(corpse.get("fade",2.0))),0.0,1.0)
 		draw_set_transform(corpse.p-camera_offset(),0,Vector2(corpse.facing,1))
-		draw_texture_rect(texture,Rect2(-w/2,-h,w,h),false,Color(1.0,0.65,0.65,corpse.time/corpse.total))
+		draw_texture_rect(texture,Rect2(-w/2,-h,w,h),false,Color(1.0,0.65,0.65,fade))
 		draw_set_transform(-camera_offset())
 	var actors: Array=session.enemies.duplicate()
 	actors.append_array(session.players.values())
