@@ -895,6 +895,7 @@ git status --porcelain
 
 | 日期 | 提交 | 更新内容 |
 |---|---|---|
+| 2026-10-11 | （本轮修复） | **洞窟卡顿根治**：第一幕天然洞窟有 965 个遮挡物，`story_environment.gd` `sync()` 每帧对每个都调 `story_asset_kit.gd` `reveal()`，而后者每次做一次 `find_children()` 全树遍历 + 逐面扫描 shader 源码，实测 `env.sync` 19.8ms/帧（野外 5.4ms）→ 改为每节点只扫描一次「带 `instance uniform float reveal` 的面」并缓存、淡出值未变则跳过 RenderingServer、无淡出面节点记为已扫描；遮挡循环里每帧重复 963 次的 `world.project(focus)` 提到循环外并加距离/高度廉价前置判断；换区与 `release_resources()` 清缓存。`env.sync` 19.8→2.4ms，实测整帧 22.6→4.5ms，4K 基准行走 mean 18.10→11.99ms、战斗 19.89→16.60ms。**尸体时长统一**：故事战役新增 `story_campaign.gd` `CORPSE_LINGER=10.0`，死亡当帧起算、最后 2 秒淡出、到期这一帧才从 `enemies` 移除（`state.defeated` 不变，尸体不会复活）；搜打撤与魔境共用 `session.gd` `CORPSE_LINGER=10.0`/`CORPSE_FADE=2.0`（原 0.55/1.6s 与 1.2s），`draw_special_boss` 改由 `fallen` 选死亡帧，慢淡出不再把尸体演回活体姿势。守门：`tests/story_corpse_linger.gd`（13项）、`tests/probe_reveal_behaviour.gd`（9项）；story 回归 2646/180/478/12/748 项全 0 失败。 |
 | 2026-10-10 | 见同批提交 | v7重做30副本为空间类型驱动的布局：22类型、不同包络/空间数/高差轴/边界语言，庭院、甬道、岩腔、环塔、扇形剧场与水槽跨桥；新增真实轮廓图集、缓存/发布身份验证与具体地图试玩。更新§4.S/§5/§10；模型库与73任务保留，长跑暂缓。 |
 | 2026-10-10 | 见同批提交 | 重做30副本与19室外轮廓，34新Blender模块；共用房间图/空洞/高程/碰撞/敌群/探索图，补全49区GI与临时副本试玩；保留地图ID和73任务，长时间跑分暂缓。详见DUNGEON-EXPLORATION.md及TEST-REPORT。 |
 | 2026-10-10 | 见同批提交 | 二至六幕84个新模型、17套新PBR、15份地形、45个可编辑区域与GI烘焙，十种额外副本题材；跨幕释放美术缓存与独立临时试玩入口；地图ID/73任务保持一致，详见ACTS-2-6-ART.md及TEST-REPORT。 |

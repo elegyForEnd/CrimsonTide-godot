@@ -94,6 +94,14 @@ var dragon_boss = preload("res://scripts/dragon_boss.gd").new()
 
 const SEARCH_SECONDS_BY_TIER := [0.55,0.8,1.1,1.45,1.9,2.4]
 const SEARCH_RANGE := 86.0
+## 击败后尸体留在场上的时长与淡出时长，搜打撤与魔境共用唯一真值。故事战役另有
+## 同名真值（story_campaign.gd CORPSE_LINGER）。尸体只是遗留表现，掉落与奖励在死亡
+## 当帧结算，改这两个值不会改变任何收益、刷新或碰撞规则。
+##
+## 刻意是 static：表现层（battlefield.gd / rogue_combat.gd）直接取常量，不经过
+## session 实例，测试替身（tests/rogue_boss_pool.gd 的 StubSession）因此不需要实现它。
+const CORPSE_LINGER := 10.0
+const CORPSE_FADE := 2.0
 ## 互动判定半径的单一真值——提示（main.gd / battlefield.gd）与判定（本文件 / roguelike.gd）
 ## 都从这里取，改任何判定半径先改这里（PROJECT-GUIDE §4.R.1）。注意 `SEARCH_RANGE` 仍是
 ## "搜索中途离开"的宽限（必须 ≥ SEARCH_RADIUS），不要拿来当提示圈。

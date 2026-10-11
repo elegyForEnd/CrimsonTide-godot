@@ -9,6 +9,10 @@ signal quest_event(kind: String, id: String)
 signal combat_event(data: Dictionary)
 const Map = preload("res://scripts/story_map.gd")
 const Inventory = preload("res://scripts/story_inventory.gd")
+## A defeated enemy keeps its body (and its loot point) on the field for this long,
+## then the corpse fades out. Spawning is unaffected: `state.defeated` alone decides
+## that, so a faded corpse never comes back.
+const CORPSE_LINGER := 10.0
 var inventory = Inventory.new(self)
 var content: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://resources/story_content.json"))
 var state: Dictionary={}
@@ -230,7 +234,7 @@ func spawn_enemy(pos: Vector2, type: int, id: String, boss: bool = false) -> voi
 	if id=="A3-S03": art="frostbone-dragon"
 	if id=="A5-S03": art="moon-leviathan"
 	if id=="exploration-guardian": art="earthsplitter" if state.act%2==1 else "thorn-huntsman"
-	enemies.append({"id":unique,"quest":id,"p":pos,"type":type,"hp":hp,"maxhp":hp,"boss":boss,"art":art,"cd":1.4+float(enemies.size()%4)*0.3,"windup":0.0,"target":pos,"shape":"circle","radius":80.0,"phase":0,"flash":0.0})
+	enemies.append({"id":unique,"quest":id,"p":pos,"type":type,"hp":hp,"maxhp":hp,"boss":boss,"art":art,"cd":1.4+float(enemies.size()%4)*0.3,"windup":0.0,"target":pos,"shape":"circle","radius":80.0,"phase":0,"flash":0.0,"corpse_time":CORPSE_LINGER})
 
 func ensure_encounter() -> void:
 	var q := current_main()
@@ -510,6 +514,7 @@ func hit(e: Dictionary, amount: float, source_hero: int=-1, source_at: Vector2=V
 		combat_event.emit({"kind":"spell_arc","p":source_at,"target":Vector2(e.p),"hero":hero,"id":hero,"weapon_index":5,"aim":(Vector2(e.p)-source_at).normalized()})
 	if e.hp<=0:
 		audio_cue.emit("death")
+		e.corpse_time=CORPSE_LINGER
 		state.defeated[e.id]=true
 		state.xp+=30 if not e.boss else 300
 		state.coins+=6 if not e.boss else 100
@@ -540,7 +545,12 @@ func update(dt: float, motion: Vector2) -> void:
 					combat_event.emit({"kind":"story_attack","p":allies[i],"aim":(Vector2(e.p)-Vector2(allies[i])).normalized(),"hero":i,"id":i,"special":0,"radius":150.0,"companion":true})
 					hit(e,damage(i)*0.30,i,allies[i]); break
 	for e in enemies:
-		if e.hp<=0: continue
+		if e.hp<=0:
+			# Defeated enemies stop acting, but their body keeps a countdown so a cleared
+			# room reads clean again after CORPSE_LINGER. The defeated id stays in the
+			# save, so the corpse never returns.
+			e.corpse_time=maxf(0.0,float(e.get("corpse_time",CORPSE_LINGER))-dt)
+			continue
 		e.flash=maxf(0,e.flash-dt)
 		var distance: float=e.p.distance_to(hero_at)
 		if distance>900: continue
@@ -575,6 +585,9 @@ func update(dt: float, motion: Vector2) -> void:
 	for i in range(effects.size()-1,-1,-1):
 		effects[i].time-=dt
 		if effects[i].time<=0: effects.remove_at(i)
+	# One compaction pass instead of removing inside the loop above.
+	if enemies.any(func(e): return e.hp<=0 and float(e.get("corpse_time",0.0))<=0.0):
+		enemies=enemies.filter(func(e): return e.hp>0 or float(e.get("corpse_time",0.0))>0.0)
 	if state.hp<=0:
 		state.hp=max_hp(); enter(int(state.act),0)
 		notice.emit("小队将你带回营地。已完成任务和物品保留，未完成交战从入口继续。")

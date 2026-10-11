@@ -3,6 +3,8 @@ extends Node2D
 var input_hint: Callable
 const WorldPresentation = preload("res://scripts/world_3d.gd")
 const Idle = preload("res://scripts/character_idle.gd")
+# 尸体时长真值所在（Session.CORPSE_LINGER / CORPSE_FADE），只在脚本级取常量。
+const Session = preload("res://scripts/session.gd")
 var idle = Idle.new()
 var idle_billboards = preload("res://scripts/character_idle_billboards.gd").new()
 var world_3d: Node3D
@@ -114,6 +116,7 @@ func _ready() -> void:
 		if event.kind=="enemy_defeated":
 			var fallen := event.duplicate()
 			fallen["age"]=0.0
+			fallen["fade"]=float(Session.CORPSE_FADE)
 			defeated_enemies.append(fallen))
 	session.map_changed.connect(func(): chest_sync_timer=0.0; waypoint=Vector2(-1,-1); explored.clear(); defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); camera=session.players.get(session.my_id(),{"p":RoyalCity.GATE}).p)
 	session.started.connect(func(): chest_sync_timer=0.0; boss_seen.clear(); boss_health.clear(); waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
@@ -129,9 +132,10 @@ func _process(dt: float) -> void:
 		if not boss_seen.has(e.id): boss_seen[e.id]=clock
 		var ratio: float=clampf(e.hp/e.max_hp,0,1)
 		boss_health[e.id]=move_toward(float(boss_health.get(e.id,ratio)),ratio,dt*0.35)
+	var linger: float=float(Session.CORPSE_LINGER)
 	for i in range(defeated_enemies.size()-1,-1,-1):
 		defeated_enemies[i].age+=dt
-		if defeated_enemies[i].age>=(1.6 if defeated_enemies[i].get("boss_kind",-1)>=0 else 0.55):
+		if defeated_enemies[i].age>=linger:
 			defeated_enemies.remove_at(i)
 	var p: Dictionary=session.players.get(session.my_id(),{})
 	if not p.is_empty():
@@ -279,17 +283,20 @@ func _draw() -> void:
 				draw_texture_rect(loot_icons[Catalog.item_icon(item)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
 				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
 	for fallen in defeated_enemies:
+		# Each record carries its own fade length so the drawn alpha never depends on
+		# mutable session state or on the draw pass recomputing the timing.
+		var fade: float=clampf(1.0-fallen.age/maxf(0.01,float(fallen.get("fade",0.55))),0.0,1.0)
 		if int(fallen.get("boss_kind",-1))>=0:
 			var kind: int=clampi(int(fallen.boss_kind),0,2)
 			if fallen.get("mini_boss",false) or fallen.get("final_form",false) or fallen.get("abyss_final",false):
-				draw_special_boss(fallen,1-fallen.age/1.6)
+				draw_special_boss(fallen,fade)
 			else:
 				set_world_transform(fallen.p,0,Vector2(fallen.facing,1))
-				draw_billboard_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,1-fallen.age/1.6))
+				draw_billboard_region(boss_frames.sheets[kind],boss_frames.sprite_rect(kind),BossFrames.region(11),Color(1,1,1,fade))
 				set_world_transform()
 			continue
 		set_world_transform(fallen.p,0,Vector2(fallen.facing,1))
-		draw_billboard_region(enemy_frames.sheets[int(fallen.type)],EnemyFrames.sprite_rect(int(fallen.type)),enemy_frames.region(11),Color(1,1,1,1-fallen.age/0.55))
+		draw_billboard_region(enemy_frames.sheets[int(fallen.type)],EnemyFrames.sprite_rect(int(fallen.type)),enemy_frames.region(11),Color(1,1,1,fade))
 		set_world_transform()
 	if not world.interior:
 		draw_raid_world()
@@ -725,15 +732,18 @@ func draw_special_boss(e: Dictionary, alpha: float = 1.0) -> void:
 	set_world_transform(pos,0,Vector2(float(e.get("facing",1)),1))
 	var appearance: float=0.26 if index==3 and e.has("travel_target") else 0.68 if index==4 and e.has("travel_target") else 1.0
 	var tint := Color(1.45,1.3,1.3,alpha*appearance) if float(e.get("flash",0))>0 else Color(1,1,1,alpha*appearance)
-	var frame := 11 if alpha<1.0 else BossFrames.pose(e,clock)
-	if alpha>=1.0:
+	# The corpse keeps its death frame for the whole linger and only fades; the living
+	# pose is chosen by `fallen`, not by alpha, so a slow fade cannot re-animate it.
+	var fallen: bool=e.has("age")
+	var frame := 11 if fallen else BossFrames.pose(e,clock)
+	if not fallen:
 		var body_pose: Dictionary=session.enemy_bodies.pose(e,session.elapsed,false)
 		set_world_transform(pos+Vector2(0,float(body_pose.hover)),0,Vector2(float(body_pose.facing),1))
 		draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
 	else:
 		draw_billboard_region(tex,sprite,BossFrames.region(frame),tint)
 	set_world_transform()
-	if alpha>=1.0:
+	if not fallen:
 		set_actor_overlay(pos)
 		label(pos+Vector2(-width/2,-height-12),str(e.get("boss_name","")),13,color)
 		var bar := 110.0 if index==2 else 85.0

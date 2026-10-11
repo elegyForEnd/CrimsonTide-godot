@@ -5,6 +5,11 @@ const FOLIAGE = preload("res://resources/story_foliage.gdshader")
 const OCCLUSION = preload("res://resources/story_occlusion.gdshader")
 var scenes: Dictionary={}
 var materials: Dictionary={}
+# Per-occluder cache of the surfaces that carry the occlusion `reveal` instance uniform.
+var reveal_cache: Dictionary={}
+func release_reveal_cache() -> void:
+	reveal_cache.clear()
+
 var vendor_tree_mesh: Mesh
 var vendor_tree_transform := Transform3D.IDENTITY
 func refresh_tree(root: Node3D) -> void:
@@ -125,12 +130,36 @@ func prepare_reveal(root: Node3D) -> void:
 func reveal(root: Node3D, amount: float) -> void:
 	root.visible=amount>.001
 	if RenderingServer.get_current_rendering_method()=="gl_compatibility": return
-	for mesh in mesh_nodes(root):
-		var supported := false
-		for i in mesh.mesh.get_surface_count():
-			var mat: Material=mesh.get_active_material(i)
-			if mat is ShaderMaterial and "instance uniform float reveal" in mat.shader.code: supported=true; break
-		if supported: mesh.set_instance_shader_parameter("reveal",amount)
+	# Occluder reveal used to be the dominant per-frame cost in dense interiors: the
+	# first-act cavern carries ~960 occluders and every one of them paid a tree walk
+	# plus a shader-source scan on every frame. Two caches make it O(1) per node:
+	#   * the surfaces that actually carry the instance uniform are discovered once;
+	#   * an unchanged amount skips RenderingServer entirely.
+	# Amounts below the visibility epsilon are pinned to 0.0, so a hidden occluder that
+	# is fading in cannot be mistaken for one already at its target.
+	if amount<=0.004: amount=0.0
+	var fade: Dictionary=reveal_cache.get(root,{})
+	if not fade.is_empty():
+		for mesh in fade.values():
+			if not is_instance_valid(mesh): fade.clear(); break
+	if fade.is_empty():
+		for mesh in mesh_nodes(root):
+			var supported := false
+			for i in mesh.mesh.get_surface_count():
+				var mat: Material=mesh.get_active_material(i)
+				if mat is ShaderMaterial and "instance uniform float reveal" in mat.shader.code: supported=true; break
+			if not supported: continue
+			fade[mesh.get_instance_id()]=mesh
+			mesh.set_instance_shader_parameter("reveal",amount)
+			mesh.set_meta("reveal_amount",amount)
+		# A scanned node with no fade surfaces is remembered as scanned, not re-walked.
+		if fade.is_empty(): reveal_cache[root]={}
+		else: reveal_cache[root]=fade
+		return
+	for mesh in fade.values():
+		if is_equal_approx(float(mesh.get_meta("reveal_amount",-2.0)),amount): continue
+		mesh.set_instance_shader_parameter("reveal",amount)
+		mesh.set_meta("reveal_amount",amount)
 
 func mesh_nodes(root: Node3D) -> Array:
 	var found: Array=root.find_children("*","MeshInstance3D",true,false)
