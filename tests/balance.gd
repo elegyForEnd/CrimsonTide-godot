@@ -34,20 +34,20 @@ func run() -> void:
 	s.solo({"hero":0})
 	s.launch(false,1729)
 	s.set_physics_process(false)
-	check(s.duration==300,"Every exploration day lasts five minutes")
+	check(s.day_duration()==660.0,"Day one exploration lasts eleven minutes")
 	var full := s.safe_radius()
-	s.raid.time=179.99
-	check(s.can_travel() and is_equal_approx(s.safe_radius(),full),"No shrink before minute three")
-	s.raid.time=180
-	check(not s.can_travel() and is_equal_approx(s.safe_radius(),full),"Travel closes exactly at minute three")
-	s.raid.time=240
-	check(is_equal_approx(s.safe_radius(),(full+540)/2),"Circle reaches halfway at minute four")
-	s.raid.time=299.99
-	check(s.raid.phase=="explore","Exploration remains open before minute five")
+	s.raid.time=395.99
+	check(s.can_travel() and is_equal_approx(s.safe_radius(),full),"No shrink before the 6.6-minute mark")
+	s.raid.time=396
+	check(not s.can_travel() and is_equal_approx(s.safe_radius(),full),"Travel closes exactly at the shrink start")
+	s.raid.time=528
+	check(is_equal_approx(s.safe_radius(),(full+540)/2),"Circle reaches halfway through the shrinking window")
+	s.raid.time=659.99
+	check(s.raid.phase=="explore","Exploration remains open before the eleven-minute mark")
 	s.expedition.tick(s,0.01)
-	check(s.raid.phase=="boss" and is_equal_approx(s.safe_radius(),540),"Minute five finishes shrinking and starts boss")
+	check(s.raid.phase=="boss" and is_equal_approx(s.safe_radius(),540),"Eleven minutes finishes shrinking and starts boss")
 	s.launch(true,1729)
-	check(s.duration==300,"Legacy long-run callers also use five minutes")
+	check(s.duration==660.0,"Legacy long-run callers also start at day-one length")
 	var tiers := {}
 	for e in s.enemies:
 		# Bosses can survive the preceding phase or occupy a habitat, but do not

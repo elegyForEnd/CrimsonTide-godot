@@ -62,6 +62,11 @@ func prepare_day(s, day: int) -> void:
 	s.raid.day=day
 	s.raid.time=0.0
 	s.raid.phase="explore"
+	# 逐天时长唯一真值：写进随快照同步的 raid.day_duration，并镜像到 session.duration
+	#（供仍读旧变量的逻辑使用）。Day3 比 Day1/Day2 短，客户端必须靠 raid 同步才不会缩圈错位。
+	var day_length: float=float(s.DAY_DURATIONS[clampi(day-1,0,s.DAY_DURATIONS.size()-1)])
+	s.raid.day_duration=day_length
+	s.duration=day_length
 	s.raid.kind=roll_dawn_kind(s,day)
 	s.raid.center=arena(s)
 	s.raid.hazards=[]
@@ -155,9 +160,9 @@ func tick(s, dt: float) -> void:
 	s.raid.time+=dt
 	if s.raid.phase=="explore":
 		# Close the optional dungeon before fog starts, so it cannot bypass dawn.
-		if s.raid.time>=s.SHRINK_START and s.map_id=="city":
+		if s.raid.time>=s.shrink_start() and s.map_id=="city":
 			s.travel_city(true)
-		if s.raid.time>=s.duration:
+		if s.raid.time>=s.day_duration():
 			spawn_boss(s)
 	update_hazards(s,dt)
 
@@ -168,7 +173,7 @@ func spawn_boss(s, final_form: bool = false) -> void:
 		s.raid.final_spawned=true
 		s.raid.hazards.clear()
 	s.raid.phase="boss"
-	s.raid.time=s.duration
+	s.raid.time=s.day_duration()
 	s.bullets.clear()
 	# No extra spawn pass: the boss must appear at exactly the marked centre.
 	var count := 0
