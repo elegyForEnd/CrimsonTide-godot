@@ -458,3 +458,13 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 增量发布使用v10小引导EXE + Inventory-v10.pck + 现有v9底包。实际嵌入运行入口启动、挂载、73任务与9件装备/9件行囊检查；旧模板不支持--main-pack，故使用内嵌小引导，初始化声音总线和图标，避免音频/窗口错误。
 - 原生发布版截图与日志：build/story-items-release.png / story-items-release-forward.png，output/story-items-release-gl-final.log/.err 与 story-items-release-forward-final.log/.err。正式运行入口Start-Story-GUI.cmd；Preview-Inventory和Preview-Quests均不保存。
 - 无长时间帧率/显存测试，不声明4K60。交易是战役NPC买卖，未实现玩家之间联网交易、耐久修理或赌博。
+
+
+## 2026-10-11 · Galgame剧情对话 v12
+
+- story_dialogue：无头210/0；Forward+与Compatibility实际控件各214/0。覆盖77份正文无损拆页、36个营地路由、鼠标/空格、自动/已读快进/回看、显式选择、治疗、1920缩放商店入口、未准备救援拒绝、完成奖励幂等、阅读记录恢复及离开清理。日志output/galgame-{rules,forward,compat}-final.log；GPU各4张实景图。
+- 原战役story_campaign 180/0，集成story_integration 12/0。原任务UI补查最终34/0（galgame-quests-repeat.log）；首次34/1为分类点击未命中，保留失败日志。计入最终各组，共864项0失败，未据此声明全仓库检查通过。
+- 官方Godot导出将脚本编译为gdc，白名单补丁仅收三份脚本及remap；v12原生入口在Forward+与Compatibility均实际加载八页岑烬开场并拍摄build/galgame-native-v12.png，galgame-native-{forward,compat}-final.log；Compatibility stderr为空。初次plaintext覆盖仍被旧remap指向旧代码，实际截图发现后改成编译补丁，最终页数8、截图成功；前面失败日志保留，不当作通过证据。
+- Forward+仍有既有7 Texture RID退出警告；不是长时间性能/4K60验收。保留原角色和NPC岗位图，不含新表情、嘴型、全篇语音、CG，也没有改造闯关/远征的剧情系统。
+
+- 项目路牌805锚点：OK523 / DRIFT0 / WRONG0 / HINT282；git diff --check通过。本地提交白名单只包含本轮对话功能，原3D Boss实验文件仍保留为未提交工作。

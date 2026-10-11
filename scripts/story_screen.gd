@@ -25,6 +25,9 @@ var move_target := Vector2.INF
 var photo_mode := false
 var quest_fx: Control
 var combat_fx: Node2D
+var dialogue: Control
+var dialogue_read: Dictionary={}
+var dialogue_history: Array=[]
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -87,6 +90,7 @@ func _ready() -> void:
 func start(save_path: String = "") -> void:
 	if "--preview-items" in OS.get_cmdline_user_args() or "--preview-quests" in OS.get_cmdline_user_args(): campaign.save_enabled=false
 	campaign.load_campaign(save_path)
+	load_dialogue_read()
 	var art_preview := false
 	# Explicit art-preview launchers are transient, separate from campaign saves.
 	if "--preview-story" in OS.get_cmdline_user_args():
@@ -138,6 +142,7 @@ func set_active(value: bool) -> void:
 	if not value and not campaign.state.is_empty(): campaign.save_campaign()
 	if not value and is_instance_valid(quest_fx): quest_fx.clear()
 	if not value and is_instance_valid(combat_fx): combat_fx.reset()
+	if not value and is_instance_valid(dialogue): close_panel()
 
 func label(parent: Node, text: String, at: Vector2, extent: Vector2, font_size: int = 18) -> Label:
 	var node := Label.new(); node.text=text; node.position=at; node.size=extent
@@ -177,6 +182,7 @@ func _physics_process(dt: float) -> void:
 		else: motion=campaign.steer("player",campaign.hero_at,move_target)
 	if Input.is_action_pressed("sprint"): motion*=1.3
 	campaign.update(dt,motion)
+	if modal: return
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not get_viewport().gui_get_hovered_control() is Button:
 		campaign.attack(aim)
 
@@ -252,6 +258,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			var destination: Vector2=world.unproject(get_global_transform_with_canvas()*get_local_mouse_position())
 			if campaign.map.walkable(destination): move_target=destination; campaign.routes.erase("player")
 	if not active or not event is InputEventKey or not event.pressed or event.echo: return
+	if is_instance_valid(dialogue):
+		dialogue.handle_key(event)
+		get_viewport().set_input_as_handled(); return
 	if event.keycode==KEY_ESCAPE:
 		if modal: close_panel()
 		else: show_menu()
@@ -283,6 +292,8 @@ func panel(title: String) -> Control:
 func close_panel() -> void:
 	for child in overlay.get_children(): overlay.remove_child(child); child.queue_free()
 	modal=false; journal_open=false
+	dialogue=null
+	if hud: hud.visible=not photo_mode
 
 func text_block(parent: Control, text: String, at: Vector2, extent: Vector2) -> RichTextLabel:
 	var node := RichTextLabel.new(); node.position=at; node.size=extent; node.text=text
@@ -298,46 +309,60 @@ func row_button(column: VBoxContainer, text: String, action: Callable) -> Button
 	var node := Button.new(); node.text=text; node.custom_minimum_size=Vector2(880,42); node.alignment=HORIZONTAL_ALIGNMENT_LEFT
 	node.pressed.connect(action); column.add_child(node); return node
 
-func show_chapter(title: String, body: String) -> void:
-	var back := panel(title)
-	text_block(back,body,Vector2(35,80),Vector2(930,480))
-	button(back,"记入日志 · 继续",Vector2(720,600),Vector2(245,44),func():
+func load_dialogue_read() -> void:
+	dialogue_read={}; dialogue_history=[]
+	var data=JSON.parse_string(FileAccess.get_file_as_string(campaign.path+".dialogue-read.json")) if FileAccess.file_exists(campaign.path+".dialogue-read.json") else []
+	if data is Array:
+		for key in data:
+			if key is String and key.length()==64: dialogue_read[key]=true
+
+func save_dialogue_read() -> void:
+	if not campaign.save_enabled: return
+	var keys: Array=dialogue_read.keys()
+	if keys.size()>4096: keys=keys.slice(keys.size()-4096)
+	var file=FileAccess.open(campaign.path+".dialogue-read.json",FileAccess.WRITE)
+	if file: file.store_string(JSON.stringify(keys))
+
+func show_dialogue(title: String, pages: Array, choices: Array = [], after: Callable = Callable()) -> void:
+	close_panel(); modal=true; move_target=Vector2.INF; hud.hide()
+	dialogue=preload("res://scripts/story_dialogue_ui.gd").new()
+	dialogue.screen=self; dialogue.title=title; dialogue.pages=pages; dialogue.choices=choices
+	dialogue.portraits=["hero:%d" % int(campaign.state.hero),"hero:%d" % ((int(campaign.state.hero)+1)%3)]
+	dialogue.finished.connect(func():
 		close_panel()
+		if after.is_valid(): after.call())
+	overlay.add_child(dialogue)
+
+func show_chapter(title: String, body: String) -> void:
+	show_dialogue(title,preload("res://scripts/story_dialogue_data.gd").chapter(body,campaign.content),[],func():
 		if title==campaign.content.quests["A6-M06"].title and "A6-M06" in campaign.state.completed and not "E-M01" in campaign.state.completed: show_final_choice()
 		elif title==campaign.content.quests["E-M01"].title and "E-M01" in campaign.state.completed: show_endings())
 
 func show_npc(index: int) -> void:
-	if index==2: show_items("forge"); return
-	if index==4: show_items("shop"); return
-	if index==5: show_bag(true); return
 	var person: String=npc_name(index)
-	var back := panel(person+" · "+["地区委托","治疗","锻造","故事资料","交易","仓库"][index])
-	var lines: Array=["南门连着原野，沿小径能找到遗迹和传送阵。人们还在等着灯亮，我会替你们保留回来的路。","先把灯放下，休息一会儿。你们不用把每一次伤都藏起来。","工具和刃都要有人照顾。带回来的材料可以强化招式，也可以重新整理专精。","记录是为了让后来的人看清发生过什么。这里保留着你们已查证的档案。","药剂一直有备货。别为了带更多东西，把回来的力气也卖掉。","放在这里的物品会保留下来。行囊满了，章节装备也会替你们收好。"]
-	var sheet: Texture2D=load("res://assets/story/npc-atlas-v1.png")
-	var portrait := TextureRect.new(); portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var portrait_texture := AtlasTexture.new(); portrait_texture.atlas=sheet; var cell := sheet.get_size()/Vector2(3,2)
-	portrait_texture.region=Rect2(Vector2(index%3,int(index/3))*cell,cell); portrait.texture=portrait_texture
-	portrait.position=Vector2(30,76); portrait.size=Vector2(108,144); portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE; back.add_child(portrait)
-	label(back,"「%s」" % lines[index],Vector2(164,91),Vector2(774,113),20)
-	var column := list_area(back)
-	column.get_parent().position.y=236; column.get_parent().size.y=335
+	var options: Array=[]
 	var q := campaign.current_main()
 	if index==0:
-		if "A6-M06" in campaign.state.completed and not "E-M01" in campaign.state.completed: row_button(column,"破冠后的选择 · 再确认女王救援",show_final_choice)
-		if not q.is_empty(): row_button(column,"当前主线：「%s」 · %s" % [q.title,q.description],func(): show_chapter(q.title,q.description+"\n\n"+"\n".join(q.steps)))
+		if "A6-M06" in campaign.state.completed and not "E-M01" in campaign.state.completed: options.append({"text":"破冠后的选择 · 再确认女王救援","action":show_final_choice})
+		if not q.is_empty(): options.append({"text":"询问主线 · "+q.title,"action":func(): show_chapter(q.title,q.description+"\n\n"+"\n".join(q.steps))})
 		if campaign.state.act<6 and "A%d-M06" % campaign.state.act in campaign.state.completed:
-			row_button(column,"报告本幕结果 · 乘交通前往下一幕营地",func(): close_panel(); campaign.next_act())
-	if index==1: row_button(column,"休息与补给 · 免费恢复生命，药剂至少补至5瓶",func(): campaign.service("heal"); toast("伤口已处理，晨灯仍亮着。"))
+			options.append({"text":"报告本幕结果 · 前往下一幕营地","action":func(): close_panel(); campaign.next_act()})
+	if index==1: options.append({"text":"休息与补给 · 免费治疗","action":func(): campaign.service("heal"); close_panel(); toast("伤口已处理，晨灯仍亮着。")})
+	if index==2: options.append({"text":"检查装备 · 打造与锻造","action":func(): show_items("forge")})
 	if index==3:
-		row_button(column,"查看地区与个人日志",show_journal)
-		row_button(column,"王国前史与三位守望者",func(): show_chapter("王国档案",campaign.content.history))
+		options.append({"text":"查看地区与个人日志","action":show_journal})
+		options.append({"text":"王国前史与三位守望者","action":func(): show_chapter("王国档案",campaign.content.history)})
+	if index==4: options.append({"text":"交易 · 购买、出售与回购","action":func(): show_items("shop")})
+	if index==5: options.append({"text":"寄存物品 · 打开仓库","action":func(): show_bag(true)})
 	for id in campaign.content.quests:
 		var optional: Dictionary=campaign.content.quests[id]
 		if optional.kind=="side" and optional.contact==person and campaign.available(optional):
 			var accepted: bool=id in campaign.state.accepted
-			row_button(column,("追踪委托 · " if accepted else "接受委托 · ")+optional.title+" / 地图："+campaign.content.acts[int(optional.act)-1].maps[int(optional.stage)-1].name,func():
-				campaign.accept(id); toast("已接取「%s」。任务日志可查看目标地点。" % optional.title); close_panel())
-	row_button(column,"营地路标 · 回访已发现地区",show_travel)
+			options.append({"text":("追踪委托 · " if accepted else "接受委托 · ")+optional.title,"action":func():
+				campaign.accept(id); close_panel(); toast("已接取「%s」。任务日志可查看目标地点。" % optional.title)})
+	options.append({"text":"营地路标 · 查看已发现地区","action":show_travel})
+	options.append({"text":"先告辞 · 待会儿见","action":close_panel})
+	show_dialogue(person+" · "+["地区委托","治疗","锻造","故事资料","交易","仓库"][index],preload("res://scripts/story_dialogue_data.gd").npc(index,person,int(campaign.state.act),int(campaign.state.hero)),options)
 
 func show_personal() -> void:
 	if campaign.state.stage!=0: toast("回营休息时，可以与伙伴展开个人委托。"); return
@@ -381,21 +406,20 @@ func show_atlas() -> void:
 	label(back,"灰色为未探索区域 · 金色为入口与目标 · 青色为传送阵 · 屋顶进入后自动隐藏",Vector2(30,603),Vector2(930,42),16)
 
 func show_final_choice() -> void:
-	var back := panel("月冠已碎 · 破冠后的选择")
-	text_block(back,"女王失去了六翼与王冠，血潮正在退去。修复过的六路导光将光送向高空。\n\n救援需要三人的全部个人线与「留下她说过的话」。救援不恢复王权，她仍须面对居民的追问。",Vector2(35,85),Vector2(920,330))
-	var rescue := button(back,"使用准备好的工具救援女王",Vector2(40,470),Vector2(510,45),func(): campaign.choose_rescue(true); close_panel(); campaign.enter(6,0))
 	var ready: bool=campaign.prepared_rescue() and campaign.state.rescue_prepared_at_battle
-	rescue.disabled=not ready
-	label(back,"救援准备齐全" if ready else "救援准备必须在决战前完成：9个个人节点及 A6-S02。战前存档另有保留。",Vector2(40,530),Vector2(900,36),16)
-	button(back,"送她离去 · 回残灯营地报平安",Vector2(40,590),Vector2(510,45),func(): campaign.choose_rescue(false); close_panel(); campaign.enter(6,0))
+	show_dialogue("月冠已碎 · 破冠后的选择",[
+		{"speaker":"旁白","text":"女王失去了六翼与王冠，血潮正在退去。修复过的六路导光将光送向高空。","left":"hero:0","right":"queen"},
+		{"speaker":"旁白","text":"救援需要三人的全部个人线与「留下她说过的话」。救援不恢复王权，她仍须面对居民的追问。","left":"hero:0","right":"queen"},
+		{"speaker":"绯月","text":"我们已经结束了血潮。接下来，决定如何面对仍有呼吸的她。","left":"hero:0","right":"queen"}],
+		[{"text":"使用准备好的工具 · 救援女王","disabled":not ready,"reason":"救援准备必须在决战前完成：9个个人节点及 A6-S02。","action":func(): campaign.choose_rescue(true); close_panel(); campaign.enter(6,0)},
+		{"text":"送她离去 · 回残灯营地报平安","action":func(): campaign.choose_rescue(false); close_panel(); campaign.enter(6,0)},
+		{"text":"暂时收起 · 稍后决定","action":close_panel}])
 
 func show_endings() -> void:
 	var text: String=campaign.content.endings["一"].story
 	if campaign.prepared_routes(): text+="\n\n"+campaign.content.endings["二"].story
 	if campaign.state.queen_rescued: text+="\n\n"+campaign.content.endings["三"].story
-	var back := panel("血月尽头，仍有黎明")
-	text_block(back,text,Vector2(35,80),Vector2(930,480))
-	button(back,"继续回访与重建",Vector2(700,600),Vector2(250,44),close_panel)
+	show_dialogue("血月尽头，仍有黎明",preload("res://scripts/story_dialogue_data.gd").chapter(text,campaign.content))
 
 func show_menu() -> void:
 	var back := panel("故事模式 · 暂停")
@@ -413,6 +437,7 @@ func show_menu() -> void:
 
 func _draw() -> void:
 	if photo_mode: return
+	if is_instance_valid(dialogue): return
 	if not active or world==null or campaign.state.is_empty(): return
 	for e in campaign.enemies:
 		if e.hp<=0: continue

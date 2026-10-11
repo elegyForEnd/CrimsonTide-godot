@@ -40,7 +40,7 @@ D:\dsh\Game\
    ├─ project.godot            ← 引擎配置（主场景 boot.tscn，无 autoload）
    ├─ scenes\                  ← 仅 2 个场景：boot.tscn（开场）、main.tscn（空壳根节点）
    ├─ scripts\                 ← 全部游戏逻辑（112 个 .gd / 3.77 万行，UI/逻辑均由代码构建）
-   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图
+   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图与Galgame对话
    │      story_act_art / story_regional_environment ← 第二至第六幕的区域布局、独立建筑、材质与灯光
    │      story_exploration_art / story_exploration_environment ← 六幕副本房间图、空洞、多段高程、地编与室外有机边界
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
@@ -91,7 +91,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### 3.3 模式开关
 
-故事入口为 `main.gd` 的独立 `story` 页面：`story_screen` → `story_campaign` → `story_map` / `story_region`，由 `story_world` / `story_environment` 显示。它使用独立战役存档，当前是单人及两名AI伙伴，不加入TideSession的联机或结算生命周期。
+故事入口为 `main.gd` 的独立 `story` 页面：`story_screen` → `story_campaign` → `story_map` / `story_region`，由 `story_world` / `story_environment` 显示。它使用独立战役存档，当前是单人及两名AI伙伴，不加入TideSession的联机或结算生命周期。章节与NPC交谈由story_dialogue_data/ui提供Galgame演出，暂停故事模拟后通过显式选项调用原服务，阅读记录独立保存。
 
 故事物品由 `story_inventory.gd` 权威处理，`story_items_ui.gd`、`story_item_grid.gd` 负责实际控件与原生拖拽，`story_ui_skin.gd` 使用原创材质九宫切片。不要调用远征/肉鸽的货币、装备或存储函数。v10发布采用小运行入口与补丁，挂载现有v9地图底包；正常启动Start-Story-GUI，临时试玩Preview-Inventory。
 
@@ -290,7 +290,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 战场主渲染（相机跟随/震屏/角色与怪物 billboard/预警/伤害数字/夜幕） | `scripts/battlefield.gd`（_process battlefield.gd:109；角色绘制 `actor` battlefield.gd:319；怪物预警 `monster` battlefield.gd:408；特殊 Boss 立绘索引 `SPECIAL_BOSS_ART` battlefield.gd:31） |
-| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:742 weapon_effect_socket()`、`battlefield.gd:744 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
+| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:742 weapon_effect_socket()`、`battlefield.gd:751 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
 | 3D 场景层（正交相机/地砖/墙/桥/湖/宝箱开盖/billboard 池） | `scripts/world_3d.gd`（rebuild world_3d.gd:165；精灵俯视压缩补偿 world_3d.gd:254） |
 | 2D 地形底图与战术地图绘制 | `scripts/world_art.gd`（atlas world_art.gd:103；王城夜景 `city_terrain` world_art.gd:132） |
 | CC0 模型库运行时（KayKit/Quaternius，shader 着色/包围盒） | `scripts/scene_assets.gd`（registry scene_assets.gd:5；宝箱开盖 chest_state scene_assets.gd:88） |
@@ -423,13 +423,13 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 栈桥 抛竿（[E]/[Space]） | `camp_screen.gd:755` | `camp_activities.gd:123 at_pier()` | `camp_activities.gd:186 cast()`、`camp_screen.gd:656` | `at_pier()`：DOCK 内且距 `PIER_AT` < `PIER_RADIUS` (240) | ✅ 同源（常量 `camp_activities.gd:9`） |
 | 家园 地面拾取（[F]） | `camp_screen.gd:667` | `has_drop_near()` ≤ `DROP_RADIUS` (120) | `camp_screen.gd:677` → `nearest_drop` / `pick_up_nearby()` | 同 `DROP_RADIUS` (120) | ✅ 同源（常量 `camp_activities.gd:10`） |
 | 搜打撤 城门（长按 E 1.5s） | `main.gd:2161` | 距 portal < `session.GATE_RADIUS` (85) 且 `can_travel()` | `session.gd:3649` | 同 `session.GATE_RADIUS` (85) + `party_at_gate()` | ✅ 同源常量 |
-| 搜打撤 城门世界标签 | `battlefield.gd:182 key_hint()` + `:201` | 相机 < 1500 且玩家 < `GATE_RADIUS` (85) 出 `[E]` | `session.gd:3649` | 玩家距城门 < `GATE_RADIUS` (85) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
+| 搜打撤 城门世界标签 | `battlefield.gd:188 key_hint()` + `:201` | 相机 < 1500 且玩家 < `GATE_RADIUS` (85) 出 `[E]` | `session.gd:3649` | 玩家距城门 < `GATE_RADIUS` (85) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
 | 搜打撤 撤离点（长按 E 4s） | `main.gd:2165` | 距 exit < `session.EXIT_RADIUS` (83) | `session.gd:3659` | 同 `session.EXIT_RADIUS` (83) | ✅ 同源常量 |
-| 搜打撤 撤离点世界标签 | `battlefield.gd:182 key_hint()` + `:218` | 相机 < 1500 且玩家 < `EXIT_RADIUS` (83) 出 `[E] 撤离` | `session.gd:3659` | 玩家 < `EXIT_RADIUS` (83) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
+| 搜打撤 撤离点世界标签 | `battlefield.gd:188 key_hint()` + `:218` | 相机 < 1500 且玩家 < `EXIT_RADIUS` (83) 出 `[E] 撤离` | `session.gd:3659` | 玩家 < `EXIT_RADIUS` (83) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
 | 搜打撤 封印（长按 E 3s） | `main.gd:2169` | 距 shrine < `session.SHRINE_RADIUS` (72) | `session.gd:3665` | 同 `session.SHRINE_RADIUS` (72) | ✅ 同源常量 |
 | 搜打撤 救援队友（长按 E 3s） | `main.gd:2158` | 距倒地队友 < `session.RESCUE_RADIUS` (75) | `session.gd:3653` | 同 `session.RESCUE_RADIUS` (75) | ✅ 同源常量 |
 | 搜打撤 箱子搜索（[F]/[H]） | `main.gd:2176`（用 `session.SEARCH_RADIUS`=80 决定显示） | 容器距玩家 < `SEARCH_RADIUS` (80) | `main.gd:1985` → `session.gd:1005 search_target` | 距离 < `SEARCH_RADIUS` (80)（中途离开宽限 `SEARCH_RANGE`=86，`session.gd:85`） | ✅ 已对齐（消除 70~80 反向不一致） |
-| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:182 key_hint()` + `:239/:264/:271` | 相机 < 1500 且玩家 < `SEARCH_RADIUS` (80) / `DROP_RADIUS` (70) 出按键 | `session.gd:974/984/1000` | 玩家 < `SEARCH_RADIUS` / `DROP_RADIUS` | ✅ 已对齐（远处纯地名，进圈才出按键） |
+| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:188 key_hint()` + `:239/:264/:271` | 相机 < 1500 且玩家 < `SEARCH_RADIUS` (80) / `DROP_RADIUS` (70) 出按键 | `session.gd:974/984/1000` | 玩家 < `SEARCH_RADIUS` / `DROP_RADIUS` | ✅ 已对齐（远处纯地名，进圈才出按键） |
 | 魔境 开宝箱（[E]） | `main.gd:2096`、`main.gd:5207`、`rogue_room_ui.gd:227`、`rogue_field.gd:145` | 玩家距 chest ≤ `session.CHEST_RADIUS` (85) | `session.gd:3634` → `roguelike.gd:727 loot_interact()` | 距 chest ≤ `session.CHEST_RADIUS` (85) | ✅ 已对齐（按判定圈动态显示 [E]，远处为叙述句） |
 | 魔境 掉落拾取（[E]） | `main.gd:2096`、`rogue_field.gd:124-133` | 玩家距 drop < `session.LOOT_RADIUS` (80) 且过落地延迟/归属门 | `roguelike.gd:738` | 距离 < `session.LOOT_RADIUS` (80) | ✅ 已对齐（三道门与判定完全镜像） |
 | 魔境 分叉选路（按住 E） | `main.gd:2096/4953/5211`、`rogue_room_ui.gd:227`、`rogue_field.gd:185` | `x > fork_start` 且距 exit ≤ `session.FORK_RADIUS` (64) | `session.gd:3637` / `roguelike.gd:1346` | 同 `session.FORK_RADIUS` (64) | ✅ 已对齐（按判定圈动态显示 [E]，远处为叙述句） |
@@ -438,7 +438,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 **已修总清单（2026-10-08 落盘验收）**：
 1. **营地名牌**：650 仅管地名可见性，`camp_screen.gd:788` 圈外只画暗名；进圈（`< station.radius`）才画完整光环+下箭头+白字。
-2. **搜打撤世界标签**（`battlefield.gd:182 key_hint()`）：按玩家真实距离门控按键字样，城门 85 / 撤离 83 / 宝箱 80 / 掉落 70；1500 仅作为相机视距门控。
+2. **搜打撤世界标签**（`battlefield.gd:188 key_hint()`）：按玩家真实距离门控按键字样，城门 85 / 撤离 83 / 宝箱 80 / 掉落 70；1500 仅作为相机视距门控。
 3. **魔境提示与指路行**（`main.gd:2096/4953/5211`、`rogue_room_ui.gd:227`、`rogue_field.gd:145`）：远处统一为安全叙述句，进入判定距离（85/80/64）才出 [E] 或高亮。
 4. **宝箱 HUD**：`main.gd:2176` 由 70 修正为 `session.SEARCH_RADIUS` (80)，与判定圈严格统一。
 5. **单真值化**：9 处搜打撤/魔境半径常量收拢至 `session.gd:86-97`；营地半径常量收拢至 `camp_activities.gd:6-12`。
@@ -455,15 +455,18 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### S. 故事模式与连续探索地图
 
+Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_dialogue_ui；完整正文和明确说话人由story_dialogue_data处理。未署名引号保持旁白，不凭附近名字推断。
+
 图形任务日志：story_quest_ui（J/人物委托/档案NPC）使用73任务真数据、分类卡片、目标进度与报酬；story_quest_fx响应campaign.quest_event，接取/推进/完成只在真实状态改变时播放，特效不发奖励。tracked/track持久保存追踪ID，HUD读取tracked；tests/story_quests_ui.gd覆盖真实鼠标、E与事件幂等。
 
-战役GUI：`story_screen.gd` 的 `show_items()` / `show_bag()` / `show_growth()`；NPC索引2/4/5分别转锻造、交易、仓库。`story_inventory.gd` 的 `move()` / `equip()` / `buy()` / `forge()` / `craft()` 是唯一规则口，`valid_data()` 校验新实例存档。三人装备镜像写回kits，伙伴伤害也读自己的装备。配套tests/story_items.gd、story_items_ui.gd；制作与操作见docs/rpg/ITEMS-AND-SERVICES.md。
+战役GUI：`story_screen.gd` 的 `show_items()` / `show_bag()` / `show_growth()`；NPC索引2/4/5在立绘交谈后通过选项转锻造、交易、仓库。`story_inventory.gd` 的 `move()` / `equip()` / `buy()` / `forge()` / `craft()` 是唯一规则口，`valid_data()` 校验新实例存档。三人装备镜像写回kits，伙伴伤害也读自己的装备。配套tests/story_items.gd、story_items_ui.gd；制作与操作见docs/rpg/ITEMS-AND-SERVICES.md。
 
 | 功能 | 文件与配套检查 |
 |---|---|
+| Galgame章节、营地交谈与结局 | `scripts/story_screen.gd:327 show_dialogue()`、`scripts/story_screen.gd:342 show_npc()`；story_dialogue_data.chapter/npc无损拆正文，story_dialogue_ui.advance/choose控制逐字、已读快进、回看与显式选项；tests/story_dialogue.gd，docs/rpg/GALGAME-DIALOGUE.md |
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
 | 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
-| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:94 sync_story()`；tests/story_visual.gd |
+| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:102 sync_story()`；tests/story_visual.gd |
 | Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:52 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
 | Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
 | 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
@@ -477,12 +480,14 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:87 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
 | 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
 | 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:333 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
-| 探索地图、UI与输入 | `story_screen.gd:377 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
+| 探索地图、UI与输入 | `story_screen.gd:403 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
 | 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
 
 ## 5. 「我要改 X」速查表
 
 武器命中/余焰/飞行尾迹：combat_finish；短时环境灯：combat_light_pool；故事攻击、Q与R的适配：story_combat_vfx；逐步揭示：weapon_image_art.reveal_mechanic。战斗规则继续在session/rogue_actions/story_campaign，表现层禁止结算伤害。
+
+剧情立绘/逐字/自动/已读快进/回看 → §4.S，story_dialogue_data/ui与story_screen.show_dialogue；规则、任务奖励仍走story_campaign/inventory。Preview-Dialogue直接体验；Start-Dialogue-v12使用新正式入口。
 
 ### 玩法规则类
 
@@ -594,6 +599,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ## 6. 数值常量速查（哪里改什么数）
 
+Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_PER_SECOND=32、AUTO_DELAY=1.5秒（另加每字0.025秒）；立绘过渡0.22秒，回看180条、阅读标记4096个。
+
 新命中层预算：combat_finish.MAX_CONTACTS=64、MAX_TRAILS=96；尾迹最多10点/130ms、600单位跳变清历史。combat_light_pool.CAPACITY=8，关闭实时阴影和GI烘焙。刀光接触揭示18ms、施法35ms，均不修改攻击前摇/冷却或伤害。
 
 故事物品：story_inventory的BAG为10×6、VAULT为12×10；BASES定义十二种占格及堆叠上限。单件强化上限5，镶嵌80银币/1晶石，回购12件；打造、强化费用在craft/forge_cost，交易库存每幕独立持久。原forged全队强化保留旧档加成，新UI只强化单件。
@@ -673,6 +680,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 | 音乐计划 | `generate_scene_music.py` + `resources/scene_music_plan.json` | 每场景一首 Suno 曲目的提示词计划与提交 |
 | 素材生成 | `generate_enemy_art.py`、`build_minimax_*`、`collectible_image_prompts.py` | ImageGen/MiniMax 提示词与图集 |
 | 地图烘焙 | `export_world_layout.gd`（GD）→ `bake_world_art.py` | **改 ruins.gd 地形后必须重跑**，否则 3D 贴图与碰撞错位 |
+| Galgame对话发布 | build_story_dialogue_release.py / pack_story_dialogue.gd / dialogue_patch_boot.gd；三个编译脚本及remap白名单，临时预设finally恢复，见GALGAME-DIALOGUE.md |
 | 故事美术生产 | export_story_models.py / export_story_terrain.py / Bake-Opening.ps1 | Blender只导出不覆盖，Godot编辑后重烘焙；详见FORWARDPLUS-ART-PIPELINE.md |
 | 图标/打包 | `make_icon.gd`、`package_server.py`、`fetch_export_templates.py`、`fetch_scene_assets.py` | exe 图标；服务器离线镜像包；模板/CC0 素材抓取（SHA-256 校验） |
 | 素材预览 / 烘焙（GD） | `bake_standalone_vfx.gd`、`pack_ranged_imagegen.gd`、`pack_rogue_animations.gd`、`prepare_boss_art.gd`、`prepare_ecology_art.gd`、`prepare_nocturne_art.gd`、`preview_rogue_boss_body.gd`、`preview_collectibles.gd`、`preview_hero_hair.gd`、`play_hero_animation_preview.gd`、`preview_hero_registration.gd`、`inspect_home_town.gd` | 图集打包 / 立绘合帧 / 角色与 Boss 立绘预览；一律 `Godot_…console.exe --headless --path . --script tools/<名>.gd` 跑，产物落在 `build/`、`output/` |
@@ -691,6 +699,8 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 ## 9. 运行、启动与部署
 
+剧情对话最新版正式运行Start-Dialogue-v12.cmd，Preview-Dialogue.cmd使用独立APPDATA临时体验岑烬开场。v12运行文件、Dialogue-v12.pck、Combat-v11.pck和v9底包需同放dist。build_story_dialogue_release.py临时导出、恢复预设并编译三脚本；pack_story_dialogue读取导出remap/gdc白名单，不能直接用同名gd覆盖已编译旧包。
+
 最新版特效正式运行Start-Combat-v11.cmd；Preview-Combat.cmd用源码真实场景自动轮播，1/2/3切故事/闯关/远征，ESC退出，独立APPDATA。v11 EXE、Combat-v11.pck和v9底包同放dist，包含v10 GUI；源码入口继续适用。
 
 | 文件 | 用途 |
@@ -705,6 +715,8 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 | 存档位置 | `%APPDATA%/Godot/app_userdata/血潮守望 · Crimson Tide/profile.json` |
 
 ## 10. 根目录文档索引（专题设计文档）
+
+剧情演出：[GALGAME-DIALOGUE.md](docs/rpg/GALGAME-DIALOGUE.md)，覆盖分镜、NPC选择、阅读记录、验证、v12依赖和官方脚本编译打包流程。
 
 战役GUI与经济：[docs/rpg/ITEMS-AND-SERVICES.md](docs/rpg/ITEMS-AND-SERVICES.md)。原创图标、框架和内部控件材质：[assets/story/items/GENERATION.md](assets/story/items/GENERATION.md)，完整提示词generation-prompts.json；只读参考表元数据reference-inventory-inspection.json。
 
@@ -735,6 +747,8 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口同时调用tag_visual_projectile；无ID旧快照跳过新尾迹。Composite Finish不得改bullet/enemy或创建伤害目标。CombatVisuals.finish在_ready中才创建，自定义Flights覆盖_ready时不能留下孤立节点。故事combat_event只在真实接受动作/命中后发出，切图与退出必须清旧残留。原69武器矩阵52518项失败已与修改前源码逐项对照，见COMBAT-FINISH.md和TEST-REPORT，不得以本轮专项通过替代全量验收。
 
+对话契约：对话只读章节和状态；choose只响应显式选项且执行一次，自动/快进不选择。阅读页面不会再次complete/发奖励，切到其他页面清overlay/dialogue并恢复HUD。阅读标记以正文散列独立保存，预览禁存；缺省NPC美术仍为现有六岗位，并非36人新画。
+
 故事GUI契约：先复制验证整次交易/换装再提交，旧档溢出入领取暂存区；新增字段同步valid_item/restore_numeric及往返测试。图标先EXPAND_IGNORE_SIZE再设尺寸，进度条先关百分比再设高度。任务事件仅由真实转换产生，silent加载不播放，通知有上限且离开模式清空。声音总线/应用图标须装入引导包，挂载v9后恢复AudioServer布局，防止发布版bus=-1。
 
 1. **`git status` 里出现 `?? 某目录/` 时先查清再动**：这类目录没进版本库（可能是重复克隆，也可能是本机构建产物）。危害是 `git add .` 会把整个目录当成一个 gitlink 提交进来。处理：① 一切修改只在项目根做；② **禁止 `git add .`**，只 add 你真正改的文件；③ 确认无用后再删除该目录。
@@ -742,7 +756,7 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 3. **藏品序号只追加不插入**：`catalog.gd:124 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
 5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:350 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:747 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
+6. **特效必须走 battlefield.gd:754 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
 8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4233 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4264 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:673 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。**营地是例外但要显式**：营地 `session.running==false`，`perform()` 会直接 return，所以营地的存储编辑全部集中在 `scripts/camp_storage.gd`，并且**只调用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`）——不要在营地面板里重写一套装箱或装备规则。
@@ -882,6 +896,8 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-11（同批提交）：v12将73任务全文、前史、结局和六幕营地服务接入Galgame阅读，加入双立绘、逐字、自动、已读快进、回看、显式选项与独立阅读记录。任务结算仍在Campaign。新增预览和正式运行入口、三脚本白名单编译补丁，沿用v11/v9底包，不发布3D Boss实验；更新§2/3/4.S/5/6/8/9/10/11及测试报告。
 
 2026-10-11（同批提交）：v11为三模式增加独立命中、烟尘、元素碎片、实际弹体采样尾迹和短时灯；渐进揭示不拉伸原画，圆斩固定真实半径，故事攻击/Q/R/伙伴订阅真实事件。读取两安装战斗表和10份重制版JSON，新增原创RGBA六格图集/完整提示词。更新§4.K/§5/§6/§8/§9/§11、制作说明与测试报告；正式与实景预览独立入口，旧版挂点/可见性矩阵失败如实保留。
 
