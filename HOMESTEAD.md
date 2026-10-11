@@ -56,7 +56,7 @@
 
 使用内置 image_gen 工具生成并复制入项目，保留原始文件。完整提示词见 [PROMPTS.md](assets/home/generated/PROMPTS.md)。
 
-- meadow-v1.png：实际三维家园地面的草地纹理。
+- meadow-v1.png：草地纹理（**已不用于家园地面**：2026-10-11 起家园地面临时借故事模式的泥地 PBR `assets/story/environment/pbr/soil_albedo.png` 占位，等家园自己画素材再换回；见 PROJECT-GUIDE §4.N/§4.O）。
 - stone-path-v1.png：道路、营地石台和设施使用的石径纹理。
 - items-v1.png：4×3 透明图集，作物、鱼、种子袋、钓竿、鱼饵与三份料理。由 AtlasTexture 分区，保留 alpha。
 - hearthhaven-map-v1.png：家园设施导览。编号与点击区域由游戏叠加；导览图是设施示意，不作为碰撞或寻路数据。

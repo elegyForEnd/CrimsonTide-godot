@@ -344,7 +344,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 营地界面外壳（HUD/设施列表/输入/名册/出发） | `scripts/camp_screen.gd`（设施分组 camp_screen.gd:343；按键 `_unhandled_input` camp_screen.gd:619；**F 只拾取脚下掉落物** camp_screen.gd:665（整备台不再占 F 键）；**Tab 打开远征行囊** camp_screen.gd:672 → 信号 `pack_requested` camp_screen.gd:18；面板挡屏时 Tab/Esc 走 `dismiss_requested` camp_screen.gd:22；marker 层 F 提示 camp_screen.gd:731）；右键蓄力直达站点 camp_screen.gd:545） |
-| 营地 3D 地图（可行走碰撞/遮挡淡化/站点定义/雷暴程序生成与运行时合成音效） | `scripts/camp_site.gd`（可行走边界 `is_walkable` camp_site.gd:169-178（边界矩形 :170）；**十设施站点表 `_build_stations` camp_site.gd:936-960**；作物显示 refresh_crops camp_site.gd:544；闪电 strike camp_site.gd:1350） |
+| 营地 3D 地图（可行走碰撞/遮挡淡化/站点定义/雷暴程序生成与运行时合成音效） | `scripts/camp_site.gd`（可行走边界 `is_walkable` camp_site.gd:169-178（边界矩形 :170）；**十设施站点表 `_build_stations` camp_site.gd:949-973**；作物显示 refresh_crops camp_site.gd:549；闪电 strike camp_site.gd:1363；**遮挡体登记口 `mesh_node` camp_site.gd:327 / `home_box` camp_site.gd:455 带 `occlude` 开关**——⚠️ 月湾栈桥（`_build_lake` camp_site.gd:601，甲板 camp_site.gd:622-629）整段 `occlude=false` 且自带 plate `top=36`：**厚地板（>12cm）会撞上"高物件＝遮挡体"的自动登记**，甲板于是在角色脚下淡到 25%、看起来像栈桥变透明；地面网格 `HomeGround` 用 `home_ground.gdshader`，贴图是**借来的占位素材**（故事模式泥地 PBR `soil_albedo.png`，camp_site.gd:468），占比 `texture_mix` camp_site.gd:469） |
 | 世界内农事/垂钓动作状态机（动画播完才结算） | `scripts/camp_activities.gd`（`farm` camp_activities.gd:145；垂钓四阶段 `update_fishing`；收获/钓鱼溢出 → `spill_overflow()` camp_activities.gd:253 落地为 Sprite3D 掉落物 `drop_item()` :263，`has_drop_near()` :278 / `pick_up_nearby()` :296 供 F 优先拾取） |
 | 钓鱼时机条 UI | `scripts/fishing_meter.gd:9 _draw()`；装配与容差（fine 档）在 camp_screen.gd:135-140 / 513-517 |
 | **家园规则层**（作物/鱼/料理价格表、离线生长、战斗加成） | `scripts/homestead.gd`（CROPS/FISH/MEALS homestead.gd:3-17；离线生长 `remaining` homestead.gd:86；**收获即掉落物**：tend 收获分支 `receive_product` homestead.gd:123、钓鱼 `catch_fish` :175 均把产物塞背包/口袋，装不下的量记入 `take_overflow()` :30 交营地落地；`cook()` :135 与 `catch_fish` 用 profile 实例计数，`home.sell()` 已退役改走交易行；**被 session.gd:295 引用**，加成 `meal_id/bonus` homestead.gd:176-181 经 session.gd:306-307 进入玩家、落库 session.gd:317；开局扣餐食 `consume_started` homestead.gd:146，调用点 main.gd:1119-1120） |
@@ -391,7 +391,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | combat_glow.gdshader | 加法混合发光层 | combat_visuals.gd:58、boss_cinematic.gd:27、ultimate_cinematic.gd:61 |
 | damage_vignette.gdshader | 受击红晕 | main.gd:223 |
 | energy_burst.gdshader | 程序化能量形态 form 0-9 | energy_bursts.gd:3、camp_site.gd:19 |
-| home_ground.gdshader / home_water.gdshader | 家园草地/水面 | camp_site.gd:463 / camp_site.gd:605 |
+| home_ground.gdshader / home_water.gdshader | 家园地面/水面（地面 albedo 由 `texture_mix` 决定：camp_site.gd:469 设 0.85，**别退回旧的 0.07**——那会把地面压成一块纯色，看起来像材质丢失；贴图 `ground_tex` 目前是**占位**＝故事模式泥地 PBR `assets/story/environment/pbr/soil_albedo.png`，见 camp_site.gd:468） | camp_site.gd:465 / camp_site.gd:610 |
 | particle_glow_batch.gdshader | MultiMesh 粒子双圆光晕 | particle_glow_batch.gd:3 |
 | scene_asset.gdshader | 场景道具着色（叶片染色/空置灰化） | scene_assets.gd:4 |
 | story_ground.gdshader / story_stone.gdshader / story_water.gdshader | 故事连续地面混合、石木建筑与微弱河面波纹 | `story_environment.gd:3 GROUND`、`story_environment.gd:4 STONE`、`story_environment.gd:5 WATER` |
@@ -417,7 +417,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 交互 | 提示在哪 | 提示条件 | 判定在哪 | 判定条件 | 状态 |
 |---|---|---|---|---|---|
-| 营地 10 个设施（按 E） | `camp_screen.gd:749` `"[E] %s"` | `station_at()` 命中 | `camp_screen.gd:691 interact()` → `camp_site.gd:1556 station_at()` | 距离 < `stations[].radius` | ✅ 同源（**数据字段** `camp_site.gd:936-960`：250/215/215/205/265/230/200/170/170/170） |
+| 营地 10 个设施（按 E） | `camp_screen.gd:749` `"[E] %s"` | `station_at()` 命中 | `camp_screen.gd:691 interact()` → `camp_site.gd:1569 station_at()` | 距离 < `stations[].radius` | ✅ 同源（**数据字段** `camp_site.gd:949-973`：250/215/215/205/265/230/200/170/170/170） |
 | 营地设施名牌（地标层） | `camp_screen.gd:739-741`（地名可见范围）、`:788 StationMarker._draw()` | 圈外只画暗名；进圈才出光环与按键 | 同上 | < `station.radius`（最小 170） | ✅ 已对齐（圈外地名变暗且不带按键字样，进圈出光环与[E]） |
 | 田畦 播种/浇水/收获 | `camp_screen.gd:750-753` → `camp_activities.gd:139 plot_hint()` | `nearest_plot()` 命中 | `camp_activities.gd:140 interact()`→`farm()`，`:155` 复查 | 距离 ≤ `PLOT_RADIUS` (155) | ✅ 同源（常量 `camp_activities.gd:8`） |
 | 栈桥 抛竿（[E]/[Space]） | `camp_screen.gd:755` | `camp_activities.gd:123 at_pier()` | `camp_activities.gd:186 cast()`、`camp_screen.gd:656` | `at_pier()`：DOCK 内且距 `PIER_AT` < `PIER_RADIUS` (240) | ✅ 同源（常量 `camp_activities.gd:9`） |
@@ -451,7 +451,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 挂载点 | `main.gd:285-290` 起（`rogue_field` 建好后）——**只有开发者模式才 new 这个节点**，正式模式连节点都不创建 |
 | 启动脚本 | `开发者模式启动.cmd`（设 `CRIMSON_DEV_RANGES=all` 后 `call 游戏启动.cmd`） |
 | 已画出来 | 魔境战场：主人索敌圈 300、灵体索敌圈 166.7 / 射程 150 / 停靠 127.5、主人点名目标、角色地形判定 15、怪物半径、灵体→目标连线；F9 收文字 |
-| 待做批次 | 营地（设施交互圈 + "半径/实时距离"文字，`camp_site.gd:1556` 与 `camp_screen.gd:738 site.project()` 是入口）、肉鸽房型地面多边形、搜打撤 3D、UI 热区——清单见工作区上一层 `任务.md` |
+| 待做批次 | 营地（设施交互圈 + "半径/实时距离"文字，`camp_site.gd:1569` 与 `camp_screen.gd:738 site.project()` 是入口）、肉鸽房型地面多边形、搜打撤 3D、UI 热区——清单见工作区上一层 `任务.md` |
 
 ### S. 故事模式与连续探索地图
 
@@ -512,7 +512,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 调理智/气味/威胁度/刷怪 | session.gd:2624-2632、2688-2696、3247-3319 | tests/ecology.gd |
 | 改掉落（宝箱/敌人/据点/骑士） | session.gd:1323 chest_loot / 1328 enemy_loot / 3342 resolve_site_defeat / 3740 knight_reward | tests/systems.gd；BALANCE.md |
 | 加新野外怪物 | enemy_frames.gd:4-8 四表 + ecology.gd:5-19 六表 + ecology.gd update() 新分支 + assets/enemies/ 4×3 图集（脚底 210px）+ 悬浮怪名单 enemy_body.gd:44 | tests/enemies.gd、ecology.gd；ENEMY-UPDATE.md |
-| 加营地设施 | camp_site.gd:936-960 站点表 + 建模函数 + camp_screen.gd:343 分组 + main.gd:754 on_camp_station 分支 | tests/camp*.gd；HOMESTEAD.md |
+| 加营地设施 | camp_site.gd:949-973 站点表 + 建模函数 + camp_screen.gd:343 分组 + main.gd:754 on_camp_station 分支 | tests/camp*.gd；HOMESTEAD.md |
 | 改家园数值（作物/鱼/料理/价格） | homestead.gd:3-17 + buy/fish_key；图标 home_art.gd | tests/homestead.gd |
 | 改种子/鱼饵买入落点（仓库→背包→落地） | `homestead.gd buy()` :77 / `plant()` :116 / `cast()` :172 + `profile.gd deposit_backpack()` :583 / `migrate_home_seeds_bait()` :720 + `home_screen.gd buy_report()` :76 | tests/homestead.gd、homestead_ui.gd、camp_activities.gd |
 | 改七属性曲线 | attributes.gd（⚠️ `clean(value, budget := 623)` attributes.gd:16 的预算要与 `point_budget` 同步） | tests/attributes.gd |
@@ -938,6 +938,8 @@ git status --porcelain
 | 2026-10-10 | 见同批提交 | 室外/洞窟/灰棘旧堡续作：16个Blender模块、111处共享补充摆放、不规则洞窟统一轮廓与碰撞；新增第一幕第九区旧堡，保留旧地图ID与73个任务，接入战斗/宝箱/传送/存档；实际光照烘焙与4K场景验证，长时间跑分暂缓。导航与生产契约见OUTDOOR-CASTLE.md。 |
 
 | 2026-10-10 | 见同批提交 | 建筑室内铺地修正：独立floor_palette与室内Shader，新增三套2K PBR，城堡/墓室/书库/礼拜堂与野外泥路分离；城堡台阶/台基同步材质并重烘焙，六幕材质选择与5个实机机位覆盖，见INTERIOR-FLOORS.md。 |
+
+| 2026-10-11 | （本轮未提交） | **营地两处实测问题（用户截图）+ 地面换占位素材**：①**晨钟家园草地"材质像丢了"**——不是引用/导入问题（`meadow-v1.png` 与 `.ctex` 都在、`load()` 成功），真因在 `home_ground.gdshader`：贴图只按 **0.07** 混进一块深青纯色 turf，纹理等于不可见，所以整片地面读起来像没材质；改法＝贴图主导 albedo（新增 `uniform float texture_mix`，`camp_site.gd:469` 显式设 0.85，`tests/camp.gd` 读它守门，防止再被调回 0.07）。②**月湾栈桥靠得太近就变半透明**——甲板 17 块木板 14cm 厚，撞上 `mesh_node` 的"高物件（>12cm）自动登记为遮挡体"规则，于是角色脚下的木板淡到 25%；**同一根因还让角色站在水面高度**（栈桥没登记 plate → `ground_height` 返回 0 → 角色 y=2cm，比甲板顶面低 34cm，所以看起来像沉在栈桥后面）。改法：`mesh_node`/`home_box` 新增 `occlude` 开关（默认 true，厚地板显式退出），栈桥甲板与系缆桩整段 `occlude=false`，并补 plate `top=36` 让角色站上甲板。③**地面贴图换成占位素材**（用户拍板"还没画素材，能看就行"）：借故事模式 act1 户外那块地的泥地 PBR `assets/story/environment/pbr/soil_albedo.png`（`camp_site.gd:468`），`home_ground.gdshader` 的 `meadow` uniform 相应改名 `ground_tex`、tint 由偏绿改成中性暖灰；`meadow-v1.png` 保留但已不用于家园地面（HOMESTEAD.md 已注明）。④测试：`camp` 88/8（8 项为**既有红**：headless 下 960×900 的相机射线往返，HEAD 版复跑同样 8 项）、`camp_occlusion` 13/0（+2 项：栈桥不入遮挡体表、甲板顶面 36）、`camp_visual` 窗口渲染 0 失败、真机 `--preview-ground --capture` 启动 0 报错并出图；全量锚点 **812 → OK 530 / DRIFT 0 / WRONG 0**。 |
 
 ### 12.7 最近一次全量审计（2026-10-07）
 

@@ -59,6 +59,17 @@ func run() -> void:
 	check(entry.parts[0].mesh.get_active_material(0) == entry.parts[0].materials[0], "original material restored")
 	site.refresh_sprites()
 	await capture("restored")
+
+	# --- the moonwater pier is floor: it never joins the occlusion fade ------
+	var deck: Array = []
+	for occluder in site.occluders:
+		var at: Vector2 = Vector2(occluder.node.global_position.x,occluder.node.global_position.z)/site.UNIT
+		if site.DOCK.grow(4.0).has_point(at): deck.append(at)
+	check(deck.is_empty(), "no dock plank registers as an occluder (%s)" % [deck])
+	site.hero_at = site.DOCK.get_center()
+	check(is_equal_approx(site.ground_height(site.hero_at),36.0),
+		"the deck carries the actor at plank height")
+
 	print("CAMP OCCLUSION: ", checks, " checks, ", failures, " failures")
 	screen.queue_free()
 	await process_frame

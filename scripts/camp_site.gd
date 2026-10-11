@@ -324,13 +324,15 @@ func glow_material(color: Color, energy: float = 2.4) -> StandardMaterial3D:
 	return mat
 
 
-func mesh_node(mesh: Mesh, at: Vector3, mat: Material, parent: Node3D = null) -> MeshInstance3D:
+func mesh_node(mesh: Mesh, at: Vector3, mat: Material, parent: Node3D = null, occlude: bool = true) -> MeshInstance3D:
 	var node := MeshInstance3D.new()
 	node.mesh = mesh
 	node.position = at
 	node.material_override = mat
 	(parent if parent else scenery).add_child(node)
-	if parent != crop_layer and (mesh is BoxMesh or mesh is CylinderMesh) and mesh.get_aabb().size.y > 0.12:
+	# `occlude=false` is for thick floor slabs (a deck plank is taller than the 12 cm
+	# threshold but still floor): they must never fade away under the actor's feet.
+	if occlude and parent != crop_layer and (mesh is BoxMesh or mesh is CylinderMesh) and mesh.get_aabb().size.y > 0.12:
 		register_occluder(node)
 	return node
 
@@ -450,19 +452,22 @@ func build() -> void:
 		npc_sprites.append(_new_sprite())
 
 
-func home_box(at: Vector2, size: Vector3, color: Color, height: float = 0.0, parent: Node3D = null) -> MeshInstance3D:
+func home_box(at: Vector2, size: Vector3, color: Color, height: float = 0.0, parent: Node3D = null, occlude: bool = true) -> MeshInstance3D:
 	var box := BoxMesh.new()
 	box.size = size * UNIT
-	return mesh_node(box, point(at, height + size.y * 0.5), material(color), parent)
+	return mesh_node(box, point(at, height + size.y * 0.5), material(color), parent, occlude)
 
 
 func _build_home_ground() -> void:
 	var ground := PlaneMesh.new()
 	ground.size = Vector2(70,70)
-	var grass := ShaderMaterial.new()
-	grass.shader = preload("res://resources/home_ground.gdshader")
-	grass.set_shader_parameter("meadow",load("res://assets/home/generated/meadow-v1.png"))
-	mesh_node(ground, point(CENTRE,-4), grass)
+	var ground_mat := ShaderMaterial.new()
+	ground_mat.shader = preload("res://resources/home_ground.gdshader")
+	# Placeholder ground: the camp has no ground art of its own yet, so it borrows the
+	# story-mode soil PBR that reads well outside the story city.
+	ground_mat.set_shader_parameter("ground_tex",load("res://assets/story/environment/pbr/soil_albedo.png"))
+	ground_mat.set_shader_parameter("texture_mix",0.85)
+	mesh_node(ground, point(CENTRE,-4), ground_mat).name = "HomeGround"
 	for path in PATHS:
 		var road := home_box(path.get_center(),Vector3(path.size.x,2,path.size.y),Color("454553"))
 		road.material_override = material(Color("a39bab"),load("res://assets/courtyard.png"),0.98,0.22)
@@ -614,10 +619,15 @@ func _build_lake() -> void:
 			# Keep the footpath and the mouth of the dock open.
 			if DOCK.grow(55).has_point(at): continue
 			prop("medieval/rock_single_A",at,Vector3(105,38+(j%3)*12,70),Color("879783"),Color.WHITE,(end-start).angle())
+	# The moonwater deck is floor, not scenery. Its plate plants the actor on the
+	# planks (14 cm thick, so it clears the occluder threshold) and `occlude=false`
+	# keeps the whole pier out of the occlusion fade: a plank under the actor's feet
+	# used to fade to 25%, which read as the bridge turning translucent.
+	plates.append({"polygon": PackedVector2Array([DOCK.position,Vector2(DOCK.end.x,DOCK.position.y),DOCK.end,Vector2(DOCK.position.x,DOCK.end.y)]),"top":36.0})
 	for i in 17:
-		home_box(Vector2(3290+i*48,2390),Vector3(45,14,180),Color("716676"),22)
+		home_box(Vector2(3290+i*48,2390),Vector3(45,14,180),Color("716676"),22,null,false)
 	for at in [Vector2(3300,2320),Vector2(3300,2460),Vector2(4080,2320),Vector2(4080,2460)]:
-		home_box(at,Vector3(16,85,16),Color("514a5a"))
+		home_box(at,Vector3(16,85,16),Color("514a5a"),0.0,null,false)
 
 	for at in [Vector2(3530,1700),Vector2(4630,2130),Vector2(4380,2480)]:
 		prop("medieval/waterplant_A",at,Vector3(0,100,0),Color("c0c79c"),Color("7da688"))
