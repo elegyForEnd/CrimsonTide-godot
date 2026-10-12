@@ -7,6 +7,7 @@ const PortraitView = preload("res://scripts/story_portrait_view.gd")
 const PortraitArt = preload("res://scripts/story_portrait_art.gd")
 const LETTERS_PER_SECOND := 32.0
 const AUTO_DELAY := 1.5
+const PORTRAIT_BASE_Y := 304.0
 var screen
 var title := ""
 var pages: Array=[]
@@ -40,7 +41,7 @@ var recorded_index := -1
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=MOUSE_FILTER_STOP
 	var shade := ColorRect.new(); shade.color=Color(.015,.012,.025,.64); shade.size=size; shade.mouse_filter=MOUSE_FILTER_IGNORE; add_child(shade)
-	left=portrait(Vector2(65,64)); right=portrait(Vector2(895,64))
+	left=portrait(Vector2(65,PORTRAIT_BASE_Y)); right=portrait(Vector2(895,PORTRAIT_BASE_Y))
 	var title_label: Label=screen.label(self,title,Vector2(80,47),Vector2(1100,45),26)
 	title_label.add_theme_color_override("font_color",Color("d5bb88"))
 	screen.label(self,"CRIMSON TIDE  /  MEMORIES BY LAMPLIGHT",Vector2(82,88),Vector2(950,24),12)
@@ -63,8 +64,9 @@ func _ready() -> void:
 	show_page()
 
 func portrait(at: Vector2) -> Control:
+	var stage := Control.new(); stage.size=Vector2(1440,650); stage.clip_contents=true; stage.mouse_filter=MOUSE_FILTER_IGNORE; add_child(stage)
 	var node := PortraitView.new()
-	node.position=at; node.size=Vector2(480,745); node.mouse_filter=MOUSE_FILTER_IGNORE; add_child(node); return node
+	node.position=at; node.size=Vector2(480,745); node.mouse_filter=MOUSE_FILTER_IGNORE; stage.add_child(node); return node
 
 func button(value: String, at: Vector2, extent: Vector2, action: Callable) -> Button:
 	var node: Button=screen.button(self,value,at,extent,action); node.focus_mode=Control.FOCUS_NONE; return node
@@ -114,7 +116,7 @@ func show_page() -> void:
 		var speaking: bool=portraits[side]==actor and actor!=""
 		var tone := Color(1,1,1,1) if speaking or actor=="" else Color(.52,.56,.64,.9)
 		transition.tween_property(node,"modulate",tone,.22)
-		transition.tween_property(node,"position:y",58.0 if speaking else 64.0,.22)
+		transition.tween_property(node,"position:y",PORTRAIT_BASE_Y-6.0 if speaking else PORTRAIT_BASE_Y,.22)
 	if skipping and not was_read(): skipping=false
 	prompt.text="点击 / 空格 · 显示全文"
 	update_buttons()

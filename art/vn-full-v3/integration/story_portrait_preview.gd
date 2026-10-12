@@ -49,11 +49,13 @@ func capture_release() -> void:
 		var up := InputEventKey.new();up.keycode=code;Input.parse_input_event(up);await get_tree().process_frame
 	if hero!=2 or clothing!=2 or gesture!=2:push_error("Portrait preview keyboard routing failed");get_tree().quit(1);return
 	screen.dialogue.index=2; screen.dialogue.show_page(); screen.dialogue.reveal_all()
+	if screen.dialogue.transition.is_running():await screen.dialogue.transition.finished
 	for i in 8: await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var target: String=OS.get_executable_path().get_base_dir().get_base_dir().path_join("build/vn-full-native-v14.png")
 	var error := get_viewport().get_texture().get_image().save_png(target)
 	print("VN_FULL_RELEASE_CAPTURE hero=2 outfit=travel pose=crossed expression=joy error=",error)
+	print("VN_FULL_DIALOGUE_LAYOUT left=",screen.dialogue.left.position," right=",screen.dialogue.right.position)
 	get_tree().quit(error)
 
 func _exit_tree() -> void:
