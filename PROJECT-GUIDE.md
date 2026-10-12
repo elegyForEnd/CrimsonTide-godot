@@ -456,7 +456,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### S. 故事模式与连续探索地图
 
-2026-10-12完整立绘v14：story_portrait_art/view加载三位角色×三服饰×三姿势×八表情，共216张独立完整PNG，单TextureRect整张切换。对话立绘统一story_dialogue_ui.PORTRAIT_BASE_Y=235，说话时上移6；PORTRAIT_EXTENT=576×894（放大20%），保持两侧水平中心及腰部落点，头部到腰部露在对话框上方。初始摆放与说话过渡必须同用该常量，防止翻页回弹到旧坐标。原稿和提示词在art/vn-full-v3，运行资源assets/story/vn-full-v3；2160×3840为整图放大画布，原生尺寸逐图记录。作者目录不导入引擎，参见docs/rpg/VN-FULL-PORTRAITS.md；v13分层方案仅为旧版本历史。
+2026-10-12完整立绘v14：story_portrait_art/view加载三位角色×三服饰×三姿势×八表情，共216张独立完整PNG，单TextureRect整张切换。对话立绘统一story_dialogue_ui.PORTRAIT_BASE_Y=148，说话时上移6；PORTRAIT_EXTENT=696×1080（初版的约1.45倍），保持两侧水平中心及腰部落点，头部到腰部露在对话框上方。初始摆放与说话过渡必须同用该常量，防止翻页回弹到旧坐标。原稿和提示词在art/vn-full-v3，运行资源assets/story/vn-full-v3；2160×3840为整图放大画布，原生尺寸逐图记录。作者目录不导入引擎，参见docs/rpg/VN-FULL-PORTRAITS.md；v13分层方案仅为旧版本历史。
 
 Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_dialogue_ui；完整正文和明确说话人由story_dialogue_data处理。未署名引号保持旁白，不凭附近名字推断。
 
@@ -607,7 +607,7 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 立绘差分：三位角色×3服饰×3姿势×8表情＝216张完整图；导出画布2160×3840由原稿整图放大，多数原稿887×1774。缓存上限story_portrait_art.CACHE_LIMIT=10；不再加载面部图层。服饰与姿势只影响剧情表现，不改装备数值。
 
-Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_PER_SECOND=32、AUTO_DELAY=1.5秒（另加每字0.025秒）；立绘过渡0.22秒，PORTRAIT_BASE_Y=235（说话229）、PORTRAIT_EXTENT=576×894，回看180条、阅读标记4096个。
+Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_PER_SECOND=32、AUTO_DELAY=1.5秒（另加每字0.025秒）；立绘过渡0.22秒，PORTRAIT_BASE_Y=148（说话142）、PORTRAIT_EXTENT=696×1080，回看180条、阅读标记4096个。
 
 新命中层预算：combat_finish.MAX_CONTACTS=64、MAX_TRAILS=96；尾迹最多10点/130ms、600单位跳变清历史。combat_light_pool.CAPACITY=8，关闭实时阴影和GI烘焙。刀光接触揭示18ms、施法35ms，均不修改攻击前摇/冷却或伤害。
 
@@ -911,6 +911,8 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-12（同批提交）：按用户要求继续放大剧情立绘至696×1080，比上一版约大21%。保持水平中心和腰部落点，基准y=148/说话142，左右x=-43/787；对话框顶边裁切保留。重建v14并检查实机画面；同步§4.S/§6及测试报告。
 
 2026-10-12（同批提交）：按用户要求将剧情立绘放大20%至576×894，左右水平中心不变，基准y=235/说话229，保持腰部落点及对话框顶边裁切。重建v14并检查实际游戏截图；同步§4.S/§6与测试报告。
 
