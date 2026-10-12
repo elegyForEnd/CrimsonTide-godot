@@ -3,7 +3,15 @@ extends RefCounted
 
 signal saved
 
-var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":-1,"talents":[0,0,0],"volume":0.65,"voice_volume":0.9,"music_volume":0.7,"fullscreen":false,"best":0,"pocket":{"key":"white","items":[],"gw":4,"gh":4,"next":1},"bag_key":"white","bags":[{"key":"white","items":[],"next":1}],"unlocks":{},"attributes":{},
+var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs":0,"extracts":0,"hero":0,"gear":-1,"talents":[0,0,0],"volume":0.65,"voice_volume":0.9,"music_volume":0.7,
+	# 窗口设置（2026-10-12）：首次下载默认全屏，之后继承玩家的选择。
+	# ⚠️ 这四个默认值必须与 `scripts/window_settings.gd` 的
+	# `DEFAULT_FULLSCREEN` / `CUSTOM` / `DEFAULT_WINDOW` 逐字一致——启动器不加载
+	# `profile.gd`（首次下载时类缓存是空的），它靠 `window_settings.gd` 自己读
+	# `user://profile.json`，两处一旦分叉就会出现"设置页显示的"和"启动时应用的"
+	# 不是同一套。`tests/systems.gd window_defaults()` 守着这条。
+	"fullscreen":true,"window_preset":-1,"window_w":1600,"window_h":900,
+	"best":0,"pocket":{"key":"white","items":[],"gw":4,"gh":4,"next":1},"bag_key":"white","bags":[{"key":"white","items":[],"next":1}],"unlocks":{},"attributes":{},
 	# Contracts §4: meta currency and growth tree. Both are top level keys on
 	# purpose: server/app.py only whitelists `attributes`, and `apply_data` keeps
 	# version 1 so an old save is never skipped (a skipped parse wipes the profile).
@@ -11,6 +19,9 @@ var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs"
 	# `roguelike.record_daily()` through the session's `profile_data()` channel.
 	"controller_rumble":true,"controller_rumble_strength":1.0,"ashes":0,"growth":{},"daily":{}}
 const Homestead = preload("res://scripts/homestead.gd")
+# 窗口设置的键名/默认值/档位表都在这一个文件里，`boot.gd`（启动器）与
+# `main.gd`（设置页）共用它；这里只借它的常量做范围夹取，保证三处不会分叉。
+const WindowSettings = preload("res://scripts/window_settings.gd")
 # The daily record's key format (`daily:YYYY-MM-DD`) and record shape
 # (`{"best":int,"plays":int}`) are owned by `RogueDaily`; the profile reuses that
 # module instead of re-implementing the date rules a second time.
@@ -84,6 +95,14 @@ func apply_data(parsed) -> void:
 		for key in ["coins","xp","runs","extracts","hero","best","ashes","loot_value"]:
 			if parsed.get(key) is float or parsed.get(key) is int:
 				data[key] = maxi(0,int(parsed[key]))
+		# 窗口设置同样全是整数，也就同样过不了上面那张"类型相同才导入"的表（§11.18）：
+		# 不在这里显式归一，玩家选的分辨率档位每次启动都会被默认值冲掉。
+		for key in ["window_preset","window_w","window_h"]:
+			if parsed.get(key) is float or parsed.get(key) is int:
+				data[key] = int(parsed[key])
+		data.window_preset = clampi(data.window_preset,WindowSettings.CUSTOM,WindowSettings.FOLLOW_DESKTOP)
+		data.window_w = clampi(data.window_w,320,16384)
+		data.window_h = clampi(data.window_h,240,16384)
 		data.hero = clampi(data.hero,0,roster_size()-1)
 		# -1 is "nothing bought yet": the camp issue gear has to be paid for, so it
 		# cannot share the non-negative clamp every other counter uses. JSON hands

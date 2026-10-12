@@ -5,8 +5,8 @@
 ## A. `tools/check_class_cache.ps1`：新增「重复 class_name」硬失败
 
 ### 事故背景（本次要防的东西）
-验证轮把 HEAD 快照拷贝丢进 gitignore 的 `build/`（例如 `build/triage/head-session.gd`、
-`build/r0-verify/combat_visuals.HEAD.gd`），这些拷贝仍然声明 `class_name TideSession` /
+验证轮把 HEAD 快照拷贝丢进 gitignore 的 `build/`（例如（旧文件已清理）
+（旧文件已清理）），这些拷贝仍然声明 `class_name TideSession` /
 `CombatVisuals`。一次 `--import` 就会把**拷贝**登记进
 `.godot/global_script_class_cache.cfg`，真实现被静默遮蔽，于是"新接线全都不生效"。
 **重建缓存修不了重复**——它只会挑一个赢家，所以必须由脚本拒绝重建并点名冲突路径。
@@ -28,11 +28,11 @@ $ powershell -NoProfile -ExecutionPolicy Bypass -File tools\check_class_cache.ps
 [setup] Godot class cache is up to date (32 classes registered).
 exit=0
 ```
-**故意注入重复后**（临时创建 `build/_a_task/dup_probe.gd`，内容 `extends RefCounted` + `class_name TideSession`）：
+**故意注入重复后**（临时创建（旧文件已清理），内容 `extends RefCounted` + `class_name TideSession`）：
 ```
 [error] 1 class name(s) are declared by more than one script:
   TideSession:
-      build/_a_task/dup_probe.gd
+      （旧文件已清理）
       scripts/session.gd
 [error] A rebuild cannot fix this - Godot would register whichever copy it loads first,
 ...

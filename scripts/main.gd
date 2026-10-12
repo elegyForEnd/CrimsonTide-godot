@@ -59,6 +59,9 @@ const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
 const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
 # 开发者模式 · 判定框总览（环境变量 CRIMSON_DEV_RANGES 才创建，见 开发者模式启动.cmd / 任务.md）
 const DevRanges := preload("res://scripts/dev_ranges.gd")
+# 窗口模式/分辨率档位/玩家手拖的窗口尺寸：键名、默认值、档位表与屏幕夹取都在
+# `window_settings.gd`，启动器（`boot.gd`）和这里共用同一份真值（2026-10-12）。
+const WindowSettings := preload("res://scripts/window_settings.gd")
 # U1 · 构筑内容表（核心 / 铭刻 / 天赋的只读定义）。`main.gd` 以前从不直接读它，
 # 但"核心候选按武器家族过滤"这条规则（`rogue_build_ui.gd:117-118`）需要 `data.cores`，
 # 而写死 12 个 id 会随内容表漂移，所以按同一个 preload 规则引进来。
@@ -76,6 +79,7 @@ var session: TideSession
 var sound: TideSound
 var rogue_field: Control
 var dev_ranges                            # 开发者模式判定框总览（`scripts/dev_ranges.gd`）
+var dev_ranges_mounted := false           # 只有开发者模式挂过覆盖层，`dev_panel_hover()` 的前置判断
 var rogue_panel: Control
 var rogue_signature := ""
 var rogue_panel_context := ""
@@ -165,6 +169,14 @@ var rogue_build_preview: Control
 # 所以下一次打开行囊会按默认规则重新显示；同一次行囊会话里按 V 可以随时翻回来。
 # 它只是界面状态：不进快照、不新增同步字段、不碰 `s.rng`。
 var _rogue_build_preview_hidden := false
+# 窗口尺寸落盘的防抖（2026-10-12）：玩家拖窗口时系统会连续发尺寸事件，逐个
+# `save_profile()` 就是几百次写盘。`window_apply_stamp` 用来区分"这次尺寸变化是
+# 我们自己应用档位造成的"和"玩家真的拖了窗口"——前者不能反过来被记成自定义尺寸。
+# 用时间戳而不是布尔开关：全屏切换不一定发尺寸事件，布尔开关会一直卡在"刚应用过"。
+var window_save_timer: Timer
+var window_apply_stamp := 0.0
+# 设置页那排分辨率档位按钮；点选后就地改高亮，不重画整个面板。
+var settings_preset_buttons: Array = []
 var canvas: CanvasLayer
 var root: Control
 var page: Control
@@ -300,12 +312,10 @@ func _ready() -> void:
 	rogue_field.session=session
 	rogue_field.visible=false
 	root.add_child(rogue_field)
-	# 开发者模式（环境变量 CRIMSON_DEV_RANGES，见 开发者模式启动.cmd）才创建判定框总览。
-	# 只读覆盖层：正式游玩时这一段根本不执行，`scripts/dev_ranges.gd` 见工作区上一层 任务.md。
-	if DevRanges.enabled():
-		dev_ranges=DevRanges.new()
-		dev_ranges.main=self
-		rogue_field.add_child(dev_ranges)
+	# 开发者模式（环境变量 CRIMSON_DEV_RANGES，见 开发者模式启动.cmd / KAIFAZHEMOSHI.md）才创建
+	# 判定框总览。只读覆盖层：正式游玩时这一段根本不执行，连节点都不建（路牌 §11.48）。
+	attach_dev_ranges(rogue_field,DevRanges.Mode.ROGUE)
+	attach_dev_ranges(field,DevRanges.Mode.EXPEDITION)
 	var serif := FontVariation.new()
 	serif.base_font=load("res://assets/NotoSerifSC.ttf")
 	serif.variation_embolden=0.55
@@ -385,8 +395,9 @@ func _ready() -> void:
 	set_volume(float(profile.data.volume))
 	set_voice_volume(float(profile.data.voice_volume))
 	set_music_volume(float(profile.data.music_volume))
-	if profile.data.fullscreen:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	# 窗口模式/尺寸不在这里应用：autoload `GraphicsQuality._ready()` 已经在进程里最早
+	# 的时刻按 `window_settings.gd` 落过一次了（那样连开场 PV 都在玩家的窗口里播）。
+	# 这里再调一次只会让 `[window]` 诊断行打两遍、窗口被设置两次。
 	show_account()
 	if "--preview-story" in OS.get_cmdline_user_args():
 		go_story("user://story-preview.json")
@@ -417,6 +428,15 @@ func _ready() -> void:
 	if "--preview-game" in OS.get_cmdline_user_args():
 		session.solo(config())
 		session.launch(false,1729)
+	# 魔境（闯关）预览：直接开一局闯关，给开发者判定框覆盖层出图/试手感用（正式游玩不经过这里）。
+	if "--preview-rogue" in OS.get_cmdline_user_args():
+		var rogue_config := config()
+		rogue_config["mode"]="roguelike"
+		session.solo(rogue_config)
+		session.launch(false,1729)
+		var rogue_preview: Dictionary=session.players.get(session.my_id(),{})
+		if not rogue_preview.is_empty() and not rogue_preview.rogue_selection.is_empty():
+			session.perform(rogue_preview.id,"rogue_selection_take",{"id":rogue_preview.rogue_selection.id,"version":rogue_preview.rogue_selection.version,"index":0})
 	# Fills both containers so the dual-grid panel can be inspected without playing.
 	if "--preview-bag" in OS.get_cmdline_user_args():
 		session.solo(config())
@@ -436,8 +456,22 @@ func _ready() -> void:
 	if "--capture" in OS.get_cmdline_user_args():
 		await get_tree().create_timer(2.0).timeout
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://build/preview-"+page_name+".png")
+		# 魔境和搜打撤都落在 game 页，文件名按预览入口区分，免得互相覆盖。
+		var shot := "rogue" if "--preview-rogue" in OS.get_cmdline_user_args() else page_name
+		get_viewport().get_texture().get_image().save_png("res://build/preview-"+shot+".png")
 		get_tree().quit()
+
+## 启动器的水滴转场用：把整页界面从全透明淡进来（用户口径："登录页秒加载，但是慢慢
+## 淡出"——所以场景是立刻就绪的，只是先不可见）。只动 `root` 的 modulate，它下面挂着
+## 全部界面；世界（`field`）不在其中，标题/账号页本来也不显示世界。
+## 只有正常启动路径会调它：`--skip-intro` / `--capture` / `--preview-*` 那条老路不加
+## 转场（否则既有预览截图会抓到淡入中途的暗画面）。
+func fade_in_ui(seconds: float) -> void:
+	if root==null:
+		return
+	root.modulate.a=0.0
+	var tween := create_tween()
+	tween.tween_property(root,"modulate:a",1.0,maxf(0.01,seconds))
 
 func set_online_busy(value: bool) -> void:
 	online_ui_busy=value
@@ -493,7 +527,8 @@ func switch_profile(path: String) -> void:
 	set_volume(float(profile.data.volume))
 	set_voice_volume(float(profile.data.voice_volume))
 	set_music_volume(float(profile.data.music_volume))
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if profile.data.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
+	# 换存档/换账号之后，窗口设置跟着这一份存档走（不落盘：写盘时机由 save_profile 管）。
+	apply_window_setting(false)
 
 func show_storage() -> void:
 	if online_ui_busy or online_service.busy:
@@ -915,6 +950,23 @@ func camp_drop_on_floor(entry: Dictionary) -> void:
 	camp.activities.drop_entry(entry,Vector2(randf_range(-42,42),randf_range(-30,30)))
 
 ## Builds the camp once, then only ever toggles it.
+## 开发者判定框覆盖层（`scripts/dev_ranges.gd`）：每个表现层宿主各挂一份，投影由宿主提供。
+## 没有 `CRIMSON_DEV_RANGES` 时直接返回——正式游玩零节点、零可见、零行为影响；同一宿主
+## 重复调用安全（挂过就跳过）。四个宿主：魔境 rogue_field / 搜打撤 field / 营地 camp / 故事 story_screen。
+func attach_dev_ranges(host: Node, host_mode: int) -> void:
+	if not DevRanges.enabled() or host == null or not is_instance_valid(host):
+		return
+	if host.has_meta("dev_ranges"):
+		return
+	var overlay := DevRanges.new()
+	overlay.main=self
+	overlay.mode=host_mode
+	host.add_child(overlay)
+	host.set_meta("dev_ranges",overlay)
+	dev_ranges_mounted=true
+	if host_mode==DevRanges.Mode.ROGUE:
+		dev_ranges=overlay
+
 func ensure_camp() -> Control:
 	if camp and not camp.is_queued_for_deletion():
 		return camp
@@ -934,6 +986,8 @@ func ensure_camp() -> Control:
 	camp.pack_requested.connect(toggle_camp_pack)
 	camp.notice_requested.connect(notice_popup)
 	# The camp floor hands a picked-up item to the same containers a raid loots into.
+	if DevRanges.enabled():
+		attach_dev_ranges(camp,DevRanges.Mode.CAMP)
 	if camp.activities:
 		camp.activities.item_receiver=func(entry: Dictionary) -> bool:
 			return camp_accept_ground_item(entry)
@@ -988,6 +1042,7 @@ func go_story(save_path: String = "") -> void:
 		root.add_child(story_screen)
 		story_screen.sound=sound
 		story_screen.exit_requested.connect(show_title)
+		attach_dev_ranges(story_screen,DevRanges.Mode.STORY)
 	var account_slot := "user://story-%s.json" % str(profile.data.name).sha256_text().substr(0,16)
 	story_screen.start(account_slot if save_path=="" else save_path)
 	sound.set_scene("camp")
@@ -1661,7 +1716,8 @@ func _process(dt: float) -> void:
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
 	var blocked: bool=inventory_open or modal or field.map_open or (controller.active and controller.pointer_mode(self)) or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
-	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim()),"fire_blocked":blocked or (not controller.active and mouse_over_button()),"fire":not blocked and Input.is_action_pressed("fire") and (controller.active or not mouse_over_button()),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and (Input.is_action_pressed("sprint") or controller.sprinting()),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
+	var dev_hover: bool=dev_panel_hover()
+	session.local_input={"move":Vector2.ZERO if blocked else Input.get_vector("left","right","up","down"),"aim":controller.aim(rogue_field.aim() if session.roguelike.active(session) else field.aim()),"fire_blocked":blocked or dev_hover or (not controller.active and mouse_over_button()),"fire":not blocked and not dev_hover and Input.is_action_pressed("fire") and (controller.active or not mouse_over_button()),"interact":not blocked and Input.is_action_pressed("interact"),"sprint":not blocked and (Input.is_action_pressed("sprint") or controller.sprinting()),"flask_held":not inventory_open and Input.is_action_pressed("heal")}
 	if session.roguelike.active(session):
 		session.local_input["aim_point"]=session.players.get(session.my_id(),{}).get("p",Vector2.ZERO)+controller.direction*600.0 if controller.active else mouse_point()+rogue_field.camera_offset()
 	time_ui+=dt
@@ -1695,6 +1751,17 @@ func mouse_over_button() -> bool:
 	var hovered := get_viewport().gui_get_hovered_control()
 	return hovered is Button
 
+## 开发者覆盖层（判定框总览）的面板是否吃掉了这次点击。勾选框本身是 Button（上面那个函数
+## 已经能认），但面板的空白处/滚动条不是，不挡的话"点一下面板"会顺带蓄力一刀。正式游玩时
+## 这个分组里一个节点都没有，函数恒为 false（见路牌 §11.48）。
+func dev_panel_hover() -> bool:
+	if not dev_ranges_mounted:
+		return false
+	for node in get_tree().get_nodes_in_group("dev_ranges"):
+		if node.has_method("captures_mouse") and node.captures_mouse():
+			return true
+	return false
+
 ## Is the bag controller listening to the mouse on this page? The rogue mode drives its own
 ## bag (`rogue_inventory.gd`), so this controller steps aside — but only **on the raid page**.
 ## `raid.mode` stays "roguelike" for the whole session once the player picks 魔境, so a camp
@@ -1713,6 +1780,9 @@ func _notification(what: int) -> void:
 		controller.release_pointer(self)
 	if what==NOTIFICATION_WM_WINDOW_FOCUS_OUT and is_instance_valid(session) and session.running:
 		session.action("attack_cancel")
+	# 玩家拖出来的窗口尺寸要继承到下一次启动（见 note_window_size()）。
+	if what==NOTIFICATION_WM_SIZE_CHANGED:
+		note_window_size()
 
 func _input(event: InputEvent) -> void:
 	if page_name=="story": return
@@ -4502,7 +4572,7 @@ func leave_to_title() -> void:
 	show_title()
 
 func show_settings() -> void:
-	var at := modal_box("设置",Vector2(740,690))
+	var at := modal_box("设置",Vector2(740,740))
 	label(overlay,"主音量",at+Vector2(37,112),20)
 	var slider := HSlider.new()
 	slider.position=at+Vector2(185,127)
@@ -4535,17 +4605,25 @@ func show_settings() -> void:
 	overlay.add_child(music_slider)
 	button(overlay,"切换全屏 / 窗口",at+Vector2(37,353),Vector2(665,56),func():
 		profile.data.fullscreen=not profile.data.fullscreen
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if profile.data.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
-		profile.save_profile()
+		apply_window_setting()
 	)
+	# 窗口分辨率档位（2026-10-12）。点一下先记住，窗口态立刻生效、全屏态等切回窗口
+	# 再用。档位表、屏幕夹取、键名全在 `window_settings.gd`，这里不写第二套阈值。
+	label(overlay,"窗口分辨率（窗口模式下生效）",at+Vector2(37,420),20)
+	settings_preset_buttons.clear()
+	for i in WindowSettings.PRESETS.size()+1:
+		var index := i if i<WindowSettings.PRESETS.size() else WindowSettings.FOLLOW_DESKTOP
+		settings_preset_buttons.append(button(overlay,WindowSettings.preset_label(index),
+			at+Vector2(37+i*135,446),Vector2(126,38),choose_window_preset.bind(index),
+			int(profile.data.window_preset)==index,14))
 	var rumble := CheckButton.new()
 	rumble.text="手柄震动 · 强烈战斗反馈"
-	rumble.position=at+Vector2(37,420)
+	rumble.position=at+Vector2(37,498)
 	rumble.button_pressed=profile.data.get("controller_rumble",true)
 	rumble.toggled.connect(func(value: bool): profile.data.controller_rumble=value; profile.save_profile(); controller.preview_time=0.0; controller.stop())
 	overlay.add_child(rumble)
 	var rumble_slider := HSlider.new()
-	rumble_slider.position=at+Vector2(350,430)
+	rumble_slider.position=at+Vector2(350,508)
 	rumble_slider.size=Vector2(240,30)
 	rumble_slider.min_value=0.0
 	rumble_slider.max_value=1.0
@@ -4553,15 +4631,61 @@ func show_settings() -> void:
 	rumble_slider.value=profile.data.get("controller_rumble_strength",1.0)
 	rumble_slider.value_changed.connect(func(value: float): profile.data.controller_rumble_strength=value; profile.save_profile())
 	overlay.add_child(rumble_slider)
-	button(overlay,"试震",at+Vector2(605,420),Vector2(95,40),func():
+	button(overlay,"试震",at+Vector2(605,498),Vector2(95,40),func():
 		if controller.device>=0 and profile.data.get("controller_rumble",true):
 			var power := float(profile.data.get("controller_rumble_strength",1.0))
 			controller.preview_time=0.4
 			Input.start_joy_vibration(controller.device,0.9*power,power,0.4)
 	)
-	label(overlay,"手柄：左摇杆移动 / 右摇杆瞄准；菜单十字键选择，A确认，B返回；右摇杆光标",at+Vector2(37,483),15,MUTED)
-	label(overlay,"成长自动保存；标题页「账号 / 存档」可设置云同步。",at+Vector2(37,520),15,MUTED)
-	button(overlay,"画面质量 / 超分辨率",at+Vector2(37,558),Vector2(665,42),show_graphics_settings)
+	label(overlay,"手柄：左摇杆移动 / 右摇杆瞄准；菜单十字键选择，A确认，B返回；右摇杆光标",at+Vector2(37,561),15,MUTED)
+	label(overlay,"成长自动保存；标题页「账号 / 存档」可设置云同步。",at+Vector2(37,598),15,MUTED)
+	button(overlay,"画面质量 / 超分辨率",at+Vector2(37,636),Vector2(665,42),show_graphics_settings)
+
+## 玩家点了某个分辨率档位：记住它 → 立刻应用 → 把高亮挪到新档位。
+## 不重画整个设置页（`modal_box()` 不会清空 overlay，重画会叠一层）。
+func choose_window_preset(index: int) -> void:
+	profile.data.window_preset=index
+	apply_window_setting()
+	for i in settings_preset_buttons.size():
+		var b = settings_preset_buttons[i]
+		if is_instance_valid(b):
+			b.primary=i==index
+
+## 把当前存档里的窗口设置应用到真实窗口，`save` 为真时顺手落盘。
+## 全屏/档位/尺寸怎么算全在 `window_settings.gd`；这里只管"谁在什么时候调它"。
+func apply_window_setting(save: bool = true) -> void:
+	if WindowSettings.skip_window_control():
+		return
+	window_apply_stamp=Time.get_ticks_msec()/1000.0
+	WindowSettings.apply(bool(profile.data.fullscreen),int(profile.data.window_preset),
+		int(profile.data.window_w),int(profile.data.window_h))
+	if save:
+		profile.save_profile()
+
+## 玩家用鼠标拖出来的窗口尺寸也属于"玩家设置"，要继承到下一次启动。
+## 拖拽期间系统会连发尺寸事件，所以只更新内存、由 `window_save_timer` 防抖落盘。
+func note_window_size() -> void:
+	if Time.get_ticks_msec()/1000.0-window_apply_stamp<0.4:
+		return
+	if WindowSettings.skip_window_control():
+		return
+	if bool(profile.data.fullscreen):
+		return
+	var size := DisplayServer.window_get_size()
+	if size.x<=0 or size.y<=0:
+		return
+	if size==Vector2i(int(profile.data.window_w),int(profile.data.window_h)):
+		return
+	profile.data.window_w=size.x
+	profile.data.window_h=size.y
+	profile.data.window_preset=WindowSettings.preset_for_size(size)
+	if window_save_timer==null:
+		window_save_timer=Timer.new()
+		window_save_timer.one_shot=true
+		window_save_timer.wait_time=0.6
+		window_save_timer.timeout.connect(func(): profile.save_profile())
+		add_child(window_save_timer)
+	window_save_timer.start()
 
 func show_graphics_settings() -> void:
 	var at := modal_box("画面设置",Vector2(740,620))

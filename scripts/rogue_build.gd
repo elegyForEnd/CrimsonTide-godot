@@ -568,7 +568,10 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 	# 引魂：主人自己打中的怪就是给灵体的索敌指令（普攻 / 战技 / 技能）。跳伤（燃烧/出血）
 	# 根本不走这里，灵体自身的召唤伤害与其它 proc 走 `depth>0`，上面已经 return 了；
 	# 0 伤害的命中也在同一个早退里被排除 —— 与"不算指令"的口径一致。
-	if str(ctx.get("kind","")) in ["attack","art","skill"]: p["soul_focus"]=e.id
+	# 2026-10-11：只在**该玩家真的有活着的灵体**时才记"主人点名的目标"。原来只要打中怪就写，
+	# 于是没有引魂词条的角色也会留下 soul_focus —— 判定框覆盖层据此误报"主人索敌圈"，
+	# 而灵体循环（下面 `for soul in p.build_summons`）本来是空的，这一写纯属白做。
+	if str(ctx.get("kind","")) in ["attack","art","skill"] and not p.get("build_summons",[]).is_empty(): p["soul_focus"]=e.id
 	for input in p.build_inputs:
 		if input.get("root","")==ctx.get("root","?"): input["hit"]=true
 	if first: hero_effect(s,p,e,ctx)
@@ -960,6 +963,9 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 		soul_step(s,p,soul,dt)
 		if soul.time<=0:
 			p.build_summons.remove_at(i)
+			# 最后一只灵体消失时把"主人点名的目标"一起清掉：没有灵体就没有指令对象，
+			# 否则下次召唤出来的灵体会先追一只早就过期的目标（2026-10-11，与上面 hit_event 同一口径）。
+			if p.build_summons.is_empty(): p.soul_focus=-1
 			if rank(p,84)>0 and ready(s,p,"T084",5): mana(s,p,r(p,84,[1,2,3]))
 	for i in range(p.build_fields.size()-1,-1,-1):
 		var zone: Dictionary=p.build_fields[i]

@@ -12,4 +12,4 @@
 
 美术在 `assets/bosses/wild/`，最终提示词在 `generation-prompts.json`。每只新 Boss 各有 7 个独立音效，均由项目已署名的 CC0 录音重新分层剪辑，来源和处理见 `assets/audio/bosses/wild-boss-sfx-manifest.json`。音乐 `earth.ogg`、`storm.ogg`、`abyss.ogg` 通过用户指定的 Apilio Suno API 生成并本地循环播放，请求及返回模型写在 `assets/audio/music/music-manifest.json`，原始 MP3 和回执在 Git 忽略的 `build/boss-music-source/`。游戏运行无需 API 密钥。
 
-`tests/map_boss_roster.gd` 覆盖随机阵容与任意两名可选 Boss 的隐藏终局条件；`tests/wild_bosses.gd` 覆盖异兽落点时序、安全缺口、音频映射与终局转场；`tests/wild_bosses_visual.gd` 生成三张渲染截图至 `build/wild-boss-*.png`。
+`tests/map_boss_roster.gd` 覆盖随机阵容与任意两名可选 Boss 的隐藏终局条件；`tests/wild_bosses.gd` 覆盖异兽落点时序、安全缺口、音频映射与终局转场；`tests/wild_bosses_visual.gd` 生成三张渲染截图至（旧截图已清理）。

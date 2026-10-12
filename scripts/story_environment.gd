@@ -513,13 +513,18 @@ func sync(focus: Vector2, dt: float = 0.0) -> void:
 		item.amount=move_toward(float(item.get("amount",1.0)),target,dt*4.0) if dt>0 else target
 		kit.reveal(item.roof,0.0 if item.get("ruined",false) else item.amount); kit.reveal(item.front,item.amount)
 		if item.get("side")!=null: kit.reveal(item.side,item.amount)
+	# Reveal the character behind a foreground tree or tall wall; collision stays.
+	# The focus projection is constant for the whole loop, and the cheap distance and
+	# height rejects keep most occluders away from the camera projection entirely.
+	var focus_projected: Vector2=world.project(focus)
 	for item in occluders:
 		var distance: float=item.p.distance_to(focus)
-		# Reveal the character behind a foreground tree or tall wall; collision stays.
-		var projected: Vector2=world.project(item.p)-world.project(focus)
-		var blocked: bool=distance<320 and projected.y>0 and absf(projected.x)<95 and item.height>140
-		var amount := move_toward(float(item.get("amount",1.0)),0.0 if blocked else 1.0,dt*4.0) if dt>0 else (0.0 if blocked else 1.0)
-		item.amount=amount; kit.reveal(item.node,amount)
+		var target := 1.0
+		if distance<320 and float(item.height)>140:
+			var projected: Vector2=world.project(item.p)-focus_projected
+			if projected.y>0 and absf(projected.x)<95: target=0.0
+		item.amount=move_toward(float(item.get("amount",1.0)),target,dt*4.0) if dt>0 else target
+		kit.reveal(item.node,item.amount)
 	for light in lights: light.visible=Vector2(light.global_position.x,light.global_position.z).distance_to(focus*.01)<16
 
 func camp_details(r) -> void:
@@ -773,4 +778,5 @@ func release_resources() -> void:
 	for path in pending_paths:
 		if ResourceLoader.load_threaded_get_status(path)!=ResourceLoader.THREAD_LOAD_INVALID_RESOURCE: ResourceLoader.load_threaded_get(path)
 	pending_paths.clear()
+	kit.release_reveal_cache()
 	kit.scenes.clear(); kit.materials.clear(); kit.vendor_tree_mesh=null

@@ -34,7 +34,7 @@
 - headless `tests/rogue_full_bag.gd` → **22 checks / 0 failures**；
   **负向对照**：临时把 `abandon` 改成空实现 + 不发布原因 → **22/5 failures**（正好是守住新行为的 5 条），随后已还原。
 - 视觉 `tests/rogue_full_bag_visual.gd` → **8 checks / 0 failures**，
-  截图 `build/rogue-full-bag-notice.png`：深色条上写明「备用行囊已满 12 件 · …或按『放弃本次』跳过」，
+  截图（旧截图已清理）：深色条上写明「备用行囊已满 12 件 · …或按『放弃本次』跳过」，
   右下角按钮为「放弃本次 · 不领取」。
 - 回归（当时）：`rogue_build_progression 727/0`、`rogue_hooks_roguelike 85/0`、`final_e2e_roguelike 120/0`、
   `rogue_ui 163/0`、`rogue_wiring 122/0`、`systems 10812/0`、`roguelike 153/0`、`rogue_build_pack exit 0`。

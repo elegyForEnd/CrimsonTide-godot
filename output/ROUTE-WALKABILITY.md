@@ -24,7 +24,7 @@ for long_room in [false,true]:
 前进；路线一旦指向被挡的地方，走位就停在那里。判定的 `blocked()` 同时考虑**地面多边形边界**与**障碍物**
 （`rogue_map.gd:129-138`）。
 
-## 2. 实测（探针 `build/route_probe*.gd`，均在 gitignore 内）
+## 2. 实测（探针（旧文件已清理），均在 gitignore 内）
 
 区域 `f1-a2`，`map.generate(1742)` + `configure(0,2,long_room)`：
 
@@ -54,15 +54,15 @@ for long_room in [false,true]:
 （路径由地图栅格 BFS 求出，再逐格用 `map.move()` 重放，`stalled=false`。）
 
 ### 可视化取证（俯视图，绿=可走、橙=只有 15px 能过、红=20px 贴边带、蓝=障碍、白=分叉口、黄=两个门）
-- `build/route_compact.png`
-- `build/route_long.png`
+- （旧截图已清理）
+- （旧截图已清理）
 
 图上是**正常的 Y 形分叉**：主走廊向右分出上下两条支路，两条支路各自连通到主走廊；两个黄点各在一条
 支路末端。旧路点落在两分支之间的黑色楔形上。
 
 ### 断言"会不会咬人"（可证伪性，防恒真）
-- 在分叉口人为横一道墙 → 两条分支 BFS 皆 **NO PATH**（`build/route_probe3.gd`）。
-- 人为 pinch 走廊 → `bottleneck=0.00`、`body15_passes=false`、`margin20_check=false`（`build/route_probe4.gd`）。
+- 在分叉口人为横一道墙 → 两条分支 BFS 皆 **NO PATH**（（旧文件已清理））。
+- 人为 pinch 走廊 → `bottleneck=0.00`、`body15_passes=false`、`margin20_check=false`（（旧文件已清理））。
 
 ## 3. 改了什么（原文 → 新断言 → 理由）
 
@@ -103,7 +103,7 @@ for long_room in [false,true]:
 ## 6. 写入面 / 未做
 
 - 改：`tests/roguelike_routes.gd`（唯一既存文件）。
-- 新增（gitignore 内 scratch）：`build/route_probe.gd`、`build/route_probe2.gd`、`build/route_probe3.gd`、`build/route_probe4.gd`、`build/route_compact.png`、`build/route_long.png`。
+- 新增（gitignore 内 scratch）：（旧文件已清理）。
 - 新增报告：`output/ROUTE-WALKABILITY.md`（本文件）。
 - **未改** `scripts/rogue_map.gd`（几何无缺陷，不需要动）、`scripts/roguelike.gd`、`scripts/session.gd`、`scripts/rogue_graph.gd`、`tools/run_rogue_gate.ps1`、`assets/`。未 `git commit`。
 - 未做：把 `roguelike_routes` 新基线数字登记进 `tools/run_rogue_gate.ps1`（该文件有并发轮次在改，按派单没碰）——**新基线是 `roguelike_routes 5234/0`**，登记时请用这个数。

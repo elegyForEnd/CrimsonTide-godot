@@ -3,6 +3,8 @@ const Choreography = preload("res://scripts/boss_choreography.gd")
 const Variants = preload("res://scripts/rogue_variants.gd")
 const Art = preload("res://scripts/boss_effect_art.gd")
 const Mirror = preload("res://scripts/rogue_mirror.gd")
+# 尸体时长真值所在（Session.CORPSE_LINGER / CORPSE_FADE），只在脚本级取常量。
+const Session = preload("res://scripts/session.gd")
 
 # Phase one keeps the original five-move rotation byte for byte; phase two opens
 # the two authored finishers (indices 5 and 6) that only exist past half health.
@@ -529,11 +531,13 @@ func defeated(s, e: Dictionary) -> void:
 	s.broadcast_combat({"kind":"rogue-boss-fall","id":e.id,"p":e.p,"floor":e.rogue_skin,"art_key":Art.identity(e),"duration":1.3})
 	s.broadcast_audio(cue(e,-1,"fall"),e)
 	s.message.emit(e.boss_name+"已击败")
-	# Keep an animated death silhouette, with no remaining damage.
+	# Keep an animated death silhouette, with no remaining damage. Linger and fade come
+	# from the single source of truth on the session script itself (Session.CORPSE_*),
+	# not from the instance, so test doubles need not implement them.
 	# 尸体也带上身份：新守层者（bell/earth/abyss）的身体立绘按身份取帧；缺少 boss_art 的
 	# 旧档/旧流程回落到 floor。不新增 raid 键，只在既有条目里加字段。
 	s.raid["rogue_corpses"]=[{"p":e.p,"floor":e.rogue_skin,"boss_art":int(e.get("boss_art",e.rogue_skin)),
-		"art_key":str(e.get("art_key","")),"time":1.2,"total":1.2,"facing":e.facing}]
+		"art_key":str(e.get("art_key","")),"time":Session.CORPSE_LINGER,"total":Session.CORPSE_LINGER,"fade":Session.CORPSE_FADE,"facing":e.facing}]
 	for other in s.enemies:
 		if other.get("rogue_summoned",false): other.hp=0.0
 	effects.clear()

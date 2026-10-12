@@ -25,8 +25,8 @@ Use case: background-extraction. Edit target: provided 4x4 gothic inventory item
 
 ## 验证
 
-界面回退后再次运行 `tests/ui.gd`，结果为 `UI INTEGRATION: 0 failures`，并检查营地截图。回退验证日志：`build/ui-rollback-test.log`。
+界面回退后再次运行 `tests/ui.gd`，结果为 `UI INTEGRATION: 0 failures`，并检查营地截图。回退验证日志：（旧文件已清理）。
 
-运行 Godot 原生窗口下的 tests/ui.gd，最终结果：UI INTEGRATION: 0 failures。检查了营地与物品详情截图，覆盖原测试中的选择、拖拽、旋转、装备、地图、结算和再次出发。日志：build/ui-art-test-final.log；截图：build/ui-camp.png、build/ui-inventory-selected.png。
+运行 Godot 原生窗口下的 tests/ui.gd，最终结果：UI INTEGRATION: 0 failures。检查了营地与物品详情截图，覆盖原测试中的选择、拖拽、旋转、装备、地图、结算和再次出发。日志：（旧文件已清理）；截图：build/ui-camp.png、build/ui-inventory-selected.png。
 
 编辑器导入时，项目原有 pv 目录中的两份 WAV 报非 PCM 格式错误；新 UI 纹理导入与 UI 测试均成功。此次未修改这些 PV 音频。

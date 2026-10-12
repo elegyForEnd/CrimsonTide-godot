@@ -17,6 +17,20 @@ const SPEED_SCALE := [1.0,1.04,1.08,1.12]
 const DROP_CHANCE := [0.42,0.54,0.66,0.78]
 const RESIDENTS := ["食尸兔 · 丧钟蛾","哀钟灵 · 禁卷枭","骨鹿 · 石像鬼 · 月碑巨像","刑偶 · 灾狐 · 血棘妖","冥水母 · 溺钟灵 · 沉钟巨骸","腐羽狮鹫 · 刽子手 · 血棺守卫"]
 const TRAITS := ["食尸兔 / 丧钟蛾 · 散射","哀钟灵 / 禁卷枭 · 三连咒","骨鹿 / 石像鬼 / 巨像 · 冲锋与晶脉","刑偶 / 灾狐 / 血棘妖 · 地刺","冥水母 / 溺钟灵 / 巨骸 · 回旋钟波","腐羽狮鹫 / 刽子手 / 血棺 · 轰击"]
+## 敌人 AI 的索敌半径与起手射程（2026-10-11 从 update() 的内联字面量收拢：开发者判定框
+## 覆盖层 `scripts/dev_ranges.gd` 必须与 AI 读同一处，别在别处再抄一份副本）。
+const SEEK_RANGE := 470.0
+
+## 每种栖息生物的起手射程（原 update() 里的 if 链，值一字未改）。
+static func attack_reach(kind: int) -> float:
+	if kind==7: return 280.0
+	if kind==11: return 260.0
+	if kind==12: return 210.0
+	if kind==13: return 185.0
+	if kind==14: return 145.0
+	if kind==15: return 285.0
+	if kind==16: return 230.0
+	return 340.0
 
 static func block_at(world, pos: Vector2) -> int:
 	for i in world.sites.size():
@@ -133,7 +147,7 @@ static func update(s, e: Dictionary, dt: float) -> void:
 				s.emit_effect("seal",e.attack_point)
 	else:
 		var target: Dictionary={}
-		var distance := 470.0
+		var distance := SEEK_RANGE
 		for p in s.players.values():
 			if p.status=="active" and e.p.distance_to(p.p)<distance:
 				target=p
@@ -141,13 +155,7 @@ static func update(s, e: Dictionary, dt: float) -> void:
 		if not target.is_empty():
 			var direction: Vector2=(target.p-e.p).normalized()
 			if absf(direction.x)>0.05: e.facing=signf(direction.x)
-			var reach := 280.0 if kind==7 else 340.0
-			if kind==11: reach=260.0
-			elif kind==12: reach=210.0
-			elif kind==13: reach=185.0
-			elif kind==14: reach=145.0
-			elif kind==15: reach=285.0
-			elif kind==16: reach=230.0
+			var reach := attack_reach(kind)
 			if distance<reach and e.cd<=0 and s.ruins.clear_line(e.p,target.p):
 				e.attack_total=WINDUP[kind]+(0.9 if kind>=14 else (0.75 if kind==11 else 0.6))
 				e.attack_time=e.attack_total

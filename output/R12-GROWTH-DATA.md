@@ -88,7 +88,7 @@ spent_on / total_spent / reset_cost / reset / effects / ash_bonus / earn_for_run
 | `tests/systems.gd` | SYSTEM TESTS 10812 / 0 | 10812 / 0 | ✅ 一致 |
 | `tests/expedition.gd` | EXPEDITION 79 / 0 | 79 / 0 | ✅ 一致 |
 
-原始日志留在 `build/r12/run4.txt`、`build/r12/reg-<test>.txt`（`build/` 被 gitignore，磁盘可见）。
+原始日志留在（旧文件已清理）`build/r12/reg-<test>.txt`（`build/` 被 gitignore，磁盘可见）。
 `rogue_build_progression` / `roguelike_seven_rooms` / `roguelike_routes` 按派单**不充当门禁**（R5 正在改口径）；
 `rogue_build_rules`（崩溃挂死）与 `rogue_build_pack`（资产缺失）按基线**豁免**。
 

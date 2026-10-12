@@ -1,6 +1,6 @@
 # 武器特效：按实际动作与弹体选图
 
-2026-10-07 全量验收：69 把武器均已逐页人工核对，记录见 [全部武器核对清单](WEAPON-FULL-AUDIT.md)。最新素材包括重刃 v3、震地 v2；熔炉巨锤和星陨石槌使用身体中心冲击环。战技使用自己的实际前摇，精确出手边界按秒数判定。新版试玩仍为 `build/CrimsonTide-WeaponTipFixed.exe`，逐把预览入口 `build/weapon-full-audit/index.html`。
+2026-10-07 全量验收：69 把武器均已逐页人工核对，记录见 [全部武器核对清单](WEAPON-FULL-AUDIT.md)。最新素材包括重刃 v3、震地 v2；熔炉巨锤和星陨石槌使用身体中心冲击环。战技使用自己的实际前摇，精确出手边界按秒数判定。新版试玩仍为（旧文件已清理），逐把预览入口（旧文件已清理）。
 
 本版修正上一版把不同武器画成相似能量波、出手和弹体共用主图的问题。当前主画面使用内置 ImageGen 制作的 32 张独立透明方图，按实际用途组合：10 张近战动作轨迹、11 张飞行弹体、2 张出手闪光、1 张直线光束、8 张范围爆发。完整原始图片、尺寸、透明边界、SHA256 和生成提示词在 `assets/combat/imagegen-mechanics/manifest.json` 与 `prompts/`。
 
@@ -45,8 +45,8 @@
 
 本轮通过内置 ImageGen 重画两张原始透明图：`assets/combat/imagegen-mechanics/motion_double_slash_v3.png`（朝前交汇的双刃刀迹）、`assets/combat/imagegen-mechanics/motion_heavy_overhead_v2.png`（方向统一的重刃终结切痕）。完整生成提示词位于同目录 `prompts/` 下的同名 `.txt`，来源、有效边界与 SHA256 记在 `manifest.json`。旧图保留，原始 RGBA 像素直接复制。
 
-新增 `tests/weapon_mechanic_contact.gd`：真实渲染器、七种刀迹、三段连击、八方向、三个播放时刻及带斜切的地面投影，共 505 项亮刃接触检查。`weapon_stroke_directions.gd` 扩展为全部远征/闯关近战武器，验证真实剑尖契约。`tests/weapon_mount_preview.gd` 生成八种动作四方向角色预览 `build/weapon-mount-repaired.png`。新版试玩为 `build/CrimsonTide-WeaponTipFixed.exe`。
+新增 `tests/weapon_mechanic_contact.gd`：真实渲染器、七种刀迹、三段连击、八方向、三个播放时刻及带斜切的地面投影，共 505 项亮刃接触检查。`weapon_stroke_directions.gd` 扩展为全部远征/闯关近战武器，验证真实剑尖契约。`tests/weapon_mount_preview.gd` 生成八种动作四方向角色预览（旧截图已清理）。新版试玩为（旧文件已清理）。
 
 `tests/weapon_mechanics.gd` 检查实际普攻/战技事件、弹体数量、选图、落点和判定尺寸；`tests/weapon_mechanics_visual.gd` 以真实 GPU 检查箭/针/枪的细长轮廓、身体中心、空中高度、光束相机稳定性与亮芯可见性。既有武器身份、释放挂点、强化、核心、战斗与法术回归继续执行。原图审计为 `tools/audit_weapon_mechanics.py`。
 
-新旧原图对照：`build/weapon-imagegen-redraw.png`（运行 `tests/weapon_redraw_preview.gd` 重新生成）。选图对照：`build/weapon-mechanics-comparison.png`；动态对照：`build/weapon-mechanics-motion.gif`；实际战场截图：`build/weapon-vfx-battle-*.png`。运行 `tests/weapon_mechanics_preview.gd -- --motion-preview` 可重新生成 viewport 帧，再直接编码为 GIF。最新试玩：`build/CrimsonTide-WeaponImageRedraw.exe`，测试记录见 `TEST-REPORT.md`。
+新旧原图对照：（旧截图已清理）（运行 `tests/weapon_redraw_preview.gd` 重新生成）。选图对照：（旧截图已清理）；动态对照：（旧截图已清理）；实际战场截图：（旧截图已清理）。运行 `tests/weapon_mechanics_preview.gd -- --motion-preview` 可重新生成 viewport 帧，再直接编码为 GIF。最新试玩：（旧文件已清理），测试记录见 `TEST-REPORT.md`。

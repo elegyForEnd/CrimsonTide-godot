@@ -35,7 +35,7 @@
 
 引擎（**不在 PATH**）：`D:\game\CrimsonTide-godot\Godot_v4.7.2-stable_win64_console.exe`
 命令模板：`& <exe> --headless --path . --script tests/<name>.gd`
-日志：`build/r9-curses/*.out.txt` / `*.err.txt`（`final-*` 是本轮最后一次复跑）
+日志：（旧文件已清理） / `*.err.txt`（`final-*` 是本轮最后一次复跑）
 
 | 测试 | 结果 | errorLines |
 | --- | --- | --- |

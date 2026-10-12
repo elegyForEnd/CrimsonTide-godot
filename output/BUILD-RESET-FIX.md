@@ -40,7 +40,7 @@
 3. `s.results[1]` 越界抛运行期错误 → `run()` 被中断 → **没有任何 `quit()`** → SceneTree 空转到被 harness 杀掉。
 
 另外老驱动 `tests/rogue_reward_flow.gd:claim()` 内部是 `while s.raid.phase=="rogue_reward"`，它在下面这条
-链路上会**无限空转**（探针 `build/fix-probe4.gd` 逐步落盘实测，角色停在 `stash=12`）：
+链路上会**无限空转**（探针（旧文件已清理）逐步落盘实测，角色停在 `stash=12`）：
 
 ```
 rogue_selection_take → apply_offer → equip()

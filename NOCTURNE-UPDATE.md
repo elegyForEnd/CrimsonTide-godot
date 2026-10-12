@@ -36,6 +36,6 @@
 - `tests/nocturne_art.gd`：原图透明度、图集尺寸、十二帧非空、边距和落脚点。
 - `tests/ecology.gd` 及原有 enemies / combat / map / city / expedition / systems 回归。
 - `tests/ecology_network.gd`：双进程本机同步九种新增生态怪物、栖息区与攻击落点。
-- `tests/nocturne_visual.gd`：实际 OpenGL 游戏画面、三种新攻击预警及地图。输出 `build/nocturne-roster-0.png`、`nocturne-roster-6.png`、`nocturne-roster-11.png`、`nocturne-telegraphs.png`、`nocturne-habitats.png`。
+- `tests/nocturne_visual.gd`：实际 OpenGL 游戏画面、三种新攻击预警及地图。输出（旧截图已清理）`nocturne-roster-6.png`、`nocturne-roster-11.png`、`nocturne-telegraphs.png`、`nocturne-habitats.png`。
 
 独立可执行文件：`dist/CrimsonTide-Nocturne.exe`。

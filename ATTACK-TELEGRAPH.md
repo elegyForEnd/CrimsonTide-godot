@@ -46,10 +46,10 @@ Godot_v4.7.2-stable_win64_console.exe --path . --script tests/attack_telegraph_v
 
 | 文件 | 内容 |
 | --- | --- |
-| `build/attack-telegraphs.png` | 17 个种族 × 4 个前摇阶段的独立画板 |
-| `build/attack-telegraph-timing.png` | 单个种族从前摇开头到锁死的完整节奏 |
-| `build/attack-telegraph-field.png` | 真实 2.5D 场景内的前摇 |
-| `build/attack-telegraph-release.png` | 同一批敌人的释放爆闪 |
+| （旧截图已清理） | 17 个种族 × 4 个前摇阶段的独立画板 |
+| （旧截图已清理） | 单个种族从前摇开头到锁死的完整节奏 |
+| （旧截图已清理） | 真实 2.5D 场景内的前摇 |
+| （旧截图已清理） | 同一批敌人的释放爆闪 |
 
 ## 已知取舍
 

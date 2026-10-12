@@ -55,7 +55,7 @@
 ## 验证
 
 - `tests/attributes.gd`：存档迁移、等级点预算、软上限、抗性、掉率、补正、蓝量、21 把武器战技及墙体遮挡。
-- `tests/attributes_ui.gd`：加点按钮、右键释放、蓝条及背包/菜单输入隔离，截图写入 `build/attributes-forge.png` 和 `build/attributes-hud.png`。
+- `tests/attributes_ui.gd`：加点按钮、右键释放、蓝条及背包/菜单输入隔离，截图写入（旧截图已清理）。
 - `tests/server_client.gd` 与 `tests/test_server.py`：真实服务器和四客户端验证属性、蓝量、战技冷却和战技事件同步。
 - `tests/test_attributes_profile.py`：云存档属性预算及格式验证，兼容未含 attributes 的旧存档。
 

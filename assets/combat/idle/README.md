@@ -13,4 +13,4 @@ These are 100 new character animation frames. They are character sheets, not eff
 
 Both battle presentations and the camp play these clips. Movement, dodge, attacks, casting, airborne and landing states override idle. Stop and weapon change start a 0.28-second gentle entry. Run-weapon textures attach at the idle grip; the empty-hand body avoids duplicated weapons.
 
-Validation: character idle 75,909 checks, character scale 295 checks, ranged regression 272 checks, camp rules 83 checks; all passed. Real renderer screenshots cover the four heroes, both facings, camp and a live equipped run weapon. Screenshots are under `build/character-idle-*.png`.
+Validation: character idle 75,909 checks, character scale 295 checks, ranged regression 272 checks, camp rules 83 checks; all passed. Real renderer screenshots cover the four heroes, both facings, camp and a live equipped run weapon. Screenshots are under （旧截图已清理）.

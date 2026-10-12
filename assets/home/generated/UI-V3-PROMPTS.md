@@ -30,4 +30,4 @@ Use case: lighting-weather. Edit target: Image 1 is the homestead guide map. Ima
 
 ## 验证
 
-Godot 4.7.2：homestead_ui 53 项、camp_activities 89 项、camp_modes 10 项均通过。编辑器导入无脚本编译错误。实机截图检查：build/home-home_shop-panel.png、build/home-kitchen-prepared.png、build/home-overview.png、build/home-map-guide.png、build/home-info-home_shop.png。
+Godot 4.7.2：homestead_ui 53 项、camp_activities 89 项、camp_modes 10 项均通过。编辑器导入无脚本编译错误。实机截图检查：（旧截图已清理）。

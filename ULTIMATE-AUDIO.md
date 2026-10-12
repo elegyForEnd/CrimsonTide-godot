@@ -20,7 +20,7 @@
 
 成品是离线剪辑、滤波、变速和叠层后的 48 kHz 双声道 WAV。使用已有 `assets/audio/skill-0.wav` 至 `skill-2.wav` 槽位，运行音量从 -11 dB 调至 -5 dB，优先级高于普通攻击，仍遵循位置衰减和总线峰值保护。独立于 CG 音轨播放，CG 结束清理不会切掉落招尾响。本地角色和附近队友均可听到。
 
-`tools/prepare_ultimate_audio.py` 仅重建三条释放音效；`tools/prepare_anime_audio.py` 全库重建时也保留这套配方。原素材哈希、各层处理参数和成品哈希写入 `assets/audio/library-manifest.json`。`build/Ultimate-Release-Preview.wav` 按绯月、雪璃、鸦羽顺序提供试听，它是三条成品按播放增益拼接的预览，不是游戏实录。
+`tools/prepare_ultimate_audio.py` 仅重建三条释放音效；`tools/prepare_anime_audio.py` 全库重建时也保留这套配方。原素材哈希、各层处理参数和成品哈希写入 `assets/audio/library-manifest.json`。（旧文件已清理）按绯月、雪璃、鸦羽顺序提供试听，它是三条成品按播放增益拼接的预览，不是游戏实录。
 
 ## 验证
 

@@ -19,4 +19,4 @@
 
 ## 验证
 
-`tests/map_boss_roster.gd` 检查随机阵容与跨天保留；`tests/new_bosses.gd` 检查纺女与司祭的招式、奖励、女王到终局形态的过渡、终局结算及素材导入。`tests/new_bosses_visual.gd` 生成三张实际渲染截图至 `build/new-boss-*.png`，用于检查角色、预警、血条和演出。
+`tests/map_boss_roster.gd` 检查随机阵容与跨天保留；`tests/new_bosses.gd` 检查纺女与司祭的招式、奖励、女王到终局形态的过渡、终局结算及素材导入。`tests/new_bosses_visual.gd` 生成三张实际渲染截图至（旧截图已清理），用于检查角色、预警、血条和演出。

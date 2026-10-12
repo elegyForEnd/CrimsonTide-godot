@@ -1,87 +1,16 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://scripts/boot.gd" id="1_boot"]
-[ext_resource type="FontFile" path="res://assets/NotoSerifSC.ttf" id="2_font"]
-[ext_resource type="VideoStream" path="res://pv/pv.ogv" id="3_video"]
 
-[node name="Boot" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+; 启动器场景 = 一个空壳（与 main.tscn 同一个约定：UI 全部由代码构建，见 §11.13）。
+; 之所以连开场画面都不放在这里，是因为这个场景必须在**首次下载**时就能加载起来：
+;  ① 任何字体/贴图的 ext_resource 都会在 `.godot/imported` 还空着的时候加载失败，
+;     而 `.tscn` 的 ext_resource 加载失败是**整个场景**加载失败（黑屏）。
+;  ② 实测：把带锚点的 Control 放进 `CanvasGroup`（第二批水滴转场要用它）之后，
+;     `.tscn` 里写的锚点值不可靠——忠告会整块跑到屏幕左侧去。所以布局一律在
+;     `boot.gd` 里按设计分辨率 1440×900 显式落一次。
+; 根是 CanvasLayer 且 layer=100：必须盖在 main.tscn 的 CanvasLayer（默认 layer=1）
+; 之上，进游戏时"擦掉启动器"才能露出下面的登录页。
+[node name="Boot" type="CanvasLayer"]
+layer = 100
 script = ExtResource("1_boot")
-
-[node name="Black" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Advice" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.16
-anchor_top = 0.26
-anchor_right = 0.84
-anchor_bottom = 0.74
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 36
-
-[node name="Title" type="Label" parent="Advice"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.86, 0.08, 0.08, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 38
-text = "健康游戏忠告"
-horizontal_alignment = 1
-
-[node name="Body" type="Label" parent="Advice"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.92, 0.92, 0.92, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
-theme_override_constants/line_spacing = 14
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 30
-text = "抵制不良游戏，拒绝盗版游戏。\n注意自我保护，谨防受骗上当。\n适度游戏益脑，沉迷游戏伤身。\n合理安排时间，享受健康生活。"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="Hint" type="Label" parent="Advice"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.42, 0.42, 0.42, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
-text = "空格 / 回车跳过   ·   Esc 进入游戏"
-horizontal_alignment = 1
-
-[node name="VideoFrame" type="AspectRatioContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-ratio = 1.76470588235294
-stretch_mode = 2
-
-[node name="Video" type="VideoStreamPlayer" parent="VideoFrame"]
-visible = false
-layout_mode = 2
-mouse_filter = 2
-stream = ExtResource("3_video")
-expand = true
-
-[connection signal="finished" from="VideoFrame/Video" to="." method="_on_video_finished"]

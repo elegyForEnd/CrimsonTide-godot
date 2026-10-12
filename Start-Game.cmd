@@ -1,23 +1,19 @@
 @echo off
-rem Crimson Tide - source launcher with resource import and class-cache guard.
+rem Crimson Tide - source launcher.
 rem
-rem Why this exists:
-rem Godot 4 keeps every "class_name" registration inside
-rem .godot/global_script_class_cache.cfg, and .godot/ is gitignored. After a
-rem "git pull" that adds brand new scripts, that cache goes stale, the main
-rem scene script fails to parse with "Could not find type ...", and the game
-rem shows a BLACK SCREEN right after the intro is skipped: the scene node
-rem loads, but its script never attaches to it.
+rem Since 2026-10-12 the resource import and the class-cache guard run INSIDE the
+rem game (the launcher screen in scripts/boot.gd): the player gets a progress bar
+rem over the looping PV instead of a console window, and a stale cache is repaired
+rem there too. So the default path below just starts the game.
 rem
-rem Imported textures also live in gitignored .godot/. Always scan/import
-rem changed resources, even when all script classes are already registered.
-rem Stop on setup failure instead of starting with missing art.
-rem
-rem Pass --import-only to repair the cache without launching the game.
+rem Flags:
+rem   (none)         start the game; the in-game launcher does the checking
+rem   --check        run tools/check_class_cache.ps1 -ImportResources first (dev/CI)
+rem   --import-only  run that check and exit without starting the game
 rem
 rem Keep this file pure ASCII with CRLF line endings: cmd.exe reads .cmd files
 rem through the OEM code page (cp936 here), and non-ASCII comments corrupt its
-rem line parsing. The Chinese explanations live in tools/check_class_cache.ps1.
+rem line parsing. Chinese notes live in PROJECT-GUIDE.md.
 setlocal
 cd /d "%~dp0"
 
@@ -32,6 +28,11 @@ if not exist "%GODOT%" (
   exit /b 2
 )
 
+if /i "%~1"=="--check" goto check
+if /i "%~1"=="--import-only" goto check
+goto run
+
+:check
 set "CHECK=%CD%\tools\check_class_cache.ps1"
 if not exist "%CHECK%" (
   echo [error] Missing tools\check_class_cache.ps1
@@ -56,6 +57,7 @@ if /i "%~1"=="--import-only" (
   exit /b 0
 )
 
+:run
 echo [run] Starting %NAME% ...
 start "%NAME%" "%GODOT%" --path .
 exit /b 0

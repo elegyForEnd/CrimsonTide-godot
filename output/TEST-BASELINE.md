@@ -71,7 +71,7 @@ blood-flask-v1.png   2.8 MB  → 从 assets/rogue/crystal.png 复制的占位图
 
 | # | 测试 | checks | failures | 退出/超时 | 口径 | 原始日志 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `rogue_build_growth` | **4066** | **0** | 正常退出 | 正式 | `build/r1-baseline/rogue_build_growth.out.txt` |
+| 1 | `rogue_build_growth` | **4066** | **0** | 正常退出 | 正式 | （旧文件已清理） |
 | 2 | `rogue_build_system` | **440** | **0** | 正常退出 | 正式 | `.../rogue_build_system.out.txt` |
 | 3 | `rogue_build_progression` | **505** | **39** | 正常退出（exit 1） | 正式 | `.../rogue_build_progression.err.txt` |
 | 4 | `rogue_build_rules` | **1**（有效） | **1**（已红） | **超时被杀**（180s/60s 两次均未退出） | 正式（但覆盖为零，见 §3） | `.../rogue_build_rules.err.txt`、`rules-rerun.err.txt` |

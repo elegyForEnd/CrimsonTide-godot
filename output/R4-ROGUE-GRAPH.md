@@ -67,7 +67,7 @@ exit=0                     # stderr 0 行（无任何 push_error）
 ```
 
 - 墙钟耗时 **0.73s**（`Measure-Command`），远低于 `run_all_tests.ps1` 的 60s/测试上限。
-- 原始日志：`build/r4/rogue_graph.out.txt` / `.err.txt`（另有 `-timed.*` 一份）。
+- 原始日志：（旧文件已清理） / `.err.txt`（另有 `-timed.*` 一份）。
 
 ### 2.2 测试覆盖了什么（对应任务书的 6 条验收）
 

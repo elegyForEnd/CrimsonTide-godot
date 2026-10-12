@@ -11,4 +11,4 @@
 
 新弧带判定 `arc` 与预警共用角度、内外半径；寒域由主机持续结算伤害，联机客户端接收同一危险区快照。入场、转阶段和倒下使用冰蓝色侧边演出与粒子，音效为 7 个独立龙系提示音。专属器乐 BGM `assets/audio/music/dragon.ogg` 通过用户指定的 Apilio Suno API 生成，本地循环播放。请求参数和实际返回模型记载于 `assets/audio/music/music-manifest.json`；原始 MP3 与接口回执在被 Git 忽略的 `build/boss-music-source/`，项目不存储 API 密钥。
 
-美术与提示词见 `assets/bosses/dragon/`，音效重建脚本为 `tools/prepare_dragon_sfx.py`，来源见 `assets/audio/bosses/dragon-sfx-manifest.json`。`tests/dragon_boss.gd` 验证独立巢穴、招式判定、寒域脉冲、阶段与奖励；`tests/dragon_boss_visual.gd` 生成两张实际渲染截图到 `build/dragon-boss-*.png`。
+美术与提示词见 `assets/bosses/dragon/`，音效重建脚本为 `tools/prepare_dragon_sfx.py`，来源见 `assets/audio/bosses/dragon-sfx-manifest.json`。`tests/dragon_boss.gd` 验证独立巢穴、招式判定、寒域脉冲、阶段与奖励；`tests/dragon_boss_visual.gd` 生成两张实际渲染截图到（旧截图已清理）。

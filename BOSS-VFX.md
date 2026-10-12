@@ -53,7 +53,7 @@
 - `tests/boss_vfx.gd`：289 项通过，所有招式事件覆盖、透明素材、音效可加载及无重复命中演出。
 - `tests/audio.gd`：170 项通过，音频加载、并发与混音规则。
 - `tests/boss_vfx_network.gd`：双进程主机/客户端通过，四种主题、范围元数据、出手、防御、破防、阶段、死亡同步。
-- `tests/boss_vfx_visual.gd`：OpenGL 实机渲染 12 张截图，保存在 `build/boss-vfx-*.png`，检查四位 Boss 的预警、释放和阶段表现。
+- `tests/boss_vfx_visual.gd`：OpenGL 实机渲染 12 张截图，保存在（旧截图已清理），检查四位 Boss 的预警、释放和阶段表现。
 - 32 个新增音频全部非静音、采样率 48 kHz，最大采样峰值 0.8595 以下。
 
 Windows 版本：`dist/CrimsonTide-BossVFX.exe`。许可记录和生成提示词随包附带；导出排除了宣传视频工作目录 `pv/`，避免把与游戏无关的 PV 音视频装入游戏。项目编辑器扫描可能仍提示该目录中两份既有 PV WAV 格式不支持，本次新增音效均可正常导入。

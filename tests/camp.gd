@@ -1,4 +1,4 @@
-﻿extends SceneTree
+extends SceneTree
 ## Headless rule checks for the standalone pre-raid camp map.
 ##
 ## Run: Godot_v4.7.2-stable_win64_console.exe --headless --path . --script tests/camp.gd
@@ -58,6 +58,21 @@ func run() -> void:
 	check(int(site.storm_state().strikes)==before,"Home weather remains calm while running")
 	check(site.is_walkable(Vector2(4000,2390)),"Dock is traversable over the water")
 	check(not site.is_walkable(site.LAKE.get_center()),"Lakeshore prevents walking on water")
+	# The field is a real material: the ground shader must have its texture bound, or
+	# the field renders as a flat fill that reads in game as a missing material.
+	var ground: MeshInstance3D = site.scenery.get_node_or_null("HomeGround")
+	check(ground != null, "the camp ground plane is built")
+	var ground_mat: ShaderMaterial = null
+	if ground: ground_mat = ground.material_override as ShaderMaterial
+	check(ground_mat != null and ground_mat.shader != null, "the ground carries its ground shader")
+	check(ground_mat != null and ground_mat.get_shader_parameter("ground_tex") != null,
+		"the ground texture is bound, not a missing reference")
+	check(ground_mat != null and float(ground_mat.get_shader_parameter("texture_mix")) >= 0.5,
+		"the painted ground carries the albedo instead of a flat fill")
+	# The pier is floor, not scenery: the actor stands on the deck instead of sinking
+	# to water level, which is what used to force the planks to fade under their feet.
+	check(is_equal_approx(site.ground_height(site.DOCK.get_center()),36.0),
+		"the moonwater deck carries the actor at plank height")
 
 	# --- generated audio, no shipped binaries --------------------------------
 	for key in ["wind", "rumble", "thunder", "bell"]:

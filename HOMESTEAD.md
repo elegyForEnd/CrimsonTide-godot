@@ -56,7 +56,7 @@
 
 使用内置 image_gen 工具生成并复制入项目，保留原始文件。完整提示词见 [PROMPTS.md](assets/home/generated/PROMPTS.md)。
 
-- meadow-v1.png：实际三维家园地面的草地纹理。
+- meadow-v1.png：草地纹理（**已不用于家园地面**：2026-10-11 起家园地面临时借故事模式的泥地 PBR `assets/story/environment/pbr/soil_albedo.png` 占位，等家园自己画素材再换回；见 PROJECT-GUIDE §4.N/§4.O）。
 - stone-path-v1.png：道路、营地石台和设施使用的石径纹理。
 - items-v1.png：4×3 透明图集，作物、鱼、种子袋、钓竿、鱼饵与三份料理。由 AtlasTexture 分区，保留 alpha。
 - hearthhaven-map-v1.png：家园设施导览。编号与点击区域由游戏叠加；导览图是设施示意，不作为碰撞或寻路数据。
@@ -80,7 +80,7 @@ home 存入现有版本 1 的 Profile，使用原有临时文件/重命名保存
 
 使用项目 Godot 4.7.2 可执行程序。无头运行 --headless --path . --script 后接测试路径。
 
-已通过：homestead（64 项）、homestead_ui（32 项）、camp（80 项）、camp_collision（33 项）、camp_occlusion（11 项）、camp_flow（25 项）、economy（78 项）、attributes（204 项）。新增 camp_activities（89 项），合计 616 项。homestead_ui 同时用真实 OpenGL 窗口运行，截图保存在 build/home-*.png。camp_visual 检查地图、导览、闸门、会议桌、菜园与湖岸的实际渲染。
+已通过：homestead（64 项）、homestead_ui（32 项）、camp（80 项）、camp_collision（33 项）、camp_occlusion（11 项）、camp_flow（25 项）、economy（78 项）、attributes（204 项）。新增 camp_activities（89 项），合计 616 项。homestead_ui 同时用真实 OpenGL 窗口运行，截图保存在（旧截图已清理）。camp_visual 检查地图、导览、闸门、会议桌、菜园与湖岸的实际渲染。
 
 营地旧测试的雷暴、五站点和旧台面高度要求已更新为新家园布局；锻炉流程测试适配当前天赋按钮文字。测试使用独立 user:// 存档。没有进行跨公网多人实机测试。完整 main 场景的测试仍会输出项目原有的第四角色四段 ultimate 音频导入缺失信息；不影响家园与此次通过的断言。
 
@@ -103,4 +103,4 @@ home 存入现有版本 1 的 Profile，使用原有临时文件/重命名保存
 
 本轮验证：home_layout 290、camp 83、camp_collision 35、camp_occlusion 11、homestead_ui 53、camp_activities 89、camp_flow 25、camp_modes 10 项断言通过，另有 camp_visual 实际 OpenGL 图形检查。连通检查覆盖 6733 个可达网格点、十个站点、实际门洞、侧墙、屋顶切换和所有场景实例的等比例缩放。部分无头流程退出仍报告 ObjectDB / 资源清理警告，断言通过；没有宣称跨公网联机已验证。
 
-实际截图：`build/camp-hearthhaven.png`、`build/home-castle-courtyard-overview.png`、`build/home-library-interior.png`、`build/camp-guide.png`。修改作用于源码，旧 `dist` 可执行程序未重新导出。
+实际截图：`build/camp-hearthhaven.png`、（旧截图已清理）`build/camp-guide.png`。修改作用于源码，旧 `dist` 可执行程序未重新导出。

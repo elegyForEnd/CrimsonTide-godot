@@ -37,7 +37,7 @@
 
 `resources/story-cave-footprint.json`是洞窟边界真源，不能只移动可见岩壁而保留旧碰撞。地形高度仍从已有地形数据取样，楼梯/台基继续覆盖逻辑高度。旧堡门柱、塔楼与拱顶柱的占地在`story_region.build_castle()`中与实际模块一致。
 
-可编辑地编为`scenes/story/opening-0/1/2/7/9.tscn`；营地、原野、洞窟和旧堡有实际LightmapGI烘焙。模型导出可指定集合，不重新生成master；一次性作者工具有修订保护。重新生成洞窟/旧堡需明确指定`--stages=7,9 --replace-generated`，先备份并重新烘焙。本轮备份在`build/outdoor-castle-baseline.zip`。
+可编辑地编为`scenes/story/opening-0/1/2/7/9.tscn`；营地、原野、洞窟和旧堡有实际LightmapGI烘焙。模型导出可指定集合，不重新生成master；一次性作者工具有修订保护。重新生成洞窟/旧堡需明确指定`--stages=7,9 --replace-generated`，先备份并重新烘焙。本轮备份在（旧文件已清理）。
 
 ```powershell
 & 'C:\Program Files\Blender Foundation\Blender 4.5\blender.exe' --background --python tools/export_story_models.py -- --assets=castle_tower,castle_wall

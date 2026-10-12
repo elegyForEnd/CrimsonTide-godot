@@ -40,6 +40,9 @@ func build_story(c) -> void:
 			art_act=int(c.state.act)
 		if scenery:
 			remove_child(scenery); scenery.queue_free()
+		# Every occluder of the previous region leaves the tree here; its cached reveal
+		# surfaces must not outlive it.
+		environment_builder.kit.release_reveal_cache()
 		scenery=Node3D.new(); scenery.name="StoryScenery"; add_child(scenery)
 		quest_models.clear(); quest_signature=""
 		environment_builder.build(self)
@@ -135,6 +138,11 @@ func sync_story(screen: Vector2, dt: float) -> void:
 			submit_sprite(npc_sheet,Rect2(Vector2(-extent.x/2,-extent.y*.99),extent),region,Color.WHITE,Transform2D(0,campaign.map.npc_at[i]))
 	for e in campaign.enemies:
 		if boss_models.draws(e) or (e.hp<=0 and preload("res://scripts/boss_actor_3d.gd").supports(e,"story")): continue
+		# The body remains a loot landmark, then fades out over its last two seconds.
+		var corpse_alpha := 1.0
+		if e.hp<=0:
+			corpse_alpha=clampf(float(e.get("corpse_time",0.0))/2.0,0.0,1.0)
+			if corpse_alpha<=0.0: continue
 		var rect: Rect2
 		var region: Rect2
 		var tex: Texture2D
@@ -149,7 +157,9 @@ func sync_story(screen: Vector2, dt: float) -> void:
 			region=Bosses.region(frame)
 		else:
 			tex=enemy_frames.sheets[int(e.type)]; rect=Foes.sprite_rect(int(e.type)); region=enemy_frames.region(frame)
-		submit_sprite(tex,rect,region,Color("ffaaaa") if e.flash>0 else Color.WHITE,Transform2D(0,e.p))
+		var tint := Color("ffaaaa") if e.flash>0 else Color.WHITE
+		if corpse_alpha<1.0: tint.a=corpse_alpha
+		submit_sprite(tex,rect,region,tint,Transform2D(0,e.p))
 	end_sprites()
 	sync_quest_objects()
 

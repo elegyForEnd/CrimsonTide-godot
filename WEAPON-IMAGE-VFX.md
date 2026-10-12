@@ -35,6 +35,6 @@ core_visual() 接在现有机制实际执行的位置。取消、未命中、核
 
 ## 验证与试玩
 
-源码相关 13 组回归共 6100 检查、0 failures；方图原始像素审计 74 项、0 failures。Windows 内嵌 PCK 单文件为 build/CrimsonTide-WeaponImageVFX.exe，成品五组回归共 1467 检查、0 failures。测试细节见 TEST-REPORT.md。
+源码相关 13 组回归共 6100 检查、0 failures；方图原始像素审计 74 项、0 failures。Windows 内嵌 PCK 单文件为（旧文件已清理），成品五组回归共 1467 检查、0 failures。测试细节见 TEST-REPORT.md。
 
-预览：build/weapon-vfx-48.png、build/weapon-vfx-combos.png、build/weapon-image-upgrades.png。重新生成分别运行 tests/weapon_vfx_preview.gd 和 tests/weapon_upgrade_visual.gd；后者以实际 Build.hit_event 触发核心，未解锁档位不播图。所有生成提示词保存在 assets/combat/imagegen-square/prompts/，生成器为内置 ImageGen；续接工作复用已齐全的原图，没有重新生成或加工像素。
+预览：（旧截图已清理）。重新生成分别运行 tests/weapon_vfx_preview.gd 和 tests/weapon_upgrade_visual.gd；后者以实际 Build.hit_event 触发核心，未解锁档位不播图。所有生成提示词保存在 assets/combat/imagegen-square/prompts/，生成器为内置 ImageGen；续接工作复用已齐全的原图，没有重新生成或加工像素。

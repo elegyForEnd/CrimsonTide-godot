@@ -132,4 +132,4 @@ Concurrency note: the rebuild happened while other rounds were still running. Go
 * The frame cap is a *backstop*, not a scheduler: a GDScript infinite loop that never yields to the main loop will not be stopped by `--quit-after` (only the wall-clock kill catches it).
 * `run_all_tests.ps1` still runs **all 183** tests, including ~15 windowed `*_visual` cases and `city` (which times out at 60 s); budget ~15 minutes and a real display for the full suite.
 * The gate's default set is headless-only; `rogue_ui_visual` and the other windowed cases are opt-in (`-IncludeVisual`, or `-Only <name> -IncludeVisual`).
-* `rogue_ui_visual` writes screenshots (`build/rogue-ui-*.png`) but asserts only 13 checks — it is a smoke/visual case, not proof of UI correctness.
+* `rogue_ui_visual` writes screenshots (（旧截图已清理）) but asserts only 13 checks — it is a smoke/visual case, not proof of UI correctness.
