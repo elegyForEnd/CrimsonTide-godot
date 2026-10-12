@@ -1,0 +1,2168 @@
+{
+  "version": 2,
+  "canvas": [
+    2160,
+    3840
+  ],
+  "generator": "built-in imagegen",
+  "native_4k": false,
+  "resampling": "Lanczos; original resolution recorded per base",
+  "expressions": [
+    "neutral",
+    "smile",
+    "joy",
+    "shy",
+    "worried",
+    "sad",
+    "angry",
+    "determined",
+    "surprised",
+    "tired"
+  ],
+  "costumes": [
+    "regular",
+    "travel",
+    "ceremony"
+  ],
+  "poses": [
+    "relaxed",
+    "crossed",
+    "clasped"
+  ],
+  "heroes": {
+    "feiyue": {
+      "ready": false,
+      "bases": {
+        "regular": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-regular-relaxed.png",
+            "rects": {
+              "eyes": [
+                888,
+                638,
+                309,
+                97
+              ],
+              "mouth": [
+                1003,
+                778,
+                81,
+                50
+              ],
+              "blush": [
+                892,
+                725,
+                302,
+                50
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              374,
+              155,
+              158,
+              195
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-regular-crossed.png",
+            "rects": {
+              "eyes": [
+                891,
+                643,
+                313,
+                99
+              ],
+              "mouth": [
+                1006,
+                783,
+                82,
+                51
+              ],
+              "blush": [
+                894,
+                731,
+                306,
+                51
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              375,
+              159,
+              160,
+              193
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-regular-clasped.png",
+            "rects": {
+              "eyes": [
+                891,
+                613,
+                323,
+                102
+              ],
+              "mouth": [
+                1010,
+                740,
+                84,
+                53
+              ],
+              "blush": [
+                895,
+                704,
+                316,
+                53
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              375,
+              159,
+              165,
+              163
+            ]
+          }
+        },
+        "travel": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-travel-relaxed.png",
+            "rects": {
+              "eyes": [
+                891,
+                612,
+                321,
+                101
+              ],
+              "mouth": [
+                1009,
+                739,
+                84,
+                52
+              ],
+              "blush": [
+                894,
+                702,
+                314,
+                52
+              ]
+            },
+            "source_size": [
+              941,
+              1671
+            ],
+            "source_skin_box": [
+              375,
+              157,
+              164,
+              164
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-travel-crossed.png",
+            "rects": {
+              "eyes": [
+                891,
+                611,
+                321,
+                101
+              ],
+              "mouth": [
+                1009,
+                736,
+                84,
+                52
+              ],
+              "blush": [
+                894,
+                701,
+                314,
+                52
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              375,
+              158,
+              164,
+              162
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-travel-clasped.png",
+            "rects": {
+              "eyes": [
+                891,
+                614,
+                311,
+                98
+              ],
+              "mouth": [
+                1005,
+                739,
+                81,
+                51
+              ],
+              "blush": [
+                894,
+                701,
+                304,
+                51
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              375,
+              158,
+              159,
+              163
+            ]
+          }
+        },
+        "ceremony": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-ceremony-relaxed.png",
+            "rects": {
+              "eyes": [
+                891,
+                611,
+                311,
+                98
+              ],
+              "mouth": [
+                1005,
+                734,
+                81,
+                51
+              ],
+              "blush": [
+                894,
+                698,
+                304,
+                51
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              375,
+              158,
+              159,
+              160
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-ceremony-crossed.png",
+            "rects": {
+              "eyes": [
+                887,
+                622,
+                323,
+                102
+              ],
+              "mouth": [
+                1006,
+                755,
+                84,
+                53
+              ],
+              "blush": [
+                890,
+                713,
+                316,
+                53
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              373,
+              157,
+              165,
+              177
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/base-ceremony-clasped.png",
+            "rects": {
+              "eyes": [
+                891,
+                636,
+                325,
+                102
+              ],
+              "mouth": [
+                1011,
+                776,
+                85,
+                53
+              ],
+              "blush": [
+                895,
+                727,
+                318,
+                53
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              375,
+              158,
+              166,
+              190
+            ]
+          }
+        }
+      },
+      "features": {
+        "neutral": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-neutral.png",
+            "size": [
+              427,
+              135
+            ],
+            "atlas_crop": [
+              0,
+              35,
+              512,
+              185
+            ],
+            "alpha_bounds": [
+              45,
+              13,
+              468,
+              144
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-neutral.png",
+            "size": [
+              43,
+              11
+            ],
+            "atlas_crop": [
+              235,
+              252,
+              278,
+              263
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              41,
+              9
+            ]
+          }
+        },
+        "smile": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-smile.png",
+            "size": [
+              427,
+              135
+            ],
+            "atlas_crop": [
+              512,
+              35,
+              1024,
+              185
+            ],
+            "alpha_bounds": [
+              46,
+              13,
+              469,
+              144
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-smile.png",
+            "size": [
+              80,
+              22
+            ],
+            "atlas_crop": [
+              729,
+              247,
+              809,
+              269
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              78,
+              20
+            ]
+          }
+        },
+        "joy": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-joy.png",
+            "size": [
+              426,
+              138
+            ],
+            "atlas_crop": [
+              0,
+              330,
+              512,
+              490
+            ],
+            "alpha_bounds": [
+              46,
+              17,
+              468,
+              151
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-joy.png",
+            "size": [
+              85,
+              58
+            ],
+            "atlas_crop": [
+              214,
+              530,
+              299,
+              588
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              83,
+              56
+            ]
+          }
+        },
+        "shy": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-shy.png",
+            "size": [
+              422,
+              137
+            ],
+            "atlas_crop": [
+              512,
+              330,
+              1024,
+              490
+            ],
+            "alpha_bounds": [
+              48,
+              21,
+              466,
+              154
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-shy.png",
+            "size": [
+              22,
+              21
+            ],
+            "atlas_crop": [
+              759,
+              556,
+              781,
+              577
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              20,
+              19
+            ]
+          }
+        },
+        "worried": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-worried.png",
+            "size": [
+              426,
+              151
+            ],
+            "atlas_crop": [
+              0,
+              630,
+              512,
+              830
+            ],
+            "alpha_bounds": [
+              46,
+              20,
+              468,
+              167
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-worried.png",
+            "size": [
+              62,
+              27
+            ],
+            "atlas_crop": [
+              226,
+              862,
+              288,
+              889
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              60,
+              25
+            ]
+          }
+        },
+        "sad": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-sad.png",
+            "size": [
+              426,
+              150
+            ],
+            "atlas_crop": [
+              512,
+              630,
+              1024,
+              830
+            ],
+            "alpha_bounds": [
+              46,
+              20,
+              468,
+              166
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-sad.png",
+            "size": [
+              52,
+              13
+            ],
+            "atlas_crop": [
+              743,
+              864,
+              795,
+              877
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              50,
+              11
+            ]
+          }
+        },
+        "angry": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-angry.png",
+            "size": [
+              429,
+              132
+            ],
+            "atlas_crop": [
+              0,
+              940,
+              512,
+              1090
+            ],
+            "alpha_bounds": [
+              44,
+              16,
+              469,
+              144
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-angry.png",
+            "size": [
+              79,
+              53
+            ],
+            "atlas_crop": [
+              216,
+              1131,
+              295,
+              1184
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              77,
+              51
+            ]
+          }
+        },
+        "determined": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-determined.png",
+            "size": [
+              425,
+              130
+            ],
+            "atlas_crop": [
+              512,
+              940,
+              1024,
+              1090
+            ],
+            "alpha_bounds": [
+              47,
+              17,
+              468,
+              143
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-determined.png",
+            "size": [
+              63,
+              13
+            ],
+            "atlas_crop": [
+              738,
+              1153,
+              801,
+              1166
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              61,
+              11
+            ]
+          }
+        },
+        "surprised": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-surprised.png",
+            "size": [
+              425,
+              167
+            ],
+            "atlas_crop": [
+              0,
+              1215,
+              512,
+              1405
+            ],
+            "alpha_bounds": [
+              47,
+              21,
+              468,
+              184
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-surprised.png",
+            "size": [
+              35,
+              42
+            ],
+            "atlas_crop": [
+              239,
+              1451,
+              274,
+              1493
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              33,
+              40
+            ]
+          }
+        },
+        "tired": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/eyes-tired.png",
+            "size": [
+              426,
+              128
+            ],
+            "atlas_crop": [
+              512,
+              1215,
+              1024,
+              1405
+            ],
+            "alpha_bounds": [
+              46,
+              51,
+              468,
+              175
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/feiyue/features/mouth-tired.png",
+            "size": [
+              55,
+              22
+            ],
+            "atlas_crop": [
+              742,
+              1457,
+              797,
+              1479
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              53,
+              20
+            ]
+          }
+        }
+      },
+      "resources_complete": true
+    },
+    "xueli": {
+      "ready": false,
+      "bases": {
+        "regular": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-regular-relaxed.png",
+            "rects": {
+              "eyes": [
+                958,
+                549,
+                256,
+                81
+              ],
+              "mouth": [
+                1053,
+                674,
+                67,
+                42
+              ],
+              "blush": [
+                961,
+                621,
+                251,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              408,
+              127,
+              131,
+              138
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-regular-crossed.png",
+            "rects": {
+              "eyes": [
+                958,
+                571,
+                258,
+                81
+              ],
+              "mouth": [
+                1054,
+                683,
+                67,
+                42
+              ],
+              "blush": [
+                961,
+                644,
+                252,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              408,
+              148,
+              132,
+              117
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-regular-clasped.png",
+            "rects": {
+              "eyes": [
+                958,
+                569,
+                256,
+                81
+              ],
+              "mouth": [
+                1053,
+                703,
+                67,
+                42
+              ],
+              "blush": [
+                961,
+                641,
+                251,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              408,
+              130,
+              131,
+              152
+            ]
+          }
+        },
+        "travel": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-travel-relaxed.png",
+            "rects": {
+              "eyes": [
+                956,
+                570,
+                258,
+                81
+              ],
+              "mouth": [
+                1052,
+                682,
+                67,
+                42
+              ],
+              "blush": [
+                959,
+                643,
+                252,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              407,
+              148,
+              132,
+              116
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-travel-crossed.png",
+            "rects": {
+              "eyes": [
+                958,
+                550,
+                256,
+                81
+              ],
+              "mouth": [
+                1053,
+                674,
+                67,
+                42
+              ],
+              "blush": [
+                961,
+                622,
+                251,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              408,
+              128,
+              131,
+              137
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-travel-clasped.png",
+            "rects": {
+              "eyes": [
+                958,
+                572,
+                258,
+                81
+              ],
+              "mouth": [
+                1054,
+                684,
+                67,
+                42
+              ],
+              "blush": [
+                961,
+                645,
+                252,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              408,
+              149,
+              132,
+              116
+            ]
+          }
+        },
+        "ceremony": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-ceremony-relaxed.png",
+            "rects": {
+              "eyes": [
+                959,
+                590,
+                262,
+                83
+              ],
+              "mouth": [
+                1055,
+                713,
+                68,
+                43
+              ],
+              "blush": [
+                961,
+                664,
+                256,
+                43
+              ]
+            },
+            "source_size": [
+              941,
+              1671
+            ],
+            "source_skin_box": [
+              408,
+              148,
+              134,
+              134
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-ceremony-crossed.png",
+            "rects": {
+              "eyes": [
+                958,
+                590,
+                258,
+                81
+              ],
+              "mouth": [
+                1054,
+                713,
+                67,
+                42
+              ],
+              "blush": [
+                961,
+                662,
+                252,
+                42
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              408,
+              148,
+              132,
+              135
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/base-ceremony-clasped.png",
+            "rects": {
+              "eyes": [
+                973,
+                591,
+                252,
+                80
+              ],
+              "mouth": [
+                1066,
+                711,
+                66,
+                41
+              ],
+              "blush": [
+                976,
+                662,
+                247,
+                41
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              415,
+              150,
+              129,
+              131
+            ]
+          }
+        }
+      },
+      "features": {
+        "neutral": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-neutral.png",
+            "size": [
+              440,
+              141
+            ],
+            "atlas_crop": [
+              0,
+              30,
+              512,
+              186
+            ],
+            "alpha_bounds": [
+              40,
+              13,
+              476,
+              150
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-neutral.png",
+            "size": [
+              58,
+              20
+            ],
+            "atlas_crop": [
+              228,
+              241,
+              286,
+              261
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              56,
+              18
+            ]
+          }
+        },
+        "smile": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-smile.png",
+            "size": [
+              440,
+              141
+            ],
+            "atlas_crop": [
+              512,
+              30,
+              1024,
+              186
+            ],
+            "alpha_bounds": [
+              40,
+              13,
+              476,
+              150
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-smile.png",
+            "size": [
+              76,
+              23
+            ],
+            "atlas_crop": [
+              731,
+              238,
+              807,
+              261
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              74,
+              21
+            ]
+          }
+        },
+        "joy": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-joy.png",
+            "size": [
+              425,
+              141
+            ],
+            "atlas_crop": [
+              0,
+              320,
+              512,
+              497
+            ],
+            "alpha_bounds": [
+              47,
+              17,
+              468,
+              154
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-joy.png",
+            "size": [
+              85,
+              60
+            ],
+            "atlas_crop": [
+              216,
+              502,
+              301,
+              562
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              83,
+              58
+            ]
+          }
+        },
+        "shy": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-shy.png",
+            "size": [
+              437,
+              154
+            ],
+            "atlas_crop": [
+              512,
+              320,
+              1024,
+              497
+            ],
+            "alpha_bounds": [
+              41,
+              20,
+              474,
+              170
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-shy.png",
+            "size": [
+              27,
+              22
+            ],
+            "atlas_crop": [
+              756,
+              536,
+              783,
+              558
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              25,
+              20
+            ]
+          }
+        },
+        "worried": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-worried.png",
+            "size": [
+              442,
+              159
+            ],
+            "atlas_crop": [
+              0,
+              625,
+              512,
+              820
+            ],
+            "alpha_bounds": [
+              39,
+              10,
+              477,
+              165
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-worried.png",
+            "size": [
+              76,
+              23
+            ],
+            "atlas_crop": [
+              220,
+              836,
+              296,
+              859
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              74,
+              21
+            ]
+          }
+        },
+        "sad": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-sad.png",
+            "size": [
+              440,
+              188
+            ],
+            "atlas_crop": [
+              512,
+              625,
+              1024,
+              820
+            ],
+            "alpha_bounds": [
+              39,
+              11,
+              475,
+              195
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-sad.png",
+            "size": [
+              71,
+              22
+            ],
+            "atlas_crop": [
+              734,
+              831,
+              805,
+              853
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              69,
+              20
+            ]
+          }
+        },
+        "angry": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-angry.png",
+            "size": [
+              442,
+              134
+            ],
+            "atlas_crop": [
+              0,
+              890,
+              512,
+              1053
+            ],
+            "alpha_bounds": [
+              39,
+              23,
+              477,
+              153
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-angry.png",
+            "size": [
+              83,
+              73
+            ],
+            "atlas_crop": [
+              216,
+              1072,
+              299,
+              1145
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              81,
+              71
+            ]
+          }
+        },
+        "determined": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-determined.png",
+            "size": [
+              440,
+              131
+            ],
+            "atlas_crop": [
+              512,
+              890,
+              1024,
+              1053
+            ],
+            "alpha_bounds": [
+              39,
+              29,
+              475,
+              156
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-determined.png",
+            "size": [
+              68,
+              20
+            ],
+            "atlas_crop": [
+              735,
+              1111,
+              803,
+              1131
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              66,
+              18
+            ]
+          }
+        },
+        "surprised": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-surprised.png",
+            "size": [
+              442,
+              179
+            ],
+            "atlas_crop": [
+              0,
+              1185,
+              512,
+              1385
+            ],
+            "alpha_bounds": [
+              39,
+              16,
+              477,
+              191
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-surprised.png",
+            "size": [
+              56,
+              62
+            ],
+            "atlas_crop": [
+              230,
+              1407,
+              286,
+              1469
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              54,
+              60
+            ]
+          }
+        },
+        "tired": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/eyes-tired.png",
+            "size": [
+              440,
+              139
+            ],
+            "atlas_crop": [
+              512,
+              1185,
+              1024,
+              1385
+            ],
+            "alpha_bounds": [
+              39,
+              49,
+              475,
+              184
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/xueli/features/mouth-tired.png",
+            "size": [
+              40,
+              23
+            ],
+            "atlas_crop": [
+              749,
+              1427,
+              789,
+              1450
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              38,
+              21
+            ]
+          }
+        }
+      },
+      "resources_complete": true
+    },
+    "yayu": {
+      "ready": false,
+      "bases": {
+        "regular": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-regular-relaxed.png",
+            "rects": {
+              "eyes": [
+                997,
+                587,
+                227,
+                71
+              ],
+              "mouth": [
+                1081,
+                702,
+                59,
+                37
+              ],
+              "blush": [
+                1000,
+                651,
+                222,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              427,
+              136,
+              116,
+              142
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-regular-crossed.png",
+            "rects": {
+              "eyes": [
+                1000,
+                585,
+                227,
+                71
+              ],
+              "mouth": [
+                1083,
+                700,
+                59,
+                37
+              ],
+              "blush": [
+                1002,
+                649,
+                222,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              428,
+              135,
+              116,
+              142
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-regular-clasped.png",
+            "rects": {
+              "eyes": [
+                1000,
+                575,
+                229,
+                72
+              ],
+              "mouth": [
+                1084,
+                682,
+                60,
+                37
+              ],
+              "blush": [
+                1002,
+                639,
+                224,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              428,
+              137,
+              117,
+              129
+            ]
+          }
+        },
+        "travel": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-travel-relaxed.png",
+            "rects": {
+              "eyes": [
+                999,
+                575,
+                225,
+                71
+              ],
+              "mouth": [
+                1083,
+                681,
+                59,
+                37
+              ],
+              "blush": [
+                1002,
+                638,
+                220,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              428,
+              137,
+              115,
+              128
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-travel-crossed.png",
+            "rects": {
+              "eyes": [
+                1000,
+                591,
+                227,
+                71
+              ],
+              "mouth": [
+                1083,
+                706,
+                59,
+                37
+              ],
+              "blush": [
+                1002,
+                655,
+                222,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              428,
+              137,
+              116,
+              143
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-travel-clasped.png",
+            "rects": {
+              "eyes": [
+                1000,
+                584,
+                227,
+                71
+              ],
+              "mouth": [
+                1083,
+                697,
+                59,
+                37
+              ],
+              "blush": [
+                1002,
+                648,
+                222,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              428,
+              136,
+              116,
+              139
+            ]
+          }
+        },
+        "ceremony": {
+          "relaxed": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-ceremony-relaxed.png",
+            "rects": {
+              "eyes": [
+                997,
+                572,
+                229,
+                72
+              ],
+              "mouth": [
+                1082,
+                680,
+                60,
+                37
+              ],
+              "blush": [
+                1000,
+                636,
+                224,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              427,
+              135,
+              117,
+              130
+            ]
+          },
+          "crossed": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-ceremony-crossed.png",
+            "rects": {
+              "eyes": [
+                1002,
+                576,
+                227,
+                71
+              ],
+              "mouth": [
+                1085,
+                683,
+                59,
+                37
+              ],
+              "blush": [
+                1004,
+                639,
+                222,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              429,
+              137,
+              116,
+              129
+            ]
+          },
+          "clasped": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/base-ceremony-clasped.png",
+            "rects": {
+              "eyes": [
+                1000,
+                573,
+                227,
+                71
+              ],
+              "mouth": [
+                1083,
+                680,
+                59,
+                37
+              ],
+              "blush": [
+                1002,
+                637,
+                222,
+                37
+              ]
+            },
+            "source_size": [
+              941,
+              1672
+            ],
+            "source_skin_box": [
+              428,
+              136,
+              116,
+              129
+            ]
+          }
+        }
+      },
+      "features": {
+        "neutral": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-neutral.png",
+            "size": [
+              442,
+              130
+            ],
+            "atlas_crop": [
+              0,
+              40,
+              512,
+              190
+            ],
+            "alpha_bounds": [
+              54,
+              20,
+              492,
+              146
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-neutral.png",
+            "size": [
+              57,
+              18
+            ],
+            "atlas_crop": [
+              244,
+              247,
+              301,
+              265
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              55,
+              16
+            ]
+          }
+        },
+        "smile": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-smile.png",
+            "size": [
+              435,
+              132
+            ],
+            "atlas_crop": [
+              512,
+              40,
+              1024,
+              190
+            ],
+            "alpha_bounds": [
+              40,
+              17,
+              471,
+              145
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-smile.png",
+            "size": [
+              74,
+              29
+            ],
+            "atlas_crop": [
+              730,
+              239,
+              804,
+              268
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              72,
+              27
+            ]
+          }
+        },
+        "joy": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-joy.png",
+            "size": [
+              435,
+              130
+            ],
+            "atlas_crop": [
+              0,
+              340,
+              512,
+              510
+            ],
+            "alpha_bounds": [
+              56,
+              21,
+              487,
+              147
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-joy.png",
+            "size": [
+              76,
+              55
+            ],
+            "atlas_crop": [
+              234,
+              530,
+              310,
+              585
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              74,
+              53
+            ]
+          }
+        },
+        "shy": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-shy.png",
+            "size": [
+              438,
+              137
+            ],
+            "atlas_crop": [
+              512,
+              340,
+              1024,
+              510
+            ],
+            "alpha_bounds": [
+              39,
+              29,
+              473,
+              162
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-shy.png",
+            "size": [
+              41,
+              24
+            ],
+            "atlas_crop": [
+              747,
+              550,
+              788,
+              574
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              39,
+              22
+            ]
+          }
+        },
+        "worried": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-worried.png",
+            "size": [
+              454,
+              147
+            ],
+            "atlas_crop": [
+              0,
+              640,
+              512,
+              830
+            ],
+            "alpha_bounds": [
+              47,
+              21,
+              497,
+              164
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-worried.png",
+            "size": [
+              64,
+              39
+            ],
+            "atlas_crop": [
+              240,
+              841,
+              304,
+              880
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              62,
+              37
+            ]
+          }
+        },
+        "sad": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-sad.png",
+            "size": [
+              443,
+              146
+            ],
+            "atlas_crop": [
+              512,
+              640,
+              1024,
+              830
+            ],
+            "alpha_bounds": [
+              38,
+              34,
+              477,
+              176
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-sad.png",
+            "size": [
+              66,
+              20
+            ],
+            "atlas_crop": [
+              735,
+              848,
+              801,
+              868
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              64,
+              18
+            ]
+          }
+        },
+        "angry": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-angry.png",
+            "size": [
+              450,
+              127
+            ],
+            "atlas_crop": [
+              0,
+              940,
+              512,
+              1092
+            ],
+            "alpha_bounds": [
+              50,
+              23,
+              496,
+              146
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-angry.png",
+            "size": [
+              64,
+              48
+            ],
+            "atlas_crop": [
+              241,
+              1122,
+              305,
+              1170
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              62,
+              46
+            ]
+          }
+        },
+        "determined": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-determined.png",
+            "size": [
+              448,
+              121
+            ],
+            "atlas_crop": [
+              512,
+              940,
+              1024,
+              1092
+            ],
+            "alpha_bounds": [
+              35,
+              27,
+              479,
+              144
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-determined.png",
+            "size": [
+              61,
+              16
+            ],
+            "atlas_crop": [
+              738,
+              1138,
+              799,
+              1154
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              59,
+              14
+            ]
+          }
+        },
+        "surprised": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-surprised.png",
+            "size": [
+              448,
+              164
+            ],
+            "atlas_crop": [
+              0,
+              1235,
+              512,
+              1400
+            ],
+            "alpha_bounds": [
+              51,
+              0,
+              495,
+              160
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-surprised.png",
+            "size": [
+              53,
+              56
+            ],
+            "atlas_crop": [
+              247,
+              1415,
+              300,
+              1471
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              51,
+              54
+            ]
+          }
+        },
+        "tired": {
+          "eyes": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/eyes-tired.png",
+            "size": [
+              436,
+              120
+            ],
+            "atlas_crop": [
+              512,
+              1235,
+              1024,
+              1400
+            ],
+            "alpha_bounds": [
+              40,
+              30,
+              472,
+              146
+            ]
+          },
+          "mouth": {
+            "path": "res://assets/story/vn-portraits-v2/yayu/features/mouth-tired.png",
+            "size": [
+              33,
+              20
+            ],
+            "atlas_crop": [
+              752,
+              1431,
+              785,
+              1451
+            ],
+            "alpha_bounds": [
+              2,
+              2,
+              31,
+              18
+            ]
+          }
+        }
+      },
+      "resources_complete": true
+    }
+  },
+  "review_state": "rejected-facial-art; production incomplete"
+}

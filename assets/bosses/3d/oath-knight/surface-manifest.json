@@ -1,0 +1,57 @@
+{
+  "origin": "original deterministic authored surfaces",
+  "generator": "tools/make_oath_knight_textures.py",
+  "license": "project original",
+  "surfaces": [
+    {
+      "material": "steel",
+      "size": [
+        1024,
+        1024
+      ],
+      "albedo": "sRGB",
+      "normal": "OpenGL, linear",
+      "orm": "R=AO G=roughness B=metallic, linear"
+    },
+    {
+      "material": "brass",
+      "size": [
+        1024,
+        1024
+      ],
+      "albedo": "sRGB",
+      "normal": "OpenGL, linear",
+      "orm": "R=AO G=roughness B=metallic, linear"
+    },
+    {
+      "material": "blade",
+      "size": [
+        1024,
+        1024
+      ],
+      "albedo": "sRGB",
+      "normal": "OpenGL, linear",
+      "orm": "R=AO G=roughness B=metallic, linear"
+    },
+    {
+      "material": "leather",
+      "size": [
+        1024,
+        1024
+      ],
+      "albedo": "sRGB",
+      "normal": "OpenGL, linear",
+      "orm": "R=AO G=roughness B=metallic, linear"
+    },
+    {
+      "material": "cloth",
+      "size": [
+        1024,
+        1024
+      ],
+      "albedo": "sRGB",
+      "normal": "OpenGL, linear",
+      "orm": "R=AO G=roughness B=metallic, linear"
+    }
+  ]
+}

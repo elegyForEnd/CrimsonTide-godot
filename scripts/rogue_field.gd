@@ -20,6 +20,7 @@ const CAMERA_DEAD_ZONE := Rect2(590,440,260,160)
 var camera := Vector2(720,575)
 var combat: CombatVisuals
 var enemy_fx: Node2D
+var boss_models: Node
 var backdrop: Node2D
 const HERO_SCALE := 1.15
 var area_signature := ""
@@ -35,6 +36,7 @@ func _ready() -> void:
 	add_child(backdrop)
 	frames=CharacterFrames.new()
 	session.enemy_bodies.rogue_art=art
+	boss_models=preload("res://scripts/rogue_boss_models_3d.gd").new(); add_child(boss_models)
 	combat=CombatVisuals.new()
 	combat.field=self
 	combat.modulate=Color.WHITE
@@ -59,6 +61,7 @@ func _ready() -> void:
 	session.started.connect(reset_effects)
 
 func reset_effects() -> void:
+	if boss_models: boss_models.reset()
 	combat.reset()
 	enemy_fx.reset()
 	move_phases.clear()
@@ -109,7 +112,9 @@ func weapon_effect_socket(source: int) -> Dictionary:
 		"grip":origin+grip*HERO_SCALE,"blade_axis":(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":p.swing_time>0 or p.cast_time>0}
 
 func _process(dt: float) -> void:
-	if not visible: return
+	if not visible:
+		if boss_models: boss_models.sync([],dt,clock,false)
+		return
 	var viewer: Dictionary=session.players.get(session.my_id(),{})
 	var vision := float(session.rogue_mods(viewer).get("vision",0.0)) if not viewer.is_empty() else 0.0
 	vision_overlay.visible=vision<0.0
@@ -141,6 +146,7 @@ func _process(dt: float) -> void:
 		art.region_backgrounds.clear()
 		reset_effects()
 	camera=camera_offset()+Vector2(720,450)
+	boss_models.sync(session.enemies,dt,clock,true)
 	backdrop.queue_redraw()
 	queue_redraw()
 
@@ -244,7 +250,9 @@ func _draw() -> void:
 			draw_string(font,title_at,title,HORIZONTAL_ALIGNMENT_LEFT,198,17,exit_tone)
 			draw_string(font,title_at+Vector2(0,23),destination.desc,HORIZONTAL_ALIGNMENT_LEFT,198,12,Color("b4bbc5"))
 	for fx in session.roguelike.combat.effects: draw_spell(fx)
+	boss_models.draw_corpses(self,camera_offset())
 	for corpse in session.raid.get("rogue_corpses",[]):
+		if int(corpse.get("boss_art",corpse.floor))==4: continue
 		if corpse.time<=0: continue
 		# 与存活时的取帧规则一致：身体立绘优先按身份（boss_art），缺帧时回落到楼层。
 		var texture: Texture2D=art.boss_animation(int(corpse.get("boss_art",corpse.floor)),11,int(corpse.floor)).texture
@@ -339,7 +347,10 @@ func _draw() -> void:
 			var texture: Texture2D=pose.texture
 			draw_set_transform((at-camera_offset()+Vector2(0,float(pose.hover))).round(),0,Vector2(float(pose.facing),1))
 			var tint := Color(1.6,1.2,1.2) if actor.get("flash",0)>0 else Color.WHITE
-			if pose.region.size!=Vector2.ZERO: draw_texture_rect_region(texture,pose.rect,pose.region,tint)
+			if boss_models.draws(actor):
+				draw_set_transform(at-camera_offset())
+				draw_texture_rect(boss_models.texture(actor),preload("res://scripts/rogue_boss_models_3d.gd").DRAW_RECT,false,Color.WHITE)
+			elif pose.region.size!=Vector2.ZERO: draw_texture_rect_region(texture,pose.rect,pose.region,tint)
 			else: draw_texture_rect(texture,pose.rect,false,tint)
 			draw_set_transform(-camera_offset())
 			draw_rect(Rect2(at+Vector2(-25,-height-13),Vector2(50,5)),Color("211d2c"))

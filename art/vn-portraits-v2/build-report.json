@@ -1,0 +1,277 @@
+{
+  "sources": [
+    {
+      "name": "feiyue-regular-relaxed",
+      "source": "art/vn-portraits-v2/masters/feiyue-regular-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "dd4cbf6de17af18cd38eed2224351d6f03af98e0a9499e7794b998bc5a6e67b0",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-regular-relaxed.png"
+    },
+    {
+      "name": "feiyue-regular-crossed",
+      "source": "art/vn-portraits-v2/masters/feiyue-regular-crossed-retake.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "3024a6cc6e545994c5341030de987ab002760c6cb74fda2a16c415ff4680419f",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-regular-crossed.png"
+    },
+    {
+      "name": "feiyue-regular-clasped",
+      "source": "art/vn-portraits-v2/masters/feiyue-regular-clasped-retake.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "7c15622d286c140f0bf14eb90903e603d3eccdc09da86512c3f416e982b21831",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-regular-clasped.png"
+    },
+    {
+      "name": "feiyue-travel-relaxed",
+      "source": "art/vn-portraits-v2/masters/feiyue-travel-relaxed.png",
+      "resolution": [
+        941,
+        1671
+      ],
+      "sha256": "681922e9ec915709049f1e242abd352006b9e59d27952358eca5e59918731e1f",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-travel-relaxed.png"
+    },
+    {
+      "name": "feiyue-travel-crossed",
+      "source": "art/vn-portraits-v2/masters/feiyue-travel-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "169ee6ca0d41789461538822da40e895001c0ddca61e1978dce97ddc794cb947",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-travel-crossed.png"
+    },
+    {
+      "name": "feiyue-travel-clasped",
+      "source": "art/vn-portraits-v2/masters/feiyue-travel-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "6014b3afd5d06efddc64279a4f90c1c57ec89c1fb8fc3c33e8d4b2c901571634",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-travel-clasped.png"
+    },
+    {
+      "name": "feiyue-ceremony-relaxed",
+      "source": "art/vn-portraits-v2/masters/feiyue-ceremony-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "5420a8d2d6c86d0bfd944a16c99b8eaaaaacbe4b67d64590fd593e6cf16b6de3",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-ceremony-relaxed.png"
+    },
+    {
+      "name": "feiyue-ceremony-crossed",
+      "source": "art/vn-portraits-v2/masters/feiyue-ceremony-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "2aed92a70d63885c7e4b4452b105855af22a92c792f88e43eec9820ad2a8aa6d",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-ceremony-crossed.png"
+    },
+    {
+      "name": "feiyue-ceremony-clasped",
+      "source": "art/vn-portraits-v2/masters/feiyue-ceremony-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "c9fd4ff09b99b64e3eedeaf682bee5d6e659bc68e87e3967363c721a2f152ee3",
+      "output": "assets\\story\\vn-portraits-v2\\feiyue\\base-ceremony-clasped.png"
+    },
+    {
+      "name": "xueli-regular-relaxed",
+      "source": "art/vn-portraits-v2/masters/xueli-regular-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "8a24581d4e454f656bec0c82c9de2b2d63264c4349c1a4bd9f1e9565b46f67ef",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-regular-relaxed.png"
+    },
+    {
+      "name": "xueli-regular-crossed",
+      "source": "art/vn-portraits-v2/masters/xueli-regular-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "c10729351b09fd8d60e9984c740cf4a07190137444263c742a7e22de2373564d",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-regular-crossed.png"
+    },
+    {
+      "name": "xueli-regular-clasped",
+      "source": "art/vn-portraits-v2/masters/xueli-regular-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "6fd41de73ac8ee8ad35f21bc901521558fa36bb74ef466d1a3b73e9b21d37422",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-regular-clasped.png"
+    },
+    {
+      "name": "xueli-travel-relaxed",
+      "source": "art/vn-portraits-v2/masters/xueli-travel-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "9993dafee919d9ac04f6a69fe9eb5d321024a102fde4f59d039d6b2907f22622",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-travel-relaxed.png"
+    },
+    {
+      "name": "xueli-travel-crossed",
+      "source": "art/vn-portraits-v2/masters/xueli-travel-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "e51a75fa29267a16b4efe376c16a9960909ab8b9e75999841356bdd9922ae500",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-travel-crossed.png"
+    },
+    {
+      "name": "xueli-travel-clasped",
+      "source": "art/vn-portraits-v2/masters/xueli-travel-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "6b6e057b96753f7919265ba1be32da6ac6a30c9fcff82badfd5483c483812a1b",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-travel-clasped.png"
+    },
+    {
+      "name": "xueli-ceremony-relaxed",
+      "source": "art/vn-portraits-v2/masters/xueli-ceremony-relaxed.png",
+      "resolution": [
+        941,
+        1671
+      ],
+      "sha256": "91e736d3a00412f996005b44fe4a568f388de3bc37295458ccab443a28d5458b",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-ceremony-relaxed.png"
+    },
+    {
+      "name": "xueli-ceremony-crossed",
+      "source": "art/vn-portraits-v2/masters/xueli-ceremony-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "016d608450b8c8d905df0def4ff90b5af17f872c430e27dba0c1c789f1c4911d",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-ceremony-crossed.png"
+    },
+    {
+      "name": "xueli-ceremony-clasped",
+      "source": "art/vn-portraits-v2/masters/xueli-ceremony-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "1a463ffb685dbb5bb128b8d7fae5e5d0e7c9fcceda1da0b3f19dbc894019834b",
+      "output": "assets\\story\\vn-portraits-v2\\xueli\\base-ceremony-clasped.png"
+    },
+    {
+      "name": "yayu-regular-relaxed",
+      "source": "art/vn-portraits-v2/masters/yayu-regular-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "5e401ddaf7a5361430ce9d1e4caf75886d74e733365624223885d9832d9cf5a7",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-regular-relaxed.png"
+    },
+    {
+      "name": "yayu-regular-crossed",
+      "source": "art/vn-portraits-v2/masters/yayu-regular-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "532238bd3bcfc933d54156ce20a52af9d7d2ba5bdb9ea9f8f7adbc7a29c19bca",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-regular-crossed.png"
+    },
+    {
+      "name": "yayu-regular-clasped",
+      "source": "art/vn-portraits-v2/masters/yayu-regular-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "5c2b18b9b921c577a2b453447503e93c3b8680ed9bb4f6d4e4421b0ffd04eb5f",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-regular-clasped.png"
+    },
+    {
+      "name": "yayu-travel-relaxed",
+      "source": "art/vn-portraits-v2/masters/yayu-travel-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "890ffed5e8f3d080efd8622dbe2ca85d3571f32dde0aa52703d47d30bb6756c2",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-travel-relaxed.png"
+    },
+    {
+      "name": "yayu-travel-crossed",
+      "source": "art/vn-portraits-v2/masters/yayu-travel-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "07fba297692d077c2652c0035d23b4bb2deb6b71b63b5202a784fb726324d014",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-travel-crossed.png"
+    },
+    {
+      "name": "yayu-travel-clasped",
+      "source": "art/vn-portraits-v2/masters/yayu-travel-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "77257f0d0798d8d512f6b61ba2b367c353512bea807dbb06d0eb5aed3d612954",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-travel-clasped.png"
+    },
+    {
+      "name": "yayu-ceremony-relaxed",
+      "source": "art/vn-portraits-v2/masters/yayu-ceremony-relaxed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "711534175d176de3b93240af77828bccc71a24e1d703b2fe41e5fef03930bccb",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-ceremony-relaxed.png"
+    },
+    {
+      "name": "yayu-ceremony-crossed",
+      "source": "art/vn-portraits-v2/masters/yayu-ceremony-crossed.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "c7c2867c4d952c8c79d421dc2f2409f98e6b7f072b29dbb1d4b6ba89c27ff82c",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-ceremony-crossed.png"
+    },
+    {
+      "name": "yayu-ceremony-clasped",
+      "source": "art/vn-portraits-v2/masters/yayu-ceremony-clasped.png",
+      "resolution": [
+        941,
+        1672
+      ],
+      "sha256": "adcf377de2ee0a2aee827037b852d110966e8bf33f698fe59949b5cc5de05a11",
+      "output": "assets\\story\\vn-portraits-v2\\yayu\\base-ceremony-clasped.png"
+    }
+  ],
+  "missing": [],
+  "head_replacement": false,
+  "skin_backplates": false
+}

@@ -6,6 +6,7 @@ const Idle = preload("res://scripts/character_idle.gd")
 var idle = Idle.new()
 var idle_billboards = preload("res://scripts/character_idle_billboards.gd").new()
 var world_3d: Node3D
+var boss_models: Node3D
 var world_pose := Transform2D.IDENTITY
 var session: TideSession
 var camera := Ruins.SPAWN
@@ -56,6 +57,8 @@ var chest_sync_timer := 0.0
 func _ready() -> void:
 	world_3d=WorldPresentation.new()
 	add_child(world_3d)
+	boss_models=preload("res://scripts/boss_models_3d.gd").new(); world_3d.add_child(boss_models)
+	session.started.connect(boss_models.reset); session.map_changed.connect(boss_models.reset)
 	world_3d.add_child(idle_billboards)
 	visibility_changed.connect(func(): world_3d.visible=visible)
 	world_3d.visible=visible
@@ -160,6 +163,7 @@ func _process(dt: float) -> void:
 			for y in range(-2,3):
 				explored[Vector2i(target/160)+Vector2i(x,y)]=true
 	world_3d.sync(session.ruins,camera,get_viewport_rect().size)
+	boss_models.sync(session.enemies,dt,clock,camera)
 	chest_sync_timer-=dt
 	if chest_sync_timer<=0.0:
 		world_3d.sync_chests(session.ruins.chests)
@@ -279,6 +283,7 @@ func _draw() -> void:
 				draw_texture_rect(loot_icons[Catalog.item_icon(item)],Rect2(at+Vector2(-12,-16+sin(clock*3)*2),Vector2(24,24)),false)
 				draw_arc(at,20+sin(clock*2)*2,0,TAU,24,Color(colour,0.45),1)
 	for fallen in defeated_enemies:
+		if int(fallen.get("type",-1))==4 and int(fallen.get("boss_kind",-1))<0: continue
 		if int(fallen.get("boss_kind",-1))>=0:
 			var kind: int=clampi(int(fallen.boss_kind),0,2)
 			if fallen.get("mini_boss",false) or fallen.get("final_form",false) or fallen.get("abyss_final",false):
@@ -503,7 +508,7 @@ func monster(e: Dictionary) -> void:
 	elif heat>0.001:
 		var hot := telegraph.tint(kind)
 		tint=Color.WHITE.lerp(Color(hot.r*2.0,hot.g*2.0,hot.b*2.0),heat*0.62)
-	draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
+	if not boss_models.draws(e): draw_billboard_region(body_pose.texture,body_pose.rect,body_pose.region,tint)
 	set_world_transform()
 	if frame==6 and kind!=4:
 		var aim: Vector2=e.get("attack_aim",Vector2.RIGHT)

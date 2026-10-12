@@ -231,6 +231,9 @@ func spawn_enemy(pos: Vector2, type: int, id: String, boss: bool = false) -> voi
 	if id=="A5-S03": art="moon-leviathan"
 	if id=="exploration-guardian": art="earthsplitter" if state.act%2==1 else "thorn-huntsman"
 	enemies.append({"id":unique,"quest":id,"p":pos,"type":type,"hp":hp,"maxhp":hp,"boss":boss,"art":art,"cd":1.4+float(enemies.size()%4)*0.3,"windup":0.0,"target":pos,"shape":"circle","radius":80.0,"phase":0,"flash":0.0})
+	if id=="exploration-guardian" and int(state.act)==1 and map.layout=="castle":
+		enemies[-1]["model_3d"]="oath-knight"
+		enemies[-1]["boss_name"]="失乡誓约骑士 · 灰棘守门人"
 
 func ensure_encounter() -> void:
 	var q := current_main()
@@ -542,11 +545,13 @@ func update(dt: float, motion: Vector2) -> void:
 	for e in enemies:
 		if e.hp<=0: continue
 		e.flash=maxf(0,e.flash-dt)
+		e["visual_release_time"]=maxf(0,float(e.get("visual_release_time",0))-dt)
 		var distance: float=e.p.distance_to(hero_at)
 		if distance>900: continue
 		if e.windup>0:
 			e.windup-=dt
 			if e.windup<=0:
+				e["visual_release_time"]=.48
 				var diff: Vector2=hero_at-e.target
 				var caught: bool=diff.length()<e.radius
 				if e.shape=="ring": caught=diff.length()>100 and diff.length()<e.radius
@@ -567,6 +572,7 @@ func update(dt: float, motion: Vector2) -> void:
 			if e.cd<=0 and distance<(650 if e.boss else 120):
 				e.cd=2.8 if e.boss else 1.7
 				e.windup=1.15 if e.boss else 0.55
+				e["visual_attack_total"]=e.windup
 				e.target=hero_at; e.radius=380.0 if e.boss else 100.0
 				if e.boss:
 					e.phase=mini(2,int((1.0-e.hp/e.maxhp)*3))

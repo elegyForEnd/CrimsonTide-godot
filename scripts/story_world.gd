@@ -6,6 +6,7 @@ const Bosses = preload("res://scripts/boss_frames.gd")
 var hero_frames = Heroes.new()
 var enemy_frames = Foes.new()
 var boss_frames = Bosses.new()
+var boss_models: Node3D
 var campaign
 var focus := Vector2.ZERO
 var npc_models: Array=[]
@@ -26,8 +27,12 @@ func _exit_tree() -> void:
 
 func build_story(c) -> void:
 	campaign=c
+	if boss_models==null:
+		boss_models=preload("res://scripts/boss_models_3d.gd").new()
+		boss_models.mode="story"; boss_models.height_at=c.map.height_at; add_child(boss_models)
 	var signature := "%d:%d" % [c.state.act,c.map.layer]
 	if geometry_key!=signature:
+		boss_models.reset()
 		geometry_key=signature
 		if art_act!=int(c.state.act):
 			environment_builder.release_resources()
@@ -105,6 +110,7 @@ func sync_story(screen: Vector2, dt: float) -> void:
 	view_camera.position=target+Vector3(12,24,19)
 	view_camera.look_at(target)
 	environment_builder.sync(focus,dt)
+	boss_models.sync(campaign.enemies,dt,campaign.clock,focus)
 	begin_sprites()
 	for i in 3:
 		var data: Dictionary
@@ -128,6 +134,7 @@ func sync_story(screen: Vector2, dt: float) -> void:
 			var extent := Vector2(115*cell.x/cell.y,115)
 			submit_sprite(npc_sheet,Rect2(Vector2(-extent.x/2,-extent.y*.99),extent),region,Color.WHITE,Transform2D(0,campaign.map.npc_at[i]))
 	for e in campaign.enemies:
+		if boss_models.draws(e) or (e.hp<=0 and preload("res://scripts/boss_actor_3d.gd").supports(e,"story")): continue
 		var rect: Rect2
 		var region: Rect2
 		var tex: Texture2D

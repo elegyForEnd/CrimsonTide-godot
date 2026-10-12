@@ -212,6 +212,7 @@ func sync_music() -> void:
 	for e in campaign.enemies:
 		if e.boss and e.hp>0 and e.p.distance_to(campaign.hero_at)<950:
 			cue={"bell-hierophant":"bishop","ashen-vesper":"ember","thorn-huntsman":"hunter","mirror-weaver":"mirror","moon-leviathan":"abyss","blood-queen":"queen","earthsplitter":"earth","storm-roc-v2":"storm","frostbone-dragon":"dragon"}.get(e.art,"queen")
+			if e.get("model_3d","")=="oath-knight": cue="knight"
 	var signature := campaign.key()+cue
 	if signature==music_signature: return
 	music_signature=signature

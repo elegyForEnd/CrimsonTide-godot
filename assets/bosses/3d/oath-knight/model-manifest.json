@@ -1,0 +1,143 @@
+{
+  "source": "art/bosses/oath-knight-master.blend",
+  "exporter": "tools/export_oath_knight.py",
+  "original": true,
+  "units": "metres",
+  "forward": "-Z after glTF conversion",
+  "bones": 19,
+  "vertices": 26230,
+  "triangles": 50284,
+  "materials": [
+    "leather",
+    "steel",
+    "brass",
+    "soul",
+    "blade",
+    "cloth"
+  ],
+  "clips": [
+    {
+      "name": "break",
+      "frames": [
+        1.0,
+        46.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "cast",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "charge",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "corpse",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "death",
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "entrance",
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "guard",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "hit",
+      "frames": [
+        1.0,
+        16.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "idle",
+      "frames": [
+        1.0,
+        61.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "phase",
+      "frames": [
+        1.0,
+        49.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "slam",
+      "frames": [
+        1.0,
+        37.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "slash",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "sweep",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "thrust",
+      "frames": [
+        1.0,
+        31.0
+      ],
+      "fps": 30
+    },
+    {
+      "name": "walk",
+      "frames": [
+        1.0,
+        33.0
+      ],
+      "fps": 30
+    }
+  ],
+  "rigid_armor": true,
+  "weighted_cloth": true,
+  "source_not_modified": true
+}
