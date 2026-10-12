@@ -1,0 +1,16 @@
+{
+  "id": "feiyue-travel-crossed-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-862c503a-fb9e-4b0a-a181-fd89e9ad9b31.png",
+  "output": "art/vn-full-v3/masters/feiyue-travel-crossed-neutral.png",
+  "sha256": "b235951fa4e80395c422744fcc1640345454c2e132e6d423c5399089f6f3fac7",
+  "prompt_sha256": "939d92d6d760f8b8e78389df20c6961fa318fe2678f10c7000627d96647918a6",
+  "visual_review": "pending"
+}

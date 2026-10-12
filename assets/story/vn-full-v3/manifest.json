@@ -1,0 +1,337 @@
+{
+  "version": 3,
+  "whole_portraits": true,
+  "facial_compositing": false,
+  "canvas": [
+    2160,
+    3840
+  ],
+  "generator": "built-in imagegen",
+  "resampling": "whole image Lanczos upscale; source resolution retained",
+  "costumes": [
+    "regular",
+    "home",
+    "travel"
+  ],
+  "poses": [
+    "front",
+    "turn",
+    "crossed"
+  ],
+  "expressions": [
+    "neutral",
+    "smile",
+    "joy",
+    "shy",
+    "worried",
+    "sad",
+    "angry",
+    "surprised"
+  ],
+  "heroes": {
+    "feiyue": {
+      "ready": true,
+      "portraits": {
+        "regular": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-regular-crossed-surprised.png"
+          }
+        },
+        "home": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-home-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-home-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-home-crossed-surprised.png"
+          }
+        },
+        "travel": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/feiyue/feiyue-travel-crossed-surprised.png"
+          }
+        }
+      }
+    },
+    "xueli": {
+      "ready": true,
+      "portraits": {
+        "regular": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-regular-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-regular-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-regular-crossed-surprised.png"
+          }
+        },
+        "home": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-home-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-home-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-home-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-home-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-home-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-home-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-home-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-home-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-home-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-home-crossed-surprised.png"
+          }
+        },
+        "travel": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-travel-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-travel-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/xueli/xueli-travel-crossed-surprised.png"
+          }
+        }
+      }
+    },
+    "yayu": {
+      "ready": true,
+      "portraits": {
+        "regular": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-regular-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-regular-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-regular-crossed-surprised.png"
+          }
+        },
+        "home": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-home-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-home-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-home-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-home-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-home-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-home-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-home-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-home-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-home-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-home-crossed-surprised.png"
+          }
+        },
+        "travel": {
+          "front": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-travel-front-surprised.png"
+          },
+          "turn": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-travel-turn-surprised.png"
+          },
+          "crossed": {
+            "neutral": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-neutral.png",
+            "smile": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-smile.png",
+            "joy": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-joy.png",
+            "shy": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-shy.png",
+            "worried": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-worried.png",
+            "sad": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-sad.png",
+            "angry": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-angry.png",
+            "surprised": "res://assets/story/vn-full-v3/yayu/yayu-travel-crossed-surprised.png"
+          }
+        }
+      }
+    }
+  },
+  "complete": true
+}

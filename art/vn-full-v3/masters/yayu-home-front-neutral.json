@@ -1,0 +1,16 @@
+{
+  "id": "yayu-home-front-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-59a40dac-67ae-43e2-a5e4-0816edb31f86.png",
+  "output": "art/vn-full-v3/masters/yayu-home-front-neutral.png",
+  "sha256": "68802eadcc5b49e3e6c61f4833f584200c82530ac02a0c354d15a30fc70b015e",
+  "prompt_sha256": "9640c9910bc3db76725ea1a71a3e1d55debbea2d8ac0fd408c7ecc06c66043f9",
+  "visual_review": "pending"
+}

@@ -20,6 +20,7 @@ var left: Control
 var right: Control
 var portraits := ["",""]
 var portrait_emotions: Dictionary={}
+var portrait_poses: Dictionary={}
 var wardrobe: Control
 var actions: VBoxContainer
 var log_view: Control
@@ -53,7 +54,7 @@ func _ready() -> void:
 	auto_button=button("自动",Vector2(731,822),Vector2(105,34),func(): auto=not auto; skipping=false; update_buttons())
 	skip_button=button("已读快进",Vector2(844,822),Vector2(129,34),func(): skipping=not skipping; auto=false; update_buttons())
 	log_button=button("回看",Vector2(981,822),Vector2(94,34),toggle_log)
-	button("衣装",Vector2(1083,822),Vector2(83,34),toggle_wardrobe)
+	button("立绘",Vector2(1083,822),Vector2(83,34),toggle_wardrobe)
 	button("收起对话",Vector2(1174,822),Vector2(112,34),finish)
 	var scroll := ScrollContainer.new(); scroll.position=Vector2(470,225); scroll.size=Vector2(525,355); scroll.name="Choices"; add_child(scroll); scroll.hide()
 	actions=VBoxContainer.new(); actions.custom_minimum_size.x=500; actions.size_flags_horizontal=Control.SIZE_EXPAND_FILL; actions.add_theme_constant_override("separation",10); scroll.add_child(actions)
@@ -100,13 +101,16 @@ func show_page() -> void:
 	for side in 2:
 		var property := "left_expression" if side==0 else "right_expression"
 		if page.has(property): portrait_emotions[portraits[side]]=page[property]
+		var pose_property := "left_pose" if side==0 else "right_pose"
+		if page.has(pose_property) and page[pose_property] in PortraitArt.POSES:portrait_poses[portraits[side]]=page[pose_property]
+	if page.has("pose") and page.pose in PortraitArt.POSES:portrait_poses[actor]=page.pose
 	if transition: transition.kill()
 	transition=create_tween().set_parallel(true)
 	for side in 2:
 		var node: Control=left if side==0 else right
 		var clothing: String=screen.dialogue_outfits.get(portraits[side],"regular")
 		if page.has("costume") and actor==portraits[side] and not screen.dialogue_outfits.has(actor): clothing=page.costume
-		node.set_actor(portraits[side],texture(portraits[side]),portrait_emotions.get(portraits[side],"neutral"),clothing)
+		node.set_actor(portraits[side],texture(portraits[side]),portrait_emotions.get(portraits[side],"neutral"),clothing,portrait_poses.get(portraits[side],"front"))
 		var speaking: bool=portraits[side]==actor and actor!=""
 		var tone := Color(1,1,1,1) if speaking or actor=="" else Color(.52,.56,.64,.9)
 		transition.tween_property(node,"modulate",tone,.22)
@@ -212,17 +216,22 @@ func finish() -> void:
 func toggle_wardrobe() -> void:
 	if is_instance_valid(wardrobe): wardrobe.queue_free(); wardrobe=null; return
 	if is_instance_valid(log_view): toggle_log()
-	wardrobe=Panel.new(); wardrobe.position=Vector2(255,150); wardrobe.size=Vector2(930,395); wardrobe.add_theme_stylebox_override("panel",UISkin.frame(5)); add_child(wardrobe)
-	screen.label(wardrobe,"旅途衣装",Vector2(28,22),Vector2(500,37),26)
-	screen.label(wardrobe,"改变剧情立绘的衣装；角色的装备与属性仍在人物界面管理。",Vector2(30,65),Vector2(820,30),17)
+	wardrobe=Panel.new(); wardrobe.position=Vector2(255,125); wardrobe.size=Vector2(930,530); wardrobe.add_theme_stylebox_override("panel",UISkin.frame(5)); add_child(wardrobe)
+	screen.label(wardrobe,"灯下立绘 · 服饰与姿态",Vector2(28,22),Vector2(650,37),26)
+	screen.label(wardrobe,"三套服饰、三种姿态独立选择。服饰选择会保存。",Vector2(30,65),Vector2(820,30),17)
 	screen.button(wardrobe,"返回对话",Vector2(760,24),Vector2(138,34),toggle_wardrobe)
 	for hero in 3:
-		screen.label(wardrobe,Data.HEROES[hero],Vector2(30,128+82*hero),Vector2(118,35),23)
-		for slot in 4:
+		screen.label(wardrobe,Data.HEROES[hero],Vector2(30,130+130*hero),Vector2(118,35),23)
+		for slot in PortraitArt.COSTUMES.size():
 			var costume: String=PortraitArt.COSTUMES[slot]
 			var actor := "hero:%d" % hero
-			var node: Button=screen.button(wardrobe,PortraitArt.COSTUME_NAMES[slot],Vector2(155+182*slot,122+82*hero),Vector2(172,47),func(): choose_costume(actor,costume))
+			var node: Button=screen.button(wardrobe,PortraitArt.COSTUME_NAMES[slot],Vector2(155+240*slot,120+130*hero),Vector2(225,42),func(): choose_costume(actor,costume))
 			UISkin.button(node,screen.dialogue_outfits.get(actor,"regular")==costume)
+		for slot in PortraitArt.POSES.size():
+			var gesture: String=PortraitArt.POSES[slot]
+			var actor := "hero:%d" % hero
+			var node: Button=screen.button(wardrobe,PortraitArt.POSE_NAMES[slot],Vector2(155+240*slot,169+130*hero),Vector2(225,38),func(): choose_pose(actor,gesture))
+			UISkin.button(node,portrait_poses.get(actor,"front")==gesture)
 
 func choose_costume(actor: String, clothing: String) -> void:
 	if not clothing in PortraitArt.COSTUMES: return
@@ -230,8 +239,17 @@ func choose_costume(actor: String, clothing: String) -> void:
 	for side in 2:
 		if portraits[side]==actor:
 			var node: Control=left if side==0 else right
-			node.set_actor(actor,texture(actor),portrait_emotions.get(actor,"neutral"),clothing)
+			node.set_actor(actor,texture(actor),portrait_emotions.get(actor,"neutral"),clothing,portrait_poses.get(actor,"front"))
 	if is_instance_valid(wardrobe): toggle_wardrobe(); toggle_wardrobe()
+
+func choose_pose(actor: String, gesture: String) -> void:
+	if not gesture in PortraitArt.POSES:return
+	portrait_poses[actor]=gesture
+	for side in 2:
+		if portraits[side]==actor:
+			var node: Control=left if side==0 else right
+			node.set_actor(actor,texture(actor),portrait_emotions.get(actor,"neutral"),screen.dialogue_outfits.get(actor,"regular"),gesture)
+	if is_instance_valid(wardrobe):toggle_wardrobe();toggle_wardrobe()
 
 func _draw() -> void:
 	var gold := Color(.69,.54,.31,.64)

@@ -1,0 +1,17 @@
+{
+  "id": "feiyue-travel-front-shy",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-dc9707bb-d42a-42c6-a3d2-59515db478f3.png",
+  "output": "art/vn-full-v3/masters/feiyue-travel-front-shy.png",
+  "sha256": "918088de21a63da6daef5cb1d817abce5b87d75d43f3f57019df561b4e0a1130",
+  "prompt_sha256": "6d60e0fdb5ef0d34c5ebc2a6cec3251301374072a7d149a9b7ec37af797cb0b2",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 绯月 / feiyue. white flowing hair, softly rounded ruby-red eyes, black hair bow with ruby and white flower, purple heart-tipped tail. Keep original delicate face and soft cheek blush. Outfit: practical beautifully tailored burgundy/black travel coat over a layered skirt, antique gold embroidered shoulder cape, leather belt and satchel, laced travel boots, ruby details. Original hair and tail remain. No weapon, no lantern. Pose1: naturally relaxed front-facing standing, arms resting at sides, gentle original head inclination. Xueli regular can hold her lantern low. Exactly two arms and hands. Expression: gentle bashful expression, subtly lowered gaze, small shy closed-mouth smile, a little more pink blush, no dramatic eyebrows. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

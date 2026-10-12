@@ -1,0 +1,16 @@
+{
+  "id": "xueli-travel-turn-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-53b36fd6-2d91-41a9-bc35-5a045a7caaf8.png",
+  "output": "art/vn-full-v3/masters/xueli-travel-turn-neutral.png",
+  "sha256": "2f00475cf6aa3590bd136af192107c0f9f3796a4fa407a1b82bffb8638c9c56b",
+  "prompt_sha256": "4e5e2671a979f8c7d75e8a0cd57f967155eb5e9c45aeb5b2c560d0f1b618a438",
+  "visual_review": "pending"
+}

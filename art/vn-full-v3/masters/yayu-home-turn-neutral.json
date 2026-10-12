@@ -1,0 +1,16 @@
+{
+  "id": "yayu-home-turn-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-a51dd89f-f5c7-4861-af1d-bbd957034a98.png",
+  "output": "art/vn-full-v3/masters/yayu-home-turn-neutral.png",
+  "sha256": "a1ae404e248accba0d16e980a6e5d4ec41d0f0c8481bea60b0066f6bc0921875",
+  "prompt_sha256": "a2d468df8742de635caeb202c1095e0d2b646863372e36be8753b2045f344940",
+  "visual_review": "pending"
+}

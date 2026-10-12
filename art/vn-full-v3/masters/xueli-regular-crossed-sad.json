@@ -1,0 +1,17 @@
+{
+  "id": "xueli-regular-crossed-sad",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-4616afce-c114-4b64-91fc-50cb2f5fd4e0.png",
+  "output": "art/vn-full-v3/masters/xueli-regular-crossed-sad.png",
+  "sha256": "2b2472828f187782e4d1244caec64a08baf0a247c83495db91b2fda5faf5e4f3",
+  "prompt_sha256": "ad7c9f524caabe69872bb34716a2589bb4da45df493029e176fc2da910262ba8",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 雪璃 / xueli. long flowing pale-blue curly hair, softly rounded cyan-blue eyes, silver star ornaments and mint ribbons. Keep original gentle face and faint cheek blush. Outfit: exact original navy ceremonial cleric veil with silver star embroidery, mint bow, navy and white lace dress, tall boots. Her cyan lantern is held low or hangs from her belt when hands are occupied. No katana or tail. Pose3: MOSTLY FRONT-FACING, only a gentle 10 to15 degree torso yaw toward viewer's right, both shoulders and most front bodice visible. Both arms naturally crossed in front of chest, face almost directly toward viewer with original natural head tilt. Like the supplied VN screenshot's mild angle; no profile or strong three-quarter view, no back-looking head, no twisted neck. Exactly two arms and hands, no third lowered arm. Held objects hang from belt instead. Expression: restrained sadness, softly lowered brows and slight tear sheen, small downturned mouth, no distorted crying face. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

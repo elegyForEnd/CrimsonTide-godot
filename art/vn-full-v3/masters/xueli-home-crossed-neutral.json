@@ -1,0 +1,16 @@
+{
+  "id": "xueli-home-crossed-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-4e3454c3-495d-499f-adb2-77c79ce6d0e4.png",
+  "output": "art/vn-full-v3/masters/xueli-home-crossed-neutral.png",
+  "sha256": "e04cf2d64924a5c27f6d5af06316f87242bf89f76cdd34a5136c3b4ed032381d",
+  "prompt_sha256": "e51114ef09d26babf4053b2b11a367a8e61b75ce53d4077d30b37dcad7cf948e",
+  "visual_review": "pending"
+}

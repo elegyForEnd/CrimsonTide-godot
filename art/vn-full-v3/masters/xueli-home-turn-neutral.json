@@ -1,0 +1,16 @@
+{
+  "id": "xueli-home-turn-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-bf63d655-009e-49bd-8188-351dbddcab92.png",
+  "output": "art/vn-full-v3/masters/xueli-home-turn-neutral.png",
+  "sha256": "9893fa3aee59ec0b77c8ae92eb79920a3e22905e7e139897bcf56225518131e9",
+  "prompt_sha256": "cab723f8fd5bd4ad9c5f396320681a91a24ef00bc447d6816fa2ee2fd7b9f302",
+  "visual_review": "pending"
+}

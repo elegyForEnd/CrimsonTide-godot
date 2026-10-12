@@ -1,0 +1,17 @@
+{
+  "id": "feiyue-regular-turn-worried",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-94d708a8-fd3a-405e-a65c-9ea661122c9c.png",
+  "output": "art/vn-full-v3/masters/feiyue-regular-turn-worried.png",
+  "sha256": "71a9521c35a5092993780dc3ef1c6b22c4103cc1645c9198b82f46734b529e42",
+  "prompt_sha256": "31c902660b99c47509373d65c39da890c0a7f8fef4f41dae3010e5c8dc84b23d",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 绯月 / feiyue. white flowing hair, softly rounded ruby-red eyes, black hair bow with ruby and white flower, purple heart-tipped tail. Keep original delicate face and soft cheek blush. Outfit: exact original white puff sleeves, black/gold gothic layered dress, ruby neck bow, lace socks and black Mary Jane shoes. No lantern, no weapon, empty hands. Pose2: MOSTLY FRONT-FACING, only a gentle 15 to20 degree torso/hip yaw toward viewer's left, both shoulders and almost the entire front bodice remain visible. One hand lightly touching her collar/ribbon at chest, other arm naturally relaxed. Face almost directly toward viewer with a small natural head tilt. Use the supplied VN screenshot only as a reference for this mild body angle, not for character identity or clothing. NOT a strong three-quarter view, NOT profile, NOT back-facing, NOT looking back over the shoulder, NO twisted neck or crossed legs. Exactly two arms and hands. Expression: quiet concern, slightly raised inner eyebrows, original eye proportions, tiny uneasy closed mouth, natural subtle emotion. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "yayu-regular-crossed-worried",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-3125bfa0-3b10-4e2d-b9e0-effb35c24dd2.png",
+  "output": "art/vn-full-v3/masters/yayu-regular-crossed-worried.png",
+  "sha256": "b2efcfd69062bd1c569d25c8f684d774321a97470a9c9decaa508d4e9555ca24",
+  "prompt_sha256": "c8b430fc6d172c9da21fd208415e06594b3a1d9011d432253a99cc4852c7d4f8",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 鸦羽 / yayu. deep violet high ponytail with silver ornaments and purple ribbons, softly rendered violet eyes, original delicate serious face with a faint natural cheek tint. Outfit: exact original black fitted armor and gauntlets, purple split overskirt with silver patterns, dark stockings and armored boots. Original sheathed katana at hip. No lantern, tail or new jewelry. Pose3: MOSTLY FRONT-FACING, only a gentle 10 to15 degree torso yaw toward viewer's right, both shoulders and most front bodice visible. Both arms naturally crossed in front of chest, face almost directly toward viewer with original natural head tilt. Like the supplied VN screenshot's mild angle; no profile or strong three-quarter view, no back-looking head, no twisted neck. Exactly two arms and hands, no third lowered arm. Held objects hang from belt instead. Expression: quiet concern, slightly raised inner eyebrows, original eye proportions, tiny uneasy closed mouth, natural subtle emotion. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

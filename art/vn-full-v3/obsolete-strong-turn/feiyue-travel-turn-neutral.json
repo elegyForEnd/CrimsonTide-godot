@@ -1,0 +1,16 @@
+{
+  "id": "feiyue-travel-turn-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-f014f1c2-ebc0-4f61-a858-b1ee9321dc80.png",
+  "output": "art/vn-full-v3/masters/feiyue-travel-turn-neutral.png",
+  "sha256": "d7eda7e98d39f94d136c191d7800cefe41b8b9472ed834e8565d4d0e0a338777",
+  "prompt_sha256": "fcc720e88df1d2b030276749e5ed2992aa14031fc39a6edc1020acf728810606",
+  "visual_review": "pending"
+}

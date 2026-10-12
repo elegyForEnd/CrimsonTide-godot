@@ -1,0 +1,3894 @@
+{
+  "exported": 216,
+  "missing": [],
+  "portraits": [
+    {
+      "id": "feiyue-regular-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "44dee5a43c66d14a8c1d0e63f9b55365af416bd44fdb5d96bf5d15e83f95d78d",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-neutral.png",
+      "source_alpha_bounds": [
+        18,
+        11,
+        874,
+        1741
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "377b444ea422d926acb8b64d4bd4cddd4afa9046d942b0dcb0b489d179f8b0e8",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-smile.png",
+      "source_alpha_bounds": [
+        17,
+        11,
+        876,
+        1740
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6c6d3d638faac0a36ddac8963ff50ba6c1e60e093ebd672c6c416c5e55c12e5f",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-joy.png",
+      "source_alpha_bounds": [
+        17,
+        10,
+        875,
+        1741
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "149dd0f3e4fe965a4372cff7e7196619b4790e307131b2a2cec5f3097126abe2",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-shy.png",
+      "source_alpha_bounds": [
+        14,
+        11,
+        879,
+        1740
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2c7ebff265028e946223b386436f829e11f59b979da9ed1a2828fbd03bfa5699",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-worried.png",
+      "source_alpha_bounds": [
+        17,
+        10,
+        875,
+        1740
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "4f5455bf594a44c298a4babda4ede707a3872be47b5223250880a04b0dfb8e0b",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-sad.png",
+      "source_alpha_bounds": [
+        18,
+        10,
+        875,
+        1741
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ea30deb83dd5f96475f9ae10977608dff819cf60af106176211060dd238bb3d3",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-angry.png",
+      "source_alpha_bounds": [
+        17,
+        11,
+        874,
+        1740
+      ]
+    },
+    {
+      "id": "feiyue-regular-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "443d264747f095da63bccb82301f6f8e60a0ee877dd92eab0a9916dc84e4bcd3",
+      "source": "art/vn-full-v3/masters/feiyue-regular-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-front-surprised.png",
+      "source_alpha_bounds": [
+        17,
+        10,
+        875,
+        1742
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c163779c6da34bbaf3a7d807846afbb5210ef239521f04ba00c4d61baf1a19d6",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-neutral.png",
+      "source_alpha_bounds": [
+        36,
+        10,
+        867,
+        1737
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "afbf5f03857d4224aff64c40c9884902995b42690cd2a4cc5efbd8cccc2fa3d9",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-smile.png",
+      "source_alpha_bounds": [
+        35,
+        9,
+        869,
+        1738
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6f62f544f8ce832c7ae62c2c5904da7368ac66423633ba1b27f5e255411b2e94",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-joy.png",
+      "source_alpha_bounds": [
+        34,
+        11,
+        869,
+        1738
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "24bdbf1a5e5671e660a4b02d07a4398101189450620709d3e8293793dd3f0926",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-shy.png",
+      "source_alpha_bounds": [
+        35,
+        9,
+        871,
+        1739
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "71a9521c35a5092993780dc3ef1c6b22c4103cc1645c9198b82f46734b529e42",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-worried.png",
+      "source_alpha_bounds": [
+        36,
+        9,
+        869,
+        1738
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "8c091db59d18801fc042abf5b897d90db8dee6e1cb4b620c28c1dc0559fb1f32",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-sad.png",
+      "source_alpha_bounds": [
+        32,
+        8,
+        881,
+        1738
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c9b445355051c0a8afdbb15502ef937372fa368221eeae90fad728da60f686a4",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-angry.png",
+      "source_alpha_bounds": [
+        34,
+        9,
+        871,
+        1739
+      ]
+    },
+    {
+      "id": "feiyue-regular-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "32e749439081616135b1a00f379444a8539e4b23716ba8b1b040879b5c4fe33a",
+      "source": "art/vn-full-v3/masters/feiyue-regular-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-turn-surprised.png",
+      "source_alpha_bounds": [
+        35,
+        9,
+        869,
+        1738
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a7619e3e5f896d2801ca83242e65f5d144bb307de4ff0e3df67336412890bde3",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-neutral.png",
+      "source_alpha_bounds": [
+        33,
+        5,
+        882,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "dcedf6bacf2011db596fec44742a807160bee3516f7f5e284b06b208fd43dec3",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-smile.png",
+      "source_alpha_bounds": [
+        31,
+        5,
+        883,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "61b7750dfea5cf49f1b3b48feba37750c18765fb64dc60d1af1d51299720696a",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-joy.png",
+      "source_alpha_bounds": [
+        32,
+        5,
+        884,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "0ac75cfd51c73f195015f4927baeca18e17bf13525b6be52691999072acdc265",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-shy.png",
+      "source_alpha_bounds": [
+        32,
+        4,
+        885,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a2abd78612e0e3843308331b390607773d289852cf301129249cbaf910737bb5",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-worried.png",
+      "source_alpha_bounds": [
+        31,
+        5,
+        885,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cd44f64672c9233c4e638ab939ebac1700c76d85c6abf043cde5cb82f77a1535",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-sad.png",
+      "source_alpha_bounds": [
+        31,
+        0,
+        886,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "17ad4fbd81eaedaf28d6534a1f3e7b5eb656d3effdc83d3dd68369d06dcca5aa",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-angry.png",
+      "source_alpha_bounds": [
+        32,
+        3,
+        883,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-regular-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "efb4491c89cc78b481b4c4628a916195ba35a2884297f14081cd4bc39152ec26",
+      "source": "art/vn-full-v3/masters/feiyue-regular-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-regular-crossed-surprised.png",
+      "source_alpha_bounds": [
+        33,
+        3,
+        887,
+        1755
+      ]
+    },
+    {
+      "id": "feiyue-home-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "21949f5ab5ed495b78d3c1b0491b2bfa55054cdfc1e03cfaf99ff3cd2746e294",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-neutral.png",
+      "source_alpha_bounds": [
+        31,
+        10,
+        869,
+        1761
+      ]
+    },
+    {
+      "id": "feiyue-home-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a93336af4c6633d50f2d391461f25fcd48e1b22bb40bd2fabf28de9bc421329d",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-smile.png",
+      "source_alpha_bounds": [
+        30,
+        9,
+        870,
+        1761
+      ]
+    },
+    {
+      "id": "feiyue-home-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "74288988084a02a5336541b2e83bc7188b27e7398ba1e82aadbe4f8d50c4d682",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-joy.png",
+      "source_alpha_bounds": [
+        30,
+        9,
+        870,
+        1762
+      ]
+    },
+    {
+      "id": "feiyue-home-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "802552a85ba44ca1de8bfede8080e40316b5cd3118d494bfdd1ccd6d739e2182",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-shy.png",
+      "source_alpha_bounds": [
+        30,
+        10,
+        871,
+        1761
+      ]
+    },
+    {
+      "id": "feiyue-home-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e4dd43bf59baf039d4507eb579fc809f706116db58698d758e1c642370098993",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-worried.png",
+      "source_alpha_bounds": [
+        30,
+        9,
+        871,
+        1762
+      ]
+    },
+    {
+      "id": "feiyue-home-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9813d086bc071c11ed99eda2c336c875e75bad5a33b39a2313289e39324dace3",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-sad.png",
+      "source_alpha_bounds": [
+        31,
+        9,
+        869,
+        1761
+      ]
+    },
+    {
+      "id": "feiyue-home-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "11553f5f1edfe94bd0606784a3a812a67a91b3b349518371d025c3714ce0ad1f",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-angry.png",
+      "source_alpha_bounds": [
+        30,
+        8,
+        871,
+        1762
+      ]
+    },
+    {
+      "id": "feiyue-home-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "19c118b2258efcf7a2e8c8daed51a8dc9f2087d02fd94ab0002e84abcfb25911",
+      "source": "art/vn-full-v3/masters/feiyue-home-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-front-surprised.png",
+      "source_alpha_bounds": [
+        31,
+        9,
+        870,
+        1761
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "da620367f902812c53e1698f95b6ba88af139ab8964a53836d276aa2baa4803c",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-neutral.png",
+      "source_alpha_bounds": [
+        18,
+        9,
+        879,
+        1753
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "710e6790382964515cd3425a7e3c968742261af9d4b7ad7cff40d70c6985ebe8",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-smile.png",
+      "source_alpha_bounds": [
+        17,
+        9,
+        882,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "d3363cefaf2d0a0779f05c892163716f0cc36153b7725b009a31a8024aca3256",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-joy.png",
+      "source_alpha_bounds": [
+        17,
+        8,
+        885,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e391c7d0cef3d25c3a3e74c0c5104438475fbf75836afabfc6708d2709c314b4",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-shy.png",
+      "source_alpha_bounds": [
+        17,
+        9,
+        884,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "4ba2596fec02cd1e4416ad431d35892fa436a9d1932375ba1ab0b6a447e60341",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-worried.png",
+      "source_alpha_bounds": [
+        17,
+        8,
+        880,
+        1755
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c599a911061e89fd3000c1ce5c0601d56c780256db2790618965826fbe149ed9",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-sad.png",
+      "source_alpha_bounds": [
+        16,
+        7,
+        885,
+        1755
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b9b74191759fe3ccb52269654c2943c31822967ed5c542a2a4f70b5115d00f59",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-angry.png",
+      "source_alpha_bounds": [
+        17,
+        8,
+        881,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-home-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "83355be283b719655571aaee6b37616e606e028702c1f7efc79a5e0580020655",
+      "source": "art/vn-full-v3/masters/feiyue-home-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-turn-surprised.png",
+      "source_alpha_bounds": [
+        17,
+        8,
+        884,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c5c72c3eea88ca26499d2d6535dd6f110c2e1912c36f5caabf75ee548684a31c",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-neutral.png",
+      "source_alpha_bounds": [
+        35,
+        7,
+        872,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "02a709aef4717bd4ff848accc40b08ec3e32c6a0a120c7659554aff7b8a58a9d",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-smile.png",
+      "source_alpha_bounds": [
+        34,
+        11,
+        872,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "55d95c068cbe5b6baf75174c9a3090122e9830110f57251729d26cd9f62d9305",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-joy.png",
+      "source_alpha_bounds": [
+        35,
+        6,
+        871,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "760bfd88809029f7b855b43bb12ae68454b9ab91e390009e050a337dee6263bf",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-shy.png",
+      "source_alpha_bounds": [
+        35,
+        8,
+        873,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a0f8f6fc06c602dd02ad793a1b062a32103bff2af535a0c31b710182a499744f",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-worried.png",
+      "source_alpha_bounds": [
+        36,
+        6,
+        871,
+        1764
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "74d06fecb0f57055935ca304a668c2623db59b17b00c21ea7fc3b3427ee6413d",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-sad.png",
+      "source_alpha_bounds": [
+        34,
+        6,
+        873,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "f2d77cd869812518b7676924be919d4d70acb42f6fa74396b8219c96c4ebd28d",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-angry.png",
+      "source_alpha_bounds": [
+        34,
+        7,
+        873,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-home-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "597b3c7d7f6d66a8d3f8fca554effd2ccd03b46fa2fdb4a8b2b4b9baa426e377",
+      "source": "art/vn-full-v3/masters/feiyue-home-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-home-crossed-surprised.png",
+      "source_alpha_bounds": [
+        34,
+        6,
+        872,
+        1763
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "1b02f12f57728e24dbf7ab6942b344adde38d11fabe771cbfed36427bdda35bb",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-neutral.png",
+      "source_alpha_bounds": [
+        10,
+        9,
+        881,
+        1758
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "0154d34f5702f07d6a5b082d0850da24926f5422077675cb280ab80add87f599",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-smile.png",
+      "source_alpha_bounds": [
+        8,
+        7,
+        887,
+        1759
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "984d205497dbc02e96ffead4d05fe5c1b96bb381574356f88f16422bb1f0a82f",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-joy.png",
+      "source_alpha_bounds": [
+        8,
+        3,
+        886,
+        1751
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "918088de21a63da6daef5cb1d817abce5b87d75d43f3f57019df561b4e0a1130",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-shy.png",
+      "source_alpha_bounds": [
+        8,
+        9,
+        887,
+        1758
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "29e7a02142b62b0828284386a74f0f62f736edf9bfaf9411347921f32552689d",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-worried.png",
+      "source_alpha_bounds": [
+        8,
+        8,
+        887,
+        1758
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6b06d9eb2e0e66b18fd1e2ead922ec36a6792b28bcbfe9e674331727daf2553d",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-sad.png",
+      "source_alpha_bounds": [
+        8,
+        7,
+        887,
+        1760
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "79719be5ae96427479f3978006920245a1a35be6e3630755cfe60c9bc3543539",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-angry.png",
+      "source_alpha_bounds": [
+        10,
+        8,
+        887,
+        1758
+      ]
+    },
+    {
+      "id": "feiyue-travel-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "acc358ff60974d596b8a26b9a0fd39fd6e5dcec3ba6c7965dc0204f82576c49b",
+      "source": "art/vn-full-v3/masters/feiyue-travel-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-front-surprised.png",
+      "source_alpha_bounds": [
+        9,
+        9,
+        886,
+        1759
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "8fb8e14aec6fec8292f07e2a3cfa24c844639e19da3afabc25ce543f5115e22b",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-neutral.png",
+      "source_alpha_bounds": [
+        30,
+        9,
+        861,
+        1752
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "3d7f669ce42f38d64690ba832ecf6fc0ad2b93f8bb29c360f04bcd28a8552aca",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-smile.png",
+      "source_alpha_bounds": [
+        28,
+        8,
+        863,
+        1752
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c25b38d7d5867a6e4f54b45c52c1c862f48775ecb63e3bf15a0715a4954c98fb",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-joy.png",
+      "source_alpha_bounds": [
+        29,
+        8,
+        862,
+        1752
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "250f239eca261bbde0be4e5f43e966191591b3cc3cc77344ba25e66cd6e04323",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-shy.png",
+      "source_alpha_bounds": [
+        29,
+        8,
+        863,
+        1753
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "f8efbf3fab2a6b32f6b5f603af8f977b89feb6277c10ebb0b60ab31ddaf62e42",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-worried.png",
+      "source_alpha_bounds": [
+        29,
+        8,
+        862,
+        1752
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "63f873ec1d8d1c2e72838cd0b98c1aadee96c089cdc2e826a2015302b1ae43d5",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-sad.png",
+      "source_alpha_bounds": [
+        28,
+        9,
+        862,
+        1753
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "27a45eef651f3409f7be12ed8f75403687ff851262fcb93fc0a7b4230816bfd1",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-angry.png",
+      "source_alpha_bounds": [
+        29,
+        8,
+        862,
+        1753
+      ]
+    },
+    {
+      "id": "feiyue-travel-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "1628a4344e00436104f1818c95460749f93d717387fb0be0b2b5da65f9789231",
+      "source": "art/vn-full-v3/masters/feiyue-travel-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-turn-surprised.png",
+      "source_alpha_bounds": [
+        28,
+        7,
+        863,
+        1753
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b235951fa4e80395c422744fcc1640345454c2e132e6d423c5399089f6f3fac7",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-neutral.png",
+      "source_alpha_bounds": [
+        24,
+        10,
+        873,
+        1753
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "49a51b39eeebaa57a4a81a7df8484d5c77ebcf23f7f7645530ebff71ca91debc",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-smile.png",
+      "source_alpha_bounds": [
+        23,
+        8,
+        874,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "3bc23df0775789f7800358ba646506223730efacf971381203db9be09a66d26d",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-joy.png",
+      "source_alpha_bounds": [
+        23,
+        10,
+        874,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b3f4b2b046de21b1ba28a36c2d490d5edb13a62916febf1c556c0f078aaaa9a4",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-shy.png",
+      "source_alpha_bounds": [
+        23,
+        11,
+        874,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "55c9e4311b04bfcfc8e716529078f59d950454b8b90ad7e9f5aeff2de641810a",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-worried.png",
+      "source_alpha_bounds": [
+        23,
+        10,
+        874,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e941f783e00bb4da67a5a9285973dc8615e1e6acf8450ac714328414ab47d587",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-sad.png",
+      "source_alpha_bounds": [
+        24,
+        9,
+        873,
+        1754
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-angry",
+      "source_resolution": [
+        887,
+        1773
+      ],
+      "native_4k": false,
+      "source_sha256": "b56fac622b132df80c0dde481faff9b9943a83ce3ff56be1f3a8040daf3bcca1",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-angry.png",
+      "source_alpha_bounds": [
+        23,
+        9,
+        876,
+        1756
+      ]
+    },
+    {
+      "id": "feiyue-travel-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "5d915663df36c7a9cad7732761f8e53715faff56313e1f93672b63ace625ca9d",
+      "source": "art/vn-full-v3/masters/feiyue-travel-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\feiyue\\feiyue-travel-crossed-surprised.png",
+      "source_alpha_bounds": [
+        23,
+        10,
+        874,
+        1756
+      ]
+    },
+    {
+      "id": "xueli-regular-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "bac30af5a487140da5cba774c6fe05aebd39e2a1751e93752e320fb50bf20676",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-neutral.png",
+      "source_alpha_bounds": [
+        22,
+        43,
+        872,
+        1726
+      ]
+    },
+    {
+      "id": "xueli-regular-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "596b1066a570146963f676f46225a3674472da0e742b3031ea80c2df3d634c06",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-smile.png",
+      "source_alpha_bounds": [
+        30,
+        43,
+        887,
+        1727
+      ]
+    },
+    {
+      "id": "xueli-regular-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "eab241e60d2cc4afed2f79be825a471eb19e3209cccff73951fa13ce1f663b1c",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-joy.png",
+      "source_alpha_bounds": [
+        21,
+        43,
+        873,
+        1727
+      ]
+    },
+    {
+      "id": "xueli-regular-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b0092732c67f37a9282849584ee6f83a2ba7b1dfe62111fd56ff4040ee69c072",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-shy.png",
+      "source_alpha_bounds": [
+        22,
+        43,
+        875,
+        1727
+      ]
+    },
+    {
+      "id": "xueli-regular-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "eb3619df76e83f2f8b40475cf58aad2c7bb89bda029dd17d03e26995c203d0f7",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-worried.png",
+      "source_alpha_bounds": [
+        21,
+        43,
+        874,
+        1726
+      ]
+    },
+    {
+      "id": "xueli-regular-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "633fd2087517448f2e6a1c56a1b29a072e348ba1a1f48d1ff3d79b76d8b47cfe",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-sad.png",
+      "source_alpha_bounds": [
+        20,
+        43,
+        875,
+        1728
+      ]
+    },
+    {
+      "id": "xueli-regular-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6406c7d83767a700fb2ab7d56fe2fdea4db260164c6517ebaeb4d9a5063171f3",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-angry.png",
+      "source_alpha_bounds": [
+        20,
+        43,
+        874,
+        1727
+      ]
+    },
+    {
+      "id": "xueli-regular-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "627b31e5aa1f239313930e9d5a98c17d1f67f4e14d0fde374efd376a6fe8e060",
+      "source": "art/vn-full-v3/masters/xueli-regular-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-front-surprised.png",
+      "source_alpha_bounds": [
+        21,
+        43,
+        873,
+        1726
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "83a67fe1bdd3909085d48e1e24552e526fa4bd8d6d92d5adbd9b163361c579db",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-neutral.png",
+      "source_alpha_bounds": [
+        16,
+        20,
+        877,
+        1733
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "bac9bc77c8635cfecd157543a78ac5669f93b3c8b6c6df6dfe60ece4f06069fd",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-smile.png",
+      "source_alpha_bounds": [
+        15,
+        20,
+        877,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "7bbb5248318af0d6ba8b1f6958fb008f733acb17878caaf0bacdabc048308559",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-joy.png",
+      "source_alpha_bounds": [
+        14,
+        22,
+        878,
+        1734
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ca4824e4800a3a0ec971c4762c4b4af95197cf61701a9b518a7fd654d8b20e9b",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-shy.png",
+      "source_alpha_bounds": [
+        17,
+        22,
+        877,
+        1733
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "5a1d5e4d9fbb0b89837378bda94ce1c4b7640047b8f6209128b8b3aaa29ae18d",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-worried.png",
+      "source_alpha_bounds": [
+        17,
+        21,
+        877,
+        1732
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2bfb74e78905931bc50af0cc64e816c45440301becd3cb697304a9f983c92b47",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-sad.png",
+      "source_alpha_bounds": [
+        10,
+        19,
+        883,
+        1734
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e4f837bd88d044ef496295673c79b7e62a3bbdea0e5b0ef1e1919c86753a9a24",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-angry.png",
+      "source_alpha_bounds": [
+        18,
+        25,
+        884,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-regular-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "d5e3189b9789476a96e33f60d4a0e59f504ed9ad0f50b3fb496896f8667d35a9",
+      "source": "art/vn-full-v3/masters/xueli-regular-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-turn-surprised.png",
+      "source_alpha_bounds": [
+        17,
+        20,
+        876,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "74cfcc21cf486deee7e16a6d6d829dbbe5a52c5ef4f10958c6ff1c397e1f40d6",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-neutral.png",
+      "source_alpha_bounds": [
+        14,
+        38,
+        881,
+        1742
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-smile",
+      "source_resolution": [
+        887,
+        1773
+      ],
+      "native_4k": false,
+      "source_sha256": "1356c8f038730e910d1c7d1bfac80e49ef33b90ef5a5a4ae3c8d5526c5778a1c",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-smile.png",
+      "source_alpha_bounds": [
+        14,
+        38,
+        882,
+        1742
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "5f1a36d514a9614676f218926a4cc3fd6732fa8d4673546d8b42ef1f0761f6e3",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-joy.png",
+      "source_alpha_bounds": [
+        13,
+        38,
+        881,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "27760ae6c758128f7e1d82caf5ab5fd292c5fa507d8133d463deb84033ba9f37",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-shy.png",
+      "source_alpha_bounds": [
+        14,
+        38,
+        882,
+        1742
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c7dbac2179d2c2efa834e463415a7c63395378991a71f2d7b9a84e86af0046af",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-worried.png",
+      "source_alpha_bounds": [
+        15,
+        37,
+        882,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2b2472828f187782e4d1244caec64a08baf0a247c83495db91b2fda5faf5e4f3",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-sad.png",
+      "source_alpha_bounds": [
+        14,
+        36,
+        882,
+        1744
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "4e196e5d802d4a8a7ef5ab50fff1f0c717b16d779f0c5822b78f081e5997e229",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-angry.png",
+      "source_alpha_bounds": [
+        13,
+        37,
+        884,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-regular-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "21669c2496ef59d17714080daba3fcfa1c1ca5bee9171eb3a3766f90c1ce173d",
+      "source": "art/vn-full-v3/masters/xueli-regular-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-regular-crossed-surprised.png",
+      "source_alpha_bounds": [
+        13,
+        37,
+        882,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9e7adecb8dcc836cdfa8ed8e87a0ed8b36e16123d8d81d6f10892854a3632768",
+      "source": "art/vn-full-v3/masters/xueli-home-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-neutral.png",
+      "source_alpha_bounds": [
+        38,
+        50,
+        862,
+        1734
+      ]
+    },
+    {
+      "id": "xueli-home-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "90fb1ad9e52b0792d913a8e61ecd36827e39c1e9000c6cf5ada21e331105dc18",
+      "source": "art/vn-full-v3/masters/xueli-home-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-smile.png",
+      "source_alpha_bounds": [
+        38,
+        49,
+        864,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-home-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9c0bd0a0b402e62af939409620590af317c5192d0779b93c9c688c5f2b2c13a9",
+      "source": "art/vn-full-v3/masters/xueli-home-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-joy.png",
+      "source_alpha_bounds": [
+        38,
+        49,
+        864,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-home-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b1070a87fc0cbd8eb1fd2ecfaeeeb31318a2f99f4470f79e9d0e115ad5c5b344",
+      "source": "art/vn-full-v3/masters/xueli-home-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-shy.png",
+      "source_alpha_bounds": [
+        38,
+        49,
+        864,
+        1734
+      ]
+    },
+    {
+      "id": "xueli-home-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2bd6fa65af25801eb6b480f672d51592087feea21744c33836fd41e17127dc7d",
+      "source": "art/vn-full-v3/masters/xueli-home-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-worried.png",
+      "source_alpha_bounds": [
+        39,
+        49,
+        864,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-home-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "5b59cf26c5b12e1b1c0cc90fae905c17c780f17d30eb7b7336480585e7a85b8f",
+      "source": "art/vn-full-v3/masters/xueli-home-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-sad.png",
+      "source_alpha_bounds": [
+        38,
+        50,
+        864,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-home-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "17c728e47073cf8236050bfcfa085282cfcf360d09e4140f4a20a27e0043fa8e",
+      "source": "art/vn-full-v3/masters/xueli-home-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-angry.png",
+      "source_alpha_bounds": [
+        38,
+        50,
+        864,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-home-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a32ce58ea91873cfd58f24f5f3273c45056985fa23d666b37878e17d77f998a3",
+      "source": "art/vn-full-v3/masters/xueli-home-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-front-surprised.png",
+      "source_alpha_bounds": [
+        38,
+        50,
+        864,
+        1735
+      ]
+    },
+    {
+      "id": "xueli-home-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9893fa3aee59ec0b77c8ae92eb79920a3e22905e7e139897bcf56225518131e9",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-neutral.png",
+      "source_alpha_bounds": [
+        109,
+        33,
+        864,
+        1742
+      ]
+    },
+    {
+      "id": "xueli-home-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "45be8ff23732a582ff273c30cbcad3ef3eb5948a89fd3a055904e0eb90c418cc",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-smile.png",
+      "source_alpha_bounds": [
+        109,
+        32,
+        868,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "911bbc9f066073b45c0c48342872cdeb625ef7380d65b86217a305feaa207589",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-joy.png",
+      "source_alpha_bounds": [
+        108,
+        32,
+        867,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cdc77013830c3fc5f11aecf04c3cec8709e3e19f3000243e11cf1f317d538eae",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-shy.png",
+      "source_alpha_bounds": [
+        109,
+        32,
+        867,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "5ffed32b5b5f754351af25681ad80e7fdd3a39fbd0f3b34929236080b6d17c67",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-worried.png",
+      "source_alpha_bounds": [
+        107,
+        30,
+        867,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "64851e71bb0373df7716045493b73eb79cf3b1c1e8859c290ea92f5e7adcd668",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-sad.png",
+      "source_alpha_bounds": [
+        107,
+        32,
+        869,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c25e9526a3e842d4d371c5aeaa65f0b74b5441d615866e1267ecbf5209a1fbf6",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-angry.png",
+      "source_alpha_bounds": [
+        108,
+        33,
+        867,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "7cf5882bf6df2651c79a789ddcebfd2eac7b292e978465cd439b755af783e683",
+      "source": "art/vn-full-v3/masters/xueli-home-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-turn-surprised.png",
+      "source_alpha_bounds": [
+        108,
+        32,
+        869,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e04cf2d64924a5c27f6d5af06316f87242bf89f76cdd34a5136c3b4ed032381d",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-neutral.png",
+      "source_alpha_bounds": [
+        46,
+        36,
+        860,
+        1756
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "1af4aa699ff21b2459f9a204aab79154e9acfa9ad0bd042fb6ea4f682c63c7a7",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-smile.png",
+      "source_alpha_bounds": [
+        46,
+        35,
+        861,
+        1757
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "89606a496aa256803bedf8363b342b2bca3b204974e573a42d2d5b8910baa22c",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-joy.png",
+      "source_alpha_bounds": [
+        44,
+        35,
+        861,
+        1756
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "d4748dcb54636b61b056bcf7099802efd3e9e2744b3b6e2bcad4aaa592a5ef08",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-shy.png",
+      "source_alpha_bounds": [
+        46,
+        35,
+        860,
+        1757
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "3111c8776a0d391c034f50e5b4aa3b21ec6da72b655be0e2c179709c2e85c1dc",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-worried.png",
+      "source_alpha_bounds": [
+        46,
+        35,
+        860,
+        1757
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "58dfd729348ab0e282a15b370ea74b593a52cf09bcd5387b97e88fc7ebc6a8b0",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-sad.png",
+      "source_alpha_bounds": [
+        43,
+        34,
+        862,
+        1757
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c595950a9bd556315851ce6b5ba0ca467d5054a52ffd8d7e8dff35b37a4ad196",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-angry.png",
+      "source_alpha_bounds": [
+        40,
+        34,
+        887,
+        1758
+      ]
+    },
+    {
+      "id": "xueli-home-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e5247ac31be6cbceb9ffff60f6072754b3d1fd0697a343a513d627bada1015f7",
+      "source": "art/vn-full-v3/masters/xueli-home-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-home-crossed-surprised.png",
+      "source_alpha_bounds": [
+        45,
+        35,
+        860,
+        1757
+      ]
+    },
+    {
+      "id": "xueli-travel-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ba59c68fb8df449928f26730e8060e57caaff0fcb54706883a66ac821607456f",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-neutral.png",
+      "source_alpha_bounds": [
+        61,
+        46,
+        887,
+        1752
+      ]
+    },
+    {
+      "id": "xueli-travel-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "869646c9228af83577ddeacc5baaea3d453ac7127020433c7dd8b0e9690074c1",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-smile.png",
+      "source_alpha_bounds": [
+        46,
+        45,
+        887,
+        1754
+      ]
+    },
+    {
+      "id": "xueli-travel-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "45eb46017d314a4a660906826b4ec7810821114e7d4c8d40e270e277faa14d1d",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-joy.png",
+      "source_alpha_bounds": [
+        58,
+        47,
+        887,
+        1754
+      ]
+    },
+    {
+      "id": "xueli-travel-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c697910ff97d5a84cba6570c7592c83ec077984c063bd28f07a8461fd4d2f57d",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-shy.png",
+      "source_alpha_bounds": [
+        56,
+        45,
+        887,
+        1754
+      ]
+    },
+    {
+      "id": "xueli-travel-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "3e62186988515436cfec9aa3d221b2dfdb04eda032af945d47d79578ebc9e521",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-worried.png",
+      "source_alpha_bounds": [
+        59,
+        45,
+        884,
+        1752
+      ]
+    },
+    {
+      "id": "xueli-travel-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "24eae14ab5be9c0b61e37ec431bd2c42c0e5f518be3477f04965b76fed2b8c31",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-sad.png",
+      "source_alpha_bounds": [
+        56,
+        46,
+        887,
+        1753
+      ]
+    },
+    {
+      "id": "xueli-travel-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "803fcb7284dd1e8564b6ecc4967b94a019a76217fe53cc39dd40e3922babfb99",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-angry.png",
+      "source_alpha_bounds": [
+        56,
+        44,
+        887,
+        1754
+      ]
+    },
+    {
+      "id": "xueli-travel-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "204919e04c30f5ef8f3eff1f0db96e4ec8e22b0522f42ef600824915e6463b08",
+      "source": "art/vn-full-v3/masters/xueli-travel-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-front-surprised.png",
+      "source_alpha_bounds": [
+        59,
+        44,
+        887,
+        1753
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a247f36a0e6c370c1a85385356f3a7649abadf85b0188ca9dd5a37a7e1a784b7",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-neutral.png",
+      "source_alpha_bounds": [
+        74,
+        59,
+        854,
+        1741
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "44270552ef6b79a041e75f437b6407cd2d2d29dc7fdc082fc4d4d5082a3cfe1a",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-smile.png",
+      "source_alpha_bounds": [
+        55,
+        22,
+        870,
+        1712
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b2befcb950b38dbb0f876c9a90aaf7c00802f30937cff123f9945279f0ede440",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-joy.png",
+      "source_alpha_bounds": [
+        61,
+        26,
+        860,
+        1710
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "acec402b20660aca8f056423252ab0f0e5ddbf0018c7d2859a32f75e52efc19d",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-shy.png",
+      "source_alpha_bounds": [
+        73,
+        56,
+        857,
+        1741
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "97bd3c55e63f82b9099ddac0b57c9b714e31f97330e8b5093ca5f8de8aff3fb4",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-worried.png",
+      "source_alpha_bounds": [
+        74,
+        57,
+        855,
+        1741
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2c5daa9600ca7c9a006bbc52065f51b18dd0f0e51a070b17eb91f1d6dae2a2a1",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-sad.png",
+      "source_alpha_bounds": [
+        68,
+        47,
+        863,
+        1744
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e6223dd14c5caaf22cbbff93b1a3d690dcd4e50214d62e5bb7ee084a80273ddf",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-angry.png",
+      "source_alpha_bounds": [
+        73,
+        58,
+        856,
+        1742
+      ]
+    },
+    {
+      "id": "xueli-travel-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "d56544338e81967c6b9649d83e48058e581f419bc557e5c3d0a65a9e3e2baf7e",
+      "source": "art/vn-full-v3/masters/xueli-travel-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-turn-surprised.png",
+      "source_alpha_bounds": [
+        74,
+        50,
+        863,
+        1743
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "e2360e0f31667b67f1af2bbb12dc79721a44efc1afdb6dfd186423b2a882fe2c",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-neutral.png",
+      "source_alpha_bounds": [
+        32,
+        24,
+        870,
+        1759
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c15c46ee1fc1b3ded2112570b653fc407a796e1daabdaa4507aa0bddecdf2ba3",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-smile.png",
+      "source_alpha_bounds": [
+        32,
+        22,
+        871,
+        1759
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "465ee950d62a816527a3ec7efa412674de66b36bcc65ba9b56f8c544e87f3517",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-joy.png",
+      "source_alpha_bounds": [
+        31,
+        22,
+        872,
+        1760
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ef18ab7866f735606d1d0120997db2a0c35746027ecfaa3c1cf91379d1419fb4",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-shy.png",
+      "source_alpha_bounds": [
+        29,
+        20,
+        873,
+        1760
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "bd5cc58eda0e2cd1a1d6e9491f4f58181600ebbc6e44bcf487b95b707279fb02",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-worried.png",
+      "source_alpha_bounds": [
+        31,
+        22,
+        871,
+        1760
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "7558cd0301911dfa15e65324e6eea99bb65b842b8a4e47cb70a9cc5b70630b7f",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-sad.png",
+      "source_alpha_bounds": [
+        31,
+        21,
+        871,
+        1759
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b26deef6261db8d61b893fd83c4e3d8ddd41aa19553083b23a908423df3f319c",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-angry.png",
+      "source_alpha_bounds": [
+        29,
+        22,
+        870,
+        1761
+      ]
+    },
+    {
+      "id": "xueli-travel-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "3089c78549d46b449a9136ddb8fa7b4df64a4509e927331c14270d8e8f98292a",
+      "source": "art/vn-full-v3/masters/xueli-travel-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\xueli\\xueli-travel-crossed-surprised.png",
+      "source_alpha_bounds": [
+        31,
+        22,
+        871,
+        1761
+      ]
+    },
+    {
+      "id": "yayu-regular-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "062d4252ced73f0aa1a9d2ddfd922119fa5db6077fac69673e49e2909cd4e713",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-neutral.png",
+      "source_alpha_bounds": [
+        39,
+        29,
+        871,
+        1735
+      ]
+    },
+    {
+      "id": "yayu-regular-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2942e89bf6acc8ecc9865e440869c5930434484b216dcc06fe2b5fd6b24d5a7e",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-smile.png",
+      "source_alpha_bounds": [
+        33,
+        28,
+        872,
+        1736
+      ]
+    },
+    {
+      "id": "yayu-regular-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "58fdd58c6597470c6c90175797aebc582ce0f2ae911bd36852be932e2bad6a41",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-joy.png",
+      "source_alpha_bounds": [
+        36,
+        28,
+        873,
+        1738
+      ]
+    },
+    {
+      "id": "yayu-regular-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "0c4c02dbfcf652e675af4553897ff3e49257d160c14673400ad848f3365f4f30",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-shy.png",
+      "source_alpha_bounds": [
+        39,
+        27,
+        882,
+        1736
+      ]
+    },
+    {
+      "id": "yayu-regular-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "1c1a249b26e419d8f84a6fffcc5faae731ac86b31045aa780e9a725cd9d4105f",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-worried.png",
+      "source_alpha_bounds": [
+        37,
+        27,
+        873,
+        1735
+      ]
+    },
+    {
+      "id": "yayu-regular-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cc8480c22722512e8162b5cc94aa418050117aa58dcb3862b512f7e571caf9bc",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-sad.png",
+      "source_alpha_bounds": [
+        49,
+        33,
+        887,
+        1721
+      ]
+    },
+    {
+      "id": "yayu-regular-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "31ee953a3e69ebcf495dbdc8d3860a76af4f7947aebce174cbe62ee8760e59f4",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-angry.png",
+      "source_alpha_bounds": [
+        31,
+        28,
+        874,
+        1737
+      ]
+    },
+    {
+      "id": "yayu-regular-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "06f0c37a66c245cf8e98bd296798cf82d046509945748fd72543261600843247",
+      "source": "art/vn-full-v3/masters/yayu-regular-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-front-surprised.png",
+      "source_alpha_bounds": [
+        38,
+        28,
+        872,
+        1737
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6fe01cbbf62d7c48c50e0bc48b316d4cedffa27905dcff792ef69709221cc451",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-neutral.png",
+      "source_alpha_bounds": [
+        48,
+        10,
+        874,
+        1746
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "efe2153edade92eb624e6cc6e241c2ea3862c25307f6d39380b66df859cd32f3",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-smile.png",
+      "source_alpha_bounds": [
+        76,
+        8,
+        887,
+        1746
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6ac20cb55ec7cd8a75ae21770cd2f131b694bc284c844c423e14dfe0a8e66f9b",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-joy.png",
+      "source_alpha_bounds": [
+        37,
+        9,
+        885,
+        1747
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "03e263e84de2c2f01f941736d6f84499fadd542051e75fdf4ba4ccff89f417f5",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-shy.png",
+      "source_alpha_bounds": [
+        48,
+        10,
+        887,
+        1746
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "0336293f622434d53da4bd9c1436ac44d2bb653d07c70cc1b8e2aec2fe684698",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-worried.png",
+      "source_alpha_bounds": [
+        46,
+        9,
+        877,
+        1746
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "64fe95bceeaae8fee83fd5b0a92164e68f3b17745c7510b4be270903472373e4",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-sad.png",
+      "source_alpha_bounds": [
+        42,
+        9,
+        878,
+        1745
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "aada061690df6d546be3556202e0db6470b9904dbdc9269dcaa0bad0bc369d6c",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-angry.png",
+      "source_alpha_bounds": [
+        43,
+        10,
+        881,
+        1747
+      ]
+    },
+    {
+      "id": "yayu-regular-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "13060a12e1621cd751d485d2db8738eba41b281f8eaba51773ed587730ad0fb7",
+      "source": "art/vn-full-v3/masters/yayu-regular-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-turn-surprised.png",
+      "source_alpha_bounds": [
+        44,
+        13,
+        882,
+        1744
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cecdba900779fd7ee628276c1a0b8ccbfe6870db98de538f374a01fa652690af",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-neutral.png",
+      "source_alpha_bounds": [
+        45,
+        17,
+        877,
+        1722
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "93198bad9982a32eaa427cbadb183a8b835c66765ec1e5157439e4557d132e94",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-smile.png",
+      "source_alpha_bounds": [
+        44,
+        22,
+        886,
+        1722
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "697360a3822249e8f0374eff864e74ac2de234fad19acb9190e5e8bab63145ca",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-joy.png",
+      "whole_image_scale": 2.1336459554513483,
+      "whole_image_offset": [
+        95,
+        62
+      ],
+      "source_alpha_bounds": [
+        44,
+        18,
+        879,
+        1724
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "d5a5674973c6a0b808aba5db708b033cd764d5fb5cff0aff0bf080000de26157",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-shy.png",
+      "source_alpha_bounds": [
+        59,
+        17,
+        887,
+        1722
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "b2efcfd69062bd1c569d25c8f684d774321a97470a9c9decaa508d4e9555ca24",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-worried.png",
+      "source_alpha_bounds": [
+        43,
+        16,
+        882,
+        1723
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a75f285100a87e04b4d32a5b9f4973e1c16cb9cf50650c16eb8cdf4ac3c3c4d8",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-sad.png",
+      "source_alpha_bounds": [
+        44,
+        17,
+        881,
+        1723
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "46142f418c9bab226c668b05ee0f86a48c245e8ed8bf5e3fbfba3d85bcffa13f",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-angry.png",
+      "whole_image_scale": 2.1299005266237567,
+      "whole_image_offset": [
+        98,
+        66
+      ],
+      "source_alpha_bounds": [
+        42,
+        16,
+        880,
+        1725
+      ]
+    },
+    {
+      "id": "yayu-regular-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "4d7614afcbe339a1d7cb1f7415101a392a90590cf7e84ee8ce4ce2c76014906c",
+      "source": "art/vn-full-v3/masters/yayu-regular-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-regular-crossed-surprised.png",
+      "whole_image_scale": 2.136150234741784,
+      "whole_image_offset": [
+        94,
+        62
+      ],
+      "source_alpha_bounds": [
+        42,
+        18,
+        881,
+        1722
+      ]
+    },
+    {
+      "id": "yayu-home-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "68802eadcc5b49e3e6c61f4833f584200c82530ac02a0c354d15a30fc70b015e",
+      "source": "art/vn-full-v3/masters/yayu-home-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-neutral.png",
+      "source_alpha_bounds": [
+        107,
+        11,
+        820,
+        1748
+      ]
+    },
+    {
+      "id": "yayu-home-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ca099b35991cc979cbf2c794717b6a9ef2c5ce76d73d98ce8429cb01fe15317d",
+      "source": "art/vn-full-v3/masters/yayu-home-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-smile.png",
+      "source_alpha_bounds": [
+        114,
+        10,
+        842,
+        1752
+      ]
+    },
+    {
+      "id": "yayu-home-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "33da42f9dd6ed17f300e62ebf1c4daa8b6d3ebbb6ff0a211bc0924408cba1da1",
+      "source": "art/vn-full-v3/masters/yayu-home-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-joy.png",
+      "source_alpha_bounds": [
+        106,
+        10,
+        823,
+        1747
+      ]
+    },
+    {
+      "id": "yayu-home-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "bdf7e9d86e281025c6f846b275aaabc0d502d4a96b094ef6d9bd4d0ab1468082",
+      "source": "art/vn-full-v3/masters/yayu-home-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-shy.png",
+      "whole_image_scale": 2.0979827089337175,
+      "whole_image_offset": [
+        111,
+        73
+      ],
+      "source_alpha_bounds": [
+        97,
+        13,
+        827,
+        1748
+      ]
+    },
+    {
+      "id": "yayu-home-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "daae7c3bc45ca8139d4f94b431decb6cb3cd89f39c8a0d6c21294ad9ecc6e33d",
+      "source": "art/vn-full-v3/masters/yayu-home-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-worried.png",
+      "whole_image_scale": 2.094361334867664,
+      "whole_image_offset": [
+        109,
+        75
+      ],
+      "source_alpha_bounds": [
+        102,
+        12,
+        825,
+        1750
+      ]
+    },
+    {
+      "id": "yayu-home-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "c8a9b6a15bd56db7e29a48c3e6916cf857f017dc2bf3805f47330c990487ce19",
+      "source": "art/vn-full-v3/masters/yayu-home-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-sad.png",
+      "whole_image_scale": 2.08955223880597,
+      "whole_image_offset": [
+        60,
+        81
+      ],
+      "source_alpha_bounds": [
+        123,
+        9,
+        853,
+        1751
+      ]
+    },
+    {
+      "id": "yayu-home-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "314a85e68bf1fdaaaa934067a5d169a815241d36ecc617013797d90d88304551",
+      "source": "art/vn-full-v3/masters/yayu-home-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-angry.png",
+      "whole_image_scale": 2.095567069660334,
+      "whole_image_offset": [
+        106,
+        77
+      ],
+      "source_alpha_bounds": [
+        104,
+        11,
+        826,
+        1748
+      ]
+    },
+    {
+      "id": "yayu-home-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2bf0c354085ca219a12698d9c4606e688c89210faafa9e8fb2d033fc221357fc",
+      "source": "art/vn-full-v3/masters/yayu-home-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-front-surprised.png",
+      "whole_image_scale": 2.094361334867664,
+      "whole_image_offset": [
+        105,
+        79
+      ],
+      "source_alpha_bounds": [
+        104,
+        10,
+        827,
+        1748
+      ]
+    },
+    {
+      "id": "yayu-home-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "a1ae404e248accba0d16e980a6e5d4ec41d0f0c8481bea60b0066f6bc0921875",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-neutral.png",
+      "source_alpha_bounds": [
+        124,
+        20,
+        802,
+        1754
+      ]
+    },
+    {
+      "id": "yayu-home-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "0b9adbc2aff02c8d3ba78500a22cdf2961f35c5c1e166e1a27da2389dc9e02f1",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-smile.png",
+      "whole_image_scale": 2.095567069660334,
+      "whole_image_offset": [
+        81,
+        60
+      ],
+      "source_alpha_bounds": [
+        129,
+        19,
+        824,
+        1756
+      ]
+    },
+    {
+      "id": "yayu-home-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9ac036e9e075875e3c98575cdb741a6d339fd42376a9f632fb1ccc92f02fd58b",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-joy.png",
+      "whole_image_scale": 2.095567069660334,
+      "whole_image_offset": [
+        107,
+        60
+      ],
+      "source_alpha_bounds": [
+        122,
+        19,
+        807,
+        1756
+      ]
+    },
+    {
+      "id": "yayu-home-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cd0eed085155543900ddc58c247d370439f9e8af60eb0596f56e873b6bb93ae8",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-shy.png",
+      "whole_image_scale": 2.0871559633027523,
+      "whole_image_offset": [
+        114,
+        77
+      ],
+      "source_alpha_bounds": [
+        122,
+        11,
+        804,
+        1755
+      ]
+    },
+    {
+      "id": "yayu-home-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "8688bb60e6dd73f3ee5ae01a2047c7eaa575b21a0f157b05ce16224ed5233216",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-worried.png",
+      "whole_image_scale": 2.096774193548387,
+      "whole_image_offset": [
+        108,
+        60
+      ],
+      "source_alpha_bounds": [
+        122,
+        19,
+        805,
+        1755
+      ]
+    },
+    {
+      "id": "yayu-home-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "25dc577a6bc52d8afe339eeae32f45db20f57094b74b51fbf336d402ca49d118",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-sad.png",
+      "whole_image_scale": 2.095567069660334,
+      "whole_image_offset": [
+        108,
+        60
+      ],
+      "source_alpha_bounds": [
+        122,
+        19,
+        806,
+        1756
+      ]
+    },
+    {
+      "id": "yayu-home-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "dbb3f957438ddf3aac6559ba0ec4c059055b4ed94b499f1a3ec1568a447e1a49",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-angry.png",
+      "whole_image_scale": 2.1016166281755195,
+      "whole_image_offset": [
+        81,
+        54
+      ],
+      "source_alpha_bounds": [
+        127,
+        22,
+        824,
+        1754
+      ]
+    },
+    {
+      "id": "yayu-home-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "0bae5d175b7493c20cf573cc221ae97ea68801abf1bb7608a125a6af26404243",
+      "source": "art/vn-full-v3/masters/yayu-home-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-turn-surprised.png",
+      "whole_image_scale": 2.0979827089337175,
+      "whole_image_offset": [
+        105,
+        60
+      ],
+      "source_alpha_bounds": [
+        122,
+        19,
+        807,
+        1754
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "614e5e7a1dd3e4340cdebdadfd146851aa6f57abad9de9e8e6607612640ab369",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-neutral.png",
+      "source_alpha_bounds": [
+        70,
+        13,
+        855,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "8a55bb78018a5a97cbecfc739fdb3afaeb787636ea303c12ed62f411a1f66478",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-smile.png",
+      "whole_image_scale": 2.077625570776256,
+      "whole_image_offset": [
+        120,
+        69
+      ],
+      "source_alpha_bounds": [
+        66,
+        15,
+        858,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "64d54300ac31c3ca973db4cac849625dff8813497a5203f6ef83664562b89686",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-joy.png",
+      "whole_image_scale": 2.0752565564424175,
+      "whole_image_offset": [
+        121,
+        73
+      ],
+      "source_alpha_bounds": [
+        68,
+        13,
+        856,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ebf39cbe0d9bae831083841b9483ae956b77153ae91ac65e9a27da8f27e88b98",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-shy.png",
+      "whole_image_scale": 2.0752565564424175,
+      "whole_image_offset": [
+        123,
+        73
+      ],
+      "source_alpha_bounds": [
+        65,
+        13,
+        857,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "6579583aa11cef24b2dceeebc80f25887e7aed2368954845b856ee5fa06c0d89",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-worried.png",
+      "whole_image_scale": 2.074074074074074,
+      "whole_image_offset": [
+        118,
+        75
+      ],
+      "source_alpha_bounds": [
+        63,
+        12,
+        865,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "7848e270787c4f0035dafbf353082830b2578075c06482a2308053e4c185da7a",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-sad.png",
+      "whole_image_scale": 2.0752565564424175,
+      "whole_image_offset": [
+        126,
+        73
+      ],
+      "source_alpha_bounds": [
+        61,
+        13,
+        858,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "4a93bc14057582904577be672ad167ae56c09036e372b47ebd2e0ee0b1df1369",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-angry.png",
+      "whole_image_scale": 2.074074074074074,
+      "whole_image_offset": [
+        126,
+        75
+      ],
+      "source_alpha_bounds": [
+        64,
+        12,
+        856,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-home-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ac5ad09d60e2bccd2506812d0ac8b4c6749d25d35fac81db389965f91bf015cf",
+      "source": "art/vn-full-v3/masters/yayu-home-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-home-crossed-surprised.png",
+      "whole_image_scale": 2.0752565564424175,
+      "whole_image_offset": [
+        121,
+        73
+      ],
+      "source_alpha_bounds": [
+        68,
+        13,
+        856,
+        1767
+      ]
+    },
+    {
+      "id": "yayu-travel-front-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "f21cfc6e8faf870469b7ae4b748cc833e4fcc9f14cec1293b9b09fe2c1b4f33b",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-neutral.png",
+      "source_alpha_bounds": [
+        168,
+        17,
+        848,
+        1764
+      ]
+    },
+    {
+      "id": "yayu-travel-front-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "1ae391bd8de15ebb592271ffbf8e5fc65622c4945f4699fb90600868ff0eb4af",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-smile.png",
+      "whole_image_scale": 2.0871559633027523,
+      "whole_image_offset": [
+        10,
+        56
+      ],
+      "source_alpha_bounds": [
+        163,
+        21,
+        862,
+        1765
+      ]
+    },
+    {
+      "id": "yayu-travel-front-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ce0269c6a337a49c1819adc481e85689764ba788e0a0fcb28e4f6f6d5d379f3b",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-joy.png",
+      "whole_image_scale": 2.0788121073672188,
+      "whole_image_offset": [
+        -9,
+        69
+      ],
+      "source_alpha_bounds": [
+        176,
+        15,
+        872,
+        1766
+      ]
+    },
+    {
+      "id": "yayu-travel-front-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cff2f79b7f2b684f0d79c800e283def133c328a04bbe048d04278142960c7f37",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-shy.png",
+      "whole_image_scale": 2.0811892510005716,
+      "whole_image_offset": [
+        21,
+        65
+      ],
+      "source_alpha_bounds": [
+        164,
+        17,
+        854,
+        1766
+      ]
+    },
+    {
+      "id": "yayu-travel-front-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "f828a66b4fcfcad87d13adfcc382ab70d94577c0ac76b510a1e767612bc67697",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-worried.png",
+      "whole_image_scale": 2.082379862700229,
+      "whole_image_offset": [
+        22,
+        67
+      ],
+      "source_alpha_bounds": [
+        166,
+        16,
+        850,
+        1764
+      ]
+    },
+    {
+      "id": "yayu-travel-front-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "7ca297144d19ad31cbcd9ef559bb3c66e2dfcde0077d0cf8508158d914ced201",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-sad.png",
+      "whole_image_scale": 2.082379862700229,
+      "whole_image_offset": [
+        -15,
+        65
+      ],
+      "source_alpha_bounds": [
+        181,
+        17,
+        871,
+        1765
+      ]
+    },
+    {
+      "id": "yayu-travel-front-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "dfd5d76a92bb8a60ef73e74addc8998a16a51f195b797863ff2eedbdcc7f6bef",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-angry.png",
+      "whole_image_scale": 2.0788121073672188,
+      "whole_image_offset": [
+        -4,
+        69
+      ],
+      "source_alpha_bounds": [
+        171,
+        15,
+        872,
+        1766
+      ]
+    },
+    {
+      "id": "yayu-travel-front-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "842fe48a7ace1da50a5bbf610922359ed5c2d41dbe80ca258232962259cb2fdb",
+      "source": "art/vn-full-v3/masters/yayu-travel-front-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-front-surprised.png",
+      "whole_image_scale": 2.0788121073672188,
+      "whole_image_offset": [
+        -40,
+        69
+      ],
+      "source_alpha_bounds": [
+        194,
+        15,
+        884,
+        1766
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "f47f5f11ab54fea8d6eb99c0287e99d1b6310c19a987fc5515618c6f1e78ab22",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-neutral.png",
+      "source_alpha_bounds": [
+        137,
+        21,
+        842,
+        1759
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "d5e74876281f7450f2598ad38220e95dae58a14bc8cb37b70e3899491a767620",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-smile.png",
+      "whole_image_scale": 2.09075244112579,
+      "whole_image_offset": [
+        50,
+        62
+      ],
+      "source_alpha_bounds": [
+        133,
+        18,
+        852,
+        1759
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "cc693296ee53a407bba205147c96fb879334272060f9e14009a9224cc81437f2",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-joy.png",
+      "whole_image_scale": 2.0883534136546187,
+      "whole_image_offset": [
+        53,
+        62
+      ],
+      "source_alpha_bounds": [
+        135,
+        18,
+        849,
+        1761
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "90b2c9282acd10053bca2acc9ef10fc06b411fa0ba59b2f481b7857d4b166729",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-shy.png",
+      "whole_image_scale": 2.0919540229885056,
+      "whole_image_offset": [
+        54,
+        58
+      ],
+      "source_alpha_bounds": [
+        136,
+        20,
+        845,
+        1760
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "85834528ca051abcfd2c18d32a97838dc59b5655054fb9092c8e4db4e37a6a97",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-worried.png",
+      "whole_image_scale": 2.0919540229885056,
+      "whole_image_offset": [
+        56,
+        58
+      ],
+      "source_alpha_bounds": [
+        137,
+        20,
+        842,
+        1760
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9ff4734471d31b7546c02dbfb868f7df879b005256eb94d1c3823b8d00061d16",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-sad.png",
+      "whole_image_scale": 2.0919540229885056,
+      "whole_image_offset": [
+        38,
+        56
+      ],
+      "source_alpha_bounds": [
+        141,
+        21,
+        855,
+        1761
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "f69261029d633585c89445f997b188c6ab89b04bec88fb1af86becf20d3d7232",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-angry.png",
+      "whole_image_scale": 2.093156986774008,
+      "whole_image_offset": [
+        44,
+        58
+      ],
+      "source_alpha_bounds": [
+        138,
+        20,
+        852,
+        1759
+      ]
+    },
+    {
+      "id": "yayu-travel-turn-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "531768a46644b0ec687d7a5da0de5b6b04f6f080e98063e9b8f97aeb494498d2",
+      "source": "art/vn-full-v3/masters/yayu-travel-turn-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-turn-surprised.png",
+      "whole_image_scale": 2.096774193548387,
+      "whole_image_offset": [
+        12,
+        48
+      ],
+      "source_alpha_bounds": [
+        149,
+        25,
+        870,
+        1761
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-neutral",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "52477fdd14b4c2424ed82284d75bc9f7932da7f283a9328cca29f61e0181a348",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-neutral.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-neutral.png",
+      "source_alpha_bounds": [
+        136,
+        4,
+        782,
+        1754
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-smile",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "9a921a8a8ea90a1c7a9d206135371b96a43671b03d78e51769593683612883a7",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-smile.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-smile.png",
+      "whole_image_scale": 2.0717131474103585,
+      "whole_image_offset": [
+        125,
+        100
+      ],
+      "source_alpha_bounds": [
+        136,
+        0,
+        786,
+        1757
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-joy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "957757793e4b2634ff30e56eb2c6a839f0d7d44e1388d93fc4246bfa1e12a6f7",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-joy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-joy.png",
+      "whole_image_scale": 2.076440387906446,
+      "whole_image_offset": [
+        124,
+        96
+      ],
+      "source_alpha_bounds": [
+        135,
+        2,
+        786,
+        1755
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-shy",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "27c9a4ab39f7b7cf7104539cb64dd45a51bfe45c2225258b8306cc84621f99b0",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-shy.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-shy.png",
+      "whole_image_scale": 2.074074074074074,
+      "whole_image_offset": [
+        102,
+        94
+      ],
+      "source_alpha_bounds": [
+        144,
+        3,
+        799,
+        1758
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-worried",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "ae121364e4f52a12695ac09653c980f3299d69c414924d4255611c5be08a1711",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-worried.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-worried.png",
+      "whole_image_scale": 2.077625570776256,
+      "whole_image_offset": [
+        114,
+        94
+      ],
+      "source_alpha_bounds": [
+        137,
+        3,
+        793,
+        1755
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-sad",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "618fde3353d4b53cb292c6e600c247495ed0f541408d3ee4b23dcc7caf944c5d",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-sad.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-sad.png",
+      "whole_image_scale": 2.08,
+      "whole_image_offset": [
+        122,
+        90
+      ],
+      "source_alpha_bounds": [
+        136,
+        5,
+        785,
+        1755
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-angry",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "2a476d12d54d6ba54ef55bad27b04ee6957097139ec093a7431029fb84a6f24b",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-angry.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-angry.png",
+      "whole_image_scale": 2.072892938496583,
+      "whole_image_offset": [
+        124,
+        100
+      ],
+      "source_alpha_bounds": [
+        136,
+        0,
+        786,
+        1756
+      ]
+    },
+    {
+      "id": "yayu-travel-crossed-surprised",
+      "source_resolution": [
+        887,
+        1774
+      ],
+      "native_4k": false,
+      "source_sha256": "76baaa220515bb3126fb360226a32371074d090b43b1a2cce26feb5dd18fcce6",
+      "source": "art/vn-full-v3/masters/yayu-travel-crossed-surprised.png",
+      "export": "assets\\story\\vn-full-v3\\yayu\\yayu-travel-crossed-surprised.png",
+      "whole_image_scale": 2.074074074074074,
+      "whole_image_offset": [
+        70,
+        100
+      ],
+      "source_alpha_bounds": [
+        160,
+        0,
+        814,
+        1755
+      ]
+    }
+  ],
+  "facial_compositing": false
+}

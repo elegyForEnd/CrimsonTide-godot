@@ -1,0 +1,17 @@
+{
+  "id": "yayu-travel-turn-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-9624a21e-f406-43fa-84a4-4443a5e97a63.png",
+  "output": "art/vn-full-v3/masters/yayu-travel-turn-neutral.png",
+  "sha256": "f47f5f11ab54fea8d6eb99c0287e99d1b6310c19a987fc5515618c6f1e78ab22",
+  "prompt_sha256": "e7b5296ca365973885fcc782fc3f7cfd9c78fc66ce84502809b3754403c61cc7",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the ORIGINAL character design, not generic anime styling. If the final reference is a green-haired VN screenshot, use it ONLY for the gentle near-front torso angle; NEVER borrow its face, green hair, school uniform, background or UI. Preserve original facial identity, original softly rounded eyes, small natural mouth, delicate nose, original head/body proportion and soft painterly fine anime linework. Character: 鸦羽 / yayu. deep violet high ponytail with silver ornaments and purple ribbons, softly rendered violet eyes, original delicate serious face with a faint natural cheek tint. Outfit: CHANGE THE ENTIRE CLOTHING to a distinct traveling UNIFORM: crisp white high-neck blouse, tailored dark-violet military-style tailcoat with silver buttons and short asymmetric shoulder cape, fitted long charcoal TROUSERS with silver braid down the sides, leather satchel, knee-high travel boots. NO armored bodice, NO skirt, NO thigh-high stockings, NO exposed thighs. Violet high ponytail, ribbons and sheathed katana remain. The silhouette must clearly differ from the original armored dress and cozy home gown. No lantern or tail. Pose2: MOSTLY FRONT-FACING, only a gentle 15 to20 degree torso/hip yaw toward viewer's left, both shoulders and almost the entire front bodice remain visible. One hand lightly touching her collar/ribbon at chest, other arm naturally relaxed. Face almost directly toward viewer with a small natural head tilt. Use the supplied VN screenshot only as a reference for this mild body angle, not for character identity or clothing. NOT a strong three-quarter view, NOT profile, NOT back-facing, NOT looking back over the shoulder, NO twisted neck or crossed legs. Exactly two arms and hands. Expression: calm natural neutral expression, gently open eyes and a tiny closed mouth, soft restful eyebrows, faint original natural blush. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

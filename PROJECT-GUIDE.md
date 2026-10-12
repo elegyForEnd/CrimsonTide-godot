@@ -40,7 +40,8 @@ D:\dsh\Game\
    ├─ project.godot            ← 引擎配置（主场景 boot.tscn，无 autoload）
    ├─ scenes\                  ← 仅 2 个场景：boot.tscn（开场）、main.tscn（空壳根节点）
    ├─ scripts\                 ← 全部游戏逻辑（112 个 .gd / 3.77 万行，UI/逻辑均由代码构建）
-   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图与Galgame对话、4K表情和衣装
+   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图与Galgame对话、整张立绘服饰/姿势/表情
+   │      vn_full_gallery / vn_full_patch_boot ← 216张完整立绘鉴赏与v14增量启动
    │      story_act_art / story_regional_environment ← 第二至第六幕的区域布局、独立建筑、材质与灯光
    │      story_exploration_art / story_exploration_environment ← 六幕副本房间图、空洞、多段高程、地编与室外有机边界
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
@@ -455,7 +456,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### S. 故事模式与连续探索地图
 
-2026-10-12立绘差分：story_portrait_art/view加载三位角色12张4K身体与27面部层，表情/衣装独立组合120种。完整PNG和原始API图在art/story-portraits，作者目录不导入引擎；参见docs/rpg/PORTRAIT-VARIANTS.md。
+2026-10-12完整立绘v14：story_portrait_art/view加载三位角色×三服饰×三姿势×八表情，共216张独立完整PNG，单TextureRect整张切换。原稿和提示词在art/vn-full-v3，运行资源assets/story/vn-full-v3；2160×3840为整图放大画布，原生尺寸逐图记录。作者目录不导入引擎，参见docs/rpg/VN-FULL-PORTRAITS.md；v13分层方案仅为旧版本历史。
 
 Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_dialogue_ui；完整正文和明确说话人由story_dialogue_data处理。未署名引号保持旁白，不凭附近名字推断。
 
@@ -465,7 +466,7 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 | 功能 | 文件与配套检查 |
 |---|---|
-| 4K表情、衣装与原画导出 | `scripts/story_portrait_art.gd:30 layers()`、`scripts/story_portrait_view.gd:21 set_actor()`；story_dialogue_ui.toggle_wardrobe/choose_costume，story_screen.save_dialogue_outfits；tests/story_portrait_variants.gd、tests/test_portrait_layers.py；build_portrait_layers/export_portrait_variant负责注册与原图导出 |
+| 完整立绘、服饰、姿势与表情 | `scripts/story_portrait_art.gd:39 layers()`、`scripts/story_portrait_view.gd:20 set_actor()`；story_dialogue_ui.toggle_wardrobe/choose_costume/choose_pose，story_screen.save_dialogue_outfits；tests/story_portrait_variants.gd、tests/test_vn_full_portraits.py；build_vn_full_portraits/register_vn_full_source负责整图导出与来源记录 |
 | Galgame章节、营地交谈与结局 | `scripts/story_screen.gd:327 show_dialogue()`、`scripts/story_screen.gd:342 show_npc()`；story_dialogue_data.chapter/npc无损拆正文，story_dialogue_ui.advance/choose控制逐字、已读快进、回看与显式选项；tests/story_dialogue.gd，docs/rpg/GALGAME-DIALOGUE.md |
 | 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
 | 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
@@ -490,7 +491,7 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 武器命中/余焰/飞行尾迹：combat_finish；短时环境灯：combat_light_pool；故事攻击、Q与R的适配：story_combat_vfx；逐步揭示：weapon_image_art.reveal_mechanic。战斗规则继续在session/rogue_actions/story_campaign，表现层禁止结算伤害。
 
-人物表情/衣装差分 → story_portrait_art/view + story_dialogue_data.expression_for，资源assets/story/portraits，作者art/story-portraits；Eye注册与局部特征合成build_portrait_layers，Preview-Portraits/Start-Portraits-v13，制作与接口说明PORTRAIT-VARIANTS.md。
+人物服饰/姿势/表情差分 → story_portrait_art/view + story_dialogue_data.expression_for，资源assets/story/vn-full-v3，作者art/vn-full-v3；整张生成与导出build_vn_full_portraits，Preview-VN-Full/Start-VN-Full-v14，制作与接口说明VN-FULL-PORTRAITS.md。
 
 剧情立绘/逐字/自动/已读快进/回看 → §4.S，story_dialogue_data/ui与story_screen.show_dialogue；规则、任务奖励仍走story_campaign/inventory。Preview-Dialogue直接体验；Start-Dialogue-v12使用新正式入口。
 
@@ -604,7 +605,7 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 ## 6. 数值常量速查（哪里改什么数）
 
-立绘差分：三位角色×10表情×4衣装＝120组合；原始及完整导出画布2160×3840，面部矩形每人独立，缓存上限story_portrait_art.CACHE_LIMIT=18。衣装只是剧情表现，不改装备数值。
+立绘差分：三位角色×3服饰×3姿势×8表情＝216张完整图；导出画布2160×3840由原稿整图放大，多数原稿887×1774。缓存上限story_portrait_art.CACHE_LIMIT=10；不再加载面部图层。服饰与姿势只影响剧情表现，不改装备数值。
 
 Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_PER_SECOND=32、AUTO_DELAY=1.5秒（另加每字0.025秒）；立绘过渡0.22秒，回看180条、阅读标记4096个。
 
@@ -687,7 +688,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 | 音乐计划 | `generate_scene_music.py` + `resources/scene_music_plan.json` | 每场景一首 Suno 曲目的提示词计划与提交 |
 | 素材生成 | `generate_enemy_art.py`、`build_minimax_*`、`collectible_image_prompts.py` | ImageGen/MiniMax 提示词与图集 |
 | 地图烘焙 | `export_world_layout.gd`（GD）→ `bake_world_art.py` | **改 ruins.gd 地形后必须重跑**，否则 3D 贴图与碰撞错位 |
-| 4K立绘发布 | build_story_portrait_release.py / pack_story_portraits.gd / portrait_patch_boot.gd；六个编译表现脚本、纹理导入资源白名单，依赖v12/v11/v9；参见PORTRAIT-VARIANTS.md |
+| 完整立绘v14发布 | build_vn_full_release.py / pack_vn_full.gd / vn_full_patch_boot.gd；五个编译表现脚本、216张纹理导入资源白名单，依赖v13/v12/v11/v9；Preview-VN-Full独立鉴赏，参见VN-FULL-PORTRAITS.md |
 | Galgame对话发布 | build_story_dialogue_release.py / pack_story_dialogue.gd / dialogue_patch_boot.gd；三个编译脚本及remap白名单，临时预设finally恢复，见GALGAME-DIALOGUE.md |
 | 故事美术生产 | export_story_models.py / export_story_terrain.py / Bake-Opening.ps1 | Blender只导出不覆盖，Godot编辑后重烘焙；详见FORWARDPLUS-ART-PIPELINE.md |
 | 图标/打包 | `make_icon.gd`、`package_server.py`、`fetch_export_templates.py`、`fetch_scene_assets.py` | exe 图标；服务器离线镜像包；模板/CC0 素材抓取（SHA-256 校验） |
@@ -707,7 +708,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 ## 9. 运行、启动与部署
 
-立绘最新版正式运行Start-Portraits-v13.cmd；Preview-Portraits.cmd用独立APPDATA查看10表情与4衣装，1/2/3换人、左右换装。v13 EXE、Portraits-v13.pck和原v12/v11补丁、v9底包同放dist。作者脚本/API凭证/3D Boss实验不进发布包；原入口保留。
+立绘最新版正式运行Start-VN-Full-v14.cmd；Preview-VN-Full.cmd用独立APPDATA查看216张完整图，1/2/3换人、A/D换服饰、W/S换姿势、左右换表情、Z换观看距离。v14 EXE、VN-Full-v14.pck和原v13/v12/v11补丁、v9底包同放dist。作者脚本/原稿/废稿/3D Boss实验不进发布包；旧入口保留。
 
 剧情对话旧版正式运行Start-Dialogue-v12.cmd，Preview-Dialogue.cmd使用独立APPDATA临时体验岑烬开场。v12运行文件、Dialogue-v12.pck、Combat-v11.pck和v9底包需同放dist。build_story_dialogue_release.py临时导出、恢复预设并编译三脚本；pack_story_dialogue读取导出remap/gdc白名单，不能直接用同名gd覆盖已编译旧包。
 
@@ -726,7 +727,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 ## 10. 根目录文档索引（专题设计文档）
 
-立绘差分：[PORTRAIT-VARIANTS.md](docs/rpg/PORTRAIT-VARIANTS.md)，包含39张完整4K PNG、120组合、源图/提示词/注册/导出、API日志限制及v13启动。
+当前立绘差分：[VN-FULL-PORTRAITS.md](docs/rpg/VN-FULL-PORTRAITS.md)，包含216张完整透明PNG、服饰/姿势/表情、源图/提示词/整图导出及v14启动。旧API分层方案历史见[PORTRAIT-VARIANTS.md](docs/rpg/PORTRAIT-VARIANTS.md)。
 
 剧情演出：[GALGAME-DIALOGUE.md](docs/rpg/GALGAME-DIALOGUE.md)，覆盖分镜、NPC选择、阅读记录、验证、v12依赖和官方脚本编译打包流程。
 
@@ -759,7 +760,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口同时调用tag_visual_projectile；无ID旧快照跳过新尾迹。Composite Finish不得改bullet/enemy或创建伤害目标。CombatVisuals.finish在_ready中才创建，自定义Flights覆盖_ready时不能留下孤立节点。故事combat_event只在真实接受动作/命中后发出，切图与退出必须清旧残留。原69武器矩阵52518项失败已与修改前源码逐项对照，见COMBAT-FINISH.md和TEST-REPORT，不得以本轮专项通过替代全量验收。
 
-立绘契约：只在脸部局部特征替换，双眼人工注册到固定位置，衣装保留原头部并统一脚底；领口/头发不可随表情替换。衣装偏好写独立.dialogue-outfits.json，save_enabled=false禁止保存；自动/回看在衣装窗口暂停。资源有限缓存并在离开故事释放。API仅请求max，不据standard日志声称档位已验证；凭证不入文件、不重复付费POST，下载失败只恢复GET。
+立绘契约（v14按用户最终决定）：每种服饰/姿势/表情独立整张生成，单TextureRect显示，不组合五官或更换头部。三个姿势含约15–25度轻侧，脸朝玩家；统一整张缩放和脚底。服饰偏好写独立.dialogue-outfits.json，save_enabled=false禁止保存，姿势保留当前对话。自动/回看在立绘选择窗口暂停；资源缓存≤10并在离开故事释放。旧determined/tired映射neutral/worried。原稿尺寸如实记录，不把放大画布声明为原生4K。
 
 对话契约：对话只读章节和状态；choose只响应显式选项且执行一次，自动/快进不选择。阅读页面不会再次complete/发奖励，切到其他页面清overlay/dialogue并恢复HUD。阅读标记以正文散列独立保存，预览禁存；缺省NPC美术仍为现有六岗位，并非36人新画。
 
@@ -910,6 +911,8 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-12（同批提交）：按用户最终要求弃用拼接，完成三角色×三服饰×三姿势×八表情216张独立全图。常服/家居服/旅行装；侧转按截图收至15–25度，保留自然腮红。完整原稿、提示词及来源记录，2160×3840整图放大导出；剧情单TextureRect、服饰/姿势选择、8表情鉴赏、缓存10与v14白名单发布。源表现Forward+478/0、GL478/0、原剧情210/0、Python五组通过，原生试玩验证实际键控。同步§2/3/4.S/5/6/8/9/10/11及测试报告，3D Boss实验保持原工作区状态。
 
 2026-10-12（同批提交）：按用户API/max要求完成三角色10表情4衣装，39完整4K PNG及120分层组合。人工双眼配准、局部眉眼/面颊/嘴部合成修复蒙版裁坏领口，复用有效嘴部记录来源；衣装独立保存，真实对话/衣装控件与缓存。新增v13发布及试玩，API密钥未写入，原3D Boss实验保持未提交。同步§2/3/4.S/5/6/8/9/10/11与测试报告。
 

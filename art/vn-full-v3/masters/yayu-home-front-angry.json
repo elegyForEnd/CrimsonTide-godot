@@ -1,0 +1,17 @@
+{
+  "id": "yayu-home-front-angry",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-995c4396-54ae-4dd0-8b2f-d873210ce634.png",
+  "output": "art/vn-full-v3/masters/yayu-home-front-angry.png",
+  "sha256": "314a85e68bf1fdaaaa934067a5d169a815241d36ecc617013797d90d88304551",
+  "prompt_sha256": "79bd7d88e1359f63fc15a55843c1cc19d629f8751ef80c24846d171de0e93057",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 鸦羽 / yayu. deep violet high ponytail with silver ornaments and purple ribbons, softly rendered violet eyes, original delicate serious face with a faint natural cheek tint. Outfit: modest soft charcoal and muted violet long-sleeved home dress, comfortable knitted cardigan, small silver clasp and cloth slippers, no armor, weapon or lantern. Preserve violet high ponytail and ribbons. Pose1: naturally relaxed front-facing standing, arms resting at sides, gentle original head inclination. Xueli regular can hold her lantern low. Exactly two arms and hands. Expression: restrained displeasure, subtly narrowed eyes and lightly furrowed brows, small firm mouth, not yelling, not exaggerated or scary. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

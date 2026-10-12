@@ -1,0 +1,17 @@
+{
+  "id": "feiyue-travel-crossed-sad",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-1f44ea38-69b8-41fc-99eb-9a20d9695668.png",
+  "output": "art/vn-full-v3/masters/feiyue-travel-crossed-sad.png",
+  "sha256": "e941f783e00bb4da67a5a9285973dc8615e1e6acf8450ac714328414ab47d587",
+  "prompt_sha256": "cdab4ea8265335147e99a57a052005e94f684a0c5917eba624a52bc07a9c6566",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 绯月 / feiyue. white flowing hair, softly rounded ruby-red eyes, black hair bow with ruby and white flower, purple heart-tipped tail. Keep original delicate face and soft cheek blush. Outfit: practical beautifully tailored burgundy/black travel coat over a layered skirt, antique gold embroidered shoulder cape, leather belt and satchel, laced travel boots, ruby details. Original hair and tail remain. No weapon, no lantern. Pose3: MOSTLY FRONT-FACING, only a gentle 10 to15 degree torso yaw toward viewer's right, both shoulders and most front bodice visible. Both arms naturally crossed in front of chest, face almost directly toward viewer with original natural head tilt. Like the supplied VN screenshot's mild angle; no profile or strong three-quarter view, no back-looking head, no twisted neck. Exactly two arms and hands, no third lowered arm. Held objects hang from belt instead. Expression: restrained sadness, softly lowered brows and slight tear sheen, small downturned mouth, no distorted crying face. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

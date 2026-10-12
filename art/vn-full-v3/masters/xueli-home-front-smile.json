@@ -1,0 +1,17 @@
+{
+  "id": "xueli-home-front-smile",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-d3ecbb6b-42ce-4d6f-81ce-26532f8f7ea1.png",
+  "output": "art/vn-full-v3/masters/xueli-home-front-smile.png",
+  "sha256": "90fb1ad9e52b0792d913a8e61ecd36827e39c1e9000c6cf5ada21e331105dc18",
+  "prompt_sha256": "918d59007d75ae472fb99ef6d94e0f834ead3a2ff3a51b16dc44721be846efd0",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 雪璃 / xueli. long flowing pale-blue curly hair, softly rounded cyan-blue eyes, silver star ornaments and mint ribbons. Keep original gentle face and faint cheek blush. Outfit: modest cozy pale-aqua linen home dress with navy knitted cardigan, long sleeves, tiny silver star buttons and mint hair ribbon, indoor flat slippers. Replace ceremonial veil with small silver star hair clips; preserve blue curly hairstyle. No lantern, weapon or armor. Pose1: naturally relaxed front-facing standing, arms resting at sides, gentle original head inclination. Xueli regular can hold her lantern low. Exactly two arms and hands. Expression: small gentle closed-mouth smile, subtle warmth in original rounded eyes and faint natural blush, no broad grin. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

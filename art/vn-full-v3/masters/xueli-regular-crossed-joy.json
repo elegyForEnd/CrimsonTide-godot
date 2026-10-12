@@ -1,0 +1,17 @@
+{
+  "id": "xueli-regular-crossed-joy",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-5ab6c786-053a-4aa2-bffd-91bbe5c60d9b.png",
+  "output": "art/vn-full-v3/masters/xueli-regular-crossed-joy.png",
+  "sha256": "5f1a36d514a9614676f218926a4cc3fd6732fa8d4673546d8b42ef1f0761f6e3",
+  "prompt_sha256": "093103f42daa10b22ef8ac516e9f3b1c936e105284edca911bdf85f9dbc6ca8e",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 雪璃 / xueli. long flowing pale-blue curly hair, softly rounded cyan-blue eyes, silver star ornaments and mint ribbons. Keep original gentle face and faint cheek blush. Outfit: exact original navy ceremonial cleric veil with silver star embroidery, mint bow, navy and white lace dress, tall boots. Her cyan lantern is held low or hangs from her belt when hands are occupied. No katana or tail. Pose3: MOSTLY FRONT-FACING, only a gentle 10 to15 degree torso yaw toward viewer's right, both shoulders and most front bodice visible. Both arms naturally crossed in front of chest, face almost directly toward viewer with original natural head tilt. Like the supplied VN screenshot's mild angle; no profile or strong three-quarter view, no back-looking head, no twisted neck. Exactly two arms and hands, no third lowered arm. Held objects hang from belt instead. Expression: natural pleased happiness, softly closed smiling crescent eyes and a small cheerful smiling mouth, slightly stronger cheek warmth, preserve the original face proportions, no huge open-mouth cartoon face. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

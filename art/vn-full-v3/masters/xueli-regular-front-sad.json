@@ -1,0 +1,17 @@
+{
+  "id": "xueli-regular-front-sad",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-bc2db068-dbc1-4204-8e69-79c9e6614dd4.png",
+  "output": "art/vn-full-v3/masters/xueli-regular-front-sad.png",
+  "sha256": "633fd2087517448f2e6a1c56a1b29a072e348ba1a1f48d1ff3d79b76d8b47cfe",
+  "prompt_sha256": "e68bef31245894c62696c1930d8c162fda4c8780d5dd9fca4065e36582288b1d",
+  "prompt": "Use case: identity-preserve. Production Japanese visual novel FULL PORTRAIT, one character only. Image1 is the complete pose/costume portrait to edit. Change ONLY the facial emotion while keeping its complete hair, head outline, head angle, clothing, hands, pose, body, camera, placement and scale as consistent as possible. Output an ENTIRE independently rendered full portrait, not layers or facial components. Image2 is original character identity. Character: 雪璃 / xueli. long flowing pale-blue curly hair, softly rounded cyan-blue eyes, silver star ornaments and mint ribbons. Keep original gentle face and faint cheek blush. Outfit: exact original navy ceremonial cleric veil with silver star embroidery, mint bow, navy and white lace dress, tall boots. Her cyan lantern is held low or hangs from her belt when hands are occupied. No katana or tail. Pose1: naturally relaxed front-facing standing, arms resting at sides, gentle original head inclination. Xueli regular can hold her lantern low. Exactly two arms and hands. Expression: restrained sadness, softly lowered brows and slight tear sheen, small downturned mouth, no distorted crying face. Natural high-quality Galgame expression, never plastic glossy eyes, mismatched facial cutouts, generic floating eyes, broad huge mouth, realistic face, flat mask or facial assembly. Full figure from complete hair tip to shoes, centered, transparent margins on all sides. Crisp delicate cloth folds, ornaments and natural anatomically correct hands. Soft consistent diffuse lighting. Real transparent alpha PNG background, no scenery, ground shadows, text, labels, atlas, sheet, collage or extra person. Highest available portrait resolution; preserve actual source resolution metadata.",
+  "visual_review": "pending"
+}

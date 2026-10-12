@@ -1,0 +1,16 @@
+{
+  "id": "feiyue-regular-turn-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-a110225a-f66b-4b70-a087-6aad5b24e360.png",
+  "output": "art/vn-full-v3/masters/feiyue-regular-turn-neutral.png",
+  "sha256": "c163779c6da34bbaf3a7d807846afbb5210ef239521f04ba00c4d61baf1a19d6",
+  "prompt_sha256": "0d73fa4adfa8969332e22568fd4659e0ea988e56ebe8a6c28d5151968991d02c",
+  "visual_review": "pending"
+}

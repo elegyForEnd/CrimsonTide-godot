@@ -1,0 +1,16 @@
+{
+  "id": "feiyue-regular-crossed-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-5e0c876a-1a9d-439c-ab56-881ff4e781be.png",
+  "output": "art/vn-full-v3/masters/feiyue-regular-crossed-neutral.png",
+  "sha256": "0ffc0b68e2e973db355b62dce6261891e3f1bf35adddd98c3d24933d46618a51",
+  "prompt_sha256": "2bad905a0370ba7a887a4e2a2ba99f160575a90dcbbdddee98816803026bacf1",
+  "visual_review": "pending"
+}

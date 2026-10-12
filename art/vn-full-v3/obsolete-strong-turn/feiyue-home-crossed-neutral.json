@@ -1,0 +1,16 @@
+{
+  "id": "feiyue-home-crossed-neutral",
+  "generator": "built-in imagegen",
+  "whole_portrait": true,
+  "facial_compositing": false,
+  "resolution": [
+    887,
+    1774
+  ],
+  "native_4k": false,
+  "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a1209e-705d-7ca3-b60b-acc41b069025\\exec-6c820a90-e62a-441b-b7ac-7f24110a0acd.png",
+  "output": "art/vn-full-v3/masters/feiyue-home-crossed-neutral.png",
+  "sha256": "d2f196d131c35d5b129616492cb0da6201a263abbc3876c07e479fa737ce8dbe",
+  "prompt_sha256": "437de0dca2f9844fefa42b0205ea64d0d49b69c356bcfc36c78e7c4e42030ed5",
+  "visual_review": "pending"
+}
