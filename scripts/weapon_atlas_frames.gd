@@ -16,6 +16,15 @@ func rate(hero: int, weapon: int, state: String, fallback: float) -> float:
 	var atlas: Dictionary=manifest.get(atlas_key(hero,weapon),{})
 	return float(atlas.get("fps",{}).get(state,fallback))
 
+func scale_height(atlas: Dictionary, state: String, source_file: String) -> float:
+	var heights: Dictionary=atlas.get("clip_heights",{})
+	var height := float(heights.get(state,atlas.get("page_heights",{}).get(source_file,atlas.standing_height)))
+	if state=="dodge":
+		# The crouched row is shorter because the knees bend, not because the
+		# actor is drawn at a smaller scale. Never enlarge it to standing height.
+		height=maxf(height,float(heights.get("idle",atlas.standing_height)))
+	return maxf(.001,height)
+
 func attack_index(p: Dictionary, state: String) -> int:
 	var key := atlas_key(int(p.hero),int(p.weapon))
 	if not manifest.has(key): return 0
@@ -65,7 +74,7 @@ func frame(hero: int, weapon: int, state: String, index: int, standing_height: f
 		# Packing density can differ between action rows on the same page.
 		# Each clip uses one scale; never resize individual limbs/keys to fit.
 		var source_file := str(entry.get("file",atlas.get("file","")))
-		var scale := standing_height/float(atlas.get("clip_heights",{}).get(clip_state,atlas.get("page_heights",{}).get(source_file,atlas.standing_height)))
+		var scale := standing_height/scale_height(atlas,clip_state,source_file)
 		poses[cache_key]={"texture":texture,"rect":Rect2(CharacterMetrics.FOOT_OFFSET-pivot*scale,texture.region.size*scale),
 			"socket":(Vector2(entry.socket[0],entry.socket[1])-pivot)*scale,
 			"grip":(Vector2(entry.get("grip",entry.socket)[0],entry.get("grip",entry.socket)[1])-pivot)*scale,

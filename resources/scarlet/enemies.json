@@ -1,0 +1,1110 @@
+{
+  "revision": "rpg-enemies-1",
+  "atlas_cells": 3,
+  "minions": {
+    "tide_hound": {
+      "id": "tide_hound",
+      "name": "赤晶猎犬",
+      "role": "侧翼扑击",
+      "hp": 0.78,
+      "speed": 145,
+      "distance": 185,
+      "cooldown": 2.7,
+      "height": 86,
+      "color": "c56b7e",
+      "skills": [
+        {
+          "name": "低身扑咬",
+          "hint": "侧移离开窄长扑击线",
+          "strikes": [
+            {
+              "shape": "line",
+              "radius": 110,
+              "delay": 0.85,
+              "anchor": "forward",
+              "reach": 225
+            }
+          ],
+          "recovery": 1.0,
+          "element": "physical"
+        }
+      ],
+      "lore": "下层水道的流浪犬被晶砂侵染，仍会回避高处。",
+      "counter": "看到压低前肢后横向闪避，扑空时反击。",
+      "flank": true
+    },
+    "crystal_husk": {
+      "id": "crystal_husk",
+      "name": "淤晶役骸",
+      "role": "近身重击",
+      "hp": 1.38,
+      "speed": 68,
+      "distance": 200,
+      "cooldown": 3.3,
+      "height": 143,
+      "color": "b46c78",
+      "skills": [
+        {
+          "name": "沉臂砸击",
+          "hint": "绕到背后或退出扇区",
+          "strikes": [
+            {
+              "shape": "cone",
+              "radius": 270,
+              "delay": 1.2,
+              "anchor": "self"
+            }
+          ],
+          "recovery": 1.15,
+          "element": "physical"
+        }
+      ],
+      "lore": "被赤潮结晶卡死的旧役用机，不是仍可救援的病人。",
+      "counter": "起手慢、转身慢；蓄力固定朝向后绕背。"
+    },
+    "royal_pikeman": {
+      "id": "royal_pikeman",
+      "name": "封印枪卫",
+      "role": "正面防守",
+      "hp": 1.18,
+      "speed": 88,
+      "distance": 245,
+      "cooldown": 2.8,
+      "height": 151,
+      "color": "c4aa7c",
+      "skills": [
+        {
+          "name": "定步突刺",
+          "hint": "向枪锋两侧移动",
+          "strikes": [
+            {
+              "shape": "line",
+              "radius": 115,
+              "delay": 1.0,
+              "anchor": "forward",
+              "reach": 245
+            }
+          ],
+          "recovery": 0.95,
+          "element": "physical"
+        },
+        {
+          "name": "横枪驱退",
+          "hint": "退出近身扇区",
+          "strikes": [
+            {
+              "shape": "cone",
+              "radius": 250,
+              "delay": 1.1,
+              "anchor": "self"
+            }
+          ],
+          "recovery": 0.9,
+          "element": "physical"
+        }
+      ],
+      "lore": "奉命封住转运与王庭通路的正规军，击退后失去战斗能力。",
+      "counter": "正面盾姿减伤，绕侧背攻击或趁出手破绽攻击。",
+      "guard": 0.35
+    },
+    "royal_arbalist": {
+      "id": "royal_arbalist",
+      "name": "王庭弩手",
+      "role": "远程狙击",
+      "hp": 0.82,
+      "speed": 92,
+      "distance": 600,
+      "cooldown": 3.2,
+      "height": 134,
+      "color": "c6b88b",
+      "skills": [
+        {
+          "name": "校准弩矢",
+          "hint": "瞄线固定后横移，靠掩体截断",
+          "strikes": [
+            {
+              "shape": "line",
+              "radius": 80,
+              "delay": 1.25,
+              "anchor": "shot",
+              "reach": 740
+            }
+          ],
+          "recovery": 1.0,
+          "element": "physical"
+        }
+      ],
+      "lore": "使用王庭制式弩机，为封锁队提供远程火力。",
+      "counter": "接近后迫使其后撤，直线瞄准会被实体遮挡。",
+      "retreat": true
+    },
+    "archive_scribe": {
+      "id": "archive_scribe",
+      "name": "封卷书记员",
+      "role": "区域封锁",
+      "hp": 0.85,
+      "speed": 72,
+      "distance": 570,
+      "cooldown": 3.6,
+      "height": 148,
+      "color": "bead84",
+      "skills": [
+        {
+          "name": "封卷落印",
+          "hint": "离开脚下延迟印区",
+          "strikes": [
+            {
+              "shape": "circle",
+              "radius": 160,
+              "delay": 1.55,
+              "anchor": "target"
+            }
+          ],
+          "recovery": 1.0,
+          "element": "physical"
+        },
+        {
+          "name": "双页划界",
+          "hint": "两道落印之间留有空隙",
+          "strikes": [
+            {
+              "shape": "circle",
+              "radius": 135,
+              "delay": 1.6,
+              "anchor": "target",
+              "offset": [
+                -185,
+                0
+              ]
+            },
+            {
+              "shape": "circle",
+              "radius": 135,
+              "delay": 1.95,
+              "anchor": "target",
+              "offset": [
+                185,
+                0
+              ]
+            }
+          ],
+          "recovery": 1.0,
+          "element": "physical"
+        }
+      ],
+      "lore": "公共档案庭的封存术士，把行政封条当作战斗禁区。",
+      "counter": "优先接近打断；落印只锁定起手时的位置。",
+      "retreat": true
+    },
+    "crystal_stalker": {
+      "id": "crystal_stalker",
+      "name": "霜脊潜猎兽",
+      "role": "快速突进",
+      "hp": 0.96,
+      "speed": 152,
+      "distance": 230,
+      "cooldown": 2.9,
+      "height": 107,
+      "color": "b2bae0",
+      "skills": [
+        {
+          "name": "折脊猛扑",
+          "hint": "等伏身后朝侧面闪开",
+          "strikes": [
+            {
+              "shape": "line",
+              "radius": 140,
+              "delay": 0.95,
+              "anchor": "forward",
+              "reach": 290
+            }
+          ],
+          "recovery": 1.1,
+          "element": "physical"
+        },
+        {
+          "name": "晶脊震落",
+          "hint": "离开兽身周围",
+          "strikes": [
+            {
+              "shape": "circle",
+              "radius": 230,
+              "delay": 1.25,
+              "anchor": "self"
+            }
+          ],
+          "recovery": 0.95,
+          "element": "physical"
+        }
+      ],
+      "lore": "废矿的巡兽失去饲养者，矿晶沿旧追踪颈环生长。",
+      "counter": "扑击前不能追踪转向，扑空后的恢复时间较长。",
+      "flank": true
+    },
+    "suture_puppet": {
+      "id": "suture_puppet",
+      "name": "缝索手术偶",
+      "role": "牵制与延迟斩",
+      "hp": 1.05,
+      "speed": 85,
+      "distance": 350,
+      "cooldown": 3.1,
+      "height": 157,
+      "color": "c4a0a5",
+      "skills": [
+        {
+          "name": "牵索剪切",
+          "hint": "绕开针索的窄线",
+          "strikes": [
+            {
+              "shape": "line",
+              "radius": 130,
+              "delay": 1.15,
+              "anchor": "shot",
+              "reach": 450
+            }
+          ],
+          "recovery": 0.95,
+          "element": "physical"
+        },
+        {
+          "name": "胸舱排气",
+          "hint": "不要停在偶身旁",
+          "strikes": [
+            {
+              "shape": "ring",
+              "radius": 300,
+              "delay": 1.4,
+              "anchor": "self",
+              "inner": 135
+            }
+          ],
+          "recovery": 1.0,
+          "element": "physical"
+        }
+      ],
+      "lore": "示范厅的机械器具由瑟芮远程牵索，停止后不会伤害病房。",
+      "counter": "贴近圆环内侧或退到外圈，击中后可打断起手。"
+    },
+    "anchor_raider": {
+      "id": "anchor_raider",
+      "name": "黑帆钩斧兵",
+      "role": "中距离逼位",
+      "hp": 1.12,
+      "speed": 105,
+      "distance": 310,
+      "cooldown": 2.9,
+      "height": 148,
+      "color": "b6ad8e",
+      "skills": [
+        {
+          "name": "抛钩封路",
+          "hint": "向链钩侧面躲开",
+          "strikes": [
+            {
+              "shape": "line",
+              "radius": 150,
+              "delay": 1.1,
+              "anchor": "forward",
+              "reach": 345
+            }
+          ],
+          "recovery": 1.05,
+          "element": "physical"
+        },
+        {
+          "name": "回身扫斧",
+          "hint": "退出钩斧扇面",
+          "strikes": [
+            {
+              "shape": "cone",
+              "radius": 290,
+              "delay": 1.1,
+              "anchor": "self"
+            }
+          ],
+          "recovery": 0.9,
+          "element": "physical"
+        }
+      ],
+      "lore": "莫罗留下的登船队负责控制舷梯与牵引链。",
+      "counter": "抛钩时侧移，然后接近其长收招空档。"
+    }
+  },
+  "bosses": {
+    "inquisitor": {
+      "id": "inquisitor",
+      "height": 210,
+      "color": "d49c82",
+      "arena": "1:6 · 修院转运厅",
+      "identity": "赫缄用交接条款拖住病人，弩台与封锁链是其权力的实体。",
+      "phases": [
+        [
+          {
+            "name": "封门锁链",
+            "hint": "横移离开锁链落点",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 190,
+                "delay": 1.25,
+                "anchor": "shot",
+                "reach": 620
+              }
+            ],
+            "recovery": 0.8,
+            "element": "physical"
+          },
+          {
+            "name": "押印处决",
+            "hint": "离开双重落印",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 210,
+                "delay": 1.5,
+                "anchor": "target"
+              },
+              {
+                "shape": "circle",
+                "radius": 155,
+                "delay": 1.9,
+                "anchor": "target",
+                "offset": [
+                  260,
+                  0
+                ]
+              }
+            ],
+            "recovery": 0.8,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "破戒追斩",
+            "hint": "绕开正面，等剑落后反击",
+            "strikes": [
+              {
+                "shape": "cone",
+                "radius": 370,
+                "delay": 1.1,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 1.1,
+            "element": "physical"
+          },
+          {
+            "name": "交叉缉拿",
+            "hint": "两条锁链按先后生效",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 140,
+                "delay": 1.35,
+                "anchor": "shot",
+                "reach": 650,
+                "rotation": -0.38
+              },
+              {
+                "shape": "line",
+                "radius": 140,
+                "delay": 1.9,
+                "anchor": "shot",
+                "reach": 650,
+                "rotation": 0.38
+              }
+            ],
+            "recovery": 1.15,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "judge": {
+      "id": "judge",
+      "height": 218,
+      "color": "d2bd88",
+      "arena": "2:6 · 公共档案庭",
+      "identity": "白面法官用三庭隔断分割证人与原件，解除隔断后亲自执剑。",
+      "phases": [
+        [
+          {
+            "name": "三庭宣判",
+            "hint": "印区逐次落下，保留另一侧走道",
+            "strikes": [
+              {
+                "shape": "rect",
+                "radius": 180,
+                "delay": 1.4,
+                "anchor": "arena",
+                "at": [
+                  420,
+                  860
+                ],
+                "reach": 340
+              },
+              {
+                "shape": "rect",
+                "radius": 180,
+                "delay": 2.0,
+                "anchor": "arena",
+                "at": [
+                  1380,
+                  860
+                ],
+                "reach": 340
+              }
+            ],
+            "recovery": 0.8,
+            "element": "physical"
+          },
+          {
+            "name": "封缄令",
+            "hint": "离开脚下落印",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 230,
+                "delay": 1.55,
+                "anchor": "target"
+              }
+            ],
+            "recovery": 0.8,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "亲持刑剑",
+            "hint": "向剑锋侧面移动",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 160,
+                "delay": 1.05,
+                "anchor": "forward",
+                "reach": 420
+              }
+            ],
+            "recovery": 1.0,
+            "element": "physical"
+          },
+          {
+            "name": "覆卷追判",
+            "hint": "先退出印区，再避开刑剑",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 195,
+                "delay": 1.3,
+                "anchor": "target"
+              },
+              {
+                "shape": "cone",
+                "radius": 370,
+                "delay": 1.95,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 1.15,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "vein": {
+      "id": "vein",
+      "height": 212,
+      "color": "b7c1d0",
+      "arena": "3:6 · 山路旧门",
+      "identity": "维恩用旧剑路押送绯月；重盾阶段应把他引到断柱再反制。",
+      "phases": [
+        [
+          {
+            "name": "旧式起手",
+            "hint": "不要从剑侧硬拼",
+            "strikes": [
+              {
+                "shape": "cone",
+                "radius": 350,
+                "delay": 1.05,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 0.9,
+            "element": "physical"
+          },
+          {
+            "name": "踏前直刺",
+            "hint": "离开直线剑路",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 135,
+                "delay": 1.15,
+                "anchor": "forward",
+                "reach": 415
+              }
+            ],
+            "recovery": 1.1,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "重盾压阵",
+            "hint": "引向断柱，在盾击后使用断柱",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 230,
+                "delay": 1.45,
+                "anchor": "forward",
+                "reach": 365
+              }
+            ],
+            "recovery": 1.3,
+            "element": "physical"
+          },
+          {
+            "name": "反身挑剑",
+            "hint": "先退出近圈，再绕过剑尖",
+            "strikes": [
+              {
+                "shape": "ring",
+                "radius": 350,
+                "delay": 1.2,
+                "anchor": "self",
+                "inner": 120
+              },
+              {
+                "shape": "line",
+                "radius": 130,
+                "delay": 1.95,
+                "anchor": "forward",
+                "reach": 400
+              }
+            ],
+            "recovery": 1.2,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "surgeon": {
+      "id": "surgeon",
+      "height": 224,
+      "color": "d3a2b3",
+      "arena": "4:6 · 示范厅",
+      "identity": "瑟芮操纵针索与手术偶，只关闭示范厅的局部阀门，不能切断病房保障。",
+      "phases": [
+        [
+          {
+            "name": "针索定位",
+            "hint": "瞄线固定后走开",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 155,
+                "delay": 1.35,
+                "anchor": "shot",
+                "reach": 680
+              }
+            ],
+            "recovery": 0.8,
+            "element": "physical"
+          },
+          {
+            "name": "局部麻醉",
+            "hint": "两片麻醉区依次落下",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 225,
+                "delay": 1.75,
+                "anchor": "target",
+                "offset": [
+                  -240,
+                  0
+                ]
+              },
+              {
+                "shape": "circle",
+                "radius": 225,
+                "delay": 2.1,
+                "anchor": "target",
+                "offset": [
+                  240,
+                  0
+                ]
+              }
+            ],
+            "recovery": 0.8,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "缝合十字",
+            "hint": "两根针索之间留出躲避时间",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 150,
+                "delay": 1.4,
+                "anchor": "shot",
+                "reach": 670,
+                "rotation": -0.65
+              },
+              {
+                "shape": "line",
+                "radius": 150,
+                "delay": 2.0,
+                "anchor": "shot",
+                "reach": 670,
+                "rotation": 0.65
+              }
+            ],
+            "recovery": 1.2,
+            "element": "physical"
+          },
+          {
+            "name": "胸舱排气",
+            "hint": "贴内圈或退到外侧",
+            "strikes": [
+              {
+                "shape": "ring",
+                "radius": 440,
+                "delay": 1.6,
+                "anchor": "self",
+                "inner": 190
+              }
+            ],
+            "recovery": 1.1,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "admiral": {
+      "id": "admiral",
+      "height": 236,
+      "color": "b2c9bf",
+      "arena": "5:6 · 黑帆旗舰",
+      "identity": "莫罗以重锚与舰舵控制船只，第二阶段锁住舰舵才能阻止断链离港。",
+      "phases": [
+        [
+          {
+            "name": "重锚抛投",
+            "hint": "横向闪过锚链，勿沿链后退",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 215,
+                "delay": 1.45,
+                "anchor": "shot",
+                "reach": 740
+              }
+            ],
+            "recovery": 1.15,
+            "element": "physical"
+          },
+          {
+            "name": "回收链环",
+            "hint": "进入内圈或撤到锚链外",
+            "strikes": [
+              {
+                "shape": "ring",
+                "radius": 430,
+                "delay": 1.65,
+                "anchor": "self",
+                "inner": 175
+              }
+            ],
+            "recovery": 1.15,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "断链摇舷",
+            "hint": "轮流越过甲板压区",
+            "strikes": [
+              {
+                "shape": "rect",
+                "radius": 170,
+                "delay": 1.65,
+                "anchor": "arena",
+                "at": [
+                  500,
+                  850
+                ],
+                "reach": 420
+              },
+              {
+                "shape": "rect",
+                "radius": 170,
+                "delay": 2.25,
+                "anchor": "arena",
+                "at": [
+                  1300,
+                  850
+                ],
+                "reach": 420
+              }
+            ],
+            "recovery": 1.25,
+            "element": "physical"
+          },
+          {
+            "name": "拒港重斩",
+            "hint": "远离锚头，再避开扫链",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 250,
+                "delay": 1.5,
+                "anchor": "target"
+              },
+              {
+                "shape": "cone",
+                "radius": 410,
+                "delay": 2.2,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 1.35,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "queen": {
+      "id": "queen",
+      "height": 260,
+      "color": "ef9eb5",
+      "arena": "6:6 · 王座厅",
+      "identity": "女王的王剑与六片晶翼表现控制和压制；回答之前始终保留赤月之心、王冠与契印。",
+      "phases": [
+        [
+          {
+            "name": "王剑裁线",
+            "hint": "侧移让开王剑指向",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 170,
+                "delay": 1.25,
+                "anchor": "forward",
+                "reach": 520
+              }
+            ],
+            "recovery": 0.9,
+            "element": "physical"
+          },
+          {
+            "name": "止步",
+            "hint": "退出女王正面的扇区",
+            "strikes": [
+              {
+                "shape": "cone",
+                "radius": 420,
+                "delay": 1.35,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 1.0,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "六翼封庭",
+            "hint": "晶翼划线有先后，趁间隔解除翼根护晶",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 150,
+                "delay": 1.4,
+                "anchor": "shot",
+                "reach": 680,
+                "rotation": -0.6
+              },
+              {
+                "shape": "line",
+                "radius": 150,
+                "delay": 1.95,
+                "anchor": "shot",
+                "reach": 680
+              },
+              {
+                "shape": "line",
+                "radius": 150,
+                "delay": 2.5,
+                "anchor": "shot",
+                "reach": 680,
+                "rotation": 0.6
+              }
+            ],
+            "recovery": 1.25,
+            "element": "physical"
+          },
+          {
+            "name": "王庭环界",
+            "hint": "近圈是空隙，优先打开侧廊",
+            "strikes": [
+              {
+                "shape": "ring",
+                "radius": 470,
+                "delay": 1.7,
+                "anchor": "self",
+                "inner": 210
+              }
+            ],
+            "recovery": 1.1,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "认证回流",
+            "hint": "只解除外侧护架，保留核心",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 220,
+                "delay": 1.9,
+                "anchor": "target"
+              }
+            ],
+            "recovery": 1.2,
+            "element": "physical"
+          },
+          {
+            "name": "护架泄压",
+            "hint": "固定落印之间有安全间隙",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 190,
+                "delay": 1.8,
+                "anchor": "target",
+                "offset": [
+                  -280,
+                  0
+                ]
+              },
+              {
+                "shape": "circle",
+                "radius": 190,
+                "delay": 2.3,
+                "anchor": "target",
+                "offset": [
+                  280,
+                  0
+                ]
+              }
+            ],
+            "recovery": 1.3,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "beast": {
+      "id": "beast",
+      "height": 222,
+      "color": "adcbdf",
+      "arena": "3:3 · 废矿支路",
+      "identity": "霜脊岩兽围绕矿甲与落石作战，支线可以选择不挑战。",
+      "phases": [
+        [
+          {
+            "name": "岩甲冲撞",
+            "hint": "离开宽直线冲撞区",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 230,
+                "delay": 1.4,
+                "anchor": "forward",
+                "reach": 400
+              }
+            ],
+            "recovery": 1.2,
+            "element": "physical"
+          },
+          {
+            "name": "震地",
+            "hint": "离开兽身周围",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 340,
+                "delay": 1.55,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 1.1,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "霜脊落石",
+            "hint": "离开锁定时所在的位置",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 210,
+                "delay": 1.5,
+                "anchor": "target"
+              },
+              {
+                "shape": "circle",
+                "radius": 180,
+                "delay": 2.0,
+                "anchor": "target",
+                "offset": [
+                  260,
+                  0
+                ]
+              }
+            ],
+            "recovery": 1.3,
+            "element": "physical"
+          },
+          {
+            "name": "碎甲震环",
+            "hint": "贴近岩兽或退到外侧",
+            "strikes": [
+              {
+                "shape": "ring",
+                "radius": 430,
+                "delay": 1.6,
+                "anchor": "self",
+                "inner": 165
+              }
+            ],
+            "recovery": 1.2,
+            "element": "physical"
+          }
+        ]
+      ]
+    },
+    "warden": {
+      "id": "warden",
+      "height": 235,
+      "color": "c1a478",
+      "arena": "4:4 · 旧牢房",
+      "identity": "铁棺看守用盾墙与拖链封路，击退后可接近关押处。",
+      "phases": [
+        [
+          {
+            "name": "棺盾压路",
+            "hint": "避开正面盾击",
+            "strikes": [
+              {
+                "shape": "cone",
+                "radius": 365,
+                "delay": 1.35,
+                "anchor": "self"
+              }
+            ],
+            "recovery": 1.15,
+            "element": "physical"
+          },
+          {
+            "name": "锁链拘束",
+            "hint": "横移离开拖链",
+            "strikes": [
+              {
+                "shape": "line",
+                "radius": 195,
+                "delay": 1.45,
+                "anchor": "shot",
+                "reach": 650
+              }
+            ],
+            "recovery": 1.15,
+            "element": "physical"
+          }
+        ],
+        [
+          {
+            "name": "闭棺扫链",
+            "hint": "进入链环内侧再反击",
+            "strikes": [
+              {
+                "shape": "ring",
+                "radius": 410,
+                "delay": 1.5,
+                "anchor": "self",
+                "inner": 155
+              }
+            ],
+            "recovery": 1.1,
+            "element": "physical"
+          },
+          {
+            "name": "断门重击",
+            "hint": "避开棺盾落点",
+            "strikes": [
+              {
+                "shape": "circle",
+                "radius": 245,
+                "delay": 1.6,
+                "anchor": "target"
+              }
+            ],
+            "recovery": 1.25,
+            "element": "physical"
+          }
+        ]
+      ]
+    }
+  },
+  "rosters": {
+    "1": [
+      "tide_hound",
+      "crystal_husk",
+      "royal_pikeman",
+      "royal_arbalist"
+    ],
+    "2": [
+      "royal_pikeman",
+      "royal_arbalist",
+      "archive_scribe",
+      "archive_scribe"
+    ],
+    "3": [
+      "crystal_stalker",
+      "royal_pikeman",
+      "crystal_husk",
+      "royal_arbalist"
+    ],
+    "4": [
+      "suture_puppet",
+      "suture_puppet",
+      "archive_scribe",
+      "royal_pikeman"
+    ],
+    "5": [
+      "anchor_raider",
+      "royal_arbalist",
+      "tide_hound",
+      "anchor_raider"
+    ],
+    "6": [
+      "royal_pikeman",
+      "archive_scribe",
+      "suture_puppet",
+      "royal_arbalist"
+    ]
+  },
+  "art_root": "res://assets/story/rpg-enemies-v1/",
+  "animation": "three-authored-poses-with-procedural-transitions",
+  "notes": "Human enemies are incapacitated; mandatory enemies remain objective encounters. No new film paths."
+}

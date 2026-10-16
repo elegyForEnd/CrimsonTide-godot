@@ -36,17 +36,28 @@ var account_path:=""
 var slots: Array=[]
 var move_target:=Vector2.INF
 var field_panel: Control
+var map_capture
+var quest_navigation
+var minimap: Control
+var tracking_detail: Label
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=MOUSE_FILTER_IGNORE; theme=Art.theme(); UISkin.theme_controls(theme)
 	world=World.new(); world.campaign=campaign; add_child(world)
+	map_capture=preload("res://scripts/scarlet/map_capture.gd").new(); map_capture.campaign=campaign; add_child(map_capture)
+	quest_navigation=preload("res://scripts/scarlet/quest_navigation.gd").new(); quest_navigation.campaign=campaign
 	hud=Control.new(); hud.size=size; hud.mouse_filter=MOUSE_FILTER_IGNORE; add_child(hud)
 	var header:=panel_at(hud,Vector2(22,18),Vector2(600,118))
 	heading=label(header,"赤月遗书",Vector2(16,8),Vector2(570,55),23)
 	hp_bar=ProgressBar.new(); hp_bar.position=Vector2(16,79); hp_bar.size=Vector2(550,15); hp_bar.show_percentage=false
 	hp_bar.add_theme_stylebox_override("background",Art.frame(Color("2c2033"),Color("574357"),2)); hp_bar.add_theme_stylebox_override("fill",Art.frame(Color("a94d69"),Color("bf7181"),2)); header.add_child(hp_bar)
-	var task_panel:=panel_at(hud,Vector2(952,74),Vector2(472,167))
+	var task_panel:=panel_at(hud,Vector2(952,74),Vector2(472,224))
 	objective=label(task_panel,"",Vector2(13,11),Vector2(450,145),18)
+	tracking_detail=label(task_panel,"",Vector2(13,153),Vector2(450,59),16)
+	tracking_detail.add_theme_color_override("font_color",Color("efd19a"))
+	minimap=preload("res://scripts/scarlet/map.gd").new()
+	minimap.campaign=campaign; minimap.capture=map_capture; minimap.navigator=quest_navigation; minimap.compact=true
+	minimap.position=Vector2(1150,312); minimap.size=Vector2(274,306); minimap.open_requested.connect(show_map); hud.add_child(minimap)
 	button(hud,"任务 J",Vector2(968,24),Vector2(100,38),show_journal)
 	button(hud,"行囊 TAB",Vector2(1078,24),Vector2(115,38),show_items)
 	button(hud,"地图 M",Vector2(1203,24),Vector2(100,38),show_map)
@@ -171,6 +182,10 @@ func _process(dt: float) -> void:
 	elapsed+=dt; toast_time=maxf(0,toast_time-dt); speech_time=maxf(0,speech_time-dt)
 	message.visible=toast_time>0 and not modal; speech.visible=speech_time>0 and not modal
 	world.sync(dt if is_instance_valid(field_panel) else 0 if modal else dt)
+	if not campaign.state.is_empty():
+		map_capture.refresh()
+		quest_navigation.refresh(dt)
+		tracking_detail.text="◆ "+quest_navigation.target.get("label","")+"\n"+quest_navigation.distance_text() if not quest_navigation.target.is_empty() else ""
 	aim=world.unproject(get_global_transform_with_canvas()*get_local_mouse_position())-campaign.hero_at
 	if not campaign.state.pending.is_empty() and not is_instance_valid(dialogue): present_pending()
 	var n:=campaign.nearest()
@@ -287,6 +302,8 @@ func fill_details(box: VBoxContainer,q: Dictionary) -> void:
 		prose(box,"接取："+q.intake.giver+"\n地点："+q.intake.place+"\n交接："+campaign.content.zones[final.zone].name+" · "+final.label,16)
 	if not done and not q.id in campaign.state.accepted: prose(box,"状态：已询问，尚未接取。回到现场按 E 交谈／调查。" if campaign.state.intake_viewed.has(q.id) else "状态：可接取。到上述地点按 E 交谈／调查；任务册只用于查看。",17)
 	elif campaign.available(q): row(box,"追踪这项任务",func(): campaign.track(q.id); close_panel())
+	if not done and not q.id in campaign.state.accepted and q.id==campaign.current_main().get("id",""):
+		row(box,"追踪接取地点",func(): campaign.track(q.id); close_panel())
 	if done: prose(box,"结果已保存。鉴赏回看不会重复发奖或更改世界。")
 func show_evidence() -> void:
 	var p:=panel("线索袋 · 只记录角色已经查证的事实"); var box:=column(p,Vector2(40,90),Vector2(1150,580))
@@ -295,7 +312,8 @@ func show_evidence() -> void:
 		var fact: Dictionary=campaign.content.facts.get(key,{"title":key,"text":"已查证"}); prose(box,fact.title,23); prose(box,fact.text+"\n")
 func show_map() -> void:
 	var p:=panel("地区路线 · 营地与现场之间"); var box:=column(p,Vector2(645,95),Vector2(555,535))
-	var local_map:=preload("res://scripts/scarlet/map.gd").new(); local_map.campaign=campaign; local_map.position=Vector2(30,95); local_map.size=Vector2(580,535); p.add_child(local_map)
+	quest_navigation.remaining=0; quest_navigation.refresh()
+	var local_map:=preload("res://scripts/scarlet/map.gd").new(); local_map.campaign=campaign; local_map.capture=map_capture; local_map.navigator=quest_navigation; local_map.position=Vector2(30,95); local_map.size=Vector2(580,535); p.add_child(local_map)
 	var can_travel: bool=campaign.can_travel()
 	prose(box,"当前位置："+campaign.zone().name+"\n"+("选择已开放区域出发。" if can_travel else "路线可查；前往原地图的传送阵后才能出发。战斗和护送需先完成当前安全段。"),20)
 	var n:=campaign.current_node()
