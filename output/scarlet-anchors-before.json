@@ -1,0 +1,300 @@
+{
+  "summary": {
+    "OK": 622,
+    "HINT": 417,
+    "DRIFT": 24,
+    "WRONG": 5
+  },
+  "problems": [
+    {
+      "guide_line": 79,
+      "anchor": "boot.gd:538",
+      "symbol": "_finish_compile",
+      "verdict": "DRIFT",
+      "found_line": 546,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 546 [_finish_compile]"
+    },
+    {
+      "guide_line": 80,
+      "anchor": "boot.gd:465",
+      "symbol": "_show_prompt",
+      "verdict": "DRIFT",
+      "found_line": 473,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 473 [_show_prompt]"
+    },
+    {
+      "guide_line": 81,
+      "anchor": "boot.gd:602",
+      "symbol": "_start_transition",
+      "verdict": "DRIFT",
+      "found_line": 610,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 610 [_start_transition]"
+    },
+    {
+      "guide_line": 128,
+      "anchor": "boot.gd:602",
+      "symbol": "_start_transition",
+      "verdict": "DRIFT",
+      "found_line": 610,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 610 [_start_transition]"
+    },
+    {
+      "guide_line": 315,
+      "anchor": "battlefield.gd:756",
+      "symbol": "ground_transform",
+      "verdict": "DRIFT",
+      "found_line": 761,
+      "distance": 5,
+      "strict": true,
+      "note": "实测 761 [ground_transform]"
+    },
+    {
+      "guide_line": 450,
+      "anchor": "battlefield.gd:188",
+      "symbol": "key_hint",
+      "verdict": "DRIFT",
+      "found_line": 192,
+      "distance": 4,
+      "strict": true,
+      "note": "实测 192 [key_hint]"
+    },
+    {
+      "guide_line": 452,
+      "anchor": "battlefield.gd:188",
+      "symbol": "key_hint",
+      "verdict": "DRIFT",
+      "found_line": 192,
+      "distance": 4,
+      "strict": true,
+      "note": "实测 192 [key_hint]"
+    },
+    {
+      "guide_line": 456,
+      "anchor": "battlefield.gd:188",
+      "symbol": "key_hint",
+      "verdict": "DRIFT",
+      "found_line": 192,
+      "distance": 4,
+      "strict": true,
+      "note": "实测 192 [key_hint]"
+    },
+    {
+      "guide_line": 465,
+      "anchor": "battlefield.gd:188",
+      "symbol": "key_hint",
+      "verdict": "DRIFT",
+      "found_line": 192,
+      "distance": 4,
+      "strict": true,
+      "note": "实测 192 [key_hint]"
+    },
+    {
+      "guide_line": 492,
+      "anchor": "story_screen.gd:195",
+      "symbol": null,
+      "verdict": "WRONG",
+      "found_line": null,
+      "distance": null,
+      "strict": false,
+      "note": "行号越界（文件共 3 行）"
+    },
+    {
+      "guide_line": 510,
+      "anchor": "scripts/story_screen.gd:327",
+      "symbol": null,
+      "verdict": "WRONG",
+      "found_line": null,
+      "distance": null,
+      "strict": false,
+      "note": "行号越界（文件共 3 行）"
+    },
+    {
+      "guide_line": 510,
+      "anchor": "scripts/story_screen.gd:342",
+      "symbol": null,
+      "verdict": "WRONG",
+      "found_line": null,
+      "distance": null,
+      "strict": false,
+      "note": "行号越界（文件共 3 行）"
+    },
+    {
+      "guide_line": 513,
+      "anchor": "story_world.gd:100",
+      "symbol": "sync_story",
+      "verdict": "DRIFT",
+      "found_line": 105,
+      "distance": 5,
+      "strict": true,
+      "note": "实测 105 [sync_story]"
+    },
+    {
+      "guide_line": 524,
+      "anchor": "scripts/story_screen.gd:91",
+      "symbol": null,
+      "verdict": "WRONG",
+      "found_line": null,
+      "distance": null,
+      "strict": false,
+      "note": "行号越界（文件共 3 行）"
+    },
+    {
+      "guide_line": 527,
+      "anchor": "story_screen.gd:418",
+      "symbol": null,
+      "verdict": "WRONG",
+      "found_line": null,
+      "distance": null,
+      "strict": false,
+      "note": "行号越界（文件共 3 行）"
+    },
+    {
+      "guide_line": 558,
+      "anchor": "boot.gd:465",
+      "symbol": "_show_prompt",
+      "verdict": "DRIFT",
+      "found_line": 473,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 473 [_show_prompt]"
+    },
+    {
+      "guide_line": 559,
+      "anchor": "boot.gd:746",
+      "symbol": "_end_transition",
+      "verdict": "DRIFT",
+      "found_line": 753,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 753 [_end_transition]"
+    },
+    {
+      "guide_line": 695,
+      "anchor": "boot.gd:973",
+      "symbol": "_stop_import",
+      "verdict": "DRIFT",
+      "found_line": 980,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 980 [_stop_import]"
+    },
+    {
+      "guide_line": 837,
+      "anchor": "battlefield.gd:759",
+      "symbol": "weapon_effect_socket",
+      "verdict": "DRIFT",
+      "found_line": 764,
+      "distance": 5,
+      "strict": true,
+      "note": "实测 764 [weapon_effect_socket]"
+    },
+    {
+      "guide_line": 912,
+      "anchor": "boot.gd:561",
+      "symbol": "_restart_into_game",
+      "verdict": "DRIFT",
+      "found_line": 569,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 569 [_restart_into_game]"
+    },
+    {
+      "guide_line": 912,
+      "anchor": "boot.gd:935",
+      "symbol": "_build_confirm_card",
+      "verdict": "DRIFT",
+      "found_line": 942,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 942 [_build_confirm_card]"
+    },
+    {
+      "guide_line": 918,
+      "anchor": "boot.gd:965",
+      "symbol": "_retry_compile",
+      "verdict": "DRIFT",
+      "found_line": 972,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 972 [_retry_compile]"
+    },
+    {
+      "guide_line": 920,
+      "anchor": "boot.gd:730",
+      "symbol": "_tick_dissolve",
+      "verdict": "DRIFT",
+      "found_line": 737,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 737 [_tick_dissolve]"
+    },
+    {
+      "guide_line": 922,
+      "anchor": "boot.gd:510",
+      "symbol": "_process",
+      "verdict": "DRIFT",
+      "found_line": 518,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 518 [_process]"
+    },
+    {
+      "guide_line": 926,
+      "anchor": "boot.gd:786",
+      "symbol": "_unhandled_input",
+      "verdict": "DRIFT",
+      "found_line": 793,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 793 [_unhandled_input]"
+    },
+    {
+      "guide_line": 1080,
+      "anchor": "boot.gd:602",
+      "symbol": "_start_transition",
+      "verdict": "DRIFT",
+      "found_line": 610,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 610 [_start_transition]"
+    },
+    {
+      "guide_line": 1080,
+      "anchor": "boot.gd:746",
+      "symbol": "_end_transition",
+      "verdict": "DRIFT",
+      "found_line": 753,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 753 [_end_transition]"
+    },
+    {
+      "guide_line": 1082,
+      "anchor": "boot.gd:602",
+      "symbol": "_start_transition",
+      "verdict": "DRIFT",
+      "found_line": 610,
+      "distance": 8,
+      "strict": true,
+      "note": "实测 610 [_start_transition]"
+    },
+    {
+      "guide_line": 1082,
+      "anchor": "boot.gd:746",
+      "symbol": "_end_transition",
+      "verdict": "DRIFT",
+      "found_line": 753,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 753 [_end_transition]"
+    }
+  ]
+}

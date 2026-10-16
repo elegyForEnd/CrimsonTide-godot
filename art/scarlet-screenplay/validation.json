@@ -1,0 +1,15 @@
+{
+  "scenes": 121,
+  "main_tasks": 40,
+  "side_tasks": 6,
+  "dialogue_entries": 879,
+  "story_choices": 9,
+  "existing_cg": 19,
+  "reserved_cg": 7,
+  "film_versions": 24,
+  "branches": [
+    "A",
+    "R"
+  ],
+  "runtime_modified": false
+}

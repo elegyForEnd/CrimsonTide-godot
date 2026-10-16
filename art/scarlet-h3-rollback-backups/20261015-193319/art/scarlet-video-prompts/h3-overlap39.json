@@ -1,0 +1,921 @@
+{
+  "fps": 24,
+  "overlapFrames": 39,
+  "films": [
+    {
+      "id": "CIN-00",
+      "budget": 40,
+      "outputFrames": 974,
+      "outputSeconds": 40.583333333333336,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 175,
+          "lengthFrames": 175,
+          "overlapFrames": 0,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 7.291666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 136,
+          "endFrame": 294,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 255,
+          "endFrame": 464,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 4,
+          "startFrame": 425,
+          "endFrame": 651,
+          "lengthFrames": 226,
+          "overlapFrames": 39,
+          "generation_seconds": 9.416666666666666,
+          "net_new_seconds": 7.791666666666667
+        },
+        {
+          "shot": 5,
+          "startFrame": 612,
+          "endFrame": 804,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 6,
+          "startFrame": 765,
+          "endFrame": 974,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-01",
+      "budget": 25,
+      "outputFrames": 600,
+      "outputSeconds": 25.0,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 124,
+          "lengthFrames": 124,
+          "overlapFrames": 0,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 5.166666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 85,
+          "endFrame": 192,
+          "lengthFrames": 107,
+          "overlapFrames": 39,
+          "generation_seconds": 4.458333333333333,
+          "net_new_seconds": 2.8333333333333335
+        },
+        {
+          "shot": 3,
+          "startFrame": 153,
+          "endFrame": 328,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 4,
+          "startFrame": 289,
+          "endFrame": 413,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        },
+        {
+          "shot": 5,
+          "startFrame": 374,
+          "endFrame": 515,
+          "lengthFrames": 141,
+          "overlapFrames": 39,
+          "generation_seconds": 5.875,
+          "net_new_seconds": 4.25
+        },
+        {
+          "shot": 6,
+          "startFrame": 476,
+          "endFrame": 600,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        }
+      ]
+    },
+    {
+      "id": "CIN-02",
+      "budget": 18,
+      "outputFrames": 447,
+      "outputSeconds": 18.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 124,
+          "lengthFrames": 124,
+          "overlapFrames": 0,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 5.166666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 85,
+          "endFrame": 294,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 255,
+          "endFrame": 447,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        }
+      ]
+    },
+    {
+      "id": "CIN-03",
+      "budget": 25,
+      "outputFrames": 600,
+      "outputSeconds": 25.0,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 124,
+          "lengthFrames": 124,
+          "overlapFrames": 0,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 5.166666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 85,
+          "endFrame": 294,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 255,
+          "endFrame": 464,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 4,
+          "startFrame": 425,
+          "endFrame": 600,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        }
+      ]
+    },
+    {
+      "id": "CIN-04",
+      "budget": 25,
+      "outputFrames": 600,
+      "outputSeconds": 25.0,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 175,
+          "lengthFrames": 175,
+          "overlapFrames": 0,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 7.291666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 136,
+          "endFrame": 362,
+          "lengthFrames": 226,
+          "overlapFrames": 39,
+          "generation_seconds": 9.416666666666666,
+          "net_new_seconds": 7.791666666666667
+        },
+        {
+          "shot": 3,
+          "startFrame": 323,
+          "endFrame": 515,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 4,
+          "startFrame": 476,
+          "endFrame": 600,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        }
+      ]
+    },
+    {
+      "id": "CIN-05",
+      "budget": 18,
+      "outputFrames": 447,
+      "outputSeconds": 18.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 158,
+          "lengthFrames": 158,
+          "overlapFrames": 0,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 6.583333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 119,
+          "endFrame": 328,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 289,
+          "endFrame": 447,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-06A",
+      "budget": 22,
+      "outputFrames": 532,
+      "outputSeconds": 22.166666666666668,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 107,
+          "lengthFrames": 107,
+          "overlapFrames": 0,
+          "generation_seconds": 4.458333333333333,
+          "net_new_seconds": 4.458333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 68,
+          "endFrame": 192,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        },
+        {
+          "shot": 3,
+          "startFrame": 153,
+          "endFrame": 413,
+          "lengthFrames": 260,
+          "overlapFrames": 39,
+          "generation_seconds": 10.833333333333334,
+          "net_new_seconds": 9.208333333333334
+        },
+        {
+          "shot": 4,
+          "startFrame": 374,
+          "endFrame": 532,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-06B",
+      "budget": 22,
+      "outputFrames": 532,
+      "outputSeconds": 22.166666666666668,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 107,
+          "lengthFrames": 107,
+          "overlapFrames": 0,
+          "generation_seconds": 4.458333333333333,
+          "net_new_seconds": 4.458333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 68,
+          "endFrame": 192,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        },
+        {
+          "shot": 3,
+          "startFrame": 153,
+          "endFrame": 413,
+          "lengthFrames": 260,
+          "overlapFrames": 39,
+          "generation_seconds": 10.833333333333334,
+          "net_new_seconds": 9.208333333333334
+        },
+        {
+          "shot": 4,
+          "startFrame": 374,
+          "endFrame": 532,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-07",
+      "budget": 18,
+      "outputFrames": 447,
+      "outputSeconds": 18.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 158,
+          "lengthFrames": 158,
+          "overlapFrames": 0,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 6.583333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 119,
+          "endFrame": 294,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 3,
+          "startFrame": 255,
+          "endFrame": 447,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        }
+      ]
+    },
+    {
+      "id": "CIN-08",
+      "budget": 15,
+      "outputFrames": 362,
+      "outputSeconds": 15.083333333333334,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 124,
+          "lengthFrames": 124,
+          "overlapFrames": 0,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 5.166666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 85,
+          "endFrame": 277,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 3,
+          "startFrame": 238,
+          "endFrame": 362,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        }
+      ]
+    },
+    {
+      "id": "CIN-09",
+      "budget": 25,
+      "outputFrames": 600,
+      "outputSeconds": 25.0,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 175,
+          "lengthFrames": 175,
+          "overlapFrames": 0,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 7.291666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 136,
+          "endFrame": 328,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 3,
+          "startFrame": 289,
+          "endFrame": 413,
+          "lengthFrames": 124,
+          "overlapFrames": 39,
+          "generation_seconds": 5.166666666666667,
+          "net_new_seconds": 3.5416666666666665
+        },
+        {
+          "shot": 4,
+          "startFrame": 374,
+          "endFrame": 600,
+          "lengthFrames": 226,
+          "overlapFrames": 39,
+          "generation_seconds": 9.416666666666666,
+          "net_new_seconds": 7.791666666666667
+        }
+      ]
+    },
+    {
+      "id": "CIN-10",
+      "budget": 18,
+      "outputFrames": 447,
+      "outputSeconds": 18.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 175,
+          "lengthFrames": 175,
+          "overlapFrames": 0,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 7.291666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 136,
+          "endFrame": 328,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 3,
+          "startFrame": 289,
+          "endFrame": 447,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-11",
+      "budget": 30,
+      "outputFrames": 736,
+      "outputSeconds": 30.666666666666668,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 192,
+          "lengthFrames": 192,
+          "overlapFrames": 0,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 8.0
+        },
+        {
+          "shot": 2,
+          "startFrame": 153,
+          "endFrame": 362,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 323,
+          "endFrame": 515,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 4,
+          "startFrame": 476,
+          "endFrame": 736,
+          "lengthFrames": 260,
+          "overlapFrames": 39,
+          "generation_seconds": 10.833333333333334,
+          "net_new_seconds": 9.208333333333334
+        }
+      ]
+    },
+    {
+      "id": "CIN-12",
+      "budget": 25,
+      "outputFrames": 600,
+      "outputSeconds": 25.0,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 192,
+          "lengthFrames": 192,
+          "overlapFrames": 0,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 8.0
+        },
+        {
+          "shot": 2,
+          "startFrame": 153,
+          "endFrame": 413,
+          "lengthFrames": 260,
+          "overlapFrames": 39,
+          "generation_seconds": 10.833333333333334,
+          "net_new_seconds": 9.208333333333334
+        },
+        {
+          "shot": 3,
+          "startFrame": 374,
+          "endFrame": 600,
+          "lengthFrames": 226,
+          "overlapFrames": 39,
+          "generation_seconds": 9.416666666666666,
+          "net_new_seconds": 7.791666666666667
+        }
+      ]
+    },
+    {
+      "id": "CIN-13",
+      "budget": 22,
+      "outputFrames": 532,
+      "outputSeconds": 22.166666666666668,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 158,
+          "lengthFrames": 158,
+          "overlapFrames": 0,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 6.583333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 119,
+          "endFrame": 294,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 3,
+          "startFrame": 255,
+          "endFrame": 396,
+          "lengthFrames": 141,
+          "overlapFrames": 39,
+          "generation_seconds": 5.875,
+          "net_new_seconds": 4.25
+        },
+        {
+          "shot": 4,
+          "startFrame": 357,
+          "endFrame": 532,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        }
+      ]
+    },
+    {
+      "id": "CIN-14",
+      "budget": 14,
+      "outputFrames": 345,
+      "outputSeconds": 14.375,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 158,
+          "lengthFrames": 158,
+          "overlapFrames": 0,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 6.583333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 119,
+          "endFrame": 277,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 238,
+          "endFrame": 345,
+          "lengthFrames": 107,
+          "overlapFrames": 39,
+          "generation_seconds": 4.458333333333333,
+          "net_new_seconds": 2.8333333333333335
+        }
+      ]
+    },
+    {
+      "id": "CIN-15",
+      "budget": 18,
+      "outputFrames": 447,
+      "outputSeconds": 18.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 158,
+          "lengthFrames": 158,
+          "overlapFrames": 0,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 6.583333333333333
+        },
+        {
+          "shot": 2,
+          "startFrame": 119,
+          "endFrame": 294,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 3,
+          "startFrame": 255,
+          "endFrame": 447,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        }
+      ]
+    },
+    {
+      "id": "CIN-16",
+      "budget": 45,
+      "outputFrames": 1093,
+      "outputSeconds": 45.541666666666664,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 226,
+          "lengthFrames": 226,
+          "overlapFrames": 0,
+          "generation_seconds": 9.416666666666666,
+          "net_new_seconds": 9.416666666666666
+        },
+        {
+          "shot": 2,
+          "startFrame": 187,
+          "endFrame": 396,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 3,
+          "startFrame": 357,
+          "endFrame": 566,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 4,
+          "startFrame": 527,
+          "endFrame": 702,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 5,
+          "startFrame": 663,
+          "endFrame": 821,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        },
+        {
+          "shot": 6,
+          "startFrame": 782,
+          "endFrame": 974,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 7,
+          "startFrame": 935,
+          "endFrame": 1093,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-17A",
+      "budget": 25,
+      "outputFrames": 600,
+      "outputSeconds": 25.0,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 175,
+          "lengthFrames": 175,
+          "overlapFrames": 0,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 7.291666666666667
+        },
+        {
+          "shot": 2,
+          "startFrame": 136,
+          "endFrame": 328,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 3,
+          "startFrame": 289,
+          "endFrame": 447,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        },
+        {
+          "shot": 4,
+          "startFrame": 408,
+          "endFrame": 600,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        }
+      ]
+    },
+    {
+      "id": "CIN-17B",
+      "budget": 18,
+      "outputFrames": 447,
+      "outputSeconds": 18.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 192,
+          "lengthFrames": 192,
+          "overlapFrames": 0,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 8.0
+        },
+        {
+          "shot": 2,
+          "startFrame": 153,
+          "endFrame": 328,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 3,
+          "startFrame": 289,
+          "endFrame": 447,
+          "lengthFrames": 158,
+          "overlapFrames": 39,
+          "generation_seconds": 6.583333333333333,
+          "net_new_seconds": 4.958333333333333
+        }
+      ]
+    },
+    {
+      "id": "CIN-18",
+      "budget": 35,
+      "outputFrames": 855,
+      "outputSeconds": 35.625,
+      "windows": [
+        {
+          "shot": 1,
+          "startFrame": 0,
+          "endFrame": 243,
+          "lengthFrames": 243,
+          "overlapFrames": 0,
+          "generation_seconds": 10.125,
+          "net_new_seconds": 10.125
+        },
+        {
+          "shot": 2,
+          "startFrame": 204,
+          "endFrame": 396,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        },
+        {
+          "shot": 3,
+          "startFrame": 357,
+          "endFrame": 532,
+          "lengthFrames": 175,
+          "overlapFrames": 39,
+          "generation_seconds": 7.291666666666667,
+          "net_new_seconds": 5.666666666666667
+        },
+        {
+          "shot": 4,
+          "startFrame": 493,
+          "endFrame": 702,
+          "lengthFrames": 209,
+          "overlapFrames": 39,
+          "generation_seconds": 8.708333333333334,
+          "net_new_seconds": 7.083333333333333
+        },
+        {
+          "shot": 5,
+          "startFrame": 663,
+          "endFrame": 855,
+          "lengthFrames": 192,
+          "overlapFrames": 39,
+          "generation_seconds": 8.0,
+          "net_new_seconds": 6.375
+        }
+      ]
+    }
+  ]
+}

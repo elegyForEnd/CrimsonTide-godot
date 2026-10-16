@@ -1,0 +1,522 @@
+{
+  "version": 1,
+  "story": "Scarlet Moon Testament / 赤月遗书",
+  "generator": "built-in image_gen",
+  "target_size": [
+    3840,
+    2160
+  ],
+  "complete": true,
+  "runtime_integrated": true,
+  "reference_policy": "user supplied assets/feiyue.png, assets/xueli.png, assets/yayu.png; existing queen portrait",
+  "illustrations": [
+    {
+      "id": "cg-01a",
+      "title": "两封矛盾的命令·遗书",
+      "trigger": "R-P01",
+      "path": "res://assets/story/cg-scarlet-v1/cg-01a.png",
+      "source": "art/story-cg-scarlet/masters/cg-01a.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "eb1d89915960e01eaf49460b81d9571a0417c35fe8747e6250301847428d349b"
+    },
+    {
+      "id": "cg-01b",
+      "title": "两封矛盾的命令·密令",
+      "trigger": "R-P01",
+      "path": "res://assets/story/cg-scarlet-v1/cg-01b.png",
+      "source": "art/story-cg-scarlet/masters/cg-01b.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "1239aafa24a80be7d84523a702757b5c729a7bba692665a38f977de434a65b42"
+    },
+    {
+      "id": "cg-02",
+      "title": "一碗热汤",
+      "trigger": "R-1-03",
+      "path": "res://assets/story/cg-scarlet-v1/cg-02.png",
+      "source": "art/story-cg-scarlet/masters/cg-02.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "1e2d6bb766ec14814436c6992bc90513540a2f37d6bba52bcf4417b9b0bdcbbc"
+    },
+    {
+      "id": "cg-03",
+      "title": "第二封信",
+      "trigger": "R-1-06",
+      "path": "res://assets/story/cg-scarlet-v1/cg-03.png",
+      "source": "art/story-cg-scarlet/masters/cg-03.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "12d411e282da054e0f9042ba9a16e0965043243dd06b40d96b7533a3ecec21cd"
+    },
+    {
+      "id": "cg-04",
+      "title": "医师与旧伤",
+      "trigger": "R-2-03",
+      "path": "res://assets/story/cg-scarlet-v1/cg-04.png",
+      "source": "art/story-cg-scarlet/masters/cg-04.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "13f5a9c132356aabfee302889178502c99e252b1a5fcaa934162b57f38705d5b"
+    },
+    {
+      "id": "cg-05",
+      "title": "不肯交出的剑",
+      "trigger": "R-2-04",
+      "path": "res://assets/story/cg-scarlet-v1/cg-05.png",
+      "source": "art/story-cg-scarlet/masters/cg-05.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "da8dffb30669fc3b74222b426a6a9f3e86fb341beeb8c9830f520cc7a7ca5516"
+    },
+    {
+      "id": "cg-06",
+      "title": "换你扶住她",
+      "trigger": "R-3-03",
+      "path": "res://assets/story/cg-scarlet-v1/cg-06.png",
+      "source": "art/story-cg-scarlet/masters/cg-06.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "eb2dc1ec666db8e16849b9e1de2cbb0837b36ef7c6cdec0d51df93b96d53fa47"
+    },
+    {
+      "id": "cg-07",
+      "title": "伸过来的旧护手",
+      "trigger": "R-3-04",
+      "path": "res://assets/story/cg-scarlet-v1/cg-07.png",
+      "source": "art/story-cg-scarlet/masters/cg-07.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "7b846d506a8a81e4a4f55066da0025b927e97be1c8e5bfe7c513f695dc00971f"
+    },
+    {
+      "id": "cg-08",
+      "title": "空着的剑架",
+      "trigger": "R-3-06",
+      "path": "res://assets/story/cg-scarlet-v1/cg-08.png",
+      "source": "art/story-cg-scarlet/masters/cg-08.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "928a7f6269969a95814acd3cbd36675b1ce609a49692a1b64a1ec9dee9b198a4"
+    },
+    {
+      "id": "cg-09",
+      "title": "为你备好的新衣",
+      "trigger": "R-4-02",
+      "path": "res://assets/story/cg-scarlet-v1/cg-09.png",
+      "source": "art/story-cg-scarlet/masters/cg-09.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "3445e6a2bb109f03444a496a9bce7b102a941e79ce3ded2d0c4b3e3dff78707d"
+    },
+    {
+      "id": "cg-10",
+      "title": "十年前的房间",
+      "trigger": "R-4-03",
+      "path": "res://assets/story/cg-scarlet-v1/cg-10.png",
+      "source": "art/story-cg-scarlet/masters/cg-10.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "180a537e1da9e6f47e8f221589e16e3999ebec828dcb56fec3e384885682cf62"
+    },
+    {
+      "id": "cg-11",
+      "title": "礼物里的契印",
+      "trigger": "R-4-05",
+      "path": "res://assets/story/cg-scarlet-v1/cg-11.png",
+      "source": "art/story-cg-scarlet/masters/cg-11.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "5b63d2e63ef16836db95f1158447aed209a0d86a98ba1fa5f202079a16c4d167"
+    },
+    {
+      "id": "cg-12",
+      "title": "她送我的时候就知道",
+      "trigger": "R-4-05",
+      "path": "res://assets/story/cg-scarlet-v1/cg-12.png",
+      "source": "art/story-cg-scarlet/masters/cg-12.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "d772811163f6cacd61a241c2c842e7b574f185e2e85ed6e7724f4e82e5b5c2df"
+    },
+    {
+      "id": "cg-13",
+      "title": "三张船票与果酱",
+      "trigger": "R-5-01",
+      "path": "res://assets/story/cg-scarlet-v1/cg-13.png",
+      "source": "art/story-cg-scarlet/masters/cg-13.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "92d30ffa2f842b0cb043522afd96ca55252bce13c5b23f5bab4bd853e6c389fd"
+    },
+    {
+      "id": "cg-14",
+      "title": "三个人的计划",
+      "trigger": "R-5-05",
+      "path": "res://assets/story/cg-scarlet-v1/cg-14.png",
+      "source": "art/story-cg-scarlet/masters/cg-14.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "e5c466fed94d40d0da5d8f787c18abc83a72698f2630b2b7e8088bf24176bd4a"
+    },
+    {
+      "id": "cg-15",
+      "title": "两只杯子",
+      "trigger": "R-6-05",
+      "path": "res://assets/story/cg-scarlet-v1/cg-15.png",
+      "source": "art/story-cg-scarlet/masters/cg-15.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "9eaa5cb0ce321839400c486926088f9b024be09f9dd4e60687bcb1eae2316fc8"
+    },
+    {
+      "id": "cg-16a",
+      "title": "病房里的提问",
+      "trigger": "R-E01:rescue",
+      "path": "res://assets/story/cg-scarlet-v1/cg-16a.png",
+      "source": "art/story-cg-scarlet/masters/cg-16a.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "574f5996f80c6d7d137a950ffe7ae5ddf82f29ec5d182676967374eaf747a10f"
+    },
+    {
+      "id": "cg-16b",
+      "title": "留在水门的剑",
+      "trigger": "R-E01:leave",
+      "path": "res://assets/story/cg-scarlet-v1/cg-16b.png",
+      "source": "art/story-cg-scarlet/masters/cg-16b.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "e7d90d5cdf110da04b406ccf7ee7711777010329cec98dd47d75891df1c7e233"
+    },
+    {
+      "id": "cg-17",
+      "title": "信的背面",
+      "trigger": "R-E01:common",
+      "path": "res://assets/story/cg-scarlet-v1/cg-17.png",
+      "source": "art/story-cg-scarlet/masters/cg-17.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole image high-quality bicubic resample; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "1c7da196f6297f9becea91eed7b6962f2756fd44e45941cbd63067880848e333"
+    }
+  ],
+  "cinematics": [
+    {
+      "id": "CIN-00",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-01",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-02",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-03",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-04",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-05",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-06A",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-06B",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-07",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-08",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-09",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-10",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-11",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-12",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-13",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-14",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-15",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-16",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-17A",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-17B",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    },
+    {
+      "id": "CIN-18",
+      "status": "reserved",
+      "path": null,
+      "autoplay": false
+    }
+  ]
+}

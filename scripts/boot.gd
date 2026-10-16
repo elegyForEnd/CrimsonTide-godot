@@ -137,6 +137,7 @@ var drop_delay: Array[float] = []
 #    走到 `_start_transition()` 的兜底同步 `load`——那正是要消灭的那几秒卡顿。
 var login_ready := false
 var login_instance: Node
+var login_process_mode := Node.PROCESS_MODE_INHERIT
 var prewarm_armed := false
 var prewarm_done := false
 var shader_warm := false
@@ -427,12 +428,19 @@ func _prewarm_attach(scene: PackedScene) -> void:
 		return
 	# 挂到 root：它在启动器层（layer=100）下面，被启动器那块不透明黑底完全盖住，看不见。
 	# `add_child` 会同步跑 main.gd 的 `_ready()`（约 4.5s，主线程、无法分帧）——这正是
-	# 为什么它必须发生在待机期间而不是点击时。挂进来先禁用处理：否则待机期间玩家
+	# 为什么它必须发生在待机期间而不是点击时。同步初始化后立即禁用处理：否则待机期间玩家
 	# 随便按一下键，底下的登录页也会收到 `_input`（点击更会误触下面的按钮）。
-	instance.process_mode=Node.PROCESS_MODE_DISABLED
 	get_tree().root.add_child(instance)
+	# _ready() establishes the scene's processing policy (main uses ALWAYS so
+	# paused menus stay interactive). Save it before suspending the prewarm.
+	login_process_mode=instance.process_mode
+	instance.process_mode=Node.PROCESS_MODE_DISABLED
 	login_instance=instance
 	login_ready=true
+
+func _activate_prewarmed_login() -> void:
+	login_instance.process_mode=login_process_mode
+	get_tree().current_scene=login_instance
 
 ## 预热闸门的唯一出口：**不管成功还是失败都要放行**，否则玩家永远等不到那句
 ## "点击任意键开始游戏"（表现为"卡在 PV 上按什么都没用"）。
@@ -613,8 +621,7 @@ func _start_transition(reveal_login: bool) -> void:
 		if login_ready and is_instance_valid(login_instance):
 			# 预加载已就绪：点击这一刻只剩抓图 + 盖板 + 淡入，没有任何加载卡顿。
 			# 把预加载期间关掉的输入/处理重新打开，再交给它当主场景。
-			login_instance.process_mode=Node.PROCESS_MODE_INHERIT
-			get_tree().current_scene=login_instance
+			_activate_prewarmed_login()
 			if login_instance.has_method("fade_in_ui"):
 				login_instance.fade_in_ui(LOGIN_FADE_SECONDS)
 		else:

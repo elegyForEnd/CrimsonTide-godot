@@ -1,0 +1,12 @@
+{
+  "base_version": 1,
+  "films": 21,
+  "shots": 83,
+  "loops": 19,
+  "overlapFrames": 39,
+  "narrative_revision": "regency-compassion-2026-10-16",
+  "revision_actions_preserved": true,
+  "legal_windows": true,
+  "archive_ok": true,
+  "game_files_modified": false
+}

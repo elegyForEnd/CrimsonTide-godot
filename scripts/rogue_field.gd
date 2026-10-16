@@ -108,8 +108,14 @@ func weapon_effect_socket(source: int) -> Dictionary:
 			var points: Array=[]
 			for site in track: points.append(origin+site*HERO_SCALE*Vector2(-1 if aim.x<0 else 1,1))
 			charge_paths.append(points)
-	return {"charge_paths":charge_paths,"charge_points":charge_points,"tip":origin+tip*HERO_SCALE,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":aim.normalized(),
-		"grip":origin+grip*HERO_SCALE,"blade_axis":(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":p.swing_time>0 or p.cast_time>0}
+	# Effects consume canvas coordinates; this field lives under the scaled,
+	# centered UI root, so field-local sockets drift at other window sizes.
+	var canvas := get_global_transform()
+	for i in charge_points.size(): charge_points[i]=canvas*charge_points[i]
+	for points: Array in charge_paths:
+		for i in points.size(): points[i]=canvas*Vector2(points[i])
+	return {"charge_paths":charge_paths,"charge_points":charge_points,"tip":canvas*(origin+tip*HERO_SCALE),"stroke_tip":canvas*stroke_tip,"stroke_pivot":canvas*stroke_pivot,"stroke_center":canvas*Vector2(mount.center),"aim":canvas.basis_xform(aim).normalized(),
+		"grip":canvas*(origin+grip*HERO_SCALE),"blade_axis":canvas.basis_xform(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":p.swing_time>0 or p.cast_time>0}
 
 func _process(dt: float) -> void:
 	if not visible:

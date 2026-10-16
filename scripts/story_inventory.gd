@@ -1,12 +1,18 @@
 extends RefCounted
+const Equipment = preload("res://scripts/rpg_equipment.gd")
 ## Campaign-only item authority. Every transfer is planned on copies before committing.
 const BAG := Vector2i(10,6)
 const VAULT := Vector2i(12,10)
 const SLOTS := ["blade","armor","charm"]
 const SLOT_NAMES := {"blade":"主手","armor":"护衣","charm":"护符"}
 const HEROES := ["绯月","雪璃","鸦羽"]
-const QUALITY := ["朴素","附魔","珍稀"]
-const TONES := [Color("dbd5c6"),Color("88c4eb"),Color("dbad65")]
+const WEAPON_POOLS := [
+	[600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,1,2,12,13,14,15],
+	[636,637,638,639,640,641,642,643,644,645,646,647,3,4,5,6,7,8,9,10,11],
+	[600,601,602,603,604,605,606,607,608,609,610,611,624,625,626,627,628,629,630,631,632,633,634,635,1,2,12,13,14,15]]
+const DEFAULT_WEAPONS := [1,5,12]
+const QUALITY := Equipment.QUALITY
+const TONES := Equipment.COLORS
 const BASES := {
 	"sword":{"name":"赤晶长剑","slot":"blade","w":1,"h":4,"icon":0,"hero":0},
 	"staff":{"name":"晨星法杖","slot":"blade","w":2,"h":4,"icon":1,"hero":1},
@@ -19,7 +25,10 @@ const BASES := {
 	"raven":{"name":"鸦羽信物","slot":"charm","w":2,"h":2,"icon":8,"hero":-1},
 	"potion":{"name":"晨灯药剂","slot":"consumable","w":1,"h":1,"icon":9,"stack":5},
 	"scrap":{"name":"锻造铁料","slot":"material","w":2,"h":1,"icon":10,"stack":20},
-	"crystal":{"name":"导光晶石","slot":"material","w":1,"h":1,"icon":11,"stack":10}
+	"crystal":{"name":"导光晶石","slot":"material","w":1,"h":1,"icon":11,"stack":10},
+	"gem_ember":{"name":"赤棱晶","slot":"material","w":1,"h":1,"icon":6,"stack":10},
+	"gem_rime":{"name":"霜心晶","slot":"material","w":1,"h":1,"icon":7,"stack":10},
+	"gem_gale":{"name":"羽纹晶","slot":"material","w":1,"h":1,"icon":8,"stack":10}
 }
 var _host: WeakRef
 var campaign:
@@ -77,21 +86,26 @@ static func price(item: Dictionary) -> int:
 	if item.base=="potion": return 20
 	if item.base=="scrap": return 12
 	if item.base=="crystal": return 60
+	if str(item.base).begins_with("gem_"): return 90
 	return 65+int(item.tier)*55+int(item.quality)*65+int(item.get("upgrade",0))*45+int(item.get("socket",false))*60
 
 static func sale_price(item: Dictionary) -> int: return maxi(1,int(price(item)*0.35))*int(item.get("count",1))
 
-static func tone(item: Dictionary) -> Color: return TONES[clampi(int(item.get("quality",0)),0,2)]
+static func tone(item: Dictionary) -> Color: return TONES[clampi(int(item.get("quality",0)),0,4)]
 
 static func stats(item: Dictionary) -> Dictionary:
 	var rank := power(item)
 	var socket := bool(item.get("socket",false))
-	return {"damage":(rank*11 if item.get("slot")=="blade" else rank*3 if item.get("slot")=="charm" else 0)+int(item.get("bonus_damage",0))+(8 if socket else 0),"hp":(rank*18 if item.get("slot")=="armor" else 0)+int(item.get("bonus_hp",0))+(12 if socket else 0)}
+	var mods := Equipment.item_mods(item)
+	return {"damage":(rank*11 if item.get("slot")=="blade" else rank*3 if item.get("slot")=="charm" else 0)+int(item.get("bonus_damage",0))+(8 if socket else 0)+int(mods.get("damage",0)),"hp":(rank*18 if item.get("slot")=="armor" else 0)+int(item.get("bonus_hp",0))+(12 if socket else 0)+int(mods.get("hp",0))}
 
 static func describe(item: Dictionary) -> String:
 	var dims := dimensions(item)
 	var lines := "%s · %s\n占格 %d × %d  /  %s\n" % [item.name,QUALITY[int(item.quality)],dims.x,dims.y,SLOT_NAMES.get(item.slot,"材料" if item.slot=="material" else "补给")]
 	if item.slot in SLOTS:
+		if item.slot=="blade":
+			var weapon := weapon_index(item)
+			lines+="%s · 攻击间隔 %.2f秒\n" % [Catalog.weapon_name(weapon),float(Catalog.weapon(weapon).rate)]
 		lines+="装备阶级 %d  ·  强化 +%d / 5\n" % [item.tier,item.upgrade]
 		if item.slot=="blade": lines+="伤害 +%d\n" % (power(item)*11)
 		elif item.slot=="armor": lines+="生命 +%d · 减伤 %d\n" % [power(item)*18,power(item)*2]
@@ -102,7 +116,7 @@ static func describe(item: Dictionary) -> String:
 	elif item.base=="potion": lines+="使用一瓶恢复 50% 最大生命；生命全满时补入药剂栏（上限15）。\n"
 	elif item.base=="scrap": lines+="使用整堆加入锻造材料钱包；铁匠也可直接消耗背包铁料。\n"
 	else: lines+="镶嵌单件装备，消耗一枚晶石；每件只能镶嵌一次。\n"
-	return lines+"出售整堆：%d 银币" % sale_price(item)
+	return lines+Equipment.description(item)+"出售整堆：%d 银币" % sale_price(item)
 
 func make(base: String, tier: int = 1, quality: int = 0, count: int = 1) -> Dictionary:
 	var s: Dictionary=campaign.state
@@ -121,7 +135,45 @@ func normalize(item: Dictionary) -> Dictionary:
 	result.upgrade=clampi(int(result.upgrade),0,5); result.quality=clampi(int(result.quality),0,2)
 	result.count=clampi(int(result.count),1,int(BASES[base].get("stack",1)))
 	result.bonus_damage=clampi(int(result.bonus_damage),0,100); result.bonus_hp=clampi(int(result.bonus_hp),0,200)
+	if item.has("weapon_index") and result.slot=="blade":
+		var index := int(item.weapon_index)
+		if index in WEAPON_POOLS[int(BASES[base].hero)]: result.weapon_index=index; result.name=Catalog.weapon_name(index)
+	if item.has("affix_revision") and Equipment.valid(item):
+		for key in ["affix_revision","affixes","unique_id","set_id","rune","origin","reforges","locked"]: result[key]=item[key].duplicate(true) if item[key] is Array else item[key]
+		result.quality=int(item.quality); result.name=str(item.name)
 	return result
+
+static func weapon_index(item: Dictionary, hero: int = 0) -> int:
+	var user := int(BASES.get(str(item.get("base","")),{}).get("hero",hero))
+	user=clampi(user,0,2)
+	var index := int(item.get("weapon_index",DEFAULT_WEAPONS[user]))
+	return index if index in WEAPON_POOLS[user] else DEFAULT_WEAPONS[user]
+
+func make_weapon(hero: int, tier: int, quality: int, rng: RandomNumberGenerator) -> Dictionary:
+	hero=clampi(hero,0,2)
+	var pool: Array=WEAPON_POOLS[hero].filter(func(index): return index>=600)
+	var item := make(["sword","staff","dagger"][hero],tier,quality)
+	item.weapon_index=pool[rng.randi_range(0,pool.size()-1)]
+	item.name=Catalog.weapon_name(int(item.weapon_index))
+	item.quality=clampi(quality,0,4)
+	Equipment.roll(item,rng,clampi(tier,1,6),"field",hero)
+	return item
+
+func make_loot(hero: int, tier: int, quality: int, rng: RandomNumberGenerator, slot: String = "", source: String = "field") -> Dictionary:
+	hero=clampi(hero,0,2)
+	if slot=="": slot=SLOTS[rng.randi_range(0,2)]
+	var base: String=["sword","staff","dagger"][hero] if slot=="blade" else ["plate","robe","coat"][hero] if slot=="armor" else ["ruby","frost","raven"][rng.randi_range(0,2)]
+	var item := make(base,tier,mini(quality,2))
+	if slot=="blade":
+		var pool: Array=WEAPON_POOLS[hero].filter(func(index): return index>=600)
+		item.weapon_index=pool[rng.randi_range(0,pool.size()-1)]; item.name=Catalog.weapon_name(int(item.weapon_index))
+	item.quality=clampi(quality,0,4)
+	Equipment.roll(item,rng,clampi(tier,1,6),source,hero)
+	return item
+
+func modifiers(hero: int = -1) -> Dictionary:
+	initialize(); hero=int(campaign.state.hero) if hero<0 else hero
+	return Equipment.modifiers(campaign.state.equipment[hero])
 
 func initialize() -> void:
 	var s: Dictionary=campaign.state
@@ -162,7 +214,7 @@ func restore_numeric() -> void:
 	sync_gear()
 
 static func canonical_numbers(item: Dictionary) -> void:
-	for key in ["tier","quality","upgrade","count","bonus_damage","bonus_hp","x","y","stock","repurchase"]:
+	for key in ["tier","quality","upgrade","count","bonus_damage","bonus_hp","x","y","stock","repurchase","weapon_index","affix_revision","reforges"]:
 		if item.has(key): item[key]=int(item[key])
 
 func bonus(stat: String, hero: int = -1) -> int:
@@ -171,6 +223,7 @@ func bonus(stat: String, hero: int = -1) -> int:
 	var total := 0
 	for item in campaign.state.equipment[hero].values():
 		total+=int(item.get("bonus_"+stat,0))+(8 if stat=="damage" else 12 if stat=="hp" else 0) if item.get("socket",false) else int(item.get("bonus_"+stat,0))
+	total+=int(modifiers(hero).get(stat,0))
 	return total
 
 static func valid_data(s: Dictionary) -> bool:
@@ -207,10 +260,14 @@ static func valid_item(item: Variant, seen: Dictionary) -> bool:
 	if not item is Dictionary or not item.get("uid") is String or not item.get("name") is String: return false
 	if item.uid=="" or seen.has(item.uid) or not BASES.has(str(item.get("base",""))): return false
 	if item.get("slot")!=BASES[item.base].slot: return false
+	if item.has("weapon_index"):
+		if item.slot!="blade" or not (item.weapon_index is int or item.weapon_index is float): return false
+		if float(item.weapon_index)!=int(item.weapon_index) or not int(item.weapon_index) in WEAPON_POOLS[int(BASES[item.base].hero)]: return false
 	for field in ["tier","quality","upgrade","count","bonus_damage","bonus_hp","x","y"]:
 		if not item.get(field) is int and not item.get(field) is float: return false
 	if not item.get("rotated") is bool or not item.get("socket") is bool: return false
-	if int(item.tier)<1 or int(item.tier)>20 or int(item.quality)<0 or int(item.quality)>2 or int(item.upgrade)<0 or int(item.upgrade)>5: return false
+	if int(item.tier)<1 or int(item.tier)>20 or int(item.quality)<0 or int(item.quality)>4 or int(item.upgrade)<0 or int(item.upgrade)>5: return false
+	if not Equipment.valid(item): return false
 	if int(item.count)<1 or int(item.count)>int(BASES[item.base].get("stack",1)): return false
 	if int(item.bonus_damage)<0 or int(item.bonus_damage)>100 or int(item.bonus_hp)<0 or int(item.bonus_hp)>200: return false
 	seen[item.uid]=true; return true
@@ -319,7 +376,7 @@ func use(uid: String) -> bool:
 	if item.is_empty(): return fail("物品已经移动。")
 	if item.base=="potion":
 		if campaign.state.hp>=campaign.max_hp() and campaign.state.potions>=15: return fail("生命与药剂栏都已满。")
-		if campaign.state.hp<campaign.max_hp(): campaign.state.hp=minf(campaign.max_hp(),campaign.state.hp+campaign.max_hp()*0.5)
+		if campaign.state.hp<campaign.max_hp(): campaign.state.hp=minf(campaign.max_hp(),campaign.state.hp+campaign.max_hp()*0.5*(1.0+float(modifiers().get("potion",0))/100.0))
 		else: campaign.state.potions+=1
 		item.count-=1
 		if item.count==0: campaign.state.bag.remove_at(find(campaign.state.bag,uid))
@@ -377,6 +434,7 @@ func sell(uid: String) -> bool:
 	if int(campaign.state.stage)!=0: return fail("请回营地交易。")
 	var item := item_at("bag",uid)
 	if item.is_empty(): return fail("请在行囊选择出售的物品。")
+	if item.get("locked",false): return fail("装备已锁定，请先解除锁定再出售。")
 	var sold := item.duplicate(true); sold["repurchase"]=sale_price(item)
 	campaign.state.coins+=int(sold.repurchase); campaign.state.bag.remove_at(find(campaign.state.bag,uid))
 	campaign.state.buyback.push_front(sold)
@@ -393,6 +451,9 @@ func craft(base: String) -> bool:
 	if campaign.state.coins<coins or int(campaign.state.materials)+count("scrap")<materials: return fail("打造需要%d银币与%d铁料。" % [coins,materials])
 	var serial := int(campaign.state.item_serial)
 	var result := make(base,tier,1)
+	if "loot_rng" in campaign:
+		campaign.state.item_serial=serial
+		result=make_loot(int(campaign.state.hero),tier,Equipment.quality_roll(campaign.loot_rng,tier,"craft"),campaign.loot_rng,str(BASES[base].slot),"craft")
 	var planned: Array=campaign.state.bag.duplicate(true)
 	if not insert(planned,result,BAG):
 		campaign.state.item_serial=serial; return fail("行囊放不下成品；未扣除材料或银币。")
@@ -412,12 +473,70 @@ func forge(source: String, uid: String, action: String) -> bool:
 		var wallet := mini(int(campaign.state.materials),int(cost.materials))
 		campaign.state.materials-=wallet; consume("scrap",int(cost.materials)-wallet); campaign.state.coins-=cost.coins; item.upgrade+=1
 	elif action=="socket":
+		if item.has("affix_revision"): return inscribe(source,uid,"light")
 		if item.socket: return fail("该装备已经镶嵌。")
 		if count("crystal")<1 or campaign.state.coins<80: return fail("需要80银币及行囊中的一枚导光晶石。")
 		consume("crystal",1); campaign.state.coins-=80; item.socket=true
 	elif action=="salvage":
 		if source!="bag": return fail("请先卸下装备再分解。")
+		if item.get("locked",false): return fail("装备已锁定，请先解除锁定再分解。")
 		campaign.state.materials+=2+int(item.tier)+int(item.quality)*2+int(item.upgrade)
 		campaign.state.bag.remove_at(find(campaign.state.bag,uid))
 	else: return fail("未知锻造操作。")
 	campaign.audio_cue.emit("chest"); return finish({"upgrade":"装备强化完成。","socket":"导光镶嵌完成。","salvage":"已分解装备并回收铁料。"}[action])
+
+func toggle_lock(source: String, uid: String) -> bool:
+	var item := item_at(source,uid)
+	if item.is_empty() or not item.has("affix_revision"): return fail("旧装备可继续使用；锁定仅用于新版词缀装备。")
+	item.locked=not bool(item.locked)
+	return finish("装备已锁定。" if item.locked else "已解除装备锁定。")
+
+func reforge_cost(item: Dictionary) -> Dictionary:
+	return {"coins":100+int(item.tier)*40+int(item.get("reforges",0))*80,"materials":5+int(item.tier)+int(item.get("reforges",0))*2}
+
+func reforge(source: String, uid: String, index: int) -> bool:
+	var item := item_at(source,uid)
+	if int(campaign.state.stage)!=0 or not (source=="bag" or source.begins_with("equipped:")): return fail("请在营地重铸行囊或身上的装备。")
+	if item.is_empty() or not item.has("affix_revision") or int(item.quality) not in [1,2,3] or item.get("locked",false): return fail("只能重铸未锁定的附魔、珍稀或套装；暗金独有词条不可重铸。")
+	if index<0 or index>=item.affixes.size() or int(item.reforges)>=20: return fail("词缀无效，或已达到20次重铸上限。")
+	var cost := reforge_cost(item)
+	if campaign.state.coins<cost.coins or int(campaign.state.materials)+count("scrap")<cost.materials: return fail("重铸资源不足，未扣除资源。")
+	# Reroll one value only; identity, other rolls, upgrades and sockets stay intact.
+	var a: Dictionary=item.affixes[index]; var d := Equipment.definition(a.id)
+	var low := float(d.min)+float(d.step)*(clampi(int(item.tier),1,6)-1)
+	var rng := RandomNumberGenerator.new(); rng.randomize()
+	var value := rng.randi_range(ceili(low*10),floori((low+float(d.span))*10))/10.0
+	var wallet := mini(int(campaign.state.materials),int(cost.materials))
+	campaign.state.materials-=wallet; consume("scrap",int(cost.materials)-wallet); campaign.state.coins-=cost.coins
+	a.value=value; item.reforges+=1
+	return finish("已重铸%s的数值，其他词缀保留。" % d.name)
+
+func inscribe(source: String, uid: String, rune: String) -> bool:
+	var item := item_at(source,uid)
+	if int(campaign.state.stage)!=0 or not (source=="bag" or source.begins_with("equipped:")): return fail("请回营地镶嵌。")
+	if item.is_empty() or not item.has("affix_revision") or item.get("locked",false) or not Equipment.data().runes.has(rune): return fail("请选择未锁定的新版装备及晶石。")
+	var base: String=Equipment.data().runes[rune].base
+	if count(base)<1 or campaign.state.coins<80: return fail("需要80银币及行囊中的一枚对应晶石。")
+	consume(base,1); campaign.state.coins-=80; item.socket=true; item.rune=rune
+	return finish("镶嵌完成；旧晶石已替换。")
+
+func craft_set(set_id: String, slot: String) -> bool:
+	if int(campaign.state.stage)!=0 or not slot in SLOTS: return fail("套装只能在营地打造。")
+	var definition: Dictionary={}
+	for entry in Equipment.data().sets:
+		if entry.id==set_id: definition=entry
+	if definition.is_empty() or int(definition.act)>int(campaign.state.act): return fail("该套装章节尚未解锁。")
+	var tier := int(definition.act)
+	var coins := 180+tier*60; var materials := 10+tier*3
+	if campaign.state.coins<coins or int(campaign.state.materials)+count("scrap")<materials or count("crystal")<1: return fail("需要%d银币、%d铁料与1枚导光晶石。" % [coins,materials])
+	var serial := int(campaign.state.item_serial)
+	var rng := RandomNumberGenerator.new(); rng.randomize()
+	var item := make_loot(int(campaign.state.hero),tier,3,rng,slot,"craft")
+	var planned: Array=campaign.state.bag.duplicate(true)
+	if not insert(planned,item,BAG): campaign.state.item_serial=serial; return fail("行囊放不下套装成品；未扣款。")
+	var wallet := mini(int(campaign.state.materials),materials)
+	campaign.state.materials-=wallet; consume("scrap",materials-wallet); consume("crystal",1)
+	# Rebuild after material consumption so copied stacks cannot resurrect spent materials.
+	planned=campaign.state.bag.duplicate(true); insert(planned,item,BAG)
+	campaign.state.bag=planned; campaign.state.coins-=coins
+	return finish("已打造%s；词缀与套装效果已保存。" % item.name)

@@ -88,6 +88,7 @@ func _draw() -> void:
 		ui.draw_icon(self,item,box.grow(-4))
 		if int(item.count)>1: draw_string(get_theme_default_font(),box.end-Vector2(21,7),str(item.count),HORIZONTAL_ALIGNMENT_RIGHT,-1,15,Color("fff1cf"))
 		if int(item.upgrade)>0: draw_string(get_theme_default_font(),box.position+Vector2(5,18),"+%d" % item.upgrade,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("f2d194"))
+		if item.get("locked",false): draw_string(get_theme_default_font(),box.position+Vector2(5,box.size.y-6),"锁",HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("f2d194"))
 	if drop_cell.x>=0 and get_viewport().gui_is_dragging():
 		var data: Variant=get_viewport().gui_get_drag_data()
 		if data is Dictionary and data.get("story_item",false):

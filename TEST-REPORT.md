@@ -1,5 +1,15 @@
 # 验证记录
 
+## 2026-10-16 · 六幕RPG装备系统
+
+- 新增32随机词缀、30暗金、6套装、4晶石，接入当前赤月遗书源码入口；设计与规则见 `docs/rpg/EQUIPMENT-SYSTEM.md`。新实例持久化affix_revision1，旧装备原值保留。未覆盖当前工作区其他正在制作的剧情、素材与玩法修改；未自动提交或导出dist。
+- `tests/rpg_equipment.gd`：**970项／0失败**。270组章节×角色×槽位×品质、全部暗金、固定骰值JSON往返、独立套装、合法攻速叠加上限与实际前摇、异常数据、锁定／交易回购、真实材料消耗、满包原子性、重铸保留其他词缀、晶石替换、续航／易伤／裂伤／寒意／第三击／闪避盾／护送／溅射不递归、六首领机关保护、六幕奖励去重与真实磁盘读档；额外检查过期裂伤不能永久继承旧高伤、弱寒意不能覆盖队友强效果。
+- `tests/rpg_equipment_visual.gd`：**OpenGL实渲18项／0失败**。实际词条按钮、重铸／镶嵌／锁定回调、配方生成、图鉴宽度、暗金不可重铸与新晶石描述；五张截图在 `output/rpg-equipment-{forge,comparison,codex,set,unique}.png`，已查看比较、暗金与配方截图。发现并修复AcceptDialog直接子控件被自动覆盖布局、旧独占窗未hide便重开、配方单行超宽裁切。
+- `tests/rpg_equipment_drop_visual.gd`：**OpenGL实渲3项／0失败**。原地图中实际暗金名称、护衣／护符／晶石的图标与五品质颜色；已查看 `output/rpg-equipment-drops.png`。
+- 当前战役回归：`scarlet_campaign` **5572／0**、`scarlet_rules` **716／0**、`scarlet_weapons` **429／0**、`scarlet_integration` **39／0**；共享库存兼容回归 `story_items` **70／0**。以上八组共 **7817项检查／0失败**。普通主场景入口仍有既有rogue_build_preview.gd的非相等anchors尺寸警告；未将该警告列为本系统新增错误。
+- `PROJECT-GUIDE.md`同步系统入口／内容源／事务／数值／导出资源与维护约束；锚点校验1060项，DRIFT0／WRONG0；`git diff --check`通过（仓库既有行尾提示保留）。导出资源白名单加入装备JSON与当前战役JSON，但没有执行完整发布导出。
+- 自动战役流程使用站位与伤害注入验证分支与状态机；未以检查数宣称长期真人装备平衡、全仓库测试、全部武器等DPS或干净机器发布包验收通过。当前可用入口为Start-Scarlet.cmd，dist保持原有产物。
+
 ## 2026-10-11 武器/技能命中与消散升级 v11
 
 - 规则专项combat_finish 25/0：零伤害不闪、75ms去重、元素分流、64命中/96尾迹/8灯限额、真实地形抬灯、命中与灯过期、快照身份、跳变清历史、真正闯关/远征释放、表现不修改弹体、故事原伤害与冷却不变。output/combat-finish-rules-final.log。
@@ -512,3 +522,65 @@ Windows 成品 dist/CrimsonTide-Rogue-Night.exe（1,919,859,472 字节）已重�
 - 更新PROJECT-GUIDE §2/3/4.S/5/6/8/9/10/11/12，制作说明PORTRAIT-VARIANTS.md、图像源提示词及完整注册资料。此前3D Boss实验保持在未提交工作区，不纳入本次发布。
 
 - 最终v13原生Forward+与Compatibility均通过键盘切角色/衣装并截取喜悦表情，portrait-native-{forward,compat}-clean.log；GL标准错误为空，Forward+仅既有7 Texture RID警告，无本轮ObjectDB/parent-busy错误。路牌807锚点：OK525 / DRIFT0 / WRONG0 / HINT282。git diff --check通过。
+
+## 2026-10-15 · 赤月遗书19张CG素材交付
+
+- 以用户指定 assets/feiyue.png、assets/xueli.png、assets/yayu.png 三视图为参考，内置 image_gen 生成19张平面插画；蜡印缺口与港口终局前天光有定向修订。已逐张查看生成图和最终总览。
+- tools/package_scarlet_cg.ps1 实际运行完成；19张成图均3840×2160、19个独立SHA-256且全部与manifest一致，21条动画登记均path=null。验收记录art/story-cg-scarlet/validation.json。
+- 原图均1672×941，整图高质量双三次重采样交付4K尺寸；不宣称原生4K、分层源文件、视频已完成或已接入新故事。原稿、提示词、来源与修改记录完整保存。
+- git diff --check通过（仅行尾提示）。路牌全量检查626 OK / 25 DRIFT / 0 WRONG / 417 HINT；25项漂移来自现有boot、battlefield、story_screen和story_world源码行号，本次未改这些运行脚本，不将该全量检查报告为通过。
+- 本轮为素材与文档交付，未启动引擎导入、未重跑战斗回归或导出游戏，不以图片尺寸验收替代游戏接入验证。
+## 2026-10-15 赤月遗书独立重做
+
+- 当前入口 `story_screen.gd → scarlet/*`：全新任务、地图、战斗、ADV、存档和界面，不实例化旧故事运行类；普通标题页及 Start-Scarlet / Start-Story-GUI 已切换。
+- `tests/scarlet_campaign.gd`：**5572 检查 / 0 失败**，四组主要分支、40 主线＋6 支线、证据答错、关键选择不可跳过、Boss 阶段与共同终结、回访及奖励幂等。
+- `tests/scarlet_rules.gd`：**479 检查 / 0 失败**，43 区目标可达、机关必须按住、序章攻击、Boss 机制门槛与重试、庭区实际阻挡／解除、读档恢复数值、七人救援状态及红潮预警、安全试航与水上读档。
+- `tests/scarlet_integration.gd`：**29 检查 / 0 失败**，普通主场景入口、其他模式隔离、实际 ADV 按钮、CG 两状态、线索入袋、表情切换、鉴赏隔离与生成 NPC 加载。合计 **6080 检查 / 0 失败**。
+- `tests/scarlet_visual.gd`：OpenGL 实际构建并渲染 **43 区**，8 张地区／局部地图截图，日志无脚本错误。另验 ADV 专用背景、CG 画面和提督交战字幕；Forward+ / Vulkan 实渲女王第三阶段及暴露母晶，均无脚本错误。
+- `art/scarlet-npc/runtime-validation.json`：40 主线、6 支线、74 场景、373 页、43 区、21 影片路径仍为空；19 CG 全部被引用，21 份新增美术文件的尺寸／哈希及 NPC alpha 核对通过。4K 为整图重采样交付，原稿保留。
+- 引擎资源导入完成，无 SCRIPT ERROR。正常主场景测试仍有既有 `rogue_build_preview.gd:122` 非相等 anchors 尺寸警告，未修改其他模式处理该警告。
+- 路牌：1052 锚点，OK 639 / HINT 413 / DRIFT 0 / WRONG 0；`git diff --check` 通过。旧 story_* 用例属于历史系统，未将它们计为新版本通过。
+- 自动流程使用测试站位与伤害注入检验状态机；未声称完成整部人工动作通关或最终战斗平衡。影片、专属 Boss 动作、动态 CG、地图/EV 精修、配音混音及正式打包见 `docs/rpg/SCARLET-REMAINING.md`。
+
+
+## 2026-10-16 女王与善良主题重写
+
+- 当前运行正文由 tools/scarlet_regency_story.py 修订，经 build_scarlet_content.py 生成：40 主线、6 支线、74 场景、407 页、43 区。开场为短召回信；证据、第二封信、重逢、移交动机、后日谈和女王阶段喊话同步。
+- 本轮未更换当前工作区地图、渲染、装备、存档格式或美术图；新增泄压与撤运内容复用已有证据和机关节点，不声称新增流体模拟。
+- tests/scarlet_campaign.gd：7144 检查 / 0 失败；tests/scarlet_rules.gd：717 / 0；tests/scarlet_integration.gd：39 / 0。合计 7900 / 0。最后两项正文证据修正后重跑主线与集成检查通过。
+- 内容交叉核对通过：第一封信不含求杀、王冠或继位解释；当前线索文本与 clue 节点一致；第二封信仅在读完后授予；开场客舍不残留女王立绘。旧缓存对白保留，体验新开场使用新故事槽。
+- 导演台新包 Scarlet-H3-Prompts-queen-rewrite-overlap39.zip：21 影片、83 镜、19 插画循环，全部生成窗满足 5+17*n 帧，相邻重复39帧，压缩包 CRC 通过。原版基线及改前文件保留。Python 源码编译检查、git diff --check 通过（既有行尾转换提示）。
+- 集成仍有既有 rogue_build_preview.gd:122 anchors 尺寸警告，无新脚本错误。本轮未生成新视频、重画 CG 或进行完整人工动作通关。当前故事和待补美术见 docs/rpg/SCARLET-QUEEN-REWRITE.md。
+
+## 2026-10-16 · 《王冠与空城》替换运行剧情
+
+当前剧情版本 scarlet-screenplay-2。121 场原始剧本编排为 141 个运行场景、905 页；40 主线、6 支线、76 处三步骤调查或机关。已将接受／拒绝王冠接入实际行动与结局，不再使用救或不救女王作为最终回答。
+
+本轮验证记录：
+
+| 验证 | 检查 | 失败 | 日志 |
+|---|---:|---:|---|
+| 两结局、六支线、确认、存档隔离与奖励幂等 | 3801 | 0 | output/scarlet-screenplay-tests.log |
+| 实际任务位置、战败重试、护送及试航存读档 | 799 | 0 | output/scarlet-screenplay-rules.log |
+| 全部现场调查与机关、暂停续做、三种校准 | 904 | 0 | output/scarlet-screenplay-fieldwork.log |
+| 标题入口、真实 ADV 按钮、姿势服饰和 CG 小头像 | 46 | 0 | output/scarlet-screenplay-integration.log |
+| 原地图连接及可达性 | 328 | 0 | output/scarlet-screenplay-geography.log |
+| 现有武器规则 | 429 | 0 | output/scarlet-screenplay-weapons.log |
+| 特效投影与坐标接口 | 1539 | 0 | output/scarlet-screenplay-vfx.log |
+| OpenGL 实际机关画面与文字布局 | 172 | 0 | output/scarlet-screenplay-fieldwork-visual.log |
+| 正文覆盖、分支引用、真实立绘路径及影片触发 | 3170 | 0 | output/scarlet-screenplay-validation.json |
+
+Godot 共 8018 项、静态内容 3170 项，均无失败。另实际渲染核对家居服、旅行服及王座 CG 对话；图片在 output/scarlet-screenplay-home.png、scarlet-screenplay-travel.png、scarlet-screenplay-cg.png。三主角说话页姿势为侧身 503、正面 36、抱臂 72；服饰为 home 69、travel 417、regular 125。
+
+集成测试仍出现既有 rogue_build_preview.gd:122 的非对称锚点警告；本轮日志没有运行脚本错误。流程测试通过移动测试角色、注入战斗伤害和操作真实状态机验证，不能替代从新槽完整人工动作通关。专用 EV 动作、母亲与冠服立绘、新 CG、影片、配音、数值精调和 dist 发布仍在剩余制作清单内。
+
+## 2026-10-16 · 新增7张静态CG
+
+CG-N01～N04、CG-A01～A03使用内置image_gen生成，原稿1672×941、整图重采样交付3840×2160，7份原稿与完整提示词保存在art/story-cg-crown-v2；运行素材为assets/story/cg-scarlet-v2，与旧19张合计26张。
+
+- scarlet_cg_delivery.gd：85项检查，0失败，验证实际4K资源加载、对应场景、序章切景、工区图不预揭、完整画框、H隐藏对白，以及24个动画路径仍为null。
+- scarlet_screenplay.gd：3801项流程回归，0失败。
+- validate_scarlet_screenplay.py：3220项内容检查，0失败。
+- 7份交付PNG的SHA-256与manifest一致，7份提示词完整；OpenGL实际截图output/scarlet-new-cg-ending.png核对三张船票与角色不被文本框遮挡。
+
+本轮没有生成动画、循环片或独立加冕服立绘，没有重新导出dist。新素材交付说明见docs/rpg/CG-CROWN-DELIVERY.md。

@@ -1,0 +1,26 @@
+{
+  "source_workflow": "D:\\Program Files\\ComfyUI\\工作流\\MiniMaxH3全功能合一完全体导演台工作流.json",
+  "sha256": "e246380d75655c4134142ac63eb4fa48932e81f98708c3460726938844352249",
+  "planner_node_id": 11,
+  "width": 960,
+  "height": 544,
+  "generation_seconds": 7.3,
+  "timeline_version": 9,
+  "fps": 24,
+  "secondPass": true,
+  "secondPassModel": "minimax_h3_latent_upscaler_3d_bf16.safetensors",
+  "source_segment_count": 8,
+  "segment_keys": [
+    "images",
+    "audios",
+    "prompt",
+    "startFrame",
+    "endFrame"
+  ],
+  "original_selection": {
+    "start": 58.791666666666664,
+    "duration": 7.291666666666667
+  },
+  "original_audio_count": 1,
+  "note": "Only inspected; source workflow not modified. Prompt manifest is an editorial interchange, not a TimelineDirector import preset."
+}

@@ -1,0 +1,75 @@
+{
+  "runtime_revision": "scarlet-screenplay-2",
+  "suites": [
+    {
+      "suite": "tests",
+      "checks": 3801,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-tests.log"
+    },
+    {
+      "suite": "rules",
+      "checks": 799,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-rules.log"
+    },
+    {
+      "suite": "fieldwork",
+      "checks": 904,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-fieldwork.log"
+    },
+    {
+      "suite": "integration",
+      "checks": 46,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-integration.log"
+    },
+    {
+      "suite": "geography",
+      "checks": 328,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-geography.log"
+    },
+    {
+      "suite": "weapons",
+      "checks": 429,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-weapons.log"
+    },
+    {
+      "suite": "vfx",
+      "checks": 1539,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-vfx.log"
+    },
+    {
+      "suite": "fieldwork-visual",
+      "checks": 172,
+      "failures": 0,
+      "log": "output/scarlet-screenplay-fieldwork-visual.log"
+    }
+  ],
+  "godot_checks": 8018,
+  "failures": 0,
+  "content_validation": {
+    "checks": 3170,
+    "failures": 0,
+    "scenes": 141,
+    "tasks": 46,
+    "physical": 76,
+    "poses": {
+      "turn": 503,
+      "front": 36,
+      "crossed": 72
+    },
+    "costumes": {
+      "home": 69,
+      "travel": 417,
+      "regular": 125
+    },
+    "reserved_films": 24
+  },
+  "manual_playthrough": false,
+  "dist_exported": false
+}

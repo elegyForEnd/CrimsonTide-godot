@@ -1,0 +1,18 @@
+{
+  "checks": 3220,
+  "failures": 0,
+  "scenes": 141,
+  "tasks": 46,
+  "physical": 76,
+  "poses": {
+    "turn": 503,
+    "front": 36,
+    "crossed": 72
+  },
+  "costumes": {
+    "home": 69,
+    "travel": 417,
+    "regular": 125
+  },
+  "reserved_films": 24
+}

@@ -1,0 +1,1902 @@
+{
+  "R-P02:1": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "卸下柜内重物",
+        "instruction": "卸下柜内重物。按住 E 操作，松开可暂歇。",
+        "result": "已确认：卸下柜内重物"
+      },
+      {
+        "name": "推柜留出担架宽度",
+        "instruction": "推柜留出担架宽度。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：推柜留出担架宽度"
+      },
+      {
+        "name": "固定柜脚",
+        "instruction": "固定柜脚。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定柜脚"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "卸下柜内重物 → 推柜留出担架宽度 → 固定柜脚",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-1-01:1": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "查看车轮卡位",
+        "instruction": "查看车轮卡位。按住 E 操作，松开可暂歇。",
+        "result": "已确认：查看车轮卡位"
+      },
+      {
+        "name": "打开内侧栏杆",
+        "instruction": "打开内侧栏杆。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：打开内侧栏杆"
+      },
+      {
+        "name": "确认担架通行宽度",
+        "instruction": "确认担架通行宽度。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认担架通行宽度"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "查看车轮卡位 → 打开内侧栏杆 → 确认担架通行宽度",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-1-02:0": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-1-02:3": {
+    "mode": "procedure",
+    "prop": "medical",
+    "parts": [
+      {
+        "name": "核药箱封条",
+        "instruction": "核药箱封条。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核药箱封条"
+      },
+      {
+        "name": "护住瓶塞与敷料",
+        "instruction": "护住瓶塞与敷料。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：护住瓶塞与敷料"
+      },
+      {
+        "name": "村医按原号验收",
+        "instruction": "村医按原号验收。按住 E 操作，松开可暂歇。",
+        "result": "已确认：村医按原号验收"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核药箱封条 → 护住瓶塞与敷料 → 村医按原号验收",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-1-03:1": {
+    "mode": "procedure",
+    "prop": "medical",
+    "parts": [
+      {
+        "name": "查看皮肤与红水接触",
+        "instruction": "查看皮肤与红水接触。按住 E 操作，松开可暂歇。",
+        "result": "已确认：查看皮肤与红水接触"
+      },
+      {
+        "name": "分开清洁敷料",
+        "instruction": "分开清洁敷料。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：分开清洁敷料"
+      },
+      {
+        "name": "写转诊标识",
+        "instruction": "写转诊标识。按住 E 操作，松开可暂歇。",
+        "result": "已确认：写转诊标识"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "查看皮肤与红水接触 → 分开清洁敷料 → 写转诊标识",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-1-03:2": {
+    "mode": "procedure",
+    "prop": "cart",
+    "parts": [
+      {
+        "name": "检查水桶无红色沉积",
+        "instruction": "检查水桶无红色沉积。按住 E 操作，松开可暂歇。",
+        "result": "已确认：检查水桶无红色沉积"
+      },
+      {
+        "name": "封好清水桶",
+        "instruction": "封好清水桶。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：封好清水桶"
+      },
+      {
+        "name": "交接转诊车",
+        "instruction": "交接转诊车。按住 E 操作，松开可暂歇。",
+        "result": "已确认：交接转诊车"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "检查水桶无红色沉积 → 封好清水桶 → 交接转诊车",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-1-04:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "验桥头挂点",
+        "instruction": "验桥头挂点。按住 E 操作，松开可暂歇。",
+        "result": "已确认：验桥头挂点"
+      },
+      {
+        "name": "拉紧主索",
+        "instruction": "拉紧主索。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：拉紧主索"
+      },
+      {
+        "name": "固定两侧护绳",
+        "instruction": "固定两侧护绳。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定两侧护绳"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "验桥头挂点 → 拉紧主索 → 固定两侧护绳",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-1-04:4": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "雪璃对准灯角",
+        "instruction": "雪璃对准灯角。按住 E 操作，松开可暂歇。",
+        "result": "已确认：雪璃对准灯角"
+      },
+      {
+        "name": "依编号打开箱盖",
+        "instruction": "依编号打开箱盖。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：依编号打开箱盖"
+      },
+      {
+        "name": "保留整张签署页",
+        "instruction": "保留整张签署页。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留整张签署页"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "雪璃对准灯角 → 依编号打开箱盖 → 保留整张签署页",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-1-05:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "支撑吊笼底架",
+        "instruction": "支撑吊笼底架。按住 E 操作，松开可暂歇。",
+        "result": "已确认：支撑吊笼底架"
+      },
+      {
+        "name": "释放绞盘张力",
+        "instruction": "释放绞盘张力。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：释放绞盘张力"
+      },
+      {
+        "name": "开侧门并架稳",
+        "instruction": "开侧门并架稳。按住 E 操作，松开可暂歇。",
+        "result": "已确认：开侧门并架稳"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "支撑吊笼底架 → 释放绞盘张力 → 开侧门并架稳",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-2-01:3": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "查看内门锁舌",
+        "instruction": "查看内门锁舌。按住 E 操作，松开可暂歇。",
+        "result": "已确认：查看内门锁舌"
+      },
+      {
+        "name": "支稳外门",
+        "instruction": "支稳外门。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：支稳外门"
+      },
+      {
+        "name": "把通行牌交接收者",
+        "instruction": "把通行牌交接收者。按住 E 操作，松开可暂歇。",
+        "result": "已确认：把通行牌交接收者"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "查看内门锁舌 → 支稳外门 → 把通行牌交接收者",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-2-02:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-2-03:1": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "观察轮值空隙",
+        "instruction": "观察轮值空隙。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察轮值空隙"
+      },
+      {
+        "name": "按门牌取钥",
+        "instruction": "按门牌取钥。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：按门牌取钥"
+      },
+      {
+        "name": "解内侧门闩",
+        "instruction": "解内侧门闩。按住 E 操作，松开可暂歇。",
+        "result": "已确认：解内侧门闩"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "观察轮值空隙 → 按门牌取钥 → 解内侧门闩",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-2-04:0": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-2-05:0": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "查清下游有人接应",
+        "instruction": "查清下游有人接应。按住 E 操作，松开可暂歇。",
+        "result": "已确认：查清下游有人接应"
+      },
+      {
+        "name": "撑稳排水侧门",
+        "instruction": "撑稳排水侧门。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：撑稳排水侧门"
+      },
+      {
+        "name": "留可回开的锁扣",
+        "instruction": "留可回开的锁扣。按住 E 操作，松开可暂歇。",
+        "result": "已确认：留可回开的锁扣"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "查清下游有人接应 → 撑稳排水侧门 → 留可回开的锁扣",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-2-06:1": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "核对证人席",
+        "instruction": "核对证人席。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核对证人席"
+      },
+      {
+        "name": "解旁门隔断",
+        "instruction": "解旁门隔断。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：解旁门隔断"
+      },
+      {
+        "name": "将原件柜移出火线",
+        "instruction": "将原件柜移出火线。按住 E 操作，松开可暂歇。",
+        "result": "已确认：将原件柜移出火线"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核对证人席 → 解旁门隔断 → 将原件柜移出火线",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-3-01:2": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "确认高处挂点",
+        "instruction": "确认高处挂点。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认高处挂点"
+      },
+      {
+        "name": "把侧梯固定在备用平台",
+        "instruction": "把侧梯固定在备用平台。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：把侧梯固定在备用平台"
+      },
+      {
+        "name": "改索避开落闸",
+        "instruction": "改索避开落闸。按住 E 操作，松开可暂歇。",
+        "result": "已确认：改索避开落闸"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "确认高处挂点 → 把侧梯固定在备用平台 → 改索避开落闸",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-3-02:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "确认担架安全侧",
+        "instruction": "确认担架安全侧。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认担架安全侧"
+      },
+      {
+        "name": "切开拦索外扣",
+        "instruction": "切开拦索外扣。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：切开拦索外扣"
+      },
+      {
+        "name": "支住通道",
+        "instruction": "支住通道。按住 E 操作，松开可暂歇。",
+        "result": "已确认：支住通道"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "确认担架安全侧 → 切开拦索外扣 → 支住通道",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-3-03:0": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "定位风道出口",
+        "instruction": "定位风道出口。按住 E 操作，松开可暂歇。",
+        "result": "已确认：定位风道出口"
+      },
+      {
+        "name": "关闭危险排气",
+        "instruction": "关闭危险排气。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：关闭危险排气"
+      },
+      {
+        "name": "卸下门闩",
+        "instruction": "卸下门闩。按住 E 操作，松开可暂歇。",
+        "result": "已确认：卸下门闩"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "定位风道出口 → 关闭危险排气 → 卸下门闩",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-3-03:2": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "复位制动",
+        "instruction": "复位制动。按住 E 操作，松开可暂歇。",
+        "result": "已确认：复位制动"
+      },
+      {
+        "name": "调平承重点",
+        "instruction": "调平承重点。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：调平承重点"
+      },
+      {
+        "name": "测试空载并锁稳",
+        "instruction": "测试空载并锁稳。按住 E 操作，松开可暂歇。",
+        "result": "已确认：测试空载并锁稳"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "复位制动 → 调平承重点 → 测试空载并锁稳",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-3-04:0": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-3-05:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "卸信标外扣",
+        "instruction": "卸信标外扣。按住 E 操作，松开可暂歇。",
+        "result": "已确认：卸信标外扣"
+      },
+      {
+        "name": "压住侧梯挂点",
+        "instruction": "压住侧梯挂点。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：压住侧梯挂点"
+      },
+      {
+        "name": "固定安全下行梯",
+        "instruction": "固定安全下行梯。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定安全下行梯"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "卸信标外扣 → 压住侧梯挂点 → 固定安全下行梯",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-4-01:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-4-01:2": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "确认栅后落脚",
+        "instruction": "确认栅后落脚。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认栅后落脚"
+      },
+      {
+        "name": "卸锁舌",
+        "instruction": "卸锁舌。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：卸锁舌"
+      },
+      {
+        "name": "撑稳通行口",
+        "instruction": "撑稳通行口。按住 E 操作，松开可暂歇。",
+        "result": "已确认：撑稳通行口"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "确认栅后落脚 → 卸锁舌 → 撑稳通行口",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-4-02:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-4-03:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-4-04:1": {
+    "mode": "procedure",
+    "prop": "medical",
+    "parts": [
+      {
+        "name": "观察呼吸和晶纹",
+        "instruction": "观察呼吸和晶纹。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察呼吸和晶纹"
+      },
+      {
+        "name": "低量稳定用药",
+        "instruction": "低量稳定用药。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：低量稳定用药"
+      },
+      {
+        "name": "确认清醒可移动",
+        "instruction": "确认清醒可移动。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认清醒可移动"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "观察呼吸和晶纹 → 低量稳定用药 → 确认清醒可移动",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-4-04:2": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "支起固定架承重",
+        "instruction": "支起固定架承重。按住 E 操作，松开可暂歇。",
+        "result": "已确认：支起固定架承重"
+      },
+      {
+        "name": "松开腕锁",
+        "instruction": "松开腕锁。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：松开腕锁"
+      },
+      {
+        "name": "隔离警报",
+        "instruction": "隔离警报。按住 E 操作，松开可暂歇。",
+        "result": "已确认：隔离警报"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "支起固定架承重 → 松开腕锁 → 隔离警报",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-4-05:0": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "比对封柜编号",
+        "instruction": "比对封柜编号。按住 E 操作，松开可暂歇。",
+        "result": "已确认：比对封柜编号"
+      },
+      {
+        "name": "验完整晶核",
+        "instruction": "验完整晶核。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：验完整晶核"
+      },
+      {
+        "name": "取出剑与档案",
+        "instruction": "取出剑与档案。按住 E 操作，松开可暂歇。",
+        "result": "已确认：取出剑与档案"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "比对封柜编号 → 验完整晶核 → 取出剑与档案",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-4-05:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-4-05:4": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "按外检模具找边界",
+        "instruction": "按外检模具找边界。按住 E 操作，松开可暂歇。",
+        "result": "已确认：按外检模具找边界"
+      },
+      {
+        "name": "卸外饰固定扣",
+        "instruction": "卸外饰固定扣。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：卸外饰固定扣"
+      },
+      {
+        "name": "保留完整契印",
+        "instruction": "保留完整契印。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留完整契印"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "按外检模具找边界 → 卸外饰固定扣 → 保留完整契印",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-4-06:1": {
+    "mode": "procedure",
+    "prop": "valve",
+    "parts": [
+      {
+        "name": "标明病房支路",
+        "instruction": "标明病房支路。按住 E 操作，松开可暂歇。",
+        "result": "已确认：标明病房支路"
+      },
+      {
+        "name": "接上独立最低供给",
+        "instruction": "接上独立最低供给。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：接上独立最低供给"
+      },
+      {
+        "name": "只隔离示范厅局部线",
+        "instruction": "只隔离示范厅局部线。按住 E 操作，松开可暂歇。",
+        "result": "已确认：只隔离示范厅局部线"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "标明病房支路 → 接上独立最低供给 → 只隔离示范厅局部线",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-4-06:5": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-4-06:6": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "检查水道出口",
+        "instruction": "检查水道出口。按住 E 操作，松开可暂歇。",
+        "result": "已确认：检查水道出口"
+      },
+      {
+        "name": "解吊栅",
+        "instruction": "解吊栅。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：解吊栅"
+      },
+      {
+        "name": "固定转运踏板",
+        "instruction": "固定转运踏板。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定转运踏板"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "检查水道出口 → 解吊栅 → 固定转运踏板",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-01:1": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "验材料断口",
+        "instruction": "验材料断口。按住 E 操作，松开可暂歇。",
+        "result": "已确认：验材料断口"
+      },
+      {
+        "name": "对齐舵杆",
+        "instruction": "对齐舵杆。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：对齐舵杆"
+      },
+      {
+        "name": "固定限位",
+        "instruction": "固定限位。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定限位"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "验材料断口 → 对齐舵杆 → 固定限位",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-5-01:3": {
+    "mode": "procedure",
+    "prop": "valve",
+    "parts": [
+      {
+        "name": "核清水支渠用途",
+        "instruction": "核清水支渠用途。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核清水支渠用途"
+      },
+      {
+        "name": "短时试闭并观察",
+        "instruction": "短时试闭并观察。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：短时试闭并观察"
+      },
+      {
+        "name": "恢复支渠确认接水",
+        "instruction": "恢复支渠确认接水。按住 E 操作，松开可暂歇。",
+        "result": "已确认：恢复支渠确认接水"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核清水支渠用途 → 短时试闭并观察 → 恢复支渠确认接水",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-02:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "验承重挂点",
+        "instruction": "验承重挂点。按住 E 操作，松开可暂歇。",
+        "result": "已确认：验承重挂点"
+      },
+      {
+        "name": "拉紧主绳",
+        "instruction": "拉紧主绳。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：拉紧主绳"
+      },
+      {
+        "name": "加保险结",
+        "instruction": "加保险结。按住 E 操作，松开可暂歇。",
+        "result": "已确认：加保险结"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "验承重挂点 → 拉紧主绳 → 加保险结",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-5-02:3": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "对照六人船单",
+        "instruction": "对照六人船单。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照六人船单"
+      },
+      {
+        "name": "让第七人自己说姓名",
+        "instruction": "让第七人自己说姓名。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：让第七人自己说姓名"
+      },
+      {
+        "name": "七人逐一签收",
+        "instruction": "七人逐一签收。按住 E 操作，松开可暂歇。",
+        "result": "已确认：七人逐一签收"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "对照六人船单 → 让第七人自己说姓名 → 七人逐一签收",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-03:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-5-03:4": {
+    "mode": "procedure",
+    "prop": "valve",
+    "parts": [
+      {
+        "name": "确认岸边人员退后",
+        "instruction": "确认岸边人员退后。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认岸边人员退后"
+      },
+      {
+        "name": "开启近岸闸",
+        "instruction": "开启近岸闸。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：开启近岸闸"
+      },
+      {
+        "name": "锁稳民船缆",
+        "instruction": "锁稳民船缆。按住 E 操作，松开可暂歇。",
+        "result": "已确认：锁稳民船缆"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "确认岸边人员退后 → 开启近岸闸 → 锁稳民船缆",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-04:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-5-04:2": {
+    "mode": "procedure",
+    "prop": "valve",
+    "parts": [
+      {
+        "name": "查下游接收牌",
+        "instruction": "查下游接收牌。按住 E 操作，松开可暂歇。",
+        "result": "已确认：查下游接收牌"
+      },
+      {
+        "name": "缓开试段闸",
+        "instruction": "缓开试段闸。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：缓开试段闸"
+      },
+      {
+        "name": "确认出流无回顶",
+        "instruction": "确认出流无回顶。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认出流无回顶"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "查下游接收牌 → 缓开试段闸 → 确认出流无回顶",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-05:1": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "先排慢行担架",
+        "instruction": "先排慢行担架。按住 E 操作，松开可暂歇。",
+        "result": "已确认：先排慢行担架"
+      },
+      {
+        "name": "按批分药与物资",
+        "instruction": "按批分药与物资。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：按批分药与物资"
+      },
+      {
+        "name": "留足行李承重空间",
+        "instruction": "留足行李承重空间。按住 E 操作，松开可暂歇。",
+        "result": "已确认：留足行李承重空间"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "先排慢行担架 → 按批分药与物资 → 留足行李承重空间",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-05:3": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "填写接冠监护",
+        "instruction": "填写接冠监护。按住 E 操作，松开可暂歇。",
+        "result": "已确认：填写接冠监护"
+      },
+      {
+        "name": "填写撤离回流条件",
+        "instruction": "填写撤离回流条件。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：填写撤离回流条件"
+      },
+      {
+        "name": "保留待查工区栏",
+        "instruction": "保留待查工区栏。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留待查工区栏"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "填写接冠监护 → 填写撤离回流条件 → 保留待查工区栏",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-5-06:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "压住弩臂",
+        "instruction": "压住弩臂。按住 E 操作，松开可暂歇。",
+        "result": "已确认：压住弩臂"
+      },
+      {
+        "name": "释放弦张力",
+        "instruction": "释放弦张力。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：释放弦张力"
+      },
+      {
+        "name": "卸发射卡销",
+        "instruction": "卸发射卡销。按住 E 操作，松开可暂歇。",
+        "result": "已确认：卸发射卡销"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "压住弩臂 → 释放弦张力 → 卸发射卡销",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-5-06:2": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "固定弩臂",
+        "instruction": "固定弩臂。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定弩臂"
+      },
+      {
+        "name": "松索",
+        "instruction": "松索。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：松索"
+      },
+      {
+        "name": "卸卡销",
+        "instruction": "卸卡销。按住 E 操作，松开可暂歇。",
+        "result": "已确认：卸卡销"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "固定弩臂 → 松索 → 卸卡销",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-5-06:4": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "核航序与安全距离",
+        "instruction": "核航序与安全距离。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核航序与安全距离"
+      },
+      {
+        "name": "签放行许可",
+        "instruction": "签放行许可。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：签放行许可"
+      },
+      {
+        "name": "确认最后一船越线",
+        "instruction": "确认最后一船越线。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认最后一船越线"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核航序与安全距离 → 签放行许可 → 确认最后一船越线",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-01:1": {
+    "mode": "procedure",
+    "prop": "valve",
+    "parts": [
+      {
+        "name": "试探落石受力",
+        "instruction": "试探落石受力。按住 E 操作，松开可暂歇。",
+        "result": "已确认：试探落石受力"
+      },
+      {
+        "name": "清门槽并抬闸",
+        "instruction": "清门槽并抬闸。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：清门槽并抬闸"
+      },
+      {
+        "name": "锁上行限位",
+        "instruction": "锁上行限位。按住 E 操作，松开可暂歇。",
+        "result": "已确认：锁上行限位"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "试探落石受力 → 清门槽并抬闸 → 锁上行限位",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-01:2": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "系主绳",
+        "instruction": "系主绳。按住 E 操作，松开可暂歇。",
+        "result": "已确认：系主绳"
+      },
+      {
+        "name": "调平两侧",
+        "instruction": "调平两侧。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：调平两侧"
+      },
+      {
+        "name": "固定梯脚",
+        "instruction": "固定梯脚。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定梯脚"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "系主绳 → 调平两侧 → 固定梯脚",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-6-02:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-6-02:2": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "对门牌",
+        "instruction": "对门牌。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对门牌"
+      },
+      {
+        "name": "卸内锁",
+        "instruction": "卸内锁。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：卸内锁"
+      },
+      {
+        "name": "撑门",
+        "instruction": "撑门。按住 E 操作，松开可暂歇。",
+        "result": "已确认：撑门"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "对门牌 → 卸内锁 → 撑门",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-02:4": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "查后门接应",
+        "instruction": "查后门接应。按住 E 操作，松开可暂歇。",
+        "result": "已确认：查后门接应"
+      },
+      {
+        "name": "卸内栓",
+        "instruction": "卸内栓。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：卸内栓"
+      },
+      {
+        "name": "留灯号支点",
+        "instruction": "留灯号支点。按住 E 操作，松开可暂歇。",
+        "result": "已确认：留灯号支点"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "查后门接应 → 卸内栓 → 留灯号支点",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-05:1": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "核甲室三人",
+        "instruction": "核甲室三人。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核甲室三人"
+      },
+      {
+        "name": "支撑门框",
+        "instruction": "支撑门框。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：支撑门框"
+      },
+      {
+        "name": "卸门外承重",
+        "instruction": "卸门外承重。按住 E 操作，松开可暂歇。",
+        "result": "已确认：卸门外承重"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核甲室三人 → 支撑门框 → 卸门外承重",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-05:4": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "核乙室两人",
+        "instruction": "核乙室两人。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核乙室两人"
+      },
+      {
+        "name": "移开堵门箱",
+        "instruction": "移开堵门箱。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：移开堵门箱"
+      },
+      {
+        "name": "留下通行宽度",
+        "instruction": "留下通行宽度。按住 E 操作，松开可暂歇。",
+        "result": "已确认：留下通行宽度"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核乙室两人 → 移开堵门箱 → 留下通行宽度",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-05:6": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "按丙室门牌敲门",
+        "instruction": "按丙室门牌敲门。按住 E 操作，松开可暂歇。",
+        "result": "已确认：按丙室门牌敲门"
+      },
+      {
+        "name": "确认诺亚在内",
+        "instruction": "确认诺亚在内。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：确认诺亚在内"
+      },
+      {
+        "name": "撑开门",
+        "instruction": "撑开门。按住 E 操作，松开可暂歇。",
+        "result": "已确认：撑开门"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "按丙室门牌敲门 → 确认诺亚在内 → 撑开门",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-05:8": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "R-6-06:2": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "原件交外侧",
+        "instruction": "原件交外侧。按住 E 操作，松开可暂歇。",
+        "result": "已确认：原件交外侧"
+      },
+      {
+        "name": "确认民船自由通行",
+        "instruction": "确认民船自由通行。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：确认民船自由通行"
+      },
+      {
+        "name": "雪璃登记监护",
+        "instruction": "雪璃登记监护。按住 E 操作，松开可暂歇。",
+        "result": "已确认：雪璃登记监护"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "原件交外侧 → 确认民船自由通行 → 雪璃登记监护",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-06:4": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "绯月主动进入站位",
+        "instruction": "绯月主动进入站位。按住 E 操作，松开可暂歇。",
+        "result": "已确认：绯月主动进入站位"
+      },
+      {
+        "name": "雪璃对准监护灯",
+        "instruction": "雪璃对准监护灯。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：雪璃对准监护灯"
+      },
+      {
+        "name": "确认第一段稳定",
+        "instruction": "确认第一段稳定。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认第一段稳定"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "绯月主动进入站位 → 雪璃对准监护灯 → 确认第一段稳定",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-6-06:6": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "确认承载反应",
+        "instruction": "确认承载反应。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认承载反应"
+      },
+      {
+        "name": "接通第二段",
+        "instruction": "接通第二段。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：接通第二段"
+      },
+      {
+        "name": "监护确认再完成移交",
+        "instruction": "监护确认再完成移交。按住 E 操作，松开可暂歇。",
+        "result": "已确认：监护确认再完成移交"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "确认承载反应 → 接通第二段 → 监护确认再完成移交",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-6-06:10": {
+    "mode": "procedure",
+    "prop": "valve",
+    "parts": [
+      {
+        "name": "核真实接收回条",
+        "instruction": "核真实接收回条。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核真实接收回条"
+      },
+      {
+        "name": "试回流无回顶",
+        "instruction": "试回流无回顶。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：试回流无回顶"
+      },
+      {
+        "name": "下游确认后开主回流",
+        "instruction": "下游确认后开主回流。按住 E 操作，松开可暂歇。",
+        "result": "已确认：下游确认后开主回流"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核真实接收回条 → 试回流无回顶 → 下游确认后开主回流",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-6-06:12": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "立好支点灯",
+        "instruction": "立好支点灯。按住 E 操作，松开可暂歇。",
+        "result": "已确认：立好支点灯"
+      },
+      {
+        "name": "对齐近场",
+        "instruction": "对齐近场。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：对齐近场"
+      },
+      {
+        "name": "确认稳流窗",
+        "instruction": "确认稳流窗。按住 E 操作，松开可暂歇。",
+        "result": "已确认：确认稳流窗"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "立好支点灯 → 对齐近场 → 确认稳流窗",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "R-6-06:13": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "松外扣",
+        "instruction": "松外扣。按住 E 操作，松开可暂歇。",
+        "result": "已确认：松外扣"
+      },
+      {
+        "name": "等待稳流确认",
+        "instruction": "等待稳流确认。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：等待稳流确认"
+      },
+      {
+        "name": "切开主连接",
+        "instruction": "切开主连接。按住 E 操作，松开可暂歇。",
+        "result": "已确认：切开主连接"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "松外扣 → 等待稳流确认 → 切开主连接",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-6-06:18": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "验承重锚点",
+        "instruction": "验承重锚点。按住 E 操作，松开可暂歇。",
+        "result": "已确认：验承重锚点"
+      },
+      {
+        "name": "卸晶桥并系救援带",
+        "instruction": "卸晶桥并系救援带。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：卸晶桥并系救援带"
+      },
+      {
+        "name": "三人分担张力拉回",
+        "instruction": "三人分担张力拉回。按住 E 操作，松开可暂歇。",
+        "result": "已确认：三人分担张力拉回"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "验承重锚点 → 卸晶桥并系救援带 → 三人分担张力拉回",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "R-E01:1": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "核民船放行",
+        "instruction": "核民船放行。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核民船放行"
+      },
+      {
+        "name": "公开完整签署页",
+        "instruction": "公开完整签署页。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：公开完整签署页"
+      },
+      {
+        "name": "记复光与长期监护",
+        "instruction": "记复光与长期监护。按住 E 操作，松开可暂歇。",
+        "result": "已确认：记复光与长期监护"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核民船放行 → 公开完整签署页 → 记复光与长期监护",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "R-E01:5": {
+    "mode": "procedure",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "登记临时供水缺口",
+        "instruction": "登记临时供水缺口。按住 E 操作，松开可暂歇。",
+        "result": "已确认：登记临时供水缺口"
+      },
+      {
+        "name": "交完整原件",
+        "instruction": "交完整原件。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：交完整原件"
+      },
+      {
+        "name": "将药粮交接收者",
+        "instruction": "将药粮交接收者。按住 E 操作，松开可暂歇。",
+        "result": "已确认：将药粮交接收者"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "登记临时供水缺口 → 交完整原件 → 将药粮交接收者",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "S01:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "S01:2": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "磨平边缘",
+        "instruction": "磨平边缘。按住 E 操作，松开可暂歇。",
+        "result": "已确认：磨平边缘"
+      },
+      {
+        "name": "嵌合缺口",
+        "instruction": "嵌合缺口。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：嵌合缺口"
+      },
+      {
+        "name": "压紧铜夹",
+        "instruction": "压紧铜夹。按住 E 操作，松开可暂歇。",
+        "result": "已确认：压紧铜夹"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "磨平边缘 → 嵌合缺口 → 压紧铜夹",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "S01:3": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "打开遮光片",
+        "instruction": "打开遮光片。按住 E 操作，松开可暂歇。",
+        "result": "已确认：打开遮光片"
+      },
+      {
+        "name": "对准暗路",
+        "instruction": "对准暗路。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：对准暗路"
+      },
+      {
+        "name": "固定支架",
+        "instruction": "固定支架。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定支架"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "打开遮光片 → 对准暗路 → 固定支架",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "S02:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "S02:2": {
+    "mode": "procedure",
+    "prop": "medical",
+    "parts": [
+      {
+        "name": "分取灰叶",
+        "instruction": "分取灰叶。按住 E 操作，松开可暂歇。",
+        "result": "已确认：分取灰叶"
+      },
+      {
+        "name": "加入温盐液",
+        "instruction": "加入温盐液。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：加入温盐液"
+      },
+      {
+        "name": "低量试用记录",
+        "instruction": "低量试用记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：低量试用记录"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "分取灰叶 → 加入温盐液 → 低量试用记录",
+    "calibrate": 1,
+    "challenge": "timing"
+  },
+  "S03:1": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "复位制动杆",
+        "instruction": "复位制动杆。按住 E 操作，松开可暂歇。",
+        "result": "已确认：复位制动杆"
+      },
+      {
+        "name": "调平侧架",
+        "instruction": "调平侧架。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：调平侧架"
+      },
+      {
+        "name": "空载试稳",
+        "instruction": "空载试稳。按住 E 操作，松开可暂歇。",
+        "result": "已确认：空载试稳"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "复位制动杆 → 调平侧架 → 空载试稳",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "S04:1": {
+    "mode": "procedure",
+    "prop": "workbench",
+    "parts": [
+      {
+        "name": "对齐旧针脚",
+        "instruction": "对齐旧针脚。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对齐旧针脚"
+      },
+      {
+        "name": "沿原线缝缺口",
+        "instruction": "沿原线缝缺口。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：沿原线缝缺口"
+      },
+      {
+        "name": "藏好线头",
+        "instruction": "藏好线头。按住 E 操作，松开可暂歇。",
+        "result": "已确认：藏好线头"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "对齐旧针脚 → 沿原线缝缺口 → 藏好线头",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "S05:1": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "套岸环",
+        "instruction": "套岸环。按住 E 操作，松开可暂歇。",
+        "result": "已确认：套岸环"
+      },
+      {
+        "name": "拉主绳",
+        "instruction": "拉主绳。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：拉主绳"
+      },
+      {
+        "name": "加保险结",
+        "instruction": "加保险结。按住 E 操作，松开可暂歇。",
+        "result": "已确认：加保险结"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "套岸环 → 拉主绳 → 加保险结",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "S05:2": {
+    "mode": "procedure",
+    "prop": "lamp",
+    "parts": [
+      {
+        "name": "擦灯面",
+        "instruction": "擦灯面。按住 E 操作，松开可暂歇。",
+        "result": "已确认：擦灯面"
+      },
+      {
+        "name": "对舱口",
+        "instruction": "对舱口。按住 E 操作，松开可暂歇。用 A / D 对准青色区间，再按 E。",
+        "result": "已确认：对舱口"
+      },
+      {
+        "name": "固定灯架",
+        "instruction": "固定灯架。按住 E 操作，松开可暂歇。",
+        "result": "已确认：固定灯架"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "擦灯面 → 对舱口 → 固定灯架",
+    "calibrate": 1,
+    "challenge": "alignment"
+  },
+  "S05:3": {
+    "mode": "procedure",
+    "prop": "rope",
+    "parts": [
+      {
+        "name": "托结",
+        "instruction": "托结。按住 E 操作，松开可暂歇。",
+        "result": "已确认：托结"
+      },
+      {
+        "name": "放松张力",
+        "instruction": "放松张力。按住 E 操作，松开可暂歇。在青色区间松开。",
+        "result": "已确认：放松张力"
+      },
+      {
+        "name": "解结收绳",
+        "instruction": "解结收绳。按住 E 操作，松开可暂歇。",
+        "result": "已确认：解结收绳"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "托结 → 放松张力 → 解结收绳",
+    "calibrate": 1,
+    "challenge": "tension"
+  },
+  "S06:1": {
+    "mode": "survey",
+    "prop": "document",
+    "parts": [
+      {
+        "name": "观察原件",
+        "instruction": "观察原件。按住 E 操作，松开可暂歇。",
+        "result": "已确认：观察原件"
+      },
+      {
+        "name": "对照编号与现场",
+        "instruction": "对照编号与现场。按住 E 操作，松开可暂歇。",
+        "result": "已确认：对照编号与现场"
+      },
+      {
+        "name": "保留原物并记录",
+        "instruction": "保留原物并记录。按住 E 操作，松开可暂歇。",
+        "result": "已确认：保留原物并记录"
+      }
+    ],
+    "subtitle": "观察 · 比对 · 留证",
+    "hint": "观察原件 → 对照编号与现场 → 保留原物并记录",
+    "calibrate": -1,
+    "challenge": "timing"
+  },
+  "S06:3": {
+    "mode": "procedure",
+    "prop": "lock",
+    "parts": [
+      {
+        "name": "核三间门牌",
+        "instruction": "核三间门牌。按住 E 操作，松开可暂歇。",
+        "result": "已确认：核三间门牌"
+      },
+      {
+        "name": "卸联锁扣",
+        "instruction": "卸联锁扣。按住 E 操作，松开可暂歇。指针进入青色区间时按 E。",
+        "result": "已确认：卸联锁扣"
+      },
+      {
+        "name": "撑通路",
+        "instruction": "撑通路。按住 E 操作，松开可暂歇。",
+        "result": "已确认：撑通路"
+      }
+    ],
+    "subtitle": "依序操作 · 稳定受力",
+    "hint": "核三间门牌 → 卸联锁扣 → 撑通路",
+    "calibrate": 1,
+    "challenge": "timing"
+  }
+}

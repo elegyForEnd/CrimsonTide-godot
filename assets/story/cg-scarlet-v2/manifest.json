@@ -1,0 +1,168 @@
+{
+  "version": 2,
+  "story": "Scarlet / Crown and City",
+  "generator": "built-in image_gen",
+  "target_size": [
+    3840,
+    2160
+  ],
+  "illustrations": [
+    {
+      "id": "cg-n01",
+      "title": "街灯与等水的人",
+      "scenes": [
+        "00-01"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-n01.png",
+      "source": "art/story-cg-crown-v2/masters/cg-n01.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "ca61f0d9d3825f2584d2f19cde43baac6de9a298017018921a0f6cb36ac55127"
+    },
+    {
+      "id": "cg-n02",
+      "title": "十年前失败的撤运",
+      "scenes": [
+        "04-06"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-n02.png",
+      "source": "art/story-cg-crown-v2/masters/cg-n02.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "d917ecd1d6e3e89bf0310b522f5a90798359f546242eb3ec04add7436b351902"
+    },
+    {
+      "id": "cg-n03",
+      "title": "请求她留下的母亲",
+      "scenes": [
+        "05-06"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-n03.png",
+      "source": "art/story-cg-crown-v2/masters/cg-n03.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "d2a2bb915b5da5d82485a2ad9792f7febac1574df9cd311237f05ba8163ec6a6"
+    },
+    {
+      "id": "cg-n04",
+      "title": "遗漏的住人区",
+      "scenes": [
+        "06-09"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-n04.png",
+      "source": "art/story-cg-crown-v2/masters/cg-n04.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "d3bedb20b3fa6829aaf0d7498b08b1c1ea681b28cf2442f787d1137066a8f2eb"
+    },
+    {
+      "id": "cg-a01",
+      "title": "姐姐交出王冠",
+      "scenes": [
+        "A-02"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-a01.png",
+      "source": "art/story-cg-crown-v2/masters/cg-a01.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "b59e94ef6766b4b9ab8f8c34b579b6586b4bf7905b5e715093bf0c844122cd02"
+    },
+    {
+      "id": "cg-a02",
+      "title": "第一道晶纹",
+      "scenes": [
+        "A-06"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-a02.png",
+      "source": "art/story-cg-crown-v2/masters/cg-a02.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "60d44a01ff88f7e1ed0ae3455f3f3d9151bca535ae9c96fd763868c6f5e371f8"
+    },
+    {
+      "id": "cg-a03",
+      "title": "灯下三人和回程票",
+      "scenes": [
+        "A-07"
+      ],
+      "path": "res://assets/story/cg-scarlet-v2/cg-a03.png",
+      "source": "art/story-cg-crown-v2/masters/cg-a03.png",
+      "source_size": [
+        1672,
+        941
+      ],
+      "delivery_size": [
+        3840,
+        2160
+      ],
+      "native_4k": false,
+      "processing": "whole-image high-quality bicubic resampling; no generative detail added",
+      "status": "generated-flat-illustration",
+      "layers_available": false,
+      "sha256": "99eca2d9d1ae76d3baf603491b1c8093d64a90b260f68b24b4af4767c4746ba8"
+    }
+  ],
+  "cinematics": "all 24 runtime paths remain null",
+  "complete": true,
+  "runtime_integrated": true
+}

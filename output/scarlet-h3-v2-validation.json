@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "cinematics": 21,
+  "segments": 83,
+  "carried_contexts_verified": 62,
+  "cg_loops": 19,
+  "legal_windows": true,
+  "previous_tail_matches_next_context": true,
+  "original_workflow_unchanged": true,
+  "zip_integrity": true,
+  "gpu_generation_run": false
+}

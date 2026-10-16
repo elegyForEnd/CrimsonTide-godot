@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "OK": 638,
+    "HINT": 413,
+    "DRIFT": 1,
+    "WRONG": 0
+  },
+  "problems": [
+    {
+      "guide_line": 508,
+      "anchor": "scripts/scarlet/adv.gd:86",
+      "symbol": "show_page",
+      "verdict": "DRIFT",
+      "found_line": 93,
+      "distance": 7,
+      "strict": true,
+      "note": "实测 93 [show_page]"
+    }
+  ]
+}

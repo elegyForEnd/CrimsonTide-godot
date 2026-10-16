@@ -69,6 +69,10 @@ func stat_card(title: String, value: String, base: String, at: Vector2, ratio: f
 		var bar := ProgressBar.new(); bar.show_percentage=false; bar.position=Vector2(6,61); bar.size=Vector2(217,3); bar.value=clampf(ratio,0,1)*100; bar.mouse_filter=MOUSE_FILTER_IGNORE; card.add_child(bar)
 
 func icon(item: Dictionary) -> Texture2D:
+	if item.has("weapon_index"):
+		var canonical := preload("res://scripts/weapon_image_art.gd").canonical(int(item.weapon_index))
+		var weapon_icon := preload("res://scripts/rogue_build_art.gd").item_icon({"kind":"weapon","weapon":canonical})
+		if weapon_icon!=null: return weapon_icon
 	var index := int(Items.BASES[item.base].icon)
 	if not textures.has(index):
 		var texture := AtlasTexture.new(); texture.atlas=atlas
@@ -111,7 +115,9 @@ func render() -> void:
 	var occupied := 0
 	for item in campaign.state.bag: occupied+=Items.dimensions(item).x*Items.dimensions(item).y
 	text(content,"%d / 60 格     %d 件     药剂栏 %d / 15" % [occupied,campaign.state.bag.size(),campaign.state.potions],Vector2(635,537),Vector2(610,26),15,MUTED)
-	detail_title=text(content,"选择物品查看详情",Vector2(635,571),Vector2(600,28),19,GOLD)
+	detail_title=text(content,"选择物品查看详情",Vector2(635,571),Vector2(424,28),19,GOLD)
+	detail_title.clip_text=true
+	button(content,"词缀 / 比较",Vector2(1070,568),Vector2(166,32),show_equipment_details)
 	details=text(content,"",Vector2(635,603),Vector2(598,68),15,PAPER)
 	action_bar=Control.new(); action_bar.position=Vector2(610,681); action_bar.size=Vector2(630,39); content.add_child(action_bar)
 	match tab:
@@ -147,7 +153,7 @@ func character_panel() -> void:
 		stat_card("攻击伤害","%.0f" % campaign.damage(),"sword",Vector2(55,243))
 		stat_card("最大生命","%.0f" % campaign.max_hp(),"potion",Vector2(299,243),campaign.state.hp/campaign.max_hp())
 		stat_card("护衣减伤",str(int(campaign.state.gear.armor)*2),"plate",Vector2(55,315))
-		stat_card("技能冷却","%.2f 秒" % maxf(2,5-int(campaign.state.gear.charm)*0.15-campaign.specialty(2)*0.2),"frost",Vector2(299,315))
+		stat_card("技能冷却","%.2f 秒" % (campaign.skill_cooldown() if campaign.has_method("skill_cooldown") else maxf(2,5-int(campaign.state.gear.charm)*0.15-campaign.specialty(2)*0.2)),"frost",Vector2(299,315))
 		stat_card("战役经验",str(campaign.state.xp),"crystal",Vector2(55,387),campaign.state.xp/pow(campaign.level()/0.3,2))
 		stat_card("专精点",str(campaign.skill_points()),"raven",Vector2(299,387))
 		for i in 3:
@@ -213,6 +219,8 @@ func forge_panel() -> void:
 		grid("equipped:%d:%s" % [hero,slot],at,Vector2i.ONE,126)
 	text(content,"铁料优先扣材料钱包，再扣行囊铁料。\n资源不够时，原物品与所有资源保持完整。",Vector2(54,601),Vector2(477,58),16,MUTED)
 	text(content,"打造费用：%d 银币 / %d 铁料" % [90+int(campaign.state.act)*35,6+int(campaign.state.act)*2],Vector2(54,569),Vector2(477,28),16,GOLD)
+	if "loot_rng" in campaign:
+		button(content,"章节套装配方 / 遗物图鉴",Vector2(55,393),Vector2(474,31),show_equipment_codex)
 
 func select(source: String, uid: String) -> void:
 	selected_source=source; selected_uid=uid; selected_product=""; update_selection()
@@ -237,7 +245,9 @@ func update_selection() -> void:
 	# Compact two-column summary; full description is available as a tooltip.
 	details.tooltip_text=Items.describe(item); details.mouse_filter=MOUSE_FILTER_PASS
 	if item.slot in Items.SLOTS:
-		var old: Dictionary=campaign.state.equipment[int(campaign.state.hero)].get(item.slot,{})
+		var compare_hero := int(Items.BASES[item.base].get("hero",-1))
+		if compare_hero<0: compare_hero=int(campaign.state.hero)
+		var old: Dictionary=campaign.state.equipment[compare_hero].get(item.slot,{})
 		var current := Items.stats(item); var previous := Items.stats(old)
 		details.text="伤害 +%d    生命 +%d    强化 +%d    %s\n对比当前%s：伤害 %+d / 生命 %+d\n%s   ·   出售 %d 银币" % [current.damage,current.hp,item.upgrade,"已镶嵌" if item.socket else "未镶嵌",Items.SLOT_NAMES[item.slot],int(current.damage)-int(previous.damage),int(current.hp)-int(previous.hp),"通用" if int(Items.BASES[item.base].hero)<0 else "适用 "+Items.HEROES[int(Items.BASES[item.base].hero)],Items.sale_price(item)]
 		if is_instance_valid(forge_preview):
@@ -248,7 +258,7 @@ func update_selection() -> void:
 			text(forge_preview,"伤害 %d → %d    生命 %d → %d" % [current.damage,upgraded.damage,current.hp,upgraded.hp],Vector2(104,34),Vector2(368,25),16,PAPER)
 			var track := EnhancementTrack.new(); track.rank=int(item.upgrade); track.position=Vector2(112,72); track.size=Vector2(320,30); forge_preview.add_child(track)
 	else:
-		details.text={"potion":"使用：恢复50%最大生命；满血时装入药剂栏。","scrap":"整堆使用加入铁料钱包；也可直接作为锻造材料。","crystal":"导光镶嵌材料 · 每件装备可镶嵌一次。"}[item.base]+"\n持有 ×%d   ·   堆叠上限 %d   ·   出售整堆 %d 银币" % [item.count,Items.BASES[item.base].stack,Items.sale_price(item)]
+		details.text={"potion":"使用：恢复50%最大生命；满血时装入药剂栏。","scrap":"整堆使用加入铁料钱包；也可直接作为锻造材料。","crystal":"导光晶石 · 用于镶嵌或定向打造套装。"}.get(item.base,"特殊晶石 · 点击词缀 / 比较查看，回营地用于对应槽位镶嵌。")+"\n持有 ×%d   ·   堆叠上限 %d   ·   出售整堆 %d 银币" % [item.count,Items.BASES[item.base].stack,Items.sale_price(item)]
 	var x := 0.0
 	if selected_product!="":
 		var cost := int(item.repurchase) if buyback else Items.price(item)
@@ -256,7 +266,10 @@ func update_selection() -> void:
 	if tab=="forge" and item.slot in Items.SLOTS:
 		var cost: Dictionary=inventory.forge_cost(item)
 		button(action_bar,"强化 · %d币 / %d料" % [cost.coins,cost.materials],Vector2.ZERO,Vector2(237,36),func(): perform(func(): return inventory.forge(selected_source,selected_uid,"upgrade")),int(item.upgrade)>=5)
-		button(action_bar,"镶嵌 · 80币 / 1晶",Vector2(245,0),Vector2(231,36),func(): perform(func(): return inventory.forge(selected_source,selected_uid,"socket")),bool(item.socket))
+		if item.has("affix_revision"):
+			button(action_bar,"晶石 / 重铸 / 锁定",Vector2(245,0),Vector2(231,36),show_equipment_details)
+		else:
+			button(action_bar,"镶嵌 · 80币 / 1晶",Vector2(245,0),Vector2(231,36),func(): perform(func(): return inventory.forge(selected_source,selected_uid,"socket")),bool(item.socket))
 		var salvage := button(action_bar,"分解",Vector2(485,0),Vector2(140,36),func(): confirm_salvage(),selected_source!="bag"); UISkin.button(salvage,false,true); return
 	if tab=="shop" and selected_source=="bag":
 		button(action_bar,"出售整堆 · %d银币" % Items.sale_price(item),Vector2.ZERO,Vector2(295,36),func(): perform(func(): return inventory.sell(selected_uid))); return
@@ -285,6 +298,94 @@ func quick_action(source: String, uid: String) -> void:
 
 func perform(action: Callable) -> void:
 	action.call(); status=inventory.last_message; render(); screen.refresh()
+
+func equipment_dialog(title: String) -> Dictionary:
+	var dialog := AcceptDialog.new(); dialog.title=title; dialog.size=Vector2i(850,660); dialog.ok_button_text="返回行装"; add_child(dialog)
+	dialog.theme=screen.theme.duplicate() if screen.theme else Theme.new()
+	dialog.theme.set_stylebox("panel","AcceptDialog",box_style(Color("11151f"),GOLD.darkened(.3)))
+	dialog.confirmed.connect(dialog.queue_free); dialog.canceled.connect(dialog.queue_free)
+	# AcceptDialog lays out its direct Control children. One body owns all authored positions.
+	var body := Control.new(); body.custom_minimum_size=Vector2(830,570); dialog.add_child(body)
+	var scroll := ScrollContainer.new(); scroll.position=Vector2(10,8); scroll.size=Vector2(810,530); scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED; body.add_child(scroll)
+	var column := VBoxContainer.new(); column.size_flags_horizontal=SIZE_EXPAND_FILL; column.add_theme_constant_override("separation",12); scroll.add_child(column)
+	return {"dialog":dialog,"column":column,"body":body}
+
+func equipment_paragraph(parent: Node, value: String, color: Color = PAPER) -> Label:
+	var node := Label.new(); node.text=value; node.custom_minimum_size.x=765; node.size_flags_horizontal=SIZE_EXPAND_FILL
+	node.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; node.add_theme_font_size_override("font_size",17); node.add_theme_color_override("font_color",color); parent.add_child(node)
+	return node
+
+func show_equipment_details() -> void:
+	var item: Dictionary=inventory.item_at(selected_source,selected_uid)
+	if selected_product!="":
+		var products: Array=campaign.state.buyback if buyback else inventory.stock()
+		var index := Items.find(products,selected_product)
+		if index>=0: item=products[index]
+	if item.is_empty(): show_equipment_codex(); return
+	var ui := equipment_dialog("装备词缀与换装比较")
+	var dialog: AcceptDialog=ui.dialog
+	var body: Control=ui.body
+	equipment_paragraph(ui.column,Items.describe(item),Items.tone(item))
+	if item.slot in Items.SLOTS:
+		var hero := int(Items.BASES[item.base].get("hero",-1))
+		if hero<0: hero=int(campaign.state.hero)
+		var worn: Dictionary=campaign.state.equipment[hero]
+		var before := Items.Equipment.modifiers(worn)
+		var planned := worn.duplicate(true); planned[item.slot]=item
+		var after := Items.Equipment.modifiers(planned)
+		var comparison := "【%s · 换装后全身词条（已应用上限）】\n" % Items.HEROES[hero]
+		var keys: Array=after.keys()
+		for key in before:
+			if not key in keys: keys.append(key)
+		for key in keys:
+			comparison+="%s    %s → %s（%+.1f）\n" % [Items.Equipment.data().stats.get(key,key),str(snappedf(float(before.get(key,0)),.1)),str(snappedf(float(after.get(key,0)),.1)),float(after.get(key,0))-float(before.get(key,0))]
+		for s in Items.Equipment.data().sets:
+			var n := int(Items.Equipment.set_counts(planned).get(s.id,0))
+			if n>0: comparison+="%s %d / 3  ·  两件%s，三件%s\n" % [s.name,n,"已激活" if n>=2 else "未激活","已激活" if n>=3 else "未激活"]
+		equipment_paragraph(ui.column,comparison,GOLD)
+		var old: Dictionary=worn.get(item.slot,{})
+		if not old.is_empty() and old.uid!=item.uid: equipment_paragraph(ui.column,"【当前装备】\n"+Items.describe(old),MUTED)
+		if item.has("affix_revision") and selected_product=="" and (selected_source=="bag" or selected_source.begins_with("equipped:")):
+			var source := selected_source; var uid := selected_uid
+			body.custom_minimum_size.y=600
+			button(body,"解除锁定" if item.locked else "锁定装备",Vector2(10,552),Vector2(145,34),func():
+				dialog.hide(); dialog.queue_free(); perform(func(): return inventory.toggle_lock(source,uid)); show_equipment_details())
+			var rune := OptionButton.new(); rune.position=Vector2(175,552); rune.size=Vector2(227,34); body.add_child(rune)
+			var rune_ids: Array=Items.Equipment.data().runes.keys()
+			for id in rune_ids: rune.add_item(Items.Equipment.data().runes[id].name+" ×%d" % inventory.count(Items.Equipment.data().runes[id].base))
+			button(body,"镶嵌 / 替换 · 80币",Vector2(420,552),Vector2(285,34),func():
+				var id: String=rune_ids[rune.selected]; dialog.hide(); dialog.queue_free(); perform(func(): return inventory.inscribe(source,uid,id)); show_equipment_details(),int(campaign.state.stage)!=0 or bool(item.locked))
+			if int(item.quality) in [1,2,3] and not item.affixes.is_empty():
+				body.custom_minimum_size.y=640
+				var affix := OptionButton.new(); affix.position=Vector2(10,595); affix.size=Vector2(255,34); body.add_child(affix)
+				for a in item.affixes: affix.add_item(Items.Equipment.definition(a.id).name+" · "+str(a.value))
+				var cost: Dictionary=inventory.reforge_cost(item)
+				button(body,"重铸所选数值 · %d币 / %d料" % [cost.coins,cost.materials],Vector2(288,595),Vector2(417,34),func():
+					var index := affix.selected; dialog.hide(); dialog.queue_free(); perform(func(): return inventory.reforge(source,uid,index)); show_equipment_details(),int(campaign.state.stage)!=0 or bool(item.locked) or int(item.reforges)>=20)
+				dialog.size.y=710
+	equipment_paragraph(ui.column,"裂伤、溅射不触发其他命中效果。首领寒意只有35%效果，首领免硬直。护盾持续3秒，重复闪避刷新；机关、阶段血线与转刃仍需完成。",MUTED)
+	dialog.popup_centered()
+
+func show_equipment_codex() -> void:
+	var ui := equipment_dialog("章节遗物图鉴与套装配方")
+	equipment_paragraph(ui.column,"普通敌人：武器30%，连续3次未掉后必掉；另有22%护衣／护符与12%晶石。探索箱必出当前角色可用武器；首领首次胜利必出暗金主手、套装及晶石。\n套装按同一角色的不同槽位计算；可在此补齐已到达章节的任意一件。旧装备及原镶嵌数值保留。",GOLD)
+	for chapter in Items.Equipment.data().chapters:
+		var act := int(chapter.act)
+		var s: Dictionary=Items.Equipment.data().sets[act-1]
+		equipment_paragraph(ui.column,"第%d幕 · %s\n%s\n%s\n%s：2件 %s；3件 %s" % [act,chapter.name,chapter.threat,chapter.focus,s.name,Items.Equipment.mod_text(s["2"]),Items.Equipment.mod_text(s["3"])],GOLD)
+		if "loot_rng" in campaign:
+			equipment_paragraph(ui.column,"每件配方：%d银币 / %d铁料 / 1导光晶石" % [180+act*60,10+act*3],MUTED)
+			var row := HBoxContainer.new(); ui.column.add_child(row)
+			for slot in Items.SLOTS:
+				var chosen: String=slot; var set_id: String=s.id
+				var b := Button.new(); b.text="打造%s" % Items.SLOT_NAMES[slot]; b.custom_minimum_size=Vector2(250,38); row.add_child(b); UISkin.button(b)
+				b.disabled=int(campaign.state.stage)!=0 or int(campaign.state.act)<act
+				b.pressed.connect(func(): ui.dialog.hide(); perform(func(): return inventory.craft_set(set_id,chosen)); ui.dialog.queue_free(); show_equipment_codex())
+		for u in Items.Equipment.data().uniques:
+			if int(u.act)==act: equipment_paragraph(ui.column,"%s · %s\n%s\n%s" % [u.name,Items.SLOT_NAMES[u.slot],u.effect,Items.Equipment.mod_text(u.mods)],Items.TONES[4])
+	for rune in Items.Equipment.data().runes.values():
+		equipment_paragraph(ui.column,"%s\n主手：%s\n护衣：%s\n护符：%s" % [rune.name,Items.Equipment.mod_text(rune.mods.blade),Items.Equipment.mod_text(rune.mods.armor),Items.Equipment.mod_text(rune.mods.charm)],MUTED)
+	ui.dialog.popup_centered()
 
 func confirm_salvage() -> void:
 	var item: Dictionary=inventory.item_at(selected_source,selected_uid)

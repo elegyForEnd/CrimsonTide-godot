@@ -1,6 +1,22 @@
 # 血潮守望 · RPG故事模式
 
-设计稿 v2.0 · 2026-10-09 · 按用户提供的PV背景及营地流程修订。
+当前版本：《赤月遗书 · 王冠与空城》· 2026-10-16，剧情修订 scarlet-screenplay-2。
+
+[最新 24 版 CG 动画生成提示词](SCARLET-H3-CG-PROMPTS.md)：小于 20 秒整片一次生成，20 秒片也不拆；长片 2—3 段，39 帧接续已计入参数，另含平面 CG 轻循环。对应新双结局，不与旧 21 版／83 镜提示词包混用。
+
+2026-10-16 制作脚本：[121 场详细完整演出与对白](SCARLET-FULL-SCREENPLAY.md) · [40 主线＋6 支线如何接取、推进与交接](SCARLET-QUEST-INTAKE.md) · [CG、影片和差分制作表](SCARLET-SCREENPLAY-ASSETS.md)。正文、任务接取、实操和接受／拒绝双结局现已接入运行版；新增7张CG已生成接入，26张静态CG可播；动画继续留空。实现范围见 [当前实现](SCARLET-IMPLEMENTATION.md)。
+
+[最新完整剧情设计《王冠与空城》](SCARLET-COMPLETE-STORY.md)：补齐背景揭示、继位的短期效果、拒绝后的代价，以及重写的终章。地下源头统一称“赤月之心”，剑柄小块称“契印晶核”。继位认证、撤运与双结局已按详细脚本接入；镜头、美术及人工平衡的剩余项见制作清单。
+
+[六章剧情、36 项章节任务与 6 位 Boss 优化规格](SCARLET-CHAPTER-QUEST-BOSS.md)：序章 3 项＋六章各 6 项＋分支后日谈 1 项，每条路线 40 项主线；双结局分别接移交压潮与回流破心。任务现已接入；请使用 [新版运行索引](SCARLET-CONTENT-INDEX.md)，旧女王重写稿只保留作修订历史。
+
+2026-10-16 前一轮叙事记录：[女王利用绯月善良的主线重写](SCARLET-QUEEN-REWRITE.md)。第一封信改为不解释目的的私人召回信；当前任务正文、证据与女王战术台词已同步，旧求死动机退出。
+
+2026-10-16：已接入[完整RPG装备系统](EQUIPMENT-SYSTEM.md)：五档品质、32种随机词缀、30件暗金、6套套装与4类晶石，包含六幕掉落、真实战斗效果、重铸、套装配方、比较及旧档兼容。
+
+[启动与实现范围](SCARLET-IMPLEMENTATION.md) · [任务节点索引](SCARLET-CONTENT-INDEX.md) · [另外制作清单](SCARLET-REMAINING.md)。双击 Start-Scarlet.cmd 或从标题页进入。
+
+以下连续地图与旧物品设计保留为历史资料。
 
 故事模式已接入连续地图重做版，见[启动、实现范围与剩余差异](IMPLEMENTATION.md)。[地图研究](MAP-IMPLEMENTATION-RESEARCH.md)记录制作前对本地资源包的实际解析。
 
@@ -8,8 +24,18 @@
 - [Forward+ 开场样板与美术生产流程](FORWARDPLUS-ART-PIPELINE.md)
 - [占格行囊、人物、交易与铁匠的实际玩法](ITEMS-AND-SERVICES.md)
 - [详细玩法与开发计划](RPG-MODE-PLAN.md)
+- [最新全新故事案《赤月遗书》：ADV开场、六章任务与章节Boss](STORY-REBOOT-ADV.md)
+- [《赤月遗书》全游戏流程、剧情触发与分支](STORY-FLOW-ADV.md)
+- [《赤月遗书》CG／过场动画制作清单与播放时机](STORY-CG-PRODUCTION.md)
+- [MiniMax H3 导演台：21 支过场、83 镜提示词与 19 张 CG 循环](SCARLET-H3-DIRECTOR-PROMPTS.md)
+- [《赤月遗书》19张CG插画交付、4K尺寸与素材位置](CG-SCARLET-DELIVERY.md)
+- [第三版旧稿（故事已弃用）](STORY-OUTLINE-V3-QUESTS.md)
+- [第二版讨论稿（逐关Boss安排已撤回）](STORY-OUTLINE-V2-BOSSES.md)
+- [第一版章节大纲（旧结构参考）](STORY-OUTLINE.md)
 - [完整长篇剧情《血月尽头，仍有黎明》](STORY.md)
 - [主线、支线、角色线与NPC索引](QUESTS.md)
+
+《赤月遗书》作为新剧情与任务事件层接入；基础地图、渲染、镜头、角色帧动画、战斗特效和行囊装备界面使用原项目。保留原 55 张地图，只按剧情增补局部内容。动画空位与后续制作范围见 SCARLET-IMPLEMENTATION.md 和 SCARLET-REMAINING.md。
 
 ## 本版依据
 

@@ -399,6 +399,7 @@ func _ready() -> void:
 	# 的时刻按 `window_settings.gd` 落过一次了（那样连开场 PV 都在玩家的窗口里播）。
 	# 这里再调一次只会让 `[window]` 诊断行打两遍、窗口被设置两次。
 	show_account()
+	if "--scarlet" in OS.get_cmdline_user_args(): go_story()
 	if "--preview-story" in OS.get_cmdline_user_args():
 		go_story("user://story-preview.json")
 		print("STORY_READY quests=%d act=%d stage=%d npc_asset=%s" % [story_screen.campaign.content.quests.size(),story_screen.campaign.state.act,story_screen.campaign.state.stage,ResourceLoader.exists("res://assets/story/npc-atlas-v1.png")])
@@ -1329,7 +1330,7 @@ func show_title() -> void:
 	motto.add_theme_font_override("font",title_font)
 	motto.add_theme_constant_override("line_spacing",12)
 	ornament(page,Vector2(74,498),Vector2(40,287),"rail",Color("9b5c65"))
-	var entries := ["故事模式 · 血月尽头","远征与魔境","创建 / 加入房间","设置","制作组","退出游戏"]
+	var entries := ["故事模式 · 赤月遗书","远征与魔境","创建 / 加入房间","设置","制作组","退出游戏"]
 	var actions: Array[Callable]=[func(): go_story(),go_camp,show_p2p_rooms,show_settings,show_credits,func(): get_tree().quit()]
 	for i in entries.size():
 		var b := button(page,entries[i],Vector2(74,493+i*50),Vector2(445,50),actions[i]) as GothicButton

@@ -1,0 +1,15 @@
+{
+  "films": 24,
+  "short_films_under_20": 8,
+  "single_generation_films": 9,
+  "total_film_generations": 41,
+  "unique_film_generations": 40,
+  "shared_ambush_first_segment": true,
+  "existing_static_loops": 19,
+  "reserved_static_loops": 7,
+  "all_short_films_single": true,
+  "overlapFrames": 39,
+  "aligned_lengths": true,
+  "original_workflow_unchanged": true,
+  "generated_media": false
+}

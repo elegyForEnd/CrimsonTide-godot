@@ -106,6 +106,19 @@ func run() -> void:
 	p.p+=Vector2(140,75); field.camera_x+=50
 	var moved := field.weapon_effect_socket(1)
 	check((moved.tip-socket.tip).distance_to(Vector2(90,75))<.01,"Mount follows movement and camera")
+	# The live roguelike field is nested under main.gd's centered UI root.
+	var ui := Node2D.new(); root.add_child(ui); ui.add_child(field)
+	field.set_process(false)
+	for scale_factor in [1.0,1.5,2.0]:
+		ui.scale=Vector2.ONE*scale_factor; ui.position=Vector2(240,35)
+		var scaled := field.weapon_effect_socket(1)
+		check(scaled.tip.distance_to(ui.transform*moved.tip)<.01,"Charge anchor follows UI scale and centering")
+		for i in moved.charge_points.size():
+			check(scaled.charge_points[i].distance_to(ui.transform*moved.charge_points[i])<.01,"Every charge light follows UI transform")
+		for i in moved.charge_paths.size():
+			for j in moved.charge_paths[i].size():
+				check(scaled.charge_paths[i][j].distance_to(ui.transform*moved.charge_paths[i][j])<.01,"Charge outline follows UI transform")
+	ui.scale=Vector2.ONE; ui.position=Vector2.ZERO
 	var fx := FX.new(); root.add_child(fx)
 	fx.socket_provider=field.weapon_effect_socket
 	fx.event({"kind":"hold_charge","p":p.p,"id":1,"weapon_index":600,"hold_time":.5})
@@ -119,5 +132,5 @@ func run() -> void:
 	check(fx.effects.is_empty(),"Cancellation clears following light")
 	fx.advance(.14)
 	check(fx.particles.particles.is_empty(),"Cancelled gathering fades and clears")
-	field.free(); fx.queue_free(); s.queue_free(); await process_frame
+	ui.queue_free(); fx.queue_free(); s.queue_free(); await process_frame
 	print("CHARGE SCALING: %d checks; %d failures" % [checks,failures]); quit(1 if failures else 0)

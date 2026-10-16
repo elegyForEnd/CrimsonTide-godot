@@ -1,0 +1,1089 @@
+{
+  "revision": 1,
+  "stats": {
+    "damage": "固定伤害",
+    "hp": "固定生命",
+    "damage_pct": "伤害",
+    "hp_pct": "最大生命",
+    "crit": "暴击率",
+    "crit_damage": "暴击额外伤害",
+    "haste": "普通攻击速度",
+    "cooldown": "战技冷却缩减",
+    "speed": "移动速度",
+    "reduction": "全伤害减免",
+    "resist": "本幕异质伤害抗性",
+    "leech": "命中汲取生命",
+    "boss_damage": "对首领伤害",
+    "execute": "对低于30%生命敌人伤害",
+    "skill_damage": "战技伤害",
+    "splash": "普攻溅射伤害",
+    "bleed": "3秒裂伤总伤害",
+    "slow": "寒意减速",
+    "vulnerable": "易伤增幅",
+    "stagger": "普通敌人硬直几率",
+    "charge": "协同充能效率",
+    "regen": "每秒回复生命",
+    "kill_heal": "击败回复生命",
+    "dodge_barrier": "闪避后3秒护盾",
+    "dash_damage": "闪避后下一次普攻伤害",
+    "third_hit": "每第三次普攻伤害",
+    "low_guard": "低于35%生命时额外减伤",
+    "potion": "药剂治疗量",
+    "escort_guard": "同行者伤害减免"
+  },
+  "percent_stats": [
+    "damage_pct",
+    "hp_pct",
+    "crit",
+    "crit_damage",
+    "haste",
+    "cooldown",
+    "speed",
+    "reduction",
+    "resist",
+    "leech",
+    "boss_damage",
+    "execute",
+    "skill_damage",
+    "splash",
+    "bleed",
+    "slow",
+    "vulnerable",
+    "stagger",
+    "charge",
+    "dash_damage",
+    "third_hit",
+    "low_guard",
+    "potion",
+    "escort_guard"
+  ],
+  "affixes": [
+    {
+      "id": "keen",
+      "name": "锐利",
+      "stat": "damage",
+      "min": 2,
+      "span": 4,
+      "step": 1.5,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 1,
+      "group": "damage"
+    },
+    {
+      "id": "vital",
+      "name": "蓄光",
+      "stat": "hp",
+      "min": 8,
+      "span": 12,
+      "step": 3,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "hp"
+    },
+    {
+      "id": "fervor",
+      "name": "炽志",
+      "stat": "damage_pct",
+      "min": 3,
+      "span": 5,
+      "step": 1,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 1,
+      "group": "damage_pct"
+    },
+    {
+      "id": "oak",
+      "name": "坚韧",
+      "stat": "hp_pct",
+      "min": 3,
+      "span": 5,
+      "step": 1,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "hp_pct"
+    },
+    {
+      "id": "precise",
+      "name": "准星",
+      "stat": "crit",
+      "min": 3,
+      "span": 4,
+      "step": 0.7,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 1,
+      "group": "crit"
+    },
+    {
+      "id": "cruel",
+      "name": "锐痛",
+      "stat": "crit_damage",
+      "min": 8,
+      "span": 10,
+      "step": 2,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 2,
+      "group": "crit_damage"
+    },
+    {
+      "id": "swift",
+      "name": "疾刃",
+      "stat": "haste",
+      "min": 3,
+      "span": 5,
+      "step": 0.8,
+      "slots": [
+        "blade"
+      ],
+      "act": 1,
+      "group": "haste"
+    },
+    {
+      "id": "lucid",
+      "name": "清明",
+      "stat": "cooldown",
+      "min": 3,
+      "span": 5,
+      "step": 0.8,
+      "slots": [
+        "charm",
+        "armor"
+      ],
+      "act": 1,
+      "group": "cooldown"
+    },
+    {
+      "id": "wayfarer",
+      "name": "远行",
+      "stat": "speed",
+      "min": 2,
+      "span": 3,
+      "step": 0.5,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "speed"
+    },
+    {
+      "id": "bulwark",
+      "name": "壁垒",
+      "stat": "reduction",
+      "min": 2,
+      "span": 3,
+      "step": 0.5,
+      "slots": [
+        "armor"
+      ],
+      "act": 1,
+      "group": "reduction"
+    },
+    {
+      "id": "conduit",
+      "name": "隔潮",
+      "stat": "resist",
+      "min": 5,
+      "span": 6,
+      "step": 1,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "resist"
+    },
+    {
+      "id": "thirst",
+      "name": "饮晶",
+      "stat": "leech",
+      "min": 0.5,
+      "span": 0.7,
+      "step": 0.15,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 2,
+      "group": "leech"
+    },
+    {
+      "id": "regicide",
+      "name": "逆冠",
+      "stat": "boss_damage",
+      "min": 4,
+      "span": 6,
+      "step": 1,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 2,
+      "group": "boss_damage"
+    },
+    {
+      "id": "mercy",
+      "name": "终裁",
+      "stat": "execute",
+      "min": 4,
+      "span": 6,
+      "step": 1,
+      "slots": [
+        "blade"
+      ],
+      "act": 2,
+      "group": "execute"
+    },
+    {
+      "id": "invocation",
+      "name": "祷锋",
+      "stat": "skill_damage",
+      "min": 4,
+      "span": 6,
+      "step": 1,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 1,
+      "group": "skill_damage"
+    },
+    {
+      "id": "echo",
+      "name": "余震",
+      "stat": "splash",
+      "min": 5,
+      "span": 7,
+      "step": 1,
+      "slots": [
+        "blade"
+      ],
+      "act": 3,
+      "group": "splash"
+    },
+    {
+      "id": "wound",
+      "name": "裂痕",
+      "stat": "bleed",
+      "min": 5,
+      "span": 7,
+      "step": 1,
+      "slots": [
+        "blade"
+      ],
+      "act": 2,
+      "group": "bleed"
+    },
+    {
+      "id": "winter",
+      "name": "霜息",
+      "stat": "slow",
+      "min": 5,
+      "span": 6,
+      "step": 1,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 2,
+      "group": "slow"
+    },
+    {
+      "id": "expose",
+      "name": "剥印",
+      "stat": "vulnerable",
+      "min": 2,
+      "span": 3,
+      "step": 0.4,
+      "slots": [
+        "blade"
+      ],
+      "act": 3,
+      "group": "vulnerable"
+    },
+    {
+      "id": "impact",
+      "name": "震慑",
+      "stat": "stagger",
+      "min": 3,
+      "span": 5,
+      "step": 0.8,
+      "slots": [
+        "blade"
+      ],
+      "act": 2,
+      "group": "stagger"
+    },
+    {
+      "id": "chorus",
+      "name": "共鸣",
+      "stat": "charge",
+      "min": 4,
+      "span": 6,
+      "step": 1,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 1,
+      "group": "charge"
+    },
+    {
+      "id": "renew",
+      "name": "回春",
+      "stat": "regen",
+      "min": 0.3,
+      "span": 0.4,
+      "step": 0.1,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "regen"
+    },
+    {
+      "id": "reclaim",
+      "name": "余烬",
+      "stat": "kill_heal",
+      "min": 2,
+      "span": 3,
+      "step": 0.7,
+      "slots": [
+        "blade",
+        "armor"
+      ],
+      "act": 1,
+      "group": "kill_heal"
+    },
+    {
+      "id": "veil",
+      "name": "留光",
+      "stat": "dodge_barrier",
+      "min": 5,
+      "span": 7,
+      "step": 1.5,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "dodge_barrier"
+    },
+    {
+      "id": "pursuit",
+      "name": "逐影",
+      "stat": "dash_damage",
+      "min": 6,
+      "span": 8,
+      "step": 1.5,
+      "slots": [
+        "blade",
+        "charm"
+      ],
+      "act": 2,
+      "group": "dash_damage"
+    },
+    {
+      "id": "cadence",
+      "name": "三叠",
+      "stat": "third_hit",
+      "min": 8,
+      "span": 10,
+      "step": 2,
+      "slots": [
+        "blade"
+      ],
+      "act": 3,
+      "group": "third_hit"
+    },
+    {
+      "id": "resolve",
+      "name": "不屈",
+      "stat": "low_guard",
+      "min": 3,
+      "span": 4,
+      "step": 0.7,
+      "slots": [
+        "armor"
+      ],
+      "act": 2,
+      "group": "low_guard"
+    },
+    {
+      "id": "apothecary",
+      "name": "药师",
+      "stat": "potion",
+      "min": 5,
+      "span": 7,
+      "step": 1,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "potion"
+    },
+    {
+      "id": "convoy",
+      "name": "护送",
+      "stat": "escort_guard",
+      "min": 4,
+      "span": 5,
+      "step": 1,
+      "slots": [
+        "armor",
+        "charm"
+      ],
+      "act": 1,
+      "group": "escort_guard"
+    },
+    {
+      "id": "barbed",
+      "name": "棱刺",
+      "stat": "damage",
+      "min": 5,
+      "span": 3,
+      "step": 1.7,
+      "slots": [
+        "blade"
+      ],
+      "act": 4,
+      "group": "damage"
+    },
+    {
+      "id": "hearth",
+      "name": "余温",
+      "stat": "hp",
+      "min": 16,
+      "span": 10,
+      "step": 4,
+      "slots": [
+        "armor"
+      ],
+      "act": 4,
+      "group": "hp"
+    },
+    {
+      "id": "discipline",
+      "name": "定心",
+      "stat": "cooldown",
+      "min": 5,
+      "span": 4,
+      "step": 0.9,
+      "slots": [
+        "charm"
+      ],
+      "act": 4,
+      "group": "cooldown"
+    }
+  ],
+  "uniques": [
+    {
+      "id": "a1-blade-0",
+      "act": 1,
+      "hero": 0,
+      "slot": "blade",
+      "name": "未熄的桥火",
+      "title": "守灯",
+      "effect": "击败敌人回复生命，战技更强。",
+      "mods": {
+        "kill_heal": 8,
+        "skill_damage": 12
+      }
+    },
+    {
+      "id": "a1-blade-1",
+      "act": 1,
+      "hero": 1,
+      "slot": "blade",
+      "name": "借来的晨光",
+      "title": "灯芯",
+      "effect": "缓慢恢复生命；帮助同行者抵御攻击。",
+      "mods": {
+        "regen": 1.2,
+        "escort_guard": 12
+      }
+    },
+    {
+      "id": "a1-blade-2",
+      "act": 1,
+      "hero": 2,
+      "slot": "blade",
+      "name": "无人署名的路标",
+      "title": "开路",
+      "effect": "闪避后的下一次普通攻击得到增幅。",
+      "mods": {
+        "dash_damage": 28,
+        "speed": 5
+      }
+    },
+    {
+      "id": "a2-blade-0",
+      "act": 2,
+      "hero": 0,
+      "slot": "blade",
+      "name": "判词背面的名字",
+      "title": "异议",
+      "effect": "提高对首领伤害与暴击率。",
+      "mods": {
+        "boss_damage": 18,
+        "crit": 7
+      }
+    },
+    {
+      "id": "a2-blade-1",
+      "act": 2,
+      "hero": 1,
+      "slot": "blade",
+      "name": "灰页不焚",
+      "title": "复诵",
+      "effect": "缩短战技冷却并增加战技伤害。",
+      "mods": {
+        "cooldown": 12,
+        "skill_damage": 18
+      }
+    },
+    {
+      "id": "a2-blade-2",
+      "act": 2,
+      "hero": 2,
+      "slot": "blade",
+      "name": "证人仍在呼吸",
+      "title": "划证",
+      "effect": "普通攻击使敌人裂伤，3秒造成额外伤害。",
+      "mods": {
+        "bleed": 22,
+        "haste": 8
+      }
+    },
+    {
+      "id": "a3-blade-0",
+      "act": 3,
+      "hero": 0,
+      "slot": "blade",
+      "name": "山口最后一班岗",
+      "title": "旧誓",
+      "effect": "每第三次命中的普攻增伤，命中汲取生命。",
+      "mods": {
+        "third_hit": 40,
+        "leech": 1.5
+      }
+    },
+    {
+      "id": "a3-blade-1",
+      "act": 3,
+      "hero": 1,
+      "slot": "blade",
+      "name": "断星测距灯",
+      "title": "星散",
+      "effect": "普通攻击溅射附近可见敌人，命中附寒意。",
+      "mods": {
+        "splash": 22,
+        "slow": 16
+      }
+    },
+    {
+      "id": "a3-blade-2",
+      "act": 3,
+      "hero": 2,
+      "slot": "blade",
+      "name": "捕猎索的断端",
+      "title": "追猎",
+      "effect": "闪避后普攻更强，对濒危敌人增伤。",
+      "mods": {
+        "dash_damage": 32,
+        "execute": 18
+      }
+    },
+    {
+      "id": "a4-blade-0",
+      "act": 4,
+      "hero": 0,
+      "slot": "blade",
+      "name": "契印拆解刀",
+      "title": "拆契",
+      "effect": "命中施加4秒易伤；伤害会转化少量生命。",
+      "mods": {
+        "vulnerable": 10,
+        "leech": 2
+      }
+    },
+    {
+      "id": "a4-blade-1",
+      "act": 4,
+      "hero": 1,
+      "slot": "blade",
+      "name": "拒绝量身的灯架",
+      "title": "逆缝",
+      "effect": "闪避生成短时护盾，提升药剂治疗量。",
+      "mods": {
+        "dodge_barrier": 30,
+        "potion": 20
+      }
+    },
+    {
+      "id": "a4-blade-2",
+      "act": 4,
+      "hero": 2,
+      "slot": "blade",
+      "name": "未送出的针线",
+      "title": "拆线",
+      "effect": "裂伤与暴击相互补足，保留行动速度。",
+      "mods": {
+        "bleed": 24,
+        "crit_damage": 25,
+        "speed": 4
+      }
+    },
+    {
+      "id": "a5-blade-0",
+      "act": 5,
+      "hero": 0,
+      "slot": "blade",
+      "name": "逆流船首",
+      "title": "破浪",
+      "effect": "普攻溅射并提高命中硬直几率；首领免硬直。",
+      "mods": {
+        "splash": 28,
+        "stagger": 18
+      }
+    },
+    {
+      "id": "a5-blade-1",
+      "act": 5,
+      "hero": 1,
+      "slot": "blade",
+      "name": "七人渡灯",
+      "title": "返航",
+      "effect": "同行者减伤；闪避护盾保护当前操作者。",
+      "mods": {
+        "escort_guard": 22,
+        "dodge_barrier": 32
+      }
+    },
+    {
+      "id": "a5-blade-2",
+      "act": 5,
+      "hero": 2,
+      "slot": "blade",
+      "name": "断缆之后",
+      "title": "离港",
+      "effect": "更快普攻为协同技提供更多充能。",
+      "mods": {
+        "haste": 18,
+        "charge": 24
+      }
+    },
+    {
+      "id": "a6-blade-0",
+      "act": 6,
+      "hero": 0,
+      "slot": "blade",
+      "name": "转刃的黎明",
+      "title": "共同终结",
+      "effect": "增加首领伤害与协同充能，仍需解除母晶机制。",
+      "mods": {
+        "boss_damage": 25,
+        "charge": 25
+      }
+    },
+    {
+      "id": "a6-blade-1",
+      "act": 6,
+      "hero": 1,
+      "slot": "blade",
+      "name": "无需王冠的晨星",
+      "title": "守约",
+      "effect": "强化战技、恢复与异质抗性。",
+      "mods": {
+        "skill_damage": 25,
+        "regen": 1.5,
+        "resist": 15
+      }
+    },
+    {
+      "id": "a6-blade-2",
+      "act": 6,
+      "hero": 2,
+      "slot": "blade",
+      "name": "第三张回程票",
+      "title": "归队",
+      "effect": "每第三次普攻爆发，暴击造成更多伤害。",
+      "mods": {
+        "third_hit": 45,
+        "crit_damage": 30,
+        "crit": 7
+      }
+    },
+    {
+      "id": "a1-armor--1",
+      "act": 1,
+      "hero": -1,
+      "slot": "armor",
+      "name": "医棚门前的外衣",
+      "title": "医棚余温",
+      "effect": "离开医棚仍能缓慢回复生命，药剂带来更多治疗。",
+      "mods": {
+        "regen": 0.8,
+        "potion": 16,
+        "hp": 14
+      }
+    },
+    {
+      "id": "a1-charm--1",
+      "act": 1,
+      "hero": -1,
+      "slot": "charm",
+      "name": "缺角蜡印",
+      "title": "蜡封余香",
+      "effect": "强化药剂与微量恢复，减少早期追缉中的补给压力。",
+      "mods": {
+        "potion": 20,
+        "regen": 0.5,
+        "charge": 8
+      }
+    },
+    {
+      "id": "a2-armor--1",
+      "act": 2,
+      "hero": -1,
+      "slot": "armor",
+      "name": "查封线下的衬衣",
+      "title": "不燃衬里",
+      "effect": "抵御焚书礼堂的异质伤害，并缩短战技冷却。",
+      "mods": {
+        "resist": 18,
+        "reduction": 5,
+        "cooldown": 6
+      }
+    },
+    {
+      "id": "a2-charm--1",
+      "act": 2,
+      "hero": -1,
+      "slot": "charm",
+      "name": "夹在灰页里的花",
+      "title": "花押异议",
+      "effect": "命中留下易伤证印，战技可以更频繁使用。",
+      "mods": {
+        "vulnerable": 6,
+        "cooldown": 10
+      }
+    },
+    {
+      "id": "a3-armor--1",
+      "act": 3,
+      "hero": -1,
+      "slot": "armor",
+      "name": "卸下军徽的披风",
+      "title": "卸甲不退",
+      "effect": "濒危时获得额外减伤，同时提高反击的暴击率。",
+      "mods": {
+        "low_guard": 16,
+        "crit": 6,
+        "hp_pct": 8
+      }
+    },
+    {
+      "id": "a3-charm--1",
+      "act": 3,
+      "hero": -1,
+      "slot": "charm",
+      "name": "停走的信站表",
+      "title": "第三声报时",
+      "effect": "每第三次命中的普通攻击得到额外增幅。",
+      "mods": {
+        "third_hit": 28,
+        "crit_damage": 18
+      }
+    },
+    {
+      "id": "a4-armor--1",
+      "act": 4,
+      "hero": -1,
+      "slot": "armor",
+      "name": "不合尺寸的礼服",
+      "title": "拒绝缝合",
+      "effect": "命中汲取生命并缓慢自愈，持续作战无需追逐击杀。",
+      "mods": {
+        "leech": 1.5,
+        "regen": 1.3,
+        "reduction": 6
+      }
+    },
+    {
+      "id": "a4-charm--1",
+      "act": 4,
+      "hero": -1,
+      "slot": "charm",
+      "name": "剪开的契印环",
+      "title": "自行解扣",
+      "effect": "以更充裕的生命施展更强的战技。",
+      "mods": {
+        "hp_pct": 12,
+        "skill_damage": 20
+      }
+    },
+    {
+      "id": "a5-armor--1",
+      "act": 5,
+      "hero": -1,
+      "slot": "armor",
+      "name": "盐蚀救生衣",
+      "title": "七人共渡",
+      "effect": "闪避生成护盾，同时帮助同行者抵御红潮。",
+      "mods": {
+        "dodge_barrier": 30,
+        "escort_guard": 18,
+        "resist": 10
+      }
+    },
+    {
+      "id": "a5-charm--1",
+      "act": 5,
+      "hero": -1,
+      "slot": "charm",
+      "name": "有编号的船票",
+      "title": "回程在手",
+      "effect": "移动与闪避后的反击更强，同时保护同行者。",
+      "mods": {
+        "speed": 8,
+        "dash_damage": 28,
+        "escort_guard": 12
+      }
+    },
+    {
+      "id": "a6-armor--1",
+      "act": 6,
+      "hero": -1,
+      "slot": "armor",
+      "name": "留给明天的守衣",
+      "title": "守到天明",
+      "effect": "低生命减伤与闪避护盾相互补足，提高协同充能。",
+      "mods": {
+        "low_guard": 14,
+        "dodge_barrier": 28,
+        "charge": 18
+      }
+    },
+    {
+      "id": "a6-charm--1",
+      "act": 6,
+      "hero": -1,
+      "slot": "charm",
+      "name": "不会传位的冠屑",
+      "title": "拒绝继位",
+      "effect": "专注攻击首领并为三人协同积蓄力量。",
+      "mods": {
+        "boss_damage": 20,
+        "charge": 25,
+        "low_guard": 8
+      }
+    }
+  ],
+  "sets": [
+    {
+      "id": "lamplighter",
+      "name": "雾桥守灯人",
+      "act": 1,
+      "2": {
+        "hp": 24,
+        "escort_guard": 10
+      },
+      "3": {
+        "regen": 1.2,
+        "dodge_barrier": 16
+      }
+    },
+    {
+      "id": "testimony",
+      "name": "灰页证言",
+      "act": 2,
+      "2": {
+        "cooldown": 10,
+        "resist": 12
+      },
+      "3": {
+        "skill_damage": 22,
+        "charge": 16
+      }
+    },
+    {
+      "id": "oath",
+      "name": "断星旧誓",
+      "act": 3,
+      "2": {
+        "crit": 8,
+        "boss_damage": 10
+      },
+      "3": {
+        "third_hit": 35,
+        "low_guard": 10
+      }
+    },
+    {
+      "id": "unbound",
+      "name": "解契之手",
+      "act": 4,
+      "2": {
+        "hp_pct": 10,
+        "reduction": 6
+      },
+      "3": {
+        "vulnerable": 8,
+        "leech": 2
+      }
+    },
+    {
+      "id": "homeward",
+      "name": "逆潮归航",
+      "act": 5,
+      "2": {
+        "speed": 8,
+        "escort_guard": 15
+      },
+      "3": {
+        "dodge_barrier": 28,
+        "dash_damage": 35
+      }
+    },
+    {
+      "id": "dawn",
+      "name": "共同黎明",
+      "act": 6,
+      "2": {
+        "boss_damage": 14,
+        "resist": 18
+      },
+      "3": {
+        "charge": 25,
+        "skill_damage": 25,
+        "regen": 1
+      }
+    }
+  ],
+  "runes": {
+    "ember": {
+      "name": "赤棱晶",
+      "base": "gem_ember",
+      "mods": {
+        "blade": {
+          "bleed": 12
+        },
+        "armor": {
+          "low_guard": 8
+        },
+        "charm": {
+          "crit": 5
+        }
+      }
+    },
+    "rime": {
+      "name": "霜心晶",
+      "base": "gem_rime",
+      "mods": {
+        "blade": {
+          "slow": 12
+        },
+        "armor": {
+          "resist": 12
+        },
+        "charm": {
+          "cooldown": 7
+        }
+      }
+    },
+    "gale": {
+      "name": "羽纹晶",
+      "base": "gem_gale",
+      "mods": {
+        "blade": {
+          "haste": 7
+        },
+        "armor": {
+          "speed": 5
+        },
+        "charm": {
+          "dash_damage": 18
+        }
+      }
+    },
+    "light": {
+      "name": "导光晶石",
+      "base": "crystal",
+      "mods": {
+        "blade": {
+          "charge": 12
+        },
+        "armor": {
+          "escort_guard": 10
+        },
+        "charm": {
+          "regen": 0.6
+        }
+      }
+    }
+  },
+  "chapters": [
+    {
+      "act": 1,
+      "name": "雾桥追缉",
+      "threat": "修院弩阵、囚车护送",
+      "element": "physical",
+      "focus": "生命、药剂、护送与闪避，先教生存，再教词缀。"
+    },
+    {
+      "act": 2,
+      "name": "灰页审判",
+      "threat": "焚书礼堂、宣判隔断",
+      "element": "fire",
+      "focus": "异质抗性与战技；装备不能跳过三道宣判隔断。"
+    },
+    {
+      "act": 3,
+      "name": "断星山口",
+      "threat": "伏击、矿坑、维恩重盾",
+      "element": "frost",
+      "focus": "单体暴击、低血守护；重盾仍要引向断柱。"
+    },
+    {
+      "act": 4,
+      "name": "王庭拆契",
+      "threat": "麻醉阀、承重手术偶",
+      "element": "venom",
+      "focus": "续航、易伤；易伤不能抵消机关无敌与阶段血线。"
+    },
+    {
+      "act": 5,
+      "name": "逆潮归航",
+      "threat": "红潮、七人救援、舰队",
+      "element": "tide",
+      "focus": "位移、护盾和护送减伤；潮水不能靠击杀吸血解决。"
+    },
+    {
+      "act": 6,
+      "name": "赤月终局",
+      "threat": "六翼、母晶、三人协作",
+      "element": "blood",
+      "focus": "首领伤害、协同与抗性；保留三人机关和最终转刃。"
+    }
+  ]
+}

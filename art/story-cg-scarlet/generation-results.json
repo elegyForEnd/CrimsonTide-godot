@@ -1,0 +1,94 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "id": "cg-01a",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-9ba8d7ba-afff-482b-af20-c153b0c15451.png",
+      "previous_source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-28d6b953-8475-4767-ac45-ff65031ec688.png",
+      "edit_prompt": "Edit target: this existing single-letter CG. Change ONLY the crimson wax seal and the tiny broken wax fragments beside it. The seal must be a perfectly round burgundy wax stamp with an embossed upright heraldic fleur-de-lis and ONE small clean triangular notch at exactly TWO O'CLOCK on its outer rim, with the point aimed inward. The rest of the circular rim is intact. Remove unrelated chips and damage so the notch is a precise identifying seal defect, not random torn wax. Preserve entire blank paper, hand, sleeve, sword, desk, candle, background lighting and composition pixel-for-pixel as much as possible. No words or extra objects. 16:9 finished illustrated game CG, target 3840x2160."
+    },
+    {
+      "id": "cg-01b",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-f265924f-3c20-4196-95f9-ef44b056da98.png",
+      "previous_source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-ccd4cc9e-0808-4006-ac33-d2b5258db441.png",
+      "edit_prompt": "Edit target: this existing TWO-letter CG. Change ONLY BOTH wax seals. Make the two seals exact matching impressions of the SAME seal: perfectly round burgundy wax, embossed upright fleur-de-lis, identical relief and orientation, and ONE small clean triangular notch at exactly TWO O'CLOCK of EACH circle. Both fleur-de-lis must face upright, both notch positions must match relative to the emblem, do not mirror or rotate one. No other chips. This exact repeated defect is crucial evidence in the story. Preserve the two completely blank paper interiors, hands, sleeves, crossbow bolt, desk, candles, lighting and framing. No words or new objects. 16:9 finished illustrated game CG, target 3840x2160."
+    },
+    {
+      "id": "cg-02",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-25879702-0283-43ae-b341-240b1ad16784.png"
+    },
+    {
+      "id": "cg-03",
+      "source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-37b75583-d06f-40cc-868a-798927b8075b.png"
+    },
+    {
+      "id": "cg-04",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-aef5b798-3838-438e-af2e-b82d0495e564.png"
+    },
+    {
+      "id": "cg-05",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-6fc78ba8-b034-45d7-b9c7-9b45eb993281.png"
+    },
+    {
+      "id": "cg-06",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-55b325e7-6de4-408f-b912-75ac8f6e2304.png"
+    },
+    {
+      "id": "cg-07",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-5aa46b2a-8b1d-499c-b8aa-ef3294d9b559.png"
+    },
+    {
+      "id": "cg-08",
+      "source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-707f03c5-81a8-4a84-9469-617b3ab5968d.png"
+    },
+    {
+      "id": "cg-09",
+      "source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-a581219c-3cdf-4a7b-8d12-ad490f35335d.png"
+    },
+    {
+      "id": "cg-10",
+      "source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-1eabc711-a350-4242-a734-48ee69d96edb.png"
+    },
+    {
+      "id": "cg-11",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-2131dfb7-935b-41db-8966-6b637fd9fa93.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-2131dfb7-935b-41db-8966-6b637fd9fa93.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "cg-12",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-687ebac2-5c73-4006-84f9-209de31a9789.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-687ebac2-5c73-4006-84f9-209de31a9789.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "cg-13",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-3a0b9c00-0bb3-4c8e-ab93-cdf3c0831b23.png",
+      "previous_source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-64a987a7-cc73-49f3-a854-a03f78c0a10b.png",
+      "edit_prompt": "Edit target: this existing CG-13 image. Change ONLY environmental lighting, sky, water light and their reflected color consistently. This is BEFORE the blood storm ends. Replace bright sunny morning sky with a heavily overcast deep slate-blue PREDAWN sky, faint distant crimson storm glow at horizon, no visible sun, no golden sunrise or clear white daylight. Keep faces readable using the existing warm porch lamps plus soft cyan lantern, so this quiet breakfast remains warm and hopeful despite dark weather. Preserve EXACTLY all three faces, expressions, eye colors, outfits, hair ornaments, Feiyue tail, all hand positions, jam, bread, three blank tickets, medicine, contract, table, camera framing and background harbor geometry. No new people, no warships, no text. Finished anime ADV CG, 16:9, target 3840x2160."
+    },
+    {
+      "id": "cg-14",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-1cd50ffc-4302-4c84-bb77-63e5ed5ef74e.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-1cd50ffc-4302-4c84-bb77-63e5ed5ef74e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "cg-15",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-a96e373c-387b-4d47-a289-7a85b4d8c0ca.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-a96e373c-387b-4d47-a289-7a85b4d8c0ca.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "cg-16a",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-75ee72ef-bd92-4e44-8d9b-eaaf8b5798bf.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-75ee72ef-bd92-4e44-8d9b-eaaf8b5798bf.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "cg-16b",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-1d6f823e-78c3-4dc7-b630-e5f2916ca6dc.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-1d6f823e-78c3-4dc7-b630-e5f2916ca6dc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "id": "cg-17",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-d38d6561-b6a0-42bd-b1ce-c4c8b69c2abb.png",
+      "output_hint": "Generated images are saved to C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288 as C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-d38d6561-b6a0-42bd-b1ce-c4c8b69c2abb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}

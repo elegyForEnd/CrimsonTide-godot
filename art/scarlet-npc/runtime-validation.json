@@ -1,0 +1,333 @@
+{
+  "main_quests": 40,
+  "optional_quests": 6,
+  "scenes": 74,
+  "pages": 373,
+  "zones": 43,
+  "cinematic_versions": 21,
+  "all_video_paths_null": true,
+  "referenced_cg_count": 19,
+  "asset_checks": [
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-01a.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-01b.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-02.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-03.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-04.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-05.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-06.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-07.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-08.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-09.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-10.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-11.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-12.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-13.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-14.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-15.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-16a.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-16b.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "assets\\story\\cg-scarlet-v1\\cg-17.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\city.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\harbor.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\inn.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\mountain.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\palace.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\throne.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\village.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\admiral.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\captain.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\craftsman.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\inquisitor.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\judge.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\messenger.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\physician-v2.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\physician.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\queen-angry.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\stablemaster.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\surgeon.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\vein-sad.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\vein.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    },
+    {
+      "asset": "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\village-doctor.png",
+      "size": [
+        2560,
+        3840
+      ],
+      "ok": true
+    }
+  ],
+  "all_assets_valid": true
+}

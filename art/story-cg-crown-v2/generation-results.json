@@ -1,0 +1,33 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "id": "cg-n01",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-669448e1-eb27-4ab4-ad19-f051b99a53e3.png"
+    },
+    {
+      "id": "cg-n02",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-995036d2-f12a-46ef-b6d1-1f3b117a89b0.png"
+    },
+    {
+      "id": "cg-n03",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-2b7bb884-ca71-428f-9b75-708596bacb33.png"
+    },
+    {
+      "id": "cg-n04",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-3f4529d9-ffbd-4a95-bc87-32e51a75e5fc.png"
+    },
+    {
+      "id": "cg-a01",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-4747fe05-704f-4c78-94d6-872462849a12.png"
+    },
+    {
+      "id": "cg-a02",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-730a3e87-bc12-41fa-8141-bbb56ad942f1.png"
+    },
+    {
+      "id": "cg-a03",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-db8be8b7-daaf-4472-a24f-32c4174883be.png"
+    }
+  ]
+}

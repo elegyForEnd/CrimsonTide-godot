@@ -808,6 +808,13 @@ func draw_story() -> void:
 	if h == null or h.campaign == null:
 		return
 	var c = h.campaign
+	if c.state.is_empty(): return
+	if c.state.get("revision","")=="scarlet-1":
+		begin_sim()
+		circle(c.hero_at,float(c.INTERACT_RADIUS),C_INTERACT,1.5)
+		for item in c.objective_nodes(): circle(item.p,float(c.INTERACT_RADIUS),C_READY,1.0)
+		end_sim()
+		return
 	var hero: Vector2 = c.hero_at
 	begin_sim()
 	# 玩家：普攻判定半径（刀光只画到 245，判定圈更大）+ 近身无条件命中圈

@@ -1,0 +1,11 @@
+{
+  "base_version": 1,
+  "films": 21,
+  "shots": 83,
+  "loops": 19,
+  "overlapFrames": 39,
+  "original_actions_preserved": true,
+  "legal_windows": true,
+  "archive_ok": true,
+  "game_files_modified": false
+}

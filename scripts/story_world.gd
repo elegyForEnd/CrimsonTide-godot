@@ -117,7 +117,9 @@ func sync_story(screen: Vector2, dt: float) -> void:
 	begin_sprites()
 	for i in 3:
 		var data: Dictionary
-		if i==int(campaign.state.hero) and campaign.attack_time>0:
+		if campaign.has_method("hero_pose"):
+			data=campaign.hero_pose(hero_frames,i)
+		elif i==int(campaign.state.hero) and campaign.attack_time>0:
 			data=hero_frames.attack_frame(i,3 if i==1 else 1,mini(3,int((0.38-campaign.attack_time)/0.10)))
 		elif campaign.moving:
 			data=hero_frames.motion_frame(i,"walk",campaign.clock*8,0)
@@ -162,6 +164,23 @@ func sync_story(screen: Vector2, dt: float) -> void:
 		submit_sprite(tex,rect,region,tint,Transform2D(0,e.p))
 	end_sprites()
 	sync_quest_objects()
+
+func weapon_effect_socket(hero: int) -> Dictionary:
+	if not campaign.has_method("hero_actor"): return {}
+	var actor: Dictionary=campaign.hero_actor(hero)
+	var pose: Dictionary=campaign.hero_pose(hero_frames,hero)
+	var origin: Vector2=campaign.hero_at if hero==int(campaign.state.hero) else campaign.allies[hero]
+	# Sprite3D compensates vertical foreshortening; project its upright sockets
+	# with the same scale and ground-height lift at any camera zoom.
+	var scale := view_camera.get_viewport().get_visible_rect().size.y/view_camera.size*UNIT
+	var side := Vector2(-1 if campaign.facing.x<0 else 1,1)
+	var tip: Vector2=Vector2(pose.get("socket",hero_frames.equipped_weapon_tip(actor)))*side
+	var grip: Vector2=Vector2(pose.get("grip",Vector2.ZERO))*side
+	var at := project(origin)-Vector2(0,2.0*scale)
+	var aim := ground_transform().basis_xform(campaign.facing).normalized()
+	var mount := CharacterMetrics.aimed_mount(at,grip*scale,tip*scale,aim)
+	return {"tip":at+tip*scale,"grip":at+grip*scale,"stroke_tip":mount.tip,"stroke_pivot":mount.pivot,"stroke_center":mount.center,
+		"aim":aim,"blade_axis":(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(int(actor.weapon)),"active":actor.swing_time>0}
 
 func sync_quest_objects() -> void:
 	var nodes: Array=campaign.objective_nodes()

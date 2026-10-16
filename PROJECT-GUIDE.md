@@ -42,13 +42,15 @@ D:\dsh\Game\
    ├─ scripts\                 ← 全部游戏逻辑（155 个 .gd / 4.73 万行，UI/逻辑均由代码构建）
    │  ├─ boot.gd / launcher_env.gd / launcher_bar.gd / launcher_mute.gd ← 启动器：忠告→环境自检→导入进度条→点击开始（§4.A）
    │  ├─ window_settings.gd    ← 窗口模式/尺寸的唯一真源（零依赖，启动器与设置页共用，§4.A）
-   │  └─ story_*.gd            ← 独立故事战役、连续地表、分层副本、环境、显示、UI、探索图与Galgame对话、整张立绘服饰/姿势/表情
+   │  └─ story_screen.gd → scarlet/*.gd ← 新剧情事件；复用原story_world/map/inventory与渲染基础
    │      vn_full_gallery / vn_full_patch_boot ← 216张完整立绘鉴赏与v14增量启动
    │      story_act_art / story_regional_environment ← 第二至第六幕的区域布局、独立建筑、材质与灯光
    │      story_exploration_art / story_exploration_environment ← 六幕副本房间图、空洞、多段高程、地编与室外有机边界
+   │      rpg_equipment.gd + scarlet/equipment_combat.gd ← 故事随机词缀、暗金、套装与临时战斗效果
    ├─ resources\               ← 16 个 .gdshader + rogue_build_content.json + scene_music_plan.json + audio_bus.tres
    ├─ shaders\                 ← hero_hair_motion.gdshader（仅离线烘帧用）
    ├─ assets\                  ← 全部美术/音频/模型资源（见 §8.4）
+   │  └─ story/cg-scarlet-v1     ← 赤月遗书19张平面CG，已接入新版ADV；新增背景与NPC在story/scarlet
    ├─ tests\                   ← 288 个 GDScript 回归测试（2.96 万行）+ 6 个 Python 测试
    ├─ tools\                   ← 147 个素材/音频/索引/门禁脚本（Python 为主，另有 GD 预览/烘焙）
    ├─ docs\rpg\               ← 故事计划/全文/任务、实现范围、本地MPQ/CASC地图研究
@@ -75,9 +77,9 @@ project.godot:18  主场景 = scenes/boot.tscn
   └─ boot.gd        启动器（2026-10-12 起；全部 UI 由代码构建，见 §4.A）：
         健康忠告 `boot.gd:272 play_advice()`（停留 4.5s，任意键可跳过——**画面上不显示提示行**，用户要求）
      → 环境自检 `launcher_env.gd:45 scan()`（全局类缓存 + `.import` 产物；与 tools/check_class_cache.ps1 同口径）
-     →〔需要时〕资源导入：PV 循环 + 进度条 + 圆形静音 + 世界观文案轮播；收尾复查 `boot.gd:538 _finish_compile()`
-     → 就绪后屏幕中下部闪烁「点击任意键开始游戏」（预热未完成时先显示"正在准备登录界面~"，见 §11.67）`boot.gd:465 _show_prompt()`（PV 两条路径都循环播）
-     → 任意键 `boot.gd:786 _unhandled_input()` → **水滴转场** `boot.gd:602 _start_transition()`：
+     →〔需要时〕资源导入：PV 循环 + 进度条 + 圆形静音 + 世界观文案轮播；收尾复查 `boot.gd:546 _finish_compile()`
+     → 就绪后屏幕中下部闪烁「点击任意键开始游戏」（预热未完成时先显示"正在准备登录界面~"，见 §11.67）`boot.gd:473 _show_prompt()`（PV 两条路径都循环播）
+     → 任意键 `boot.gd:793 _unhandled_input()` → **水滴转场** `boot.gd:610 _start_transition()`：
          抓一张启动器画面 → 立刻把 main.tscn 挂到它下面 → 用 4~5 个向外扩散的圆把那张图擦掉，
          露出下面的登录页（音频同步淡出，见 §4.A 与 §11.57/64/65）；这次真导过资源就先擦成黑、
          再重启一次进程进 main.tscn（见 §11.60）
@@ -105,9 +107,13 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### 3.3 模式开关
 
-故事入口为 `main.gd` 的独立 `story` 页面：`story_screen` → `story_campaign` → `story_map` / `story_region`，由 `story_world` / `story_environment` 显示。它使用独立战役存档，当前是单人及两名AI伙伴，不加入TideSession的联机或结算生命周期。章节与NPC交谈由story_dialogue_data/ui提供Galgame演出，暂停故事模拟后通过显式选项调用原服务，阅读记录独立保存。
+2026-10-16 运行剧情已更新为 `scarlet-screenplay-2`。《王冠与空城》正文来自 `art/scarlet-screenplay/screenplay.json`，实操编排在 `tools/scarlet_screenplay_runtime.py`，`build_scarlet_content.py` 同时生成 campaign 与 fieldwork，旧 regency 覆盖器不再加载。旧 scarlet-1 存档转开独立新槽，原文件保留。双结局为接受／拒绝王冠，菜单支持回答前安全记录恢复。当前范围见 docs/rpg/SCARLET-IMPLEMENTATION.md。
 
-故事物品由 `story_inventory.gd` 权威处理，`story_items_ui.gd`、`story_item_grid.gd` 负责实际控件与原生拖拽，`story_ui_skin.gd` 使用原创材质九宫切片。不要调用远征/肉鸽的货币、装备或存储函数。v10发布采用小运行入口与补丁，挂载现有v9地图底包；正常启动Start-Story-GUI，临时试玩Preview-Inventory。
+故事入口为 main.gd 独立 story 页面：story_screen.gd → scripts/scarlet/screen.gd → campaign / combat / world / adv / map / art。新剧情／任务／Boss机制作为事件层接入；原story_world、world_3d、story_map、环境渲染、角色帧动画、战斗特效与行囊界面直接复用。单人三角色与AI伙伴，存档版本2，使用独立.scarlet.json，任务/证据/选择/世界/待播场景与阶段检查点分开持久化。
+
+赤月遗书保留原story_inventory与story_items_ui的行囊、仓库、装备、商店和锻造；专精与装备属性接入新事件层，证物单独保存不可出售。Start-Scarlet.cmd和Start-Story-GUI.cmd使用源码启动，新版正式发布包另行导出。旧v10~v14发布补丁属于历史版本；story_inventory本身继续在当前故事模式使用。
+
+故事装备数据链：tools/build_rpg_equipment.py → resources/rpg_equipment.json → rpg_equipment（纯规则）→ story_inventory（实例／事务）→ scarlet/campaign、combat、equipment_combat（战斗）→ story_items_ui、story_item_grid、scarlet/screen（显示）。新实例用affix_revision=1，旧装备不重新掷骰。
 
 `session.gd:253 select_mode()` 分派 `campaign`（搜打撤）与 `rogue`（魔境）。两模式共用：
 - 同一个 `TideSession`（session.gd:78-82 同时持有 roguelike/expedition/mini_bosses/wild_bosses/dragon_boss 实例）；
@@ -123,12 +129,12 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 | 功能 | 文件:锚点 |
 |---|---|
-| 启动器总控（忠告→环境自检→导入→点击开始） | `scripts/boot.gd`（入口 `boot.gd:149 _ready()`、UI 构建 `boot.gd:182 _build_scene_ui()`、忠告 `boot.gd:272 play_advice()`、自检 `boot.gd:313 _scan_env()`、PV `boot.gd:355 _start_video()`、闪烁提示 `boot.gd:465 _show_prompt()`、导入轮询 `boot.gd:510 _process()`、导入超时兜底 `boot.gd:39 IMPORT_TIMEOUT_SECONDS`=1200s + `boot.gd:973 _stop_import()`（⚠️ 见 §11.63）、收尾复查 `boot.gd:538 _finish_compile()`、重启进程 `boot.gd:561 _restart_into_game()`、进主场景 `boot.gd:569 _enter_game()`、任意键 `boot.gd:786 _unhandled_input()`）；设计分辨率 `boot.gd:42 VIEW`=1440×900，布局全部显式写死（⚠️ 原因见 §11.57） |
-| **水滴转场（点任意键 → 登录页）** | 着色器 `resources/launcher_dissolve.gdshader`（等比空间的圆，圆内 alpha 归零）+ `scripts/boot.gd`：总控 `boot.gd:602 _start_transition()`（抓图→**复用预热好的材质**→挂 main.tscn→盖 TextureRect→藏启动器层）、摇圆心 `boot.gd:682 _roll_drops()`、推参数 `boot.gd:711 _push_dissolve_uniforms()`、每帧 `boot.gd:730 _tick_dissolve()`、收尾清理 `boot.gd:746 _end_transition()`；常量 `boot.gd:49 DISSOLVE_SHADER` / `boot.gd:52 TRANSITION_SECONDS`=0.9 / `boot.gd:54 LOGIN_FADE_SECONDS`=0.5 / `boot.gd:55 DROP_COUNT_MIN/MAX`=4/5 / `boot.gd:58 DROP_REGION_AREA`=0.2（圆心所在圆**面积**占屏 20%）/ `boot.gd:60 DROP_MIN_GAP`=0.55 / `boot.gd:62 MAX_DROP_RADIUS`=1.35；登录页淡入 `main.gd:469 fade_in_ui()`。⚠️ 三条铁律见 §11.57（为什么是抓图而不是 CanvasGroup）、§11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开）、§11.67（**不许在点击那一刻 load / 编译着色器**，两者都要提前预热） |
-| **转场预热（"提前渲染"/编译着色器，用户第 4 轮要求）** | 三件事全部提前到"玩家还在看开场"时做，点击时只复用：① 着色器管线预编译 `boot.gd:245 _shader_warm_setup()`（材质挂在被黑底盖住的满屏贴图上先画，`boot.gd:265 _park_warm_plate()` 两帧后收成不可见）+ 复用点 `boot.gd:602 _start_transition()`；② 后台线程加载 + 待机期实例化 `boot.gd:385 _begin_prewarm()` / `boot.gd:395 _prewarm()` / `boot.gd:422 _prewarm_attach()`；③ 闸门 `boot.gd:439 _finish_prewarm()` + 藏在忠告里的等待 `boot.gd:298 _hold_for_prewarm()`（上限 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s）+ 未就绪时顶替提示 `boot.gd:451 _show_preparing()`；起跑点 `boot.gd:326 _maybe_prewarm_early()`（自检一通过就开，早于它 = 类缓存过期时解析失败）。⚠️ 见 §11.67 |
+| 启动器总控（忠告→环境自检→导入→点击开始） | `scripts/boot.gd`（入口 `boot.gd:149 _ready()`、UI 构建 `boot.gd:182 _build_scene_ui()`、忠告 `boot.gd:272 play_advice()`、自检 `boot.gd:313 _scan_env()`、PV `boot.gd:355 _start_video()`、闪烁提示 `boot.gd:473 _show_prompt()`、导入轮询 `boot.gd:518 _process()`、导入超时兜底 `boot.gd:39 IMPORT_TIMEOUT_SECONDS`=1200s + `boot.gd:980 _stop_import()`（⚠️ 见 §11.63）、收尾复查 `boot.gd:546 _finish_compile()`、重启进程 `boot.gd:569 _restart_into_game()`、进主场景 `boot.gd:569 _enter_game()`、任意键 `boot.gd:793 _unhandled_input()`）；设计分辨率 `boot.gd:42 VIEW`=1440×900，布局全部显式写死（⚠️ 原因见 §11.57） |
+| **水滴转场（点任意键 → 登录页）** | 着色器 `resources/launcher_dissolve.gdshader`（等比空间的圆，圆内 alpha 归零）+ `scripts/boot.gd`：总控 `boot.gd:610 _start_transition()`（抓图→**复用预热好的材质**→挂 main.tscn→盖 TextureRect→藏启动器层）、摇圆心 `boot.gd:682 _roll_drops()`、推参数 `boot.gd:711 _push_dissolve_uniforms()`、每帧 `boot.gd:737 _tick_dissolve()`、收尾清理 `boot.gd:753 _end_transition()`；常量 `boot.gd:49 DISSOLVE_SHADER` / `boot.gd:52 TRANSITION_SECONDS`=0.9 / `boot.gd:54 LOGIN_FADE_SECONDS`=0.5 / `boot.gd:55 DROP_COUNT_MIN/MAX`=4/5 / `boot.gd:58 DROP_REGION_AREA`=0.2（圆心所在圆**面积**占屏 20%）/ `boot.gd:60 DROP_MIN_GAP`=0.55 / `boot.gd:62 MAX_DROP_RADIUS`=1.35；登录页淡入 `main.gd:469 fade_in_ui()`。⚠️ 三条铁律见 §11.57（为什么是抓图而不是 CanvasGroup）、§11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开）、§11.67（**不许在点击那一刻 load / 编译着色器**，两者都要提前预热） |
+| **转场预热（"提前渲染"/编译着色器，用户第 4 轮要求）** | 三件事全部提前到"玩家还在看开场"时做，点击时只复用：① 着色器管线预编译 `boot.gd:245 _shader_warm_setup()`（材质挂在被黑底盖住的满屏贴图上先画，`boot.gd:265 _park_warm_plate()` 两帧后收成不可见）+ 复用点 `boot.gd:610 _start_transition()`；② 后台线程加载 + 待机期实例化 `boot.gd:385 _begin_prewarm()` / `boot.gd:395 _prewarm()` / `boot.gd:422 _prewarm_attach()`；③ 闸门 `boot.gd:439 _finish_prewarm()` + 藏在忠告里的等待 `boot.gd:298 _hold_for_prewarm()`（上限 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s）+ 未就绪时顶替提示 `boot.gd:451 _show_preparing()`；起跑点 `boot.gd:326 _maybe_prewarm_early()`（自检一通过就开，早于它 = 类缓存过期时解析失败）。⚠️ 见 §11.67 |
 | 启动器进度条 / 圆形静音按钮 | `scripts/launcher_bar.gd`（描金进度条 `launcher_bar.gd:17 set_ratio()` / `launcher_bar.gd:26 _draw()`）、`scripts/launcher_mute.gd`（圆形静音 `launcher_mute.gd:16 set_muted()` / `launcher_mute.gd:20 _draw()`）；静音状态 `graphics_quality.gd:14 launcher_mute` + `graphics_quality.gd:71 set_launcher_mute()`（写 `user://graphics.cfg` 的 `[audio] launcher_mute`，**不进** profile.json——避免跟云存档同步） |
 | 启动器环境自检（玩家侧，与开发侧同一口径） | `scripts/launcher_env.gd`：`launcher_env.gd:45 scan()` / `launcher_env.gd:72 _exact()` / `launcher_env.gd:136 progress()` / `launcher_env.gd:142 count_pending()` / `launcher_env.gd:151 entry_count()` / `launcher_env.gd:166 start_import()` / `launcher_env.gd:175 log_tail()` / `launcher_env.gd:189 import_entry_of()` / `launcher_env.gd:212 class_names_in()` / `launcher_env.gd:236 _fingerprint()` / `launcher_env.gd:249 _stamp_matches()` / `launcher_env.gd:277 _walk()`；常量 `launcher_env.gd:29-32`（`CACHE_PATH`/`IMPORT_DIR`/`LOG_PATH`/`STAMP_PATH`）。⚠️ 与 `tools/check_class_cache.ps1` 是**同一套判定口径的两份实现**，改一边必须改另一边 |
-| 启动器画面与文案（改台词/时长/卡片） | `boot.gd:73 FLAVOR`（15 句世界观轮播）、`boot.gd:30 ADVICE_HOLD_SECONDS`=4.5、`boot.gd:31 FLAVOR_SECONDS`=4.0、`boot.gd:32 POLL_SECONDS`=0.35；忠告文案 `boot.gd:67 ADVICE_TITLE` + `boot.gd:68 ADVICE_BODY`（**不再显示"任意键跳过"提示行**，跳过功能保留在 `_unhandled_input()`）；字体兜底 `boot.gd:170 _resolve_face()`（加载不到就退 `SystemFont` 并挂 `ThemeDB.fallback_font`）；编译页 `boot.gd:909 _build_compile_ui()`、重启确认卡 `boot.gd:935 _build_confirm_card()`、出错卡 `boot.gd:948 _build_blocked_card()` |
+| 启动器画面与文案（改台词/时长/卡片） | `boot.gd:73 FLAVOR`（15 句世界观轮播）、`boot.gd:30 ADVICE_HOLD_SECONDS`=4.5、`boot.gd:31 FLAVOR_SECONDS`=4.0、`boot.gd:32 POLL_SECONDS`=0.35；忠告文案 `boot.gd:67 ADVICE_TITLE` + `boot.gd:68 ADVICE_BODY`（**不再显示"任意键跳过"提示行**，跳过功能保留在 `_unhandled_input()`）；字体兜底 `boot.gd:170 _resolve_face()`（加载不到就退 `SystemFont` 并挂 `ThemeDB.fallback_font`）；编译页 `boot.gd:909 _build_compile_ui()`、重启确认卡 `boot.gd:942 _build_confirm_card()`、出错卡 `boot.gd:948 _build_blocked_card()` |
 | **窗口模式/尺寸（全屏 / 档位 / 手拖继承）** | 单一真源 `scripts/window_settings.gd`：`window_settings.gd:19 DEFAULT_FULLSCREEN` / `window_settings.gd:20 DEFAULT_WINDOW`=1600×900 / `window_settings.gd:24 PRESETS` / `window_settings.gd:30 FOLLOW_DESKTOP`=4 / `window_settings.gd:32 CUSTOM`=-1 / `window_settings.gd:33 MIN_WINDOW`=960×540 / 豁免表 `window_settings.gd:41 CLI_WINDOW_FLAGS` / `window_settings.gd:43 skip_window_control()` / `window_settings.gd:86 read_saved()` / `window_settings.gd:115 apply()` / `window_settings.gd:131 apply_saved()` / `window_settings.gd:139 preset_for_size()`；应用点 `graphics_quality.gd:31 apply_saved()`（autoload 第一句）与设置页 `main.gd:4656 apply_window_setting()` |
 | 设置页的窗口那一段 | `main.gd:4574 show_settings()`（modal 高度 740；全屏按钮 `main.gd:4606-4609`、5 个档位按钮循环 `main.gd:4614-4618`）、`main.gd:4646 choose_window_preset()`；玩家手拖的尺寸由 `main.gd:4667 note_window_size()` 经 0.6s 防抖写回存档（`main.gd:1784 NOTIFICATION_WM_SIZE_CHANGED` 分支进，Timer 在 `main.gd:4682-4688`） |
 | 窗口缩放/1440×900 适配 | `scripts/main.gd:672 fit_ui()` |
@@ -311,7 +317,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 功能 | 文件:锚点 |
 |---|---|
 | 战场主渲染（相机跟随/震屏/角色与怪物 billboard/预警/伤害数字/夜幕） | `scripts/battlefield.gd`（_process battlefield.gd:109；角色绘制 `actor` battlefield.gd:319；怪物预警 `monster` battlefield.gd:408；特殊 Boss 立绘索引 `SPECIAL_BOSS_ART` battlefield.gd:31） |
-| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:742 weapon_effect_socket()`、`battlefield.gd:756 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
+| **武器挂点/地面投影契约**（一切特效的锚） | `battlefield.gd:742 weapon_effect_socket()`、`battlefield.gd:761 ground_transform()`——新特效必须遵守，否则 tests/weapon_stroke_stability.gd 失败 |
 | 3D 场景层（正交相机/地砖/墙/桥/湖/宝箱开盖/billboard 池） | `scripts/world_3d.gd`（rebuild world_3d.gd:165；精灵俯视压缩补偿 world_3d.gd:254） |
 | 2D 地形底图与战术地图绘制 | `scripts/world_art.gd`（atlas world_art.gd:103；王城夜景 `city_terrain` world_art.gd:132） |
 | CC0 模型库运行时（KayKit/Quaternius，shader 着色/包围盒） | `scripts/scene_assets.gd`（registry scene_assets.gd:5；宝箱开盖 chest_state scene_assets.gd:88） |
@@ -446,13 +452,13 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 栈桥 抛竿（[E]/[Space]） | `camp_screen.gd:755` | `camp_activities.gd:123 at_pier()` | `camp_activities.gd:186 cast()`、`camp_screen.gd:656` | `at_pier()`：DOCK 内且距 `PIER_AT` < `PIER_RADIUS` (240) | ✅ 同源（常量 `camp_activities.gd:9`） |
 | 家园 地面拾取（[F]） | `camp_screen.gd:667` | `has_drop_near()` ≤ `DROP_RADIUS` (120) | `camp_screen.gd:677` → `nearest_drop` / `pick_up_nearby()` | 同 `DROP_RADIUS` (120) | ✅ 同源（常量 `camp_activities.gd:10`） |
 | 搜打撤 城门（长按 E 1.5s） | `main.gd:2161` | 距 portal < `session.GATE_RADIUS` (85) 且 `can_travel()` | `session.gd:3649` | 同 `session.GATE_RADIUS` (85) + `party_at_gate()` | ✅ 同源常量 |
-| 搜打撤 城门世界标签 | `battlefield.gd:188 key_hint()` + `:201` | 相机 < 1500 且玩家 < `GATE_RADIUS` (85) 出 `[E]` | `session.gd:3649` | 玩家距城门 < `GATE_RADIUS` (85) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
+| 搜打撤 城门世界标签 | `battlefield.gd:192 key_hint()` + `:201` | 相机 < 1500 且玩家 < `GATE_RADIUS` (85) 出 `[E]` | `session.gd:3649` | 玩家距城门 < `GATE_RADIUS` (85) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
 | 搜打撤 撤离点（长按 E 4s） | `main.gd:2165` | 距 exit < `session.EXIT_RADIUS` (83) | `session.gd:3659` | 同 `session.EXIT_RADIUS` (83) | ✅ 同源常量 |
-| 搜打撤 撤离点世界标签 | `battlefield.gd:188 key_hint()` + `:218` | 相机 < 1500 且玩家 < `EXIT_RADIUS` (83) 出 `[E] 撤离` | `session.gd:3659` | 玩家 < `EXIT_RADIUS` (83) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
+| 搜打撤 撤离点世界标签 | `battlefield.gd:192 key_hint()` + `:218` | 相机 < 1500 且玩家 < `EXIT_RADIUS` (83) 出 `[E] 撤离` | `session.gd:3659` | 玩家 < `EXIT_RADIUS` (83) | ✅ 已对齐（远处纯地名，进圈才出 [E]） |
 | 搜打撤 封印（长按 E 3s） | `main.gd:2169` | 距 shrine < `session.SHRINE_RADIUS` (72) | `session.gd:3665` | 同 `session.SHRINE_RADIUS` (72) | ✅ 同源常量 |
 | 搜打撤 救援队友（长按 E 3s） | `main.gd:2158` | 距倒地队友 < `session.RESCUE_RADIUS` (75) | `session.gd:3653` | 同 `session.RESCUE_RADIUS` (75) | ✅ 同源常量 |
 | 搜打撤 箱子搜索（[F]/[H]） | `main.gd:2176`（用 `session.SEARCH_RADIUS`=80 决定显示） | 容器距玩家 < `SEARCH_RADIUS` (80) | `main.gd:1985` → `session.gd:1019 search_target` | 距离 < `SEARCH_RADIUS` (80)（中途离开宽限 `SEARCH_RANGE`=86，`session.gd:85`） | ✅ 已对齐（消除 70~80 反向不一致） |
-| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:188 key_hint()` + `:239/:264/:271` | 相机 < 1500 且玩家 < `SEARCH_RADIUS` (80) / `DROP_RADIUS` (70) 出按键 | `session.gd:974/984/1000` | 玩家 < `SEARCH_RADIUS` / `DROP_RADIUS` | ✅ 已对齐（远处纯地名，进圈才出按键） |
+| 搜打撤 世界标签（箱/掉落/背包） | `battlefield.gd:192 key_hint()` + `:239/:264/:271` | 相机 < 1500 且玩家 < `SEARCH_RADIUS` (80) / `DROP_RADIUS` (70) 出按键 | `session.gd:974/984/1000` | 玩家 < `SEARCH_RADIUS` / `DROP_RADIUS` | ✅ 已对齐（远处纯地名，进圈才出按键） |
 | 魔境 开宝箱（[E]） | `main.gd:2096`、`main.gd:5207`、`rogue_room_ui.gd:227`、`rogue_field.gd:145` | 玩家距 chest ≤ `session.CHEST_RADIUS` (85) | `session.gd:3634` → `roguelike.gd:727 loot_interact()` | 距 chest ≤ `session.CHEST_RADIUS` (85) | ✅ 已对齐（按判定圈动态显示 [E]，远处为叙述句） |
 | 魔境 掉落拾取（[E]） | `main.gd:2096`、`rogue_field.gd:124-133` | 玩家距 drop < `session.LOOT_RADIUS` (80) 且过落地延迟/归属门 | `roguelike.gd:738` | 距离 < `session.LOOT_RADIUS` (80) | ✅ 已对齐（三道门与判定完全镜像） |
 | 魔境 分叉选路（按住 E） | `main.gd:2096/4953/5211`、`rogue_room_ui.gd:227`、`rogue_field.gd:185` | `x > fork_start` 且距 exit ≤ `session.FORK_RADIUS` (64) | `session.gd:3637` / `roguelike.gd:1346` | 同 `session.FORK_RADIUS` (64) | ✅ 已对齐（按判定圈动态显示 [E]，远处为叙述句） |
@@ -461,7 +467,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 **已修总清单（2026-10-08 落盘验收）**：
 1. **营地名牌**：650 仅管地名可见性，`camp_screen.gd:788` 圈外只画暗名；进圈（`< station.radius`）才画完整光环+下箭头+白字。
-2. **搜打撤世界标签**（`battlefield.gd:188 key_hint()`）：按玩家真实距离门控按键字样，城门 85 / 撤离 83 / 宝箱 80 / 掉落 70；1500 仅作为相机视距门控。
+2. **搜打撤世界标签**（`battlefield.gd:192 key_hint()`）：按玩家真实距离门控按键字样，城门 85 / 撤离 83 / 宝箱 80 / 掉落 70；1500 仅作为相机视距门控。
 3. **魔境提示与指路行**（`main.gd:2096/4953/5211`、`rogue_room_ui.gd:227`、`rogue_field.gd:145`）：远处统一为安全叙述句，进入判定距离（85/80/64）才出 [E] 或高亮。
 4. **宝箱 HUD**：`main.gd:2176` 由 70 修正为 `session.SEARCH_RADIUS` (80)，与判定圈严格统一。
 5. **单真值化**：9 处搜打撤/魔境半径常量收拢至 `session.gd:86-97`；营地半径常量收拢至 `camp_activities.gd:6-12`。2026-10-11 追加：战斗/AI 半径（敌人索敌/近身命中、`Ecology.SEEK_RANGE`/`attack_reach`、故事 21 个半径）也提成常量，见 R.1 第二条注。
@@ -488,53 +494,51 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 回归测试 | `tests/dev_ranges.gd`（217 项）：开关口径、勾选树 key 唯一、灵体门控（无灵体不写 `soul_focus`、最后一只到期时清理）、故事几何契约（门只画当前区域、宝箱在当前区域内、5 段墙与 110 门洞、台阶高度） |
 
 **投影来源**：魔境 `Transform2D(0,-camera_offset())`；搜打撤 `battlefield.ground_transform()` → `world_3d.gd:100`；
-营地 `camp_site.gd:140 project()` / `camp_site.gd:146 project_ground()`（覆盖层用后者）；故事 `story_screen.gd:195 project()`。
-全项目只有两处 `Camera3D.new()`（`world_3d.gd:54` 被搜打撤与故事共用、`camp_site.gd:637`）。
+营地 `camp_site.gd:140 project()` / `camp_site.gd:146 project_ground()`（覆盖层用后者）；故事 `scripts/scarlet/screen.gd:358 project()`。
+赤月遗书直接使用原story_world及world_3d的相机、光照、PBR、烘焙、阴影与角色帧。scarlet/geography只将事件索引坐标转为原地图坐标；没有另造相机或环境。
 
-### S. 故事模式与连续探索地图
+### S. 赤月遗书独立故事战役
 
-2026-10-12完整立绘v14：story_portrait_art/view加载三位角色×三服饰×三姿势×八表情，共216张独立完整PNG，单TextureRect整张切换。对话立绘统一story_dialogue_ui.PORTRAIT_BASE_Y=148，说话时上移6；PORTRAIT_EXTENT=696×1080（初版的约1.45倍），保持两侧水平中心及腰部落点，头部到腰部露在对话框上方。初始摆放与说话过渡必须同用该常量，防止翻页回弹到旧坐标。原稿和提示词在art/vn-full-v3，运行资源assets/story/vn-full-v3；2160×3840为整图放大画布，原生尺寸逐图记录。作者目录不导入引擎，参见docs/rpg/VN-FULL-PORTRAITS.md；v13分层方案仅为旧版本历史。
+2026-10-15按用户要求全部重做运行基础。旧story_campaign/map/world/dialogue/inventory不参与新入口。素材允许使用已有角色原画、216张完整差分、19张CG、通用模型与声音。
 
-Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_dialogue_ui；完整正文和明确说话人由story_dialogue_data处理。未署名引号保持旁白，不凭附近名字推断。
+40主线、6支线、74场景373页；43个剧情事件地区映射到原55张地图；连同其余探索地区共56个入口，保留连续野外与原副本进出。调查、证据辨析、机关、潜入视线、护送与倒地接应、试航、七人救援与红潮预警、六位章节Boss及两位可选Boss均有实际规则。ADV按台词切换完整表情/姿态；Boss交战字幕不暂停模拟。21个影片版本为空路径，使用叙事过渡，不冒充成片。
 
-图形任务日志：story_quest_ui（J/人物委托/档案NPC）使用73任务真数据、分类卡片、目标进度与报酬；story_quest_fx响应campaign.quest_event，接取/推进/完成只在真实状态改变时播放，特效不发奖励。tracked/track持久保存追踪ID，HUD读取tracked；tests/story_quests_ui.gd覆盖真实鼠标、E与事件幂等。
-
-战役GUI：`story_screen.gd` 的 `show_items()` / `show_bag()` / `show_growth()`；NPC索引2/4/5在立绘交谈后通过选项转锻造、交易、仓库。`story_inventory.gd` 的 `move()` / `equip()` / `buy()` / `forge()` / `craft()` 是唯一规则口，`valid_data()` 校验新实例存档。三人装备镜像写回kits，伙伴伤害也读自己的装备。配套tests/story_items.gd、story_items_ui.gd；制作与操作见docs/rpg/ITEMS-AND-SERVICES.md。
-
-| 功能 | 文件与配套检查 |
+| 功能 | 权威入口与检查 |
 |---|---|
-| 完整立绘、服饰、姿势与表情 | `scripts/story_portrait_art.gd:39 layers()`、`scripts/story_portrait_view.gd:20 set_actor()`；story_dialogue_ui.toggle_wardrobe/choose_costume/choose_pose，story_screen.save_dialogue_outfits；tests/story_portrait_variants.gd、tests/test_vn_full_portraits.py；build_vn_full_portraits/register_vn_full_source负责整图导出与来源记录 |
-| Galgame章节、营地交谈与结局 | `scripts/story_screen.gd:327 show_dialogue()`、`scripts/story_screen.gd:342 show_npc()`；story_dialogue_data.chapter/npc无损拆正文，story_dialogue_ui.advance/choose控制逐字、已读快进、回看与显式选项；tests/story_dialogue.gd，docs/rpg/GALGAME-DIALOGUE.md |
-| 地区连接、双向副本入口、寻路 | `story_map.gd:23 configure()`、`story_map.gd:147 route()`；tests/story_geography.gd |
-| 地形、楼梯、房屋与碰撞 | `story_region.gd:32 build()`、`story_region.gd:268 height_at()`、`story_region.gd:354 building_walls()`；楼梯高度与门洞必须同时影响渲染和移动 |
-| 场景摆放、屋顶、灯光、河岸 | `story_environment.gd:38 build()`，`story_world.gd:100 sync_story()`；tests/story_visual.gd |
-| Forward+画质、超分与兼容启动 | `graphics_quality.gd:30 apply()`、`graphics_quality.gd:52 configure()`；graphics_settings_ui.gd、Start-Compatibility.cmd |
-| Blender模型、PBR与可编辑地编 | story_asset_kit.gd；art/story-environment/opening-master.blend、opening-terrain.blend；scenes/story/*.tscn / *.scn；docs/rpg/FORWARDPLUS-ART-PIPELINE.md |
-| 开场室内家具、侧墙与占地 | story_set_dressing.gd / resources/story-opening-dressing.json共享摆放与碰撞；story_region.height_at按室内台基抬脚；story_environment.crafted_details、story_asset_kit.mesh_nodes包含淡出根网格；tools/patch_story_workplaces.gd增量编辑，tools/Bake-Opening.ps1重新烘焙；tests/story_workplaces.gd |
-| 不规则洞窟与旧堡副本 | story_region.floor_contains/build_castle、story_environment.cave_shell/castle_shell；story-cave-footprint.json统一地面/移动/寻路/探索图；OUTDOOR-CASTLE.md、tests/story_outdoor_castle.gd；第九区存档上限从章节地图数量读取 |
-| 建筑室内地面材质 | story_floor_palette.gd、resources/story_interior_floor.gdshader；城堡/墓室/书库/礼拜堂分流，自然洞窟保留岩土；tools/patch_story_interior_floors.gd仅替换地面/台阶/台基，tests/story_architectural_floors.gd；docs/rpg/INTERIOR-FLOORS.md |
-| 第二至第六幕美术/副本 | `scripts/story_act_art.gd:14 configure()`、`scripts/story_act_art.gd:6 terrain()`；story-later-acts.json / story-later-terrain.json；`scripts/story_regional_environment.gd:4 ground()`、`scripts/story_regional_environment.gd:24 walls()`；独立acts-2-6-master.blend、scenes/story/act*-*.tscn；`tests/story_later_acts.gd:12 run()`、tools/Bake-Later-Acts.ps1；docs/rpg/ACTS-2-6-ART.md |
-| 副本规模、环路、分区高差、室外非矩形边界 | story_exploration_art.configure / contains / height、story_exploration_environment.terrain / walls / outdoor_edge；story-exploration.json同步模型、通行、导航、敌群、探索图；独立dungeon-master.blend与34新模块；tests/story_exploration.gd；⚠️布局修改后必须更新缓存场景并重烘静态地面 |
-| 室外地面、桥头、岸线与虚空边界 | story_surface_geometry.land_pieces / connector_pieces；story_exterior_composition.build / height / river_outline；story_environment.connector_ground / curved_river；tests/story_boundary_surfaces.gd覆盖实际普通/兼容网格、世界偏移和移动轮廓保护；BOUNDARY-SURFACES.md。⚠️Packed数组平移前必须duplicate；静态地面/岸壁改动要重烘，外景要有起伏/装饰；外景不覆盖通路并排除固定GI |
-| 副本空间类型与边界语言 | story-exploration.json的layout_family / grade_axis / edge_styles / void_surface；story_exploration_environment.surrounding_geology与墙/栏杆/拱廊/断墙；30区22类型、10—14功能空间，DUNGEON-IDENTITIES.md；tests/story_dungeon_identity.gd和tools/verify_story_dungeon_release.gd检查真实缓存及发布包 |
-| 植被缓存与无头制作 | `scripts/story_ground_cover.gd:6 _ready()`；source_mesh / source_transforms保留CPU数据，prepare_capture清空GPU缓冲；story_environment.cover_batch、tools/patch_story_ground_cover.gd；⚠️不得序列化Dummy渲染器的MultiMesh实例缓冲，可能产生遮住整幅画面的巨面 |
-| 五幕临时场景试玩 | Preview-Later-Acts.cmd、`scripts/story_screen.gd:91 start()`；显式--preview-story/--story-act/--story-stage，开放五幕传送并禁用保存；tests/story_art_preview.gd |
-| 4K渲染与性能验收 | tests/story_render_upgrade.gd、story_4k_benchmark.gd、tools/monitor_story_gpu.py；原始数据在build，正式结果见TEST-REPORT |
-| 战役任务、传送激活、分层往返与存档 | `story_campaign.gd:45 load_campaign()`、`story_campaign.gd:309 activate_waypoint()`、`story_campaign.gd:333 use_entrance()`；tests/story_campaign.gd、story_geography.gd |
-| 探索地图、UI与输入 | `story_screen.gd:418 show_atlas()`、scripts/story_atlas.gd；tests/story_integration.gd、story_visual.gd |
-| 内容编译与本地参考复查 | tools/build_story_content.py、inspect_reference_maps.py、inspect_reference_regions.py、inspect_d2r_scenes.py；范围见docs/rpg/IMPLEMENTATION.md |
+| 入口、HUD、槽位与菜单 | `scripts/scarlet/screen.gd:88 start()`；tests/scarlet_integration.gd |
+| 任务与持久化 | `scripts/scarlet/campaign.gd:136 save_campaign()`；tests/scarlet_campaign.gd |
+| 调查、机关与分支 | `scripts/scarlet/campaign.gd:382 use()`；tests/scarlet_rules.gd |
+| 护送、红潮与三人更新 | `scripts/scarlet/campaign.gd:786 update()`；tests/scarlet_rules.gd |
+| Boss阶段与场内字幕 | `scripts/scarlet/combat.gd:269 tick()`；tests/scarlet_campaign.gd |
+| RPG词缀、暗金、套装、晶石 | `scripts/rpg_equipment.gd:6 CAPS`；数据resources/rpg_equipment.json由tools/build_rpg_equipment.py生成；32词缀／30暗金／6套装／4晶石 |
+| 故事装备生成与事务 | `scripts/story_inventory.gd:162 make_loot()`、`scripts/story_inventory.gd:497 reforge()`、`scripts/story_inventory.gd:514 inscribe()`、`scripts/story_inventory.gd:523 craft_set()`；tests/rpg_equipment.gd |
+| 装备真实战斗效果 | `scripts/scarlet/equipment_combat.gd:78 tick()`；scarlet/combat.hit与campaign.release_strike接线，持续／溅射不递归触发词条且服从机关血线 |
+| 装备比较与遗物图鉴 | `scripts/story_items_ui.gd:318 show_equipment_details()`、`scripts/story_items_ui.gd:369 show_equipment_codex()`；tests/rpg_equipment_visual.gd，实际渲染和真实UI回调 |
+| ADV与完整差分 | `scripts/scarlet/adv.gd:93 show_page()`；tests/scarlet_integration.gd |
+| 原渲染接入与附加剧情物件 | `scripts/scarlet/world.gd:48 build()`；tests/scarlet_visual.gd |
+| 路线与局部地图 | `scripts/scarlet/screen.gd:274 show_map()`；scripts/scarlet/map.gd，同源碰撞轮廓 |
+| 鉴赏与回看 | `scripts/scarlet/screen.gd:293 show_gallery()`；回看不提交任务或改变选择 |
+| 战前记录恢复 | `scripts/scarlet/campaign.gd:844 restore_before_finale()`；先备份当前分支，保留收藏 |
+
+内容源tools/build_scarlet_content.py生成resources/scarlet/campaign.json与SCARLET-CONTENT-INDEX.md。美术在assets/story/scarlet，提示词及原稿在art/scarlet-npc、art/scarlet-backgrounds；作者目录有.gdignore。tools/package_scarlet_art.ps1只做整图重采样与manifest。交互/提示统一INTERACT_RADIUS=105；原地图移动310像素/秒，闪避0.24秒/冷却0.85秒，机关按住2.4秒，阶段准备窗2.8秒。新增立绘长边3840、背景3840×2160为重采样交付，原始尺寸和SHA-256有记录，不称原生4K。
+
+当前实现与另外制作清单：docs/rpg/SCARLET-IMPLEMENTATION.md、SCARLET-REMAINING.md。旧story_*测试、Blender地编与v10~v14补丁说明为历史参考，不能据此声称新入口通过了旧系统验收。
+
+装备掉落表现复用story_combat_vfx：weapon_drop携带实际实例name，equipment_drop携带base／name／quality，护衣／护符也显示对应图标与品质光圈；tests/rpg_equipment_drop_visual.gd实渲验收。export_presets.cfg包含resources/rpg_equipment.json与resources/scarlet/campaign.json，正式导出仍另行执行。
 
 ## 5. 「我要改 X」速查表
 
-武器命中/余焰/飞行尾迹：combat_finish；短时环境灯：combat_light_pool；故事攻击、Q与R的适配：story_combat_vfx；逐步揭示：weapon_image_art.reveal_mechanic。战斗规则继续在session/rogue_actions/story_campaign，表现层禁止结算伤害。
+故事随机词缀／暗金／套装／镶嵌 → §4.S、docs/rpg/EQUIPMENT-SYSTEM.md；内容改tools/build_rpg_equipment.py后生成JSON，规则改rpg_equipment，库存事务改story_inventory，临时战斗改scarlet/equipment_combat，比较／图鉴改story_items_ui。
+
+武器命中/余焰/飞行尾迹：combat_finish；短时环境灯：combat_light_pool；赤月遗书攻击、Q与R的规则：scarlet/campaign与combat，表现：原story_combat_vfx与story_world，scarlet/world仅作坐标与事件适配；逐步揭示：weapon_image_art.reveal_mechanic。战斗规则分别在session/rogue_actions/scarlet/campaign与combat，表现层禁止结算伤害。
 
 人物服饰/姿势/表情差分 → story_portrait_art/view + story_dialogue_data.expression_for，资源assets/story/vn-full-v3，作者art/vn-full-v3；整张生成与导出build_vn_full_portraits，Preview-VN-Full/Start-VN-Full-v14，制作与接口说明VN-FULL-PORTRAITS.md。
 
-剧情立绘/逐字/自动/已读快进/回看 → §4.S，story_dialogue_data/ui与story_screen.show_dialogue；规则、任务奖励仍走story_campaign/inventory。Preview-Dialogue直接体验；Start-Dialogue-v12使用新正式入口。
+剧情立绘/逐字/自动/已读快进/回看 → §4.S，scarlet/adv与art；规则及奖励走scarlet/campaign。使用Start-Scarlet.cmd，旧Preview-Dialogue为历史版本。
 
 ### 玩法规则类
 
-故事地图、任务与NPC → §4.S；连续区域/门洞改 story_map/region，3D场景改 story_environment/world，传送与战役规则改 story_campaign，面板改 story_screen/atlas。不要把故事币、经验或任务写进远征结算。
+故事地图、任务与NPC → §4.S；内容改build_scarlet_content.py，规则改scarlet/campaign与combat，基础3D保留原story_world及环境实现，剧情附加物件改scarlet/world，ADV改scarlet/adv，界面改scarlet/screen与map。
 
 故事行囊/人物/买卖/锻造 → §4.S、story_inventory/items_ui/item_grid/ui_skin。新入口Preview-Inventory.cmd与Start-Story-GUI.cmd；补丁由pack_story_patch_launcher和build_story_patch_runtime制作，依赖v9底包，不能直接用旧v9启动来验证新GUI。
 
@@ -552,8 +556,8 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 | 需求 | 主要文件 | 配套（测试/文档/工具） |
 |---|---|---|
-| 改**启动器画面与文案**（忠告/PV/进度条/闪烁提示/世界观轮播） | `scripts/boot.gd`（`boot.gd:73 FLAVOR`、时长 `ADVICE_HOLD_SECONDS`/`FLAVOR_SECONDS`/`POLL_SECONDS` boot.gd:30-32、UI `boot.gd:182 _build_scene_ui()`、忠告 `boot.gd:272 play_advice()`、PV `boot.gd:355 _start_video()`、提示 `boot.gd:465 _show_prompt()`）；进度条与静音按钮是独立控件 `scripts/launcher_bar.gd`、`scripts/launcher_mute.gd` | `tests/launcher_visual.gd`（17 项，出图到 `build/launcher/`；⚠️ 它**不真跑导入**，只搭界面拍照 + 真鼠标事件——真导入链路由 `tests/launcher_env.gd` 判定 + 手工开窗验证） |
-| 改**水滴转场**（点任意键→登录页的擦除效果） | `resources/launcher_dissolve.gdshader`（圆/半径/柔边/微光）+ `scripts/boot.gd`（`boot.gd:602 _start_transition()`、`boot.gd:682 _roll_drops()`、`boot.gd:711 _push_dissolve_uniforms()`、`boot.gd:730 _tick_dissolve()`、`boot.gd:746 _end_transition()`）；登录页淡入 `main.gd:469 fade_in_ui()`。⚠️ 三条铁律：§11.57（只能抓图，CanvasGroup 拿不到组贴图）、§11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开） | `tests/launcher_visual.gd`（`10-transition-*` 连拍就是用来**实测**"登录页什么时候能看清"的，改 `TRANSITION_SECONDS` 后重跑对帧） |
+| 改**启动器画面与文案**（忠告/PV/进度条/闪烁提示/世界观轮播） | `scripts/boot.gd`（`boot.gd:73 FLAVOR`、时长 `ADVICE_HOLD_SECONDS`/`FLAVOR_SECONDS`/`POLL_SECONDS` boot.gd:30-32、UI `boot.gd:182 _build_scene_ui()`、忠告 `boot.gd:272 play_advice()`、PV `boot.gd:355 _start_video()`、提示 `boot.gd:473 _show_prompt()`）；进度条与静音按钮是独立控件 `scripts/launcher_bar.gd`、`scripts/launcher_mute.gd` | `tests/launcher_visual.gd`（17 项，出图到 `build/launcher/`；⚠️ 它**不真跑导入**，只搭界面拍照 + 真鼠标事件——真导入链路由 `tests/launcher_env.gd` 判定 + 手工开窗验证） |
+| 改**水滴转场**（点任意键→登录页的擦除效果） | `resources/launcher_dissolve.gdshader`（圆/半径/柔边/微光）+ `scripts/boot.gd`（`boot.gd:610 _start_transition()`、`boot.gd:682 _roll_drops()`、`boot.gd:711 _push_dissolve_uniforms()`、`boot.gd:737 _tick_dissolve()`、`boot.gd:753 _end_transition()`）；登录页淡入 `main.gd:469 fade_in_ui()`。⚠️ 三条铁律：§11.57（只能抓图，CanvasGroup 拿不到组贴图）、§11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开） | `tests/launcher_visual.gd`（`10-transition-*` 连拍就是用来**实测**"登录页什么时候能看清"的，改 `TRANSITION_SECONDS` 后重跑对帧） |
 | 改**转场预热**（提前编译着色器 / 提前加载登录页 / 交接口耗时） | `scripts/boot.gd`（材质预编译 `boot.gd:245 _shader_warm_setup()`、收起 `boot.gd:265 _park_warm_plate()`、后台加载 `boot.gd:395 _prewarm()`、待机期实例化 `boot.gd:422 _prewarm_attach()`、闸门 `boot.gd:439 _finish_prewarm()`、藏在忠告里等 `boot.gd:298 _hold_for_prewarm()`、上限 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s、未就绪提示 `boot.gd:451 _show_preparing()`、提前起跑 `boot.gd:326 _maybe_prewarm_early()`）；⚠️ 绝不许在点击那一刻 `load` 或 `ShaderMaterial.new()`，见 §11.67 | `tests/launcher_visual.gd`（断言预热三面旗 `prewarm_done`/`shader_warm`/`login_ready` + 点击复用同一实例 + 点击耗时 <1.5s；诊断行 `[prewarm] ready in Nms` / `[prewarm] click setup Nms`，弱机再报"点击卡"先看这两行） |
 | 改**"什么算需要导入"**（自检口径） | ⚠️ **两份实现必须成对改**：玩家侧 `scripts/launcher_env.gd`（`launcher_env.gd:45 scan()`、`launcher_env.gd:72 _exact()`、指纹 `launcher_env.gd:236 _fingerprint()`、快通道 `launcher_env.gd:249 _stamp_matches()`）+ 开发/CI 侧 `tools/check_class_cache.ps1` | `tests/launcher_env.gd`（29 项）；改完用 `Start-Game.cmd --check` 对照两侧结论 |
 | 改**窗口默认值与档位**（全屏默认/分辨率档/最小尺寸/手拖继承） | `scripts/window_settings.gd`（`window_settings.gd:19 DEFAULT_FULLSCREEN`、`window_settings.gd:20 DEFAULT_WINDOW`、`window_settings.gd:24 PRESETS`、`window_settings.gd:33 MIN_WINDOW`、`window_settings.gd:139 preset_for_size()`）；⚠️ `profile.gd` 的 `data` 字面量默认值必须同步（`profile.gd:13`）——两处一分叉，就会出现"设置页显示的"和"启动时应用的"不是同一套 | `tests/window_settings.gd`（31 项）；豁免规则 `window_settings.gd:43 skip_window_control()`：`--headless` / `--script` 回归 / 命令行显式窗口参数（`-w`/`-f`/`--resolution`…）一律**完全不碰窗口**，这条保住了全部回归测试的窗口几何（见 §4.A） |
@@ -625,6 +629,7 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 | 加音效 | assets/audio/<kind>-<i>.wav + sound.gd:5-17 VARIANTS/LEVELS | tools/prepare_library_audio.py；tests/audio.gd |
 | 加曲目 | assets/audio/music/<cue>.ogg + music-manifest.json + music.gd:41 set_world 选择逻辑 | tests/music.gd、python tests/scene_music_assets.py |
 | 改大招 CG/台词 | ultimate_cinematic.gd:5-26 + assets/combat/ultimate-cg.png | tests/ultimate.gd |
+| 赤月遗书剧情CG与动画占位 | assets/story/cg-scarlet-v1/manifest.json + art/story-cg-scarlet/prompts.json + tools/package_scarlet_cg.ps1；已接入独立scarlet运行系统 | docs/rpg/CG-SCARLET-DELIVERY.md，19张尺寸与来源验收 |
 | 改语音 | assets/audio/voices/voice-manifest.json + hero_voice.gd | tools/prepare_free_voices.py；tests/voice_assets.py |
 | 改角色动画/体型 | assets/combat/attack-clean-%d.png、movement-%d.png + character_metrics.gd:10-53 地标 | tests/character_scale.gd、movement.gd |
 | 改 HUD 布局/文案 | main.gd:1547（on_started 布局）+ main.gd:2217（update_hud 刷新） | tests/ui.gd |
@@ -648,13 +653,17 @@ Galgame对话：show_chapter/show_npc/show_final_choice/show_endings使用story_
 
 ## 6. 数值常量速查（哪里改什么数）
 
+赤月遗书独立规则：scarlet/campaign 的 INTERACT_RADIUS=105，原地图移动310像素/秒，闪避0.24秒／冷却0.85秒，护送接应180／跟随启动220；红潮周期16秒、提前6秒预警；六次兵装／防具整备。scarlet/combat 的阶段准备窗2.8秒。旧story_campaign常量仅适用于历史系统。
+
 立绘差分：三位角色×3服饰×3姿势×8表情＝216张完整图；导出画布2160×3840由原稿整图放大，多数原稿887×1774。缓存上限story_portrait_art.CACHE_LIMIT=10；不再加载面部图层。服饰与姿势只影响剧情表现，不改装备数值。
 
 Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_PER_SECOND=32、AUTO_DELAY=1.5秒（另加每字0.025秒）；立绘过渡0.22秒，PORTRAIT_BASE_Y=148（说话142）、PORTRAIT_EXTENT=696×1080，回看180条、阅读标记4096个。
 
 新命中层预算：combat_finish.MAX_CONTACTS=64、MAX_TRAILS=96；尾迹最多10点/130ms、600单位跳变清历史。combat_light_pool.CAPACITY=8，关闭实时阴影和GI烘焙。刀光接触揭示18ms、施法35ms，均不修改攻击前摇/冷却或伤害。
 
-故事物品：story_inventory的BAG为10×6、VAULT为12×10；BASES定义十二种占格及堆叠上限。单件强化上限5，镶嵌80银币/1晶石，回购12件；打造、强化费用在craft/forge_cost，交易库存每幕独立持久。原forged全队强化保留旧档加成，新UI只强化单件。
+故事物品：story_inventory的BAG为10×6、VAULT为12×10；BASES定义十五种占格及堆叠上限。单件强化上限5，镶嵌80银币/1晶石，回购12件；打造、强化费用在craft/forge_cost，交易库存每幕独立持久。原forged全队强化保留旧档加成，新UI只强化单件。
+
+RPG装备数值：rpg_equipment.CAPS控制全身上限（暴击45%、攻速30%、减免30%、异质抗性50%、吸血6%）；词缀数0/2/4/2/3对应五档品质。主手掉率30%且三次未出后必出、额外护衣／护符22%、晶石12%；scarlet/campaign中grant_weapon与enemy_weapon_drop。套装配方180+章×60币／10+章×3料／1导光，重铸100+阶×40+次数×80币／5+阶+次数×2料，最多20次；story_inventory.craft_set与reforge_cost。闪避盾3秒、裂伤3秒、寒意2秒、易伤4秒；scarlet/equipment_combat。
 
 | 数值 | 位置 |
 |---|---|
@@ -688,7 +697,7 @@ Galgame阅读：story_dialogue_data.MAX_PAGE=108字；story_dialogue_ui.LETTERS_
 | 窗口默认：首次下载全屏 / 默认窗口 1600×900 / 最小 960×540 | `window_settings.gd:19 DEFAULT_FULLSCREEN`、`window_settings.gd:20 DEFAULT_WINDOW`、`window_settings.gd:33 MIN_WINDOW` |
 | 窗口分辨率档位 1280×720 / 1600×900 / 1920×1080 / 2560×1440 + 跟随桌面(4) + 自定义(-1) | `window_settings.gd:24 PRESETS`、`window_settings.gd:30 FOLLOW_DESKTOP`、`window_settings.gd:32 CUSTOM` |
 | 启动器时长：忠告停留 4.5s / 世界观文案每条 4.0s / 导入轮询 0.35s | `boot.gd:30 ADVICE_HOLD_SECONDS`、`boot.gd:31 FLAVOR_SECONDS`、`boot.gd:32 POLL_SECONDS` |
-| 启动器导入兜底超时 1200s（20 分钟；超时先掐子进程再翻"重试/退出"卡片） | `boot.gd:39 IMPORT_TIMEOUT_SECONDS`、`boot.gd:973 _stop_import()` |
+| 启动器导入兜底超时 1200s（20 分钟；超时先掐子进程再翻"重试/退出"卡片） | `boot.gd:39 IMPORT_TIMEOUT_SECONDS`、`boot.gd:980 _stop_import()` |
 | 启动器设计分辨率 1440×900（布局全部显式写死，原因见 §11.57） | `boot.gd:42 VIEW` |
 | 水滴转场：总时长 0.9s（实测约 0.7s 全擦开 + 0.2s 余量，到点即清演算）/ 登录页淡入 0.5s | `boot.gd:52 TRANSITION_SECONDS`、`boot.gd:54 LOGIN_FADE_SECONDS` |
 | 水滴：4~5 滴；圆心所在圆**面积**占屏 20%；两滴最小间距 0.55×区域半径；半径上限 1.35×屏幕高度（够盖到最远的角） | `boot.gd:55 DROP_COUNT_MIN/MAX`、`boot.gd:58 DROP_REGION_AREA`、`boot.gd:60 DROP_MIN_GAP`、`boot.gd:62 MAX_DROP_RADIUS` |
@@ -728,6 +737,8 @@ python tests/scene_music_assets.py # 曲目清单校验
 - **⚠️ `tests/ui.gd` 的失败数是 flaky 波动的，不是固定值（2026-10-08 复测）**：同代码同机器连跑开窗实测在 **8 / 1 / 0 / 4** 之间跳（详见 §11.49）。所以别用某一次的失败数当门禁基线——要多跑几次数波动范围；也别据此相信"换 1440×900 就全绿"的旧结论。当前拖拽/背包两处真鼠标失败用兜底保绿（`ui.gd:368`、`:381`），根治方案写在 §11.49。
 
 ## 8. 工具链与素材管线（tools/）
+
+赤月遗书CG导出：`tools/package_scarlet_cg.ps1`读取`art/story-cg-scarlet/generation-results.json`，保留原图、输出19张3840×2160 PNG与缩略图/总览/本地索引，逐张记录是否原生尺寸。内置image_gen生成，脚本只做素材打包，不发生成请求；动画只登记21个空路径。交付见`docs/rpg/CG-SCARLET-DELIVERY.md`。
 
 v11新特效图集在assets/combat/finish，内置image_gen生成，generation-prompts.json留完整提示词；本地两游戏战斗元数据由inspect_reference_combat读取。增量导出Combat-v11.pck对v9底包，pack_combat_patch_launcher后调用build_story_patch_runtime的--pack/--output生成v11小入口，未覆盖v10。
 
@@ -781,6 +792,10 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 
 ## 10. 根目录文档索引（专题设计文档）
 
+故事装备完整设计与实现：`docs/rpg/EQUIPMENT-SYSTEM.md`（六幕适配、五品质、32词缀、30暗金、6套装、4晶石、战斗结算与护送、掉落保底去重、事务、旧档、UI与验证边界）。
+
+新增故事制作资料：`docs/rpg/STORY-REBOOT-ADV.md`（赤月遗书大纲）、`STORY-FLOW-ADV.md`（40主线触发与分支）、`STORY-CG-PRODUCTION.md`（CG／视频制作）、`CG-SCARLET-DELIVERY.md`（本批19张平面CG与4K尺寸边界）。当前入口已经切换scarlet；SCARLET-IMPLEMENTATION.md说明实现范围，SCARLET-REMAINING.md列出另需制作的动画、美术与发布工作。
+
 当前立绘差分：[VN-FULL-PORTRAITS.md](docs/rpg/VN-FULL-PORTRAITS.md)，包含216张完整透明PNG、服饰/姿势/表情、源图/提示词/整图导出及v14启动。旧API分层方案历史见[PORTRAIT-VARIANTS.md](docs/rpg/PORTRAIT-VARIANTS.md)。
 
 剧情演出：[GALGAME-DIALOGUE.md](docs/rpg/GALGAME-DIALOGUE.md)，覆盖分镜、NPC选择、阅读记录、验证、v12依赖和官方脚本编译打包流程。
@@ -792,7 +807,7 @@ v11新特效图集在assets/combat/finish，内置image_gen生成，generation-p
 | README.md | 总览/启动/操作/存档 | 全局 |
 | docs/rpg/ACTS-2-6-ART.md | 五幕独立美术、84新模型、17套材质、45区烘焙、不同题材副本与临时试玩 | story_act_art / story_regional_environment / story-later-acts.json / story-later-terrain.json；tests/story_later_acts / story_regional_scene_models |
 | docs/rpg/DUNGEON-EXPLORATION.md | 30副本15功能空间、环路、多段高程，19室外有机轮廓，34新模块；25旧版/33重制版实际模板研究 | story_exploration_art / story_exploration_environment / story-exploration.json；tests/story_exploration |
-| [docs/rpg/README.md](docs/rpg/README.md)、IMPLEMENTATION.md、DUNGEON-IDENTITIES.md、MAP-IMPLEMENTATION-RESEARCH.md、D2R-ENVIRONMENT-RESEARCH.md、RPG-MODE-PLAN.md、STORY.md、QUESTS.md（均在 docs/rpg/） | RPG连续地图重做版：PV背景、六幕营地、南门首图、40主线/24支线/9个人线；本地MPQ/CASC场景研究，连续野外、分层副本、激活传送阵与探索；v7各副本按空间类型重做 | main.gd独立story页面；story_campaign/map/region/environment/world/screen/atlas负责运行。范围和剩余差异见IMPLEMENTATION；TideSession模式仍为expedition/roguelike |
+| [docs/rpg/README.md](docs/rpg/README.md)、IMPLEMENTATION.md、DUNGEON-IDENTITIES.md、MAP-IMPLEMENTATION-RESEARCH.md、D2R-ENVIRONMENT-RESEARCH.md、RPG-MODE-PLAN.md、STORY.md、QUESTS.md（均在 docs/rpg/） | RPG连续地图重做版：PV背景、六幕营地、南门首图、40主线/24支线/9个人线；本地MPQ/CASC场景研究，连续野外、分层副本、激活传送阵与探索；v7各副本按空间类型重做 | 当前story页面由scripts/scarlet负责；旧剧情规则为历史；原地图、渲染、角色动画、战斗特效及行囊类继续复用。范围见SCARLET-IMPLEMENTATION与SCARLET-REMAINING；TideSession模式仍为expedition/roguelike |
 | EXPEDITION.md / ROGUELIKE.md | 远征/闯关玩法与验证 | expedition.gd / roguelike.gd |
 | ATTACK-TELEGRAPH.md | 攻击前摇提示（预警可读性、时长与美术口径） | scripts/attack_telegraph.gd |
 | output/ROGUE-CONTRACTS.md、output/CONTRACT-CHANGELOG.md、output/ROGUELIKE-EXPANSION-SUMMARY.md、output/R*.md（26 份） | 肉鸽扩展（图谱/事件/诅咒/每日/成长/房间 UI）的契约、变更记录、逐项验收报告与执行计划 | scripts/rogue_graph.gd、rogue_events.gd、rogue_curses.gd、rogue_daily.gd、rogue_growth.gd、rogue_room_ui.gd 等 |
@@ -826,7 +841,7 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 3. **藏品序号只追加不插入**：`catalog.gd:124 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
 5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:350 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:759 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
+6. **特效必须走 battlefield.gd:764 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
 8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4251 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4264 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:687 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。**营地是例外但要显式**：营地 `session.running==false`，`perform()` 会直接 return，所以营地的存储编辑全部集中在 `scripts/camp_storage.gd`，并且**只调用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`）——不要在营地面板里重写一套装箱或装备规则。
@@ -901,21 +916,21 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 
 59. **源文件已被删除的 `.import` 残留不能算"缺产物"**：它们**导入也修不好**（没有源可导），算进去会让启动器陷入"导入 → 复查还缺 → 再导入"的死循环。本仓库实测有 **9 个**这种残留（4 个 `ultimate-*.wav`、3 个 `hero-3-muyu-*.wav`、2 张 `3x-crystal*.png`），源文件都不在了。判定落在 `launcher_env.gd:189 import_entry_of()` 读出的 `source` 字段上：源文件不存在就跳过该条（`launcher_env.gd:113-117`）。改自检口径时这条不能丢。
 
-60. **导入完成后当前进程的类缓存已经过期，必须重启一次进程才能进主场景**：全局类表是引擎**启动时一次性读入**的，子进程刚重建好的那一份对当前进程无效——这时进 `main.tscn` 只会黑屏或满屏 `Invalid access`。所以 `boot.gd:561 _restart_into_game()` 先设 `restarting=true` 再走水滴转场 `_start_transition(false)`（底下垫纯黑 `ColorRect`，擦完才 `OS.create_process(..., "--skip-intro")` + `quit()`，`--skip-intro` 让新进程跳过忠告与 PV）。按用户要求，这次重启必须**玩家自己点确认卡片**（`boot.gd:935 _build_confirm_card()`），不要改成自动重启。
+60. **导入完成后当前进程的类缓存已经过期，必须重启一次进程才能进主场景**：全局类表是引擎**启动时一次性读入**的，子进程刚重建好的那一份对当前进程无效——这时进 `main.tscn` 只会黑屏或满屏 `Invalid access`。所以 `boot.gd:569 _restart_into_game()` 先设 `restarting=true` 再走水滴转场 `_start_transition(false)`（底下垫纯黑 `ColorRect`，擦完才 `OS.create_process(..., "--skip-intro")` + `quit()`，`--skip-intro` 让新进程跳过忠告与 PV）。按用户要求，这次重启必须**玩家自己点确认卡片**（`boot.gd:942 _build_confirm_card()`），不要改成自动重启。
 
 61. **`DirAccess.get_modified_time()` 在 4.7.2 不存在**（静态方法找不到，GDScript 直接解析报错）；指纹里不要用它。`launcher_env.gd:236 _fingerprint()` 用的是 `FileAccess.get_modified_time()`（逐文件）与 `FileAccess.get_size()`，目录一侧改用"列一次 `.godot/imported` 数条目"（`launcher_env.gd:151 entry_count()`）——顺带这也比目录 mtime 可靠。
 
 62. **`Start-Game.cmd` 默认不再预导入，`--check` 才是旧语义**：旧版每次启动都先跑 `tools/check_class_cache.ps1 -ImportResources`（控制台要等几十秒），现在默认路径只有"起游戏"一条，导入与类缓存守卫交给游戏内启动器（首启时它自己发现缺产物并导入）。于是：①"pull 之后本机没有 `.ctex`"由启动器兜住，玩家不再等控制台；②命令行/CI 想要旧行为必须显式写 `--check`，只导入不起游戏用 `--import-only`；③改了自检口径要**同时改** `scripts/launcher_env.gd` 与 `tools/check_class_cache.ps1` 两份实现（见 §4.A 与 §5）。窗口控制的豁免（`--headless` / `--script` / 显式窗口参数完全不碰窗口）是另一条独立开关，见 `window_settings.gd:43 skip_window_control()`。
 
-63. **导入超时或"重试"之前必须先 `_stop_import()`**：导入是 `OS.create_process()` 拉起来的**编辑器子进程**（`launcher_env.gd:166 start_import()`），而**两个编辑器进程同时写 `.godot/` 会互相踩**。所以 `boot.gd:510 _process()` 里一旦超过 `boot.gd:39 IMPORT_TIMEOUT_SECONDS`（1200s = 20 分钟）就先 `boot.gd:973 _stop_import()` 掐掉子进程、再翻出错卡；"重试导入"（`boot.gd:965 _retry_compile()`）同样必须先掐再重开。⚠️ 以后再加任何"重试 / 超时 / 放弃导入"的路径，都要走这个顺序——漏掉就会出现两个 `--editor --import` 抢同一个 `.godot/`，表现为导入永远不结束或缓存写坏。
+63. **导入超时或"重试"之前必须先 `_stop_import()`**：导入是 `OS.create_process()` 拉起来的**编辑器子进程**（`launcher_env.gd:166 start_import()`），而**两个编辑器进程同时写 `.godot/` 会互相踩**。所以 `boot.gd:518 _process()` 里一旦超过 `boot.gd:39 IMPORT_TIMEOUT_SECONDS`（1200s = 20 分钟）就先 `boot.gd:980 _stop_import()` 掐掉子进程、再翻出错卡；"重试导入"（`boot.gd:972 _retry_compile()`）同样必须先掐再重开。⚠️ 以后再加任何"重试 / 超时 / 放弃导入"的路径，都要走这个顺序——漏掉就会出现两个 `--editor --import` 抢同一个 `.godot/`，表现为导入永远不结束或缓存写坏。
 
-64. **水滴转场的第一帧 `dt` 必须跳过**（`boot.gd:730 _tick_dissolve()` 开头的 `dissolve_warmup` 分支）：转场是在 `_unhandled_input()` 里被点起来的，紧接着协程要**同步实例化 `main.tscn` 并跑它的 `_ready()`**（创建 Profile/OnlineService/TideSession/Battlefield…，实测几百毫秒）。这段卡顿落在**下一帧的 `dt` 里**——不跳过的话 0.9s 的预算会被第一口吃掉，水滴一上来就跳一大步、看起来像"没有转场直接切了"。同理，任何"从输入回调里同步挂重型场景 + 再开始计时动画"的代码都要先跳一帧。
+64. **水滴转场的第一帧 `dt` 必须跳过**（`boot.gd:737 _tick_dissolve()` 开头的 `dissolve_warmup` 分支）：转场是在 `_unhandled_input()` 里被点起来的，紧接着协程要**同步实例化 `main.tscn` 并跑它的 `_ready()`**（创建 Profile/OnlineService/TideSession/Battlefield…，实测几百毫秒）。这段卡顿落在**下一帧的 `dt` 里**——不跳过的话 0.9s 的预算会被第一口吃掉，水滴一上来就跳一大步、看起来像"没有转场直接切了"。同理，任何"从输入回调里同步挂重型场景 + 再开始计时动画"的代码都要先跳一帧。
 
-65. **`_start_transition()` 里必须显式 `set_process(true)`**：水滴每帧演算挂在 `boot.gd:510 _process()`，而收尾 `_end_transition()` 会 `set_process(false)`（这是用户要的"到点清除所有演算"）。所以**第二次**进转场（例如重启路径）不重新打开就是"水滴永远不动、启动器擦不掉"。这条是测试里踩出来的：用例先 `set_process(false)` 拍照，之后转场就再也不走了——修的时候顺手确认过真实链路只走一次转场，但代码必须自己保证可重入。
+65. **`_start_transition()` 里必须显式 `set_process(true)`**：水滴每帧演算挂在 `boot.gd:518 _process()`，而收尾 `_end_transition()` 会 `set_process(false)`（这是用户要的"到点清除所有演算"）。所以**第二次**进转场（例如重启路径）不重新打开就是"水滴永远不动、启动器擦不掉"。这条是测试里踩出来的：用例先 `set_process(false)` 拍照，之后转场就再也不走了——修的时候顺手确认过真实链路只走一次转场，但代码必须自己保证可重入。
 
 66. **抓图转场是一次 GPU→CPU 回读**：`_start_transition()` 里 `await RenderingServer.frame_post_draw` 之后调 `get_viewport().get_texture().get_image()`，把启动器画面抓成 `ImageTexture`。代价是点击那一刻的一次回读（几十毫秒级），换来的是"擦掉的地方露出下面真登录页"。⚠️ 想省掉它就得让 CanvasGroup 的材质能拿到整组贴图——本版本拿不到（§11.57）。抓图必须在挂 `main.tscn` **之前**，否则会把登录页一起抓进图里。
 
-67. **不许在"点击那一刻"做加载或着色器编译——两者都必须提前预热**（用户第 4 轮要求："把水滴转场做成编译着色器的一部分 / 每次登录都提前渲染 / 转场收尾彻底释放"）。本机实测点击那一刻的原始耗时是 `load(main.tscn)=5268ms + add_child 跑 _ready=4524ms ≈ 9.8s`，而水滴转场演算本身只有约 12ms；`ShaderMaterial.new()` 不是那 9.8s 的大头，但**着色器管线是第一次真正绘制时才编译的**，弱机上同样是"点一下顿一下"的一口。所以 `boot.gd` 现在分三件事预热，点击时只复用：① `boot.gd:245 _shader_warm_setup()` 在 `_build_scene_ui()` 里就把 `ShaderMaterial` 建好，挂在一张满屏贴图上先画两帧（`boot.gd:265 _park_warm_plate()` 之后收成不可见）——它**必须**排在 `black` 之前，被那块不透明黑底盖住，玩家看不见它、但 GPU 已经把管线建好了；`boot.gd:602 _start_transition()` 直接复用这个材质，**不许**再 `ShaderMaterial.new()`；② `load` 走 `ResourceLoader.load_threaded_request`（后台线程，不占主线程）、`instantiate + add_child`（会同步跑 main.gd 的 `_ready()`）留在主线程但发生在待机期（`boot.gd:395 _prewarm()` / `boot.gd:422 _prewarm_attach()`，挂进来的实例先 `PROCESS_MODE_DISABLED`，点击时才改回 `INHERIT`）；③ **闸门**：`boot.gd:439 _finish_prewarm()` 之前，`boot.gd:786 _unhandled_input()` 在 VIDEO 阶段**不放行**"任意键"，界面显示 `boot.gd:451 _show_preparing()`（"正在准备登录界面~"）而不是"点击任意键开始游戏"。⚠️ 三条不能踩的坑：(a) 预热**绝不能早于自检**——起跑点 `boot.gd:326 _maybe_prewarm_early()` 挂在自检结果之后，因为类缓存过期时 `load(main.tscn)` 会解析失败（这正是硬约束③）；(b) 等预热的等待要放在**静态**的忠告画面上（`boot.gd:298 _hold_for_prewarm()`），不要让它落到 PV 上（视频会卡住）；(c) 等待**必须**有上限 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s，且到点必须 `_finish_prewarm()` 放行——否则预热一旦卡死，闸门永不开，玩家永远进不去。验证：`tests/launcher_visual.gd` 断言 `prewarm_done`/`shader_warm`/`login_ready` 三面旗 + 点击复用**同一个** `login_instance` 实例 + 点击→切场景 <1.5s，实测日志 `[prewarm] ready in 8014ms`（预热在点击前 8 秒就完成）/ `[prewarm] click setup 26ms`（点击那一刻只剩"1 帧 + 抓图回读 + 盖板"），对照修复前的 ~9.8s。
+67. **不许在"点击那一刻"做加载或着色器编译——两者都必须提前预热**（用户第 4 轮要求："把水滴转场做成编译着色器的一部分 / 每次登录都提前渲染 / 转场收尾彻底释放"）。本机实测点击那一刻的原始耗时是 `load(main.tscn)=5268ms + add_child 跑 _ready=4524ms ≈ 9.8s`，而水滴转场演算本身只有约 12ms；`ShaderMaterial.new()` 不是那 9.8s 的大头，但**着色器管线是第一次真正绘制时才编译的**，弱机上同样是"点一下顿一下"的一口。所以 `boot.gd` 现在分三件事预热，点击时只复用：① `boot.gd:245 _shader_warm_setup()` 在 `_build_scene_ui()` 里就把 `ShaderMaterial` 建好，挂在一张满屏贴图上先画两帧（`boot.gd:265 _park_warm_plate()` 之后收成不可见）——它**必须**排在 `black` 之前，被那块不透明黑底盖住，玩家看不见它、但 GPU 已经把管线建好了；`boot.gd:610 _start_transition()` 直接复用这个材质，**不许**再 `ShaderMaterial.new()`；② `load` 走 `ResourceLoader.load_threaded_request`（后台线程，不占主线程）、`instantiate + add_child`（会同步跑 main.gd 的 `_ready()`）留在主线程但发生在待机期（`boot.gd:395 _prewarm()` / `boot.gd:422 _prewarm_attach()`，挂进来的实例先 `PROCESS_MODE_DISABLED`，点击时才改回 `INHERIT`）；③ **闸门**：`boot.gd:439 _finish_prewarm()` 之前，`boot.gd:793 _unhandled_input()` 在 VIDEO 阶段**不放行**"任意键"，界面显示 `boot.gd:451 _show_preparing()`（"正在准备登录界面~"）而不是"点击任意键开始游戏"。⚠️ 三条不能踩的坑：(a) 预热**绝不能早于自检**——起跑点 `boot.gd:326 _maybe_prewarm_early()` 挂在自检结果之后，因为类缓存过期时 `load(main.tscn)` 会解析失败（这正是硬约束③）；(b) 等预热的等待要放在**静态**的忠告画面上（`boot.gd:298 _hold_for_prewarm()`），不要让它落到 PV 上（视频会卡住）；(c) 等待**必须**有上限 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s，且到点必须 `_finish_prewarm()` 放行——否则预热一旦卡死，闸门永不开，玩家永远进不去。验证：`tests/launcher_visual.gd` 断言 `prewarm_done`/`shader_warm`/`login_ready` 三面旗 + 点击复用**同一个** `login_instance` 实例 + 点击→切场景 <1.5s，实测日志 `[prewarm] ready in 8014ms`（预热在点击前 8 秒就完成）/ `[prewarm] click setup 26ms`（点击那一刻只剩"1 帧 + 抓图回读 + 盖板"），对照修复前的 ~9.8s。
 
 
 ---
@@ -925,6 +940,8 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 ## 12. 路牌维护规范（做完一个功能、交接前必做）
 
 新增存储契约：故事物品UI以唯一uid操作；先在副本上验证整次移动/换装/购买，再提交，不允许半扣款。旧档空间不足进入可领取overflow。新增实例字段需同步valid_item/restore_numeric/存档往返测试。TextureRect先设置EXPAND_IGNORE_SIZE再设尺寸，进度条先关闭百分比再设高度，避免内部图标撑破卡片。
+
+RPG装备契约：新字段须同步rpg_equipment.valid与story_inventory.canonical_numbers／normalize；暗金／套装／晶石和随机数值必须随原UID保存，读档不掷骰。持续伤害／溅射也经过scarlet/combat.hit的机关血线，禁止递归命中触发。AcceptDialog只放一个直接Control承载内容；重开独占弹窗前先hide旧窗，再queue_free，防止覆盖布局与独占窗口冲突。
 
 > 这份文件是「下一个人 / 下一个 AI」的唯一入口。代码变了而路牌没改，比没有路牌更糟：它会把后来者精准地指到错误的位置。
 > **强制要求：一个功能做完、只剩交接之前，必须更新本文件并提交。谁改的代码，谁更新路牌。**
@@ -989,6 +1006,12 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-16（本轮未提交）：RPG故事装备系统接入六幕，新增rpg_equipment规则／JSON内容源、equipment_combat、32词缀、30暗金、6套装、4晶石；定向打造、单词缀数值重铸、锁定、完整比较和遗物图鉴，保留三人独立装备与旧档。更新§2/3/4.S/5/6/10及存储契约，验证见TEST-REPORT.md和EQUIPMENT-SYSTEM.md。源码入口可体验，未重新导出dist。
+
+2026-10-15（本轮）：赤月遗书独立运行重做，40主线/6支线、43区域、74场景373页，ADV差分/CG、分支、Boss阶段和场内对白、护送/试航/潜入/红潮、新槽位与备份、11位NPC和7背景。同步§2/3/4.S/5/6/8/10；新测试及制作清单见SCARLET-IMPLEMENTATION。
+
+2026-10-15（未提交）：按用户三视图制作《赤月遗书》19张平面CG，原图1672×941、交付3840×2160，原稿/提示词/修订/manifest和本地鉴赏留档。视频21版本空路径预留；未生成视频、未接入新故事、未改旧玩法。同步§2/4.S/5/8/10与专题交付说明。
 
 2026-10-12（同批提交）：按用户要求继续放大剧情立绘至696×1080，比上一版约大21%。保持水平中心和腰部落点，基准y=148/说话142，左右x=-43/787；对话框顶边裁切保留。重建v14并检查实机画面；同步§4.S/§6及测试报告。
 
@@ -1067,9 +1090,9 @@ git status --porcelain
 
 | 2026-10-11 | （本轮未提交） | **判定框第 5 批：勾选面板 + 灵体门控 + 子弹 + 故事投影修复 + NPC/建筑碰撞箱**。用户报三件事：①魔境里"没有灵体词条却出现主人索敌框"；②魔境子弹没有判定框；③故事里"宝箱下方一个孤立蓝框，走进去没有事件"；另要求把面板做成可勾选/可拖动/可最小化，并新增 NPC 互动范围与建筑体积碰撞箱。①**灵体门控**：真因在玩法侧——`rogue_build.gd hit_event()` 原来只要打中怪就写 `p.soul_focus`（跟有没有灵体无关），覆盖层据此画出主人索敌圈；现在**只有该玩家真有活着的灵体（`build_summons` 非空）才写**，且**最后一只灵体消失时把 `soul_focus` 清成 -1**（否则下次召唤会先追过期目标）。联机天然按玩家隔离（两个字段都在玩家字典里、随 `players` 快照同步）。②**勾选面板**（用户拍板：原生 Control / 实时生效 / 内存保留）：`dev_ranges.gd:71 PANEL_TREE` 模式→大类→小类共 30 项、`dev_ranges.gd:137 static var toggles` 换宿主不丢、`dev_ranges.gd:239 _build_panel()` 原生 CheckBox+ScrollContainer、标题栏可拖 `:364`、最小化 `:374`、F10 收展；当前模式分组自动排最前。点面板不会顺带出招：勾选框是 `Button`（`main.gd mouse_over_button()` 认），面板空白处由新增的 `main.gd dev_panel_hover()` → 覆盖层 `captures_mouse()`（用 `gui_get_hovered_control()` 的命中结果）兜住，`main.gd` 的 `fire`/`fire_blocked` 各加一个 `not dev_hover`（正式游玩分组为空，恒 false）。③**子弹**：弹体是全模式共用的 `session.bullets`，抽成公共 `draw_bullets()`（敌弹画 `hit_radius` 18 圆、玩家弹画本帧扫掠线段），魔境与搜打撤共用；故事模式没有弹体对象（`ENEMY_STRIKE` 是瞬时判定），不加。④**故事"有圈无事件"真因＝高度**：圆环原来走 `ground_transform()`（`world_3d.gd:100` 在 (0,0)/(100,0)/(0,100) 三点取高度做一次仿射拟合），而宝箱模型与文字走带高度的逐点 `project()`→`height_at()`；台阶上高度 169 会被整体压下约 90px（800px 屏约 11%），判定只看 2D 距离所以"走进圈里没反应"。改法：营地/故事**逐点投影**（`dev_ranges.gd:414 project_point()` + `circle()` 采样成折线），并给 `camp_site.gd:153` 加 `project_ground()`（`project()` + `ground_height()`）。另一条真的跨区域绘制：`story_map.entrances()` 在户外会返回**别的户外区域**的门（`story_map.gd:139`），覆盖层原来无过滤全画（可能画到水里）——现在 `_local_entrances()` 只留当前区域。⑤**新增框**：NPC 互动圈（位置 `story_map.npc_at`，门控复用 `PROMPT_RADIUS` 125，只有 stage 0 可交互）、建筑碰撞箱（`region.buildings[].rect` 世界化 + `story_region.building_walls()` 现算的 5 段 28 厚墙（南墙 110 门洞，与 `story_environment` 摆的墙同源）+ act≥2 的 `structural_obstacles`/`obstacles` 被挡矩形）。⑥**提示圈 vs 使用圈**按用户拍板"只显示、不改玩法"：白细＝提示圈、使用圈绿（英雄已在半径内）/青（不在）/红（被威胁门 260 挡住）。⑦新增 `--preview-rogue --capture` 预览入口（`main.gd:419`，出图 `build/preview-rogue.png`）。⑧测试：新增 `tests/dev_ranges.gd`（217 项：开关口径、勾选树 key 唯一、灵体门控三态、故事几何契约含"台阶高度"与"5 段墙 110 门洞"）。验证：`dev_ranges` 217/0、`rogue_summons` 31/0、`story_campaign` 180/0、`story_geography` 748/0、`enemies` 23/0、`ecology` 1082/0、`expedition` 79/0；四模式真机出图 `preview-rogue/game/ground/story.png` 全部 0 脚本错误。**已知红（均非本次引入）**：`rogue_build_rules` 565/1（"Same-frame lethal hit wins over flask commit…"，用 HEAD 版 `rogue_build.gd` 复跑同样 1 红）、`camp` 88/8（headless 相机射线往返，早已登记）、`balance` 6、`boss_tactics` 1。 |
 
-| 2026-10-12 | （本轮未提交） | **窗口设置单真值化 + 启动器搬进游戏内（控制台预导入退役）**。①**修"开场 PV 在写死的小窗里播"**：新增零依赖的 `scripts/window_settings.gd`（无 `class_name`、不 preload 别的脚本、不碰贴图——首次下载类缓存为空时它必须能自己活），`DEFAULT_FULLSCREEN=true` / `DEFAULT_WINDOW=1600×900` / `PRESETS` 四档 + 跟随桌面(4) + 自定义(-1) / `MIN_WINDOW=960×540`；autoload `scripts/graphics_quality.gd`（`project.godot:28`，进程里最早的脚本执行点）的 `_ready()` 第一句就是 `WindowSettings.apply_saved()`，所以 PV 也在玩家自己的窗口里播。`profile.gd` 的 `data` 字面量同步加 `fullscreen`/`window_preset`/`window_w`/`window_h`，并在 `apply_data()` 里为这三个整数键补**显式 int 归一**（§11.18 那个"JSON 读回来是 float"的坑）与范围夹取。设置页全屏按钮下新增 5 个档位按钮（`main.gd:4614-4618`），玩家手拖的窗口尺寸经 0.6s 防抖写回存档（`main.gd:4667 note_window_size()` ← `main.gd:1784 NOTIFICATION_WM_SIZE_CHANGED`）。**豁免规则**：`--headless`、`--script` 回归、命令行显式给了 `-w`/`-f`/`--resolution`/`--position` 等时**完全不碰窗口**（`window_settings.gd:43`）——这条保住了全部回归测试的窗口几何。②**启动器编译进游戏内**：`scenes/boot.tscn` 退成空壳（只留一条脚本 ext_resource，§11.58），`scripts/boot.gd` 重写成启动器——健康忠告 → 环境自检 →〔需要时〕资源导入（PV 循环 + 描金进度条 `scripts/launcher_bar.gd` + 右上角圆形静音 `scripts/launcher_mute.gd` + 15 句世界观轮播）→ 就绪后闪烁「点击任意键开始游戏」→ 进登录页；新增 `scripts/launcher_env.gd` 作玩家侧自检（与 `tools/check_class_cache.ps1` 同口径的**两份实现**；本机实测精确自检 3.1s、指纹快通道 0.2s）；静音状态写 `user://graphics.cfg` 的 `[audio] launcher_mute`，**不进** profile.json（避免跟云存档同步）。`Start-Game.cmd` 默认只起游戏，`--check` 才是旧的命令行预导入（§11.62）。③新增测试：`tests/window_settings.gd`（31 项，已跑 **31/0**）、`tests/launcher_env.gd`（**28** 项，已跑 **28/0**）、`tests/launcher_visual.gd`（4 项，出图 `build/launcher/`；刻意不真跑导入，只搭界面拍照）。④路牌：§1/§2/§3.1/§4.A/§5/§6/§8/§9/§11.57–63 与本节；§2 顺手改正两处与本次改动直接冲突的旧数字（脚本 112→**155**、测试 213→**288**，均为实测）。⑤路牌定稿前 `scripts/boot.gd` 与 `scripts/launcher_env.gd` 又各被扩了一次（新增导入兜底超时 `IMPORT_TIMEOUT_SECONDS`/`_stop_import()`；`entry_count()` 加了路径参数），**全部 boot/launcher_env 锚点已按当次实测重锚**，并补上 §11.63 与 §6 的超时行。⑥**同日第二批：水滴转场 + 两处行为修正**。转场：点任意键后 `boot.gd:602 _start_transition()` 抓一张启动器画面（`await RenderingServer.frame_post_draw` + `get_viewport().get_texture().get_image()`）→ 立刻把 `main.tscn` 实例化挂到 root（`current_scene` 手动顶替，main.gd 不读 current_scene 所以安全）→ 抓图铺到新建的 `CanvasLayer(layer=110)` 上的 `TextureRect`（材质 = 新着色器 `resources/launcher_dissolve.gdshader`，等比空间的 4~5 个圆向外扩散、圆内 alpha 归零）→ 藏掉启动器层（视频继续放，音频才淡得出来）→ 每帧推半径 → `boot.gd:746 _end_transition()` 摘材质、清数组、`set_process(false)`、释放抓图层与启动器层。登录页 `main.gd:469 fade_in_ui()` 0.5s 淡入（用户口径"秒加载、慢慢淡出"）。**时长实测得出**：`tests/launcher_visual.gd` 连拍 `10-transition-*`，400ms 还在擦、600ms 快完、800ms 全清楚 → 约 0.7s，取 `TRANSITION_SECONDS=0.9`（平均 + 0.2s 余量，到点清演算）。重启路径走同一套但底下垫纯黑（擦成黑再 `OS.create_process`）。⚠️ 为什么是"抓图"而不是 CanvasGroup：实测 CanvasGroup 的材质拿不到整组贴图（纯直通着色器渲染成默认白贴图），见 §11.57；另两条铁律 §11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开）。预览路径（`--skip-intro`/`--capture`/`--preview-*`）走 `_enter_game(false)` **不加转场**，免得既有预览截图抓到淡入中途。两处修正：健康忠告**删掉"任意键跳过"提示行**（功能保留在 `_unhandled_input()`，用户要求前端不显示）；PV 两条路径都 `loop=true`（用户反馈"播完一次停住像卡死"）。测试更新：`tests/launcher_visual.gd` 4→**11 项**（新增真鼠标点击：点静音按钮不触发进游戏、点空白处立刻挂上主场景、转场收尾释放启动器层、结束后看得见登录页），`tests/launcher_env.gd` 28→**29 项**（新增 `entry_count()` 目录不存在返回 0）。本批又改动了 `boot.gd`（+约 70 行）与 `main.gd`（+`fade_in_ui`），**boot/main 相关锚点已全部按当次实测重锚**。 |
+| 2026-10-12 | （本轮未提交） | **窗口设置单真值化 + 启动器搬进游戏内（控制台预导入退役）**。①**修"开场 PV 在写死的小窗里播"**：新增零依赖的 `scripts/window_settings.gd`（无 `class_name`、不 preload 别的脚本、不碰贴图——首次下载类缓存为空时它必须能自己活），`DEFAULT_FULLSCREEN=true` / `DEFAULT_WINDOW=1600×900` / `PRESETS` 四档 + 跟随桌面(4) + 自定义(-1) / `MIN_WINDOW=960×540`；autoload `scripts/graphics_quality.gd`（`project.godot:28`，进程里最早的脚本执行点）的 `_ready()` 第一句就是 `WindowSettings.apply_saved()`，所以 PV 也在玩家自己的窗口里播。`profile.gd` 的 `data` 字面量同步加 `fullscreen`/`window_preset`/`window_w`/`window_h`，并在 `apply_data()` 里为这三个整数键补**显式 int 归一**（§11.18 那个"JSON 读回来是 float"的坑）与范围夹取。设置页全屏按钮下新增 5 个档位按钮（`main.gd:4614-4618`），玩家手拖的窗口尺寸经 0.6s 防抖写回存档（`main.gd:4667 note_window_size()` ← `main.gd:1784 NOTIFICATION_WM_SIZE_CHANGED`）。**豁免规则**：`--headless`、`--script` 回归、命令行显式给了 `-w`/`-f`/`--resolution`/`--position` 等时**完全不碰窗口**（`window_settings.gd:43`）——这条保住了全部回归测试的窗口几何。②**启动器编译进游戏内**：`scenes/boot.tscn` 退成空壳（只留一条脚本 ext_resource，§11.58），`scripts/boot.gd` 重写成启动器——健康忠告 → 环境自检 →〔需要时〕资源导入（PV 循环 + 描金进度条 `scripts/launcher_bar.gd` + 右上角圆形静音 `scripts/launcher_mute.gd` + 15 句世界观轮播）→ 就绪后闪烁「点击任意键开始游戏」→ 进登录页；新增 `scripts/launcher_env.gd` 作玩家侧自检（与 `tools/check_class_cache.ps1` 同口径的**两份实现**；本机实测精确自检 3.1s、指纹快通道 0.2s）；静音状态写 `user://graphics.cfg` 的 `[audio] launcher_mute`，**不进** profile.json（避免跟云存档同步）。`Start-Game.cmd` 默认只起游戏，`--check` 才是旧的命令行预导入（§11.62）。③新增测试：`tests/window_settings.gd`（31 项，已跑 **31/0**）、`tests/launcher_env.gd`（**28** 项，已跑 **28/0**）、`tests/launcher_visual.gd`（4 项，出图 `build/launcher/`；刻意不真跑导入，只搭界面拍照）。④路牌：§1/§2/§3.1/§4.A/§5/§6/§8/§9/§11.57–63 与本节；§2 顺手改正两处与本次改动直接冲突的旧数字（脚本 112→**155**、测试 213→**288**，均为实测）。⑤路牌定稿前 `scripts/boot.gd` 与 `scripts/launcher_env.gd` 又各被扩了一次（新增导入兜底超时 `IMPORT_TIMEOUT_SECONDS`/`_stop_import()`；`entry_count()` 加了路径参数），**全部 boot/launcher_env 锚点已按当次实测重锚**，并补上 §11.63 与 §6 的超时行。⑥**同日第二批：水滴转场 + 两处行为修正**。转场：点任意键后 `boot.gd:610 _start_transition()` 抓一张启动器画面（`await RenderingServer.frame_post_draw` + `get_viewport().get_texture().get_image()`）→ 立刻把 `main.tscn` 实例化挂到 root（`current_scene` 手动顶替，main.gd 不读 current_scene 所以安全）→ 抓图铺到新建的 `CanvasLayer(layer=110)` 上的 `TextureRect`（材质 = 新着色器 `resources/launcher_dissolve.gdshader`，等比空间的 4~5 个圆向外扩散、圆内 alpha 归零）→ 藏掉启动器层（视频继续放，音频才淡得出来）→ 每帧推半径 → `boot.gd:753 _end_transition()` 摘材质、清数组、`set_process(false)`、释放抓图层与启动器层。登录页 `main.gd:469 fade_in_ui()` 0.5s 淡入（用户口径"秒加载、慢慢淡出"）。**时长实测得出**：`tests/launcher_visual.gd` 连拍 `10-transition-*`，400ms 还在擦、600ms 快完、800ms 全清楚 → 约 0.7s，取 `TRANSITION_SECONDS=0.9`（平均 + 0.2s 余量，到点清演算）。重启路径走同一套但底下垫纯黑（擦成黑再 `OS.create_process`）。⚠️ 为什么是"抓图"而不是 CanvasGroup：实测 CanvasGroup 的材质拿不到整组贴图（纯直通着色器渲染成默认白贴图），见 §11.57；另两条铁律 §11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开）。预览路径（`--skip-intro`/`--capture`/`--preview-*`）走 `_enter_game(false)` **不加转场**，免得既有预览截图抓到淡入中途。两处修正：健康忠告**删掉"任意键跳过"提示行**（功能保留在 `_unhandled_input()`，用户要求前端不显示）；PV 两条路径都 `loop=true`（用户反馈"播完一次停住像卡死"）。测试更新：`tests/launcher_visual.gd` 4→**11 项**（新增真鼠标点击：点静音按钮不触发进游戏、点空白处立刻挂上主场景、转场收尾释放启动器层、结束后看得见登录页），`tests/launcher_env.gd` 28→**29 项**（新增 `entry_count()` 目录不存在返回 0）。本批又改动了 `boot.gd`（+约 70 行）与 `main.gd`（+`fade_in_ui`），**boot/main 相关锚点已全部按当次实测重锚**。 |
 
-| 2026-10-12 | （本轮未提交） | **水滴转场预热：把它做成"编译着色器的一部分"（用户第 4 轮）**。用户报"电脑差，点击后有转场但会卡几秒，想提前渲染、转场收尾彻底释放"。先量化真因（临时 `[timing]` 探针，已移除）：点击那一刻 `await_frame=4ms readback=8ms load_scene=5268ms instantiate=1ms add_child(_ready)=4524ms` —— **转场演算只有约 12ms，9.8s 全在"现加载 main.tscn + 跑它的 `_ready()`"，另有一口是着色器管线首次绘制才编译**。于是 `scripts/boot.gd` 加三件事，全部提前到"玩家还在看开场"时做，点击时只复用：① **GPU 预热** `boot.gd:245 _shader_warm_setup()`——在 `_build_scene_ui()` 里就建好 `ShaderMaterial` 并挂在一张满屏贴图上先画两帧（`boot.gd:265 _park_warm_plate()` 后收起），它排在 `black` 之前被不透明黑底盖住，玩家看不见；`boot.gd:602 _start_transition()` 改为**复用**这个材质，不再 `ShaderMaterial.new()`。② **场景预热** `boot.gd:385 _begin_prewarm()`/`boot.gd:395 _prewarm()`——`load` 走 `ResourceLoader.load_threaded_request`（后台线程），`instantiate + add_child`（同步跑 main.gd 的 `_ready()`）留在主线程但挪到待机期（`boot.gd:422 _prewarm_attach()`，先 `PROCESS_MODE_DISABLED` 防误触，点击时改回 `INHERIT`）。③ **闸门 + 藏卡顿**：`boot.gd:439 _finish_prewarm()` 之前 `boot.gd:786 _unhandled_input()` 在 VIDEO 阶段不放行"任意键"，先显示 `boot.gd:451 _show_preparing()`（"正在准备登录界面~"）；起跑点 `boot.gd:326 _maybe_prewarm_early()` 挂在自检之后（**绝不能更早**：类缓存过期时 `load(main.tscn)` 会解析失败，硬约束③）；等预热放在**静态**的忠告画面上（`boot.gd:298 _hold_for_prewarm()`，上限新常量 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s，到点必须放行，否则闸门永不开）。④**收尾彻底释放**：`boot.gd:746 _end_transition()` 除原有"停 `_process`、清 4 个水滴数组、删抓图盖板、`queue_free()` 启动器层"外，再把材质/预热贴图/提示节点引用全部置空。⑤`play_advice()` 的淡出改用**新** tween（旧那条跑完即回收，再往上加步骤会报"无效 Tween"）。**实测**：`tests/launcher_visual.gd` 扩到 **17 项 / 0 失败**（新增 3 项预热旗标 + 1 项"复用同一实例" + 1 项点击耗时 + 1 项盖板无残留），窗口版实跑 `[prewarm] ready in 8014ms` / `[prewarm] click setup 26ms`，无 SCRIPT ERROR；真实入口（`--headless --quit-after`）实跑 `[prewarm] ready in 7612ms`，加载落在静态忠告里、PV 不卡。⑥路牌：§3.1 链路、§4.A 新行「转场预热」、§5 新行、§6 新常量行、§11.67、本节。 |
+| 2026-10-12 | （本轮未提交） | **水滴转场预热：把它做成"编译着色器的一部分"（用户第 4 轮）**。用户报"电脑差，点击后有转场但会卡几秒，想提前渲染、转场收尾彻底释放"。先量化真因（临时 `[timing]` 探针，已移除）：点击那一刻 `await_frame=4ms readback=8ms load_scene=5268ms instantiate=1ms add_child(_ready)=4524ms` —— **转场演算只有约 12ms，9.8s 全在"现加载 main.tscn + 跑它的 `_ready()`"，另有一口是着色器管线首次绘制才编译**。于是 `scripts/boot.gd` 加三件事，全部提前到"玩家还在看开场"时做，点击时只复用：① **GPU 预热** `boot.gd:245 _shader_warm_setup()`——在 `_build_scene_ui()` 里就建好 `ShaderMaterial` 并挂在一张满屏贴图上先画两帧（`boot.gd:265 _park_warm_plate()` 后收起），它排在 `black` 之前被不透明黑底盖住，玩家看不见；`boot.gd:610 _start_transition()` 改为**复用**这个材质，不再 `ShaderMaterial.new()`。② **场景预热** `boot.gd:385 _begin_prewarm()`/`boot.gd:395 _prewarm()`——`load` 走 `ResourceLoader.load_threaded_request`（后台线程），`instantiate + add_child`（同步跑 main.gd 的 `_ready()`）留在主线程但挪到待机期（`boot.gd:422 _prewarm_attach()`，先 `PROCESS_MODE_DISABLED` 防误触，点击时改回 `INHERIT`）。③ **闸门 + 藏卡顿**：`boot.gd:439 _finish_prewarm()` 之前 `boot.gd:793 _unhandled_input()` 在 VIDEO 阶段不放行"任意键"，先显示 `boot.gd:451 _show_preparing()`（"正在准备登录界面~"）；起跑点 `boot.gd:326 _maybe_prewarm_early()` 挂在自检之后（**绝不能更早**：类缓存过期时 `load(main.tscn)` 会解析失败，硬约束③）；等预热放在**静态**的忠告画面上（`boot.gd:298 _hold_for_prewarm()`，上限新常量 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s，到点必须放行，否则闸门永不开）。④**收尾彻底释放**：`boot.gd:753 _end_transition()` 除原有"停 `_process`、清 4 个水滴数组、删抓图盖板、`queue_free()` 启动器层"外，再把材质/预热贴图/提示节点引用全部置空。⑤`play_advice()` 的淡出改用**新** tween（旧那条跑完即回收，再往上加步骤会报"无效 Tween"）。**实测**：`tests/launcher_visual.gd` 扩到 **17 项 / 0 失败**（新增 3 项预热旗标 + 1 项"复用同一实例" + 1 项点击耗时 + 1 项盖板无残留），窗口版实跑 `[prewarm] ready in 8014ms` / `[prewarm] click setup 26ms`，无 SCRIPT ERROR；真实入口（`--headless --quit-after`）实跑 `[prewarm] ready in 7612ms`，加载落在静态忠告里、PV 不卡。⑥路牌：§3.1 链路、§4.A 新行「转场预热」、§5 新行、§6 新常量行、§11.67、本节。 |
 
 ### 12.7 最近一次全量审计（2026-10-07）
 
@@ -1184,3 +1207,7 @@ git ls-files --others --exclude-standard | Select-String '\.uid$'
 ### 13.5 收尾
 
 `git merge` 完成前**必须重跑本次改动对应的逻辑测试**（确认代码自动合并没合坏），再 `git commit`（merge 提交）并 `git push`（网络命令 stdout 不接管道，见 §11.52）。测试基线沿用 §7 / TEST-REPORT.md：已知红要写清是"既有"还是"本次引入"。
+
+赤月遗书数值：INTERACT_RADIUS=105，护送接应半径180、跟随启动220；红潮周期16秒、提前6秒预警；六次兵装/防具整备；见scripts/scarlet/campaign.gd及combat.gd。
+
+2026-10-15 更正：以原游戏为基础添加剧情和玩法。撤下替代地图与替代渲染，原55张地图、连续连接路、副本进出、StoryWorld／World3D／GraphicsQuality、角色帧、接触阴影和StoryCombatVFX继续使用；行囊、仓库、商店、锻造、装备、专精、宝箱与传送阵已接回。绑定表见 docs/rpg/SCARLET-MAP-BINDINGS.md。

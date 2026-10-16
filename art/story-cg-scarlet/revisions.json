@@ -1,0 +1,22 @@
+{
+  "revisions": [
+    {
+      "id": "cg-01a",
+      "source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-28d6b953-8475-4767-ac45-ff65031ec688.png",
+      "prompt": "Edit target: this existing single-letter CG. Change ONLY the crimson wax seal and the tiny broken wax fragments beside it. The seal must be a perfectly round burgundy wax stamp with an embossed upright heraldic fleur-de-lis and ONE small clean triangular notch at exactly TWO O'CLOCK on its outer rim, with the point aimed inward. The rest of the circular rim is intact. Remove unrelated chips and damage so the notch is a precise identifying seal defect, not random torn wax. Preserve entire blank paper, hand, sleeve, sword, desk, candle, background lighting and composition pixel-for-pixel as much as possible. No words or extra objects. 16:9 finished illustrated game CG, target 3840x2160.",
+      "result": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-9ba8d7ba-afff-482b-af20-c153b0c15451.png"
+    },
+    {
+      "id": "cg-01b",
+      "source": "C:/Users/wangk/.codex/generated_images/01a13e13-77b0-7f71-a38b-64d07f94e288/exec-ccd4cc9e-0808-4006-ac33-d2b5258db441.png",
+      "prompt": "Edit target: this existing TWO-letter CG. Change ONLY BOTH wax seals. Make the two seals exact matching impressions of the SAME seal: perfectly round burgundy wax, embossed upright fleur-de-lis, identical relief and orientation, and ONE small clean triangular notch at exactly TWO O'CLOCK of EACH circle. Both fleur-de-lis must face upright, both notch positions must match relative to the emblem, do not mirror or rotate one. No other chips. This exact repeated defect is crucial evidence in the story. Preserve the two completely blank paper interiors, hands, sleeves, crossbow bolt, desk, candles, lighting and framing. No words or new objects. 16:9 finished illustrated game CG, target 3840x2160.",
+      "result": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-f265924f-3c20-4196-95f9-ef44b056da98.png"
+    },
+    {
+      "id": "cg-13",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-64a987a7-cc73-49f3-a854-a03f78c0a10b.png",
+      "prompt": "Edit target: this existing CG-13 image. Change ONLY environmental lighting, sky, water light and their reflected color consistently. This is BEFORE the blood storm ends. Replace bright sunny morning sky with a heavily overcast deep slate-blue PREDAWN sky, faint distant crimson storm glow at horizon, no visible sun, no golden sunrise or clear white daylight. Keep faces readable using the existing warm porch lamps plus soft cyan lantern, so this quiet breakfast remains warm and hopeful despite dark weather. Preserve EXACTLY all three faces, expressions, eye colors, outfits, hair ornaments, Feiyue tail, all hand positions, jam, bread, three blank tickets, medicine, contract, table, camera framing and background harbor geometry. No new people, no warships, no text. Finished anime ADV CG, 16:9, target 3840x2160.",
+      "result": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-3a0b9c00-0bb3-4c8e-ab93-cdf3c0831b23.png"
+    }
+  ]
+}

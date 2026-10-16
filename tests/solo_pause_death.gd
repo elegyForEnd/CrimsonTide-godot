@@ -14,13 +14,23 @@ func _initialize() -> void:
 	call_deferred("run")
 
 func run() -> void:
-	var app = load("res://scenes/main.tscn").instantiate()
+	# Attach the launcher script after entering the tree to exercise its prewarm
+	# handoff without starting the video / rendering transition in headless mode.
+	var launcher := CanvasLayer.new()
+	root.add_child(launcher)
+	launcher.set_script(load("res://scripts/boot.gd"))
+	launcher._prewarm_attach(load("res://scenes/main.tscn"))
+	var app = launcher.login_instance
+	check(app.process_mode==Node.PROCESS_MODE_DISABLED and not app.can_process(),"prewarmed login stays inactive behind launcher")
+	launcher._activate_prewarmed_login()
+	check(app.process_mode==Node.PROCESS_MODE_ALWAYS,"launcher preserves pause-safe UI processing")
+	launcher.queue_free()
 	app.profile.path="user://test-solo-pause-death.json"
-	root.add_child(app)
 	app.session.changed.disconnect(app.on_lobby)
 	app.session.finished.connect(func(): finishes+=1)
-	var escape := InputEventAction.new()
-	escape.action="pause"
+	var escape := InputEventKey.new()
+	escape.keycode=KEY_ESCAPE
+	escape.physical_keycode=KEY_ESCAPE
 	escape.pressed=true
 	for mode in ["expedition","roguelike"]:
 		app.session.solo({"hero":0,"mode":mode})
@@ -34,7 +44,7 @@ func run() -> void:
 		await create_timer(0.05).timeout
 		check(paused,"UI processing does not release cinematic pause")
 		app.ultimate.stop()
-		app._unhandled_input(escape)
+		root.push_input(escape)
 		check(paused and app.modal,"%s Escape pauses the world" % mode)
 		check(app.can_process() and not app.session.can_process() and not app.field.can_process() and not app.rogue_field.can_process(),"UI remains active while simulation and both worlds pause")
 		var before: float=app.session.elapsed
@@ -42,9 +52,13 @@ func run() -> void:
 		check(app.session.elapsed==before,"%s time freezes while menu is open" % mode)
 		app.show_settings()
 		check(paused,"settings preserve pause")
-		app._unhandled_input(escape)
+		root.push_input(escape)
 		check(not paused and not app.modal,"Escape resumes after closing menu")
-		app.toggle_bag()
+		var bag := InputEventKey.new()
+		bag.keycode=KEY_TAB
+		bag.physical_keycode=KEY_TAB
+		bag.pressed=true
+		root.push_input(bag)
 		check(paused and app.inventory_open,"%s bag pauses immediately" % mode)
 		before=app.session.elapsed
 		var hp: float=p.hp
@@ -53,10 +67,21 @@ func run() -> void:
 		app.pause_menu()
 		app.close_modal()
 		check(paused and app.inventory_open,"closing a modal over inventory keeps pause")
-		app._unhandled_input(escape)
+		root.push_input(escape)
 		check(not paused and not app.inventory_open,"Escape closes bag and resumes")
 		await create_timer(0.12).timeout
 		check(app.session.elapsed>before,"%s simulation resumes" % mode)
+		root.push_input(bag)
+		check(paused and app.inventory_open,"%s Tab reopens bag" % mode)
+		root.push_input(bag)
+		check(not paused and not app.inventory_open,"%s Tab closes paused bag" % mode)
+		root.push_input(escape)
+		var resume: Button=null
+		for child in app.overlay.get_children():
+			if child is Button and child.text=="继续探索": resume=child
+		check(resume!=null and resume.can_process(),"%s resume button stays interactive while paused" % mode)
+		if resume!=null: resume.pressed.emit()
+		check(not paused and not app.modal,"%s resume button closes pause menu" % mode)
 		if mode=="expedition":
 			var chest: Dictionary=app.session.ruins.chests[0]
 			chest.p=p.p

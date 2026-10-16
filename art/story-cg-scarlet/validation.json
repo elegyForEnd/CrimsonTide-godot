@@ -1,0 +1,144 @@
+{
+  "image_count": 19,
+  "unique_hashes": 19,
+  "all_dimensions_valid": true,
+  "all_hashes_match": true,
+  "movies_reserved": 21,
+  "all_movie_paths_null": true,
+  "native_4k_count": 0,
+  "images": [
+    {
+      "id": "cg-01a",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-01b",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-02",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-03",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-04",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-05",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-06",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-07",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-08",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-09",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-10",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-11",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-12",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-13",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-14",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-15",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-16a",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-16b",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    },
+    {
+      "id": "cg-17",
+      "width": 3840,
+      "height": 2160,
+      "valid_size": true,
+      "hash_matches": true
+    }
+  ]
+}

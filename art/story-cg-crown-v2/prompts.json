@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "generator": "built-in image_gen",
+  "target_size": [
+    3840,
+    2160
+  ],
+  "assets": [
+    {
+      "id": "cg-n01",
+      "title": "街灯与等水的人",
+      "scenes": [
+        "00-01"
+      ],
+      "sourceResult": "cg-n01",
+      "prompt": "Use case: illustration-story. Asset: CG-N01 for the dark gothic fantasy ADV 赤月遗书. Generate ONE finished full-bleed cinematic landscape 16:9 illustration, aim for 3840x2160 pixels / 4K, no collage or panels. Exquisite Japanese anime game key visual, delicate clean linework, restrained expressive faces, detailed painted stone architecture and damp cloth, muted blue-gray rain and tiny amber reflections. Scene: before dawn outside the lower palace gate, an old communal stone water pump has stopped; a small queue of ordinary residents patiently holds empty wooden buckets. Focus on an adult woman in patched brown wool with a bucket in the foreground, a tired worker leaning on an empty pail beyond her, a guard gently holding people behind a faded narrow red safety stripe. Unlit street lanterns recede toward a towering gothic city, sluice channels and rooftops barely visible through rain. One weak amber light at a distant window promises dependence on a fragile system. This is an inhabited city, quiet unease and fatigue, no combat and no flood yet. Eye-level wide composition with emotionally legible ordinary human faces above the lower quarter; reserve the bottom 22 percent for a game dialogue overlay by keeping that area mostly wet cobblestones and buckets. No recognizable main heroines, no queens, no crowns, no extra magic effects. No captions, no text, no speech bubbles, no logos, no watermark.",
+      "references": []
+    },
+    {
+      "id": "cg-n02",
+      "title": "十年前失败的撤运",
+      "scenes": [
+        "04-06"
+      ],
+      "sourceResult": "cg-n02",
+      "prompt": "Use case: illustration-story. Transform the supplied ADV illustration into a NEW ARCHIVAL CLOSE-UP scene, preserving its exquisite Japanese anime game rendering, gothic material detail, color grading and painterly line quality; replace the composition completely. This is CG-N02, ten-years-ago evacuation failure evidence. Landscape 16:9, aim for 3840x2160 4K, one finished full-bleed illustration, no comic panels. Top-down oblique close-up of a battered wooden archive desk. At center a large old hand-drawn city river/sluice map on yellowed parchment; it has a blocked return-water passage marked by a simple red cross, a delayed boat indicated by a small ink ship sketch, and a separate small work-zone street/room sheet tucked half-under the map but clearly visible. A faded sepia ink-wash record picture of evacuees waiting on a pier and a grounded boat rests in one corner; it is a document on the desk, not a supernatural vision. Wax seals, paper tabs, a broken string and a low candle show these are preserved originals. Physical evidence of failure and overlooked residents, not propaganda. NO current heroines, NO queen physically present, NO crystal core, NO crown, NO montage of people drowning. Indistinct nonlinguistic ruled rows and tiny ink strokes only: all readable dates, names, arrows explaining causes and UI labels are added later in game, so no legible generated text. Keep key map and overlooked supplement above the bottom 22% dialogue safe area. Thoughtful detective-story still life, crisp detail, not photorealistic; no logos, captions, watermark.",
+      "references": [
+        "assets/story/cg-scarlet-v1/cg-14.png"
+      ]
+    },
+    {
+      "id": "cg-n03",
+      "title": "请求她留下的母亲",
+      "scenes": [
+        "05-06"
+      ],
+      "sourceResult": "cg-n03",
+      "prompt": "Use case: illustration-story. Recompose/edit the supplied anime ADV CG into CG-N03, a new emotionally restrained story scene after a harbor rescue. Preserve precisely the white-haired red-eyed heroine Feiyue from the center reference: same youthful round face, small build, long silver-white hair, ahoge, black bow and small red gem, white puff sleeves, black-and-gold gothic dress and red neck bow; she is NOT the tall older queen. Preserve the blue-haired lantern healer Xueli and purple ponytail armored swordswoman Yayu as recognizable companions, farther back. ONE wide 16:9 4K-intended finished illustration, no panels, no lettering or UI. Inside a rough harbor medical reception shelter after rain, an ordinary adult mother with dark brown hair in a loose low bun, weathered patched brown wool shawl and plain muted green dress gently grips Feiyue's RIGHT hand with both hands, asking a painful sincere favor. Mother's face is tired and earnest, not villainous or ecstatic; Feiyue faces her in THREE-QUARTER SIDE PROFILE with shaken kindness, not angry or triumphant, looking at her rather than at camera. Mother's small child in a plain coat holds mother's sleeve in the background. Feiyue's held hand has a small clean gauze wrap from rescue. Behind and to the side, Xueli bends to check the child, hood and cyan lantern set nearby; Yayu keeps respectful distance by shelter entrance, full long sword sheathed. They do not surround or pressure Feiyue. Wet harbor planks, ropes, bandages, warm lamplight against blue rainy exterior. Focus of the composition is the natural, anatomically correct hand clasp and two faces, all above bottom 22% dialogue-safe zone. Delicate anime linework and luminous game CG painting matching the reference. No crown, no queen, no wings, no blood or new battle, no text, speech bubbles, logos or watermark.",
+      "references": [
+        "assets/story/cg-scarlet-v1/cg-14.png"
+      ]
+    },
+    {
+      "id": "cg-n04",
+      "title": "遗漏的住人区",
+      "scenes": [
+        "06-09"
+      ],
+      "sourceResult": "cg-n04",
+      "prompt": "Use case: illustration-story. Edit/recompose the supplied anime ADV illustration into a completely different scene, CG-N04 'the overlooked occupied work zone'. Preserve Yayu's identity from the RIGHT reference character: purple eyes, dark violet long HIGH PONYTAIL, dark black-purple fitted armor, practical gauntlets, full-length long sword safely sheathed, serious observant expression. Preserve the elegant anime linework, atmospheric detailed gothic game illustration style. One landscape 16:9 finished CG, aim 3840x2160 4K, no collage/panels. View over Yayu's three-quarter shoulder at a dim palace workers' corridor, with a waist-high wooden checkpoint desk in the foreground. One official evacuation ledger on desk appears stamped as checked (abstract wax impression only); Yayu's gloved hand has lifted a SEPARATE household-and-shift supplement and is comparing its ruled rows with a key ring and the real room doors. An OPEN doorway beyond reveals ordinary occupied life: an adult worker helping an elderly resident stand, folded bedding, cups, a child's wooden toy on a shelf, and another closed door farther along. This is discovery BEFORE rescue, residents are alive and waiting, not already standing safely at a boat. A cyan signal lamp near desk suggests a real message relay; no glowing radios or floating UI. Background no Feiyue, no Xueli, no queen, no crown, no fantasy wings. Dramatic contrast of cold corridor light and warm lived-in room. Keep face, raised household supplement and room doorway readable ABOVE bottom 22% for dialogue overlay; lower foreground can contain desk and rolled plans. Ledger details are nonlinguistic tiny ink marks with clean blank areas for later game text; do not generate legible names, numbers or Chinese. Natural gloved hands, no extra fingers, no weapons drawn, no logos, watermark or captions.",
+      "references": [
+        "assets/story/cg-scarlet-v1/cg-14.png"
+      ]
+    },
+    {
+      "id": "cg-a01",
+      "title": "姐姐交出王冠",
+      "scenes": [
+        "A-02"
+      ],
+      "sourceResult": "cg-a01",
+      "prompt": "Use case: illustration-story. Edit/recompose reference 1 into a NEW acceptance-route CG-A01 'the elder sister offers the crown'. Keep both distinct sisters' exact identities: Feiyue is the SMALLER white-haired red-eyed heroine on LEFT with her own round face, ahoge, black hair bow, white puff sleeves, black-and-gold dress and red throat ribbon. The elder queen is the TALLER mature silver-haired red-eyed woman on RIGHT in black/red/white rose royal gown, refined face and regal bearing. Reference 2 confirms elder queen and thorn gold/ruby crown design only. Preserve anime ADV rendering, luxurious fine linework, detailed fabric, architectural depth. One wide 16:9 4K-intended full illustration. Quiet stable throne side-platform after combat, no combat posing. Eye-level side profiles: Feiyue stands willingly upright, not kneeling, looking her sister in the eye. Queen holds her single intricate gold-and-ruby crown with both hands BETWEEN them, just above the table, offering but not yet placing it on Feiyue; neither sister is wearing another crown. The queen's wrist has faint crystal disease and her tired composure is controlled, not possessed, grinning or begging. On desk between them lie a sealed transfer document and her seal, wax impression and blank ruled lines, no legible generated writing. Behind the queen the disabled stained-glass machinery is folded against the wall, NOT wings attached to Feiyue; easiest keep all wings out of frame. A partly open doorway gives witness sightline. Feiyue keeps her original dress and proportions, no queen-face replacement, no new large chest, no extra body change. Exactly TWO visible people and ONE crown. No stabbing, sword through a person, death, shattered core, levitation or forced gripping. Faces and offered crown in middle-upper frame above bottom 22 percent reserved for ADV dialogue. Solemn, painful voluntary responsibility, beautiful restrained light. No text, UI, watermark or montage.",
+      "references": ["D:/develop/school/CrimsonTide-godot/assets/story/cg-scarlet-v1/cg-15.png","D:/develop/school/CrimsonTide-godot/assets/bosses/blood-queen-portrait.png"]
+    },
+    {
+      "id": "cg-a02",
+      "title": "第一道晶纹",
+      "scenes": [
+        "A-06"
+      ],
+      "sourceResult": "cg-a02",
+      "prompt": "Use case: illustration-story. Create an intimate acceptance-ending CG by recomposing the supplied heroine art into a finished anime ADV scene. Reference 1 locks Feiyue's own face, long white hair, red eyes, black bow and cream knitted home cardigan with burgundy bows. Reference 2 locks Xueli's blue hair/eyes and navy knitted home cardigan, mint ribbon, white dress. Reference 3 gives painterly gothic game style only, do not repeat its map table. CG-A02 'the first crystal line'. Landscape 16:9, intended 3840x2160 4K, exquisite delicate linework, realistic fabric folds within anime illustration. Medium close intimate shot in a palace recovery room the next morning. Feiyue sits at left in THREE-QUARTER SIDE VIEW, sleeves gently rolled back, looking down at her own exposed inner RIGHT wrist with vulnerable composed fear. A single very faint pale-pink branching crystalline hairline under the wrist skin is the central detail, tiny and newly formed, no gore, spikes, red blood or whole-arm corruption. Xueli sits close at right, attentively holding one end of clean bandage, her other hand gently supports Feiyue's forearm on a folded white cloth; natural anatomically distinct hands and readable contact. Both faces, Feiyue's wrist and bandage sit above bottom 22 percent game-text safe zone. Warm window light, clean water cup and a closed plain envelope at side, quiet care without promise of cure. Exactly TWO characters; elder queen is dead and NOT in this scene. No floating queen portrait, no royal throne or wings, no glamorous transformation, no giant glowing magical tattoo. Crown may remain outside the frame, she has not become her sister. Both fully clothed, no romance posing. No legible letters, captions, UI, text, logos or watermark.",
+      "references": ["D:/develop/school/CrimsonTide-godot/assets/story/vn-full-v3/feiyue/feiyue-home-turn-neutral.png","D:/develop/school/CrimsonTide-godot/assets/story/vn-full-v3/xueli/xueli-home-turn-neutral.png","D:/develop/school/CrimsonTide-godot/assets/story/cg-scarlet-v1/cg-14.png"]
+    },
+    {
+      "id": "cg-a03",
+      "title": "灯下三人和回程票",
+      "scenes": [
+        "A-07"
+      ],
+      "sourceResult": "cg-a03",
+      "prompt": "Use case: illustration-story. Recompose the supplied assets into CG-A03, acceptance-route ending 'three tickets under the lamplight'. Reference 1 Feiyue identity and cream/burgundy HOME outfit, reference 2 Xueli identity and navy/mint HOME outfit, reference 3 Yayu identity and dark-purple knitted HOME outfit. Reference 4 establishes anime ADV art quality only; do not copy the old war planning pose, rain harbor or sword table. ONE polished full-bleed landscape 16:9 illustration, intended 3840x2160 4K. Exactly THREE heroines, together in a modest lived-in palace working room after the city has relit. White-haired red-eyed small-build Feiyue sits at the middle of a broad desk writing her own reply with a pen, expression weary and gently alive, still her own face, black bow and long hair, right wrist freshly bandaged. Blue-haired blue-eyed Xueli sits left with a clean bandage roll and water cup, turned toward Feiyue. Purple-eyed Yayu at right with unmistakable high ponytail, relaxed home cardigan rather than combat armor, places the incoming plain envelope closer and makes a dry affectionate remark; no smirking villain expression. Three distinct plain rectangular RETURN BOAT TICKETS lie together near the middle of the table, above the bottom 22 percent dialogue overlay zone; no readable text or numbers. A single small gold thorn crown with ruby accents rests on folded dark cloth to one side, responsibility present but not dominating them. Feiyue has NO wings and wears NO borrowed queen face or provocative royal gown. Behind them, a tall open window shows the SAME intact gothic city with warm streetlights and working canals, not a ruined-city refusal ending, not a promise that the disease is cured. Morning light and one desk lamp illuminate all three evenly, no character isolated on a throne. Quiet hope with unresolved cost, natural conversational side poses and anatomically correct separated hands. No elder queen or ghost, no fourth person, no big battle effects, no captions, text, logo or watermark.",
+      "references": ["D:/develop/school/CrimsonTide-godot/assets/story/vn-full-v3/feiyue/feiyue-home-turn-neutral.png","D:/develop/school/CrimsonTide-godot/assets/story/vn-full-v3/xueli/xueli-home-turn-neutral.png","D:/develop/school/CrimsonTide-godot/assets/story/vn-full-v3/yayu/yayu-home-turn-neutral.png","D:/develop/school/CrimsonTide-godot/assets/story/cg-scarlet-v1/cg-14.png"]
+    }
+  ]
+}

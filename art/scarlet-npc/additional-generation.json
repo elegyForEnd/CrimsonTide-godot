@@ -1,0 +1,27 @@
+[
+  {
+    "id": "craftsman",
+    "prompt": "illustration-story. New production gothic anime ADV portrait asset. An older adult female master swordsmith age 55, short dark auburn hair with grey temples, practical linen shirt, soot stained dark leather apron, small round glasses, calloused gloved hands holding a folded technical diagram, quietly attentive. Single adult full body character, entire boots visible, relaxed three quarter stance facing screen left. Finely painted anime line art, restrained ornate believable costume. Clean alpha transparent background, no vignette, no backdrop, no text, no panels. Reference only for drawing style, never copy the girl or her costume.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-a880fdca-ab34-436b-8a47-de75c4ae1a32.png"
+  },
+  {
+    "id": "stablemaster",
+    "prompt": "illustration-story. New production gothic anime ADV portrait asset. Adult male stablemaster age 40, freckled weathered face, curly chestnut hair under wool cap, layered olive travel coat, leather harness apron, holding bridle buckle, wary ordinary civilian. Single adult full body character, entire boots visible, relaxed three quarter stance facing screen left. Finely painted anime line art, restrained ornate believable costume. Clean alpha transparent background, no vignette, no backdrop, no text, no panels. Reference only for drawing style, never copy the girl or her costume.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-360f2b37-bc63-4d44-8ef1-4d9ba2abafec.png"
+  },
+  {
+    "id": "village-doctor",
+    "prompt": "illustration-story. New production gothic anime ADV portrait asset. Adult woman rural physician age 46, brown hair tied in loose braid, simple teal dress with clean cream apron and dark shawl, linen bandages and medicine box, tired determined kind expression. No glowing lantern or protagonist traits. Single adult full body character, entire boots visible, relaxed three quarter stance facing screen left. Finely painted anime line art, restrained ornate believable costume. Clean alpha transparent background, no vignette, no backdrop, no text, no panels. Reference only for drawing style, never copy the girl or her costume.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-98a77a99-f4ed-476f-9692-31153f1c5eb8.png"
+  },
+  {
+    "id": "vein-sad",
+    "prompt": "Edit reference into a matching visual novel expression variant. His eyes show tired shame and loss, gaze lowered, lips drawn tight; no smile. Preserve character face identity, exact body pose, full outfit, ornaments, hair, proportions, framing and all accessories. Change only facial emotion. True clean alpha transparent background, no vignette or backdrop, no text.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-ac7492fd-331e-4b44-919f-604f458fbb3a.png"
+  },
+  {
+    "id": "queen-angry",
+    "prompt": "Edit reference into a matching visual novel expression variant. Furious controlled expression, brows drawn sharply down, eyes intense, lips slightly parted speaking an angry command. Preserve character face identity, exact body pose, full outfit, ornaments, hair, proportions, framing and all accessories. Change only facial emotion. True clean alpha transparent background, no vignette or backdrop, no text.",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a13e13-77b0-7f71-a38b-64d07f94e288\\exec-a6b79cf9-3696-429e-aafb-8f597e35687e.png"
+  }
+]

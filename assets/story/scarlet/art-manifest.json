@@ -1,0 +1,362 @@
+﻿{
+    "generator":  "built-in image_gen",
+    "assets":  [
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\city.png",
+                       "id":  "city",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "8c76159d536869408fd64c1d7def29bb0a9033b62935a62786409ab77f1817ca",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\city.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\harbor.png",
+                       "id":  "harbor",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "4b52b1b166244f150913c587d1b706706b2d011b80e326372ca729b089a01863",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\harbor.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\inn.png",
+                       "id":  "inn",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "0896fb130c707618f18e11c843407b5a46023549cfca477fd27cb5ede670c444",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\inn.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\mountain.png",
+                       "id":  "mountain",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "b968c66307cccca13a2981b20933ac8223257e2aab159df218d3b4231a874a74",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\mountain.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\palace.png",
+                       "id":  "palace",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "4e34a11472982bbb8eebc16d4e910ea244bea4e28852e80b307597d662e72ac5",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\palace.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\throne.png",
+                       "id":  "throne",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "0cea4850c753ec42d3bdc4f1f40ed1817b9709e1b8b041b05fdab4684a859b53",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\throne.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-backgrounds\\masters\\village.png",
+                       "id":  "village",
+                       "source_size":  [
+                                           1672,
+                                           941
+                                       ],
+                       "category":  "bg",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "52811d7aef11cd5318fab6d8bb1d5f9327ece019598c22053eca1bdf040388a1",
+                       "delivery_size":  [
+                                             3840,
+                                             2160
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\bg\\village.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\admiral.png",
+                       "id":  "admiral",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "716f8f077e746ba695ff549fa8b2a5ac1e53d627d3a64e054b63f9e3a940ce59",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\admiral.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\captain.png",
+                       "id":  "captain",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "a28fe8ca3cb8fabc7186197789f19c7ec9a5f8166a30e5e7397535f365621530",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\captain.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\craftsman.png",
+                       "id":  "craftsman",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "01efd7828d5c0bdbd23ad2eecd7d10abea51ce27f74d74c361e517a22d4bb696",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\craftsman.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\inquisitor.png",
+                       "id":  "inquisitor",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "6b7c09f78f7880c5b3eb2b3dcfefd5f7da619459c60a893f595f480dc23e2192",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\inquisitor.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\judge.png",
+                       "id":  "judge",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "f00394560d0ede367f0f8159c5519da568e53b3ca76e6f12c356f1fc866ac88c",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\judge.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\messenger.png",
+                       "id":  "messenger",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "1662a8dd765e463e2f7e232b954604f83bf99cee0a516826f93a753d82e9e3dd",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\messenger.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\physician-v2.png",
+                       "id":  "physician-v2",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "eda66644260214ad8d5aab0f83b5113bdf2250fa1172aa519c0c2c27125130fc",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\physician-v2.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\physician.png",
+                       "id":  "physician",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "c89fd7b70816a63f8095b33df09d2837cfc17dfb224733adca94d816c70443d9",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\physician.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\queen-angry.png",
+                       "id":  "queen-angry",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "26fd0bec3aa7160c1f87301389d5639399b018864d7b03850759c7f13692bdc4",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\queen-angry.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\stablemaster.png",
+                       "id":  "stablemaster",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "afd1e1d9fdab0dc3301a141933c21c9c56a2a8984f6cfac0fa90653e178ff6bc",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\stablemaster.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\surgeon.png",
+                       "id":  "surgeon",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "db71576e42c601de863d28add866df3bca2b23f85ab86985b507d7383230d4c9",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\surgeon.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\vein-sad.png",
+                       "id":  "vein-sad",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "751da6b0f04691a8b8d32dcd7ffd2918dcf794ce8a747ee5bfbf2bfd5aa88b7d",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\vein-sad.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\vein.png",
+                       "id":  "vein",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "4a0fe94dbbe4d85fc9af6edf4739fe96ab542a141c67b04f4cf34cda4bd6c72a",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\vein.png",
+                       "native_4k":  false
+                   },
+                   {
+                       "source":  "D:\\develop\\school\\CrimsonTide-godot\\art\\scarlet-npc\\masters\\village-doctor.png",
+                       "id":  "village-doctor",
+                       "source_size":  [
+                                           1024,
+                                           1536
+                                       ],
+                       "category":  "npc",
+                       "processing":  "whole-image high quality bicubic resample, alpha preserved",
+                       "sha256":  "a10fccf1daa4c9a30c948f4b7a3f890a86ac5a06bd82a479064b99e063142b45",
+                       "delivery_size":  [
+                                             2560,
+                                             3840
+                                         ],
+                       "path":  "D:\\develop\\school\\CrimsonTide-godot\\assets\\story\\scarlet\\npc\\village-doctor.png",
+                       "native_4k":  false
+                   }
+               ]
+}
