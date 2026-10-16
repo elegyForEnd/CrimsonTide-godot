@@ -2,7 +2,9 @@
 from pathlib import Path
 import json
 from scarlet_screenplay_runtime import apply
+from build_scarlet_enemy_roster import build as build_enemies
 ROOT=Path(__file__).resolve().parents[1]
+build_enemies()
 OUT=ROOT/'resources/scarlet'
 OUT.mkdir(parents=True,exist_ok=True)
 CAMPS=['边境客舍','白垩避难所','月晶驿站','蔷薇篱营','月舟码头','旧水门营地']

@@ -139,6 +139,19 @@ func sync_story(screen: Vector2, dt: float) -> void:
 			var extent := Vector2(115*cell.x/cell.y,115)
 			submit_sprite(npc_sheet,Rect2(Vector2(-extent.x/2,-extent.y*.99),extent),region,Color.WHITE,Transform2D(0,campaign.map.npc_at[i]))
 	for e in campaign.enemies:
+		if campaign.has_method("enemy_pose"):
+			var authored: Dictionary=campaign.enemy_pose(e)
+			if not authored.is_empty():
+				var transform:=Transform2D(0,Vector2(e.p)+Vector2(authored.offset))
+				transform.x.x=float(authored.facing)
+				var part_index:=0
+				for part: Dictionary in authored.get("pieces",[{"rect":authored.rect,"region":authored.region}]):
+					submit_sprite(authored.texture,part.rect,part.region,authored.tint,transform)
+					var footprint: float=float(authored.get("shadow_width",75))*UNIT
+					contact_shadows[used-1].scale=Vector3(maxf(.35,footprint),1,maxf(.22,footprint*.45))
+					if part_index>0: contact_shadows[used-1].hide()
+					part_index+=1
+				continue
 		if boss_models.draws(e) or (e.hp<=0 and preload("res://scripts/boss_actor_3d.gd").supports(e,"story")): continue
 		# The body remains a loot landmark, then fades out over its last two seconds.
 		var corpse_alpha := 1.0
@@ -194,7 +207,9 @@ func sync_quest_objects() -> void:
 		var text: String=node.label
 		var model := "halloween/shrine_candles"
 		var dimensions := Vector3(85,70,70)
-		if "取" in text or "找" in text or "箱" in text:
+		if node.get("kind","")=="enemy_patrol":
+			model="dungeon/banner_shield_red"; dimensions=Vector3(85,135,75)
+		elif "取" in text or "找" in text or "箱" in text:
 			model="dungeon/chest_gold"; dimensions=Vector3(75,55,60)
 		elif "记录" in text or "证" in text or "图" in text:
 			model="dungeon/table_long_decorated_A"; dimensions=Vector3(100,60,70)

@@ -81,17 +81,28 @@ def build():
          skill('王庭环界','近圈是空隙，优先打开侧廊',strike('ring',470,1.7,'self',inner=210),recovery=1.1)],
         [skill('认证回流','只解除外侧护架，保留核心',strike('circle',220,1.9),recovery=1.2),
          skill('护架泄压','固定落印之间有安全间隙',strike('circle',190,1.8,offset=[-280,0]),strike('circle',190,2.3,offset=[280,0]),recovery=1.3)]])
-    boss('beast',222,'adcbdf','3:3 · 废矿支路','霜脊岩兽围绕矿甲与落石作战，支线可以选择不挑战。',[
+    boss('beast',222,'adcbdf','3:0 · 驿站侧架外的兽道（S03）','霜脊岩兽围绕矿甲与落石作战，支线可以选择不挑战。',[
         [skill('岩甲冲撞','离开宽直线冲撞区',strike('line',230,1.4,'forward',reach=400),recovery=1.2),
          skill('震地','离开兽身周围',strike('circle',340,1.55,'self'),recovery=1.1)],
         [skill('霜脊落石','离开锁定时所在的位置',strike('circle',210,1.5),strike('circle',180,2.0,offset=[260,0]),recovery=1.3),
          skill('碎甲震环','贴近岩兽或退到外侧',strike('ring',430,1.6,'self',inner=165),recovery=1.2)]])
-    boss('warden',235,'c1a478','4:4 · 旧牢房','铁棺看守用盾墙与拖链封路，击退后可接近关押处。',[
+    boss('warden',235,'c1a478','6:2 · 额外拘留室（S06）','铁棺看守用盾墙与拖链封路，击退后可接近关押处。',[
         [skill('棺盾压路','避开正面盾击',strike('cone',365,1.35,'self'),recovery=1.15),
          skill('锁链拘束','横移离开拖链',strike('line',195,1.45,'shot',reach=650),recovery=1.15)],
         [skill('闭棺扫链','进入链环内侧再反击',strike('ring',410,1.5,'self',inner=155),recovery=1.1),
          skill('断门重击','避开棺盾落点',strike('circle',245,1.6),recovery=1.25)]])
 
+    # Keep resistance gear relevant to the threat being shown, rather than
+    # assigning every blade a chapter element or making all magic physical.
+    magical = {
+        '封卷落印':'fire','双页划界':'fire','晶脊震落':'frost','胸舱排气':'venom',
+        '三庭宣判':'fire','封缄令':'fire','覆卷追判':'fire','局部麻醉':'venom',
+        '断链摇舷':'tide','王剑裁线':'blood','止步':'blood','六翼封庭':'blood',
+        '王庭环界':'blood','认证回流':'blood','护架泄压':'blood',
+        '霜脊落石':'frost','碎甲震环':'frost'}
+    for info in [*minions.values(), *bosses.values()]:
+        for move in info.get('skills',[]) + [m for phase in info.get('phases',[]) for m in phase]:
+            move['element']=magical.get(move['name'],'physical')
     rosters = {
         '1':['tide_hound','crystal_husk','royal_pikeman','royal_arbalist'],
         '2':['royal_pikeman','royal_arbalist','archive_scribe','archive_scribe'],

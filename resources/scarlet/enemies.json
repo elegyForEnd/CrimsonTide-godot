@@ -161,7 +161,7 @@
             }
           ],
           "recovery": 1.0,
-          "element": "physical"
+          "element": "fire"
         },
         {
           "name": "双页划界",
@@ -189,7 +189,7 @@
             }
           ],
           "recovery": 1.0,
-          "element": "physical"
+          "element": "fire"
         }
       ],
       "lore": "公共档案庭的封存术士，把行政封条当作战斗禁区。",
@@ -234,7 +234,7 @@
             }
           ],
           "recovery": 0.95,
-          "element": "physical"
+          "element": "frost"
         }
       ],
       "lore": "废矿的巡兽失去饲养者，矿晶沿旧追踪颈环生长。",
@@ -280,7 +280,7 @@
             }
           ],
           "recovery": 1.0,
-          "element": "physical"
+          "element": "venom"
         }
       ],
       "lore": "示范厅的机械器具由瑟芮远程牵索，停止后不会伤害病房。",
@@ -458,7 +458,7 @@
               }
             ],
             "recovery": 0.8,
-            "element": "physical"
+            "element": "fire"
           },
           {
             "name": "封缄令",
@@ -472,7 +472,7 @@
               }
             ],
             "recovery": 0.8,
-            "element": "physical"
+            "element": "fire"
           }
         ],
         [
@@ -509,7 +509,7 @@
               }
             ],
             "recovery": 1.15,
-            "element": "physical"
+            "element": "fire"
           }
         ]
       ]
@@ -642,7 +642,7 @@
               }
             ],
             "recovery": 0.8,
-            "element": "physical"
+            "element": "venom"
           }
         ],
         [
@@ -683,7 +683,7 @@
               }
             ],
             "recovery": 1.1,
-            "element": "physical"
+            "element": "venom"
           }
         ]
       ]
@@ -756,7 +756,7 @@
               }
             ],
             "recovery": 1.25,
-            "element": "physical"
+            "element": "tide"
           },
           {
             "name": "拒港重斩",
@@ -802,7 +802,7 @@
               }
             ],
             "recovery": 0.9,
-            "element": "physical"
+            "element": "blood"
           },
           {
             "name": "止步",
@@ -816,7 +816,7 @@
               }
             ],
             "recovery": 1.0,
-            "element": "physical"
+            "element": "blood"
           }
         ],
         [
@@ -849,7 +849,7 @@
               }
             ],
             "recovery": 1.25,
-            "element": "physical"
+            "element": "blood"
           },
           {
             "name": "王庭环界",
@@ -864,7 +864,7 @@
               }
             ],
             "recovery": 1.1,
-            "element": "physical"
+            "element": "blood"
           }
         ],
         [
@@ -880,7 +880,7 @@
               }
             ],
             "recovery": 1.2,
-            "element": "physical"
+            "element": "blood"
           },
           {
             "name": "护架泄压",
@@ -908,7 +908,7 @@
               }
             ],
             "recovery": 1.3,
-            "element": "physical"
+            "element": "blood"
           }
         ]
       ]
@@ -917,7 +917,7 @@
       "id": "beast",
       "height": 222,
       "color": "adcbdf",
-      "arena": "3:3 · 废矿支路",
+      "arena": "3:0 · 驿站侧架外的兽道（S03）",
       "identity": "霜脊岩兽围绕矿甲与落石作战，支线可以选择不挑战。",
       "phases": [
         [
@@ -974,7 +974,7 @@
               }
             ],
             "recovery": 1.3,
-            "element": "physical"
+            "element": "frost"
           },
           {
             "name": "碎甲震环",
@@ -989,7 +989,7 @@
               }
             ],
             "recovery": 1.2,
-            "element": "physical"
+            "element": "frost"
           }
         ]
       ]
@@ -998,7 +998,7 @@
       "id": "warden",
       "height": 235,
       "color": "c1a478",
-      "arena": "4:4 · 旧牢房",
+      "arena": "6:2 · 额外拘留室（S06）",
       "identity": "铁棺看守用盾墙与拖链封路，击退后可接近关押处。",
       "phases": [
         [

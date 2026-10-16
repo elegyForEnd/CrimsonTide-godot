@@ -412,6 +412,7 @@ func objective_nodes() -> Array:
 			var cache_id: String="%d:%d:cache:%d" % [region.act,region.stage,index]
 			if not state.opened_chests.has(cache_id): result.append({"id":cache_id,"kind":"original_cache","p":place(region.chests[index]/terrain().ratio),"label":"探索宝箱"})
 	if combat.running: result.append_array(combat.gadgets())
+	result.append_array(preload("res://scripts/scarlet/enemy_encounters.gd").nodes(self))
 	if not combat.running and escort_group.is_empty():
 		var geo=terrain()
 		for door in geo.original.entrances():
@@ -444,6 +445,7 @@ func nearest() -> Dictionary:
 func use(n: Dictionary) -> bool:
 	if not fieldwork.active.is_empty(): return false
 	if not state.pending.is_empty() or n.is_empty() or hero_at.distance_to(n.get("p",Vector2.INF))>INTERACT_RADIUS: return false
+	if n.kind=="enemy_patrol": return preload("res://scripts/scarlet/enemy_encounters.gd").use(self,n)
 	if n.kind=="original_cache":
 		if combat.running or state.opened_chests.has(n.id): return false
 		state.opened_chests[n.id]=true; state.coins+=30+int(state.act)*12; grant_weapon(n.p,true); audio_cue.emit("chest"); changed.emit(); save_campaign(); return true

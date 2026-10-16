@@ -1,0 +1,23 @@
+[
+  {
+    "id": "queen-idle",
+    "prompt": "Use case: background-extraction and identity-preserve. Input is a three-row character atlas. Extract and re-render ONLY the TOP ready stance, sword lowered, free hand relaxed. The output must show exactly ONE full-body adult queen, no other figures, no duplicate poses. Keep exact mature face, long silver hair, ruby eyes, jeweled crown, white crimson and gold rose royal gown, exactly SIX stained-glass blade wings, three per side, and only ONE hand-held sword. Preserve the detailed hand-painted gothic RPG style and three-quarter view from slightly above. Whole figure, all wing tips, sword tip and feet are visible, no clipping. Center the complete silhouette with at least 12 percent empty margin around all sides. A wide landscape canvas is fine if needed to fit the extended sword. TRUE transparent background: remove ALL backdrop, shadows, glow fog and haze. No text, no grid, no scene, no VFX. This is an individual game combat sprite, one person only.",
+    "references": [
+      "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-980af81e-2eab-49b4-857c-8cd9d0c84de1.png"
+    ]
+  },
+  {
+    "id": "queen-windup",
+    "prompt": "Use case: background-extraction and identity-preserve. Input is a three-row character atlas. Extract and re-render ONLY the MIDDLE raised-rapier anticipation stance, free hand empty. The output must show exactly ONE full-body adult queen, no other figures, no duplicate poses. Keep exact mature face, long silver hair, ruby eyes, jeweled crown, white crimson and gold rose royal gown, exactly SIX stained-glass blade wings, three per side, and only ONE hand-held sword. Preserve the detailed hand-painted gothic RPG style and three-quarter view from slightly above. Whole figure, all wing tips, sword tip and feet are visible, no clipping. Center the complete silhouette with at least 12 percent empty margin around all sides. A wide landscape canvas is fine if needed to fit the extended sword. TRUE transparent background: remove ALL backdrop, shadows, glow fog and haze. No text, no grid, no scene, no VFX. This is an individual game combat sprite, one person only.",
+    "references": [
+      "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-980af81e-2eab-49b4-857c-8cd9d0c84de1.png"
+    ]
+  },
+  {
+    "id": "queen-strike",
+    "prompt": "Use case: background-extraction and identity-preserve. Input is a three-row character atlas. Extract and re-render ONLY the BOTTOM fencing lunge follow-through with ONE crimson rapier extended right, free hand empty. The output must show exactly ONE full-body adult queen, no other figures, no duplicate poses. Keep exact mature face, long silver hair, ruby eyes, jeweled crown, white crimson and gold rose royal gown, exactly SIX stained-glass blade wings, three per side, and only ONE hand-held sword. Preserve the detailed hand-painted gothic RPG style and three-quarter view from slightly above. Whole figure, all wing tips, sword tip and feet are visible, no clipping. Center the complete silhouette with at least 12 percent empty margin around all sides. A wide landscape canvas is fine if needed to fit the extended sword. TRUE transparent background: remove ALL backdrop, shadows, glow fog and haze. No text, no grid, no scene, no VFX. This is an individual game combat sprite, one person only.",
+    "references": [
+      "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-980af81e-2eab-49b4-857c-8cd9d0c84de1.png"
+    ]
+  }
+]

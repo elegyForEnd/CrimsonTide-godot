@@ -1,0 +1,107 @@
+[
+  {
+    "id": "inquisitor",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-054071e5-09ef-4fd6-b6f6-e85e90edd982.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/inquisitor-final-atlas.png"
+  },
+  {
+    "id": "judge",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-e8e798a6-f9c5-4d3f-8363-4c2c53cbdf3e.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/judge-final-atlas.png"
+  },
+  {
+    "id": "vein",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-d9ceb0c4-5dfd-4109-b205-03958e517adc.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/vein-final-atlas.png"
+  },
+  {
+    "id": "surgeon",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-ce5725de-6415-4224-9655-7de0545cfb6e.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/surgeon-final-atlas.png"
+  },
+  {
+    "id": "admiral",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-2b41a1cc-0afb-480c-98b6-6dba27bde825.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/admiral-final-atlas.png"
+  },
+  {
+    "id": "queen",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-980af81e-2eab-49b4-857c-8cd9d0c84de1.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/queen-final-atlas.png",
+    "singles": [
+      {
+        "id": "queen-idle",
+        "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-62fc7a3a-c802-434c-8e5a-51c6db1e0f92.png",
+        "workspace_source": "art/rpg-enemies-v1/masters/queen-idle-final.png"
+      },
+      {
+        "id": "queen-windup",
+        "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-25544dac-e871-4993-885c-2ebbf6f01a3b.png",
+        "workspace_source": "art/rpg-enemies-v1/masters/queen-windup-final.png"
+      },
+      {
+        "id": "queen-strike",
+        "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-50a9bfc1-9c59-4031-96e6-8dc48e58499e.png",
+        "workspace_source": "art/rpg-enemies-v1/masters/queen-strike-final.png"
+      }
+    ]
+  },
+  {
+    "id": "beast",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-325309c6-0d82-4121-8e4d-2b4b31e9d842.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/beast-final-atlas.png"
+  },
+  {
+    "id": "warden",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-f60d25eb-9c37-40fd-ba20-fd5813445f79.png",
+    "layout": "vertical",
+    "workspace_source": "art/rpg-enemies-v1/masters/warden-final-atlas.png"
+  },
+  {
+    "id": "tide_hound",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-d03dbcd4-427b-4c40-8c1f-c753cd98d2cc.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/tide_hound-original.png"
+  },
+  {
+    "id": "crystal_husk",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-ba51b9e9-0320-44fc-b0dc-fa71b8747dd6.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/crystal_husk-original.png"
+  },
+  {
+    "id": "royal_pikeman",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-a5752e6a-3a95-4298-8404-52f81cdac1b1.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/royal_pikeman-original.png"
+  },
+  {
+    "id": "royal_arbalist",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-49d0d0b6-c304-4af8-a4f5-2aaf1470c9e6.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/royal_arbalist-original.png"
+  },
+  {
+    "id": "archive_scribe",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-f9bc9368-40aa-4127-9642-76b3ccd164c9.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/archive_scribe-original.png"
+  },
+  {
+    "id": "crystal_stalker",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-7842c532-372e-4e79-9ec5-e1add7f8b4e1.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/crystal_stalker-original.png"
+  },
+  {
+    "id": "suture_puppet",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-1db3da36-2678-401f-ae5d-6c795ca4d00a.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/suture_puppet-original.png"
+  },
+  {
+    "id": "anchor_raider",
+    "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-36ff58ee-f6af-4cd8-8bc4-2ea2468229f9.png",
+    "workspace_source": "art/rpg-enemies-v1/masters/anchor_raider-original.png"
+  }
+]

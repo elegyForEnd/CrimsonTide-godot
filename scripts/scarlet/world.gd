@@ -15,6 +15,7 @@ var trial_boat: Node3D
 var mechanism_key:=""
 var mechanisms: Node3D
 var combat_fx: Node2D
+var enemy_fx: Node2D
 var field_props: Node3D
 var zoom: float=15.0:
 	set(value):
@@ -27,6 +28,8 @@ func _ready() -> void:
 	combat_fx=preload("res://scripts/story_combat_vfx.gd").new()
 	combat_fx.screen=preload("res://scripts/scarlet/render_fx_host.gd").new(self)
 	get_parent().add_child(combat_fx)
+	enemy_fx=preload("res://scripts/scarlet/enemy_presentation.gd").new()
+	enemy_fx.screen=get_parent(); get_parent().add_child(enemy_fx)
 	campaign.combat_event.connect(original_combat_event)
 	extras=Node3D.new(); extras.name="StoryAdditions"; add_child(extras)
 	mechanisms=Node3D.new(); extras.add_child(mechanisms)
@@ -70,6 +73,7 @@ func sync(dt: float) -> void:
 	if campaign.state.is_empty() or facade==null: return
 	original.sync_story(Vector2(1440,900),dt)
 	combat_fx.advance(dt)
+	enemy_fx.advance(dt)
 	field_props.sync(dt)
 	# The unchanged sprite submission includes the original foot anchoring,
 	# terrain-height contact shadows and nearby-light tint for escorted people.
