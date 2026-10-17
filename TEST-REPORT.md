@@ -584,3 +584,14 @@ CG-N01～N04、CG-A01～A03使用内置image_gen生成，原稿1672×941、整�
 - 7份交付PNG的SHA-256与manifest一致，7份提示词完整；OpenGL实际截图output/scarlet-new-cg-ending.png核对三张船票与角色不被文本框遮挡。
 
 本轮没有生成动画、循环片或独立加冕服立绘，没有重新导出dist。新素材交付说明见docs/rpg/CG-CROWN-DELIVERY.md。
+
+## 2026-10-16 · RPG小怪与Boss
+
+8种小怪、6位章节Boss与2位支线Boss的新战斗造型和玩法已接入源码版。运行素材为15张三姿态透明图与女王3张独立透明图，共18张原生PNG、48个关键姿态。原图、提示词和图源在art/rpg-enemies-v1；实际UV、脚底枢轴和SHA-256在assets/story/rpg-enemies-v1/manifest.json。原生尺寸为1536×1024或1024×1536，没有重采样成4K。
+
+- scarlet_enemies.gd：674项，0失败。检查实际章节组合、全部姿态、固定预警、收招、正面防护与背后／收招破绽、打断、弩台撤销待发攻击、六处可选遭遇、真实存读档、不重复掉落／推进任务，以及24个影片路径仍为空。
+- scarlet_enemies_visual.gd：OpenGL实渲31项，0失败。实际地图提交8位Boss的全部3个姿态、混编小怪；遭遇手册展示真实立绘、暂停与关闭恢复。截图output/rpg-minions-final.png、output/rpg-bestiary-final.png；另核对output/rpg-queen-final.png。
+- scarlet_screenplay.gd：3801项，0失败；scarlet_rules.gd：799项，0失败；scarlet_weapons.gd：429项，0失败；scarlet_integration.gd：46项，0失败；scarlet_map_tracking.gd：163项，0失败。
+- validate_scarlet_screenplay.py：3220项，0失败。18张实际采用PNG的SHA-256已核对。长武器与跨分格装饰使用完整人物的UV分块，排除邻姿态碎片，不涂改原图；单姿态最多9块，共用一处接地阴影。
+
+集成测试仍有既有rogue_build_preview.gd:122锚点警告；本轮最终日志无运行脚本错误。三关键姿态加程序过渡不代表完整逐帧行走／转身／倒地动画，尚未以人工动作从新槽完整通关，也未重新导出dist。设计与后续精修范围见docs/rpg/SCARLET-ENEMIES.md。

@@ -1,5 +1,6 @@
 extends RefCounted
 ## Fixed-step action encounter rules, authored phases and stable phase checkpoints.
+const Roster=preload("res://scripts/scarlet/enemy_roster.gd")
 var owner_ref: WeakRef
 var campaign:
 	get: return owner_ref.get_ref() if owner_ref else null
@@ -22,8 +23,8 @@ func clear() -> void:
 	enemies.clear(); hazards.clear(); effects.clear(); running=false; context={}; switches={}; phase=0; phase_pending=false
 	if campaign!=null: campaign.equipment_combat.reset()
 
-func start(qid: String,node_id: String,boss_id: String,count: int,escort: bool = false) -> void:
-	clear(); context={"qid":qid,"node":node_id,"boss":boss_id,"count":count,"escort":escort,"zone":campaign.state.zone}
+func start(qid: String,node_id: String,boss_id: String,count: int,escort: bool = false,types: Array=[]) -> void:
+	clear(); context={"qid":qid,"node":node_id,"boss":boss_id,"count":count,"escort":escort,"zone":campaign.state.zone,"types":types.duplicate()}
 	running=true; phase=0; opening_grace=2.8; tick_time=0; companion_cd=1.0; speech_cd=1
 	campaign.state.checkpoint={"kind":"combat","context":context.duplicate(true),"phase":0}
 	spawn_phase(); campaign.changed.emit(); campaign.save_campaign()
@@ -36,13 +37,16 @@ func spawn_phase() -> void:
 	if boss_id!="":
 		var info: Dictionary=campaign.content.bosses[boss_id]
 		var hp: float=float(info.hp)*(1.0+phase*.12)
-		enemies.append({"id":"boss:"+boss_id,"p":campaign.place(Vector2(900,550)),"hp":hp,"maxhp":hp,"boss":true,"key":boss_id,"name":info.name,"cd":2.5,"windup":0.0,"flash":0.0,"attack":0,"stagger":0.0})
+		enemies.append(actor("boss:"+boss_id,boss_id,info.name,campaign.place(Vector2(900,550)),hp,true,2.5))
 		campaign.battle_speech.emit(info.name,info.lines[mini(phase,info.lines.size()-1)])
 	else:
-		for i in int(context.get("count",3)):
+		var types: Array=context.get("types",[])
+		if types.is_empty(): types=Roster.composition(int(campaign.state.act),str(context.qid),int(context.get("count",3)),bool(context.get("escort",false)))
+		for i in types.size():
 			var p:=Vector2(760+(i%3)*155,520+(i/3)*170)
-			var hp:=80.0+int(campaign.state.act)*16
-			enemies.append({"id":"guard:%d" % i,"p":campaign.place(p),"hp":hp,"maxhp":hp,"boss":false,"key":"guard","name":"王庭弩手" if i%2 else "近卫","cd":1.6+i*.4,"windup":0.0,"flash":0.0,"attack":0,"stagger":0.0})
+			var profile:=Roster.profile(types[i])
+			var hp: float=(80.0+int(campaign.state.act)*16)*float(profile.hp)
+			enemies.append(actor("guard:%d" % i,types[i],profile.name,campaign.place(p),hp,false,1.6+i*.65))
 	if boss_id=="queen":
 		campaign.state.party=[0] if phase==0 else [0,1] if phase==1 else [0,1,2]
 		if phase==0: campaign.state.hero=0
@@ -50,6 +54,20 @@ func spawn_phase() -> void:
 	opening_grace=2.8
 	campaign.hero_at=campaign.safe_place(campaign.place(Vector2(900,550))+Vector2(0,440*campaign.terrain().speed_scale()))
 	for i in 3: campaign.allies[i]=campaign.place(campaign.hero_at+Vector2((i-1)*65,75))
+	if context.has("anchor"):
+		var at: Array=context.anchor
+		place_patrol(Vector2(at[0],at[1]))
+
+func place_patrol(at: Vector2) -> void:
+	var scale: float=campaign.terrain().speed_scale()
+	for i in enemies.size(): enemies[i].p=campaign.safe_place(at+Vector2((i-1)*150,-150)*scale)
+	campaign.hero_at=campaign.safe_place(at+Vector2(0,290)*scale)
+	for i in 3: campaign.allies[i]=campaign.safe_place(campaign.hero_at+Vector2((i-1)*65,75)*scale)
+
+func actor(id: String,key: String,label: String,p: Vector2,hp: float,boss: bool,cd: float) -> Dictionary:
+	campaign.state.world["enemy_seen:"+key]=true
+	return {"id":id,"key":key,"name":label,"p":p,"hp":hp,"maxhp":hp,"boss":boss,"cd":cd,"windup":0.0,"flash":0.0,"attack":0,"stagger":0.0,
+		"aim":Vector2.DOWN,"release":0.0,"recover":0.0,"moving":false,"skill":"","skill_hint":"","rpg_enemy":true}
 
 func snapshot() -> Dictionary:
 	if not running: return {}
@@ -146,6 +164,7 @@ func use_gadget(id: String) -> bool:
 			campaign.battle_speech.emit("女王","停。让她把回答说完。")
 			campaign.request_scene("06-disarm",{"kind":"queen_finisher"}); return true
 		switches[id]=true
+		hazards=hazards.filter(func(h): return h.get("mechanism","")!=id)
 		campaign.navigation_zone=""
 		for e in enemies: e.stagger=1.6
 		campaign.combat_event.emit({"kind":"mechanism","p":n.p})
@@ -177,11 +196,21 @@ func hit(e: Dictionary,amount: float,hero: int,special: int=0,proc: bool=true) -
 	if e.hp<=0 or phase_pending: return
 	if e.boss and context.boss=="queen" and phase==2 and hero!=0: return
 	if proc: amount=campaign.equipment_combat.outgoing(e,amount,hero,special)
-	var final_amount: float=amount*(armor() if e.boss else 1.0)
+	var defense:=armor() if e.boss else 1.0
+	var profile:=Roster.profile(str(e.get("key","")))
+	# The gunwale/royal buckler only protects a ready guard's forward arc.
+	var attacker: Vector2=campaign.hero_at if hero==int(campaign.state.hero) else campaign.allies[hero]
+	if not e.boss and float(profile.get("guard",0))>0 and float(e.windup)<=0 and float(e.release)<=0 and float(e.stagger)<=0 and float(e.get("recover",0))<=0:
+		if Vector2(e.aim).dot(Vector2(e.p).direction_to(attacker))>.45: defense*=1.0-float(profile.guard)
+	var final_amount: float=amount*defense
 	var floor_hp: float=e.maxhp*.025 if e.boss and context.boss=="queen" and phase==2 else 1.0 if e.boss and armor()<.8 else 0.0
 	var before := float(e.hp)
 	e.hp=maxf(floor_hp,float(e.hp)-final_amount); e.flash=.16
 	final_amount=maxf(0,before-float(e.hp))
+	if not e.boss and final_amount>=e.maxhp*.14 and float(e.get("windup",0))>0:
+		e.stagger=.55; e.windup=0.0; e.recover=.65
+		hazards=hazards.filter(func(h): return h.owner!=e.id or h.resolved)
+		campaign.combat_event.emit({"kind":"enemy_interrupt","p":e.p})
 	if proc: campaign.equipment_combat.after_hit(e,final_amount,hero,special)
 	campaign.combat_event.emit({"kind":"hit","p":e.p,"damage":final_amount,"hero":hero})
 	if e.hp<=0:
@@ -205,6 +234,13 @@ func phase_finished() -> void:
 
 func commit_victory() -> void:
 	if not running: return
+	if context.has("patrol"):
+		campaign.state.world["cleared:"+str(context.patrol)]=true
+		campaign.state.coins+=25+int(campaign.state.act)*8
+		campaign.state.xp+=40+int(campaign.state.act)*15
+		clear(); campaign.state.encounter={}; campaign.state.checkpoint={}
+		campaign.notice.emit("此处威胁已解除，补给与战利品已保留。")
+		campaign.changed.emit(); campaign.save_campaign(); return
 	var qid: String=context.qid
 	var node_id: String=context.node
 	var escort: bool=context.get("escort",false)
@@ -227,46 +263,54 @@ func commit_victory() -> void:
 
 func add_hazard(e: Dictionary,shape: String,at: Vector2,radius: float,delay: float,direction: Vector2=Vector2.UP) -> void:
 	serial+=1
-	hazards.append({"id":serial,"owner":e.id,"origin":e.p,"shape":shape,"p":at,"radius":radius*campaign.terrain().speed_scale(),"reach":(520 if shape=="line" else 470)*campaign.terrain().speed_scale(),"inner":135*campaign.terrain().speed_scale(),"delay":delay,"total":delay,"direction":direction,"damage":18.0+int(campaign.state.act)*2.5,"resolved":false,"after":.3})
+	hazards.append({"id":serial,"owner":e.id,"origin":e.p,"shape":shape,"p":at,"radius":radius*campaign.terrain().speed_scale(),"reach":(520 if shape=="line" else 470)*campaign.terrain().speed_scale(),"inner":135*campaign.terrain().speed_scale(),"delay":delay,"total":delay,"direction":direction,"damage":18.0+int(campaign.state.act)*2.5,"resolved":false,"after":.3,"element":"physical","skill":e.get("skill",""),"color":Roster.profile(str(e.key)).get("color","dc8a99")})
 
 func attack_pattern(e: Dictionary) -> void:
 	var target: Vector2=campaign.hero_at
 	var direction: Vector2=Vector2(e.p).direction_to(target)
-	e.attack+=1
-	if not e.boss:
-		add_hazard(e,"line" if e.name=="王庭弩手" else "circle",target,95,.85,direction); return
-	var key: String=context.boss
-	var which: int=int(e.attack)%3
-	match key:
-		"inquisitor":
-			add_hazard(e,"line",target,170,1.15,direction)
-			if phase==1 or not switches.get("turret:0",false): add_hazard(e,"line",target+Vector2(-180,0),85,1.65,Vector2.RIGHT)
-			if phase==1 or not switches.get("turret:1",false): add_hazard(e,"line",target+Vector2(180,0),85,1.65,Vector2.DOWN)
-		"judge":
-			add_hazard(e,"rect",Vector2(420+which*480,860),200,1.35)
-			if phase==1: add_hazard(e,"line",target,130,.95,direction)
-		"vein":
-			add_hazard(e,"cone",e.p,340,.85,direction)
-			if phase==1: add_hazard(e,"line",target,100,1.4,direction)
-		"surgeon":
-			add_hazard(e,"line",target,135,1.2,Vector2.RIGHT.rotated(which*PI/3))
-			if not switches.get("vent:0",false) or phase==1: add_hazard(e,"circle",target+Vector2(180,70),210,1.8)
-		"admiral":
-			add_hazard(e,"ring" if which==0 else "line",e.p if which==0 else target,340,1.3,direction)
-			if phase==1: add_hazard(e,"rect",Vector2(500+which*400,850),150,1.8)
-		"queen":
-			if phase==0: add_hazard(e,"cone",e.p,390,1.15,direction)
-			elif phase==1:
-				add_hazard(e,"ring",e.p,420,1.35)
-				add_hazard(e,"line",target,140,1.6,Vector2.RIGHT)
-			else:
-				add_hazard(e,"circle",target,210,1.65)
-				if not switches.get("stable",false): add_hazard(e,"line",Vector2(900,950),180,2,Vector2.DOWN)
-		_:
-			add_hazard(e,"circle",target,240,1.1)
-			if phase==1: add_hazard(e,"ring",e.p,370,1.6)
-	if speech_cd<=0:
-		var info: Dictionary=campaign.content.bosses[key]
+	if direction.length_squared()<.01: direction=Vector2.DOWN
+	var moves:=Roster.moves(str(e.key),phase)
+	if moves.is_empty(): return
+	var move: Dictionary=moves[int(e.attack)%moves.size()]
+	e.attack+=1; e.aim=direction; e.skill=move.name; e.skill_hint=move.hint
+	e.windup=0.0; e.release=0.0; e.moving=false
+	var scale: float=campaign.terrain().speed_scale()
+	for strike: Dictionary in move.strikes:
+		var aim:=direction.rotated(float(strike.get("rotation",0)))
+		var at:=target
+		var reach: float=float(strike.get("reach",520))*scale
+		match str(strike.get("anchor","target")):
+			"self": at=e.p
+			"forward": at=Vector2(e.p)+aim*reach
+			"shot":
+				var length:=minf(reach,Vector2(e.p).distance_to(target)*.5+90*scale)
+				reach=length; at=Vector2(e.p)+aim*length
+			"arena":
+				var coords: Array=strike.at
+				at=campaign.place(Vector2(coords[0],coords[1]))
+		var offset: Array=strike.get("offset",[0,0])
+		at+=Vector2(offset[0],offset[1])*scale
+		add_hazard(e,strike.shape,at,float(strike.radius),float(strike.delay),aim)
+		var h: Dictionary=hazards[-1]
+		h.reach=reach; h.inner=float(strike.get("inner",135))*scale
+		h.element=move.element
+		e.windup=maxf(e.windup,float(strike.delay))
+		if context.get("escort",false): h.damage*=.85
+	# The removable crossbows are real pressure, and stay removed after interaction.
+	if e.boss and e.key=="inquisitor" and phase==0:
+		for i in 2:
+			if switches.get("turret:%d" % i,false): continue
+			var turret: Vector2=campaign.place(Vector2(300+i*1200,650))
+			var aim:=turret.direction_to(target)
+			var reach:=turret.distance_to(target)*.5
+			add_hazard(e,"line",turret+aim*reach,90,1.8+i*.35,aim)
+			hazards[-1].origin=turret; hazards[-1].reach=reach
+			hazards[-1].get_or_add("mechanism","turret:%d" % i)
+			e.windup=maxf(e.windup,1.8+i*.35)
+	e.recover=e.windup+float(move.recovery)
+	campaign.combat_event.emit({"kind":"enemy_windup","p":e.p,"direction":direction,"enemy":e.key,"skill":e.skill})
+	if e.boss and speech_cd<=0:
+		var info: Dictionary=campaign.content.bosses[e.key]
 		var barks: Array=info.get("barks",[])
 		var line: String=info.lines[mini(phase,info.lines.size()-1)]
 		if not barks.is_empty(): line=barks[mini(1+int(e.attack)%2,barks.size()-1)][1]
@@ -288,6 +332,10 @@ func tick(dt: float) -> void:
 	opening_grace=maxf(0,opening_grace-dt)
 	for e in enemies:
 		e.flash=maxf(0,float(e.flash)-dt); e.stagger=maxf(0,float(e.stagger)-dt)
+		var was_winding: bool=float(e.get("windup",0))>0
+		e.windup=maxf(0,float(e.get("windup",0))-dt); e.release=maxf(0,float(e.get("release",0))-dt)
+		e.recover=maxf(0,float(e.get("recover",0))-dt); e.moving=false
+		if was_winding and e.windup<=0: e.release=.34
 		if e.hp<=0 or e.stagger>0: continue
 		if context.get("stealth",false):
 			var origin: Vector2=e.get("patrol_origin",e.p)
@@ -299,13 +347,25 @@ func tick(dt: float) -> void:
 				context.stealth=false; opening_grace=1.5
 				campaign.battle_speech.emit(e.name,"后巷有人！关门！")
 			else: continue
+		var profile:=Roster.profile(str(e.key))
+		var scale: float=campaign.terrain().speed_scale()
+		var distance: float=Vector2(e.p).distance_to(campaign.hero_at)
+		var desired: float=float(profile.get("distance",280))*scale
 		e.cd-=dt
-		if opening_grace<=0 and e.cd<=0 and Vector2(e.p).distance_to(campaign.hero_at)<950*campaign.terrain().speed_scale():
-			attack_pattern(e); e.cd=2.6 if e.boss else 2.1
+		var reach: float=(950 if e.boss else float(profile.get("distance",240))+160)*scale
+		if opening_grace<=0 and e.cd<=0 and e.recover<=0 and distance<reach and campaign.sight(e.p,campaign.hero_at):
+			attack_pattern(e); e.cd=float(profile.get("cooldown",3.2))
+		if e.recover>0: continue
+		e.aim=Vector2(e.p).direction_to(campaign.hero_at)
 		var toward: Vector2=campaign.navigate(e.p,campaign.hero_at)
-		if Vector2(e.p).distance_to(campaign.hero_at)>220*campaign.terrain().speed_scale() and not (e.boss and context.boss=="queen" and phase==2):
+		if not e.boss and profile.get("retreat",false) and distance<desired*.65: toward=-toward
+		elif distance<=desired: continue
+		elif not e.boss and profile.get("flank",false): toward=toward.rotated(.38 if int(e.attack)%2 else -.38)
+		if not (e.boss and context.boss=="queen" and phase==2):
 			var slow := float(e.get("rpg_slow",0))*(.35 if e.boss else 1.0) if float(e.get("rpg_slow_time",0))>0 else 0.0
-			e.p=campaign.move_point(e.p,toward*(65 if e.boss else 95)*campaign.terrain().speed_scale()*dt*(1.0-slow/100.0))
+			var before: Vector2=e.p
+			e.p=campaign.move_point(e.p,toward*float(profile.get("speed",65))*scale*dt*(1.0-slow/100.0))
+			e.moving=Vector2(e.p).distance_to(before)>.01
 	if companion_cd<=0:
 		companion_cd=.8
 		for hero in campaign.state.party:
@@ -319,8 +379,12 @@ func tick(dt: float) -> void:
 		h.delay-=dt
 		if h.delay<=0 and not h.resolved:
 			h.resolved=true
+			for e in enemies:
+				if e.id==h.owner and e.hp>0:
+					e.release=.34
+					campaign.combat_event.emit({"kind":"enemy_release","p":h.p,"direction":h.direction,"enemy":e.key,"shape":h.shape,"radius":h.radius})
 			if campaign.invulnerable<=0 and hazard_contains(h,campaign.hero_at):
-				var element: String=campaign.Equipment.data().chapters[clampi(int(campaign.state.act)-1,0,5)].element
+				var element: String=h.get("element","physical")
 				campaign.take_damage(float(h.damage),element,.65)
 			for person in campaign.escort_group:
 				if person.hp>0 and hazard_contains(h,person.p): person.hp=maxf(0,person.hp-campaign.equipment_combat.incoming(float(h.damage)*.65,"physical",true))

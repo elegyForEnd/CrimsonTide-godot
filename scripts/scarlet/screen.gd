@@ -77,7 +77,7 @@ func _ready() -> void:
 		else: toast("沿原路回营，或在路口打开地图旅行。"))
 	button(hud,"线索 I",Vector2(1220,795),Vector2(160,38),show_evidence)
 	skill_label=label(hud,"",Vector2(225,793),Vector2(970,54),16)
-	label(hud,"WASD 移动  ·  左键攻击  ·  E 交互（机关按住）  ·  C 人物  ·  空格闪避  ·  Q 技能  ·  R 协同  ·  F 补给  ·  1/2/3 切换",Vector2(100,853),Vector2(1240,30),16)
+	label(hud,"WASD 移动  ·  左键攻击  ·  E 交互（机关按住）  ·  C 人物  ·  B 遭遇手册  ·  空格闪避  ·  Q 技能  ·  R 协同  ·  F 补给  ·  1/2/3 切换",Vector2(100,853),Vector2(1240,30),16)
 	overlay=Control.new(); overlay.size=size; overlay.mouse_filter=MOUSE_FILTER_IGNORE; add_child(overlay)
 	campaign.location_changed.connect(func(): world.build(); refresh(); sync_music())
 	campaign.changed.connect(refresh); campaign.notice.connect(toast); campaign.combat_event.connect(on_combat_event)
@@ -229,6 +229,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_TAB: show_items()
 			KEY_M: show_map()
 			KEY_C: show_party()
+			KEY_B: preload("res://scripts/scarlet/bestiary.gd").open(self)
 	get_viewport().set_input_as_handled()
 
 func present_pending() -> void:

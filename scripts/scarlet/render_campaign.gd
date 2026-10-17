@@ -45,6 +45,8 @@ var enemies: Array:
 			result.append(e)
 		return result
 func _init(c): owner_ref=weakref(c)
+func enemy_pose(e: Dictionary) -> Dictionary:
+	return preload("res://scripts/scarlet/enemy_frames.gd").pose(e,source.clock)
 func hero_pose(frames, hero: int) -> Dictionary:
 	var actor: Dictionary=source.hero_actor(hero)
 	if actor.swing_time>0: return frames.equipped_attack_frame(actor)

@@ -1,0 +1,1528 @@
+{
+  "revision": "rpg-enemies-1",
+  "generator": "built-in imagegen",
+  "pixel_edits": false,
+  "entries": {
+    "inquisitor": {
+      "path": "res://assets/story/rpg-enemies-v1/inquisitor-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            338,
+            22,
+            327,
+            471
+          ],
+          "pieces": [
+            [
+              338,
+              22,
+              327,
+              471
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            447.0,
+            493
+          ],
+          "opaque_pixels": 79910
+        },
+        {
+          "region": [
+            287,
+            546,
+            513,
+            487
+          ],
+          "pieces": [
+            [
+              287,
+              546,
+              513,
+              487
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            400.0,
+            1033
+          ],
+          "opaque_pixels": 112446
+        },
+        {
+          "region": [
+            236,
+            1077,
+            729,
+            431
+          ],
+          "pieces": [
+            [
+              236,
+              1077,
+              729,
+              431
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            691.0,
+            1508
+          ],
+          "opaque_pixels": 118227
+        }
+      ],
+      "display_height": 210,
+      "sha256": "f76d2d83ddad430b261c80645ebaa0420978aafc58f72e63d4056d9cd4905bf9",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-054071e5-09ef-4fd6-b6f6-e85e90edd982.png",
+      "native_size": true
+    },
+    "judge": {
+      "path": "res://assets/story/rpg-enemies-v1/judge-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            356,
+            14,
+            313,
+            468
+          ],
+          "pieces": [
+            [
+              356,
+              14,
+              313,
+              468
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            446.0,
+            482
+          ],
+          "opaque_pixels": 77826
+        },
+        {
+          "region": [
+            316,
+            494,
+            409,
+            562
+          ],
+          "pieces": [
+            [
+              316,
+              494,
+              409,
+              554
+            ],
+            [
+              316,
+              1048,
+              158,
+              8
+            ],
+            [
+              520,
+              1048,
+              205,
+              8
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              474,
+              1048,
+              46,
+              8
+            ]
+          ],
+          "pivot": [
+            671.0,
+            1056
+          ],
+          "opaque_pixels": 114141
+        },
+        {
+          "region": [
+            249,
+            1045,
+            718,
+            475
+          ],
+          "pieces": [
+            [
+              249,
+              1053,
+              718,
+              467
+            ],
+            [
+              249,
+              1045,
+              410,
+              8
+            ],
+            [
+              698,
+              1045,
+              269,
+              8
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              659,
+              1045,
+              39,
+              8
+            ]
+          ],
+          "pivot": [
+            645.0,
+            1520
+          ],
+          "opaque_pixels": 108927
+        }
+      ],
+      "display_height": 218,
+      "sha256": "5fc38127c625eb79220ed987f50f1e7c804427bd6a1587cc37d8a3d473c6bce6",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-e8e798a6-f9c5-4d3f-8363-4c2c53cbdf3e.png",
+      "native_size": true
+    },
+    "vein": {
+      "path": "res://assets/story/rpg-enemies-v1/vein-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            234,
+            14,
+            479,
+            484
+          ],
+          "pieces": [
+            [
+              234,
+              14,
+              479,
+              484
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            610.0,
+            498
+          ],
+          "opaque_pixels": 95989
+        },
+        {
+          "region": [
+            274,
+            505,
+            516,
+            558
+          ],
+          "pieces": [
+            [
+              274,
+              505,
+              516,
+              558
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            322.0,
+            1063
+          ],
+          "opaque_pixels": 125163
+        },
+        {
+          "region": [
+            197,
+            1083,
+            783,
+            441
+          ],
+          "pieces": [
+            [
+              197,
+              1083,
+              783,
+              441
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            716.0,
+            1524
+          ],
+          "opaque_pixels": 124583
+        }
+      ],
+      "display_height": 212,
+      "sha256": "968d251ec2f5ec2cb7c31ef9d993e0b0139c8b6b958e2877d0b0456ade82085e",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-d9ceb0c4-5dfd-4109-b205-03958e517adc.png",
+      "native_size": true
+    },
+    "surgeon": {
+      "path": "res://assets/story/rpg-enemies-v1/surgeon-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            309,
+            11,
+            404,
+            503
+          ],
+          "pieces": [
+            [
+              309,
+              11,
+              404,
+              503
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            549.0,
+            514
+          ],
+          "opaque_pixels": 85541
+        },
+        {
+          "region": [
+            312,
+            523,
+            434,
+            539
+          ],
+          "pieces": [
+            [
+              312,
+              523,
+              434,
+              525
+            ],
+            [
+              312,
+              1048,
+              159,
+              14
+            ],
+            [
+              548,
+              1048,
+              198,
+              14
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              471,
+              1048,
+              77,
+              14
+            ]
+          ],
+          "pivot": [
+            661.0,
+            1062
+          ],
+          "opaque_pixels": 100900
+        },
+        {
+          "region": [
+            271,
+            1045,
+            560,
+            483
+          ],
+          "pieces": [
+            [
+              271,
+              1059,
+              560,
+              469
+            ],
+            [
+              271,
+              1045,
+              359,
+              14
+            ],
+            [
+              691,
+              1045,
+              140,
+              14
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              630,
+              1045,
+              61,
+              14
+            ]
+          ],
+          "pivot": [
+            700.0,
+            1528
+          ],
+          "opaque_pixels": 111318
+        }
+      ],
+      "display_height": 224,
+      "sha256": "087ae1af6796b8e585d69c54edd8f5ae2b006f9793e91dfb4934f2170f840d89",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-ce5725de-6415-4224-9655-7de0545cfb6e.png",
+      "native_size": true
+    },
+    "admiral": {
+      "path": "res://assets/story/rpg-enemies-v1/admiral-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            292,
+            12,
+            495,
+            475
+          ],
+          "pieces": [
+            [
+              292,
+              12,
+              495,
+              475
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            417.0,
+            487
+          ],
+          "opaque_pixels": 95699
+        },
+        {
+          "region": [
+            290,
+            501,
+            501,
+            602
+          ],
+          "pieces": [
+            [
+              290,
+              501,
+              501,
+              602
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            364.0,
+            1103
+          ],
+          "opaque_pixels": 122663
+        },
+        {
+          "region": [
+            218,
+            1104,
+            719,
+            425
+          ],
+          "pieces": [
+            [
+              218,
+              1104,
+              719,
+              425
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            698.0,
+            1529
+          ],
+          "opaque_pixels": 119459
+        }
+      ],
+      "display_height": 236,
+      "sha256": "e9ec45a89898d8bc27b2b149ce83fb1fab3e22dfa7ced1815d68c7280d5efefc",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-2b41a1cc-0afb-480c-98b6-6dba27bde825.png",
+      "native_size": true
+    },
+    "queen": {
+      "path": "res://assets/story/rpg-enemies-v1/queen-idle.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "separate",
+      "frames": [
+        {
+          "path": "res://assets/story/rpg-enemies-v1/queen-idle.png",
+          "region": [
+            253,
+            0,
+            1238,
+            1015
+          ],
+          "pivot": [
+            904.0,
+            1015
+          ],
+          "size": [
+            1536,
+            1024
+          ],
+          "opaque_pixels": 511250,
+          "sha256": "8467f9fb1bfe5e8b16d74232317071702b0d171b09bb8811711103f29459a952",
+          "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-62fc7a3a-c802-434c-8e5a-51c6db1e0f92.png"
+        },
+        {
+          "path": "res://assets/story/rpg-enemies-v1/queen-windup.png",
+          "region": [
+            232,
+            9,
+            1186,
+            1004
+          ],
+          "pivot": [
+            584.0,
+            1013
+          ],
+          "size": [
+            1536,
+            1024
+          ],
+          "opaque_pixels": 544179,
+          "sha256": "4e0138eda82d20a8dd08cf06ba2746869c0e6adc3e3bb756742f9aa17243af63",
+          "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-25544dac-e871-4993-885c-2ebbf6f01a3b.png"
+        },
+        {
+          "path": "res://assets/story/rpg-enemies-v1/queen-strike.png",
+          "region": [
+            87,
+            0,
+            1436,
+            1008
+          ],
+          "pivot": [
+            1145.0,
+            1008
+          ],
+          "size": [
+            1536,
+            1024
+          ],
+          "opaque_pixels": 600141,
+          "sha256": "71d589068b8c92578b5e43be539d33d14274cd8249c17fbb14edb6f5094fc082",
+          "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-50a9bfc1-9c59-4031-96e6-8dc48e58499e.png"
+        }
+      ],
+      "display_height": 260,
+      "native_size": true
+    },
+    "beast": {
+      "path": "res://assets/story/rpg-enemies-v1/beast-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            260,
+            84,
+            512,
+            404
+          ],
+          "pieces": [
+            [
+              260,
+              84,
+              512,
+              404
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            539.0,
+            488
+          ],
+          "opaque_pixels": 105775
+        },
+        {
+          "region": [
+            267,
+            545,
+            498,
+            529
+          ],
+          "pieces": [
+            [
+              267,
+              545,
+              498,
+              529
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            354.0,
+            1074
+          ],
+          "opaque_pixels": 119793
+        },
+        {
+          "region": [
+            220,
+            1117,
+            600,
+            401
+          ],
+          "pieces": [
+            [
+              220,
+              1117,
+              600,
+              401
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            716.0,
+            1518
+          ],
+          "opaque_pixels": 114893
+        }
+      ],
+      "display_height": 222,
+      "sha256": "9436dc100da04b4a10e9369acc7e03d88c7cc8166ed5311dc24acd125e3db3d9",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-325309c6-0d82-4121-8e4d-2b4b31e9d842.png",
+      "native_size": true
+    },
+    "warden": {
+      "path": "res://assets/story/rpg-enemies-v1/warden-combat-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "layout": "vertical",
+      "frames": [
+        {
+          "region": [
+            292,
+            52,
+            415,
+            406
+          ],
+          "pieces": [
+            [
+              292,
+              52,
+              415,
+              406
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            635.0,
+            458
+          ],
+          "opaque_pixels": 87699
+        },
+        {
+          "region": [
+            330,
+            500,
+            392,
+            537
+          ],
+          "pieces": [
+            [
+              330,
+              500,
+              392,
+              537
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            384.0,
+            1037
+          ],
+          "opaque_pixels": 91196
+        },
+        {
+          "region": [
+            331,
+            1111,
+            454,
+            397
+          ],
+          "pieces": [
+            [
+              331,
+              1111,
+              454,
+              397
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            646.0,
+            1508
+          ],
+          "opaque_pixels": 76180
+        }
+      ],
+      "display_height": 235,
+      "sha256": "60b6efc7071d0daea37e27bb4314c24a02bf076ff23a43d3b4894a038cd72f25",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-f60d25eb-9c37-40fd-ba20-fd5813445f79.png",
+      "native_size": true
+    },
+    "tide_hound": {
+      "path": "res://assets/story/rpg-enemies-v1/tide_hound.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            16,
+            392,
+            517,
+            389
+          ],
+          "pieces": [
+            [
+              16,
+              392,
+              517,
+              389
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            384.0,
+            781
+          ],
+          "opaque_pixels": 72984
+        },
+        {
+          "region": [
+            549,
+            269,
+            405,
+            475
+          ],
+          "pieces": [
+            [
+              549,
+              269,
+              405,
+              475
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            600.0,
+            744
+          ],
+          "opaque_pixels": 78616
+        },
+        {
+          "region": [
+            997,
+            379,
+            527,
+            359
+          ],
+          "pieces": [
+            [
+              997,
+              379,
+              527,
+              359
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1493.0,
+            738
+          ],
+          "opaque_pixels": 68010
+        }
+      ],
+      "display_height": 86,
+      "sha256": "8496eab887558045ba5e0686b3c62e3ebd060016cac6c0d0c34e4bb0717c1499",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-d03dbcd4-427b-4c40-8c1f-c753cd98d2cc.png",
+      "native_size": true
+    },
+    "crystal_husk": {
+      "path": "res://assets/story/rpg-enemies-v1/crystal_husk.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            40,
+            300,
+            475,
+            528
+          ],
+          "pieces": [
+            [
+              40,
+              300,
+              475,
+              528
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            98.0,
+            828
+          ],
+          "opaque_pixels": 129582
+        },
+        {
+          "region": [
+            513,
+            116,
+            425,
+            713
+          ],
+          "pieces": [
+            [
+              513,
+              116,
+              425,
+              713
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            626.0,
+            829
+          ],
+          "opaque_pixels": 124605
+        },
+        {
+          "region": [
+            996,
+            347,
+            519,
+            480
+          ],
+          "pieces": [
+            [
+              996,
+              347,
+              519,
+              480
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1051.5,
+            827
+          ],
+          "opaque_pixels": 107551
+        }
+      ],
+      "display_height": 143,
+      "sha256": "42bb72df3e2c7a67f69a22fffa301b17f66e7e782100fbed9fb90bbad2e5afea",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-ba51b9e9-0320-44fc-b0dc-fa71b8747dd6.png",
+      "native_size": true
+    },
+    "royal_pikeman": {
+      "path": "res://assets/story/rpg-enemies-v1/royal_pikeman.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            40,
+            299,
+            505,
+            512
+          ],
+          "pieces": [
+            [
+              40,
+              299,
+              505,
+              23
+            ],
+            [
+              40,
+              344,
+              505,
+              467
+            ],
+            [
+              40,
+              322,
+              484,
+              22
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              524,
+              322,
+              21,
+              22
+            ]
+          ],
+          "pivot": [
+            85.0,
+            811
+          ],
+          "opaque_pixels": 79123
+        },
+        {
+          "region": [
+            521,
+            135,
+            470,
+            676
+          ],
+          "pieces": [
+            [
+              521,
+              135,
+              470,
+              437
+            ],
+            [
+              521,
+              572,
+              411,
+              156
+            ],
+            [
+              521,
+              775,
+              470,
+              36
+            ],
+            [
+              521,
+              749,
+              411,
+              26
+            ],
+            [
+              542,
+              728,
+              390,
+              21
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              521,
+              728,
+              21,
+              21
+            ],
+            [
+              932,
+              572,
+              59,
+              203
+            ]
+          ],
+          "pivot": [
+            595.0,
+            811
+          ],
+          "opaque_pixels": 76946
+        },
+        {
+          "region": [
+            929,
+            363,
+            598,
+            416
+          ],
+          "pieces": [
+            [
+              929,
+              363,
+              598,
+              416
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1294.0,
+            779
+          ],
+          "opaque_pixels": 73668
+        }
+      ],
+      "display_height": 151,
+      "sha256": "a30848676aa64a11f9c37b21b645061249d488e33cbeb863f02435e76e092296",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-a5752e6a-3a95-4298-8404-52f81cdac1b1.png",
+      "native_size": true
+    },
+    "royal_arbalist": {
+      "path": "res://assets/story/rpg-enemies-v1/royal_arbalist.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            5,
+            173,
+            531,
+            714
+          ],
+          "pieces": [
+            [
+              5,
+              173,
+              531,
+              157
+            ],
+            [
+              5,
+              386,
+              531,
+              501
+            ],
+            [
+              5,
+              330,
+              511,
+              56
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              516,
+              330,
+              20,
+              56
+            ]
+          ],
+          "pivot": [
+            103.0,
+            887
+          ],
+          "opaque_pixels": 147205
+        },
+        {
+          "region": [
+            513,
+            153,
+            470,
+            725
+          ],
+          "pieces": [
+            [
+              513,
+              153,
+              470,
+              250
+            ],
+            [
+              513,
+              519,
+              432,
+              26
+            ],
+            [
+              513,
+              480,
+              395,
+              39
+            ],
+            [
+              513,
+              403,
+              395,
+              77
+            ],
+            [
+              513,
+              564,
+              470,
+              71
+            ],
+            [
+              513,
+              713,
+              470,
+              165
+            ],
+            [
+              513,
+              635,
+              395,
+              78
+            ],
+            [
+              533,
+              558,
+              450,
+              6
+            ],
+            [
+              533,
+              545,
+              412,
+              13
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              513,
+              545,
+              20,
+              19
+            ],
+            [
+              908,
+              403,
+              75,
+              77
+            ],
+            [
+              908,
+              480,
+              75,
+              39
+            ],
+            [
+              945,
+              519,
+              38,
+              39
+            ],
+            [
+              908,
+              635,
+              75,
+              78
+            ]
+          ],
+          "pivot": [
+            570.0,
+            878
+          ],
+          "opaque_pixels": 142683
+        },
+        {
+          "region": [
+            905,
+            255,
+            628,
+            597
+          ],
+          "pieces": [
+            [
+              905,
+              255,
+              628,
+              291
+            ],
+            [
+              905,
+              594,
+              628,
+              258
+            ],
+            [
+              940,
+              546,
+              593,
+              48
+            ]
+          ],
+          "excluded_neighbor_regions": [
+            [
+              905,
+              546,
+              35,
+              48
+            ]
+          ],
+          "pivot": [
+            1028.0,
+            852
+          ],
+          "opaque_pixels": 137700
+        }
+      ],
+      "display_height": 134,
+      "sha256": "ea147c5c6eabfa3413eb61625db1d2a419b0a1b12fc0e872b27f7c36822dbe71",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-49d0d0b6-c304-4af8-a4f5-2aaf1470c9e6.png",
+      "native_size": true
+    },
+    "archive_scribe": {
+      "path": "res://assets/story/rpg-enemies-v1/archive_scribe.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            13,
+            182,
+            462,
+            716
+          ],
+          "pieces": [
+            [
+              13,
+              182,
+              462,
+              716
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            112.0,
+            898
+          ],
+          "opaque_pixels": 163817
+        },
+        {
+          "region": [
+            518,
+            133,
+            483,
+            770
+          ],
+          "pieces": [
+            [
+              518,
+              133,
+              483,
+              770
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            602.0,
+            903
+          ],
+          "opaque_pixels": 173591
+        },
+        {
+          "region": [
+            1002,
+            257,
+            519,
+            641
+          ],
+          "pieces": [
+            [
+              1002,
+              257,
+              519,
+              641
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1081.0,
+            898
+          ],
+          "opaque_pixels": 160757
+        }
+      ],
+      "display_height": 148,
+      "sha256": "72e9b6f5edf03c21ff91c8b459de78914724ed91a1a94eaa1dc3a6e604466e3b",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-f9bc9368-40aa-4127-9642-76b3ccd164c9.png",
+      "native_size": true
+    },
+    "crystal_stalker": {
+      "path": "res://assets/story/rpg-enemies-v1/crystal_stalker.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            18,
+            292,
+            474,
+            492
+          ],
+          "pieces": [
+            [
+              18,
+              292,
+              474,
+              492
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            403.0,
+            784
+          ],
+          "opaque_pixels": 83192
+        },
+        {
+          "region": [
+            547,
+            269,
+            405,
+            498
+          ],
+          "pieces": [
+            [
+              547,
+              269,
+              405,
+              498
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            580.0,
+            767
+          ],
+          "opaque_pixels": 86304
+        },
+        {
+          "region": [
+            981,
+            383,
+            527,
+            426
+          ],
+          "pieces": [
+            [
+              981,
+              383,
+              527,
+              426
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1449.0,
+            809
+          ],
+          "opaque_pixels": 81678
+        }
+      ],
+      "display_height": 107,
+      "sha256": "4b4fc3128c207ae1a412b46d9e513629dea79c89eeb9126f58c3a34df724348a",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-7842c532-372e-4e79-9ec5-e1add7f8b4e1.png",
+      "native_size": true
+    },
+    "suture_puppet": {
+      "path": "res://assets/story/rpg-enemies-v1/suture_puppet.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            31,
+            180,
+            392,
+            723
+          ],
+          "pieces": [
+            [
+              31,
+              180,
+              392,
+              723
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            111.0,
+            903
+          ],
+          "opaque_pixels": 115418
+        },
+        {
+          "region": [
+            492,
+            106,
+            475,
+            796
+          ],
+          "pieces": [
+            [
+              492,
+              106,
+              475,
+              796
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            578.0,
+            902
+          ],
+          "opaque_pixels": 127685
+        },
+        {
+          "region": [
+            980,
+            249,
+            540,
+            629
+          ],
+          "pieces": [
+            [
+              980,
+              249,
+              540,
+              629
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1457.0,
+            878
+          ],
+          "opaque_pixels": 116424
+        }
+      ],
+      "display_height": 157,
+      "sha256": "f875b2189a7f7d307bbf5f45897ca06b7526baaadd7b776342d7354b50deffad",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-1db3da36-2678-401f-ae5d-6c795ca4d00a.png",
+      "native_size": true
+    },
+    "anchor_raider": {
+      "path": "res://assets/story/rpg-enemies-v1/anchor_raider.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "layout": "horizontal",
+      "frames": [
+        {
+          "region": [
+            12,
+            206,
+            482,
+            670
+          ],
+          "pieces": [
+            [
+              12,
+              206,
+              482,
+              670
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            415.0,
+            876
+          ],
+          "opaque_pixels": 132656
+        },
+        {
+          "region": [
+            538,
+            107,
+            427,
+            782
+          ],
+          "pieces": [
+            [
+              538,
+              107,
+              427,
+              782
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            572.0,
+            889
+          ],
+          "opaque_pixels": 134140
+        },
+        {
+          "region": [
+            990,
+            246,
+            535,
+            647
+          ],
+          "pieces": [
+            [
+              990,
+              246,
+              535,
+              647
+            ]
+          ],
+          "excluded_neighbor_regions": [],
+          "pivot": [
+            1391.0,
+            893
+          ],
+          "opaque_pixels": 128214
+        }
+      ],
+      "display_height": 148,
+      "sha256": "c22a8c2d95f8f59efb0d23f3f90d7fb9e17230aa7adea5c7f51df51a9b866b9b",
+      "source": "C:\\Users\\wangk\\.codex\\generated_images\\01a142f7-d4cd-7400-8377-ff5baec8ef2b\\exec-36ff58ee-f6af-4cd8-8bc4-2ea2468229f9.png",
+      "native_size": true
+    }
+  }
+}

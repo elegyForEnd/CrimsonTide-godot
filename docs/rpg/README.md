@@ -2,6 +2,8 @@
 
 当前版本：《赤月遗书 · 王冠与空城》· 2026-10-16，剧情修订 scarlet-screenplay-2。
 
+[RPG敌人与首领：8种小怪、6位章节Boss、2位支线Boss](SCARLET-ENEMIES.md) 已制作并接入，含48个战斗姿态、47个招式与六处可选遭遇；游戏中按 B 查看已见敌人的遭遇手册。[查看造型总览](../../assets/story/rpg-enemies-v1/contact-sheet.png)。剧情过场动画仍留空。
+
 [最新 24 版 CG 动画生成提示词](SCARLET-H3-CG-PROMPTS.md)：小于 20 秒整片一次生成，20 秒片也不拆；长片 2—3 段，39 帧接续已计入参数，另含平面 CG 轻循环。对应新双结局，不与旧 21 版／83 镜提示词包混用。
 
 2026-10-16 制作脚本：[121 场详细完整演出与对白](SCARLET-FULL-SCREENPLAY.md) · [40 主线＋6 支线如何接取、推进与交接](SCARLET-QUEST-INTAKE.md) · [CG、影片和差分制作表](SCARLET-SCREENPLAY-ASSETS.md)。正文、任务接取、实操和接受／拒绝双结局现已接入运行版；新增7张CG已生成接入，26张静态CG可播；动画继续留空。实现范围见 [当前实现](SCARLET-IMPLEMENTATION.md)。
