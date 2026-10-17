@@ -509,7 +509,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 任务与持久化 | `scripts/scarlet/campaign.gd:160 save_campaign()`；tests/scarlet_campaign.gd |
 | 调查、机关与分支 | `scripts/scarlet/campaign.gd:444 use()`；tests/scarlet_rules.gd |
 | 护送、红潮与三人更新 | `scripts/scarlet/campaign.gd:882 update()`；tests/scarlet_rules.gd |
-| Boss阶段与场内字幕 | `scripts/scarlet/combat.gd:285 tick()`；tests/scarlet_campaign.gd |
+| Boss阶段与场内字幕 | `scripts/scarlet/combat.gd:329 tick()`；tests/scarlet_campaign.gd |
 | RPG词缀、暗金、套装、晶石 | `scripts/rpg_equipment.gd:6 CAPS`；数据resources/rpg_equipment.json由tools/build_rpg_equipment.py生成；32词缀／30暗金／6套装／4晶石 |
 | 故事装备生成与事务 | `scripts/story_inventory.gd:162 make_loot()`、`scripts/story_inventory.gd:497 reforge()`、`scripts/story_inventory.gd:514 inscribe()`、`scripts/story_inventory.gd:523 craft_set()`；tests/rpg_equipment.gd |
 | 装备真实战斗效果 | `scripts/scarlet/equipment_combat.gd:78 tick()`；scarlet/combat.hit与campaign.release_strike接线，持续／溅射不递归触发词条且服从机关血线 |
@@ -1074,7 +1074,7 @@ git status --porcelain
 
 ### 12.6 修订记录
 
-2026-10-18（未提交）**血潮猎场正式美术接入**：24 张地区背景（8 区×day/dusk/night）、羊皮纸地区图、5 张敌人动作表与 60 帧、5 张图标表与 65 个单图标、墓煜 8 表情立绘、面板/三态按钮/提示条/互动圆环全部接进猎场。`hunt_stage.gd` 增加画片模式（有背景整屏铺、缺图回退 3D 箱庭）；`hunt_art.gd` 从占位取图改成正式素材解析（`ICON_SHEETS` / `background()` / `map_texture()` / `enemy_texture()` / `portrait_texture()` / `panel_style()` / `button_style()` / `toast_style()` / `hotspot_texture()`），彩色图标不再乘物品色；`hunt_data.AREAS` 的 `map_at` 按成品图 8 个暗圈重标，医院/研究所改名并清掉现代场景文案；UI 2K 素材用 `tools/build_hunt_ui_crops.py` 裁成可九宫格的小图（panel 只取内圈石板+细金边）。测试：rules 142 / ui 21 / playtest 35 / integration 19 / visual 20 / camp 6 = 243 全绿；出图 `build/hunt-*.png`。同步 §4.T、§5、§11.68/74/76/80–83、§12.6 与 `assets/hunt/README.md`。未重新导出 dist。
+2026-10-18（未提交）**血潮猎场正式美术接入**：24 张地区背景（8 区×day/dusk/night）、羊皮纸地区图、5 张敌人动作表与 60 帧、5 张图标表与 65 个单图标、墓煜 8 表情立绘、面板/三态按钮/提示条/互动圆环全部接进猎场。`hunt_stage.gd` 增加画片模式（有背景整屏铺、缺图回退 3D 箱庭）；`hunt_art.gd` 从占位取图改成正式素材解析（`ICON_SHEETS` / `background()` / `map_texture()` / `enemy_texture()` / `portrait_texture()` / `panel_style()` / `button_style()` / `toast_style()` / `hotspot_texture()`），彩色图标不再乘物品色；`hunt_data.AREAS` 的 `map_at` 按成品图 8 个暗圈重标，医院/研究所改名并清掉现代场景文案；UI 2K 素材用 `tools/build_hunt_ui_crops.py` 裁成可九宫格的小图（panel 只取内圈石板+细金边）。测试：rules 142 / ui 21 / playtest 35 / integration 19 / visual 20 / camp 6 = 243 全绿；出图 `build/hunt-*.png`。同步 §4.T、§5、§11.68/74/76/80–83、§12.6 与 `assets/hunt/README.md`。未重新导出 dist。；合并远端 `b695249e` 后同步修正 Scarlet `scripts/scarlet/combat.gd:329 tick()` 锚点。
 
 2026-10-17（未提交）**血潮猎场 V2 改版**：①8 个地区改成封边的箱庭（三面墙 + 室内天花板 + 近景陈设），灯光真实落在墙上；②全部现代物品连内部 id 改成中世纪/炼金/血魔法/教会遗物体系（`scrap`→`iron`、`medicine`→`herbal_bandage`、`ammo`→`lead_shot`、`tape`→`resin`、`battery`→`storm_phial`、`gunpowder`→`brimstone`、`radio`→`spirit_horn`、`improvised_pistol`→`hand_cannon` 等，配方/掉落/目录/提示词同步）；③新增 Act/Hide 双形态（Z，2s CD，隐藏伤害 ×0.6 向下取整、行动×1.2、发现率 15%，攻击欲望乘区），去掉全部怪物判定圈，未遭遇不显示怪物立绘；④搜索改成 W 键+按钮（3 秒、共享 CD、可打断、只从已解锁点随机抽），战斗面板只能由搜索遭遇打开，怪物主动攻击只扣血并只提示一次；怪物攻击改为「攻击欲望积累察觉 + 带 ±20% 抖动的单体 CD」，双向反击（统一 0.1s CD、无视普攻 CD、不连锁）；⑤新增 8 区一次性互动点（神龛/血池/尸体/许愿井/暗格/陷阱/血契石）、条件搜索点（火把/面具/血契）与祭坛区域解锁。测试全绿：rules 142 / ui 11 / playtest 35 / integration 19 / visual 18 / camp 6；同步 §4.T、§5、§6、§11.76–79 与本文件。未重新导出 dist。
 
