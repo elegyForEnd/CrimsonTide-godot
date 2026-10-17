@@ -528,17 +528,18 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 ### T. 血潮猎场（单人 PvE 新模式，2026-10-17）
 
-玩法骨架照搬《黑色幸存者》的「点地图换地区 + 固定第一人称静态画面」，但**不是俯视、不能自由走**。V2 起：每个地区是一套**箱庭**（三面墙 + 室内天花板 + 近景陈设，正面视角看不到地面边缘/天空接缝），光照会真实落在墙上；**不能指定搜索位置**，W 键/「搜索」按钮从"当前地区已解锁的搜索点"里随机抽一个翻找 3 秒（可被换姿态、换区、战斗打断，按钮与 W 共享 CD）；Z 键在「行动 act」与「隐藏 hide」之间切换（2 秒 CD：隐藏伤害 ×0.6 向下取整、行动与翻找慢 20%、被发现概率降到 15%）；怪物**没有判定圈**，只有搜索遭遇会打开战斗面板，平时被怪物主动攻击只扣血；每个怪有攻击欲望（`aggression`）和带 ±20% 抖动的攻击 CD，双方挨打时都能反击一次（统一 0.1 秒反击 CD、无视普攻 CD、不连锁）；场景保留可点击的一次性互动点（神龛/血池/尸体/许愿井/暗格/陷阱/血契石），祭坛需要血契石才能进。物品全部改成中世纪/炼金/血魔法/教会遗物体系（**连内部 id 一起换**）。8 分钟 = 1 天、共 3 天（24 分钟）；白天 / 黄昏 / 夜晚；搜索耗体力、地区资源按天重置且有限；搜到的东西局内合成（36 条配方）；撤离成功才把战利品带回晨钟家园，倒下则全丢。
+玩法骨架照搬《黑色幸存者》的「点地图换地区 + 固定第一人称静态画面」，但**不是俯视、不能自由走**。V2 起：每个地区是一套**箱庭**（三面墙 + 室内天花板 + 近景陈设，正面视角看不到地面边缘/天空接缝），光照会真实落在墙上；**不能指定搜索位置**，W 键/「搜索」按钮从"当前地区已解锁的搜索点"里随机抽一个翻找 3 秒（可被换姿态、换区、战斗打断，按钮与 W 共享 CD）；Z 键在「行动 act」与「隐藏 hide」之间切换（2 秒 CD：隐藏伤害 ×0.6 向下取整、行动与翻找慢 20%、被发现概率降到 15%）；怪物**没有判定圈**，只有搜索遭遇会打开战斗面板，平时被怪物主动攻击只扣血；每个怪有攻击欲望（`aggression`）和带 ±20% 抖动的攻击 CD，双方挨打时都能反击一次（统一 0.1 秒反击 CD、无视普攻 CD、不连锁）；场景保留可点击的一次性互动点（神龛/血池/尸体/许愿井/暗格/陷阱/血契石），祭坛需要血契石才能进。物品全部改成中世纪/炼金/血魔法/教会遗物体系（**连内部 id 一起换**）。8 分钟 = 1 天、共 3 天（24 分钟）；白天 / 黄昏 / 夜晚；搜索耗体力、地区资源按天重置且有限；搜到的东西局内合成（36 条配方）；撤离成功才把战利品带回晨钟家园，倒下则全丢。正式美术到位后 8 区改走整屏画片（`hunt_stage.gd` 的 `_build_painted()`）：背景里已经烘好机位/雾/昼夜调色，1440×900 下按 16:10 左右各裁约 5%；3D 箱庭只在缺图时兜底。
 
 | 功能 | 权威入口与检查 |
 |---|---|
 | 地区 / 物品 / 配方 / 敌人 / 立绘配置 | `scripts/hunt/hunt_data.gd`（`scripts/hunt/hunt_data.gd:26 AREAS` 8 区、`:231 ITEMS`、`:319 RECIPES` 36 条、`:371 ENEMIES` 5 种、`:387 PORTRAITS`） |
 | 一局的全部规则（点击事件都发到这里） | `scripts/hunt/hunt_run.gd`（`scripts/hunt/hunt_run.gd:79 setup()`、`:268 start_search()`、`:447 craft()`、`:503 use_item()`、`:610 start_combat()`、`:646 attack()`、`:723 travel()`、`:761 advance_day()`、`:806 finish()`）；纯 RefCounted，不依赖场景 |
-| 固定第一人称 3D 舞台（伪 2D） | `scripts/hunt/hunt_stage.gd`（`scripts/hunt/hunt_stage.gd:50 build()`、`scripts/hunt/hunt_stage.gd:221 _build_props()`、`scripts/hunt/hunt_stage.gd:298 apply_phase()`；机位 `(0,1.92,7)`、FOV 70；8 套主题 street/forest/hospital/docks/institute/catacombs/square/altar） |
-| 模式页面（简报/HUD/热点/地图/合成/背包/战斗/结算） | `scripts/hunt/hunt_screen.gd`（`scripts/hunt/hunt_screen.gd:192 show_briefing()`、`:257 start_run()`、`:283 _build_run_ui()`、`:514 _build_map_overlay()`、`:564 _build_craft_overlay()`、`:682 _build_bag_overlay()`、`:761 _build_combat_panel()`、`:819 _build_result()`）；出图回归 `tests/hunt_visual.gd` |
-| 地区图控件 | `scripts/hunt/hunt_map_view.gd`（节点 / 连线 / 当前 / 锁定 / 相邻，`picked(id)`） |
-| 左下立绘与表情 | `scripts/hunt/hunt_portrait.gd` + `scripts/hunt/hunt_art.gd`；**整张差分**走 `assets/story/vn-full-v3/`（`StoryArt.layers(hero, expression, "regular", "front")`），隐藏角色回 `assets/portrait-3.png` |
-| 占位图标 / 敌人图 / 立绘取图 | `scripts/hunt/hunt_art.gd`（`scripts/hunt/hunt_art.gd:20 icon()` 按分类复用 `assets/icons/*.svg`、`:47 enemy_texture()` 裁 4×3 表第一格、`:66 portrait_texture()`）；正式素材提示词在 `D:\dsh\Game\HUNT-ART-PROMPTS.md` |
+| 固定第一人称舞台（伪 2D） | `scripts/hunt/hunt_stage.gd`（`scripts/hunt/hunt_stage.gd:56 build()` 先试正式背景、`:110 _build_painted()` 用 CanvasLayer+TextureRect 整屏铺；缺图才走 `:126 _build_shell()` / `:291 _build_props()` 的 3D 箱庭，`:420 apply_phase()`；机位 `(0,1.92,7)`、FOV 70；8 套主题 street/forest/hospital/docks/institute/catacombs/square/altar） |
+| 模式页面（简报/HUD/热点/地图/合成/背包/战斗/结算） | `scripts/hunt/hunt_screen.gd`（`:193 show_briefing()`、`:270 start_run()`、`:296 _build_run_ui()`、`:632 _build_map_overlay()`、`:682 _build_craft_overlay()`、`:800 _build_bag_overlay()`、`:879 _build_combat_panel()`、`:937 _build_result()`；`:1095 _panel()` / `:1142 _button()` 套 UI 素材，`:403 _spawn_toast()` 用提示条九宫格）；出图回归 `tests/hunt_visual.gd` |
+| 地区图控件 | `scripts/hunt/hunt_map_view.gd`（`:33 _frame_rect()` 把 16:9 羊皮纸等比放进控件、`:45 _at()` 用同一块矩形映射归一化坐标、`:74 _draw()` 画图/连线/节点；`picked(id)`） |
+| 左下立绘与表情 | `scripts/hunt/hunt_portrait.gd` + `scripts/hunt/hunt_art.gd`；三位基础角色**整张差分**走 `assets/story/vn-full-v3/`（`StoryArt.layers(hero, expression, "regular", "front")`），隐藏角色**墓煜**用 `assets/hunt/portraits/portrait_<表情>_alpha.png`（8 表情；规则层的 smile/determined/worried 由 `hunt_art.HUNT_EXPRESSIONS` 映射） |
+| 正式美术取图（背景/地图/图标/敌人/立绘/UI） | `scripts/hunt/hunt_art.gd`（`:33 ICON_SHEETS` 65 张图标→物品 id、`:101 icon()`、`:137 background()`、`:149 map_texture()`、`:160 panel_style()`、`:175 button_style()`、`:194 toast_style()`、`:211 hotspot_texture()`、`:216 enemy_texture()`、`:239 portrait_texture()`；缺图才回退旧 `assets/icons/*.svg` / 4×3 敌表）；裁图 `tools/build_hunt_ui_crops.py` |
+| UI 九宫格 / 裁图 | `assets/hunt/ui/crops/`（panel 512×503、toast 512×118、hotspot 三态、按钮 512 宽）；`hunt_art.gd` 的 `panel_style()/button_style()/toast_style()/hotspot_texture()` 只认这些小图；`ui/bar.png` 暂未接入（9~14px 细条会糊） |
 | 营地入口 | `scripts/camp_site.gd`（`camp_site.gd:975` 的 `hunt_gate` 站点与 `camp_site.gd:995` 的暗红环，落在 `(3320,4240)`，`is_walkable` 已实测）、`scripts/camp_screen.gd`（出征分组 `["gate","rogue_gate","hunt_gate"]` :358） |
 | 页面生命周期 / 结算入库 | `scripts/main.gd`（`ensure_hunt()` :1021、`show_hunt()` :1037、`on_hunt_finished()` :1046、`on_camp_station("hunt")` :1137、`new_page` :887、`_input`/`_unhandled_input` 早退 :1847/:2047）；入库走 `profile.bank_item()`/`spill_item()` |
 | 猎场纪录 | `scripts/profile.gd`（`data["hunt"]={runs,extracts,wins,best_day}` :21、`sanitize_hunt()` :66） |
@@ -546,7 +547,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 规则要点（改数值时对照）：`BASE_STAMINA=100`、`START_CAPACITY=20`；`SEARCH_SECONDS=3`、`SEARCH_ENCOUNTER=0.16`；`FORM_SWITCH_CD=2`、`HIDE_DAMAGE=0.6`、`HIDE_ACTION=1.2`、`HIDE_STEALTH=0.15`、`NOTICE_RATE=0.05`、`COUNTER_CD=0.1`；撤离点只在 `bell_square` / `docks`，第 4 分钟（`EXTRACT_AFTER=240`）后开放；第 3 天走完即"活过第三夜"胜利；血月使徒只在祭坛第 3 天夜里出现，击杀即结算胜利。
 
-测试：`tests/hunt_rules.gd`（142 项：搜索/体力/合成/装备/锁定容器与条件点/背包满/换日/撤离/死亡/三天存活/Boss/双形态/反击/攻击欲望/互动点/区域解锁）、`tests/hunt_ui_smoke.gd`（11）、`tests/hunt_playtest.gd`（35，**只按真实 UI 信号**：Z 形态按钮与 CD、W 搜索按钮与 CD、搜索遭遇开战斗面板、攻击与反击、被动挨打不开面板、点互动点、地图换区、黄昏自动换光、撤离与返回营地）、`tests/hunt_integration.gd`（19：main → 营地 → 猎场 → 结算 → 回营地 + 仓库入库）、`tests/hunt_visual.gd`（18，出图 `build/hunt-*.png`，含 8 个箱庭各一张）、`tests/hunt_camp_visual.gd`（6，营地入口出图 `build/hunt-camp.png`）。
+测试：`tests/hunt_rules.gd`（142 项：搜索/体力/合成/装备/锁定容器与条件点/背包满/换日/撤离/死亡/三天存活/Boss/双形态/反击/攻击欲望/互动点/区域解锁）、`tests/hunt_ui_smoke.gd`（21，含背景/地图/65 张图标/敌图/墓煜立绘/UI 九宫格取图）、`tests/hunt_playtest.gd`（35，**只按真实 UI 信号**：Z 形态按钮与 CD、W 搜索按钮与 CD、搜索遭遇开战斗面板、攻击与反击、被动挨打不开面板、点互动点、地图换区、黄昏自动换光、撤离与返回营地）、`tests/hunt_integration.gd`（19：main → 营地 → 猎场 → 结算 → 回营地 + 仓库入库）、`tests/hunt_visual.gd`（20，真实窗口出图 `build/hunt-*.png`，含 8 个地区各一张与墓煜 HUD）、`tests/hunt_camp_visual.gd`（6，营地入口出图 `build/hunt-camp.png`）。
 
 ### T.1 V2 目标与进度（2026-10-17 收工点）
 
@@ -559,12 +560,13 @@ project.godot:18  主场景 = scenes/boot.tscn
 - 搜索：W+按钮 3 秒、可打断、共享 CD、只抽已解锁点；战斗只由搜索遭遇打开；被动挨打只扣血、每区提示一次；怪物带抖动的攻击 CD；双向 0.1s 反击 CD、不连锁。
 - 互动：8 区各 2 个一次性点（神龛/血池/尸体/许愿井/暗格/陷阱/血契石）、条件搜索点、祭坛区域解锁。
 - UI：中上方浮动提示（上浮渐隐、多条错位）、立绘透明化、信息面板可滚动、血条体力条独立窗口永远可见。
+- 正式美术：24 张地区背景 / 羊皮纸地图 / 5 敌 60 帧 / 65 图标 / 墓煜 8 表情 / UI 九宫格全部接入；`hunt_stage.gd` 有图走画片、缺图回退 3D 箱庭；裁图 `tools/build_hunt_ui_crops.py`。
 - 文档：`HUNT-ART-PROMPTS.md` 按世界观重写；本路牌 §4.T/§5/§6/§11/§12.6 更新；工作区上一层 `D:\dsh\Game\HUNT-HANDOFF-2026-10-17.md` 交接文档。
-- 测试：rules 142 / ui 11 / playtest 35 / integration 19 / visual 18 / camp 6，全绿；锚点 1082 全命中。
+- 测试：rules 142 / ui 21 / playtest 35 / integration 19 / visual 20 / camp 6 = 243，全绿；锚点 1082 全命中。
 
 **未完成 / 待决策**：
 - 主玩法（搜打撤/魔境/故事）里的现代物品词条（急救针、弹药匣、古城零件等）**未改**，需要用户拍板后单开一轮。
-- 箱庭仍是现有素材拼的占位，等正式背景图。
+- 正式美术已接入；`map_at` 已按成品图重标，其它地区文案/互动点坐标仍需真机走查。
 - 仓库满→spill 只由既有 `tests/economy.gd` 覆盖；猎场侧未加。
 - 测试/手工项：真机试玩 W/Z/互动手感；Boss 夜战完整跑一遍。
 
@@ -613,7 +615,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 改掉落（宝箱/敌人/据点/骑士） | session.gd:1337 chest_loot / 1409 enemy_loot / 3914 resolve_site_defeat / 4317 knight_reward | tests/systems.gd；BALANCE.md |
 | 加新野外怪物 | enemy_frames.gd:4-8 四表 + ecology.gd:5-19 六表 + ecology.gd update() 新分支 + assets/enemies/ 4×3 图集（脚底 210px）+ 悬浮怪名单 enemy_body.gd:44 | tests/enemies.gd、ecology.gd；ENEMY-UPDATE.md |
 | 加营地设施 | camp_site.gd:949-973 站点表 + 建模函数 + camp_screen.gd:343 分组 + main.gd:754 on_camp_station 分支 | tests/camp*.gd；HOMESTEAD.md |
-| 改**血潮猎场**（单人 PvE：营地下方的暗红环入口／三日 24 分钟／箱庭／Z 形态／W 随机搜索／互动点／局内合成／撤离结算） | 规则 `scripts/hunt/hunt_run.gd`（`setup()` :79、`start_search()` :380、`toggle_form()` :1090、`interact()` :1140、`craft()`、`start_combat()`、`travel()`、`tick()`）；数据 `scripts/hunt/hunt_data.gd`（8 区、`SITES`、36 配方、5 敌、`aggression`）；界面 `scripts/hunt/hunt_screen.gd`；箱庭 `scripts/hunt/hunt_stage.gd`；入口 `camp_site.gd` 的 `hunt_gate` + `main.gd:1021 ensure_hunt()`。⚠️ 舞台取主题必须 `Data.area(id).theme`（§11.68）；箱庭外壳见 §11.76；物品 id 见 §11.77 | `tests/hunt_rules.gd`(142)、`tests/hunt_ui_smoke.gd`(11)、`tests/hunt_playtest.gd`(35，真实 UI 信号)、`tests/hunt_integration.gd`(19)、`tests/hunt_visual.gd`(18, 出图 `build/hunt-*.png`)、`tests/hunt_camp_visual.gd`(6)；正式素材提示词 `D:\dsh\Game\HUNT-ART-PROMPTS.md` |
+| 改**血潮猎场**（单人 PvE：营地下方的暗红环入口／三日 24 分钟／画片舞台／Z 形态／W 随机搜索／互动点／局内合成／撤离结算） | 规则 `scripts/hunt/hunt_run.gd`（`setup()` / `start_search()` / `toggle_form()` / `interact()` / `craft()` / `start_combat()` / `travel()` / `tick()`）；数据 `scripts/hunt/hunt_data.gd`（8 区、`SITES`、36 配方、5 敌、`aggression`、`map_at`）；界面 `scripts/hunt/hunt_screen.gd`；舞台 `scripts/hunt/hunt_stage.gd`（有图走 `_build_painted()`，缺图 3D 箱庭）；取图 `scripts/hunt/hunt_art.gd` + `assets/hunt/`；入口 `camp_site.gd` 的 `hunt_gate` + `main.gd:1021 ensure_hunt()`。⚠️ 舞台取主题必须 `Data.area(id).theme`（§11.68）；2K UI 必须先裁（§11.81）；地图坐标按成品图重标（§11.83） | `tests/hunt_rules.gd`(142)、`tests/hunt_ui_smoke.gd`(21)、`tests/hunt_playtest.gd`(35)、`tests/hunt_integration.gd`(19)、`tests/hunt_visual.gd`(20)、`tests/hunt_camp_visual.gd`(6)；素材说明 `assets/hunt/README.md` |
 | 改家园数值（作物/鱼/料理/价格） | homestead.gd:3-17 + buy/fish_key；图标 home_art.gd | tests/homestead.gd |
 | 改种子/鱼饵买入落点（仓库→背包→落地） | `homestead.gd buy()` :77 / `plant()` :116 / `cast()` :172 + `profile.gd deposit_backpack()` :583 / `migrate_home_seeds_bait()` :720 + `home_screen.gd buy_report()` :76 | tests/homestead.gd、homestead_ui.gd、camp_activities.gd |
 | 改七属性曲线 | attributes.gd（⚠️ `clean(value, budget := 623)` attributes.gd:16 的预算要与 `point_budget` 同步） | tests/attributes.gd |
@@ -981,18 +983,22 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 67. **不许在"点击那一刻"做加载或着色器编译——两者都必须提前预热**（用户第 4 轮要求："把水滴转场做成编译着色器的一部分 / 每次登录都提前渲染 / 转场收尾彻底释放"）。本机实测点击那一刻的原始耗时是 `load(main.tscn)=5268ms + add_child 跑 _ready=4524ms ≈ 9.8s`，而水滴转场演算本身只有约 12ms；`ShaderMaterial.new()` 不是那 9.8s 的大头，但**着色器管线是第一次真正绘制时才编译的**，弱机上同样是"点一下顿一下"的一口。所以 `boot.gd` 现在分三件事预热，点击时只复用：① `boot.gd:245 _shader_warm_setup()` 在 `_build_scene_ui()` 里就把 `ShaderMaterial` 建好，挂在一张满屏贴图上先画两帧（`boot.gd:265 _park_warm_plate()` 之后收成不可见）——它**必须**排在 `black` 之前，被那块不透明黑底盖住，玩家看不见它、但 GPU 已经把管线建好了；`boot.gd:610 _start_transition()` 直接复用这个材质，**不许**再 `ShaderMaterial.new()`；② `load` 走 `ResourceLoader.load_threaded_request`（后台线程，不占主线程）、`instantiate + add_child`（会同步跑 main.gd 的 `_ready()`）留在主线程但发生在待机期（`boot.gd:395 _prewarm()` / `boot.gd:422 _prewarm_attach()`，挂进来的实例先 `PROCESS_MODE_DISABLED`，点击时才改回 `INHERIT`）；③ **闸门**：`boot.gd:439 _finish_prewarm()` 之前，`boot.gd:793 _unhandled_input()` 在 VIDEO 阶段**不放行**"任意键"，界面显示 `boot.gd:451 _show_preparing()`（"正在准备登录界面~"）而不是"点击任意键开始游戏"。⚠️ 三条不能踩的坑：(a) 预热**绝不能早于自检**——起跑点 `boot.gd:326 _maybe_prewarm_early()` 挂在自检结果之后，因为类缓存过期时 `load(main.tscn)` 会解析失败（这正是硬约束③）；(b) 等预热的等待要放在**静态**的忠告画面上（`boot.gd:298 _hold_for_prewarm()`），不要让它落到 PV 上（视频会卡住）；(c) 等待**必须**有上限 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s，且到点必须 `_finish_prewarm()` 放行——否则预热一旦卡死，闸门永不开，玩家永远进不去。验证：`tests/launcher_visual.gd` 断言 `prewarm_done`/`shader_warm`/`login_ready` 三面旗 + 点击复用**同一个** `login_instance` 实例 + 点击→切场景 <1.5s，实测日志 `[prewarm] ready in 8014ms`（预热在点击前 8 秒就完成）/ `[prewarm] click setup 26ms`（点击那一刻只剩"1 帧 + 抓图回读 + 盖板"），对照修复前的 ~9.8s。
 
 
-68. **猎场舞台取主题必须 `Data.area(id).theme`，不能把 area id 直接传给 `_build_props()`**：地区 id（`old_town`/`black_pines`…）和主题名（`street`/`forest`/`hospital`/`docks`/`institute`/`catacombs`/`square`/`altar`）是两套字符串，传错不会报错，只会"地面和天空都在、建筑一个都不生成"。`scripts/hunt/hunt_stage.gd:50 build()` 先 `var theme = Data.area(area_id).theme`，再依次 `_build_ground(theme)` / `_build_backdrop(theme)` / `_build_props(theme)` / `_environment(theme, phase)`。
+68. **猎场舞台取主题必须 `Data.area(id).theme`，不能把 area id 直接传给 `_build_props()`**：地区 id（`old_town`/`black_pines`…）和主题名（`street`/`forest`/`hospital`/`docks`/`institute`/`catacombs`/`square`/`altar`）是两套字符串，传错不会报错，只会"地面和天空都在、建筑一个都不生成"。`scripts/hunt/hunt_stage.gd:56 build()` 先试 `Art.background(area, phase)`：有正式背景就 `_build_painted()` 直接返回；缺图才 `var theme = Data.area(area_id).theme`，再依次 `_build_ground(theme)` / `_build_backdrop(theme)` / `_build_props(theme)` / `_environment(theme, phase)`。
 69. **猎场建筑被压成纯黑/发白，是材质覆盖的问题，不是灯光**：舞台的静态模型自带 `scene_asset.gdshader`，直接当材质用会吃掉贴图与光照。正确做法是给每个 `MeshInstance3D` 套 `StandardMaterial3D` 的 PBR override（**保留原 `albedo_texture`**）再调亮度；反过来"发白"就是 ambient/tonemap 过头，先降 `_environment()` 里的环境光与雾。
 70. **鱼饵已经叫 `bait`，猎场饵料必须叫 `hunt_bait`**：`Catalog.ITEMS` 是同一个字典，同名键会直接 `Key "bait" was already used in this dictionary` 让整个项目加载失败。新增猎场物品前先 `grep '"name"' catalog.gd`。
 71. **`hunt_run.gd` 里不能定义 `func log()`**：`log()` 是 GDScript 内置数学函数，同名方法会让所有 `log(...)` 调用解析到内置版本并报 `argument 1 should be "float" but is "String"`。日志方法叫 `note()`。
 72. **SubViewport 里相机不 `current` 就是黑屏；但无头探针黑屏多半是容器没布局**：`hunt_stage.gd` 在 `build()` 末尾显式 `camera.current = true`（`own_world_3d` 的 SubViewport 里保险）。另外单独 `Portrait.new()`/`SubViewport.new()` 塞进 `root` 做探针时没有容器给尺寸，会得到 0×0 或全黑——那不是产品 bug，`HuntScreen` 里三层布局是正常的。
 73. **Godot 的 `Control.size` 会被"最小尺寸"钳住，先设尺寸再改属性会静默失效**——本轮连踩三处：① `Label` 关换行时最小宽度=整行文本宽度，`size` 设 238 会被钳到 400+，之后再开 `autowrap_mode` 也缩不回去（中文还要用 `AUTOWRAP_ARBITRARY`，`WORD_SMART` 不折 CJK）；② `TextureRect` 的最小尺寸=纹理尺寸，`size = 30` 会被钳回 64，图标直接盖住右边的文字——`expand_mode = EXPAND_IGNORE_SIZE` 必须排在 `size` 之前；③ `ProgressBar` 带主题字体，最小高度约 27px，传 9px 的细条会被拉到 27px 并压住下面的文字，细条改用自绘 `Bar`（`hunt_screen.gd` 内部类，`draw_style_box` + `value/max_value` setter）。另外 `Label` 的 `size.y` 小于行高时，**垂直居中会把字形下半截裁掉**（HUD 的"赤刃守夜姬"就这样缺了一半）。
-74. **表情差分不能拿"body + face 叠层"拼**：`assets/story/vn-full-v3` 的 face 图只有五官、没有皮肤底色，盖在 body 自带的平静脸上会露馅。猎场立绘统一用**整张差分**（`StoryArt.layers(hero, expr, "regular", "front")`），隐藏角色没有差分就退回单张静态图、表情静默不变。
+74. **表情差分不能拿"body + face 叠层"拼**：`assets/story/vn-full-v3` 的 face 图只有五官、没有皮肤底色，盖在 body 自带的平静脸上会露馅。猎场三位基础角色统一用**整张差分**（`StoryArt.layers(hero, expr, "regular", "front")`）；隐藏角色**墓煜**有猎场新画的 8 表情差分 `assets/hunt/portraits/portrait_<expr>_alpha.png`，`assets/portrait-3.png` 只作缺图兜底。规则层的 smile/determined/worried 走 `hunt_art.HUNT_EXPRESSIONS` 映射，不要拿表情名直接拼路径。
 75. **无参自定义信号 `connect()` 到带参方法，只会在"点下去"那一刻炸**：`SpotButton`/`EnemyButton` 的 `signal pressed` 没有参数，却直接 `connect(_on_spot_pressed)`（该方法要 `id: String`），编辑器不报错、编译也过，真实点击时报"参数不足/调用失败"且没有日志——出图测试和 API 测试都发现不了。正确写法是 `.bind(str(spot.id))`（或 `func(): _on_spot_pressed(id)`）。凡是"新建控件 + 自定义信号 + 回调要带 id"的写法，都要有一条**按信号**的测试（`tests/hunt_playtest.gd` 就是这么把这处和 `run.log()` 一起揪出来的）。
-76. **箱庭必须自己"封边"，别指望雾和背景色**：猎场舞台早年只有一块 54×54 地面 + 室内一块 backdrop，正面视角在夜里会直接看到地面边缘与天空接缝。现在 `hunt_stage.gd` 的 `_build_shell()` 统一建三面墙（室内再加天花板）和左右矮墙；墙用**普通 PBR 材质**（不是 `SHADING_MODE_UNSHADED`），否则昼夜灯光落不到墙上、箱庭永远一个色。改箱庭时先看 `_build_shell()`，再动 `_build_props()` / `_build_foreground()`。
+76. **箱庭必须自己"封边"，别指望雾和背景色**：猎场舞台早年只有一块 54×54 地面 + 室内一块 backdrop，正面视角在夜里会直接看到地面边缘与天空接缝。现在 `hunt_stage.gd` 的 `_build_shell()` 统一建三面墙（室内再加天花板）和左右矮墙；墙用**普通 PBR 材质**（不是 `SHADING_MODE_UNSHADED`），否则昼夜灯光落不到墙上、箱庭永远一个色。改箱庭时先看 `_build_shell()`，再动 `_build_props()` / `_build_foreground()`。（正式画片模式不走这套，别在 `_build_painted()` 里再建墙。）
 77. **改猎场物品 id 会同时撞 `Catalog.ITEMS` 的旧键**：猎场把现代物品改名时（`scrap`→`iron`、`medicine`→`herbal_bandage`、`ammo`→`lead_shot`），如果对 `catalog.gd` 做**全文**替换，会把基础物品那几行也改掉，于是 `Key "iron" was already used` 直接让整个项目解析失败。正确做法：只改 `catalog.gd` 的猎场物品块，基础物品的键（`scrap`/`medicine`/`ammo`）和 `STACK_LIMITS` 里对应的行必须保留原名；猎场自己那份用不冲突的新键。
 78. **攻击欲望模型里"丢目标"只能发生在隐藏形态**：`_tick_area_enemies()` 有一段 `alert and wake < 0.35 → 丢失`，如果无条件执行，任何刚被 `debug_alert_enemy()`/事件拉满、但 `wake` 还是 0 的怪下一帧就会自己跟丢。这条判定必须带 `form == FORM_HIDE`；行动形态下它们一旦注意到就不会忘。
 79. **`start_search()` 的显式 id 要单独校验**：不给 id 时从 `available_spots()` 抽点没问题，但传了 id 就必须再查"这个点还有次数 / 条件满足 / 上锁的话有没有钥匙"，否则会出现"没有钥匙也能翻上锁药柜"（`can_search()` 是地区级判断，管不到具体点位）。同一段里 `consume(key)` 失败要能看出来，不要静默继续。
+80. **正式背景走画片模式，缺图才回退 3D 箱庭**：`scripts/hunt/hunt_stage.gd:56 build()` 先 `Art.background(area, phase)`，命中就 `:110 _build_painted()`（CanvasLayer + 满屏 TextureRect，`STRETCH_KEEP_ASPECT_COVERED`）并直接 return，不再建 `_build_shell/_build_props`。两套透视叠在一起会打架；`apply_phase()` 在 painted 模式只换贴图，不碰 `world_env/sun/fill`（它们可能是 null）。
+81. **2K UI 素材不能直接当 `StyleBoxTexture`**：`texture_margin` 是固定的屏幕像素，2048 面板外面那圈木框有 140px，塞进 340×196 的 HUD 条会把内容全吃掉。运行时只认 `assets/hunt/ui/crops/` 的小图（panel 只取内圈石板+细金边、toast 裁横幅、按钮压到 512 宽），由 `tools/build_hunt_ui_crops.py` 生成；按钮九宫格左右 46px、上下 0，面板 16px。改任何 `*_alpha.png` 后重跑脚本并 `--import`，否则 Godot 还在用旧 `.ctex`（这轮就因此先看到旧木框）。
+82. **隐藏角色立绘不再是 `assets/portrait-3.png`**：hero 3 走 `Art.portrait_texture()` 里的 `assets/hunt/portraits/portrait_<表情>_alpha.png`；缺表情会先回退 neutral，再回退旧单图。新增表情只加图不改规则层，`HUNT_EXPRESSIONS` 负责 smile/determined/worried 的就近映射。
+83. **地图节点坐标必须按成品图重标**：`hunt_data.AREAS[...]["map_at"]` 现在是按 `map/region_map.png` 里 8 个暗圈的中心重标的（旧值 0.13/0.44 那套是提示词阶段的近似值，落到成品图上会偏一个地标）。`hunt_map_view._frame_rect()` 把 16:9 图等比放进 1240×610 控件，`_at()` 必须用同一块矩形；换图/重生成地图后重新量暗圈。
 
 ---
 
@@ -1067,6 +1073,8 @@ git status --porcelain
 ```
 
 ### 12.6 修订记录
+
+2026-10-18（未提交）**血潮猎场正式美术接入**：24 张地区背景（8 区×day/dusk/night）、羊皮纸地区图、5 张敌人动作表与 60 帧、5 张图标表与 65 个单图标、墓煜 8 表情立绘、面板/三态按钮/提示条/互动圆环全部接进猎场。`hunt_stage.gd` 增加画片模式（有背景整屏铺、缺图回退 3D 箱庭）；`hunt_art.gd` 从占位取图改成正式素材解析（`ICON_SHEETS` / `background()` / `map_texture()` / `enemy_texture()` / `portrait_texture()` / `panel_style()` / `button_style()` / `toast_style()` / `hotspot_texture()`），彩色图标不再乘物品色；`hunt_data.AREAS` 的 `map_at` 按成品图 8 个暗圈重标，医院/研究所改名并清掉现代场景文案；UI 2K 素材用 `tools/build_hunt_ui_crops.py` 裁成可九宫格的小图（panel 只取内圈石板+细金边）。测试：rules 142 / ui 21 / playtest 35 / integration 19 / visual 20 / camp 6 = 243 全绿；出图 `build/hunt-*.png`。同步 §4.T、§5、§11.68/74/76/80–83、§12.6 与 `assets/hunt/README.md`。未重新导出 dist。
 
 2026-10-17（未提交）**血潮猎场 V2 改版**：①8 个地区改成封边的箱庭（三面墙 + 室内天花板 + 近景陈设），灯光真实落在墙上；②全部现代物品连内部 id 改成中世纪/炼金/血魔法/教会遗物体系（`scrap`→`iron`、`medicine`→`herbal_bandage`、`ammo`→`lead_shot`、`tape`→`resin`、`battery`→`storm_phial`、`gunpowder`→`brimstone`、`radio`→`spirit_horn`、`improvised_pistol`→`hand_cannon` 等，配方/掉落/目录/提示词同步）；③新增 Act/Hide 双形态（Z，2s CD，隐藏伤害 ×0.6 向下取整、行动×1.2、发现率 15%，攻击欲望乘区），去掉全部怪物判定圈，未遭遇不显示怪物立绘；④搜索改成 W 键+按钮（3 秒、共享 CD、可打断、只从已解锁点随机抽），战斗面板只能由搜索遭遇打开，怪物主动攻击只扣血并只提示一次；怪物攻击改为「攻击欲望积累察觉 + 带 ±20% 抖动的单体 CD」，双向反击（统一 0.1s CD、无视普攻 CD、不连锁）；⑤新增 8 区一次性互动点（神龛/血池/尸体/许愿井/暗格/陷阱/血契石）、条件搜索点（火把/面具/血契）与祭坛区域解锁。测试全绿：rules 142 / ui 11 / playtest 35 / integration 19 / visual 18 / camp 6；同步 §4.T、§5、§6、§11.76–79 与本文件。未重新导出 dist。
 

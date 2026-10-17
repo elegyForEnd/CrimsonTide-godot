@@ -7,6 +7,7 @@ extends Node3D
 
 const Assets = preload("res://scripts/scene_assets.gd")
 const Data = preload("res://scripts/hunt/hunt_data.gd")
+const Art = preload("res://scripts/hunt/hunt_art.gd")
 const GROUND := {
 	"street": "res://assets/world/ground-1-1.jpg",
 	"forest": "res://assets/world/ground-0-1.jpg",
@@ -32,6 +33,11 @@ var fill: OmniLight3D
 var area_id := ""
 var phase := "day"
 var built := false
+## 正式背景（8 区 × 3 时段）到位时走「画片模式」：整屏一张 2K 背景，
+## 3D 箱庭整套不生成；素材缺失才退回原来的 CC0 场景件拼装。
+var painted := false
+var back_layer: CanvasLayer
+var back_rect: TextureRect
 
 func _ready() -> void:
 	_build_camera()
@@ -52,12 +58,28 @@ func build(p_area: String, p_phase: String) -> void:
 		remove_child(root)
 		root.queue_free()
 	assets = Assets.new()
+	world_env = null
+	sun = null
+	fill = null
+	back_layer = null
+	back_rect = null
+	painted = false
 	area_id = p_area
 	phase = p_phase
 	var theme := str(Data.area(p_area).get("theme", p_area))
 	root = Node3D.new()
 	root.name = "Stage"
 	add_child(root)
+	# 有正式背景就直接铺画片：背景里已经烘好机位、雾和昼夜调色，
+	# 再叠 3D 箱庭只会出现两套透视打架。
+	var painted_texture := Art.background(p_area, p_phase)
+	if painted_texture != null:
+		_build_painted(painted_texture)
+		painted = true
+		built = true
+		if camera:
+			camera.current = true
+		return
 	world_env = WorldEnvironment.new()
 	world_env.environment = _environment(theme)
 	root.add_child(world_env)
@@ -82,6 +104,22 @@ func build(p_area: String, p_phase: String) -> void:
 	if camera:
 		camera.current = true
 	built = true
+
+## 画片模式：CanvasLayer + 满屏 TextureRect。放在 SubViewport 里，
+## 尺寸就是 1440×900，KEEP_ASPECT_COVERED 会把 16:9 原图左右各裁掉一点。
+func _build_painted(tex: Texture2D) -> void:
+	back_layer = CanvasLayer.new()
+	back_layer.name = "PaintedLayer"
+	back_layer.layer = -10
+	root.add_child(back_layer)
+	back_rect = TextureRect.new()
+	back_rect.name = "PaintedBackdrop"
+	back_rect.texture = tex
+	back_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	back_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	back_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	back_layer.add_child(back_rect)
+	back_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 ## 箱庭外壳：三面墙（室内再加天花板）把画面封死，正面视角永远看不到地面边缘和天空接缝。
 ## 墙用普通 PBR 材质（不是 unshaded），所以昼夜灯光会真实地落在墙上。
@@ -380,9 +418,15 @@ func _build_foreground(theme: String) -> void:
 			_omni(Vector3(5.5, 2.4, -4.5), Color(1.0, 0.30, 0.30), 0.9, 9.0)
 
 func apply_phase(p_phase: String) -> void:
+	phase = p_phase
+	if painted:
+		if back_rect and is_instance_valid(back_rect):
+			var next := Art.background(area_id, p_phase)
+			if next != null:
+				back_rect.texture = next
+		return
 	if not built:
 		return
-	phase = p_phase
 	var tint: Color = PHASE_TINT.get(p_phase, PHASE_TINT["day"])
 	if world_env and world_env.environment:
 		var env := world_env.environment

@@ -102,5 +102,13 @@ func run() -> void:
 		screen._build_stage(id, "day")
 		await shot("theme-" + id)
 		check(screen.stage.area_id == id, "box garden built: " + id)
+	# 隐藏角色（墓煜）的正式 8 表情立绘：放到最后单独起一局，避免新 run 的
+	# _refresh_all 把上面手动搭的舞台又拽回它自己的地区。
+	screen.start_run(3)
+	await process_frame
+	screen.run.note("墓煜：冥火已备。")
+	await shot("09-hero3")
+	check(screen.run.hero == 3, "hidden hero run starts")
+	check(screen.portrait != null and screen.portrait.hero == 3, "hidden hero portrait bound")
 	print("HUNT VISUAL: ", checks, " checks, ", failures, " failures")
 	quit(1 if failures else 0)

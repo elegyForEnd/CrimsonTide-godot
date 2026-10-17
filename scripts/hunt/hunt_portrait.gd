@@ -3,8 +3,8 @@ extends Control
 ##
 ## 三位基础角色直接使用 `assets/story/vn-full-v3/` 的整张差分立绘（8 种表情，
 ## 常服 / 正面），不再做 body+face 叠层——那套 face 图只有五官、没有皮肤底色，
-## 盖不住 body 自带的平静脸，表情切了也看不出来。隐藏角色没有 vn-full 差分，
-## 退回 `portrait-3.png`，表情切换会安静地保持不变。
+## 盖不住 body 自带的平静脸，表情切了也看不出来。隐藏角色（墓煜）用
+## `assets/hunt/portraits/portrait_<表情>_alpha.png` 的 8 张差分，表情会真的变。
 ## 这是展示层：不读规则、不写存档，只响应 set_hero / set_expression。
 
 const Art = preload("res://scripts/hunt/hunt_art.gd")
@@ -46,15 +46,9 @@ func refresh() -> void:
 	body.texture = tex
 	if tex == null:
 		return
-	if hero >= 3:
-		# 隐藏角色只有一张整图：按高度铺满，水平居中裁切。
-		var scale := box.y / float(tex.get_height())
-		var body_size := Vector2(tex.get_width(), tex.get_height()) * scale
-		body.position = Vector2((box.x - body_size.x) * 0.5, 0)
-		body.size = body_size
-	else:
-		# vn-full-v3 是 2160×3840 的整张全身立绘：按宽度铺满，从头顶开始裁出胸像。
-		var scale := box.x / float(tex.get_width())
-		var body_size := Vector2(tex.get_width(), tex.get_height()) * scale
-		body.position = Vector2(0, 0)
-		body.size = body_size
+	# 两套图都是竖幅（2160×3840 / 1152×2048）：按「铺满宽度、从头顶裁胸像」取景。
+	# 横图（旧 portrait-3.png 这类回退素材）会自动改成铺满高度并水平居中。
+	var scale := maxf(box.x / float(tex.get_width()), box.y / float(tex.get_height()))
+	var body_size := Vector2(tex.get_width(), tex.get_height()) * scale
+	body.position = Vector2((box.x - body_size.x) * 0.5, 0)
+	body.size = body_size

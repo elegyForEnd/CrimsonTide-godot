@@ -7,6 +7,7 @@ extends Control
 signal picked(id: String)
 
 const Data = preload("res://scripts/hunt/hunt_data.gd")
+const Art = preload("res://scripts/hunt/hunt_art.gd")
 
 var run
 var font: Font
@@ -27,10 +28,25 @@ func set_run(value) -> void:
 	run = value
 	queue_redraw()
 
+## 羊皮纸地图按 16:9 原比例放进控件；节点坐标是图上的归一化位置，
+## 所以 _at() 必须用「图实际占的那块矩形」，不能用整个控件。
+func _frame_rect() -> Rect2:
+	var tex := Art.map_texture()
+	if tex == null or tex.get_width() <= 0 or tex.get_height() <= 0:
+		return Rect2(Vector2.ZERO, size)
+	var tex_aspect := float(tex.get_width()) / float(tex.get_height())
+	var box_aspect := size.x / maxf(1.0, size.y)
+	if tex_aspect >= box_aspect:
+		var h := size.x / tex_aspect
+		return Rect2(0.0, (size.y - h) * 0.5, size.x, h)
+	var w := size.y * tex_aspect
+	return Rect2((size.x - w) * 0.5, 0.0, w, size.y)
+
 func _at(id: String) -> Vector2:
 	var data: Dictionary = Data.area(id)
 	var norm: Vector2 = data.get("map_at", Vector2(0.5, 0.5))
-	return Vector2(norm.x * (size.x - 90) + 45, norm.y * (size.y - 90) + 45)
+	var frame := _frame_rect()
+	return frame.position + norm * frame.size
 
 func _hit(at: Vector2) -> String:
 	var best := ""
@@ -58,13 +74,19 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	if run == null:
 		return
-	var panel := Rect2(Vector2.ZERO, size)
-	draw_rect(panel, Color(0.025, 0.03, 0.045, 0.96), true)
-	draw_rect(panel, Color("6f5c55"), false, 2.0)
-	# Faint contour lines, to read as a hand-drawn field map rather than a list.
-	for i in 9:
-		var y := 30.0 + i * (size.y - 60.0) / 8.0
-		draw_line(Vector2(24, y), Vector2(size.x - 24, y + sin(i * 1.7) * 18.0), Color(0.35, 0.30, 0.28, 0.10), 1.0)
+	var frame := _frame_rect()
+	var tex := Art.map_texture()
+	if tex != null:
+		draw_texture_rect(tex, frame, false, Color(0.94, 0.91, 0.87))
+		draw_rect(frame, Color("6f5c55"), false, 2.0)
+	else:
+		draw_rect(frame, Color(0.025, 0.03, 0.045, 0.96), true)
+		draw_rect(frame, Color("6f5c55"), false, 2.0)
+		# Faint contour lines, to read as a hand-drawn field map rather than a list.
+		for i in 9:
+			var y := frame.position.y + 30.0 + i * (frame.size.y - 60.0) / 8.0
+			draw_line(Vector2(frame.position.x + 24, y),
+				Vector2(frame.end.x - 24, y + sin(i * 1.7) * 18.0), Color(0.35, 0.30, 0.28, 0.10), 1.0)
 	var current := str(run.area_id)
 	var neighbors: Array = run.area().get("neighbors", [])
 	for id in Data.AREAS:
@@ -74,9 +96,9 @@ func _draw() -> void:
 				continue
 			var p1 := _at(str(id))
 			var p2 := _at(str(other))
-			var unlocked := int(Data.area(str(other)).get("unlock_day", 1)) <= int(run.day)
 			var lit := str(id) == current or str(other) == current
-			draw_line(p1, p2, Color(0.55, 0.47, 0.40, 0.55 if lit else 0.22), 2.0 if lit else 1.0, true)
+			var ink := Color(0.86, 0.70, 0.45, 0.60 if lit else 0.26) if tex != null else Color(0.55, 0.47, 0.40, 0.55 if lit else 0.22)
+			draw_line(p1, p2, ink, 2.0 if lit else 1.0, true)
 	for id in Data.AREAS:
 		var a: Dictionary = Data.AREAS[id]
 		var at := _at(str(id))
@@ -96,14 +118,19 @@ func _draw() -> void:
 		if is_current:
 			draw_circle(at, radius + 10.0, Color(colour, 0.10))
 			draw_arc(at, radius + 8.0, 0, TAU, 40, Color(colour, 0.50), 2.0, true)
-		draw_circle(at, radius, Color(0.08, 0.07, 0.09, 0.95))
+		draw_circle(at, radius, Color(0.015, 0.015, 0.022, 0.58) if tex != null else Color(0.08, 0.07, 0.09, 0.95))
 		draw_arc(at, radius, 0, TAU, 36, colour, 2.0, true)
 		var label := str(a.get("short", a.get("name", id)))
 		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
-		draw_string(font, at + Vector2(-width * 0.5, radius + 26), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, colour)
+		draw_rect(Rect2(at + Vector2(-width * 0.5 - 6, radius + 6), Vector2(width + 12, 23)),
+			Color(0.008, 0.01, 0.016, 0.62), true)
+		draw_string(font, at + Vector2(-width * 0.5, radius + 25), label,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 17, colour)
 		if locked:
 			draw_string(font, at + Vector2(-30, 6), "第%d天" % int(a.get("unlock_day", 1)), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.55, 0.50, 0.48))
 		elif is_current:
 			draw_string(font, at + Vector2(-18, 6), "现在", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("f0c98a"))
 	# Legend / current state.
-	draw_string(font, Vector2(26, size.y - 26), "点击相邻地区移动 · 每次 6 秒 · 消耗 3 体力", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(0.66, 0.60, 0.55))
+	draw_rect(Rect2(10, size.y - 37, size.x - 20, 29), Color(0.008, 0.01, 0.016, 0.62), true)
+	draw_string(font, Vector2(26, size.y - 18), "点击相邻地区移动 · 每次 6 秒 · 消耗 3 体力",
+		HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(0.80, 0.73, 0.64))

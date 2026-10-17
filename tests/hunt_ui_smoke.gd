@@ -1,6 +1,8 @@
 extends SceneTree
-## 猎场页面的 headless 冒烟：只验证脚本能编译、页面能创建、简报与一局能起。
+## 猎场页面的 headless 冒烟：只验证脚本能编译、页面能创建、简报与一局能起，
+## 以及正式美术（背景 / 地图 / 图标 / 敌人 / 立绘 / UI 九宫格）能被解析到。
 const Screen = preload("res://scripts/hunt/hunt_screen.gd")
+const Art = preload("res://scripts/hunt/hunt_art.gd")
 var checks := 0
 var failures := 0
 
@@ -46,5 +48,16 @@ func run() -> void:
 	screen._close_overlay()
 	screen.run.tick(1.0)
 	await process_frame
+	# 正式素材接入：缺任何一类都应该在冒烟里就红，而不是出图时才看出来。
+	check(Art.background("old_town", "night") != null, "painted old-town night background")
+	check(Art.background("altar", "dusk") != null, "painted altar dusk background")
+	check(Art.map_texture() != null, "parchment region map")
+	check(Art.has_hunt_icon("branch") and Art.has_hunt_icon("hand_cannon"), "item icon table")
+	check(Art.icon("branch") != Art.icon("stone"), "item icons are distinct")
+	check(Art.enemy_texture("apostle") != null, "apostle enemy frame")
+	check(Art.portrait_texture(3, "angry") != null, "hidden hero expression portrait")
+	check(Art.crop_texture("panel.png") != null and Art.crop_texture("toast.png") != null, "ui nine-slice crops")
+	check(Art.button_style(false, "normal") != null and Art.button_style(true, "pressed") != null, "ui button styles")
+	check(Art.hotspot_texture("locked") != null, "hotspot ring art")
 	print("HUNT UI SMOKE: ", checks, " checks, ", failures, " failures")
 	quit(1 if failures else 0)

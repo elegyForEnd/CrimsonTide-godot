@@ -53,6 +53,7 @@ var area_desc: Label
 var day_label: Label
 var timer_label: Label
 var phase_label: Label
+var phase_icon: TextureRect
 var timer_bar
 var hint_label: Label
 var portrait
@@ -295,6 +296,8 @@ func start_run(hero: int) -> void:
 func _build_run_ui() -> void:
 	_clear_children(hud)
 	_clear_children(hotspot_layer)
+	_clear_children(toast_layer)
+	toast_slot = 0
 	spot_nodes.clear()
 	enemy_nodes.clear()
 	marker_signature = ""
@@ -306,6 +309,7 @@ func _build_run_ui() -> void:
 	# Top-centre timer.
 	_panel(hud, Vector2(520, 18), Vector2(400, 98), Color(0.035, 0.045, 0.07, 0.88))
 	day_label = _label(hud, "", Vector2(542, 26), Vector2(160, 26), 17, GOLD)
+	phase_icon = _hud_icon(hud, "ui_day", Vector2(676, 29), Vector2(18, 18), Color("e8d8b0"))
 	phase_label = _label(hud, "", Vector2(700, 26), Vector2(90, 26), 15, BLUE, HORIZONTAL_ALIGNMENT_CENTER)
 	timer_label = _label(hud, "", Vector2(790, 22), Vector2(112, 32), 26, INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	timer_bar = _bar(hud, Vector2(542, 62), Vector2(356, 9), RED)
@@ -353,12 +357,16 @@ func _build_run_ui() -> void:
 		info_box.add_child(line)
 		info_labels.append(line)
 	_panel(hud, Vector2(16, 806), Vector2(340, 82), Color(0.04, 0.048, 0.075, 0.92))
-	hp_bar = _bar(hud, Vector2(26, 816), Vector2(242, 14), RED)
+	_hud_icon(hud, "ui_hp", Vector2(26, 815), Vector2(16, 16), Color(1.0, 0.52, 0.56))
+	hp_bar = _bar(hud, Vector2(48, 816), Vector2(220, 14), RED)
 	hp_text = _label(hud, "", Vector2(274, 812), Vector2(76, 20), 12, INK, HORIZONTAL_ALIGNMENT_RIGHT)
-	sp_bar = _bar(hud, Vector2(26, 840), Vector2(242, 12), GREEN)
+	_hud_icon(hud, "ui_stamina", Vector2(26, 839), Vector2(16, 16), Color(0.62, 1.0, 0.68))
+	sp_bar = _bar(hud, Vector2(48, 840), Vector2(220, 12), GREEN)
 	sp_text = _label(hud, "", Vector2(274, 836), Vector2(76, 20), 12, INK, HORIZONTAL_ALIGNMENT_RIGHT)
-	attack_label = _label(hud, "", Vector2(26, 858), Vector2(150, 24), 12, GOLD)
-	defense_label = _label(hud, "", Vector2(180, 858), Vector2(166, 24), 12, BLUE, HORIZONTAL_ALIGNMENT_RIGHT)
+	_hud_icon(hud, "ui_attack", Vector2(26, 859), Vector2(16, 16), Color("e8c07a"))
+	attack_label = _label(hud, "", Vector2(46, 858), Vector2(126, 24), 12, GOLD)
+	_hud_icon(hud, "ui_defense", Vector2(176, 859), Vector2(16, 16), Color("9fc4d8"))
+	defense_label = _label(hud, "", Vector2(196, 858), Vector2(150, 24), 12, BLUE, HORIZONTAL_ALIGNMENT_RIGHT)
 	# Bottom action strip: 搜索 / 合成 / 背包 / 地图 / 休息 / 撤离。
 	_panel(hud, Vector2(356, 806), Vector2(720, 82), Color(0.035, 0.045, 0.07, 0.90))
 	search_button = _button(hud, "搜索  W", Vector2(364, 820), Vector2(108, 54), _do_search, true)
@@ -397,12 +405,15 @@ func _spawn_toast(text: String) -> void:
 		return
 	var panel := Panel.new()
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := _style(Color(0.03, 0.035, 0.05, 0.86), Color(0.62, 0.50, 0.38, 0.85))
-	style.set_corner_radius_all(10)
-	style.content_margin_left = 18
-	style.content_margin_right = 18
-	style.content_margin_top = 9
-	style.content_margin_bottom = 9
+	var style: StyleBox = Art.toast_style()
+	if style == null:
+		var flat := _style(Color(0.03, 0.035, 0.05, 0.86), Color(0.62, 0.50, 0.38, 0.85))
+		flat.set_corner_radius_all(10)
+		flat.content_margin_left = 18
+		flat.content_margin_right = 18
+		flat.content_margin_top = 9
+		flat.content_margin_bottom = 9
+		style = flat
 	panel.add_theme_stylebox_override("panel", style)
 	var label := Label.new()
 	label.text = text
@@ -414,8 +425,8 @@ func _spawn_toast(text: String) -> void:
 	panel.add_child(label)
 	toast_layer.add_child(panel)
 	var width := minf(760.0, face_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x + 40.0)
-	panel.size = Vector2(width, 40)
-	label.position = Vector2(18, 8)
+	panel.size = Vector2(width, 44)
+	label.position = Vector2(18, 10)
 	label.size = Vector2(width - 36, 24)
 	var slot := toast_slot % 3
 	toast_slot += 1
@@ -436,8 +447,12 @@ func _refresh_all() -> void:
 		area_label.text = run.area_name()
 		area_desc.text = str(run.area().get("desc", ""))
 		day_label.text = run.day_text()
+		var phase_tint := BLUE if run.is_night() else (Color("d9a36e") if run.phase_id() == "dusk" else GOLD)
 		phase_label.text = run.phase_name()
-		phase_label.add_theme_color_override("font_color", BLUE if run.is_night() else (Color("d9a36e") if run.phase_id() == "dusk" else GOLD))
+		phase_label.add_theme_color_override("font_color", phase_tint)
+		if phase_icon and is_instance_valid(phase_icon):
+			phase_icon.texture = Art.icon("ui_night" if run.is_night() else ("ui_dusk" if run.phase_id() == "dusk" else "ui_day"))
+			phase_icon.modulate = phase_tint
 		timer_label.text = run.time_text()
 		timer_bar.value = (1.0 - run.day_ratio()) * 100.0
 		if not run.combat.is_empty():
@@ -724,7 +739,7 @@ func _craft_row(recipe: Dictionary) -> Control:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.position = Vector2(8, 6)
 	icon.size = Vector2(40, 40)
-	icon.modulate = Art.tint(out)
+	icon.modulate = Art.icon_modulate(out)
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(icon)
 	_label(panel, "%s ×%d" % [Data.item_name(out), int(recipe.get("count", 1))], Vector2(56, 8), Vector2(210, 36), 17, INK)
@@ -833,7 +848,7 @@ func _refresh_bag_overlay() -> void:
 			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			tex.position = Vector2(8, 8)
 			tex.size = Vector2(52, 52)
-			tex.modulate = Art.tint(kind)
+			tex.modulate = Art.icon_modulate(kind)
 			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			slot.add_child(tex)
 			var name_label := _label(slot, Data.item_name(kind), Vector2(66, 8), Vector2(104, 34), 13, INK,
@@ -954,7 +969,7 @@ func _build_result(result: Dictionary) -> void:
 			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			tex.position = Vector2(44, y - 2)
 			tex.size = Vector2(30, 30)
-			tex.modulate = Art.tint(kind)
+			tex.modulate = Art.icon_modulate(kind)
 			panel.add_child(tex)
 			_label(panel, "%s ×%d" % [Data.item_name(kind), int(entry.get("count", 1))], Vector2(82, y), Vector2(600, 28), 16, INK)
 			y += 34.0
@@ -1081,7 +1096,13 @@ func _panel(parent: Node, at: Vector2, dim: Vector2, colour: Color = PANEL, acce
 	var p := Panel.new()
 	p.position = at
 	p.size = dim
-	p.add_theme_stylebox_override("panel", _style(colour, Color("cbb087") if accent else Color(0.20, 0.22, 0.28, 0.9)))
+	# 大面板套石板九宫格；340×196 这类小 HUD 条保持平涂，避免细边框压住文字。
+	var framed := dim.x >= 420.0 and dim.y >= 180.0
+	var art := Art.panel_style(colour.a, accent) if framed else null
+	if art != null:
+		p.add_theme_stylebox_override("panel", art)
+	else:
+		p.add_theme_stylebox_override("panel", _style(colour, Color("cbb087") if accent else Color(0.20, 0.22, 0.28, 0.9)))
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(p)
 	return p
@@ -1105,6 +1126,19 @@ func _label(parent: Node, text: String, at: Vector2, dim: Vector2, size: int = 1
 	parent.add_child(l)
 	return l
 
+func _hud_icon(parent: Node, kind: String, at: Vector2, dim: Vector2, colour: Color) -> TextureRect:
+	var node := TextureRect.new()
+	# expand_mode 必须排在 size 之前：TextureRect 的最小尺寸等于纹理尺寸。
+	node.texture = Art.icon(kind)
+	node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	node.position = at
+	node.size = dim
+	node.modulate = colour
+	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(node)
+	return node
+
 func _button(parent: Node, text: String, at: Vector2, dim: Vector2, cb: Callable, accent: bool = false) -> Button:
 	var b := Button.new()
 	b.text = text
@@ -1114,18 +1148,25 @@ func _button(parent: Node, text: String, at: Vector2, dim: Vector2, cb: Callable
 	b.mouse_filter = Control.MOUSE_FILTER_STOP
 	b.add_theme_font_override("font", face_font)
 	b.add_theme_font_size_override("font_size", 17)
-	var normal := _style(Color(0.06, 0.07, 0.10, 0.94), Color(0.26, 0.24, 0.26))
-	var hover := _style(Color(0.10, 0.09, 0.12, 0.98), Color("cbb087"))
-	var pressed := _style(Color(0.14, 0.11, 0.13, 1.0), Color("d8b58a"))
-	var disabled := _style(Color(0.04, 0.045, 0.06, 0.9), Color(0.18, 0.19, 0.22))
-	if accent:
-		normal = _style(Color(0.32, 0.12, 0.16, 0.95), Color("d8a48a"))
-		hover = _style(Color(0.42, 0.16, 0.20, 1.0), Color("f0c9a0"))
-		pressed = _style(Color(0.50, 0.20, 0.24, 1.0), Color("ffd9b0"))
-	b.add_theme_stylebox_override("normal", normal)
-	b.add_theme_stylebox_override("hover", hover)
-	b.add_theme_stylebox_override("pressed", pressed)
-	b.add_theme_stylebox_override("disabled", disabled)
+	var art_normal := Art.button_style(accent, "normal")
+	if art_normal != null:
+		b.add_theme_stylebox_override("normal", art_normal)
+		b.add_theme_stylebox_override("hover", Art.button_style(accent, "hover"))
+		b.add_theme_stylebox_override("pressed", Art.button_style(accent, "pressed"))
+		b.add_theme_stylebox_override("disabled", Art.button_style(accent, "normal", true))
+	else:
+		var normal := _style(Color(0.06, 0.07, 0.10, 0.94), Color(0.26, 0.24, 0.26))
+		var hover := _style(Color(0.10, 0.09, 0.12, 0.98), Color("cbb087"))
+		var pressed := _style(Color(0.14, 0.11, 0.13, 1.0), Color("d8b58a"))
+		var disabled := _style(Color(0.04, 0.045, 0.06, 0.9), Color(0.18, 0.19, 0.22))
+		if accent:
+			normal = _style(Color(0.32, 0.12, 0.16, 0.95), Color("d8a48a"))
+			hover = _style(Color(0.42, 0.16, 0.20, 1.0), Color("f0c9a0"))
+			pressed = _style(Color(0.50, 0.20, 0.24, 1.0), Color("ffd9b0"))
+		b.add_theme_stylebox_override("normal", normal)
+		b.add_theme_stylebox_override("hover", hover)
+		b.add_theme_stylebox_override("pressed", pressed)
+		b.add_theme_stylebox_override("disabled", disabled)
 	b.add_theme_color_override("font_color", INK)
 	b.add_theme_color_override("font_hover_color", Color.WHITE)
 	b.add_theme_color_override("font_disabled_color", Color(0.45, 0.45, 0.48))
@@ -1191,6 +1232,7 @@ class Bar extends Control:
 ## 只画在有互动点的地区；点一次结算一次（一次性）。
 class SiteButton extends Control:
 	signal pressed
+	const Art = preload("res://scripts/hunt/hunt_art.gd")
 	var run
 	var site: Dictionary = {}
 	var hover := false
@@ -1223,37 +1265,53 @@ class SiteButton extends Control:
 		var c := size * 0.5
 		var verdict: Dictionary = run.can_interact(str(site.get("id", "")))
 		var ready := bool(verdict.get("ok", false))
-		var colour := Color("d9b36a") if ready else Color(0.48, 0.45, 0.42)
+		var hint := str(verdict.get("why", ""))
+		var state := "ready" if ready else ("locked" if not hint.is_empty() else "used")
+		var colour := Color("d9b36a") if ready else Color(0.55, 0.52, 0.48)
 		if hover and ready:
 			colour = colour.lightened(0.22)
-		draw_circle(c, 26.0, Color(0.02, 0.025, 0.04, 0.72))
-		draw_arc(c, 30.0, 0, TAU, 40, Color(colour, 0.9), 2.5, true)
-		draw_arc(c, 38.0, 0, TAU, 40, Color(colour, 0.18), 1.0, true)
-		var glyph := "?"
-		match str(site.get("kind", "")):
-			"shrine":
-				glyph = "†"
-			"blood":
-				glyph = "◆"
-			"corpse":
-				glyph = "⌁"
-			"well":
-				glyph = "○"
-			"cache":
-				glyph = "▣"
-			"trap":
-				glyph = "!"
-			"sigil":
-				glyph = "✦"
-		var glyph_w := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
-		draw_string(font, c + Vector2(-glyph_w * 0.5, 7), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, colour)
+		var tex := Art.hotspot_texture(state)
+		if tex != null:
+			var ring := 112.0
+			var ring_h := ring * float(tex.get_height()) / float(tex.get_width())
+			# 原画的黄环带红晕，直接上屏像霓虹；乘成旧金/灰紫才融得进猎场。
+			var tint := Color(0.66, 0.61, 0.50, 0.84) if ready else Color(0.50, 0.49, 0.56, 0.78)
+			if hover and ready:
+				tint = Color(0.82, 0.76, 0.62, 0.92)
+			draw_texture_rect(tex, Rect2(c - Vector2(ring, ring_h) * 0.5, Vector2(ring, ring_h)), false, tint)
+			if ready:
+				# 圆心留空，只放一个呼吸的小光点：锁和虚线已经由图本身表达。
+				draw_circle(c, 3.8, Color(1.0, 0.86, 0.55, 0.70))
+		else:
+			draw_circle(c, 26.0, Color(0.02, 0.025, 0.04, 0.72))
+			draw_arc(c, 30.0, 0, TAU, 40, Color(colour, 0.9), 2.5, true)
+			draw_arc(c, 38.0, 0, TAU, 40, Color(colour, 0.18), 1.0, true)
+			var glyph := "?"
+			match str(site.get("kind", "")):
+				"shrine":
+					glyph = "†"
+				"blood":
+					glyph = "◆"
+				"corpse":
+					glyph = "⌁"
+				"well":
+					glyph = "○"
+				"cache":
+					glyph = "▣"
+				"trap":
+					glyph = "!"
+				"sigil":
+					glyph = "✦"
+			var glyph_w := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+			draw_string(font, c + Vector2(-glyph_w * 0.5, 7), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, colour)
 		var label := str(site.get("name", ""))
 		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
-		draw_string(font, c + Vector2(-width * 0.5, 62), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(colour, 0.95))
+		draw_rect(Rect2(c + Vector2(-width * 0.5 - 5, 64), Vector2(width + 10, 20)), Color(0.008, 0.01, 0.016, 0.55), true)
+		draw_string(font, c + Vector2(-width * 0.5, 78), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(colour, 0.95))
 		if not ready:
-			var hint := str(verdict.get("why", ""))
 			var hint_w := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
-			draw_string(font, c + Vector2(-hint_w * 0.5, 80), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.62, 0.58, 0.55))
+			draw_rect(Rect2(c + Vector2(-hint_w * 0.5 - 4, 84), Vector2(hint_w + 8, 18)), Color(0.008, 0.01, 0.016, 0.5), true)
+			draw_string(font, c + Vector2(-hint_w * 0.5, 97), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.72, 0.67, 0.62))
 
 class SpotButton extends Control:
 	signal pressed
