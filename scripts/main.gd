@@ -57,6 +57,9 @@ const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
 # `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
 # 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
 const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
+# 血潮猎场：营地「出征」栏的新模式。逻辑在 scripts/hunt/，这里只负责页面生命周期、
+# 战利品入仓和档案统计，避免新模式把 session 的搜打撤/魔境流程分叉。
+const HuntScreen := preload("res://scripts/hunt/hunt_screen.gd")
 # 开发者模式 · 判定框总览（环境变量 CRIMSON_DEV_RANGES 才创建，见 开发者模式启动.cmd / 任务.md）
 const DevRanges := preload("res://scripts/dev_ranges.gd")
 # 窗口模式/分辨率档位/玩家手拖的窗口尺寸：键名、默认值、档位表与屏幕夹取都在
@@ -269,6 +272,7 @@ var damage_tween: Tween
 # The pre-raid camp is a separate 3D map with its own camera and storm. It is
 # created once and switched on and off, so walking into it never rebuilds it.
 var camp: Control
+var hunt_screen: Control
 var story_screen: Control
 # Set for one frame when the hidden ending recruits somebody, so the report can
 # announce the unlock that this run just earned.
@@ -879,6 +883,9 @@ func new_page(name_value: String) -> void:
 	# The camp map is switched off, never freed: it keeps its storm and meshes.
 	if camp and not camp.is_queued_for_deletion():
 		camp.set_active(false)
+	# 血潮猎场也是常驻页面（它的 3D 舞台很贵），离开时只藏不释放。
+	if hunt_screen and is_instance_valid(hunt_screen):
+		hunt_screen.set_active(name_value == "hunt")
 	clear(page)
 	clear(overlay)
 	modal=false
@@ -1009,6 +1016,53 @@ func ensure_camp() -> Control:
 	return camp
 
 
+## 血潮猎场是独立页面：它有自己的 3D 舞台、规则模块和结算，不共用 session 的
+## 搜打撤/魔境状态机。这里只创建一次、把档案和返回营地的接线接好。
+func ensure_hunt() -> Control:
+	if hunt_screen and is_instance_valid(hunt_screen):
+		return hunt_screen
+	hunt_screen = HuntScreen.new()
+	hunt_screen.name = "CrimsonHunt"
+	add_child(hunt_screen)
+	hunt_screen.set_context(profile, sound)
+	hunt_screen.exit_requested.connect(func():
+		if page_name == "hunt":
+			go_camp())
+	hunt_screen.run_finished.connect(on_hunt_finished)
+	hunt_screen.set_active(false)
+	return hunt_screen
+
+
+## 从营地站点 E / 左侧「血潮猎场」快捷按钮进入。先走简报/选人页，再由它开始一局。
+func show_hunt() -> void:
+	ensure_hunt()
+	new_page("hunt")
+	hunt_screen.set_context(profile, sound)
+	hunt_screen.show_briefing()
+
+
+## 猎场结算：撤离/通关才把局内背包搬进守夜人仓库；阵亡/放弃一律丢失。
+## 档案只记结果，不保存局内背包；save_profile 仍然是唯一落盘点。
+func on_hunt_finished(result: Dictionary) -> void:
+	var extracted := bool(result.get("extracted", false))
+	if extracted:
+		for entry in result.get("loot", []):
+			var kind := str(entry.get("kind", ""))
+			var count := maxi(1, int(entry.get("count", 1)))
+			var item := {"kind": kind, "count": count}
+			if not profile.bank_item(item):
+				profile.spill_item(item, count)
+	var hunt: Dictionary = profile.data.get("hunt", {})
+	hunt["runs"] = int(hunt.get("runs", 0)) + 1
+	if extracted:
+		hunt["extracts"] = int(hunt.get("extracts", 0)) + 1
+	if bool(result.get("victory", false)):
+		hunt["wins"] = int(hunt.get("wins", 0)) + 1
+	hunt["best_day"] = maxi(int(hunt.get("best_day", 0)), int(result.get("day", 1)))
+	profile.data["hunt"] = hunt
+	profile.save_profile()
+
+
 ## Enters the standalone pre-raid camp map. A solo expedition is prepared first so
 ## the camp has a real loadout to edit, exactly as the old整备 panel required.
 func go_camp() -> void:
@@ -1032,7 +1086,7 @@ func go_camp() -> void:
 	# The camp owns the bottom of the screen here, so the hint goes through its
 	# own line instead of the shared toast band.
 	if camp.has_method("say"):
-		camp.say("营地 · 南侧闸门进入搜打撤，东侧紫色传送门进入魔境闯关。走近按 E 或 Space。")
+		camp.say("营地 · 南侧闸门进入搜打撤，东侧紫门进入魔境，东侧红环进入血潮猎场。走近按 E 或 Space。")
 
 func go_story(save_path: String = "") -> void:
 	if session.online: session.disconnect_room()
@@ -1080,6 +1134,8 @@ func on_camp_station(id: String) -> void:
 				notify("请等待队长选择魔境闯关。")
 				return
 			show_rogue_setup()
+		"hunt":
+			show_hunt()
 
 
 ## The camp HUD's 「出发」 button. It has to leave from wherever the hero happens to stand: the
@@ -1089,7 +1145,7 @@ func on_camp_station(id: String) -> void:
 ## Space still goes through those very stations, in that very order.
 func camp_departure() -> void:
 	var station: Dictionary=camp.site.station_at(camp.site.hero_position())
-	if station.get("action","") in ["launch","rogue"]:
+	if station.get("action","") in ["launch","rogue","hunt"]:
 		on_camp_station(str(station.action))
 		return
 	on_camp_station("rogue" if session.selected_mode=="roguelike" else "launch")
@@ -1787,6 +1843,8 @@ func _notification(what: int) -> void:
 
 func _input(event: InputEvent) -> void:
 	if page_name=="story": return
+	# 猎场页面自己处理鼠标/键盘（它不经过 session 的袋控器）。
+	if page_name=="hunt": return
 	if event is InputEventMouseMotion and event.device==-2:
 		pass
 	elif controller.handle(self,event):
@@ -1986,6 +2044,7 @@ func index_at(slot: String, cell: Vector2i) -> int:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if page_name=="story": return
+	if page_name=="hunt": return
 	if event is InputEventMouseButton and event.device==-2 and controller.pointer_mode(self): return
 	if event.is_action_pressed("pause"):
 		# Esc first puts the units in hand back where they came from: cancelling a

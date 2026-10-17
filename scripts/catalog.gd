@@ -102,6 +102,62 @@ const ITEMS = {
 	,"carrot_seed":{"name":"赤霞萝卜种", "size":Vector2i(1,1), "value":9, "color":Color("d4823f"), "desc":"家园商店购入的萝卜种。每份可播种一块田畦。"}
 	,"herb_seed":{"name":"月露草种", "size":Vector2i(1,1), "value":13, "color":Color("7fbfa4"), "desc":"家园商店购入的月露草种。每份可播种一块田畦。"}
 	,"bait":{"name":"鱼饵", "size":Vector2i(1,1), "value":2, "color":Color("b9a48f"), "desc":"家园商店购入的钓饵。每次抛竿消耗一份，收竿失败不返还。"}
+	# ---- 血潮猎场（hunt_data.gd 的 ITEMS 是同一批物品的规则/文案来源；
+	# 这里是仓库、交易行与图标解析需要的目录行。新增时两处一起加。 ----
+	,"branch": {"name": "树枝", "size": Vector2i(1, 1), "value": 3, "color": Color("8d6f4d"), "cat": "material", "desc": "干燥的硬枝，能做柄也能当柴。"}
+	,"stone": {"name": "石块", "size": Vector2i(1, 1), "value": 4, "color": Color("8b8a84"), "cat": "material", "desc": "边缘锋利的碎石，猎场里最不缺的东西。"}
+	,"cloth": {"name": "碎布", "size": Vector2i(1, 1), "value": 5, "color": Color("b9ad9b"), "cat": "material", "desc": "从旧衣和窗帘上撕下来的布条。"}
+	,"dirty_water": {"name": "污水", "size": Vector2i(1, 1), "value": 2, "color": Color("6f8077"), "cat": "material", "desc": "混着泥沙的脏水，滤过之后还能用。"}
+	,"clean_water": {"name": "净水", "size": Vector2i(1, 1), "value": 8, "color": Color("9fd1d2"), "cat": "material", "desc": "滤掉泥沙的清水，能直接喝。"}
+	,"honey": {"name": "蜂蜜", "size": Vector2i(1, 1), "value": 12, "color": Color("d5a33f"), "cat": "material", "desc": "从废弃蜂箱里刮下来的浓稠蜂蜜。"}
+	,"wild_herb": {"name": "野草", "size": Vector2i(1, 1), "value": 7, "color": Color("7da77b"), "cat": "material", "desc": "气味苦涩的草药，能止血也能提神。"}
+	,"iron": {"name": "铁片", "size": Vector2i(1, 1), "value": 14, "color": Color("9da6b2"), "cat": "material", "desc": "从旧铁器上敲下来的铁片，边缘还带着锈。"}
+	,"nail": {"name": "钉子", "size": Vector2i(1, 1), "value": 6, "color": Color("b7b3a8"), "cat": "material", "desc": "生锈但还算直的铁钉。"}
+	,"leather": {"name": "兽皮", "size": Vector2i(1, 1), "value": 16, "color": Color("9a6f52"), "cat": "material", "desc": "从猎场野兽身上剥下的皮，还带着腥气。"}
+	,"rope": {"name": "绳索", "size": Vector2i(1, 1), "value": 10, "color": Color("b7a27a"), "cat": "material", "desc": "几股旧麻绳拧成的结实绳子。"}
+	,"resin": {"name": "松脂", "size": Vector2i(1, 1), "value": 8, "color": Color("c7b98d"), "cat": "material", "desc": "从松树里熬出的黏稠树胶，能粘合木石。"}
+	,"storm_phial": {"name": "封雷瓶", "size": Vector2i(1, 1), "value": 18, "color": Color("c9b45c"), "cat": "material", "desc": "封着一小团雷的玻璃瓶，炼金术士用它代替火种。"}
+	,"glass": {"name": "玻璃", "size": Vector2i(1, 1), "value": 6, "color": Color("9fc6c8"), "cat": "material", "desc": "教堂彩窗的碎片，边缘锋利得能割开皮肉。"}
+	,"paper": {"name": "纸页", "size": Vector2i(1, 1), "value": 4, "color": Color("d0c7b5"), "cat": "material", "desc": "受潮的羊皮纸页，能引火也能包东西。"}
+	,"oil": {"name": "灯油", "size": Vector2i(1, 1), "value": 15, "color": Color("c7a35b"), "cat": "material", "desc": "从教堂长明灯里倒出来的灯油。"}
+	,"brimstone": {"name": "硫磺", "size": Vector2i(1, 1), "value": 22, "color": Color("8f7b6d"), "cat": "material", "desc": "磨碎的硫磺与炭，炼金火器的引药。"}
+	,"bandage": {"name": "绷带", "size": Vector2i(1, 1), "value": 14, "color": Color("d8c9b5"), "cat": "recovery", "heal": 28, "desc": "碎布缠成的绷带，恢复 28 生命。"}
+	,"mead": {"name": "蜜酒", "size": Vector2i(1, 1), "value": 20, "color": Color("d9b25c"), "cat": "recovery", "stamina": 45, "desc": "蜂蜜兑水的粗酿，恢复 45 体力。"}
+	,"herbal_tea": {"name": "草药汤", "size": Vector2i(1, 1), "value": 18, "color": Color("8fb88a"), "cat": "recovery", "heal": 16, "stamina": 20, "desc": "苦味压住了恐慌，恢复 16 生命与 20 体力。"}
+	,"poppy_syrup": {"name": "罂粟膏", "size": Vector2i(1, 1), "value": 30, "color": Color("b8c9d8"), "cat": "recovery", "heal": 42, "desc": "罂粟熬出的黑膏，压住疼痛，恢复 42 生命。"}
+	,"blood_draught": {"name": "血酿", "size": Vector2i(1, 1), "value": 26, "color": Color("d3a45f"), "cat": "recovery", "stamina": 60, "desc": "一小瓶温热的血酿，恢复 60 体力，喝下去心跳发慌。"}
+	,"salve": {"name": "药膏", "size": Vector2i(1, 1), "value": 24, "color": Color("9cbe8a"), "cat": "recovery", "heal": 34, "desc": "草药和油脂熬成的药膏，恢复 34 生命。"}
+	,"herbal_bandage": {"name": "草药绷带", "size": Vector2i(1, 1), "value": 28, "color": Color("b7c9a4"), "cat": "recovery", "heal": 46, "desc": "浸过草汁的绷带，恢复 46 生命。"}
+	,"frenzy_phial": {"name": "狂血药剂", "size": Vector2i(1, 1), "value": 35, "color": Color("d27f65"), "cat": "recovery", "buff": "attack", "desc": "炼金术士的狂血药剂，短时间提高攻击力，代价是体力见底。"}
+	,"stone_axe": {"name": "燧石斧", "size": Vector2i(1, 1), "value": 30, "color": Color("9a7b5d"), "cat": "weapon", "desc": "燧石绑在树枝上，粗糙但劈得开骨头。"}
+	,"spear": {"name": "长矛", "size": Vector2i(1, 1), "value": 34, "color": Color("a98a62"), "cat": "weapon", "desc": "两根白蜡木接成的长杆，前端削尖烤黑。"}
+	,"spiked_club": {"name": "钉头棒", "size": Vector2i(1, 1), "value": 38, "color": Color("8b7a68"), "cat": "weapon", "desc": "钉满铁钉的木棒，挥起来带着风声。"}
+	,"iron_mace": {"name": "铁头槌", "size": Vector2i(1, 1), "value": 36, "color": Color("9da6ad"), "cat": "weapon", "desc": "锻铁槌头装在木柄上，缠着防滑的麻布。"}
+	,"machete": {"name": "砍刀", "size": Vector2i(1, 1), "value": 48, "color": Color("b2a18b"), "cat": "weapon", "desc": "铁片磨出的刀身，缠着皮革刀柄。"}
+	,"crossbow": {"name": "十字弩", "size": Vector2i(1, 1), "value": 60, "color": Color("a98963"), "cat": "weapon", "desc": "白蜡木和绳索拼成的弩，近距离很致命。"}
+	,"hand_cannon": {"name": "手铳", "size": Vector2i(1, 1), "value": 72, "color": Color("8d9199"), "cat": "weapon", "desc": "短铁管缠上铁箍，用硫磺点火；打一发要重新装填。"}
+	,"heavy_axe": {"name": "战斧", "size": Vector2i(1, 1), "value": 78, "color": Color("9d8064"), "cat": "weapon", "desc": "燧石斧加铁箍加固，挥空会露出破绽。"}
+	,"iron_maul": {"name": "铁槌", "size": Vector2i(1, 1), "value": 70, "color": Color("8c7b6a"), "cat": "weapon", "desc": "钉头棒外箍铁环，砸下去像一记闷雷。"}
+	,"cloth_armor": {"name": "衬垫甲", "size": Vector2i(1, 1), "value": 32, "color": Color("b9aa94"), "cat": "armor", "desc": "多层碎布缝成的护身衣。"}
+	,"leather_armor": {"name": "皮胸甲", "size": Vector2i(1, 1), "value": 46, "color": Color("997055"), "cat": "armor", "desc": "兽皮裁成的硬皮护胸。"}
+	,"ring_mail": {"name": "环甲", "size": Vector2i(1, 1), "value": 64, "color": Color("9aa3ad"), "cat": "armor", "desc": "铁环缝在皮甲外侧，沉得压肩。"}
+	,"hunter_cloak": {"name": "猎人斗篷", "size": Vector2i(1, 1), "value": 58, "color": Color("7d6d5e"), "cat": "armor", "desc": "带兜帽的厚斗篷，夜里能挡住一些视线。"}
+	,"armor_patch": {"name": "甲片补丁", "size": Vector2i(1, 1), "value": 20, "color": Color("a99a86"), "cat": "armor", "desc": "使用后永久提高 1 点防御，最多叠 5 层。"}
+	,"torch": {"name": "火把", "size": Vector2i(1, 1), "value": 22, "color": Color("d39a52"), "cat": "tool", "desc": "夜里搜索不再摸黑，敌人也更早发现你。"}
+	,"lockpick": {"name": "开锁针", "size": Vector2i(1, 1), "value": 26, "color": Color("b9b1a0"), "cat": "tool", "desc": "能打开一次上锁的容器。"}
+	,"snare": {"name": "捕兽夹", "size": Vector2i(1, 1), "value": 28, "color": Color("8f7a5e"), "cat": "tool", "desc": "战斗中使用，造成 40 伤害并让敌人停顿。"}
+	,"alchemist_flare": {"name": "炼金焰筒", "size": Vector2i(1, 1), "value": 30, "color": Color("d76b5f"), "cat": "tool", "desc": "战斗中使用，必定脱离战斗。"}
+	,"smoke_pouch": {"name": "烟囊", "size": Vector2i(1, 1), "value": 32, "color": Color("9a9a9a"), "cat": "tool", "desc": "战斗中使用，降低敌人下一次攻击的伤害。"}
+	,"armor_kit": {"name": "修甲工具", "size": Vector2i(1, 1), "value": 34, "color": Color("a6a08e"), "cat": "tool", "desc": "使用后恢复 20 生命并提高 1 点防御。"}
+	,"lead_shot": {"name": "铅弹", "size": Vector2i(1, 1), "value": 20, "color": Color("c4ad82"), "cat": "tool", "desc": "手铳与弩用的铅弹；也可以直接卖掉。"}
+	,"spirit_horn": {"name": "通灵骨笛", "size": Vector2i(1, 1), "value": 44, "color": Color("8d9a9d"), "cat": "tool", "desc": "吹响后能听见远处的动静：揭示所有地区，下一次换区不会遇袭。"}
+	,"pack_straps": {"name": "行囊背带", "size": Vector2i(1, 1), "value": 40, "color": Color("b2a084"), "cat": "tool", "desc": "使用后背包容量 +4 格。"}
+	,"plague_mask": {"name": "瘟疫面具", "size": Vector2i(1, 1), "value": 12, "color": Color("c8c3b7"), "cat": "tool", "desc": "遮住口鼻，减少毒气与陷阱带来的伤害。"}
+	,"key": {"name": "铁钥匙", "size": Vector2i(1, 1), "value": 18, "color": Color("c0b28d"), "cat": "tool", "desc": "可以打开一次上锁的容器。"}
+	,"blood_sigil": {"name": "血契石", "size": Vector2i(1, 1), "value": 0, "color": Color("c95666"), "cat": "tool", "desc": "刻满凹槽的黑石。带着它才能走进血月祭坛。"}
+	,"hunt_bait": {"name": "血饵", "size": Vector2i(1, 1), "value": 10, "color": Color("b39a6d"), "cat": "tool", "desc": "抹了血的饵料，能引开当前地区的敌人。"}
+	,"charcoal_filter": {"name": "炭滤器", "size": Vector2i(1, 1), "value": 24, "color": Color("9fb1a6"), "cat": "tool", "desc": "持有后每份污水可多滤出一份净水。"}
+
 }
 const BIOME_COLLECTIBLES := [
 	["wind_chime","rabbit_bell","oath_banner"],
@@ -738,6 +794,13 @@ const STACK_LIMITS := {
 	"crystal":5, "scrap":5, "charm":5, "bait":5,
 	"wheat":5, "carrot":5, "herb":5, "silver":5, "moon":5, "gold":5,
 	"wheat_seed":5, "carrot_seed":5, "herb_seed":5,
+	# 血潮猎场材料：同一张表决定"能不能叠"与"一叠多少"，不要在别处再写阈值。
+	"branch":10, "stone":10, "cloth":10, "dirty_water":10, "clean_water":10,
+	"honey":10, "wild_herb":10, "iron":10, "nail":10, "leather":10,
+	"rope":10, "resin":10, "storm_phial":10, "glass":10, "paper":10,
+	"oil":10, "brimstone":10,
+	"bandage":5, "mead":5, "herbal_tea":5, "poppy_syrup":5,
+	"blood_draught":5, "salve":5, "herbal_bandage":5, "frenzy_phial":3,
 }
 
 static func max_stack(kind: String) -> int:

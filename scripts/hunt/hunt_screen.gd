@@ -1,0 +1,1361 @@
+extends Control
+## 血潮猎场 · 模式页面
+##
+## 三层：SubViewport 里的固定第一人称 3D 舞台 → 2D 热点/敌人 → HUD 与面板。
+## 规则全部在 `hunt_run.gd`；这里只发动作、读字段、画界面，不写存档。
+## 营地入口由 main.gd 调用 `show_briefing()`，返回营地走 `exit_requested`。
+
+signal exit_requested
+signal run_finished(result: Dictionary)
+
+const Run = preload("res://scripts/hunt/hunt_run.gd")
+const Stage = preload("res://scripts/hunt/hunt_stage.gd")
+const Art = preload("res://scripts/hunt/hunt_art.gd")
+const Portrait = preload("res://scripts/hunt/hunt_portrait.gd")
+const MapView = preload("res://scripts/hunt/hunt_map_view.gd")
+const Data = preload("res://scripts/hunt/hunt_data.gd")
+
+const BG := Color("0b0d13")
+const PANEL := Color("121722")
+const PANEL_2 := Color("171d29")
+const INK := Color("e7dfd5")
+const MUTED := Color("979aa8")
+const GOLD := Color("cbb087")
+const RED := Color("c95666")
+const GREEN := Color("8fbf9b")
+const BLUE := Color("8fb7c9")
+const DIM := Color("5f6370")
+const CARD := Color("1a202c")
+
+const VIEW := Vector2(1440, 900)
+const HERO_CARD_W := 270.0
+const HERO_CARD_H := 520.0
+
+var profile: Profile
+var sound
+var run
+var mode := "idle" # idle / briefing / run / result
+var selected_hero := 0
+var active := false
+
+var title_font: Font
+var face_font: Font
+
+var stage_container: SubViewportContainer
+var stage_view: SubViewport
+var stage
+var vignette: TextureRect
+
+var hotspot_layer: Control
+var hud: Control
+var area_label: Label
+var area_desc: Label
+var day_label: Label
+var timer_label: Label
+var phase_label: Label
+var timer_bar
+var hint_label: Label
+var portrait
+var hero_name_label: Label
+var hp_bar
+var sp_bar
+var hp_text: Label
+var sp_text: Label
+var attack_label: Label
+var defense_label: Label
+var bag_label: Label
+var log_label: Label
+var extract_button: Button
+var rest_button: Button
+
+var briefing: Control
+var result_layer: Control
+var map_overlay: Control
+var map_view
+var craft_overlay: Control
+var craft_list: VBoxContainer
+var craft_rows: Dictionary = {}
+var craft_cat := "all"
+var craft_buttons: Dictionary = {}
+var bag_overlay: Control
+var bag_grid: GridContainer
+var combat_panel: Panel
+var combat_enemy_art: TextureRect
+var combat_name: Label
+var combat_hp
+var combat_hp_text: Label
+var combat_attack: Button
+var combat_heavy: Button
+var combat_trap: Button
+var combat_flare: Button
+var combat_smoke: Button
+var combat_flee: Button
+var pause_layer: Control
+var result_built_for := ""
+
+var spot_nodes: Dictionary = {}
+var enemy_nodes: Dictionary = {}
+var site_nodes: Dictionary = {}
+var search_button: Button
+var form_button: Button
+var toast_layer: Control
+var toast_slot := 0
+var info_labels: Array = []
+var marker_signature := ""
+var overlay_kind := ""
+var last_result: Dictionary = {}
+
+func _ready() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	focus_mode = Control.FOCUS_NONE
+	visible = false
+	var serif := FontVariation.new()
+	serif.base_font = load("res://assets/NotoSerifSC.ttf")
+	title_font = serif
+	var face := FontVariation.new()
+	face.base_font = load("res://assets/NotoSansSC.ttf")
+	face.variation_opentype = {"wght": 420.0}
+	face_font = face
+	_ensure_stage()
+	vignette = TextureRect.new()
+	vignette.name = "Vignette"
+	vignette.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vignette.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	vignette.stretch_mode = TextureRect.STRETCH_SCALE
+	var grad := Gradient.new()
+	grad.colors = PackedColorArray([Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.55)])
+	var grad_tex := GradientTexture2D.new()
+	grad_tex.gradient = grad
+	grad_tex.width = 256
+	grad_tex.height = 256
+	grad_tex.fill = GradientTexture2D.FILL_RADIAL
+	vignette.texture = grad_tex
+	add_child(vignette)
+	hotspot_layer = Control.new()
+	hotspot_layer.name = "Hotspots"
+	hotspot_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hotspot_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(hotspot_layer)
+	hud = Control.new()
+	hud.name = "HuntHUD"
+	hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(hud)
+	# 中上方的浮动提示：单条、自动上浮淡出；多条就错位叠着走。
+	toast_layer = Control.new()
+	toast_layer.name = "HuntToasts"
+	toast_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	toast_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(toast_layer)
+
+func set_context(p_profile: Profile, p_sound = null) -> void:
+	profile = p_profile
+	sound = p_sound
+	selected_hero = clampi(int(profile.data.get("hero", 0)), 0, profile.roster_size() - 1)
+
+func set_active(value: bool) -> void:
+	active = value
+	visible = value
+	set_process(value)
+	if not value:
+		_close_overlay(true)
+		if run and not run.ended_flag:
+			run.set_paused(true)
+
+func _ensure_stage() -> void:
+	if stage_container and is_instance_valid(stage_container):
+		return
+	stage_view = SubViewport.new()
+	stage_view.name = "HuntViewport"
+	stage_view.size = Vector2i(1440, 900)
+	stage_view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	stage_view.own_world_3d = true
+	stage_view.msaa_3d = Viewport.MSAA_2X
+	stage = Stage.new()
+	stage.name = "HuntStage"
+	stage_view.add_child(stage)
+	stage_container = SubViewportContainer.new()
+	stage_container.name = "HuntStageView"
+	stage_container.stretch = true
+	stage_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stage_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(stage_container)
+	stage_container.add_child(stage_view)
+
+func _build_stage(area_id: String, phase: String) -> void:
+	_ensure_stage()
+	if stage.area_id != area_id or stage.phase != phase or not stage.built:
+		stage.build(area_id, phase)
+
+func show_briefing() -> void:
+	mode = "briefing"
+	run = null
+	if hud:
+		hud.visible = false
+	if hotspot_layer:
+		hotspot_layer.visible = false
+	if result_layer:
+		_clear(result_layer)
+		result_layer = null
+	_close_overlay(false)
+	if vignette:
+		vignette.visible = true
+	_build_stage(Data.CAMP_AREA, "day")
+	_clear(briefing)
+	briefing = Control.new()
+	briefing.name = "Briefing"
+	briefing.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(briefing)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.025, 0.04, 0.72)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	briefing.add_child(dim)
+	_label(briefing, "血 潮 猎 场", Vector2(70, 42), Vector2(760, 70), 46, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(briefing, "C R I M S O N   H U N T   /   三 日 禁 区", Vector2(74, 112), Vector2(760, 30), 15, GOLD)
+	_label(briefing, "在血潮漫上来之前，搜到能活过第三夜的东西。", Vector2(74, 154), Vector2(900, 32), 19, MUTED)
+	_label(briefing, "8 分钟 = 1 天，共 3 天。搜索消耗体力，地区资源有限；搜到的东西可以在局内合成。\n撤离成功才能把战利品带回晨钟家园；倒下就什么都没有。", Vector2(74, 192), Vector2(1180, 58), 16, MUTED)
+	var slot := 0
+	for hero in 4:
+		var unlocked := hero < profile.roster_size()
+		var x := 74.0 + slot * (HERO_CARD_W + 26.0)
+		var card := _panel(briefing, Vector2(x, 262), Vector2(HERO_CARD_W, HERO_CARD_H), Color(0.055, 0.065, 0.095, 0.94), hero == selected_hero)
+		if not unlocked:
+			card.modulate = Color(0.62, 0.62, 0.66, 0.95)
+		var art = Portrait.new()
+		art.name = "HeroPortrait%d" % hero
+		art.size = Vector2(HERO_CARD_W - 22, 330)
+		art.position = Vector2(11, 10)
+		art.set_hero(hero)
+		card.add_child(art)
+		var hd: Dictionary = Catalog.HEROES[hero]
+		_label(card, str(hd.name), Vector2(16, 344), Vector2(220, 32), 26, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+		_label(card, str(hd.title), Vector2(16, 376), Vector2(240, 18), 13, GOLD)
+		if unlocked:
+			var desc := _label(card, "%s\nHP %d · 攻击 %d" % [str(hd.desc), int(hd.hp), int(hd.damage)],
+				Vector2(16, 398), Vector2(238, 64), 11, MUTED, HORIZONTAL_ALIGNMENT_LEFT, null, true)
+			desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+		else:
+			var hint := _label(card, "隐藏角色\n抵达护身符结局后解锁", Vector2(16, 400), Vector2(238, 60), 12, MUTED,
+				HORIZONTAL_ALIGNMENT_LEFT, null, true)
+			hint.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+		var choose := _button(card, "选择" if unlocked else "未解锁", Vector2(16, 470), Vector2(238, 38), func(): _select_hero(hero), hero == selected_hero)
+		choose.disabled = not unlocked
+		slot += 1
+	_label(briefing, "已解锁 %d / 4 名守夜人。每次进入猎场只带一名角色；局内装备与仓库分离，撤离后结算。" % profile.roster_size(),
+		Vector2(74, 806), Vector2(1000, 26), 14, MUTED)
+	var back := _button(briefing, "返回营地", Vector2(74, 842), Vector2(200, 44), func(): exit_requested.emit())
+	back.name = "HuntBack"
+	var start := _button(briefing, "进入猎场  →", Vector2(1060, 824), Vector2(300, 62), func(): _start_selected(), true)
+	start.name = "HuntStart"
+	start.add_theme_font_size_override("font_size", 24)
+	visible = true
+	set_process(true)
+	active = true
+
+func _select_hero(hero: int) -> void:
+	if hero >= profile.roster_size():
+		return
+	selected_hero = hero
+	show_briefing()
+
+func _start_selected() -> void:
+	if selected_hero >= profile.roster_size():
+		return
+	start_run(selected_hero)
+
+func start_run(hero: int) -> void:
+	_clear(briefing)
+	briefing = null
+	if result_layer:
+		_clear(result_layer)
+		result_layer = null
+	if pause_layer:
+		pause_layer.visible = false
+	mode = "run"
+	hud.visible = true
+	hotspot_layer.visible = true
+	vignette.visible = true
+	run = Run.new()
+	run.setup(hero, 0, int(profile.data.get("gear", -1)), profile.data.get("talents", [0, 0, 0]))
+	run.changed.connect(_on_run_changed)
+	run.logged.connect(_on_run_log)
+	run.finished.connect(_on_run_finished)
+	_build_stage(run.area_id, run.phase_id())
+	_build_run_ui()
+	_refresh_all()
+	visible = true
+	set_process(true)
+	active = true
+
+# ------------------------------------------------------------------ run HUD
+
+func _build_run_ui() -> void:
+	_clear_children(hud)
+	_clear_children(hotspot_layer)
+	spot_nodes.clear()
+	enemy_nodes.clear()
+	marker_signature = ""
+	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Top-left area plaque.
+	_panel(hud, Vector2(24, 20), Vector2(370, 92), Color(0.035, 0.045, 0.07, 0.86))
+	area_label = _label(hud, "", Vector2(44, 30), Vector2(330, 34), 25, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	area_desc = _label(hud, "", Vector2(44, 66), Vector2(334, 34), 12, MUTED, HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	# Top-centre timer.
+	_panel(hud, Vector2(520, 18), Vector2(400, 98), Color(0.035, 0.045, 0.07, 0.88))
+	day_label = _label(hud, "", Vector2(542, 26), Vector2(160, 26), 17, GOLD)
+	phase_label = _label(hud, "", Vector2(700, 26), Vector2(90, 26), 15, BLUE, HORIZONTAL_ALIGNMENT_CENTER)
+	timer_label = _label(hud, "", Vector2(790, 22), Vector2(112, 32), 26, INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	timer_bar = _bar(hud, Vector2(542, 62), Vector2(356, 9), RED)
+	hint_label = _label(hud, "", Vector2(542, 75), Vector2(356, 20), 12, MUTED, HORIZONTAL_ALIGNMENT_CENTER)
+	# Top-right mode buttons.
+	_button(hud, "地图  M", Vector2(1078, 24), Vector2(106, 40), _open_map)
+	_button(hud, "合成  C", Vector2(1192, 24), Vector2(106, 40), _open_craft)
+	var bag_button := _button(hud, "背包  Tab", Vector2(1306, 24), Vector2(110, 40), _open_bag)
+	bag_button.name = "HuntBagButton"
+	# V2 形态切换：行动 act / 隐藏 hide（Z）。
+	form_button = _button(hud, "形态：行动  Z", Vector2(24, 118), Vector2(186, 38), _do_form)
+	form_button.name = "HuntFormButton"
+	# 立绘：不再垫底板，整张透明 PNG 直接浮在场景上。
+	portrait = Portrait.new()
+	portrait.name = "HuntPortrait"
+	portrait.size = Vector2(300, 300)
+	portrait.position = Vector2(36, 296)
+	portrait.set_hero(run.hero)
+	hud.add_child(portrait)
+	hero_name_label = _label(hud, str(run.hero_data.name), Vector2(36, 226), Vector2(300, 34), 24, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(hud, str(run.hero_data.title), Vector2(36, 260), Vector2(300, 22), 12, GOLD)
+	# 详细信息窗口：可滚动；血条/体力条在下面单独一个窗口，滚动永远不会把它们滚走。
+	_panel(hud, Vector2(16, 604), Vector2(340, 196), Color(0.03, 0.038, 0.06, 0.88))
+	var info_scroll := ScrollContainer.new()
+	info_scroll.name = "HuntInfoScroll"
+	info_scroll.position = Vector2(24, 610)
+	info_scroll.size = Vector2(324, 184)
+	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	info_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	info_scroll.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	hud.add_child(info_scroll)
+	var info_box := VBoxContainer.new()
+	info_box.name = "HuntInfoBox"
+	info_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_box.add_theme_constant_override("separation", 6)
+	info_scroll.add_child(info_box)
+	info_labels.clear()
+	for i in 8:
+		var line := Label.new()
+		line.text = ""
+		line.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+		line.add_theme_font_override("font", face_font)
+		line.add_theme_font_size_override("font_size", 12)
+		line.add_theme_color_override("font_color", MUTED)
+		info_box.add_child(line)
+		info_labels.append(line)
+	_panel(hud, Vector2(16, 806), Vector2(340, 82), Color(0.04, 0.048, 0.075, 0.92))
+	hp_bar = _bar(hud, Vector2(26, 816), Vector2(242, 14), RED)
+	hp_text = _label(hud, "", Vector2(274, 812), Vector2(76, 20), 12, INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	sp_bar = _bar(hud, Vector2(26, 840), Vector2(242, 12), GREEN)
+	sp_text = _label(hud, "", Vector2(274, 836), Vector2(76, 20), 12, INK, HORIZONTAL_ALIGNMENT_RIGHT)
+	attack_label = _label(hud, "", Vector2(26, 858), Vector2(150, 24), 12, GOLD)
+	defense_label = _label(hud, "", Vector2(180, 858), Vector2(166, 24), 12, BLUE, HORIZONTAL_ALIGNMENT_RIGHT)
+	# Bottom action strip: 搜索 / 合成 / 背包 / 地图 / 休息 / 撤离。
+	_panel(hud, Vector2(356, 806), Vector2(720, 82), Color(0.035, 0.045, 0.07, 0.90))
+	search_button = _button(hud, "搜索  W", Vector2(364, 820), Vector2(108, 54), _do_search, true)
+	search_button.name = "HuntSearchButton"
+	_button(hud, "合成  C", Vector2(480, 820), Vector2(108, 54), _open_craft)
+	_button(hud, "背包 Tab", Vector2(596, 820), Vector2(108, 54), _open_bag)
+	_button(hud, "地图  M", Vector2(712, 820), Vector2(108, 54), _open_map)
+	rest_button = _button(hud, "休息  R", Vector2(828, 820), Vector2(108, 54), func(): run.rest(); _refresh_all())
+	extract_button = _button(hud, "撤离", Vector2(944, 820), Vector2(108, 54), func(): run.extract(); _refresh_all(), true)
+	# Log.
+	_panel(hud, Vector2(1080, 700), Vector2(340, 190), Color(0.035, 0.045, 0.07, 0.78))
+	_label(hud, "记录", Vector2(1096, 708), Vector2(120, 22), 13, GOLD)
+	log_label = _label(hud, "", Vector2(1096, 732), Vector2(308, 150), 12, MUTED, HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	log_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_build_combat_panel()
+	_build_map_overlay()
+	_build_craft_overlay()
+	_build_bag_overlay()
+	_build_pause_overlay()
+
+func _on_run_changed() -> void:
+	if run == null:
+		return
+	_refresh_all()
+
+func _on_run_log(text: String) -> void:
+	if log_label != null:
+		var lines: Array = run.logs.slice(maxi(0, run.logs.size() - 7))
+		log_label.text = "\n".join(lines)
+	if not text.strip_edges().is_empty() and mode == "run":
+		_spawn_toast(text)
+
+## 中上方浮动提示：单条上浮 + 渐隐；多条（短时间内）错位叠着出现。
+func _spawn_toast(text: String) -> void:
+	if toast_layer == null:
+		return
+	var panel := Panel.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := _style(Color(0.03, 0.035, 0.05, 0.86), Color(0.62, 0.50, 0.38, 0.85))
+	style.set_corner_radius_all(10)
+	style.content_margin_left = 18
+	style.content_margin_right = 18
+	style.content_margin_top = 9
+	style.content_margin_bottom = 9
+	panel.add_theme_stylebox_override("panel", style)
+	var label := Label.new()
+	label.text = text
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_override("font", face_font)
+	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_color_override("font_color", Color(0.95, 0.91, 0.84))
+	panel.add_child(label)
+	toast_layer.add_child(panel)
+	var width := minf(760.0, face_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x + 40.0)
+	panel.size = Vector2(width, 40)
+	label.position = Vector2(18, 8)
+	label.size = Vector2(width - 36, 24)
+	var slot := toast_slot % 3
+	toast_slot += 1
+	var start := Vector2(720.0 - width * 0.5, 150.0 + slot * 36.0)
+	panel.position = start
+	panel.modulate = Color(1, 1, 1, 0.0)
+	var tween := create_tween()
+	tween.tween_property(panel, "modulate:a", 0.95, 0.16)
+	tween.parallel().tween_property(panel, "position:y", start.y - 46.0, 2.0).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(0.05)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.45)
+	tween.tween_callback(panel.queue_free)
+
+func _refresh_all() -> void:
+	if run == null:
+		return
+	if area_label:
+		area_label.text = run.area_name()
+		area_desc.text = str(run.area().get("desc", ""))
+		day_label.text = run.day_text()
+		phase_label.text = run.phase_name()
+		phase_label.add_theme_color_override("font_color", BLUE if run.is_night() else (Color("d9a36e") if run.phase_id() == "dusk" else GOLD))
+		timer_label.text = run.time_text()
+		timer_bar.value = (1.0 - run.day_ratio()) * 100.0
+		if not run.combat.is_empty():
+			hint_label.text = "战斗：攻击 / 重击 / 道具 / 逃跑"
+		elif not run.search.is_empty():
+			hint_label.text = "翻找中……换姿态或离开会打断它"
+		elif run.form == "hide":
+			hint_label.text = "隐藏：很难被找到，出手与翻找都变慢"
+		elif run.has_enemy():
+			hint_label.text = "附近有东西在动。压低身形（Z）会更安全"
+		else:
+			hint_label.text = "W 翻找 / Z 换形态 / M 换区" if run.search_cd <= 0.0 else "缓一缓再翻（%.1fs）" % run.search_cd
+		hp_bar.max_value = maxf(1.0, run.total_max_hp())
+		hp_bar.value = run.hp
+		sp_bar.max_value = maxf(1.0, run.max_stamina)
+		sp_bar.value = run.stamina
+		hp_text.text = "%d/%d" % [int(run.hp), int(run.total_max_hp())]
+		sp_text.text = "%d/%d" % [int(run.stamina), int(run.max_stamina)]
+		attack_label.text = "攻击 %d" % int(run.attack_power())
+		defense_label.text = "防御 %d%%   背包 %d/%d" % [int(run.defense_value() * 100.0), run.bag.size(), run.capacity]
+		if not info_labels.is_empty():
+			var hide_now: bool = run.form == "hide"
+			var rate_now: float = run.attack_rate()
+			var base_rate: float = rate_now / 1.2 if hide_now else rate_now
+			var search_now: float = run.search_seconds()
+			var base_search: float = search_now / 1.2 if hide_now else search_now
+			var alert_count := 0
+			for enemy in run.active_enemies():
+				if bool(enemy.get("alert", false)):
+					alert_count += 1
+			info_labels[0].text = "形态　%s（Z 切换，冷却 2 秒）" % run.form_name()
+			info_labels[1].text = "被发现率　行动 100% ／ 隐藏 15%"
+			info_labels[2].text = "攻击力　%d（隐藏形态最终伤害 ×0.6 向下取整）" % int(run.attack_power())
+			info_labels[3].text = "攻速　%.2fs ／ 隐藏 %.2fs" % [base_rate, base_rate * 1.2]
+			info_labels[4].text = "翻找　%.1fs ／ 隐藏 %.1fs（可被打断）" % [base_search, base_search * 1.2]
+			info_labels[5].text = "防御　%d%%　背包　%d/%d" % [int(run.defense_value() * 100.0), run.bag.size(), run.capacity]
+			info_labels[6].text = "附近威胁　%d 只（已察觉 %d）" % [run.active_enemies().size(), alert_count]
+			info_labels[7].text = "第 %d 天 · %s · %s" % [run.day, run.phase_name(), run.area_name()]
+		portrait.set_expression(run.expression)
+		portrait.modulate = Color(1.0, 0.96, 0.88) if run.phase_id() == "day" else (Color(1.0, 0.78, 0.66) if run.phase_id() == "dusk" else Color(0.70, 0.80, 1.0))
+		rest_button.disabled = not run.can_rest()
+		extract_button.disabled = not run.can_extract()
+		extract_button.text = "撤离" if run.can_extract() else "撤离(4:00)"
+		if form_button:
+			form_button.text = "形态：%s  Z%s" % [run.form_name(), ("（%.1f）" % run.form_cd) if run.form_cd > 0.0 else ""]
+			form_button.disabled = run.form_cd > 0.0
+		if search_button:
+			if not run.search.is_empty():
+				search_button.text = "翻找中…"
+				search_button.disabled = true
+			elif run.search_cd > 0.0:
+				search_button.text = "整备 %.1fs" % run.search_cd
+				search_button.disabled = true
+			else:
+				search_button.text = "搜索  W"
+				search_button.disabled = not bool(run.can_search().ok)
+		_on_run_log("")
+	else:
+		pass
+	if run.area_id != stage.area_id or run.phase_id() != stage.phase:
+		_build_stage(run.area_id, run.phase_id())
+	_refresh_markers()
+	_refresh_combat()
+	_refresh_bag_text()
+
+func _refresh_bag_text() -> void:
+	var b := hud.get_node_or_null("HuntBagButton")
+	if b is Button:
+		b.text = "背包 %d/%d" % [run.bag.size(), run.capacity]
+
+# --------------------------------------------------------------- scene markers
+
+func _refresh_markers() -> void:
+	if run == null or hotspot_layer == null:
+		return
+	if run.ended_flag:
+		for child in hotspot_layer.get_children():
+			child.queue_free()
+		site_nodes.clear()
+		return
+	var sig := "%s|%s|%s|%s|%s" % [run.area_id, run.day, run.phase_id(), run.search.size(), run.sites_done.size()]
+	if sig == marker_signature:
+		return
+	marker_signature = sig
+	for child in hotspot_layer.get_children():
+		child.queue_free()
+	site_nodes.clear()
+	spot_nodes.clear()
+	enemy_nodes.clear()
+	var area := Vector2(hotspot_layer.size)
+	if area.x < 10.0:
+		area = VIEW
+	# Keep interactive markers out of the portrait/stat corner and the bottom action
+	# strip: the authored 0..1 coordinates describe the painted scene, not the HUD.
+	var scene_rect := Rect2(Vector2(372, 128), Vector2(area.x - 396, area.y - 368))
+	# V2：搜索不再点位置、怪物不再有判定圈，只剩可互动的事件点。
+	for site in run.sites():
+		var sid := str(site.get("id", ""))
+		if run.site_done(sid):
+			continue
+		var node := SiteButton.new()
+		node.name = "Site_" + sid
+		node.run = run
+		node.site = site
+		node.size = Vector2(150, 150)
+		var at: Vector2 = site.get("at", Vector2(0.5, 0.5))
+		node.position = scene_rect.position + at * scene_rect.size - node.size * 0.5
+		node.position.x = clampf(node.position.x, scene_rect.position.x, scene_rect.end.x - node.size.x)
+		node.position.y = clampf(node.position.y, scene_rect.position.y, scene_rect.end.y - node.size.y)
+		node.pressed.connect(_on_site_pressed.bind(sid))
+		hotspot_layer.add_child(node)
+		site_nodes[sid] = node
+	for node in site_nodes.values():
+		node.queue_redraw()
+
+func _on_site_pressed(id: String) -> void:
+	if run == null or run.ended_flag:
+		return
+	run.interact(id)
+	_refresh_all()
+
+## W 键 / 「搜索」按钮共用的入口：随机抽一个已解锁的点位，3 秒，可被打断。
+func _do_search() -> void:
+	if run == null or run.ended_flag:
+		return
+	run.start_search()
+	_refresh_all()
+
+## Z 键 / 「形态」按钮：行动 ⇄ 隐藏，2 秒切换 CD。
+func _do_form() -> void:
+	if run == null or run.ended_flag:
+		return
+	run.toggle_form()
+	_refresh_all()
+
+# ------------------------------------------------------------------- overlays
+
+func _close_overlay(resume: bool = true) -> void:
+	if map_overlay: map_overlay.visible = false
+	if craft_overlay: craft_overlay.visible = false
+	if bag_overlay: bag_overlay.visible = false
+	if pause_layer: pause_layer.visible = false
+	overlay_kind = ""
+	if run and resume and not run.ended_flag:
+		run.set_paused(false)
+
+func _open_overlay(kind: String) -> void:
+	_close_overlay(false)
+	overlay_kind = kind
+	if run:
+		run.set_paused(true)
+	match kind:
+		"map":
+			map_overlay.visible = true
+			_refresh_map_overlay()
+		"craft":
+			craft_overlay.visible = true
+			_refresh_craft_overlay()
+		"bag":
+			bag_overlay.visible = true
+			_refresh_bag_overlay()
+		"pause":
+			pause_layer.visible = true
+
+func _open_map() -> void:
+	if mode != "run": return
+	_open_overlay("map")
+
+func _open_craft() -> void:
+	if mode != "run": return
+	_open_overlay("craft")
+
+func _open_bag() -> void:
+	if mode != "run": return
+	_open_overlay("bag")
+
+func _build_map_overlay() -> void:
+	if map_overlay: return
+	map_overlay = Control.new()
+	map_overlay.name = "HuntMap"
+	map_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	map_overlay.visible = false
+	map_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(map_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(0.015, 0.02, 0.03, 0.88)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	map_overlay.add_child(dim)
+	var panel := _panel(map_overlay, Vector2(70, 44), Vector2(1300, 812), Color(0.03, 0.04, 0.06, 0.98))
+	_label(panel, "血 潮 猎 场 · 地 区 图", Vector2(30, 20), Vector2(600, 40), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "邻近地区才能移动；第 2 / 3 天会解锁更深的区域。", Vector2(32, 62), Vector2(900, 24), 14, MUTED)
+	map_view = MapView.new()
+	map_view.position = Vector2(30, 100)
+	map_view.size = Vector2(1240, 610)
+	map_view.picked.connect(_on_map_pick)
+	panel.add_child(map_view)
+	_button(panel, "关闭  Esc/M", Vector2(30, 730), Vector2(180, 48), func(): _close_overlay())
+	_button(panel, "撤离  (4:00 后 / 需在广场或码头)", Vector2(900, 730), Vector2(370, 48), _extract_from_map, true)
+	panel.name = "MapPanel"
+	var extract := panel.get_child(panel.get_child_count() - 1)
+	extract.name = "HuntExtractButton"
+
+func _extract_from_map() -> void:
+	if run and run.extract():
+		_close_overlay()
+		_refresh_all()
+
+func _refresh_map_overlay() -> void:
+	if map_view:
+		map_view.set_run(run)
+	var panel := map_overlay.get_node_or_null("MapPanel") if map_overlay else null
+	if panel and panel.has_node("HuntExtractButton"):
+		var b := panel.get_node("HuntExtractButton") as Button
+		if b:
+			b.disabled = not run.can_extract()
+
+func _on_map_pick(id: String) -> void:
+	if run == null:
+		return
+	if run.travel(id):
+		_close_overlay()
+		_refresh_all()
+	else:
+		_refresh_map_overlay()
+
+func _build_craft_overlay() -> void:
+	if craft_overlay: return
+	craft_overlay = Control.new()
+	craft_overlay.name = "HuntCraft"
+	craft_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	craft_overlay.visible = false
+	craft_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(craft_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(0.015, 0.02, 0.03, 0.9)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	craft_overlay.add_child(dim)
+	var panel := _panel(craft_overlay, Vector2(150, 40), Vector2(1140, 820), Color(0.03, 0.04, 0.06, 0.99))
+	panel.name = "CraftPanel"
+	_label(panel, "局 内 合 成", Vector2(28, 18), Vector2(400, 40), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "材料够就能合成；背包满时合成会失败并退还材料。", Vector2(30, 58), Vector2(900, 22), 13, MUTED)
+	var x := 30.0
+	for cat in Data.RECIPE_CATEGORIES:
+		var id := str(cat.id)
+		var b := _button(panel, str(cat.name), Vector2(x, 90), Vector2(104, 38), func(): _set_craft_cat(id))
+		b.name = "CraftCat_" + id
+		b.toggle_mode = true
+		craft_buttons[id] = b
+		x += 112.0
+	_button(panel, "关闭  Esc/C", Vector2(970, 90), Vector2(140, 38), func(): _close_overlay())
+	var scroll := ScrollContainer.new()
+	scroll.position = Vector2(28, 142)
+	scroll.size = Vector2(1084, 590)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.add_theme_stylebox_override("panel", _style(Color(0.02, 0.03, 0.045, 0.9), Color(0.18, 0.20, 0.25)))
+	panel.add_child(scroll)
+	craft_list = VBoxContainer.new()
+	craft_list.custom_minimum_size = Vector2(1060, 0)
+	craft_list.add_theme_constant_override("separation", 4)
+	scroll.add_child(craft_list)
+	for recipe in Data.RECIPES:
+		var row := _craft_row(recipe)
+		craft_list.add_child(row)
+		craft_rows[str(recipe.id)] = row
+	_refresh_craft_overlay()
+	_set_craft_cat("all")
+
+func _craft_row(recipe: Dictionary) -> Control:
+	var row := Control.new()
+	row.custom_minimum_size = Vector2(1050, 56)
+	var panel := Panel.new()
+	panel.position = Vector2(0, 0)
+	panel.size = Vector2(1050, 52)
+	panel.add_theme_stylebox_override("panel", _style(Color(0.05, 0.06, 0.085, 0.8), Color(0.16, 0.18, 0.22)))
+	row.add_child(panel)
+	var out := str(recipe.get("out", ""))
+	var icon := TextureRect.new()
+	icon.texture = Art.icon(out)
+	# expand_mode 必须排在 size 之前：TextureRect 的最小尺寸等于纹理尺寸，
+	# 先设 size 会被钳回原图大小，图标就把右边的文字盖住了。
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.position = Vector2(8, 6)
+	icon.size = Vector2(40, 40)
+	icon.modulate = Art.tint(out)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(icon)
+	_label(panel, "%s ×%d" % [Data.item_name(out), int(recipe.get("count", 1))], Vector2(56, 8), Vector2(210, 36), 17, INK)
+	var inputs: Array = []
+	for kind in recipe.get("inputs", {}):
+		inputs.append("%s×%d" % [Data.item_name(str(kind)), int(recipe.inputs[kind])])
+	_label(panel, " + ".join(inputs), Vector2(270, 10), Vector2(420, 32), 13, MUTED)
+	_label(panel, _cat_name(str(recipe.get("cat", ""))), Vector2(700, 10), Vector2(90, 32), 12, DIM)
+	var button := _button(panel, "合成", Vector2(930, 6), Vector2(104, 38), func(): _craft(str(recipe.id)), true)
+	button.name = "Craft_" + str(recipe.id)
+	row.set_meta("cat", str(recipe.get("cat", "")))
+	row.set_meta("button", button)
+	return row
+
+func _cat_name(id: String) -> String:
+	for cat in Data.RECIPE_CATEGORIES:
+		if str(cat.id) == id:
+			return str(cat.name)
+	return id
+
+func _set_craft_cat(cat: String) -> void:
+	craft_cat = cat
+	for id in craft_buttons:
+		var b := craft_buttons[id] as Button
+		if b: b.set_pressed_no_signal(id == cat)
+	for id in craft_rows:
+		var row: Control = craft_rows[id]
+		row.visible = cat == "all" or str(row.get_meta("cat", "")) == cat
+	_refresh_craft_overlay()
+
+func _refresh_craft_overlay() -> void:
+	if run == null: return
+	for id in craft_rows:
+		var row: Control = craft_rows[id]
+		var button := row.get_meta("button") as Button
+		var recipe := Data.recipe(str(id))
+		var ok: bool = run.can_craft(recipe)
+		if button:
+			button.disabled = not ok
+			button.text = "合成" if ok else "缺料"
+		row.modulate = Color.WHITE if ok else Color(0.55, 0.55, 0.58, 0.85)
+	_refresh_craft_header()
+
+func _refresh_craft_header() -> void:
+	var panel := craft_overlay.get_node_or_null("CraftPanel") if craft_overlay else null
+	if panel == null: return
+	var hint := panel.get_node_or_null("CraftHint") as Label
+	if hint == null:
+		hint = _label(panel, "", Vector2(700, 94), Vector2(250, 30), 12, GOLD, HORIZONTAL_ALIGNMENT_RIGHT)
+		hint.name = "CraftHint"
+	hint.text = "背包 %d/%d" % [run.bag.size(), run.capacity]
+
+func _craft(id: String) -> void:
+	if run and run.craft(id):
+		_refresh_all()
+		_refresh_craft_overlay()
+
+func _build_bag_overlay() -> void:
+	if bag_overlay: return
+	bag_overlay = Control.new()
+	bag_overlay.name = "HuntBag"
+	bag_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bag_overlay.visible = false
+	bag_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(bag_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(0.015, 0.02, 0.03, 0.9)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	bag_overlay.add_child(dim)
+	var panel := _panel(bag_overlay, Vector2(220, 60), Vector2(1000, 780), Color(0.03, 0.04, 0.06, 0.99))
+	panel.name = "BagPanel"
+	_label(panel, "局 内 行 囊", Vector2(26, 18), Vector2(400, 40), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "点击物品使用 / 装备；武器与防具会替换身上的那件。", Vector2(28, 58), Vector2(700, 22), 13, MUTED)
+	var close := _button(panel, "关闭  Esc/Tab", Vector2(820, 90), Vector2(150, 38), func(): _close_overlay())
+	close.name = "BagClose"
+	bag_grid = GridContainer.new()
+	bag_grid.columns = 5
+	bag_grid.position = Vector2(30, 150)
+	bag_grid.size = Vector2(940, 560)
+	bag_grid.add_theme_constant_override("h_separation", 8)
+	bag_grid.add_theme_constant_override("v_separation", 8)
+	panel.add_child(bag_grid)
+	_label(panel, "装备", Vector2(28, 96), Vector2(120, 28), 17, GOLD)
+	var equip := _label(panel, "", Vector2(100, 96), Vector2(600, 28), 14, INK)
+	equip.name = "BagEquip"
+
+func _refresh_bag_overlay() -> void:
+	if bag_grid == null or run == null: return
+	for child in bag_grid.get_children():
+		child.queue_free()
+	for i in run.capacity:
+		var slot := Button.new()
+		slot.custom_minimum_size = Vector2(178, 100)
+		slot.focus_mode = Control.FOCUS_NONE
+		slot.add_theme_font_override("font", face_font)
+		slot.add_theme_stylebox_override("normal", _style(Color(0.045, 0.055, 0.08, 0.9), Color(0.16, 0.18, 0.22)))
+		slot.add_theme_stylebox_override("hover", _style(Color(0.08, 0.09, 0.13, 0.95), Color(0.42, 0.36, 0.30)))
+		slot.add_theme_stylebox_override("pressed", _style(Color(0.10, 0.11, 0.15, 1.0), Color(0.55, 0.45, 0.35)))
+		if i < run.bag.size():
+			var entry: Dictionary = run.bag[i]
+			var kind := str(entry.kind)
+			var tex := TextureRect.new()
+			tex.texture = Art.icon(kind)
+			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.position = Vector2(8, 8)
+			tex.size = Vector2(52, 52)
+			tex.modulate = Art.tint(kind)
+			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			slot.add_child(tex)
+			var name_label := _label(slot, Data.item_name(kind), Vector2(66, 8), Vector2(104, 34), 13, INK,
+				HORIZONTAL_ALIGNMENT_LEFT, null, true)
+			var count := int(entry.get("count", 1))
+			_label(slot, "×%d" % count, Vector2(66, 48), Vector2(104, 22), 13, GOLD)
+			slot.tooltip_text = "%s\n%s" % [Data.item_name(kind), str(Data.item(kind).get("desc", ""))]
+			slot.pressed.connect(func(): _use_bag_slot(i))
+		else:
+			_label(slot, "空", Vector2(8, 38), Vector2(160, 24), 12, DIM, HORIZONTAL_ALIGNMENT_CENTER)
+		bag_grid.add_child(slot)
+	var equip := bag_overlay.get_node_or_null("BagPanel/BagEquip") as Label
+	if equip:
+		equip.text = "武器：%s    防具：%s    容量 %d" % [
+			Data.item_name(run.weapon_kind()) if run.weapon_kind() != "fist" else "空手",
+			Data.item_name(run.armor_kind()) if not run.armor_kind().is_empty() else "无",
+			run.capacity,
+		]
+
+func _use_bag_slot(index: int) -> void:
+	if run == null: return
+	if run.use_item(index):
+		_refresh_all()
+		_refresh_bag_overlay()
+
+# ------------------------------------------------------------------- combat
+
+func _build_combat_panel() -> void:
+	combat_panel = Panel.new()
+	combat_panel.name = "HuntCombat"
+	combat_panel.position = Vector2(360, 584)
+	combat_panel.size = Vector2(720, 216)
+	combat_panel.add_theme_stylebox_override("panel", _style(Color(0.03, 0.035, 0.055, 0.96), Color(0.55, 0.28, 0.30)))
+	combat_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	combat_panel.visible = false
+	hud.add_child(combat_panel)
+	combat_enemy_art = TextureRect.new()
+	combat_enemy_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	combat_enemy_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	combat_enemy_art.position = Vector2(16, 16)
+	combat_enemy_art.size = Vector2(120, 156)
+	combat_enemy_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	combat_panel.add_child(combat_enemy_art)
+	combat_name = _label(combat_panel, "", Vector2(152, 14), Vector2(300, 30), 23, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	combat_hp = _bar(combat_panel, Vector2(152, 50), Vector2(300, 14), RED)
+	combat_hp_text = _label(combat_panel, "", Vector2(460, 44), Vector2(100, 24), 12, MUTED, HORIZONTAL_ALIGNMENT_RIGHT)
+	_label(combat_panel, "它挨打会还手（0.1 秒反击 CD）。重击消耗 12 体力，8 秒冷却。", Vector2(152, 74), Vector2(540, 22), 12, MUTED)
+	combat_attack = _button(combat_panel, "攻击", Vector2(152, 108), Vector2(112, 52), func(): run.attack(); _refresh_all(), true)
+	combat_heavy = _button(combat_panel, "重击", Vector2(272, 108), Vector2(112, 52), func(): run.heavy_attack(); _refresh_all())
+	combat_trap = _button(combat_panel, "捕兽夹", Vector2(392, 108), Vector2(100, 52), func(): run.use_combat_item("snare"); _refresh_all())
+	combat_flare = _button(combat_panel, "焰筒", Vector2(500, 108), Vector2(100, 52), func(): run.use_combat_item("alchemist_flare"); _refresh_all())
+	combat_smoke = _button(combat_panel, "烟囊", Vector2(608, 108), Vector2(96, 52), func(): run.use_combat_item("smoke_pouch"); _refresh_all())
+	combat_flee = _button(combat_panel, "逃跑", Vector2(152, 166), Vector2(552, 34), func(): run.flee(); _refresh_all())
+
+func _refresh_combat() -> void:
+	if combat_panel == null: return
+	var active_combat: bool = run != null and not run.combat.is_empty()
+	combat_panel.visible = active_combat
+	if not active_combat:
+		return
+	var enemy: Dictionary = run.combat
+	combat_name.text = "%s · %s" % [str(enemy.get("name", "敌人")), "首领" if bool(enemy.get("boss", false)) else "敌人"]
+	combat_hp.max_value = maxf(1.0, float(enemy.get("max_hp", 1.0)))
+	combat_hp.value = float(enemy.get("hp", 0.0))
+	combat_hp_text.text = "%d/%d" % [int(enemy.get("hp", 0)), int(enemy.get("max_hp", 1))]
+	combat_enemy_art.texture = Art.enemy_texture(str(enemy.get("kind", "")))
+	combat_attack.disabled = run.attack_cd > 0.0
+	combat_heavy.disabled = run.heavy_cd > 0.0 or run.stamina < 12.0
+	combat_trap.disabled = run.item_count("snare") <= 0
+	combat_flare.disabled = run.item_count("alchemist_flare") <= 0
+	combat_smoke.disabled = run.item_count("smoke_pouch") <= 0
+	combat_trap.text = "捕兽夹 ×%d" % run.item_count("snare")
+	combat_flare.text = "焰筒 ×%d" % run.item_count("alchemist_flare")
+	combat_smoke.text = "烟囊 ×%d" % run.item_count("smoke_pouch")
+
+# ------------------------------------------------------------------- result
+
+func _on_run_finished(result: Dictionary) -> void:
+	mode = "result"
+	last_result = result
+	_close_overlay(false)
+	run_finished.emit(result)
+	_refresh_all()
+	_build_result(result)
+
+func _build_result(result: Dictionary) -> void:
+	_clear(result_layer)
+	result_layer = Control.new()
+	result_layer.name = "HuntResult"
+	result_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	result_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(result_layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0.01, 0.012, 0.02, 0.88)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	result_layer.add_child(dim)
+	var victory := bool(result.get("victory", false))
+	var panel := _panel(result_layer, Vector2(300, 90), Vector2(840, 720), Color(0.035, 0.045, 0.07, 0.99), victory)
+	_label(panel, "撤离成功" if victory else "猎场吞没了你", Vector2(36, 30), Vector2(760, 54), 38, GOLD if victory else RED, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, str(result.get("reason", "")), Vector2(38, 90), Vector2(720, 30), 17, MUTED)
+	_label(panel, "第 %d 天 · %s   ·   击杀 %d   ·   搜索 %d 次   ·   战利品价值 %d ◈" % [
+		int(result.get("day", 1)), _clock_text(float(result.get("clock", 0.0))), int(result.get("kills", 0)),
+		int(result.get("searched", 0)), int(result.get("value", 0))], Vector2(38, 132), Vector2(760, 28), 15, INK)
+	var y := 190.0
+	_label(panel, "战利品", Vector2(38, y), Vector2(200, 28), 20, GOLD)
+	y += 38.0
+	var loot: Array = result.get("loot", [])
+	if loot.is_empty():
+		_label(panel, "什么也没带回来。", Vector2(44, y), Vector2(600, 28), 16, MUTED)
+		y += 36.0
+	else:
+		for entry in loot:
+			var kind := str(entry.get("kind", ""))
+			var tex := TextureRect.new()
+			tex.texture = Art.icon(kind)
+			tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex.position = Vector2(44, y - 2)
+			tex.size = Vector2(30, 30)
+			tex.modulate = Art.tint(kind)
+			panel.add_child(tex)
+			_label(panel, "%s ×%d" % [Data.item_name(kind), int(entry.get("count", 1))], Vector2(82, y), Vector2(600, 28), 16, INK)
+			y += 34.0
+			if y > 610:
+				_label(panel, "……还有更多，已经一并结算。", Vector2(82, y), Vector2(600, 24), 13, MUTED)
+				break
+	_label(panel, "战利品已存入守夜人仓库。" if victory else "本局战利品全部丢失；仓库里的东西不会受影响。", Vector2(38, 626), Vector2(760, 26), 14, GREEN if victory else MUTED)
+	_button(panel, "返回营地", Vector2(38, 660), Vector2(220, 44), func(): exit_requested.emit(), victory)
+	_button(panel, "再来一局", Vector2(272, 660), Vector2(180, 44), func(): _retry())
+
+func _retry() -> void:
+	_clear(result_layer)
+	result_layer = null
+	mode = "briefing"
+	show_briefing()
+
+func _clock_text(seconds: float) -> String:
+	var total := int(seconds)
+	return "%02d:%02d" % [int(total / 60), total % 60]
+
+func _build_pause_overlay() -> void:
+	pause_layer = Control.new()
+	pause_layer.name = "HuntPause"
+	pause_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	pause_layer.visible = false
+	pause_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(pause_layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0.01, 0.012, 0.02, 0.78)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	pause_layer.add_child(dim)
+	var panel := _panel(pause_layer, Vector2(470, 300), Vector2(500, 280), Color(0.035, 0.045, 0.07, 0.99))
+	_label(panel, "暂 停", Vector2(30, 24), Vector2(300, 44), 32, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "时间暂停。继续猎场，或放弃本局回到营地。", Vector2(32, 78), Vector2(430, 44), 14, MUTED)
+	_button(panel, "继续", Vector2(32, 146), Vector2(190, 48), func(): _close_overlay(), true)
+	_button(panel, "放弃本局", Vector2(238, 146), Vector2(190, 48), _forfeit)
+	_button(panel, "回营地", Vector2(32, 210), Vector2(396, 40), func(): exit_requested.emit())
+
+func _forfeit() -> void:
+	if run and not run.ended_flag:
+		run.finish(false, "主动放弃")
+	_close_overlay(false)
+
+# ------------------------------------------------------------------- input
+
+func _input(event: InputEvent) -> void:
+	if not active or not visible:
+		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		var code: int = event.physical_keycode if event.physical_keycode else event.keycode
+		if overlay_kind != "":
+			if code == KEY_ESCAPE or (overlay_kind == "map" and code == KEY_M) or (overlay_kind == "craft" and code == KEY_C) or (overlay_kind == "bag" and code == KEY_TAB):
+				_close_overlay()
+				get_viewport().set_input_as_handled()
+			return
+		if mode == "run":
+			match code:
+				KEY_ESCAPE:
+					_open_overlay("pause")
+				KEY_W:
+					_do_search()
+				KEY_Z:
+					_do_form()
+				KEY_M:
+					_open_map()
+				KEY_C:
+					_open_craft()
+				KEY_TAB:
+					_open_bag()
+				KEY_R:
+					if run and run.rest():
+						_refresh_all()
+				_:
+					return
+			get_viewport().set_input_as_handled()
+			return
+		if mode == "result" and code == KEY_ESCAPE:
+			exit_requested.emit()
+			get_viewport().set_input_as_handled()
+			return
+		if mode == "briefing" and code == KEY_ESCAPE:
+			exit_requested.emit()
+			get_viewport().set_input_as_handled()
+			return
+
+func _process(dt: float) -> void:
+	if not active or not visible:
+		return
+	if mode == "run" and run:
+		run.tick(dt)
+		if run.ended_flag:
+			return
+
+# ------------------------------------------------------------------ helpers
+
+func _clear(node: Node) -> void:
+	if node == null or not is_instance_valid(node):
+		return
+	node.queue_free()
+	for child in node.get_children():
+		child.queue_free()
+
+func _clear_children(node: Node) -> void:
+	if node == null or not is_instance_valid(node):
+		return
+	for child in node.get_children():
+		node.remove_child(child)
+		child.queue_free()
+
+func _style(colour: Color, border: Color) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = colour
+	s.border_color = border
+	s.set_border_width_all(1)
+	s.set_corner_radius_all(6)
+	s.content_margin_left = 10
+	s.content_margin_right = 10
+	s.content_margin_top = 6
+	s.content_margin_bottom = 6
+	return s
+
+func _panel(parent: Node, at: Vector2, dim: Vector2, colour: Color = PANEL, accent: bool = false) -> Panel:
+	var p := Panel.new()
+	p.position = at
+	p.size = dim
+	p.add_theme_stylebox_override("panel", _style(colour, Color("cbb087") if accent else Color(0.20, 0.22, 0.28, 0.9)))
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(p)
+	return p
+
+func _label(parent: Node, text: String, at: Vector2, dim: Vector2, size: int = 16, colour: Color = INK,
+		align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT, font: Font = null, wrap: bool = false) -> Label:
+	var l := Label.new()
+	l.text = text
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.horizontal_alignment = align
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.add_theme_font_override("font", font if font != null else face_font)
+	l.add_theme_font_size_override("font_size", size)
+	l.add_theme_color_override("font_color", colour)
+	# 必须在设 size 之前打开换行：Label 的最小宽度会被不换行的整行文本撑大，
+	# 先设 size 会被钳到文本宽度，之后再改 autowrap 也不会缩回去（中文必须用 ARBITRARY）。
+	if wrap:
+		l.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	l.position = at
+	l.size = dim
+	parent.add_child(l)
+	return l
+
+func _button(parent: Node, text: String, at: Vector2, dim: Vector2, cb: Callable, accent: bool = false) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.position = at
+	b.size = dim
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_filter = Control.MOUSE_FILTER_STOP
+	b.add_theme_font_override("font", face_font)
+	b.add_theme_font_size_override("font_size", 17)
+	var normal := _style(Color(0.06, 0.07, 0.10, 0.94), Color(0.26, 0.24, 0.26))
+	var hover := _style(Color(0.10, 0.09, 0.12, 0.98), Color("cbb087"))
+	var pressed := _style(Color(0.14, 0.11, 0.13, 1.0), Color("d8b58a"))
+	var disabled := _style(Color(0.04, 0.045, 0.06, 0.9), Color(0.18, 0.19, 0.22))
+	if accent:
+		normal = _style(Color(0.32, 0.12, 0.16, 0.95), Color("d8a48a"))
+		hover = _style(Color(0.42, 0.16, 0.20, 1.0), Color("f0c9a0"))
+		pressed = _style(Color(0.50, 0.20, 0.24, 1.0), Color("ffd9b0"))
+	b.add_theme_stylebox_override("normal", normal)
+	b.add_theme_stylebox_override("hover", hover)
+	b.add_theme_stylebox_override("pressed", pressed)
+	b.add_theme_stylebox_override("disabled", disabled)
+	b.add_theme_color_override("font_color", INK)
+	b.add_theme_color_override("font_hover_color", Color.WHITE)
+	b.add_theme_color_override("font_disabled_color", Color(0.45, 0.45, 0.48))
+	b.pressed.connect(cb)
+	parent.add_child(b)
+	return b
+
+func _bar(parent: Node, at: Vector2, dim: Vector2, colour: Color) -> Bar:
+	var bar := Bar.new()
+	bar.position = at
+	bar.size = dim
+	bar.colour = colour
+	bar.max_value = 100.0
+	bar.value = 100.0
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(bar)
+	return bar
+
+# --------------------------------------------------------------- marker classes
+
+## 细条进度。不用 ProgressBar：它带主题字体，最小高度会被撑到 27px 左右，
+## 传进来的 9~14px 高度会被静默放大，条子盖到下面的文字上（已踩过）。
+class Bar extends Control:
+	var value := 100.0:
+		set(v):
+			value = v
+			queue_redraw()
+	var max_value := 100.0:
+		set(v):
+			max_value = v
+			queue_redraw()
+	var colour := Color.WHITE:
+		set(v):
+			colour = v
+			if _fill:
+				_fill.bg_color = v
+			queue_redraw()
+	var _bg: StyleBoxFlat
+	var _fill: StyleBoxFlat
+
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_bg = StyleBoxFlat.new()
+		_bg.bg_color = Color(0.04, 0.045, 0.06, 1.0)
+		_bg.border_color = Color(0.18, 0.19, 0.22)
+		_bg.set_border_width_all(1)
+		_bg.set_corner_radius_all(4)
+		_fill = StyleBoxFlat.new()
+		_fill.bg_color = colour
+		_fill.set_corner_radius_all(4)
+
+	func _draw() -> void:
+		if _bg == null:
+			return
+		draw_style_box(_bg, Rect2(Vector2.ZERO, size))
+		var ratio := clampf(value / maxf(max_value, 0.001), 0.0, 1.0)
+		if ratio <= 0.0:
+			return
+		var w: float = maxf(size.x * ratio, minf(size.y, size.x))
+		draw_style_box(_fill, Rect2(Vector2(1, 1), Vector2(w - 2.0, size.y - 2.0)))
+
+## V2 的可点击互动点：神龛、血池、尸体、许愿井、暗格、陷阱、血契石。
+## 只画在有互动点的地区；点一次结算一次（一次性）。
+class SiteButton extends Control:
+	signal pressed
+	var run
+	var site: Dictionary = {}
+	var hover := false
+	var font: Font
+
+	func _ready() -> void:
+		size = Vector2(150, 150)
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		focus_mode = Control.FOCUS_NONE
+		font = ThemeDB.fallback_font
+		var face := FontVariation.new()
+		face.base_font = load("res://assets/NotoSansSC.ttf")
+		if face.base_font:
+			font = face
+		mouse_entered.connect(func(): hover = true; queue_redraw())
+		mouse_exited.connect(func(): hover = false; queue_redraw())
+		set_process(true)
+
+	func _process(_dt: float) -> void:
+		queue_redraw()
+
+	func _gui_input(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			pressed.emit()
+			accept_event()
+
+	func _draw() -> void:
+		if run == null or site.is_empty():
+			return
+		var c := size * 0.5
+		var verdict: Dictionary = run.can_interact(str(site.get("id", "")))
+		var ready := bool(verdict.get("ok", false))
+		var colour := Color("d9b36a") if ready else Color(0.48, 0.45, 0.42)
+		if hover and ready:
+			colour = colour.lightened(0.22)
+		draw_circle(c, 26.0, Color(0.02, 0.025, 0.04, 0.72))
+		draw_arc(c, 30.0, 0, TAU, 40, Color(colour, 0.9), 2.5, true)
+		draw_arc(c, 38.0, 0, TAU, 40, Color(colour, 0.18), 1.0, true)
+		var glyph := "?"
+		match str(site.get("kind", "")):
+			"shrine":
+				glyph = "†"
+			"blood":
+				glyph = "◆"
+			"corpse":
+				glyph = "⌁"
+			"well":
+				glyph = "○"
+			"cache":
+				glyph = "▣"
+			"trap":
+				glyph = "!"
+			"sigil":
+				glyph = "✦"
+		var glyph_w := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+		draw_string(font, c + Vector2(-glyph_w * 0.5, 7), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, colour)
+		var label := str(site.get("name", ""))
+		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		draw_string(font, c + Vector2(-width * 0.5, 62), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(colour, 0.95))
+		if not ready:
+			var hint := str(verdict.get("why", ""))
+			var hint_w := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+			draw_string(font, c + Vector2(-hint_w * 0.5, 80), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.62, 0.58, 0.55))
+
+class SpotButton extends Control:
+	signal pressed
+	var run
+	var spot: Dictionary = {}
+	var hover := false
+	var font: Font
+
+	func _ready() -> void:
+		size = Vector2(136, 136)
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		focus_mode = Control.FOCUS_NONE
+		font = ThemeDB.fallback_font
+		var face := FontVariation.new()
+		face.base_font = load("res://assets/NotoSansSC.ttf")
+		if face.base_font: font = face
+		mouse_entered.connect(func(): hover = true; queue_redraw())
+		mouse_exited.connect(func(): hover = false; queue_redraw())
+		set_process(true)
+
+	func _process(_dt: float) -> void:
+		queue_redraw()
+
+	func _gui_input(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			pressed.emit()
+			accept_event()
+
+	func _draw() -> void:
+		if run == null or spot.is_empty(): return
+		var c := size * 0.5
+		var used: bool = run.hotspot_uses(str(spot.id)) <= 0
+		var locked: bool = run.is_locked(str(spot.id))
+		var searching: bool = not run.search.is_empty() and str(run.search.id) == str(spot.id)
+		var colour := Color("cbb087")
+		if used: colour = Color(0.35, 0.34, 0.33)
+		elif locked: colour = Color("b28b5e")
+		elif searching: colour = Color("e8b36a")
+		if hover: colour = colour.lightened(0.2)
+		draw_circle(c, 33.0, Color(0.02, 0.025, 0.04, 0.72))
+		draw_arc(c, 36.0, 0, TAU, 40, Color(colour, 0.85), 2.0 if not searching else 3.0, true)
+		draw_arc(c, 44.0, 0, TAU, 40, Color(colour, 0.18), 1.0, true)
+		if searching:
+			var total := maxf(0.01, float(run.search.get("total", 1.0)))
+			var ratio := clampf(1.0 - float(run.search.left) / total, 0.0, 1.0)
+			draw_arc(c, 36.0, -PI * 0.5, -PI * 0.5 + TAU * ratio, 40, Color("ffe0a8"), 5.0, true)
+		if locked:
+			draw_rect(Rect2(c + Vector2(-8, -3), Vector2(16, 13)), Color(colour, 0.9), true)
+			draw_arc(c + Vector2(0, -5), 7, PI, TAU, 12, Color(colour, 0.9), 2.0, true)
+		elif used:
+			draw_line(c + Vector2(-9, 0), c + Vector2(9, 0), Color(colour, 0.9), 2.0)
+		else:
+			draw_circle(c, 4.0, Color(colour, 0.9))
+		var label := str(spot.get("name", "容器"))
+		if used: label = "已搜空 · " + label
+		elif locked: label = "上锁 · " + label
+		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		draw_string(font, c + Vector2(-width * 0.5, 68), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(colour, 0.95))
+		draw_string(font, c + Vector2(-width * 0.5, 86), "剩余 %d 次" % run.hotspot_uses(str(spot.id)), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.70, 0.66, 0.60))
+
+class EnemyButton extends Control:
+	signal pressed
+	const Data = preload("res://scripts/hunt/hunt_data.gd")
+	const Art = preload("res://scripts/hunt/hunt_art.gd")
+	var run
+	var enemy: Dictionary = {}
+	var hover := false
+	var font: Font
+	var texture: Texture2D
+
+	func _ready() -> void:
+		size = Vector2(150, 190)
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		focus_mode = Control.FOCUS_NONE
+		font = ThemeDB.fallback_font
+		var face := FontVariation.new()
+		face.base_font = load("res://assets/NotoSansSC.ttf")
+		if face.base_font: font = face
+		texture = Art.enemy_texture(str(enemy.get("kind", "")))
+		mouse_entered.connect(func(): hover = true; queue_redraw())
+		mouse_exited.connect(func(): hover = false; queue_redraw())
+		set_process(true)
+
+	func _process(_dt: float) -> void:
+		queue_redraw()
+
+	func _gui_input(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			pressed.emit()
+			accept_event()
+
+	func _draw() -> void:
+		if run == null or enemy.is_empty(): return
+		var c := size * 0.5
+		var pulse := 1.0 + sin(Time.get_ticks_msec() * 0.004) * 0.05
+		draw_circle(c + Vector2(0, 10), 54.0 * pulse, Color(0.55, 0.12, 0.18, 0.18))
+		draw_arc(c + Vector2(0, 10), 50.0, 0, TAU, 36, Color(0.85, 0.30, 0.34, 0.55), 2.0, true)
+		if texture:
+			draw_texture_rect(texture, Rect2(Vector2(15, -12), Vector2(120, 150)), false, Color(1, 1, 1, 0.95))
+		var name := str(enemy.get("name", "敌人"))
+		var width := font.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+		draw_string(font, c + Vector2(-width * 0.5, 158), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1, 0.78, 0.75))
+		var hp_ratio := clampf(float(enemy.get("hp", 1.0)) / maxf(1.0, float(enemy.get("max_hp", 1.0))), 0.0, 1.0)
+		draw_rect(Rect2(c + Vector2(-44, 168), Vector2(88, 6)), Color(0.12, 0.10, 0.12))
+		draw_rect(Rect2(c + Vector2(-44, 168), Vector2(88 * hp_ratio, 6)), Color(0.80, 0.28, 0.32))

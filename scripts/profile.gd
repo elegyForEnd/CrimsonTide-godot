@@ -17,7 +17,9 @@ var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs"
 	# version 1 so an old save is never skipped (a skipped parse wipes the profile).
 	# CHANGE-LOG v3-1 adds `daily`: the per-day daily-challenge record written by
 	# `roguelike.record_daily()` through the session's `profile_data()` channel.
-	"controller_rumble":true,"controller_rumble_strength":1.0,"ashes":0,"growth":{},"daily":{}}
+	"controller_rumble":true,"controller_rumble_strength":1.0,"ashes":0,"growth":{},"daily":{},
+	# 血潮猎场：独立单局模式的档案统计。只记结果，不保存局内背包。
+	"hunt":{"runs":0,"extracts":0,"wins":0,"best_day":0}}
 const Homestead = preload("res://scripts/homestead.gd")
 # 窗口设置的键名/默认值/档位表都在这一个文件里，`boot.gd`（启动器）与
 # `main.gd`（设置页）共用它；这里只借它的常量做范围夹取，保证三处不会分叉。
@@ -60,6 +62,15 @@ func load_profile() -> void:
 		sanitize_storage()
 		return
 	apply_data(JSON.parse_string(FileAccess.get_file_as_string(path)))
+
+func sanitize_hunt() -> void:
+	var raw = data.get("hunt", {})
+	var clean := {"runs":0,"extracts":0,"wins":0,"best_day":0}
+	if raw is Dictionary:
+		for key in clean:
+			clean[key] = maxi(0, int(raw.get(key, 0)))
+		clean["best_day"] = mini(3, clean["best_day"])
+	data["hunt"] = clean
 
 func apply_data(parsed) -> void:
 	# Contracts §4.1. `version` is never bumped, but a save whose version is
@@ -116,6 +127,7 @@ func apply_data(parsed) -> void:
 			data.talents[i] = clampi(int(data.talents[i]),0,5)
 	data["version"]=1
 	sanitize_storage()
+	sanitize_hunt()
 	# One-time hand-off of legacy home counts to the vault (see migrate_home_stock).
 	migrate_home_stock()
 	migrate_home_seeds_bait()
