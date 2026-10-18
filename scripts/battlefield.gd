@@ -47,6 +47,7 @@ var velocity_visual: Dictionary = {}
 var previous_positions: Dictionary = {}
 var loot_icons: Dictionary = {}
 var combat: CombatVisuals
+var combat_text: Node2D
 var boss_fx: Node2D
 # The danger pass owns every ordinary enemy windup: saturated colour, charging
 # fill, white-hot edge, countdown ring and release flash.
@@ -109,6 +110,12 @@ func _ready() -> void:
 	boss_fx=preload("res://scripts/boss_vfx.gd").new()
 	boss_fx.field=self
 	add_child(boss_fx)
+	combat_text=preload("res://scripts/combat_text.gd").new()
+	combat_text.projector=world_3d.project
+	add_child(combat_text)
+	session.combat_event.connect(combat_text.on_event)
+	session.started.connect(combat_text.reset)
+	session.map_changed.connect(combat_text.reset)
 	session.combat_event.connect(boss_fx.event)
 	session.map_changed.connect(boss_fx.reset)
 	session.started.connect(boss_fx.reset)
@@ -320,11 +327,6 @@ func _draw() -> void:
 	if waypoint.x>=0:
 		draw_arc(waypoint,28+sin(clock*3)*3,0,TAU,32,Color("ffe1a1"),2)
 		diamond(waypoint-Vector2(0,40),9,Color("ffe1a1"))
-	for number in combat.numbers:
-		var alpha: float=1.0-number.age/0.7
-		var at: Vector2=number.p+Vector2(12*number.age,-44*number.age)
-		label(at+Vector2(1,2),number.value,23 if number.heavy else 17,Color(0.05,0.02,0.03,alpha))
-		label(at,number.value,23 if number.heavy else 17,Color(1,0.82,0.48,alpha) if number.heavy else Color(1,0.96,0.85,alpha))
 	world_3d.end_sprites()
 	blood_tide.draw(self)
 	draw_set_transform(Vector2.ZERO)

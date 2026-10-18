@@ -66,6 +66,7 @@ var attack_label: Label
 var defense_label: Label
 var bag_label: Label
 var log_label: Label
+var combat_text: Node2D
 var extract_button: Button
 var rest_button: Button
 
@@ -284,6 +285,7 @@ func start_run(hero: int) -> void:
 	run.changed.connect(_on_run_changed)
 	run.logged.connect(_on_run_log)
 	run.finished.connect(_on_run_finished)
+	run.floated.connect(_on_run_float)
 	_build_stage(run.area_id, run.phase_id())
 	_build_run_ui()
 	_refresh_all()
@@ -382,6 +384,9 @@ func _build_run_ui() -> void:
 	log_label = _label(hud, "", Vector2(1096, 732), Vector2(308, 150), 12, MUTED, HORIZONTAL_ALIGNMENT_LEFT, null, true)
 	log_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_build_combat_panel()
+	combat_text = preload("res://scripts/combat_text.gd").new()
+	combat_text.name = "HuntCombatText"
+	hud.add_child(combat_text)
 	_build_map_overlay()
 	_build_craft_overlay()
 	_build_bag_overlay()
@@ -398,6 +403,18 @@ func _on_run_log(text: String) -> void:
 		log_label.text = "\n".join(lines)
 	if not text.strip_edges().is_empty() and mode == "run":
 		_spawn_toast(text)
+
+func _on_run_float(kind: String, anchor: String, amount: float, heavy: bool) -> void:
+	if combat_text == null or not is_instance_valid(combat_text) or run == null:
+		return
+	var at := Vector2.ZERO
+	if anchor == "enemy" and combat_panel != null:
+		at = combat_panel.position + Vector2(140, 8)
+	elif portrait != null:
+		at = portrait.position + Vector2(250, 60)
+	else:
+		at = Vector2(186, 360)
+	combat_text.push(kind, at, amount, {"heavy": heavy})
 
 ## 中上方浮动提示：单条上浮 + 渐隐；多条（短时间内）错位叠着出现。
 func _spawn_toast(text: String) -> void:

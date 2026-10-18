@@ -10,6 +10,7 @@ extends RefCounted
 signal changed
 signal logged(text: String)
 signal finished(result: Dictionary)
+signal floated(kind: String, anchor: String, amount: float, heavy: bool)
 
 const Data = preload("res://scripts/hunt/hunt_data.gd")
 const CatalogRef = preload("res://scripts/catalog.gd")
@@ -618,6 +619,8 @@ func use_item(index: int) -> bool:
 		var before := hp
 		hp = minf(total_max_hp(), hp + float(info.heal))
 		used = hp > before
+		if hp > before:
+			floated.emit("heal", "player", hp - before, false)
 		note("使用 %s，恢复 %d 生命。" % [Data.item_name(kind), int(hp - before)])
 	if info.has("stamina"):
 		var before := stamina
@@ -639,7 +642,10 @@ func use_item(index: int) -> bool:
 			used = true
 			note("甲片补丁生效：防御 +1。")
 		"armor_kit":
+			var before_kit := hp
 			hp = minf(total_max_hp(), hp + 20.0)
+			if hp > before_kit:
+				floated.emit("heal", "player", hp - before_kit, false)
 			defense_bonus = minf(5.0, defense_bonus + 1.0)
 			used = true
 			note("修甲工具：恢复 20 生命，防御 +1。")
@@ -693,6 +699,7 @@ func use_combat_item(kind: String) -> bool:
 		"snare":
 			combat.hp = maxf(0.0, float(combat.hp) - 40.0)
 			combat.next = float(combat.next) + 1.5
+			floated.emit("damage", "enemy", 40.0, false)
 			note("捕兽夹咬合：%s 受到 40 伤害并停顿。" % str(combat.name))
 		"alchemist_flare":
 			consume(kind, 1)
@@ -761,6 +768,8 @@ func _enemy_hits_player(raw: float, allow_counter: bool) -> void:
 		smoke_guard = 0.0
 	var dealt := raw * (1.0 - defense_value())
 	hp = maxf(0.0, hp - dealt)
+	if dealt > 0.0:
+		floated.emit("hurt", "player", dealt, false)
 	var source := str(combat.get("name", "暗处的东西"))
 	note("%s 击中你，受到 %d 伤害。" % [source, int(dealt)])
 	set_expression("sad" if form == FORM_ACT else "afraid", 1.2)
@@ -778,6 +787,7 @@ func _counter_from_player() -> void:
 	var damage := _player_damage(1.0)
 	combat.hp = maxf(0.0, float(combat.hp) - damage)
 	counter_hits += 1
+	floated.emit("damage", "enemy", damage, false)
 	note("你反手还了一下：%s 受到 %d 伤害。" % [str(combat.get("name", "敌人")), int(damage)])
 	if float(combat.hp) <= 0.0:
 		_win_combat()
@@ -797,6 +807,7 @@ func attack() -> bool:
 	stamina = maxf(0.0, stamina - 1.5)
 	var damage := _player_damage(1.0)
 	combat.hp = maxf(0.0, float(combat.hp) - damage)
+	floated.emit("damage", "enemy", damage, false)
 	note("你击中 %s，造成 %d 伤害。" % [str(combat.name), int(damage)])
 	set_expression("determined", 1.0)
 	if float(combat.hp) <= 0.0:
@@ -817,6 +828,7 @@ func heavy_attack() -> bool:
 	attack_cd = maxf(attack_cd, 0.45)
 	var damage := _player_damage(2.1)
 	combat.hp = maxf(0.0, float(combat.hp) - damage)
+	floated.emit("damage", "enemy", damage, true)
 	note("重击命中 %s，造成 %d 伤害。" % [str(combat.name), int(damage)])
 	set_expression("angry", 1.0)
 	if float(combat.hp) <= 0.0:
@@ -931,7 +943,10 @@ func advance_day() -> void:
 		return
 	day += 1
 	clock = 0.0
+	var before_day := hp
 	hp = minf(total_max_hp(), hp + total_max_hp() * 0.3)
+	if hp > before_day:
+		floated.emit("heal", "player", hp - before_day, false)
 	stamina = max_stamina
 	search = {}
 	combat = {}
@@ -962,7 +977,10 @@ func rest() -> bool:
 	if not can_rest():
 		return false
 	stamina = maxf(0.0, stamina - 8.0)
+	var before_rest := hp
 	hp = minf(total_max_hp(), hp + 6.0)
+	if hp > before_rest:
+		floated.emit("heal", "player", hp - before_rest, false)
 	clock += 20.0
 	note("你靠着墙喘了一会儿。")
 	if clock >= Data.DAY_SECONDS:
@@ -1038,19 +1056,24 @@ func interact(site_id: String) -> bool:
 		"shrine":
 			var roll := rng.randf()
 			if roll < 0.5:
+				var before_shrine := hp
 				hp = minf(total_max_hp(), hp + 18.0)
+				if hp > before_shrine:
+					floated.emit("heal", "player", hp - before_shrine, false)
 				note("神龛的香灰还温着。恢复 18 生命。")
 			elif roll < 0.8:
 				stamina = minf(max_stamina, stamina + 30.0)
 				note("神龛里有人留了半壶蜜酒。恢复 30 体力。")
 			else:
 				hp = maxf(0.0, hp - 10.0)
+				floated.emit("hurt", "player", 10.0, false)
 				note("木像的眼睛转了一下。你掉了 10 生命。")
 		"blood":
 			if hp <= 20.0:
 				note("血不够，祭坛没有回应。")
 				return false
 			hp -= 15.0
+			floated.emit("hurt", "player", 15.0, false)
 			stamina = minf(max_stamina, stamina + 15.0)
 			var pool := ["relic", "crystal", "ring_mail", "hand_cannon", "spirit_horn"]
 			var gift := str(pool[rng.randi_range(0, pool.size() - 1)])
@@ -1078,13 +1101,17 @@ func interact(site_id: String) -> bool:
 				add_item(gift, 1)
 				note("井底传来一声闷响，%s 被水推了上来。" % Data.item_name(gift))
 			elif roll < 0.7:
+				var before_well := hp
 				hp = minf(total_max_hp(), hp + 15.0)
+				if hp > before_well:
+					floated.emit("heal", "player", hp - before_well, false)
 				note("井水是温的。恢复 15 生命。")
 			elif roll < 0.85:
 				stamina = minf(max_stamina, stamina + 20.0)
 				note("你喝了一口，喉咙里泛起铁味。恢复 20 体力。")
 			else:
 				hp = maxf(0.0, hp - 8.0)
+				floated.emit("hurt", "player", 8.0, false)
 				note("井底有什么拽了一下你的袖子。你掉了 8 生命。")
 		"cache":
 			var opened_key := false
@@ -1103,6 +1130,7 @@ func interact(site_id: String) -> bool:
 		"trap":
 			var damage := 4.0 if bool(flags.mask) else 14.0
 			hp = maxf(0.0, hp - damage)
+			floated.emit("hurt", "player", damage, false)
 			if bool(flags.mask):
 				note("面具滤掉了大半毒气，你只受到 %d 伤害。" % int(damage))
 			else:

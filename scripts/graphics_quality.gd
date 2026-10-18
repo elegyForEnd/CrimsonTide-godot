@@ -8,6 +8,10 @@ const PATH := "user://graphics.cfg"
 const WindowSettings = preload("res://scripts/window_settings.gd")
 var quality := 0
 var upscale := 0
+# 战斗飘字的两种本地表现开关。属于"本地表现设置"：写 `graphics.cfg`，
+# 不进存档、不参与联机同步。默认都开启。
+var damage_ghost := true
+var damage_flash := true
 # 启动器（PV 那段）的静音开关。它属于"本地表现设置"而不是存档内容：不进
 # `profile.json`，免得跟着账号云存档同步到别的机器上（玩家在网吧静音一次，
 # 回家发现自己游戏没声音是最糟的体验）。键在 `graphics.cfg` 的 `[audio]` 段。
@@ -32,6 +36,8 @@ func _ready() -> void:
 	config.load(PATH)
 	quality=clampi(int(config.get_value("graphics","quality",0)),0,2)
 	upscale=clampi(int(config.get_value("graphics","upscale",0)),0,2)
+	damage_ghost=bool(config.get_value("graphics","damage_ghost",true))
+	damage_flash=bool(config.get_value("graphics","damage_flash",true))
 	launcher_mute=bool(config.get_value("audio","launcher_mute",false))
 	if quality==2 and RenderingServer.get_current_rendering_method()=="forward_plus" and not Engine.is_editor_hint() and DisplayServer.get_name()!="headless":
 		var arguments := launch_arguments()
@@ -63,6 +69,8 @@ func apply() -> void:
 	for node in get_tree().get_nodes_in_group("quality_fog"): node.visible=advanced() and quality==0
 func save() -> void:
 	config.set_value("graphics","quality",quality); config.set_value("graphics","upscale",upscale)
+	config.set_value("graphics","damage_ghost",damage_ghost)
+	config.set_value("graphics","damage_flash",damage_flash)
 	config.set_value("audio","launcher_mute",launcher_mute)
 	config.save(PATH); apply()
 

@@ -764,8 +764,10 @@ func switch_hero(index: int) -> bool:
 
 func heal() -> bool:
 	if state.potions<=0 or state.hp>=max_hp(): return false
+	var before: float=float(state.hp)
 	state.potions-=1; state.hp=minf(max_hp(),float(state.hp)+max_hp()*.5*(1.0+float(inventory.modifiers().get("potion",0))/100.0))
-	combat_event.emit({"kind":"heal","p":hero_at}); changed.emit(); save_campaign(); return true
+	var healed: float=float(state.hp)-before
+	combat_event.emit({"kind":"heal","p":hero_at,"amount":healed}); changed.emit(); save_campaign(); return true
 
 func attack(direction: Vector2,special: int=0) -> bool:
 	if not fieldwork.active.is_empty(): return false
@@ -787,7 +789,12 @@ func attack(direction: Vector2,special: int=0) -> bool:
 	var radius: float=maxf(180,float(spec.reach)) if special==0 else 440.0 if special==1 else 650.0
 	radius*=terrain().speed_scale()
 	var amount: float=damage()*([clampf(float(spec.damage)/38.0,.55,3.4),2.0,4.8][special])
-	if state.hero==1 and special==1: state.hp=minf(max_hp(),state.hp+28.0); invulnerable=1.3
+	if state.hero==1 and special==1:
+		var before: float=float(state.hp)
+		state.hp=minf(max_hp(),state.hp+28.0)
+		var healed: float=float(state.hp)-before
+		if healed>0.0: combat_event.emit({"kind":"heal","p":hero_at,"amount":healed})
+		invulnerable=1.3
 	if state.hero==2 and special==1: hero_at=move_point(hero_at,facing*140*terrain().speed_scale()); invulnerable=.5
 	pending_strike={"kind":"attack","hero":int(state.hero),"p":hero_at,"direction":facing,"radius":radius,"special":special,"weapon_index":action_weapon,"amount":amount,"remaining":action_windup}
 	var windup := pending_strike.duplicate(); windup.kind="windup"; windup.windup=action_windup
@@ -879,7 +886,7 @@ func take_damage(amount: float, element: String, grace: float) -> void:
 	invulnerable=grace
 	if received>0:
 		hurt_time=.18
-		combat_event.emit({"kind":"hurt","p":hero_at})
+		combat_event.emit({"kind":"hurt","p":hero_at,"damage":received})
 
 func update(dt: float,motion: Vector2,holding_interact: bool = false) -> void:
 	if not fieldwork.active.is_empty(): return

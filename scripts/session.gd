@@ -2211,8 +2211,12 @@ func apply_medkit(p: Dictionary) -> bool:
 		p.self_revive=false
 		p.status="active"
 		p.invuln=3.0
+	var before: float = p.hp
 	p.hp=minf(p.max_hp,p.hp+45)
 	p.sanity=minf(100,p.sanity+10)
+	var healed: float = p.hp-before
+	if healed>0.0:
+		broadcast_combat({"kind":"heal","p":p.p,"amount":healed,"id":p.id})
 	emit_effect("skill",p.p)
 	return true
 
@@ -3005,7 +3009,11 @@ func release_ultimate(id: int) -> void:
 		for ally in players.values():
 			if ally.status=="active" and ally.p.distance_to(p.p)<300:
 				var healing := clampf(45.0+0.15*(ally.max_hp-100.0),45.0,70.0)
+				var before: float = ally.hp
 				ally.hp=minf(ally.max_hp,ally.hp+healing)
+				var healed: float = ally.hp-before
+				if healed>0.0:
+					broadcast_combat({"kind":"heal","p":ally.p,"amount":healed,"id":ally.id})
 				ally.sanity=minf(100,ally.sanity+15)
 	else:
 		p.invuln=maxf(p.invuln,1.0)
@@ -3682,7 +3690,7 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 	e.p=ruins.move(e.p,direction*knock)
 	if players.has(owner):
 		players[owner].hitstop=0.045 if knock<40 else 0.085
-	var impact_data := {"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id}
+	var impact_data := {"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id,"damage_tag":str(build_context.get("kind",""))}
 	if build_context.has("vfx"): impact_data["vfx"]=build_context.vfx
 	broadcast_combat(impact_data)
 
@@ -3782,9 +3790,14 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			p.status="extracted"
 			emit_effect("extract",p.p)
 		"revive":
-			players[index].status="active"
-			players[index].hp=players[index].max_hp*0.4
-			players[index].invuln=2
+			var revived: Dictionary=players[index]
+			var before: float=revived.hp
+			revived.status="active"
+			revived.hp=revived.max_hp*0.4
+			revived.invuln=2
+			var healed: float=revived.hp-before
+			if healed>0.0:
+				broadcast_combat({"kind":"heal","p":revived.p,"amount":healed,"id":revived.id})
 			emit_effect("skill",p.p)
 			broadcast_audio("heal",p)
 		"shrine":
@@ -4063,6 +4076,8 @@ func hurt(p: Dictionary, damage: float, source: Dictionary = {}, height_tag: Str
 	# 这里曾再挂一个 RogueEquipment.has(p,"mana_guard") 的 30% 吸收：它长期是死代码（没有任何
 	# 条目带 passive 字段），一旦有人给条目补上该字段就会**重复扣蓝**。已删除，避免双重结算。
 	p.hp-=received
+	if received>0.0:
+		broadcast_combat({"kind":"hurt","p":p.p,"damage":received,"id":p.id})
 	p.invuln=0.3
 	p.channel=0
 	# Taking a hit is what a channel counts against: the key-held ring restarts

@@ -19,6 +19,7 @@ var camera_y := 0.0
 const CAMERA_DEAD_ZONE := Rect2(590,440,260,160)
 var camera := Vector2(720,575)
 var combat: CombatVisuals
+var combat_text: Node2D
 var enemy_fx: Node2D
 var boss_models: Node
 var backdrop: Node2D
@@ -52,6 +53,11 @@ func _ready() -> void:
 	vision_overlay.material=fog_material
 	vision_overlay.visible=false
 	add_child(vision_overlay)
+	combat_text=preload("res://scripts/combat_text.gd").new()
+	combat_text.projector=func(at: Vector2) -> Vector2: return at-camera_offset()
+	add_child(combat_text)
+	session.combat_event.connect(combat_text.on_event)
+	session.started.connect(combat_text.reset)
 	session.combat_event.connect(func(data: Dictionary):
 		if visible and session.roguelike.active(session):
 			combat.event(data)
@@ -63,6 +69,7 @@ func _ready() -> void:
 func reset_effects() -> void:
 	if boss_models: boss_models.reset()
 	combat.reset()
+	combat_text.reset()
 	enemy_fx.reset()
 	move_phases.clear()
 

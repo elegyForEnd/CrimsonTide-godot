@@ -17,7 +17,6 @@ var extract_flashes: Array = []
 var rune_patches: Array = []
 var flames: Array = []
 var trauma := 0.0
-var numbers: Array = []
 var particles=preload("res://scripts/combat_particles.gd").new()
 # The same danger palette the ground telegraph uses, so the charge motes and the
 # release burst read as one event instead of two separate effects.
@@ -89,7 +88,6 @@ func reset() -> void:
 	stylized.reset()
 	if finish: finish.reset()
 	if light_pool: light_pool.reset()
-	numbers.clear()
 	trauma=0.0
 
 # Loaded on first use: the necromancer's art is optional, so a missing file
@@ -213,7 +211,6 @@ func event(data: Dictionary) -> void:
 		"impact":
 			var heavy: bool=data.get("heavy",false)
 			trauma=maxf(trauma,0.65 if heavy else 0.24)
-			numbers.append({"p":at-Vector2(0,55),"age":0.0,"value":str(roundi(data.damage)),"heavy":heavy})
 		"skill":
 			trauma=maxf(trauma,.45)
 			if int(data.hero)==TideSession.NECROMANCER:
@@ -298,10 +295,6 @@ func _process(dt: float) -> void:
 		flames[i].age+=dt
 		if flames[i].age>flames[i].duration:
 			flames.remove_at(i)
-	for i in range(numbers.size()-1,-1,-1):
-		numbers[i].age+=dt
-		if numbers[i].age>0.7:
-			numbers.remove_at(i)
 	queue_redraw()
 	spell_light.queue_redraw()
 

@@ -237,6 +237,8 @@ static func heal(s, source: Dictionary, target: Dictionary, ratio: float, passiv
 	if source.id==target.id and passive: wanted=minf(wanted,maxf(0,target.max_hp*.1-own))
 	target.hp+=wanted
 	if wanted>0:
+		if s.has_method("broadcast_combat"):
+			s.broadcast_combat({"kind":"heal","p":target.p,"amount":wanted,"id":target.id})
 		recent.append({"time":s.elapsed,"amount":wanted,"source":source.id,"passive":passive})
 		if rank(source,95)>0 and ready(s,source,"T095",5): grant(source,"healed",r(source,95,[.10,.15]),4,s.elapsed)
 	target.build_heals=recent
@@ -1344,6 +1346,10 @@ static func commit_flask(s, p: Dictionary) -> void:
 	# 对最主要的治疗来源完全无效。无诅咒时乘数恒为 1.0，`tests/rogue_build_system.gd` 与
 	# `tests/rogue_build_rules.gd` 的 `hp==20+max_hp*0.3` 逐位不变。
 	var curse_heal := maxf(0.0,1.0+hook_mod(s,p,"heal_scale"))
+	var before: float=float(p.hp)
 	p.hp=minf(p.max_hp,p.hp+p.max_hp*.3*(1+minf(.3,amp))*curse_heal)
+	var healed: float=float(p.hp)-before
+	if healed>0.0 and s.has_method("broadcast_combat"):
+		s.broadcast_combat({"kind":"heal","p":p.p,"amount":healed,"id":p.id})
 	s.broadcast_audio("heal",p)
 	p.rogue_inventory_revision+=1

@@ -497,7 +497,10 @@ func switch_hero(index: int) -> void:
 
 func heal() -> bool:
 	if state.potions<=0 or state.hp>=max_hp(): return false
+	var before: float=float(state.hp)
 	state.potions-=1; state.hp=minf(max_hp(),float(state.hp)+max_hp()*0.5)
+	var healed: float=float(state.hp)-before
+	combat_event.emit({"kind":"heal","p":hero_at,"amount":healed})
 	audio_cue.emit("heal")
 	changed.emit(); save_campaign(); return true
 
@@ -511,7 +514,11 @@ func attack(aim: Vector2, special: int = 0) -> bool:
 	if special==0: attack_cd=0.42
 	if special==1:
 		skill_cd=maxf(2.0,5.0-int(state.gear.charm)*0.15-specialty(2)*0.2)
-		if state.hero==1: hurt_time=1.5; state.hp=minf(max_hp(),float(state.hp)+max_hp()*0.08)
+		if state.hero==1:
+			var before: float=float(state.hp)
+			hurt_time=1.5; state.hp=minf(max_hp(),float(state.hp)+max_hp()*0.08)
+			var healed: float=float(state.hp)-before
+			if healed>0.0: combat_event.emit({"kind":"heal","p":hero_at,"amount":healed})
 		if state.hero==2: hero_at=map.move(hero_at,facing*180.0)
 	if special==2: ultimate_cd=24.0
 	audio_cue.emit("magic" if state.hero==1 else "slash")
@@ -595,7 +602,9 @@ func update(dt: float, motion: Vector2) -> void:
 				if e.shape=="ring": caught=diff.length()>BOSS_RING_INNER and diff.length()<e.radius
 				if e.shape=="cross": caught=(absf(diff.x)<BOSS_CROSS_ARM or absf(diff.y)<BOSS_CROSS_ARM) and diff.length()<e.radius
 				if caught and hurt_time<=0 and dodge_time<=0:
-					state.hp-=maxf(3,(25 if e.boss else 9)+int(state.act)*4-int(state.gear.armor)*2)
+					var damage: float=maxf(3,(25 if e.boss else 9)+int(state.act)*4-int(state.gear.armor)*2)
+					state.hp-=damage
+					combat_event.emit({"kind":"hurt","p":hero_at,"damage":damage})
 					hurt_time=0.55; changed.emit()
 					effects.append({"p":e.target,"time":0.3,"total":0.3,"kind":"impact","radius":e.radius,"hero":0,"special":0,"aim":Vector2.RIGHT})
 		else:
