@@ -172,6 +172,12 @@ var rogue_build_preview: Control
 # 所以下一次打开行囊会按默认规则重新显示；同一次行囊会话里按 V 可以随时翻回来。
 # 它只是界面状态：不进快照、不新增同步字段、不碰 `s.rng`。
 var _rogue_build_preview_hidden := false
+## 窄屏默认收起（2026-10-19）。面板按 1440×900 设计坐标压住构筑页正文左起约 468px
+## （`rogue_build_preview.gd:43-57` 记录了逐项避让取舍），在 1280×720 的本子上等于把整行
+## 开头盖掉。所以物理窗口宽低于此值时不**自动**弹出：玩家按 V 仍可显式展开（`_forced`），
+## 与 `PROJECT-GUIDE §12.7 D` 的自适应规范配套。只影响默认可见性，不改任何布局常量。
+const PREVIEW_AUTO_MIN_WINDOW := 1366
+var _rogue_build_preview_forced := false
 # 窗口尺寸落盘的防抖（2026-10-12）：玩家拖窗口时系统会连续发尺寸事件，逐个
 # `save_profile()` 就是几百次写盘。`window_apply_stamp` 用来区分"这次尺寸变化是
 # 我们自己应用档位造成的"和"玩家真的拖了窗口"——前者不能反过来被记成自定义尺寸。
@@ -929,6 +935,7 @@ func new_page(name_value: String) -> void:
 	# U1-b · 换页同样复位预览的"手动收起"（`new_page()` 是唯一一条不经过 `close_bag()` 就把
 	# `inventory_open` 置 false 的路径，就是本函数上面那一行）。
 	_rogue_build_preview_hidden=false
+	_rogue_build_preview_forced=false
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
 
@@ -1799,7 +1806,10 @@ func _process(dt: float) -> void:
 	# `queue_redraw()`。页签这一维是 U1-b 的实机修复点：面板讲的是构筑派生链，画在「物品」页上
 	# 只会整块盖住行囊左侧（页签状态就在 `rogue_inventory.selected_tab`，`rogue_inventory.gd:16`）。
 	if rogue_build_preview and is_instance_valid(rogue_build_preview):
-		var preview_open: bool=inventory_open and page_name=="game" and session.roguelike.active(session) and str(rogue_inventory.selected_tab)=="build" and not session.players.get(session.my_id(),{}).is_empty() and not _rogue_build_preview_hidden
+		# 窄屏（物理窗口 < `PREVIEW_AUTO_MIN_WINDOW`）不自动弹出：它按设计坐标压住构筑页
+		# 正文左列，1280 宽的本子上会把每一行的开头盖掉；按 V 显式展开时 `_forced` 放行。
+		var narrow: bool=get_window().size.x<PREVIEW_AUTO_MIN_WINDOW
+		var preview_open: bool=inventory_open and page_name=="game" and session.roguelike.active(session) and str(rogue_inventory.selected_tab)=="build" and not session.players.get(session.my_id(),{}).is_empty() and not _rogue_build_preview_hidden and (not narrow or _rogue_build_preview_forced)
 		rogue_build_preview.visible=preview_open
 	# The grabbed item follows the cursor on every frame, not only on a rebuild.
 	sync_drag()
@@ -2530,6 +2540,7 @@ func close_bag() -> void:
 		sound.play("ui-close")
 	# U1-b · 行囊会话到此结束：预览的"手动收起"复位，下一次开行囊按默认规则重新显示。
 	_rogue_build_preview_hidden=false
+	_rogue_build_preview_forced=false
 	inventory_open=false
 	camp_pack_open=false
 	_loot_index=-1
@@ -5181,6 +5192,8 @@ func _rogue_preview_toggle(event: InputEvent) -> bool:
 	var code: int=event.physical_keycode if event.physical_keycode else event.keycode
 	if code!=KEY_V: return false
 	_rogue_build_preview_hidden=not _rogue_build_preview_hidden
+	# 玩家显式展开 → 记下"强制"，窄屏也能弹（见 `PREVIEW_AUTO_MIN_WINDOW`）。
+	_rogue_build_preview_forced=not _rogue_build_preview_hidden
 	# 展开时如果人正停在「物品」页签，顺手切到「构筑」页：面板只画构筑派生链，`_process()` 的
 	# 可见性也要求 `selected_tab=="build"`，不切过去的话按 V 会"看起来没反应"。
 	# 这一对人 `selected_tab` / `show_inventory()` 的写法与 `rogue_inventory.gd:97-98` 的
