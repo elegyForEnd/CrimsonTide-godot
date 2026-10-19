@@ -120,7 +120,7 @@ func run() -> void:
 			Build.award(s,p); Build.award(s,p)
 			check(p.build_attribute_points==0,"Room completion grants no attributes")
 			check(p.build_reward_queue.is_empty(),"Cultivation alone does not create talent choices")
-	check(p.build_cultivation==18 and p.build_forge_points==8 and p.build_attribute_points==0,"Fixed cultivation/forge budgets are independent of XP and attribute drops")
+	check(p.build_cultivation==18 and p.build_forge_points==0 and p.build_attribute_points==0,"Cultivation stays fixed; forge points are no longer awarded")
 	# Campaign attributes remain unchanged with run mode disabled.
 	s.solo({"hero":0,"attributes":{"strength":15}}); s.launch(false,111)
 	check(not s.roguelike.active(s) and s.attributes_of(s.players[1]).strength==15,"Campaign permanent attributes preserve old behavior")

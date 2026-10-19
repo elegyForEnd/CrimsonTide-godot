@@ -57,6 +57,7 @@ const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
 # `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
 # 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
 const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
+const RogueLevelUi := preload("res://scripts/rogue_level_ui.gd")
 # 血潮猎场：营地「出征」栏的新模式。逻辑在 scripts/hunt/，这里只负责页面生命周期、
 # 战利品入仓和档案统计，避免新模式把 session 的搜打撤/魔境流程分叉。
 const HuntScreen := preload("res://scripts/hunt/hunt_screen.gd")
@@ -167,6 +168,9 @@ var rogue_map_screen: Control
 # 手动收起（`_rogue_build_preview_hidden`）——它讲的是构筑派生链，画在「物品」页上只会整块盖住
 # 行囊左侧的物品栏。
 var rogue_build_preview: Control
+var rogue_level_ui: Control
+var _rogue_level_signature := ""
+var _rogue_level_deferred := false
 # U1-b（2026-06 实机修复）· 玩家按了预览面板上的「关闭 ×」或按 V 收起了它。
 # 这是**本行囊会话**级别的开关：行囊一关（`close_bag()`）或换页（`new_page()`）就复位成"展开"，
 # 所以下一次打开行囊会按默认规则重新显示；同一次行囊会话里按 V 可以随时翻回来。
@@ -345,17 +349,7 @@ func _ready() -> void:
 	rogue_map_screen.session=session
 	rogue_map_screen.visible=false
 	root.add_child(rogue_map_screen)
-	# U1 · 构筑页的派生链预览。同样的处理：`root` 的兄弟节点（不被 `clear(overlay)` 释放），
-	# 默认隐藏，`_process()` 每帧按"行囊打开 + 在魔境里 + 当前是构筑页签 + 玩家没有手动收起"
-	# 决定显隐；它自己不写会话状态，除了面板自己那个 60x26 的「关闭 ×」按钮之外不吃鼠标事件。
-	rogue_build_preview=RogueBuildPreview.new()
-	rogue_build_preview.session=session
-	rogue_build_preview.visible=false
-	# U1-b · 面板上的「关闭 ×」。这里用**字符串**形式连接，因为 `rogue_build_preview` 的静态类型
-	# 是 `Control`（见上面的声明），`Control` 上没有 `closed` 成员；信号名两边是同一条字面量
-	# （`rogue_build_preview.gd` 的 `signal closed`），改名时必须一起改。
-	rogue_build_preview.connect("closed",func(): _rogue_build_preview_hidden=true)
-	root.add_child(rogue_build_preview)
+	# 派生链预览已移除：不再创建 `RogueBuildPreview` 节点。
 	toast=label(root,"",Vector2(230,700),19,GOLD,Vector2(980,34))
 	toast.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	toast.z_index=50
@@ -1730,7 +1724,29 @@ func on_started() -> void:
 		var run_seed := label(page,"",Vector2(1175,286),11,MUTED,Vector2(252,20))
 		run_seed.name="RogueSeedLine"
 		hud.rogue_seed=run_seed
-		notify("魔境闯关：E开箱 / 拾取 · Tab构筑 · F血瓶 · C跃起")
+		# 左下战技铭刻轨：五式各三阶，永久显示在本局 HUD 上。
+		# 它只读 `build_abilities`，不改战斗状态；普通战斗开箱后这里会逐颗点亮。
+		rect(page,Vector2(24,322),Vector2(330,272),Color(0.018,0.012,0.028,0.72))
+		ornament(page,Vector2(30,320),Vector2(318,276),"frame")
+		hud.rogue_level_hint=label(page,"",Vector2(40,312),11,Color("83dcff"),Vector2(290,16))
+		label(page,"雷霆能力 · 十二式",Vector2(40,330),15,GOLD,Vector2(290,24))
+		var ability_icons: Array=[]
+		var ability_names: Array=[]
+		var ability_pips: Array=[]
+		for i in 12:
+			var entry: Dictionary=preload("res://scripts/rogue_abilities.gd").TRACKS[i]
+			var y := 358+i*19
+			var icon := rogue_icon(page,rogue_field.art.offer_icon({"ability_id":str(entry.id),"icon_id":str(entry.icon)}),Vector2(40,y),Vector2(18,18))
+			icon.mouse_filter=Control.MOUSE_FILTER_PASS
+			var name_label := label(page,"",Vector2(64,y),11,INK,Vector2(120,18))
+			var pips := label(page,"",Vector2(188,y),11,Color("83dcff"),Vector2(148,18))
+			pips.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+			ability_icons.append(icon); ability_names.append(name_label); ability_pips.append(pips)
+		hud.rogue_ability_icons=ability_icons
+		hud.rogue_ability_names=ability_names
+		hud.rogue_ability_pips=ability_pips
+		_refresh_rogue_ability_rail(session.players.get(session.my_id(),{}))
+		notify("魔境闯关：升级七选一 · 每3级雷霆三选一 · 开箱得魔晶/概率装备")
 		return
 	notify("第一天无法撤离。M 查看黎明印记；血潮收缩完成后迎战 Boss。")
 	# The two things a first raid has to know: the backpack is a piece of equipment
@@ -1777,6 +1793,8 @@ func _process(dt: float) -> void:
 	# 正常路径上的显隐赋值，否则它会留在标题页上。
 	if page_name!="game" or not session.running:
 		if rogue_build_preview and is_instance_valid(rogue_build_preview): rogue_build_preview.visible=false
+		if rogue_level_ui and is_instance_valid(rogue_level_ui):
+			rogue_level_ui.queue_free(); rogue_level_ui=null; _rogue_level_signature=""
 		return
 	sound.update_world(session.players.get(session.my_id(),{"p":field.camera}).p if session.roguelike.active(session) else field.camera,session.players,dt)
 	var blocked: bool=inventory_open or modal or field.map_open or (controller.active and controller.pointer_mode(self)) or (session.roguelike.active(session) and not session.players.get(session.my_id(),{}).get("rogue_selection",{}).is_empty())
@@ -1806,11 +1824,8 @@ func _process(dt: float) -> void:
 	# `queue_redraw()`。页签这一维是 U1-b 的实机修复点：面板讲的是构筑派生链，画在「物品」页上
 	# 只会整块盖住行囊左侧（页签状态就在 `rogue_inventory.selected_tab`，`rogue_inventory.gd:16`）。
 	if rogue_build_preview and is_instance_valid(rogue_build_preview):
-		# 窄屏（物理窗口 < `PREVIEW_AUTO_MIN_WINDOW`）不自动弹出：它按设计坐标压住构筑页
-		# 正文左列，1280 宽的本子上会把每一行的开头盖掉；按 V 显式展开时 `_forced` 放行。
-		var narrow: bool=get_window().size.x<PREVIEW_AUTO_MIN_WINDOW
-		var preview_open: bool=inventory_open and page_name=="game" and session.roguelike.active(session) and str(rogue_inventory.selected_tab)=="build" and not session.players.get(session.my_id(),{}).is_empty() and not _rogue_build_preview_hidden and (not narrow or _rogue_build_preview_forced)
-		rogue_build_preview.visible=preview_open
+		# 派生链/组合路线已在魔境模式移除，预览面板不再出现。
+		rogue_build_preview.visible=false
 	# The grabbed item follows the cursor on every frame, not only on a rebuild.
 	sync_drag()
 
@@ -2083,6 +2098,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and _rogue_build_hotkey(event):
 		get_viewport().set_input_as_handled()
 		return
+	if event is InputEventKey and event.pressed and not event.echo and session.roguelike.active(session):
+		var level_code: int=event.physical_keycode if event.physical_keycode else event.keycode
+		var level_player: Dictionary=session.players.get(session.my_id(),{})
+		if level_code==KEY_L and _rogue_level_pending(level_player):
+			_rogue_level_deferred=false
+			if is_instance_valid(rogue_level_ui): rogue_level_ui.visible=true
+			_sync_rogue_level_ui(level_player)
+			get_viewport().set_input_as_handled()
+			return
 	# U1-b（2026-06 实机修复）· V：派生链预览的显隐开关。位置与上面三个构筑热键同一口径
 	# （`_rogue_build_hotkey` 之后、三选一/行囊早退之前）：行囊关着时它立刻退出，地图开着时也
 	# 退出，所以游戏内 V 依旧什么都不绑定。V 未被占用的依据见 `_rogue_build_hotkey()` 上方
@@ -2313,14 +2337,16 @@ func update_hud() -> void:
 				hud.room_marker.texture=rogue_field.art.item_icons[11 if marker_room=="treasure" else 15]
 		# 按键字样只在自己真正进入判定圈后出现（_rogue_loot_near/_rogue_fork_near 与
 		# roguelike.gd 的判定同源）；远处只给叙述句，不出 [E] 等按键提示。
-		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱爆出随机品质秘藏","rogue_reward":("E 开箱 / 拾取 · 三选一后领取或分享" if _rogue_loot_near(p) else "搜刮战利品 · 三选一后领取或分享"),"rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":("直行或斜向 · 靠近路线末端按 E" if _rogue_fork_near(p) else "直行或斜向 · 走到路线末端进入下一段")}.get(session.raid.phase,"")
-		hud.area.text+=" · Lv.%d 经验%d/%d 属性点%d" % [p.build_level,p.build_xp,preload("res://scripts/rogue_build.gd").xp_needed(int(p.build_level)),p.build_attribute_points]
+		hud.area.text={"rogue_combat":"清场出现宝箱 · 开箱得魔晶，概率掉装备","rogue_reward":("E 开箱 / 拾取 · 金币 + 概率装备" if _rogue_loot_near(p) else "搜刮战利品 · 金币 + 概率装备"),"rogue_shop":"游商补给 · 购买后沿右侧分叉继续","rogue_exit":("直行或斜向 · 靠近路线末端按 E" if _rogue_fork_near(p) else "直行或斜向 · 走到路线末端进入下一段")}.get(session.raid.phase,"")
+		hud.area.text+=" · Lv.%d 经验%d/%d 升级待选%d 属性点%d" % [p.build_level,p.build_xp,preload("res://scripts/rogue_build.gd").xp_needed(int(p.build_level)),int(p.get("build_pending_levels",0)),p.build_attribute_points]
 		if hud.has("rogue_variant"):
 			hud.rogue_variant.text=RogueUi.variant_line(session.raid)
 			hud.rogue_curses.text=RogueUi.curses_text(p)
 			hud.rogue_ash.text=RogueUi.ash_line(p,profile.data)
 			hud.rogue_node.text=RogueUi.node_line(session.raid,session.roguelike.ROOM_NAMES)
 			hud.rogue_seed.text=RogueUi.seed_line(session.raid)
+			_refresh_rogue_ability_rail(p)
+			_sync_rogue_level_ui(p)
 	hud.health.text="生命   %d / %d" % [maxf(0,p.hp),p.max_hp]
 	hud.hpbar.size.x=220*clampf(p.hp/p.max_hp,0,1)
 	hud.mana.text="蓝量   %d / %d" % [p.mana,p.max_mana]
@@ -2355,7 +2381,7 @@ func update_hud() -> void:
 	draw_hud_item_bar()
 	if session.roguelike.active(session):
 		hud.items.text="血瓶 %d%% · 刷新卡 %d · %s" % [p.flask,p.rogue_rerolls,"饮用中" if p.flask_time>0 else "%.1fs" % p.flask_cd if p.flask_cd>0 else "F饮用"]
-		hud.sanity.text="补正 +%d%% · 修为 %d/%d · 武器 +%d" % [session.weapon_scaling(p)*100,session.RogueBuild.talent_cost(p),p.build_cultivation,session.RogueBuild.forge_level(p)]
+		hud.sanity.text="补正 +%d%% · 修为 %d/%d · 雷霆 %d/36" % [session.weapon_scaling(p)*100,session.RogueBuild.talent_cost(p),p.build_cultivation,preload("res://scripts/rogue_abilities.gd").total_rank(p)]
 		hud.scent.text="本局魔晶 %d · 击杀 %d" % [p.rogue_gold,p.kills]
 		if p.status=="down":
 			hud.notice.text="倒地 · 长按F两秒使用魂灯" if p.soul_lamp else "倒地 · 等待队友长按E救援"
@@ -2424,6 +2450,68 @@ func update_hud() -> void:
 		else:
 			hud.prompt.text="[F] 搜索 "+title+"   ·   已搜出 %d / %d" % [session.visible_units(container),session.container_units(container)]
 		return
+
+func _rogue_level_pending(p: Dictionary) -> bool:
+	return not p.is_empty() and (int(p.get("build_pending_levels",0))>0 or int(p.get("build_pending_abilities",0))>0)
+
+## 升级弹窗在清场后才出现：战斗中途升级不打断走位，也不让敌人在玩家读卡时白打。
+func _rogue_level_ready(p: Dictionary) -> bool:
+	return _rogue_level_pending(p) and str(session.raid.get("phase",""))!="rogue_combat"
+
+func _sync_rogue_level_ui(p: Dictionary) -> void:
+	var pending := _rogue_level_ready(p)
+	if not _rogue_level_pending(p): _rogue_level_deferred=false
+	var hint: Label=hud.get("rogue_level_hint")
+	if is_instance_valid(hint):
+		if _rogue_level_pending(p):
+			hint.text="升级待选 %d · 按 L 打开" % (int(p.get("build_pending_levels",0))+int(p.get("build_pending_abilities",0)))
+		else:
+			hint.text=""
+	var allowed: bool=page_name=="game" and session.running and not p.is_empty() and p.get("status","")=="active" and not inventory_open and not modal and not field.map_open and p.get("rogue_selection",{}).is_empty()
+	if not pending or not allowed or _rogue_level_deferred:
+		if is_instance_valid(rogue_level_ui): rogue_level_ui.visible=false
+		if not pending and is_instance_valid(rogue_level_ui):
+			rogue_level_ui.queue_free(); rogue_level_ui=null; _rogue_level_signature=""
+		return
+	var offers: Array=p.get("build_ability_offers",[])
+	var signature := "%d:%d:%s:%s:%s" % [int(p.get("build_pending_levels",0)),int(p.get("build_pending_abilities",0)),str(p.get("build_attributes",{})),str(p.get("build_level",1)),str(offers)]
+	if not is_instance_valid(rogue_level_ui):
+		rogue_level_ui=RogueLevelUi.new()
+		rogue_level_ui.z_index=200
+		page.add_child(rogue_level_ui)
+		_rogue_level_signature=""
+	if signature!=_rogue_level_signature:
+		_rogue_level_signature=signature
+		rogue_level_ui.build(self,p)
+	rogue_level_ui.visible=true
+
+## 弹窗不阻塞战斗：玩家可以“稍后再说”，待选项一直保留，按 L 或点 HUD 提示再打开。
+func rogue_level_defer() -> void:
+	_rogue_level_deferred=true
+	if is_instance_valid(rogue_level_ui): rogue_level_ui.visible=false
+
+func _refresh_rogue_ability_rail(p: Dictionary) -> void:
+	if p.is_empty() or not hud.has("rogue_ability_names"): return
+	var abilities = preload("res://scripts/rogue_abilities.gd")
+	var names: Array=hud.get("rogue_ability_names",[])
+	var pips_list: Array=hud.get("rogue_ability_pips",[])
+	var icons: Array=hud.get("rogue_ability_icons",[])
+	for i in mini(abilities.TRACKS.size(),names.size()):
+		var entry: Dictionary=abilities.TRACKS[i]
+		var key := str(entry.key)
+		var level: int=abilities.rank(p,key)
+		var name_label: Label=names[i]
+		if is_instance_valid(name_label):
+			name_label.text=str(entry.name)
+			name_label.add_theme_color_override("font_color",GOLD if level>0 else Color("8d8b9c"))
+		var pips: Variant=pips_list[i] if i<pips_list.size() else null
+		if is_instance_valid(pips):
+			pips.text=abilities.pips(p,key)
+			pips.add_theme_color_override("font_color",Color(str(entry.color)) if level>0 else Color("575a6d"))
+		var icon: Variant=icons[i] if i<icons.size() else null
+		if is_instance_valid(icon):
+			icon.modulate=Color.WHITE if level>0 else Color(0.55,0.55,0.62,0.6)
+			icon.tooltip_text="%s · %s\n%s\n%s" % [str(entry.action),str(entry.name),abilities.status_line(p,key),abilities.next_line(p,key)]
 
 func loot_total(p: Dictionary) -> int:
 	return Catalog.container_value(p.backpack)+Catalog.container_value(p.pocket)
@@ -4366,7 +4454,7 @@ func quick_use_slots(p: Dictionary) -> Array:
 
 func weapon_title(p: Dictionary) -> String:
 	var title: String=Catalog.weapon_name(p.weapon)
-	if session.roguelike.active(session): return title+" +%d" % session.RogueBuild.forge_level(p)+(" · "+Catalog.quality_name(int(p.equipped.weapon.get("tier",0))) if not p.equipped.weapon.is_empty() else " · 初始")
+	if session.roguelike.active(session): return title+(" · "+Catalog.quality_name(int(p.equipped.weapon.get("tier",0))) if not p.equipped.weapon.is_empty() else " · 初始")
 	if session.weapon_kit_active(p):
 		var item: Dictionary=session.kit_weapon(p)
 		if item.has("rogue_id"):
@@ -4809,13 +4897,13 @@ func show_rogue_setup() -> void:
 	label(page,"幽光菌林 → 魔焰铸炉 → 星晶幻境 → 风暴空港 → 黑曜魔宫",Vector2(82,220),23,GOLD,Vector2(1290,50))
 	# R5 replaced the fixed five-slot floor with a node graph, so the old "每层五区"
 	# copy would describe a game that no longer exists.
-	label(page,"每层 7~10 个节点，路线按分支自选：战斗 / 精英 / 游商 / 遗落宝藏 / 灵契圣坛 / 守层者，\n另有诅咒回廊、幽暗异事、熔炉工坊、赌徒帐幕与镜像试炼。\n每层开局抽取一条全队共享的深渊变数；天赋只在圣坛获得，装备清场后开箱获取。",Vector2(82,290),19,INK,Vector2(1270,112))
+	label(page,"每层 7~10 个节点，路线按分支自选：战斗 / 精英 / 游商 / 遗落宝藏 / 灵契圣坛 / 守层者，\n另有诅咒回廊、幽暗异事、赌徒帐幕与镜像试炼。\n每层开局抽取一条全队共享的深渊变数；升级选属性，每 3 级三选一雷霆能力，宝箱出魔晶与概率装备。",Vector2(82,290),19,INK,Vector2(1270,112))
 	rogue_cards=0; rogue_weapon=-1
 	label(page,"免费出发 · 每人3次刷新 · 60魔晶 · 血瓶100%",Vector2(82,405),26,GOLD)
-	label(page,"252项独立构筑：48武器 / 72装备 / 96天赋 / 24铭刻 / 12武器核心",Vector2(82,473),23,INK,Vector2(1260,52))
+	label(page,"252项武器/装备/天赋 · 另有 12 式雷霆能力，每式最多 3 次获取",Vector2(82,473),23,INK,Vector2(1260,52))
 	rogue_icon(page,rogue_field.art.item_icons[8],Vector2(816,453),Vector2(80,80))
 	label(page,"开局免费三选一白色武器，保留角色自带武器作后备。不同角色有初始属性；永久分配完整保留。",Vector2(82,551),21,INK,Vector2(1260,66))
-	label(page,"每局保底18修为 / 8锻造点。打怪获得局内经验，每级+2属性点；宝箱概率掉落额外属性灵晶。\nTab → 构筑：天赋、加点、锻造、连招手册和全部素材图鉴。",Vector2(82,628),21,GOLD,Vector2(1260,70))
+	label(page,"每局保底18修为。打怪获得局内经验，每级弹窗七属性选一 +1；每 3 级雷霆能力三选一。\nTab → 构筑：雷霆能力、天赋、七属性和素材图鉴。",Vector2(82,628),21,GOLD,Vector2(1260,70))
 	label(page,"WASD移动 · 左键点按普攻 / 长按蓄力，松开释放 · 右键战技 · Space闪避 · C跃起 · Q奥义 · F血瓶 · E救援/出口\n种子 / 每日挑战与灰烬成长树见下方两个入口：同一条种子必得同一座魔境，灰烬只在局外消费。",Vector2(82,722),18,MUTED,Vector2(1260,72))
 	# R7: the third and fourth slots of the bottom row are the two new魔境 entries —
 	# the run seed / daily challenge, and the ash growth tree.
@@ -5121,6 +5209,8 @@ func _rogue_hud_sell_signature(p: Dictionary) -> String:
 #   * 本函数的调用点在地图早退（`field.map_open`）之后、三选一早退之前，
 #     所以：地图开着时不响应，三选一/游商面板开着时**仍然**响应（那时按 TAB 也在切换行囊）。
 func _rogue_build_hotkey(event: InputEvent) -> bool:
+	# 装备锻造/核心/铭刻/补正已从魔境移除，Q/R/T 构筑热键一并停用。
+	return false
 	if not inventory_open: return false
 	if not session.roguelike.active(session): return false
 	# 物理键判断，与 `setup_inputs()`（`:539`）的绑定口径一致；`keycode` 只在 `physical_keycode`
@@ -5185,6 +5275,8 @@ func _rogue_build_hotkey(event: InputEvent) -> bool:
 # （上面 `rogue_build_preview.connect("closed", …)` 那一处），这里按键把它翻回来，
 # 两条入口共用同一份状态，不会各记一份。
 func _rogue_preview_toggle(event: InputEvent) -> bool:
+	# 派生链预览已移除，V 不再绑定任何东西。
+	return false
 	if not inventory_open: return false
 	if not session.roguelike.active(session): return false
 	if field.map_open: return false
@@ -5463,7 +5555,7 @@ func _build_rogue_default_panel() -> void:
 	_rogue_hud_nodes["gold"]=label(rogue_panel,"",Vector2(1030,92),18,GOLD,Vector2(380,35))
 	# 两行提示的按键字样都按判定圈值级刷新（_rogue_hud_refresh_default）；建树时先给
 	# 不带按键字样的安全叙述句。
-	_rogue_hud_nodes["reward_hint"]=label(rogue_panel,"搜刮战利品 · 每人武器与装备三选一",Vector2(380,130),20,GOLD,Vector2(900,40))
+	_rogue_hud_nodes["reward_hint"]=label(rogue_panel,"搜刮战利品 · 开箱得魔晶，概率掉装备",Vector2(380,130),20,GOLD,Vector2(900,40))
 	_rogue_hud_nodes["exit_hint"]=label(rogue_panel,"全队向右集合 · 走到路线末端进入下一段",Vector2(1040,730),20,GOLD,Vector2(360,40))
 	# The 游商 block is a lazy sub-panel of the default tree: it exists only when the shop is
 	# on screen and is appended **after** the hints, exactly the order the old builder used.
@@ -5514,7 +5606,7 @@ func _rogue_hud_refresh_default(p: Dictionary, browsing_shop: bool) -> void:
 		reward_hint.visible=session.raid.phase=="rogue_reward"
 		# 按键字样按判定圈出（全队任一 active 队友进圈即"近"，与 roguelike.gd 判定同源）：
 		# 远处只有不带按键字样的叙述句——提示出现 = 一定能按键。
-		reward_hint.text=("E 开箱 / 拾取 · 每人武器与装备三选一 · Tab管理构筑" if _rogue_team_loot_near() else "搜刮战利品 · 每人武器与装备三选一")
+		reward_hint.text=("E 开箱 / 拾取 · 每人能力或装备三选一 · Tab管理构筑" if _rogue_team_loot_near() else "搜刮战利品 · 普通战斗铭刻战技，精英/首领/宝藏出装备")
 	var exit_hint: Label=_rogue_hud_nodes.get("exit_hint")
 	if is_instance_valid(exit_hint):
 		exit_hint.visible=session.raid.phase in ["rogue_shop","rogue_exit"]
@@ -5616,7 +5708,7 @@ func _rogue_hud_refresh_room(p: Dictionary, kind: String) -> void:
 	var body: Label=_rogue_hud_nodes.get("body")
 	if is_instance_valid(body): body.text=RogueRoomUi.body(kind,ctx)
 	var stats: Label=_rogue_hud_nodes.get("stats")
-	if is_instance_valid(stats): stats.text="魔晶 %d · 锻造 +%d · 本局灰烬 %d" % [p.rogue_gold,int(p.get("build_forge_level",0)),int(p.get("rogue_ash_run",0))]
+	if is_instance_valid(stats): stats.text="魔晶 %d · 雷霆 %d/36 · 本局灰烬 %d" % [p.rogue_gold,preload("res://scripts/rogue_abilities.gd").total_rank(p),int(p.get("rogue_ash_run",0))]
 	var buttons: Array=_rogue_hud_offer_buttons
 	for i in mini(rows.size(),buttons.size()):
 		var row: Dictionary=rows[i]

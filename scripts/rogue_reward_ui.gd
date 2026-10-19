@@ -2,6 +2,7 @@ extends Control
 ## Typography uses the actual painted inset bounds, measured from the v2 art.
 const ALTAR = preload("res://assets/ui/rewards/treasure-altar-v2.png")
 const Equipment = preload("res://scripts/rogue_equipment.gd")
+const Abilities = preload("res://scripts/rogue_abilities.gd")
 # B3-2(P2) 圣坛付费刷新：单价与上限只从 `Rooms` 读，UI 不自己算，也不写任何常量副本。
 const Rooms = preload("res://scripts/rogue_rooms.gd")
 const PAPER := Color("eee2cb")
@@ -20,6 +21,40 @@ var share: Button
 var caption: Label
 var notice: Label
 var notice_plate: ColorRect
+
+## 雷弧/雷纹只在“战技觉醒”面板上画。纯 `_draw`，不建节点、不读随机源，
+## 所以联机两端看到的形状一致，低配机也只多一次 2px polyline 绘制。
+class AbilityStorm:
+	extends Control
+	var clock := 0.0
+	var tint := Color("83dcff")
+	var ranks: Array = [0, 0, 0, 0, 0]
+
+	func _process(delta: float) -> void:
+		clock+=delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var center := Vector2(768, 214)
+		var glow := 0.10+0.04*sin(clock*3.7)
+		# 五式雷纹：未铭刻空心，已铭刻实心，中心一线贯穿。
+		for i in 5:
+			var point := Vector2(590+i*89, 214)
+			var lit := int(ranks[i]) if i<ranks.size() else 0
+			draw_circle(point, 7.0+float(lit), Color(tint, 0.10+0.06*float(lit)))
+			draw_arc(point, 9.0, 0, TAU, 24, Color(tint, 0.55 if lit>0 else 0.22), 1.4, true)
+			if lit>0: draw_circle(point, 2.4, Color(tint, 0.9))
+			if i>0: draw_line(Vector2(590+(i-1)*89, 214), point, Color(tint, 0.16), 1.2, true)
+		# 左右两侧的雷弧：贴着卡框外缘，不压字。
+		for lane in 2:
+			var cx := 174.0 if lane==0 else 1362.0
+			var points := PackedVector2Array()
+			for i in 15:
+				var y := 246.0+i*39.0
+				var dx := sin(clock*5.4+i*1.63+lane*2.2)*17.0+sin(clock*11.0+i*0.7)*5.0
+				points.append(Vector2(cx+dx, y))
+			draw_polyline(points, Color(tint, glow), 2.0, true)
+		draw_arc(center, 210.0+8.0*sin(clock*2.1), 0.0, TAU, 96, Color(tint, 0.055), 1.0, true)
 
 func text(parent: Control, value: String, box: Rect2, font_size: int, color: Color = PAPER, centered: bool = false, serif: bool = false) -> Label:
 	var node := Label.new()
@@ -73,8 +108,14 @@ func choose(index: int) -> void:
 		statuses[i].modulate=Color.WHITE if i==index else Color(1,1,1,0.7)
 		portraits[i].scale=Vector2.ONE*(1.06 if i==index else 1.0)
 	take.disabled=false
-	share.disabled=false
-	caption.text="收藏后可在构筑页分配修为" if selection.get("category","") in ["talent","core"] else "领取装备 · 或丢出后队友拾取"
+	# 能力是个人成长，不能丢给队友；装备/武器和圣坛的“跳过本轮”才需要这颗按钮。
+	share.disabled=str(selection.get("category",""))=="ability"
+	if selection.get("category","")=="ability":
+		caption.text="选中后立即铭刻 · 本局有效 · 不占修为"
+	elif selection.get("category","") in ["talent","core"]:
+		caption.text="收藏后可在构筑页分配修为"
+	else:
+		caption.text="领取装备 · 或丢出后队友拾取"
 
 func submit(kind: String) -> void:
 	if selected<0: return
@@ -82,6 +123,19 @@ func submit(kind: String) -> void:
 
 func card_body(parent: Control, offer: Dictionary, center: float) -> void:
 	var left := center-137
+	if offer.has("ability_id"):
+		var key := str(offer.get("ability_key",""))
+		var me: Dictionary=host.session.players.get(host.session.my_id(),{})
+		var current := Abilities.rank(me,key)
+		var current_name := "%s %s" % [str(Abilities.track(key).get("name","")),Abilities.pips(me,key)] if current>0 else "尚未获取"
+		text(parent,"当前  "+current_name,Rect2(left,576,274,27),17,MUTED)
+		var wanted := int(offer.get("rank",1))
+		text(parent,"阶位  "+"◆".repeat(wanted)+"◇".repeat(maxi(0,3-wanted)),Rect2(left,607,274,27),18,GOLD)
+		var description: String=preload("res://scripts/rogue_content.gd").player_text(str(offer.get("desc","")))
+		var body := text(parent,description,Rect2(left,641,274,103),18,GOLD)
+		body.vertical_alignment=VERTICAL_ALIGNMENT_TOP
+		text(parent,"立即生效 · 本局有效\n不占天赋槽 / 不耗修为",Rect2(left,748,274,55),15,PAPER)
+		return
 	if offer.has("item"):
 		var item: Dictionary=offer.item
 		var row := 0
@@ -128,10 +182,23 @@ func build(owner, data: Dictionary) -> void:
 	backdrop.stretch_mode=TextureRect.STRETCH_SCALE
 	var tier: int=selection.tier
 	var quality: Color=Catalog.BAG_TIERS[tier].color
-	var heading_title: String={"gear":"装 备 抉 择","weapon":"武 器 抉 择","boon":"天 赋 抉 择","talent":"灵 契 圣 坛","core":"核 心 灵 契"}.get(selection.get("category","gear"),"秘 藏 抉 择")
+	var category := str(selection.get("category","gear"))
+	if category=="ability":
+		# 战技觉醒用雷青色做主框，不受宝箱品质色影响（能力本身没有品质）。
+		quality=Color("83dcff")
+		var storm := AbilityStorm.new()
+		storm.size=stage.size
+		storm.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		var first_offer: Dictionary=selection.offers[0] if not selection.offers.is_empty() else {}
+		storm.tint=Color(str(first_offer.get("color","83dcff")))
+		var me: Dictionary=host.session.players.get(host.session.my_id(),{})
+		for i in 5: storm.ranks[i]=Abilities.rank(me,str(Abilities.TRACKS[i].key))
+		stage.add_child(storm)
+	var heading_title: String={"gear":"装 备 抉 择","weapon":"武 器 抉 择","boon":"天 赋 抉 择","talent":"灵 契 圣 坛","core":"核 心 灵 契","ability":"战 技 觉 醒"}.get(category,"秘 藏 抉 择")
 	text(stage,heading_title,Rect2(530,75,476,47),36,PAPER,true,true)
 	caption=text(stage,"%s秘藏 · 选中卡牌后领取或分享" % QUALITY_NAMES[tier],Rect2(490,127,556,27),19,MUTED,true)
-	if selection.get("category","") in ["talent","core"]: caption.text="选中天赋收藏 · Tab进入构筑配置"
+	if category=="ability": caption.text="五式铭刻 · 选中后立即生效 · 第 3 阶带专属觉醒演出"
+	if category in ["talent","core"]: caption.text="选中天赋收藏 · Tab进入构筑配置"
 	# Refusals and the full-reserve warning live here; see `_refresh_notice()`.
 	# The plate keeps the line readable over the painted frame, which the notice crosses.
 	notice_plate=ColorRect.new()
@@ -173,15 +240,19 @@ func build(owner, data: Dictionary) -> void:
 		picture.pivot_offset=Vector2(60,60)
 		portraits.append(picture)
 		var title: String=offer.name
-		var category := "天赋"
+		var card_kind := "天赋"
 		var subtitle := ""
 		var preview := ""
-		if offer.has("item"):
+		if offer.has("ability_id"):
+			card_kind="战技铭刻"
+			title="%s · %s" % [str(offer.get("ability_action","")),offer.name]
+			subtitle=str(offer.get("ability_track",""))
+		elif offer.has("item"):
 			var item: Dictionary=offer.item
 			var definition: Dictionary=Equipment.definition(item)
 			if item.kind=="weapon":
 				title=Catalog.weapon(int(item.weapon)).name
-				category="武器"
+				card_kind="武器"
 				subtitle="%s铭刻" % definition.name if not definition.is_empty() else "属性补正武器"
 				var player: Dictionary=host.session.players[host.session.my_id()]
 				var after: Dictionary=player.duplicate(true)
@@ -189,11 +260,12 @@ func build(owner, data: Dictionary) -> void:
 				preview="伤害 %.1f → %.1f\n%s" % [host.session.weapon_damage(player),host.session.weapon_damage(after),Catalog.scaling_text(int(item.weapon))]
 			else:
 				title=definition.get("name",Catalog.item_name(item))
-				category=Catalog.gear_slot_name(item)
+				card_kind=Catalog.gear_slot_name(item)
 		else: subtitle="收藏 / 修为分配" if offer.has("talent_id") else "本局加成"
 		var name_label := text(stage,title,Rect2(center-136,449,272,48),29,PAPER,true,true)
 		name_label.name="RewardName%d" % i
-		var metadata := "%s · %s" % [QUALITY_NAMES[tier],category]
+		var metadata := "%s · %s" % [QUALITY_NAMES[tier],card_kind]
+		if category=="ability": metadata="%s · %s" % [card_kind,subtitle]
 		if not subtitle.is_empty(): metadata+=" · "+subtitle
 		text(stage,metadata,Rect2(center-137,539,274,31),19,quality,true)
 		if not preview.is_empty(): text(stage,preview,Rect2(center-137,576,274,64),16,PAPER)
@@ -221,7 +293,8 @@ func build(owner, data: Dictionary) -> void:
 	paid.tooltip_text=str(check.get("message","")) if not bool(check.get("ok",false)) else "花 %d 魔晶更换这一屏候选（本次报价还剩 %d 次）" % [int(state.get("cost",0)),int(state.get("left",0))]
 	paid.disabled=not bool(check.get("ok",false))
 	if paid.disabled: paid.text="魔晶刷新 · %s" % short
-	take=action_button(stage,"收藏天赋" if selection.get("category","") in ["talent","core"] else "领取奖励",Rect2(468,898,270,48),func(): submit("rogue_selection_take"))
+	var take_label := "铭刻战技" if category=="ability" else "收藏天赋" if selection.get("category","") in ["talent","core"] else "领取奖励"
+	take=action_button(stage,take_label,Rect2(468,898,270,48),func(): submit("rogue_selection_take"))
 	for i in selection.offers.size():
 		var card: Control=stage.get_node("RewardCard%d" % i)
 		card.focus_neighbor_bottom=card.get_path_to(take)

@@ -1,115 +1,82 @@
 extends SceneTree
+## 奖励节奏 v3：宝箱 = 金币 + 概率装备；能力只从升级弹窗产出。
 var checks := 0
 var failures := 0
+var s: TideSession
+
 func check(ok: bool, reason: String) -> void:
 	checks+=1
 	if not ok: failures+=1; push_error(reason)
+
 func _initialize() -> void: call_deferred("run")
+
 func selection_payload(p: Dictionary, index: int = 0) -> Dictionary:
 	return {"id":p.rogue_selection.id,"version":p.rogue_selection.version,"index":index}
-func run() -> void:
-	var s := TideSession.new()
-	root.add_child(s)
-	s.solo({"hero":0,"mode":"roguelike","rogue_rerolls":2})
-	s.launch(false,1729)
-	s.set_physics_process(false)
-	var p: Dictionary=s.players[1]
-	var ally: Dictionary=s.make_player(2,{"hero":1,"name":"Ally"})
-	s.players[2]=ally
-	# Reset initializes all party members' run fields.
-	s.roguelike.reset(s)
-	p=s.players[1]
-	ally=s.players[2]
+
+func take_starter(p: Dictionary) -> void:
+	if not p.rogue_selection.is_empty():
+		s.perform(p.id,"rogue_selection_take",selection_payload(p))
+
+func prepare_room(room: String, floor: int = 1, area: int = 2) -> void:
 	s.enemies.clear()
+	s.raid.room=room; s.raid.floor=floor; s.raid.area=area; s.raid.phase="rogue_combat"
+	s.raid["room_rewarded"]=false
+	s.raid.reward_chest={}; s.raid.reward_drops=[]; s.raid["reward_claims"]=[]
+	for player in s.players.values():
+		player.rogue_selection={}; player.build_reward_queue=[]
 	s.roguelike.clear_room(s)
-	check(s.raid.offers.is_empty() and not s.raid.reward_chest.opened,"Clear spawns chest without opening choices")
-	var chest: Dictionary=s.raid.reward_chest
-	p.p=Vector2(180,400)
-	s.perform(1,"rogue_loot")
-	check(not chest.opened,"Distant opening rejected")
-	p.p=chest.p
-	s.perform(1,"rogue_loot")
-	var count: int=s.raid.reward_drops.size()
-	check(chest.opened and count==3,"Chest drops at most one packet per category, three total")
-	var categories := {}
-	for packet in s.raid.reward_drops: categories[packet.category]=true
-	check(categories.size()==3 and categories.has("gear") and categories.has("weapon") and categories.has("boon"),"One equipment, weapon and talent packet")
-	s.perform(1,"rogue_loot")
-	check(s.raid.reward_drops.size()==count,"Chest cannot reroll or duplicate on reopening")
-	check(p.rogue_selection.is_empty(),"Packets cannot be picked before landing")
-	s.elapsed+=2
-	var first: Dictionary=s.raid.reward_drops[0]
-	p.p=first.p
-	ally.p=first.p
-	s.perform(1,"rogue_loot")
-	check(p.rogue_selection.offers.size()==3 and s.raid.reward_drops.size()==count-1,"Pickup atomically reserves one packet with three choices")
-	var types := {}
-	for offer in p.rogue_selection.offers:
-		types["boon" if offer.has("boon") else offer.item.kind]=true
-		check(offer.tier==first.tier,"All choices retain packet quality")
-	check(types.size()==1 and types.has(first.category),"Packet offers only its own category")
-	var distinct := {}
-	for offer in p.rogue_selection.offers: distinct[offer.name]=true
-	check(distinct.size()==3,"Three distinct same-category choices")
-	var stale: Dictionary=selection_payload(p)
-	s.perform(1,"rogue_selection_reroll",stale)
-	check(p.rogue_rerolls==1 and p.rogue_selection.version==1,"Personal reroll consumes one card")
-	s.perform(1,"rogue_selection_take",stale)
-	check(not p.rogue_selection.is_empty(),"Stale click rejected after reroll")
-	var preserved: Array=p.rogue_selection.offers.duplicate(true)
-	s.perform(1,"rogue_selection_return",selection_payload(p))
-	check(p.rogue_selection.is_empty() and 1 not in s.raid.reward_claims,"Putting packet back keeps room claim pending")
-	var returned: Dictionary=s.raid.reward_drops.back()
-	s.elapsed+=2
-	p.p=returned.p
-	# Force the returned packet to be the only one in range.
-	for packet in s.raid.reward_drops:
-		if packet.id!=returned.id: packet.p=Vector2(2000,580)
-	s.perform(1,"rogue_loot")
-	check(p.rogue_selection.offers==preserved,"Returning and repicking cannot freely reroll")
-	var take: Dictionary=selection_payload(p)
-	var expected: Dictionary=p.rogue_selection.offers[0].duplicate(true)
-	s.perform(1,"rogue_selection_drop",take)
-	check(p.rogue_selection.is_empty() and 1 in s.raid.reward_claims,"Choosing and sharing satisfies sender reward")
-	check(s.raid.phase=="rogue_reward","Room waits for other party members")
-	var shared: Dictionary=s.raid.reward_drops.back()
-	check(shared.offer==expected,"Shared reward retains exact rolled item or talent")
-	var remaining: int=s.raid.reward_drops.size()
-	s.perform(1,"rogue_selection_drop",take)
-	check(s.raid.reward_drops.size()==remaining,"Repeated share cannot duplicate reward")
-	ally.p=shared.p
-	var before: int=ally.rogue_inventory_revision
-	s.perform(2,"rogue_loot")
-	check(ally.rogue_inventory_revision>before and ally.rogue_selection.is_empty(),"Teammate picks selected reward directly")
-	check(s.raid.reward_drops.size()==remaining-1,"Shared item consumed exactly once")
+
+func open_chest(p: Dictionary) -> void:
+	p.p=s.raid.reward_chest.p
+	s.perform(p.id,"rogue_loot")
+
+func run() -> void:
+	s=TideSession.new(); root.add_child(s)
+	s.solo({"hero":0,"mode":"roguelike","rogue_rerolls":2})
+	s.launch(false,1729); s.set_physics_process(false)
+	var p: Dictionary=s.players[1]
+	take_starter(p); s.roguelike.tick(s,.01)
+	p=s.players[1]
+
+	# 普通战斗：金币必得，装备 25%，绝不掉能力/属性晶。
+	prepare_room("combat")
+	check(s.roguelike.chest_equipment_chance(s)==0.25,"Combat chest has a 25% equipment chance")
+	p.rogue_gold=0
+	open_chest(p)
+	check(int(p.rogue_gold)>0,"Chest opening pays gold")
+	check(s.raid.reward_chest.opened,"Chest opens")
+	check(not s.raid.reward_drops.any(func(d): return d.category in ["ability","attribute"]),"Chest never drops ability or attribute shards")
+	check(s.raid.reward_drops.size()<=1,"At most one equipment packet per player")
+	if not s.raid.reward_drops.is_empty():
+		check(s.raid.reward_drops[0].category in ["weapon","gear"],"Drop is weapon or gear")
+
+	# 守层者：100% 装备。
+	prepare_room("boss",2,7)
+	check(s.roguelike.chest_equipment_chance(s)==1.0,"Boss chest guarantees equipment")
+	p.rogue_gold=0
+	open_chest(p)
+	check(int(p.rogue_gold)>0,"Boss chest pays gold as well")
+	check(s.raid.reward_drops.size()==1,"Boss chest drops exactly one equipment packet")
+	check(s.raid.reward_drops[0].category in ["weapon","gear"],"Boss equipment identity")
 	var packet: Dictionary=s.raid.reward_drops[0]
-	ally.p=packet.p
-	s.perform(2,"rogue_loot")
-	check(not ally.rogue_selection.is_empty(),"Ally can claim their own independent selection")
-	s.perform(2,"rogue_selection_take",selection_payload(ally))
-	check(s.raid.phase=="rogue_reward","Remaining category packet still blocks the exit")
-	preload("res://tests/rogue_reward_flow.gd").claim(s,p)
-	check(s.raid.phase=="rogue_exit" and s.raid.reward_claims.size()==2,"Both choices unlock exits")
-	var equipment=preload("res://scripts/rogue_equipment.gd")
-	var gear: Dictionary=equipment.make_gear(2,4)
-	s.roguelike.equip(s,p,gear)
-	s.perform(1,"rogue_inventory",{"source":"equipped","index":1,"verb":"discard","version":p.rogue_inventory_revision})
-	check(p.equipped.gear[0].is_empty() and s.raid.reward_drops.back().offer.item==gear,"Inventory discard creates recoverable exact equipment")
-	ally.p=s.raid.reward_drops.back().p
-	s.perform(2,"rogue_loot")
-	check(ally.equipped.gear[0]==gear,"Ally equips discarded gear with quality and passive preserved")
-	# Serialization uses the existing snapshot dictionaries, including choices.
-	var copied: Dictionary=bytes_to_var(var_to_bytes(s.raid))
-	check(copied.reward_chest==s.raid.reward_chest and copied.reward_drops==s.raid.reward_drops,"Chest and drops serialize exactly for network snapshots")
-	for category in ["gear","weapon","boon"]:
-		for i in 10:
-			var offers: Array=s.roguelike.reward_offers(s,3,category)
-			var identities := {}
-			for offer in offers:
-				check(offer.has("boon") if category=="boon" else offer.item.kind==category,"All three choices retain their category")
-				identities[offer.boon.stat if category=="boon" else offer.item.weapon if category=="weapon" else offer.item.rogue_id]=true
-			check(identities.size()==3,"No duplicate choices in a category")
-	s.queue_free()
-	await process_frame
+	s.elapsed+=2
+	p.p=packet.p
+	s.perform(1,"rogue_loot")
+	check(p.rogue_selection.get("category","") in ["weapon","gear"],"Equipment packet opens its category choice")
+	check(p.rogue_selection.offers.size()==3,"Three equipment candidates")
+	var offer: Dictionary=p.rogue_selection.offers[0]
+	s.perform(1,"rogue_selection_drop",selection_payload(p))
+	check(p.rogue_selection.is_empty(),"Equipment can be shared")
+	check(s.raid.reward_drops.back().offer==offer,"Shared equipment keeps the exact item")
+
+	# 精英：50% 概率，只校验配置。
+	prepare_room("elite",1,3)
+	check(s.roguelike.chest_equipment_chance(s)==0.5,"Elite chest has a 50% equipment chance")
+
+	# 锻造点不再发放。
+	check(p.build_forge_points==0,"No forge points after clearing rooms")
+	check(p.build_ability_offers.is_empty(),"Chest rooms never create ability popups")
+
+	s.queue_free(); await process_frame
 	print("ROGUE CHEST: ",checks," checks / ",failures," failures")
 	quit(1 if failures else 0)

@@ -73,7 +73,12 @@ func run() -> void:
 			p.p=s.raid.reward_chest.p
 			s.perform(p.id,"rogue_loot")
 			check(s.raid.reward_chest.opened,"%s chest opens" % kind)
-			check(s.raid.reward_drops.filter(func(drop): return drop.category in ["weapon","gear"]).size()==2,"%s grants personal weapon and gear packets" % kind)
+			var paid: int=s.raid.reward_drops.filter(func(drop): return drop.category in ["weapon","gear"]).size()
+			var seals: int=s.raid.reward_drops.filter(func(drop): return drop.category=="ability").size()
+			check(seals==0,"%s never grants ability seals" % kind)
+			check(paid<=1,"%s grants at most one equipment packet" % kind)
+			if kind in ["boss","treasure"]: check(paid==1,"%s guarantees one equipment packet" % kind)
+			check(int(p.rogue_gold)>0,"%s chest pays gold on open" % kind)
 			var packets: int=s.raid.reward_drops.size()
 			s.perform(p.id,"rogue_loot")
 			check(s.raid.reward_drops.size()==packets,"%s chest cannot pay twice" % kind)

@@ -39,33 +39,9 @@ func run() -> void:
 	p["status"]="active"
 
 	# ------------------------------------------------------------ 1. frozen surface
-	check(RoomUi.handled("forge") and RoomUi.handled("gamble") and RoomUi.handled("mirror"), "the three dedicated rooms are handled by this panel")
+	check(not RoomUi.handled("forge") and RoomUi.handled("gamble") and RoomUi.handled("mirror"), "forge removed; gamble and mirror remain")
 	check(not RoomUi.handled("shop") and not RoomUi.handled("combat") and not RoomUi.handled("boss"), "every other room keeps its existing UI")
-	check(RoomUi.action_for("forge")=="rogue_forge" and RoomUi.action_for("gamble")=="rogue_gamble" and RoomUi.action_for("mirror")=="rogue_mirror", "the action names are the frozen ones")
-
-	# ------------------------------------------------------------ 2. forge
-	app.session.raid["room"]="forge"
-	app.session.raid["floor"]=3
-	app.session.raid["depth"]=3
-	p["rogue_gold"]=0
-	var poor := RoomUi.rows("forge",app.session.raid,RoomUi.context_of(app.session,p))
-	check(poor.size()==4, "the forge quotes its four services")
-	check(not bool(poor[0].enabled) and str(poor[0].reason).contains("魔晶不足"), "a broke player is told *why* the first service is locked")
-	check(bool(poor[3].enabled) and int(poor[3].cost)==0, "转移锻造 stays free")
-	p["rogue_gold"]=100000
-	var rich := RoomUi.rows("forge",app.session.raid,RoomUi.context_of(app.session,p))
-	check(bool(rich[0].enabled) and bool(rich[1].enabled), "a rich player may buy forge points")
-	check(str(rich[0].action)=="rogue_forge", "the forge row ships the forge action")
-	check(int(rich[0].payload.index)==0 and int(rich[0].payload.revision)==int(app.session.raid.revision), "the forge payload carries the index plus the raid revision")
-	check(not bool(rich[2].enabled) or int(rich[2].cost)>0, "the direct smith quotes a price instead of firing for free")
-
-	# ------------------------------------------------------------ 3. the raid's own quote wins
-	app.session.roguelike.open_room(app.session)
-	app.session.roguelike.refresh_dedicated(app.session,p)
-	check(app.session.raid.pending_forge.has("offers"), "open_room() quotes the forge offers for the raid")
-	var quoted := RoomUi.rows("forge",app.session.raid,RoomUi.context_of(app.session,p))
-	check(quoted.size()==(app.session.raid.pending_forge.offers as Array).size(), "the panel draws the raid's own quote")
-	check(int(quoted[0].payload.revision)==int(app.session.raid.pending_forge.revision), "the revision shown is the one the guard will compare")
+	check(RoomUi.action_for("gamble")=="rogue_gamble" and RoomUi.action_for("mirror")=="rogue_mirror", "the action names are the frozen ones")
 
 	# ------------------------------------------------------------ 4. gamble
 	app.session.raid["room"]="gamble"
@@ -97,9 +73,9 @@ func run() -> void:
 	check(not bool(spent[0].enabled) and str(spent[0].reason).contains("已经挑战过"), "a used mirror says so instead of looking clickable")
 
 	# ------------------------------------------------------------ 6. repaint key
-	var sig_before := RoomUi.signature("forge",app.session.raid,RoomUi.context_of(app.session,p))
+	var sig_before := RoomUi.signature("gamble",app.session.raid,RoomUi.context_of(app.session,p))
 	p["rogue_gold"]=1
-	var sig_after := RoomUi.signature("forge",app.session.raid,RoomUi.context_of(app.session,p))
+	var sig_after := RoomUi.signature("gamble",app.session.raid,RoomUi.context_of(app.session,p))
 	check(sig_before!=sig_after, "a change of purse repaints the room panel")
 	check(str(RoomUi.footer("mirror",app.session.raid,"rogue_reward")).contains("镜像") or RoomUi.footer("mirror",app.session.raid,"rogue_reward")!="", "the mirror footer keeps telling the player what the next click does")
 

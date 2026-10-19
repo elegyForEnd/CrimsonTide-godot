@@ -8,6 +8,7 @@ const NodeGraph = preload("res://scripts/rogue_graph.gd")
 const Equipment = preload("res://scripts/rogue_equipment.gd")
 const Build = preload("res://scripts/rogue_build.gd")
 const Content = preload("res://scripts/rogue_content.gd")
+const Abilities = preload("res://scripts/rogue_abilities.gd")
 # W1b: the dedicated-room / economy layers. Preloaded (never a bare class name) so headless
 # runs and a stale class cache can never break the parse step.
 const Curses = preload("res://scripts/rogue_curses.gd")
@@ -25,12 +26,12 @@ const AREAS_PER_FLOOR := 7
 const ROOM_NAMES := {"combat":"魔物围猎", "elite":"精英试炼", "shop":"游商营火", "treasure":"遗落宝藏",
 	"talent":"灵契圣坛", "boss":"守层者", "curse":"诅咒回廊", "event":"幽暗异事",
 	"forge":"熔炉工坊", "gamble":"赌徒帐幕", "mirror":"镜像试炼"}
-const ROOM_DESCS := {"combat":"迎战魔物 · 通关奖励", "elite":"更强敌人 · 更高品质装备",
-	"shop":"安全补给 · 消耗魔晶购买", "treasure":"安全宝藏 · 免费选择装备",
+const ROOM_DESCS := {"combat":"迎战魔物 · 魔晶 + 概率装备", "elite":"更强敌人 · 魔晶 + 高概率装备",
+	"shop":"安全补给 · 消耗魔晶购买", "treasure":"安全宝藏 · 必得武器或装备",
 	"talent":"灵契圣坛 · 两轮天赋三选一", "curse":"诅咒回廊 · 以代价换取秘藏",
-	"event":"幽暗异事 · 抉择各有后果", "forge":"熔炉工坊 · 强化手中武器",
+	"event":"幽暗异事 · 抉择各有后果",
 	"gamble":"赌徒帐幕 · 押注魔晶博取翻倍", "mirror":"镜像试炼 · 直面自己的影子",
-	"boss":"击败首领，进入下一层"}
+	"boss":"击败首领 · 必得武器或装备，进入下一层"}
 # Contracts §7.2 ②: rooms that are NOT combat long-rooms. Missing one here silently turns a
 # new room into a combat lane (`session.gd:1501` has the client-side copy of this list).
 const SAFE_ROOMS := ["shop","treasure","talent","curse","event","forge","gamble","mirror"]
@@ -515,21 +516,21 @@ func room_gold(s) -> int:
 	if s.raid.get("challenge",false): base+=50
 	return base
 
+func pay_room_gold(s, p: Dictionary) -> int:
+	var income_scale := maxf(0.0,1.0+mod_of(s,"gold_income",p))
+	var gold_scale := (1.0+mod_of(s,"gold",p))*Curses.personal_reward_scale(p)*income_scale
+	var amount := maxi(0,scale_int(room_gold(s),gold_scale))
+	p.rogue_gold=int(p.get("rogue_gold",0))+amount
+	return amount
+
 func clear_room(s) -> void:
 	if s.raid.get("room_rewarded",false): return
 	s.raid["room_rewarded"]=true
 	combat.reset()
 	s.raid.cleared+=1
 	for p in s.players.values():
-		# W1b (R8 hook h + R9 hook 2): the team-wide variant income and this player's own curse
-		# compensation scale one payout. Both factors are exactly 1.0 when unused, so a clean
-		# run keeps the shipped numbers to the digit.
-		# A2 (R9 hook 5): CU03「贪婪之握」的 `gold_income`（CAPS 锁在 [-0.60,0]，负=收入变差）
-		# 作为**独立乘数**接到同一笔区域工资上——这是本局唯一反复产出的魔晶收入。
-		# 无诅咒/无该键时恒为 1.0，`scale_int` 在 1.0 处逐位恒等，因此既有出账不变。
-		var income_scale := maxf(0.0,1.0+mod_of(s,"gold_income",p))
-		var gold_scale := (1.0+mod_of(s,"gold",p))*Curses.personal_reward_scale(p)*income_scale
-		p.rogue_gold+=maxi(0,scale_int(room_gold(s),gold_scale))
+		# 宝箱房的魔晶改在开箱时结算；服务房仍在清场时结工资。
+		if s.raid.room not in CHEST_ROOMS: pay_room_gold(s,p)
 		Build.award(s,p)
 	s.bullets.clear()
 	s.pending_ultimates.clear()
@@ -551,7 +552,7 @@ func clear_room(s) -> void:
 		if p.status=="active": at=p.p; break
 	s.raid.reward_chest={"p":spawn_point(s,at+Vector2(100,0)),"tier":tier,"opened":false}
 	s.raid.revision+=1
-	s.message.emit("宝箱已出现 · 靠近按 E 开启")
+	s.message.emit({"combat":"战利品宝箱已出现 · 魔晶 + 25% 概率装备","elite":"精英秘藏已出现 · 魔晶 + 50% 概率装备","boss":"守层者遗赠已出现 · 必得武器或装备","treasure":"遗落宝藏已出现 · 必得武器或装备"}.get(str(s.raid.room),"宝箱已出现 · 靠近按 E 开启"))
 	for p in s.players.values(): next_personal(s,p)
 
 # All loot and pending choices live in the authoritative snapshot. A pickup
@@ -628,6 +629,19 @@ func roll_tier(s, scope: String = LOOT_PITY_CHEST, p: Dictionary = {}) -> int:
 
 func reward_offers(s, tier: int, category: String = "gear", p: Dictionary = {}) -> Array:
 	var offers: Array=[]
+	# 五式铭刻：只发“下一阶”，一张屏不会出现同一条轨道的两张牌。
+	# 候选完全来自 `Abilities.next_offers()`，这样 UI / 刷新 / 联机都读同一份阶位表。
+	if category=="ability":
+		var pool: Array=Abilities.next_offers(p)
+		if pool.is_empty():
+			# 15/15 后的兜底：普通战斗不再产出空三选一，而是把这一包转成 1 点属性。
+			# 日常路径还会在 `loot_interact()` 里直接把能力包换成装备包；这一条只防
+			# 旧包 / 事件 / 直接调用把空候选送到面板。
+			return [{"name":"战技精通","desc":"五式已全部觉醒：获得 1 点局内属性，可在构筑页分配。","attribute_points":1,"tier":tier,"price":0}]
+		for i in mini(3,pool.size()):
+			var at: int=s.rng.randi_range(0,pool.size()-1)
+			offers.append(pool.pop_at(at))
+		return offers
 	if category in ["talent","core","boon"]:
 		var pool: Array=[]
 		for def in Content.data.talents:
@@ -671,7 +685,6 @@ func reward_offers(s, tier: int, category: String = "gear", p: Dictionary = {}) 
 	for i in 3:
 		var choice: int=pool.pop_at(s.rng.randi_range(0,pool.size()-1))
 		var item: Dictionary=Content.make_weapon(choice,tier) if category in ["weapon","starter"] else Equipment.make_gear(choice,tier)
-		if category=="weapon" and s.rng.randf()<.25: item=Equipment.engrave(item,s.rng.randi_range(0,23))
 		offers.append({"name":Catalog.item_name(item),"desc":Equipment.description(item),"item":item,"tier":tier,"price":0})
 	return offers
 
@@ -699,30 +712,32 @@ func add_reward_drop(s, at: Vector2, tier: int, offer: Dictionary = {}, delay: f
 	loot_serial+=1
 	s.raid.reward_drops.append({"id":loot_serial,"p":spawn_point(s,at),"tier":tier,"offer":offer.duplicate(true),"born":s.elapsed,"delay":delay,"owner":owner,"category":category})
 
+## 宝箱只产金币 + 概率装备；能力已改由“每 3 级”的升级弹窗产出。
+func chest_equipment_chance(s) -> float:
+	match str(s.raid.room):
+		"boss", "treasure": return 1.0
+		"elite": return 0.5
+	return 0.25
+
 func loot_interact(s, p: Dictionary) -> void:
 	if p.status!="active" or not p.get("rogue_selection",{}).is_empty(): return
 	var chest: Dictionary=s.raid.get("reward_chest",{})
 	if s.raid.room in CHEST_ROOMS and not chest.is_empty() and not chest.opened and p.p.distance_to(chest.p)<=s.CHEST_RADIUS:
 		chest.opened=true
 		chest["opened_at"]=s.elapsed
-		var categories: Array=["weapon","gear"]
 		var index := 0
 		for ally in s.players.values():
 			if not ally.connected: continue
-			for category in categories:
+			var gold := pay_room_gold(s,ally)
+			var chance := clampf(chest_equipment_chance(s)*(1.0+mod_of(s,"chest_drop",ally)),0.0,1.0)
+			var got_equipment: bool=s.rng.randf()<chance
+			if got_equipment:
+				var category := "gear" if s.rng.randf()<0.65 else "weapon"
 				add_reward_drop(s,chest.p+Vector2((index%4-1)*70,45+floori(index/4.0)*50),roll_tier(s,LOOT_PITY_CHEST,ally),{},.65+index*.04,int(ally.id),category)
 				s.raid.reward_drops.back()["personal"]=true
 				index+=1
-			# Personal, bound attribute shards use one roll per opened chest/player.
-			# W1b (R9 hook 4): the shard rate answers to *this ally's* curses — the chest is
-			# shared but the roll is personal. Still exactly one rng draw either way.
-			var chance := (.5 if s.raid.room=="boss" else .2)*(1.0+mod_of(s,"chest_drop",ally))
-			chance=clampf(chance,0.0,1.0)
-			if ally.build_chest_attribute_drops<2 and s.rng.randf()<chance:
-				add_reward_drop(s,chest.p+Vector2((index%4-1)*70,45+floori(index/4.0)*50),0,{"name":"属性灵晶 +1","desc":"拾取获得1点局内属性，可在构筑页分配。","attribute_points":1},.65+index*.04,int(ally.id),"attribute")
-				s.raid.reward_drops.back()["personal"]=true
-				ally.build_chest_attribute_drops+=1
-				index+=1
+			if int(ally.id)==int(s.my_id()):
+				s.message.emit("开箱 · 魔晶 +%d · %s" % [gold,"装备掉落" if got_equipment else "没有装备"])
 		s.effect.emit("seal",chest.p)
 		s.broadcast_audio("chest",p)
 		s.raid.revision+=1
@@ -754,6 +769,30 @@ func apply_offer(s, p: Dictionary, offer: Dictionary) -> bool:
 ## prints that reason verbatim, so a refused claim can never read as a dead click: the old
 ## boolean-only contract left a full reserve staring at a choice that would not resolve.
 func apply_offer_reason(s, p: Dictionary, offer: Dictionary) -> String:
+	if offer.has("ability_id"):
+		var key := str(offer.get("ability_key",""))
+		var wanted := int(offer.get("rank",0))
+		var current := Abilities.rank(p,key)
+		if Abilities.track(key).is_empty() or wanted<1 or wanted>Abilities.MAX_RANK:
+			return "这门战技的铭刻数据不完整"
+		if current>=wanted:
+			return "这门战技已经铭刻到该阶"
+		if current+1!=wanted:
+			return "铭刻顺序不合法：需要先从上一阶铭刻"
+		if not (p.get("build_abilities",{}) is Dictionary): p["build_abilities"]={}
+		p.build_abilities[key]=wanted
+		p.rogue_inventory_revision+=1
+		var entry := Abilities.track(key)
+		s.message.emit("雷能获取 · %s %s（%d / %d）" % [str(entry.get("name","")),Abilities.pips(p,key),wanted,Abilities.MAX_RANK])
+		# 让领取动作在战场上也有回执：一阶是小雷花，三阶是整圈雷暴。面板会在
+		# `update_rogue_hud()` 的下一帧收起，所以表现必须落在真实战斗事件上。
+		var radius := 150.0 if wanted>=Abilities.MAX_RANK else 78.0
+		s.broadcast_combat({"kind":"spell_burst","p":p.p,"aim":p.aim,"spell":"chain","radius":radius,"id":p.id,"weapon_index":-1})
+		if wanted>=Abilities.MAX_RANK:
+			for i in 6:
+				var angle := TAU*float(i)/6.0
+				s.broadcast_combat({"kind":"spell_arc","p":p.p,"target":p.p+Vector2.from_angle(angle)*160.0,"spell":"chain","id":p.id,"weapon_index":-1,"aim":Vector2.from_angle(angle)})
+		return ""
 	if offer.has("attribute_points"):
 		p.build_attribute_points+=int(offer.attribute_points)
 		p.rogue_inventory_revision+=1
@@ -921,8 +960,9 @@ func roll_offers(s, _shop: bool, target: Dictionary = {}) -> void:
 ## `forging`/`binding` drive the existing forge hooks, `respec` refunds the build points of
 ## this run, `tier` hardens the equipped weapon. Deliberately no "pure gold" service: a
 ## buy-only-sell-gold loop would be free money.
+## 装备锻造/铭刻/精炼已移除；服务位只保留补给、属性和属性重塑。
 const SERVICE_KINDS := [
-	"engraving","flask","attribute","forging","binding","respec","tier","flask",
+	"flask","attribute","respec",
 ]
 
 ## One row of the shelf. The shape mirrors every other offer (`name`/`desc`/`price`/`tier`/
@@ -1202,6 +1242,16 @@ func inventory_action(s, p: Dictionary, payload: Dictionary) -> void:
 
 func choose(s,p: Dictionary,kind: String,payload: Dictionary) -> void:
 	if p.status!="active" or not s.running or s.raid.ended: return
+	if kind in ["rogue_level_choice","rogue_ability_choice"]:
+		if int(payload.get("version",-1))!=int(p.get("rogue_inventory_revision",0)): return
+		if int(payload.get("revision",-1))!=int(s.raid.revision): return
+		var reason := ""
+		if kind=="rogue_level_choice":
+			reason=Build.level_choice(s,p,str(payload.get("stat","")))
+		else:
+			reason=Build.ability_choice(s,p,int(payload.get("index",-1)))
+		if reason!="": s.message.emit(reason)
+		return
 	if kind=="rogue_build":
 		Build.management(s,p,payload)
 		return
@@ -1389,7 +1439,7 @@ func exit_choices(s) -> Array:
 
 func random_destinations(s) -> Array:
 	var pool := ["combat","elite","shop","treasure","talent"]
-	var descriptions := {"combat":"迎战魔物 · 通关奖励","shop":"安全补给 · 消耗魔晶购买","elite":"更强敌人 · 更高品质装备","treasure":"安全宝藏 · 免费选择装备","talent":"灵契圣坛 · 两轮天赋三选一"}
+	var descriptions := {"combat":"迎战魔物 · 魔晶 + 概率装备","shop":"安全补给 · 消耗魔晶购买","elite":"更强敌人 · 魔晶 + 高概率装备","treasure":"安全宝藏 · 必得武器或装备","talent":"灵契圣坛 · 两轮天赋三选一"}
 	var choices: Array=[]
 	for i in 2:
 		var index: int=s.rng.randi_range(0,pool.size()-1)

@@ -24,11 +24,11 @@ extends RefCounted
 const Curses = preload("res://scripts/rogue_curses.gd")
 
 ## 本模块负责的房间类型（boss 与其它房间不在这里）。
-const KINDS := ["forge", "gamble", "mirror"]
+const KINDS := ["gamble", "mirror"]
 ## 出现深度下限；语义与 `RogueGraph.NEW_KIND_MIN_DEPTH` 的对应项逐字相同，改动必须两边同步。
-const MIN_DEPTH := {"forge": 3, "gamble": 4, "mirror": 5}
+const MIN_DEPTH := {"gamble": 4, "mirror": 5}
 ## 房间显示名（接线时并入 `roguelike.gd` 的 ROOM_NAMES）。
-const ROOM_NAMES := {"forge": "游方锻炉", "gamble": "赌徒营帐", "mirror": "镜中挑战"}
+const ROOM_NAMES := {"gamble": "赌徒营帐", "mirror": "镜中挑战"}
 
 # ---------------------------------------------------------------- 铁匠铺
 ## 与 `RogueBuild.FORGE_COST = [1,1,2,2,2]`、`mini(5, raid.floor)` 同源的规则，不另造一套。
@@ -66,7 +66,7 @@ const PAID_REROLL_MAX := 2
 ## 允许付费刷新的奖励类别。与 `roguelike.reward_offers()` 真正会重新抽牌的类别一一对应；
 ## 其余类别（例如固定单张的属性灵晶 category="attribute"）必须明确拒绝——若放行，
 ## `reward_offers()` 会落到装备分支，花魔晶反而把属性灵晶换成装备（吞掉既有奖励）。
-const PAID_REROLL_CATEGORIES := ["talent", "core", "boon", "gear", "weapon", "starter"]
+const PAID_REROLL_CATEGORIES := ["talent", "core", "boon", "ability", "gear", "weapon", "starter"]
 
 # ---------------------------------------------------------------- 赌徒
 ## 三种赌法。`multiplier` 是「赢时到手的倍数（含本金）」，tier 赌法用阶位而非倍数。
