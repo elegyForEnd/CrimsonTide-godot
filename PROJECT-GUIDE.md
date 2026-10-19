@@ -1190,31 +1190,72 @@ git status --porcelain
 | 2026-10-12 | （本轮未提交） | **窗口设置单真值化 + 启动器搬进游戏内（控制台预导入退役）**。①**修"开场 PV 在写死的小窗里播"**：新增零依赖的 `scripts/window_settings.gd`（无 `class_name`、不 preload 别的脚本、不碰贴图——首次下载类缓存为空时它必须能自己活），`DEFAULT_FULLSCREEN=true` / `DEFAULT_WINDOW=1600×900` / `PRESETS` 四档 + 跟随桌面(4) + 自定义(-1) / `MIN_WINDOW=960×540`；autoload `scripts/graphics_quality.gd`（`project.godot:28`，进程里最早的脚本执行点）的 `_ready()` 第一句就是 `WindowSettings.apply_saved()`，所以 PV 也在玩家自己的窗口里播。`profile.gd` 的 `data` 字面量同步加 `fullscreen`/`window_preset`/`window_w`/`window_h`，并在 `apply_data()` 里为这三个整数键补**显式 int 归一**（§11.18 那个"JSON 读回来是 float"的坑）与范围夹取。设置页全屏按钮下新增 5 个档位按钮（`main.gd:4614-4618`），玩家手拖的窗口尺寸经 0.6s 防抖写回存档（`main.gd:4727 note_window_size()` ← `main.gd:1841 NOTIFICATION_WM_SIZE_CHANGED`）。**豁免规则**：`--headless`、`--script` 回归、命令行显式给了 `-w`/`-f`/`--resolution`/`--position` 等时**完全不碰窗口**（`window_settings.gd:43`）——这条保住了全部回归测试的窗口几何。②**启动器编译进游戏内**：`scenes/boot.tscn` 退成空壳（只留一条脚本 ext_resource，§11.58），`scripts/boot.gd` 重写成启动器——健康忠告 → 环境自检 →〔需要时〕资源导入（PV 循环 + 描金进度条 `scripts/launcher_bar.gd` + 右上角圆形静音 `scripts/launcher_mute.gd` + 15 句世界观轮播）→ 就绪后闪烁「点击任意键开始游戏」→ 进登录页；新增 `scripts/launcher_env.gd` 作玩家侧自检（与 `tools/check_class_cache.ps1` 同口径的**两份实现**；本机实测精确自检 3.1s、指纹快通道 0.2s）；静音状态写 `user://graphics.cfg` 的 `[audio] launcher_mute`，**不进** profile.json（避免跟云存档同步）。`Start-Game.cmd` 默认只起游戏，`--check` 才是旧的命令行预导入（§11.62）。③新增测试：`tests/window_settings.gd`（31 项，已跑 **31/0**）、`tests/launcher_env.gd`（**28** 项，已跑 **28/0**）、`tests/launcher_visual.gd`（4 项，出图 `build/launcher/`；刻意不真跑导入，只搭界面拍照）。④路牌：§1/§2/§3.1/§4.A/§5/§6/§8/§9/§11.57–63 与本节；§2 顺手改正两处与本次改动直接冲突的旧数字（脚本 112→**155**、测试 213→**288**，均为实测）。⑤路牌定稿前 `scripts/boot.gd` 与 `scripts/launcher_env.gd` 又各被扩了一次（新增导入兜底超时 `IMPORT_TIMEOUT_SECONDS`/`_stop_import()`；`entry_count()` 加了路径参数），**全部 boot/launcher_env 锚点已按当次实测重锚**，并补上 §11.63 与 §6 的超时行。⑥**同日第二批：水滴转场 + 两处行为修正**。转场：点任意键后 `boot.gd:610 _start_transition()` 抓一张启动器画面（`await RenderingServer.frame_post_draw` + `get_viewport().get_texture().get_image()`）→ 立刻把 `main.tscn` 实例化挂到 root（`current_scene` 手动顶替，main.gd 不读 current_scene 所以安全）→ 抓图铺到新建的 `CanvasLayer(layer=110)` 上的 `TextureRect`（材质 = 新着色器 `resources/launcher_dissolve.gdshader`，等比空间的 4~5 个圆向外扩散、圆内 alpha 归零）→ 藏掉启动器层（视频继续放，音频才淡得出来）→ 每帧推半径 → `boot.gd:753 _end_transition()` 摘材质、清数组、`set_process(false)`、释放抓图层与启动器层。登录页 `main.gd:474 fade_in_ui()` 0.5s 淡入（用户口径"秒加载、慢慢淡出"）。**时长实测得出**：`tests/launcher_visual.gd` 连拍 `10-transition-*`，400ms 还在擦、600ms 快完、800ms 全清楚 → 约 0.7s，取 `TRANSITION_SECONDS=0.9`（平均 + 0.2s 余量，到点清演算）。重启路径走同一套但底下垫纯黑（擦成黑再 `OS.create_process`）。⚠️ 为什么是"抓图"而不是 CanvasGroup：实测 CanvasGroup 的材质拿不到整组贴图（纯直通着色器渲染成默认白贴图），见 §11.57；另两条铁律 §11.64（第一帧 dt 必须跳过）、§11.65（`set_process(true)` 必须显式打开）。预览路径（`--skip-intro`/`--capture`/`--preview-*`）走 `_enter_game(false)` **不加转场**，免得既有预览截图抓到淡入中途。两处修正：健康忠告**删掉"任意键跳过"提示行**（功能保留在 `_unhandled_input()`，用户要求前端不显示）；PV 两条路径都 `loop=true`（用户反馈"播完一次停住像卡死"）。测试更新：`tests/launcher_visual.gd` 4→**11 项**（新增真鼠标点击：点静音按钮不触发进游戏、点空白处立刻挂上主场景、转场收尾释放启动器层、结束后看得见登录页），`tests/launcher_env.gd` 28→**29 项**（新增 `entry_count()` 目录不存在返回 0）。本批又改动了 `boot.gd`（+约 70 行）与 `main.gd`（+`fade_in_ui`），**boot/main 相关锚点已全部按当次实测重锚**。 |
 
 | 2026-10-12 | （本轮未提交） | **水滴转场预热：把它做成"编译着色器的一部分"（用户第 4 轮）**。用户报"电脑差，点击后有转场但会卡几秒，想提前渲染、转场收尾彻底释放"。先量化真因（临时 `[timing]` 探针，已移除）：点击那一刻 `await_frame=4ms readback=8ms load_scene=5268ms instantiate=1ms add_child(_ready)=4524ms` —— **转场演算只有约 12ms，9.8s 全在"现加载 main.tscn + 跑它的 `_ready()`"，另有一口是着色器管线首次绘制才编译**。于是 `scripts/boot.gd` 加三件事，全部提前到"玩家还在看开场"时做，点击时只复用：① **GPU 预热** `boot.gd:245 _shader_warm_setup()`——在 `_build_scene_ui()` 里就建好 `ShaderMaterial` 并挂在一张满屏贴图上先画两帧（`boot.gd:265 _park_warm_plate()` 后收起），它排在 `black` 之前被不透明黑底盖住，玩家看不见；`boot.gd:610 _start_transition()` 改为**复用**这个材质，不再 `ShaderMaterial.new()`。② **场景预热** `boot.gd:385 _begin_prewarm()`/`boot.gd:395 _prewarm()`——`load` 走 `ResourceLoader.load_threaded_request`（后台线程），`instantiate + add_child`（同步跑 main.gd 的 `_ready()`）留在主线程但挪到待机期（`boot.gd:422 _prewarm_attach()`，先 `PROCESS_MODE_DISABLED` 防误触，点击时改回 `INHERIT`）。③ **闸门 + 藏卡顿**：`boot.gd:439 _finish_prewarm()` 之前 `boot.gd:793 _unhandled_input()` 在 VIDEO 阶段不放行"任意键"，先显示 `boot.gd:451 _show_preparing()`（"正在准备登录界面~"）；起跑点 `boot.gd:326 _maybe_prewarm_early()` 挂在自检之后（**绝不能更早**：类缓存过期时 `load(main.tscn)` 会解析失败，硬约束③）；等预热放在**静态**的忠告画面上（`boot.gd:298 _hold_for_prewarm()`，上限新常量 `boot.gd:36 PREWARM_HOLD_MAX_SECONDS`=30s，到点必须放行，否则闸门永不开）。④**收尾彻底释放**：`boot.gd:753 _end_transition()` 除原有"停 `_process`、清 4 个水滴数组、删抓图盖板、`queue_free()` 启动器层"外，再把材质/预热贴图/提示节点引用全部置空。⑤`play_advice()` 的淡出改用**新** tween（旧那条跑完即回收，再往上加步骤会报"无效 Tween"）。**实测**：`tests/launcher_visual.gd` 扩到 **17 项 / 0 失败**（新增 3 项预热旗标 + 1 项"复用同一实例" + 1 项点击耗时 + 1 项盖板无残留），窗口版实跑 `[prewarm] ready in 8014ms` / `[prewarm] click setup 26ms`，无 SCRIPT ERROR；真实入口（`--headless --quit-after`）实跑 `[prewarm] ready in 7612ms`，加载落在静态忠告里、PV 不卡。⑥路牌：§3.1 链路、§4.A 新行「转场预热」、§5 新行、§6 新常量行、§11.67、本节。 |
-| 2026-10-19 | （本轮未提交） | **首次导入提速 + 进度条分阶段（用户报"重新 clone 后首启十多分钟、进度条卡在 1%"）**。①**先量化**（`.godot/imported` 每个文件的 mtime 就是硬证据）：一次全新导入 **11 分 00 秒**（17:04:34→17:15:34）、4138 个资源、7248 条目、4.6 GB 缓存；其中 **6 分 26 秒**只完成了 108 个条目 = **55 个 `.ctexarray`**（`scenes/story/act*.exr` / `opening-*.exr`，1024×4096×2 切片、HDR BPTC 编码，约 7 秒/张、串行），它们只占资源数 **1.3%**；剩下 4000 个资源只用 4.5 分钟（约 15 个/秒）。②这 55 个 EXR **无任何引用**：1214 个 `.scn/.tscn/.tres/.res/.cfg` 里搜它们的 uid = 0 命中，代码里搜 `.exr` = 0 命中（只有它们自己的 `.import` 提到）→ 本地删除 55 个 `.exr` + 55 个 `.exr.import`（228.8 MB；清单与恢复命令在 `dist/cleanup-2026-10-19-exr.txt`；**已随本轮 `chore(assets)` 提交**，历史里可 `git revert` 找回、工作区可 `git restore -- scenes/story` 从上一提交取回）。⚠️ `scenes/story/*.tscn` 与 `.scn` **不能**按"静态搜不到引用"就删——故事模式是运行时拼路径加载的（`main.gd:407 --preview-story` + `story_act_art.gd`），它们是真内容。③**实测重导**（删掉整个 `.godot` 后 `--headless --import`）：**8 分 34 秒**（514.2s）、4083 个资源、7138 条目、4.5 GB——EXR 那 6.4 分钟消失，但总时长只回收 2.4 分钟：余下 **2800 张 2048² BPTC 贴图**现在稳定吃约 7 分钟（每分钟 280–770 条目，`.ctex` 占 4.4 GB）。下一刀要切的是 `compress/mode=2` 的大贴图（改无损/降 `size_limit`）或缓存快照，不是 EXR。④`launcher_env.gd` 的折算系数 2.1 → **实测 1.75**（7248/4138；7248 = 贴图/音频/字体各 2 份 + glb 的 `.scn`+folding cfg 各 2 份），旧值让主条最多爬到 83% 再跳 100%。⑤进度条改成**一个框两行条**（用户要求：主条位置不变、子条在下面适当间距、不单独给子条加边框、框高适配）：`launcher_bar.gd` 框高 36→62（`PAD 11 / MAIN_H 25 / GAP 6 / SUB_H 8`），新增 `sub_ratio`/`set_sub_ratio()`/`needed_height()`；`boot.gd` 新增 `BAR_SIZE`(760×62)、`PHASE_ORDER`/`PHASE_LABELS`、`_prepare_phases()`（从 `env_report.pending` 按扩展名分组）、`_update_sub_progress()`（一次目录列举同时喂两条条，按"这一轮谁长得多"挑当前阶段）、`_eta_seconds()/_eta_text()`、`bar_frame_ok()`；子条下面那行 15px 小字给"阶段 x/y · 剩余约 N 分"。⑥新增 `tests/launcher_progress.gd`（**18 项 / 0 失败**：钉 1.75、按类型分组、阶段切换与 12/55、框内布局对账）；`tests/launcher_visual.gd` **17 项 / 0 失败**（新布局照旧过）；`tests/launcher_env.gd` 29 项里 2 项在本沙箱红——`user://` 不可写导致快通道戳存不下（探针实测 `FileAccess.open("user://…")` 返回错误 12），与本次改动无关，真机可写。⑦路牌：§4.A 进度条行、§5 测试行、§11.85、本节。 ⑧**同日第二批（用户三条反馈）**：**(a) `~` 语气分级**——15 句里三条严肃句（"鸦羽说，斩血潮者必先沾血" / "血香散出去之后，异兽总会来" / "白骨王座上的钟摆，有人正在拨动"）去掉 `~`，其余保留；规矩写进 `boot.gd:FLAVOR` 上方注释与 §11.85，测试用 XOR 钉住（轻松句必须带、严肃句必须不带）。**(b) 启动器布局大屏适配**——真因：`stretch=canvas_items` + `aspect=expand` 下 `get_visible_rect()` 不是 1440×900（实测 1920×1080 窗口 → 1600×900；2560×1600 → 1467×900），而编译页/静音按钮/两张卡片全按 `const VIEW` 摆，于是"PV 铺满、启动器 UI 缩在左上角一个固定框里"。改法：新增 `boot.gd:launcher_layout(canvas)`（纯函数，`scale=clamp(canvas.x/1440,0.7,2.6)`、纵向用画布比例）与 `_apply_launcher_layout()`（第一次调用自己 connect `viewport.size_changed`，忠告/PV/编译页/卡片/静音按钮建完都调一次）；条子与卡片用 `Control.scale` 整体缩放（内部 11/25/6/8 分层不破坏），字号用 `add_theme_font_size_override` 单独放大；`const VIEW` 退成兜底初值。实测 1600×900 下条子 = x 377.8→1222.2（宽 52.8%、水平居中）、静音按钮右边距 30×1.111。**(c) 文档**：§11.86（画布真值）、§11.87（**"静态搜不到引用"≠ 可删**，含 5 步处理方法：双通道搜路径+uid → 搜动态拼接与后缀 → 查 `*.cmd` 入口 → 查 tools 生成器 → 先隔离后删除），§4.A/§5 同步。验证：`tests/launcher_progress.gd` **51 项 / 0 失败**（新增 `~` 语气 16 项 + 四种画布缩放 17 项），`tests/launcher_visual.gd` **17 项 / 0 失败**。**(d)** 顺带记下 §11.88：`--headless` 冒烟启动会因 `load_threaded_request` 报一屏假的 `Could not preload`（同资源直接 `load()` 正常、开窗启动零错误），判定资源缺失必须开窗。 |
+| 2026-10-19 | （本轮未提交） | **首次导入提速 + 进度条分阶段（用户报"重新 clone 后首启十多分钟、进度条卡在 1%"）**。①**先量化**（`.godot/imported` 每个文件的 mtime 就是硬证据）：一次全新导入 **11 分 00 秒**（17:04:34→17:15:34）、4138 个资源、7248 条目、4.6 GB 缓存；其中 **6 分 26 秒**只完成了 108 个条目 = **55 个 `.ctexarray`**（`scenes/story/act*.exr` / `opening-*.exr`，1024×4096×2 切片、HDR BPTC 编码，约 7 秒/张、串行），它们只占资源数 **1.3%**；剩下 4000 个资源只用 4.5 分钟（约 15 个/秒）。②这 55 个 EXR **无任何引用**：1214 个 `.scn/.tscn/.tres/.res/.cfg` 里搜它们的 uid = 0 命中，代码里搜 `.exr` = 0 命中（只有它们自己的 `.import` 提到）→ 本地删除 55 个 `.exr` + 55 个 `.exr.import`（228.8 MB；清单与恢复命令在 `dist/cleanup-2026-10-19-exr.txt`；**已随本轮 `chore(assets)` 提交**，历史里可 `git revert` 找回、工作区可 `git restore -- scenes/story` 从上一提交取回）。⚠️ `scenes/story/*.tscn` 与 `.scn` **不能**按"静态搜不到引用"就删——故事模式是运行时拼路径加载的（`main.gd:407 --preview-story` + `story_act_art.gd`），它们是真内容。③**实测重导**（删掉整个 `.godot` 后 `--headless --import`）：**8 分 34 秒**（514.2s）、4083 个资源、7138 条目、4.5 GB——EXR 那 6.4 分钟消失，但总时长只回收 2.4 分钟：余下 **2800 张 2048² BPTC 贴图**现在稳定吃约 7 分钟（每分钟 280–770 条目，`.ctex` 占 4.4 GB）。下一刀要切的是 `compress/mode=2` 的大贴图（改无损/降 `size_limit`）或缓存快照，不是 EXR。④`launcher_env.gd` 的折算系数 2.1 → **实测 1.75**（7248/4138；7248 = 贴图/音频/字体各 2 份 + glb 的 `.scn`+folding cfg 各 2 份），旧值让主条最多爬到 83% 再跳 100%。⑤进度条改成**一个框两行条**（用户要求：主条位置不变、子条在下面适当间距、不单独给子条加边框、框高适配）：`launcher_bar.gd` 框高 36→62（`PAD 11 / MAIN_H 25 / GAP 6 / SUB_H 8`），新增 `sub_ratio`/`set_sub_ratio()`/`needed_height()`；`boot.gd` 新增 `BAR_SIZE`(760×62)、`PHASE_ORDER`/`PHASE_LABELS`、`_prepare_phases()`（从 `env_report.pending` 按扩展名分组）、`_update_sub_progress()`（一次目录列举同时喂两条条，按"这一轮谁长得多"挑当前阶段）、`_eta_seconds()/_eta_text()`、`bar_frame_ok()`；子条下面那行 15px 小字给"阶段 x/y · 剩余约 N 分"。⑥新增 `tests/launcher_progress.gd`（**18 项 / 0 失败**：钉 1.75、按类型分组、阶段切换与 12/55、框内布局对账）；`tests/launcher_visual.gd` **17 项 / 0 失败**（新布局照旧过）；`tests/launcher_env.gd` 29 项里 2 项在本沙箱红——`user://` 不可写导致快通道戳存不下（探针实测 `FileAccess.open("user://…")` 返回错误 12），与本次改动无关，真机可写。⑦路牌：§4.A 进度条行、§5 测试行、§11.85、本节。 ⑧**同日第二批（用户三条反馈）**：**(a) `~` 语气分级**——15 句里三条严肃句（"鸦羽说，斩血潮者必先沾血" / "血香散出去之后，异兽总会来" / "白骨王座上的钟摆，有人正在拨动"）去掉 `~`，其余保留；规矩写进 `boot.gd:FLAVOR` 上方注释与 §11.85，测试用 XOR 钉住（轻松句必须带、严肃句必须不带）。**(b) 启动器布局大屏适配**——真因：`stretch=canvas_items` + `aspect=expand` 下 `get_visible_rect()` 不是 1440×900（实测 1920×1080 窗口 → 1600×900；2560×1600 → 1467×900），而编译页/静音按钮/两张卡片全按 `const VIEW` 摆，于是"PV 铺满、启动器 UI 缩在左上角一个固定框里"。改法：新增 `boot.gd:launcher_layout(canvas)`（纯函数，`scale=clamp(canvas.x/1440,0.7,2.6)`、纵向用画布比例）与 `_apply_launcher_layout()`（第一次调用自己 connect `viewport.size_changed`，忠告/PV/编译页/卡片/静音按钮建完都调一次）；条子与卡片用 `Control.scale` 整体缩放（内部 11/25/6/8 分层不破坏），字号用 `add_theme_font_size_override` 单独放大；`const VIEW` 退成兜底初值。实测 1600×900 下条子 = x 377.8→1222.2（宽 52.8%、水平居中）、静音按钮右边距 30×1.111。**(c) 文档**：§11.86（画布真值）、§11.87（**"静态搜不到引用"≠ 可删**，含 5 步处理方法：双通道搜路径+uid → 搜动态拼接与后缀 → 查 `*.cmd` 入口 → 查 tools 生成器 → 先隔离后删除），§4.A/§5 同步。验证：`tests/launcher_progress.gd` **51 项 / 0 失败**（新增 `~` 语气 16 项 + 四种画布缩放 17 项），`tests/launcher_visual.gd` **17 项 / 0 失败**。**(d)** 顺带记下 §11.88：`--headless` 冒烟启动会因 `load_threaded_request` 报一屏假的 `Could not preload`（同资源直接 `load()` 正常、开窗启动零错误），判定资源缺失必须开窗。 ⑨**同日第三批（协作反馈）**：`fix(rogue)` 窄屏默认收起构筑派生链预览（`main.gd:PREVIEW_AUTO_MIN_WINDOW`=1366；按 V 仍可强制展开），因为面板按设计坐标压住构筑页正文左列；路牌新增 **§12.7 画面自适应规范**（真值/全屏页/CanvasLayer/自查清单/已知实例），并把 §12 后面 10 条日期小标题按 `12.x 标题（日期）` 重编号为 **12.9–12.18**（原来是无编号的 `### 2026-10-xx …`，与 12.1–12.6 层级不一致）。 |
 
-### 12.7 最近一次全量审计（2026-10-07）
+### 12.7 画面自适应规范（2026-10-19，改任何全屏页 / 浮层前必读）
+
+**布局真值只有一个：`get_viewport().get_visible_rect().size`**（下文叫"画布"）。工程是
+`stretch=canvas_items` + `aspect=expand`，所以画布**不是**窗口像素：1280×720 的窗口里画布是
+**1600×900**，2560×1600 的窗口里是 **1467×900**（`§11.86` 有实测表）。任何按 1440×900 写死、
+或按 `DisplayServer.window_get_size()` 算边距的 UI，换一台机器就会错位/被切。
+
+**A. 全屏页（绝大多数情况）：挂到 `main.root` 下，照 1440×900 设计坐标写就行。**
+- `main.gd:309` 的 `root` 就是一块 1440×900 的画布，`main.gd:677 fit_ui()` 用
+  `min(canvas.x/1440, canvas.y/900)` 统一缩放并居中（信箱式，16:9 时左右留边）；
+- 页面只要 `host.overlay.add_child(self)` + `size=Vector2(1440,900)`，**自动跟随**，
+  不需要自己算缩放、也不要按窗口改字号；
+- 已核对走这条路的有：`rogue_build_ui` / `rogue_inventory` / `extraction_inventory` /
+  `vn_full_gallery` / `story_dialogue_ui` / `rogue_map_screen` / `rogue_build_preview`。
+
+**B. 独立 `CanvasLayer` / 自绘浮层：层内控件用画布尺寸，别用窗口尺寸。**
+- 实测（2026-10-19，1280×720 窗口）：`CanvasLayer` 里的 200px 色块渲染成 160px，
+  说明**层内容跟着拉伸一起缩放**，只是它不享受 `root` 的 1440×900 信箱居中；
+- 所以层内"贴右边/贴底部"用 `view.x - w` / `view.y - h`（`view` 取 `get_visible_rect()`），
+  参考 `controller_ui.gd:tick()` 的底部提示带（用 `view` 算宽、字号按 `view.x/80` 夹取）；
+- 纯自绘控件（`_draw`）里所有坐标都必须由自己的 `size` 推出，参考
+  `boot.gd:launcher_layout()` + `launcher_bar.gd`（内部 `PAD/MAIN_H/GAP/SUB_H` 全按
+  `size` 缩放），以及 `tests/launcher_progress.gd` 对 1440/1467/1600/1920 四种画布的断言。
+
+**C. 新页面自查清单（1 分钟，改完必做）**
+1. `size=Vector2(1440,900)` 的父节点是 `overlay` / `page` / `root` 吗？挂到别处就**不会**
+   被 `fit_ui()` 缩放（这正是"有些功能窗口没适配"的典型成因）；
+2. 有没有写死 `1440` / `900` / `1280` 去算"右边距 / 居中 / 分栏宽度"？改成
+   `canvas.x - …` 或直接 `set_anchors_and_offsets_preset(PRESET_FULL_RECT)`；
+3. 有没有拿 `DisplayServer.window_get_size()` 当布局真值？换 `get_visible_rect()`；
+4. 浮层会不会压住下面的按钮文字？小屏上尤其明显——压住了就把浮层默认收起（见 D）；
+5. 三档截图验收：**1280×720**（笔记本）、**1920×1080**（16:9）、**2560×1600**（16:10），
+   看边缘有没有被切、浮层有没有盖住可点区域。
+
+**D. 已知实例：构筑页的"派生链预览"面板**
+`rogue_build_preview.gd:58` 的 `PANEL_RECT=(64,205,468,517)` 是**设计坐标固定**的只读浮层，
+`rogue_build_preview.gd:43-57` 记录了它与构筑页左列、HUD、prompt 的逐项避让取舍。它压住的是
+构筑页正文的左起约 468px（页面正文从 x=66/76 起），在 1280 宽的机器上等于压掉整行开头；
+所以 `main.gd` 的显隐条件补了"窄屏默认收起"（窗口宽 < 1366 时不自动弹出，按 V 才展开）。
+**新做浮层时别照着往左列叠**：先看这块有没有被占，能放进页头/页脚空带的优先放那里。
+
+### 12.8 最近一次全量审计（2026-10-07）
 
 - **范围**：全文 `文件:行号` 锚点，`tools/verify_anchors.py` 解析出 **675** 个（含区间与裸行号锚点），逐条对代码实测。
 - **结果**：**全部通过**——OK 455 / DRIFT 0 / WRONG 0；另有 220 条 HINT（锚点只写了行号、附近才出现符号名，或按设计就容忍 ≤3 行漂移，脚本无法硬校验，建议后续逐步补符号名）。
 - **本轮改动**：①肉鸽岔路修复（`rogue_map.gd`）与营地行囊面板三修（`main.gd`/`camp_pack.gd`）重锚 `main.gd` 共 53 处；②引魂灵体索敌（`rogue_build.gd` 前部插入常量与五个函数）把该文件的路牌锚点全部重锚（`stat` 81→117、`hit_multiplier` 259→435、`hit_event` 341→517、`action_event` 544→735、`legal_talents` 746→933、`management` 798→985、`award` 847→1034、`add_experience` 973→1178、`hero_effect` 1008→1126、`visual_state` 55→80、`core_visual` 164→183、武器分支表 :320-327→:496-659、match 表 :423-445→:609）；③新增 §4.E 路线图、§4.F 派生链预览与灵体索敌、§4.R 开发工具与判定框总览、§5 四行、§6 灵体数值、§9 开发者启动、§11.43–48 等条目。**本轮 `main.gd` 又插了 9 行（开发者覆盖层挂载点），全部 `main.gd` 锚点再重锚一次**：`verify_anchors.py --fix` 机械修正 21 处，另有 28 处是「只写短路径」的锚点（工具的 `--fix` 因路径归一化匹配不上），用 `build/probe/fix_bare_anchors.py` 按工具自己的 `--json` 报告逐行改写。上一轮（2026-10-05，基准 `abcbaaf`）的审计记录见 §12.6 对应行。
 - **结论**：每次 pull 到含代码变更的提交后，先跑一次 `python tools/verify_anchors.py --guide PROJECT-GUIDE.md --root . --summary`；有 DRIFT / WRONG 就按报告改完再交接。批量修行号可用 `--fix`（只在符号唯一命中时改，并写 `.bak`）。⚠️ **合并主线后 `--fix` 修不干净是常态**——全文重复出现的锚点会被它的去重门跳过、DRIFT 卡住不再下降，此时改按 `--json` 报告做全局替换（见 §11.50）；`--fix` 写出的 `.bak` 是临时产物，已被 `.gitignore` 忽略，勿提交（§11.51）。
 
-### 2026-10-06 本地恢复与同步
+### 12.9 本地恢复与同步（2026-10-06）
 
 肉鸽地图已接入 50 张 ComfyUI 精确三倍图，ground-manifest.json 保存专用房间背景和实测碰撞轮廓；tools/install_rogue_final_maps.py 优先选择三倍图，tools/audit_rogue_final_maps.py 与 tests/roguelike_smooth_maps.gd 验证选图及尺寸。scripts/main.gd 增加面板关闭与重新打开操作，tests/rogue_panel_close.gd 验证关闭行为。相关代码变动后的行号需重新校验。
 
-### 2026-10-06 武器与连段特效
+### 12.10 武器与连段特效（2026-10-06）
 
 具体武器配色与几何在 weapon_vfx.gd 中统一定义；Catalog.visual_weapon_index 仍负责图标与旧原画兼容，不能用于合并闯关特效身份。派生事件必须携带 combo_route；hero_combo 仅在权威 hero_effect 确认时广播。当前预览为（旧截图已清理）；图片素材与强化版本试玩为（旧文件已清理），详情见 WEAPON-IMAGE-VFX.md。
 
-### 2026-10-07 本地修改与上游同步补充
+### 12.11 本地修改与上游同步补充（2026-10-07）
 
 - 武器视觉入口：`scripts/weapon_vfx.gd` 管理武器攻击与强化反馈，`scripts/weapon_image_art.gd` 读取透明原画，方形原画清单随导出配置保留。
 - Boss 攻击设计与分段特效：`scripts/boss_attack_design.gd`、`scripts/boss_effect_sequence.gd`；设计说明见 `BOSS-ATTACK-DESIGN.md`。
 - 肉鸽房间面板保留关闭、重新打开与奖励覆盖后的关闭状态，同时采用上游增量 HUD 和商店回收逻辑。
 - 合并验证：Godot 无头导入无解析错误；面板关闭 45、房间宝箱 75、Boss 攻击意图 1592 项检查，均为 0 失败。
 
-### 2026-10-07 武器实际机制与亮度修正
+### 12.12 武器实际机制与亮度修正（2026-10-07）
 
 主表现改为 weapon_mechanics.gd 依据实际 family/pattern/spell 和 attack_kind 选图；32 张原始透明方图与完整提示词在 assets/combat/imagegen-mechanics。圆斩中心和高度、光束宽度/端点、爆发落点/半径来自实际事件。预览（旧截图已清理），试玩（旧文件已清理）；详见 WEAPON-MECHANICS-VFX.md。
 
@@ -1222,13 +1263,13 @@ git status --porcelain
 
 Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/rogue_combat.gd` 的 `BOSS_ORDER`、`boss_pool()` 和 `setup_boss()`。条件终局分派位于 `scripts/session.gd` 的 `defeated_boss` 分支：无名赤月存活时不得触发隐藏战。Boss 特效事件必须携带实际 `art_key`，死亡事件不能依赖已从快照移除的敌人。
 
-### 2026-10-08 闯关构筑效果审计
+### 12.13 闯关构筑效果审计（2026-10-08）
 
 完整清单见 `output/ROGUE-EFFECTS-AUDIT-2026-10-08.md`：252条构筑内容及永久成长/层变数/诅咒/事件/32派生，区分静态接入、动态复现与规则歧义，记录32组待处理问题；本次未修改运行玩法、未重新导出。
 
 武器升级实伤验证入口：`tests/rogue_weapon_upgrade_audit.gd:23 run()`，48把武器的品质、锻造、稳锋、补正及实例绑定共718项检查通过；原始数值在 `output/rogue-weapon-upgrade-audit.json`。定向观察入口：`output/rogue_effect_audit_probe.gd:34 run()`，21场景复现当前异常/歧义，结果在 `output/rogue-effect-audit-observations.json`，不表示问题已经修复。目录重建：`python tools/build_rogue_effect_audit.py`。重点：领取天赋未激活的反馈、变数正倍率截断/负生命重复应用、房间灰烬遗漏永久入库、不同盾来源共用general、联机个人成长数据通道。
 
-### 2026-10-08 构筑效果修复与天赋滚动位置
+### 12.14 构筑效果修复与天赋滚动位置（2026-10-08）
 
 修复状态见 `output/ROGUE-EFFECTS-FIXES-2026-10-08.md`；前面的审计清单是修复前快照。天赋界面 `scripts/rogue_build_ui.gd:19 remember_scroll()` 与 `scripts/rogue_build_ui.gd:23 restore_scroll()` 保留各页位置，先设置内容范围防止重建当帧闪回顶部，再在布局结束恢复；列表保持收藏顺序。按钮与布局回归在 `tests/rogue_build_scroll.gd:16 run()`（10项）。
 
@@ -1236,25 +1277,25 @@ Boss 顺序入口：`scripts/expedition.gd` 的 `roll_dawn_kind()`；`scripts/ro
 
 专项 `tests/rogue_effect_fixes.gd:17 run()`（65项）、`tests/rogue_weapon_upgrade_audit.gd:23 run()`（718项）均通过；新增真实ENet个人成长测试 `tests/rogue_growth_network_fixes.gd:17 run()`（房主9/客户端7），原构筑2人/4人联机均通过。累计27415项通过；另有修复前源码副本复现的Boss1001/6、小怪103/1既有失败，详见修复报告，不能把本轮描述为全仓库全绿。此轮未重新导出EXE。
 
-### 2026-10-09 手柄输入与战斗震动
+### 12.15 手柄输入与战斗震动（2026-10-09）
 
 输入与本地震动统一在 `scripts/controller.gd` 的 `setup()` / `handle()` / `tick()` / `combat()`；主界面 `setup_inputs()`、`_input()`、`_process()`、`on_combat_audio()` 接入。营地实际页面名为 `ground`，按键桥接保留营地原有互动、钓鱼、行囊和地图逻辑。两种战斗共用扳机蓄力、摇杆瞄准及动作映射；面板用虚拟鼠标支持拖拽、右键、滚动和旋转。
 
 震动只作用于最后操作的本地手柄：普通出招、实际命中、重击、蓄力、受伤、闪避、大招和装填分别反馈；双马达包络按较强值混合，暂停、失焦和断开时停震。`scripts/profile.gd` 保存 `controller_rumble` / `controller_rumble_strength`；`main.gd` 的 `show_settings()` 提供开关、强度和试震。操作表与验收范围见 `CONTROLLER.md`；自动化入口 `tests/controller.gd` 的 `run()`，实物震感需接手柄验证。
 
-### 2026-10-09 手柄 UI 修复与按键提示
+### 12.16 手柄 UI 修复与按键提示（2026-10-09）
 
 新增 `scripts/controller_ui.gd` 的 `scope()` / `ensure_focus()` / `navigate()` / `activate()` / `back()` / `tick()`：标题、设置、角色/出征页、房间、行囊、奖励、事件与营地子面板采用可见控件焦点；十字键/左摇杆选择，A 确认，B 返回，滑杆左右调节。默认选中标题「开始游戏」，右摇杆仍可切换虚拟光标。虚拟鼠标延后通过 viewport 局部坐标注入，修复事件重入和窗口缩放下的点击失效；`main.gd` 的 `mouse_point()` 读取手柄光标坐标。
 
 上下文提示在独立 CanvasLayer 展示（键鼠操作时隐藏），Xbox/PlayStation 按设备名称选择按钮字样；`prompt_text()` / `convert_prompts()` 更新 HUD 与营地互动文字并可恢复原键鼠文字。两战场的 `input_hint` 回调更新绘制式提示。`rogue_reward_ui.gd` 设置卡牌→领取按钮的焦点路径；`item_tile.gd` 和 `rogue_inventory.gd` 标记可导航物品。专项 `tests/controller_ui.gd` 验证真实标题按钮与实际三选一领取链路，窗口预览由 `tests/controller_ui_visual.gd` 生成。
 
-### 2026-10-09 手柄战斗键位调整
+### 12.17 手柄战斗键位调整（2026-10-09）
 
 用户指定 RB 轻击、RT 重击、B 点按闪避/长按奔跑、A 跳跃。`controller.gd` 的 `handle_combat()` / `advance_gestures()` / `sprinting()` 处理独立轻重击输入与 B 的 0.25 秒阈值；`setup()` 只移除旧手柄绑定，保留键鼠。互动移到 Y，菜单继续 A 确认/B 返回。`main.gd` 的本地 `sprint` 合并手柄长按状态。
 
 `session.gd` 的 `perform()` 把 `attack_press` 的 `heavy` 意图交给 `weapon_hold_attack.gd` 的 `begin()`；重击点按按 `HEAVY_MIN_RATIO`（0.35）下限走现有重击机制，长按继续增强，键鼠普通点按不变。判定与资源消耗均由权威执行，客户端没有自行改伤害/蓄力时间。`controller_ui.gd` 同步战斗按键提示与互动/跳跃字样。新增 `tests/controller_layout.gd` 的 `run()`：两种模式真实轻重击、B 点按/长按互斥、奔跑移动、面板取消、已有魔境跳跃、失焦取消及键鼠绑定。
 
-### 2026-10-10 第二至第六幕美术扩展
+### 12.18 第二至第六幕美术扩展（2026-10-10）
 
 独立acts-2-6-master.blend与84个新GLB、17套新PBR、15份地形、45个可编辑/烘焙区域；五种区域轮廓与十种额外副本题材。story_act_art管理共享渲染/移动数据，story_regional_environment管理新建筑/灯光，world跨幕释放缓存。原地图ID、73任务不变。专题ACTS-2-6-ART.md与tests/story_later_acts.gd同步；长时间性能验收暂缓。
 
@@ -1309,3 +1350,4 @@ git ls-files --others --exclude-standard | Select-String '\.uid$'
 赤月遗书数值：INTERACT_RADIUS=105，护送接应半径180、跟随启动220；红潮周期16秒、提前6秒预警；六次兵装/防具整备；见scripts/scarlet/campaign.gd及combat.gd。
 
 2026-10-15 更正：以原游戏为基础添加剧情和玩法。撤下替代地图与替代渲染，原55张地图、连续连接路、副本进出、StoryWorld／World3D／GraphicsQuality、角色帧、接触阴影和StoryCombatVFX继续使用；行囊、仓库、商店、锻造、装备、专精、宝箱与传送阵已接回。绑定表见 docs/rpg/SCARLET-MAP-BINDINGS.md。
+
