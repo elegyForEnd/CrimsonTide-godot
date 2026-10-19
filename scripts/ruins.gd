@@ -6,6 +6,7 @@ const MAP_SCALE := 1.5
 const SIZE := BASE_SIZE*MAP_SCALE
 const CENTER := SIZE/2
 const SPAWN := Vector2(560,2400)*MAP_SCALE
+const CITY_GATE := Vector2(3860,1880)*MAP_SCALE
 const EXIT_NAMES := ["西境驿站","东岸渡口","北境钟门","晨钟归途"]
 const BIOME_NAMES := ["风铃原野","白垩旧城","月晶高地","蔷薇庭域","雾汐湿地","圣血王庭"]
 const COLORS := [Color("809d83"),Color("b1a28c"),Color("9990b5"),Color("ae7f8c"),Color("689c9b"),Color("c9b99c")]
@@ -16,6 +17,17 @@ const CACHE_TIERS := [0,1,2,2,3,4]
 const AssetLayout = preload("res://scripts/scene_asset_layout.gd")
 var extent := SIZE
 var layout_scale := MAP_SCALE
+var spawn := SPAWN
+var center := CENTER
+var city_gate := CITY_GATE
+var exit_names: Array[String] = []
+var sealed_exits: Array[int] = []
+var rivers: Array = []
+var lakes: Array = []
+var generated := false
+var layout_version: int = 0
+var layout_hash: String = ""
+var terrain: Variant = null
 var interior := false
 var walls: Array[Rect2] = []
 var sites: Array = []
@@ -35,10 +47,32 @@ var coast := PackedVector2Array()
 var features: Array=[]
 var building_footprints: Array[Rect2]=[]
 
+func _init() -> void:
+	for name in EXIT_NAMES:
+		exit_names.append(name)
+
+func exit_name(index: int) -> String:
+	if index >= 0 and index < exit_names.size():
+		return exit_names[index]
+	return "撤离点 %d" % (index + 1)
+
+func exit_open(_index: int) -> bool:
+	return true
+
 func generate(value: int) -> void:
 	# Author geometry in the baked terrain's coordinates, then expand it together.
 	extent=BASE_SIZE
 	layout_scale=1.0
+	spawn=SPAWN
+	center=CENTER
+	city_gate=CITY_GATE
+	generated=false
+	layout_version=0
+	layout_hash=""
+	terrain=null
+	sealed_exits.clear()
+	rivers.clear()
+	lakes.clear()
 	map_seed=value
 	rng.seed=value
 	walls.clear()

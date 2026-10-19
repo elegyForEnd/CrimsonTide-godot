@@ -56,12 +56,15 @@ var character_frames: CharacterFrames
 var move_phases: Dictionary = {}
 var blood_tide = preload("res://scripts/blood_tide.gd").new()
 var chest_sync_timer := 0.0
+var fog: MapFog
+var fog_name_timer := 0.0
 
 func _ready() -> void:
 	world_3d=WorldPresentation.new()
 	add_child(world_3d)
 	boss_models=preload("res://scripts/boss_models_3d.gd").new(); world_3d.add_child(boss_models)
 	session.started.connect(boss_models.reset); session.map_changed.connect(boss_models.reset)
+	session.started.connect(reset_fog); session.map_changed.connect(reset_fog)
 	world_3d.add_child(idle_billboards)
 	visibility_changed.connect(func(): world_3d.visible=visible)
 	world_3d.visible=visible
@@ -73,6 +76,8 @@ func _ready() -> void:
 	sentinels=load("res://assets/sentinels.png")
 	ground=load("res://assets/courtyard.png")
 	world_art=WorldArt.new()
+	camera=session.ruins.spawn
+	reset_fog()
 	texture_repeat=CanvasItem.TEXTURE_REPEAT_ENABLED
 	enemy_frames=EnemyFrames.new()
 	boss_frames=BossFrames.new()
@@ -131,6 +136,13 @@ func _ready() -> void:
 	session.map_changed.connect(func(): chest_sync_timer=0.0; waypoint=Vector2(-1,-1); explored.clear(); defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); camera=session.players.get(session.my_id(),{"p":RoyalCity.GATE}).p)
 	session.started.connect(func(): chest_sync_timer=0.0; boss_seen.clear(); boss_health.clear(); waypoint=Vector2(-1,-1); map_filter=0; defeated_enemies.clear(); combat.reset(); smooth_positions.clear(); previous_positions.clear(); velocity_visual.clear(); move_phases.clear())
 
+func reset_fog() -> void:
+	if session == null or session.ruins == null:
+		return
+	fog=MapFog.new()
+	fog.configure(session.ruins.extent)
+	fog_name_timer=0.0
+
 func _process(dt: float) -> void:
 	if not visible:
 		blood_tide.update(self)
@@ -158,6 +170,8 @@ func _process(dt: float) -> void:
 		var target: Vector2=session.players.get(follow_id,p).p
 		var half := get_viewport_rect().size/2
 		target=target.clamp(half,session.ruins.extent-half)
+		if session.ruins.generated:
+			fog.reveal_capsule(camera,target,MapFog.REVEAL_RADIUS)
 		camera=camera.lerp(target,1-exp(-dt*10))
 		for ally in session.players.values():
 			var old_pos: Vector2=previous_positions.get(ally.id,ally.p)
@@ -173,6 +187,12 @@ func _process(dt: float) -> void:
 		for x in range(-2,3):
 			for y in range(-2,3):
 				explored[Vector2i(target/160)+Vector2i(x,y)]=true
+		if session.ruins.generated:
+			fog_name_timer-=dt
+			if fog_name_timer<=0.0:
+				fog_name_timer=1.0
+				if session.ruins.terrain is TerrainMap:
+					fog.refresh_names(session.ruins.terrain)
 	world_3d.sync(session.ruins,camera,get_viewport_rect().size)
 	boss_models.sync(session.enemies,dt,clock,camera)
 	chest_sync_timer-=dt
@@ -227,13 +247,13 @@ func _draw() -> void:
 		var gate_rect := Rect2(pos-Vector2(105,52),Vector2(210,105))
 		if channel>0:
 			draw_texture_rect(extraction_sigil,gate_rect.grow(3+channel*7),false,Color(0.30,1.0,0.78,0.15+channel*0.24))
-		draw_texture_rect(extraction_sigil,gate_rect,false,Color.WHITE if session.can_extract() else Color(0.48,0.52,0.55,0.74))
-		var exit_text: String=Ruins.EXIT_NAMES[i]
-		if not session.can_extract():
+		draw_texture_rect(extraction_sigil,gate_rect,false,Color.WHITE if session.can_extract_at(i) else Color(0.48,0.52,0.55,0.74))
+		var exit_text: String=world.exit_name(i)
+		if not session.can_extract_at(i):
 			exit_text+=" · 封锁"
 		elif key_hint(pos,session.EXIT_RADIUS):
 			exit_text+=" · [E] 撤离"
-		label(pos+Vector2(-58,80),exit_text,15,Color("a5ead6") if session.can_extract() else Color("98a3aa"))
+		label(pos+Vector2(-58,80),exit_text,15,Color("a5ead6") if session.can_extract_at(i) else Color("98a3aa"))
 	for shrine in world.shrines:
 		var pos: Vector2=shrine.p
 		if pos.distance_squared_to(camera)>visible_distance_sq: continue
@@ -552,50 +572,73 @@ func draw_map(rect: Rect2, big: bool) -> void:
 		diamond(corner,3,Color("ba9d84"))
 	var scale := rect.size/session.ruins.extent
 	world_art.atlas(self,session.ruins,rect,big)
+	if session.ruins.generated and fog!=null:
+		draw_texture_rect(fog.texture(),rect,false)
+		if big:
+			for region in session.ruins.regions:
+				if not bool(region.get("named",false)): continue
+				var region_at: Vector2=rect.position+region.center*scale
+				label(region_at-Vector2(36,0),str(region.name),13,Color("eadfc8"))
 	var gate := rect.position+session.portal_position()*scale
 	diamond(gate,8 if big else 4,Color("9de8f3"))
 	if big: label(gate+Vector2(12,30),"城门 · 长按 E 切换地图" if session.can_travel() else "城门 · 血潮封锁",13,Color("9de8f3"))
+	var map_player: Dictionary=session.players.get(session.my_id(),{})
+	var map_player_pos: Vector2=map_player.get("p",Vector2.ZERO)
 	for site_index in session.ruins.sites.size():
 		var site: Dictionary=session.ruins.sites[site_index]
 		var at: Vector2=rect.position+site.p*scale
-		var discovered := explored.has(Vector2i(site.p/160))
-		if big:
+		var discovered := fog.is_revealed(site.p) if session.ruins.generated else explored.has(Vector2i(site.p/160))
+		if session.ruins.generated and not discovered:
+			continue
+		var show_label: bool = not session.ruins.generated or site.p.distance_to(map_player_pos)<900.0
+		if big and show_label:
 			var ecology_view: bool=not session.ruins.interior and map_filter==3
 			if ecology_view:
 				var area: Rect2=site.rect.grow(170)
 				var corners_block := PackedVector2Array([area.position,Vector2(area.end.x,area.position.y),area.end,Vector2(area.position.x,area.end.y)])
-				for polygon in Geometry2D.intersect_polygons(corners_block,session.ruins.regions[int(site.biome)].polygon):
-					var outline := PackedVector2Array()
-					for point in polygon: outline.append(rect.position+point*scale)
-					draw_colored_polygon(outline,Color(0.15,0.12,0.2,0.35))
-					outline.append(outline[0])
-					draw_polyline(outline,Color("eac698"),1.5,true)
+				var region_index: int=int(site.get("region",site.biome))
+				if region_index>=0 and region_index<session.ruins.regions.size():
+					for polygon in Geometry2D.intersect_polygons(corners_block,session.ruins.regions[region_index].polygon):
+						var outline := PackedVector2Array()
+						for point in polygon: outline.append(rect.position+point*scale)
+						draw_colored_polygon(outline,Color(0.15,0.12,0.2,0.35))
+						outline.append(outline[0])
+						draw_polyline(outline,Color("eac698"),1.5,true)
 			draw_rect(Rect2(at-Vector2(7,6),Vector2(14,12)),Color("b5a585") if site.tier==1 else Color("c57b8e"),false,2)
-			var caption: String=Ecology.RESIDENTS[int(site.biome)] if ecology_view else ("高危 · 珍藏" if site.tier==2 else "野外 · 补给")
-			if not session.ruins.interior: caption=Ecology.site_status(session,site_index)
+			var caption: String=""
+			if session.ruins.generated:
+				caption=""
+			else:
+				caption=Ecology.RESIDENTS[int(site.biome)] if ecology_view else ("高危 · 珍藏" if site.tier==2 else "野外 · 补给")
+				if not session.ruins.interior: caption=Ecology.site_status(session,site_index)
 			var width: float=maxf(site.name.length()*14+8,caption.length()*11+8)
-			draw_rect(Rect2(at+Vector2(8,-23),Vector2(width,38)),Color(0.06,0.075,0.085,0.93))
+			draw_rect(Rect2(at+Vector2(8,-23),Vector2(width,22 if caption=="" else 38)),Color(0.06,0.075,0.085,0.93))
 			label(at+Vector2(11,-8),site.name,14,Color("fff1d3"))
-			label(at+Vector2(11,8),caption,11,Color("eed6ba") if ecology_view else (Color("e1a3b0") if site.tier==2 else Color("b7c8b8")))
+			if caption!="":
+				label(at+Vector2(11,8),caption,11,Color("eed6ba") if ecology_view else (Color("e1a3b0") if site.tier==2 else Color("b7c8b8")))
 		else: draw_circle(at,3 if site.get("cleared",false) else 2,Color("8fc39a") if site.get("cleared",false) else Color("bcb2a0"))
 		if discovered: draw_arc(at,11,0,TAU,16,Color("b9d8ba"),1)
 	if big and map_filter in [0,1]:
 		for chest in session.ruins.chests:
-			if not explored.has(Vector2i(chest.p/160)): continue
+			if session.ruins.generated:
+				if not fog.is_revealed(chest.p): continue
+			elif not explored.has(Vector2i(chest.p/160)): continue
 			var at: Vector2=rect.position+chest.p*scale
 			var marker: Color=Catalog.quality_color(int(chest.cache_tier)) if chest.has("cache_tier") else Color("f3d794")
 			draw_rect(Rect2(at-Vector2(2,2),Vector2(4,4)),Color("847e76") if chest.open and chest.items.is_empty() else marker)
 	if not big or map_filter in [0,2]:
 		for shrine in session.ruins.shrines:
+			if session.ruins.generated and not fog.is_revealed(shrine.p): continue
 			var icon_at: Vector2=rect.position+shrine.p*scale
 			var icon_size := 30.0 if big else 13.0
 			draw_texture_rect(shrine_sigil,Rect2(icon_at-Vector2(icon_size/2,icon_size/4),Vector2(icon_size,icon_size/2)),false,Color.WHITE if shrine.done else Color("e7c591"))
 		for i in session.ruins.exits.size():
 			var pos: Vector2=session.ruins.exits[i]
+			if session.ruins.generated and not fog.is_revealed(pos): continue
 			var icon_at: Vector2=rect.position+pos*scale
 			var icon_size := 32.0 if big else 15.0
-			draw_texture_rect(extraction_sigil,Rect2(icon_at-Vector2(icon_size/2,icon_size/4),Vector2(icon_size,icon_size/2)),false,Color.WHITE if session.can_extract() else Color(0.58,0.62,0.65))
-			if big: label(icon_at+Vector2(-28,23),Ruins.EXIT_NAMES[i]+(" · 封锁" if not session.can_extract() else ""),11,Color("aeefce"))
+			draw_texture_rect(extraction_sigil,Rect2(icon_at-Vector2(icon_size/2,icon_size/4),Vector2(icon_size,icon_size/2)),false,Color.WHITE if session.can_extract_at(i) else Color(0.58,0.62,0.65))
+			if big: label(icon_at+Vector2(-28,23),session.ruins.exit_name(i)+(" · 封锁" if not session.can_extract_at(i) else ""),11,Color("aeefce"))
 	if waypoint.x>=0:
 		var at: Vector2=rect.position+waypoint*scale
 		diamond(at,8 if big else 4,Color("fff1a6"))

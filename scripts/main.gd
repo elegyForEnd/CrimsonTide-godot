@@ -1151,6 +1151,7 @@ func camp_departure() -> void:
 	on_camp_station("rogue" if session.selected_mode=="roguelike" else "launch")
 
 func on_camp_launch() -> void:
+	session.mapgen_enabled = session.selected_mode=="expedition"
 	if session.players.is_empty():
 		session.solo(config())
 	if not session.running:
@@ -1621,7 +1622,7 @@ func on_started() -> void:
 	new_page("game")
 	if field and field.world_3d and field.world_3d.view_camera:
 		field.world_3d.view_camera.make_current()
-	field.camera=Ruins.SPAWN
+	field.camera=session.ruins.spawn
 	field.explored.clear()
 	field.map_open=false
 	hud.clear()
@@ -2386,9 +2387,13 @@ func update_hud() -> void:
 	if p.p.distance_to(session.portal_position())<session.GATE_RADIUS and session.can_travel():
 		hud.prompt.text=("长按 [E] 1.5 秒返回边境" if session.map_id=="city" else "长按 [E] 1.5 秒进入王城") if session.party_at_gate() else "全体存活队友需在城门附近集合；先救起倒地队友"
 		return
-	for exit_pos in session.ruins.exits:
+	for i in session.ruins.exits.size():
+		var exit_pos: Vector2=session.ruins.exits[i]
 		if p.p.distance_to(exit_pos)<session.EXIT_RADIUS:
-			hud.prompt.text="长按 [E] 4 秒独立撤离 · 受伤会打断" if session.can_extract() else "撤离封锁 · 第一天需击败黎明 Boss；终局需击败女王"
+			if not session.can_extract_at(i):
+				hud.prompt.text="撤离点已被血潮封死 · 换一个开放出口"
+			else:
+				hud.prompt.text="长按 [E] 4 秒独立撤离 · 受伤会打断" if session.can_extract() else "撤离封锁 · 第一天需击败黎明 Boss；终局需击败女王"
 			return
 	for shrine in session.ruins.shrines:
 		if session.raid.phase not in ["choice","complete"] and not shrine.done and p.p.distance_to(shrine.p)<session.SHRINE_RADIUS:

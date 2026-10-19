@@ -2,6 +2,14 @@ extends Node3D
 ## Presentation only. Ruins remains the authoritative movement/collision map.
 ## 100 simulation pixels = one metre; simulation (x,y) maps to 3D (x,0,z).
 const UNIT := 0.01
+## Wilderness ground variants only. terrain-1/5 are palace floors and must never
+## be used for the generated continent.
+const GROUND_BY_BIOME := [0, 0, 2, 3, 4, 4]
+const WATER_SHADER := preload("res://shaders/water.gdshader")
+const FOAM_SHADER := preload("res://shaders/water_foam.gdshader")
+const WATER_HEIGHT := 0.52
+const FOAM_HEIGHT := 0.60
+const BANK_HEIGHT := 0.24
 const AssetLibrary = preload("res://scripts/scene_assets.gd")
 const AssetLayout = preload("res://scripts/scene_asset_layout.gd")
 var assets := AssetLibrary.new()
@@ -13,6 +21,11 @@ var sprites: Array[Sprite3D] = []
 var used := 0
 var materials: Dictionary = {}
 var chest_meshes: Dictionary = {}
+var water_material: ShaderMaterial
+var foam_material: ShaderMaterial
+var water_materials: Array[ShaderMaterial] = []
+var water_detail := 1.0
+var water_quality := -1
 
 func prop(key: String, at: Vector2, size: Vector3, tint: Color = Color.WHITE, foliage: Color = Color.WHITE, angle: float = 0.0, base: float = 0.0) -> Node3D:
 	return assets.place(scenery,key,point(at,base),size*UNIT,tint,foliage,angle)
@@ -84,6 +97,8 @@ static func point(p: Vector2, height: float = 0.0) -> Vector3:
 func sync(world: Ruins, focus: Vector2, screen: Vector2) -> void:
 	if source!=world or seed_value!=world.map_seed:
 		rebuild(world)
+	if water_material != null and water_quality != _current_quality():
+		_apply_water_quality(_current_quality())
 	view_camera.size=screen.y*UNIT
 	var target := point(focus)
 	view_camera.position=target+Vector3(0,24,19)
@@ -167,6 +182,267 @@ func cone(at: Vector2, radius: float, height: float, color: Color, base: float =
 	mesh.radial_segments=7
 	mesh_node(mesh,point(at,base+height/2),material(color))
 
+func ensure_water() -> void:
+	if water_material != null:
+		return
+	water_material = ShaderMaterial.new()
+	water_material.shader = WATER_SHADER
+	foam_material = ShaderMaterial.new()
+	foam_material.shader = FOAM_SHADER
+	water_materials.clear()
+	water_materials.append(water_material)
+	_apply_water_quality(_current_quality())
+
+func _current_quality() -> int:
+	if has_node("/root/GraphicsQuality"):
+		return int(get_node("/root/GraphicsQuality").quality)
+	return 0
+
+func _apply_water_quality(quality: int) -> void:
+	water_quality = quality
+	water_detail = 1.0 if quality == 0 else (0.5 if quality == 1 else 0.0)
+	for material: ShaderMaterial in water_materials:
+		material.set_shader_parameter("detail", water_detail)
+		material.set_shader_parameter("wave_strength", 1.0 if quality == 0 else 0.65)
+		material.set_shader_parameter("glint", 1.0 if quality == 0 else (0.4 if quality == 1 else 0.15))
+	if foam_material != null:
+		foam_material.set_shader_parameter("foam_amount", 0.75 if quality == 0 else (0.5 if quality == 1 else 0.25))
+
+func _polygon_center(polygon: PackedVector2Array) -> Vector2:
+	var count := polygon.size()
+	if count == 0:
+		return Vector2.ZERO
+	var twice_area := 0.0
+	var weighted := Vector2.ZERO
+	for i in count:
+		var a: Vector2 = polygon[i]
+		var b: Vector2 = polygon[(i + 1) % count]
+		var cross := a.x * b.y - b.x * a.y
+		twice_area += cross
+		weighted += (a + b) * cross
+	if absf(twice_area) > 0.001:
+		var center := weighted / (3.0 * twice_area)
+		if Geometry2D.is_point_in_polygon(center, polygon):
+			return center
+	# Concave / crescent outlines can put the area centroid outside. Fall back
+	# to the centre of the largest triangulated triangle, which is always inside.
+	var indices := Geometry2D.triangulate_polygon(polygon)
+	var best := Vector2.ZERO
+	var best_area := -1.0
+	for i in range(0, indices.size() - 2, 3):
+		var a: Vector2 = polygon[indices[i]]
+		var b: Vector2 = polygon[indices[i + 1]]
+		var c: Vector2 = polygon[indices[i + 2]]
+		var area := absf((b - a).cross(c - a)) * 0.5
+		if area > best_area:
+			best_area = area
+			best = (a + b + c) / 3.0
+	return best
+
+func _offset_polygon(polygon: PackedVector2Array, center: Vector2, distance: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for point: Vector2 in polygon:
+		var direction := point - center
+		if direction.length_squared() < 0.0001:
+			out.append(point)
+		else:
+			out.append(point + direction.normalized() * distance)
+	return out
+
+func _inset_polygon(polygon: PackedVector2Array, center: Vector2, factor: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for point: Vector2 in polygon:
+		out.append(center + (point - center) * (1.0 - factor))
+	return out
+
+func _water_tri(surface: SurfaceTool, a: Vector2, b: Vector2, c: Vector2, tone: float, height: float) -> void:
+	var color := Color(tone, tone, tone, 1.0)
+	for at: Vector2 in [a, b, c]:
+		surface.set_color(color)
+		surface.set_normal(Vector3.UP)
+		surface.add_vertex(point(at, height))
+
+func _water_tri_tones(surface: SurfaceTool, a: Vector2, b: Vector2, c: Vector2, tones: Vector3, height: float) -> void:
+	var colors := [Color(tones.x, tones.x, tones.x, 1.0), Color(tones.y, tones.y, tones.y, 1.0), Color(tones.z, tones.z, tones.z, 1.0)]
+	var points := [a, b, c]
+	for i in 3:
+		surface.set_color(colors[i])
+		surface.set_normal(Vector3.UP)
+		surface.add_vertex(point(points[i], height))
+
+func _foam_tri(surface: SurfaceTool, a: Vector2, b: Vector2, c: Vector2, alphas: Vector3, height: float) -> void:
+	var colors := [Color(1.0, 1.0, 1.0, alphas.x), Color(1.0, 1.0, 1.0, alphas.y), Color(1.0, 1.0, 1.0, alphas.z)]
+	var points := [a, b, c]
+	for i in 3:
+		surface.set_color(colors[i])
+		surface.set_normal(Vector3.UP)
+		surface.add_vertex(point(points[i], height))
+
+func water_lake(lake: Dictionary, index: int) -> void:
+	var outline: PackedVector2Array = lake.get("polygon", PackedVector2Array())
+	if outline.size() < 3:
+		return
+	var center := _polygon_center(outline)
+	var radius := float(lake.get("radius", 64.0))
+	# Sand beach sits outside the waterline; the opaque water surface covers the
+	# basin itself and composites depth colour, ripples and caustics in one pass.
+	_beach_ring(outline, center, radius * 0.05 + 18.0)
+
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# Concentric rings follow the authored silhouette; colour is sampled from
+	# the authoritative depth field per vertex, so the gradient has no fan
+	# spokes and no visible ring steps.
+	var terrain: TerrainMap = source.terrain as TerrainMap if source != null else null
+	var factors := [0.0, 0.10, 0.22, 0.35, 0.48, 0.60, 0.71, 0.80, 0.88, 0.94]
+	var rings: Array = []
+	for factor: float in factors:
+		if factor <= 0.0:
+			rings.append(outline)
+		else:
+			rings.append(_inset_polygon(outline, center, factor))
+	for ring in range(rings.size() - 1):
+		var outer: PackedVector2Array = rings[ring]
+		var inner: PackedVector2Array = rings[ring + 1]
+		var count := mini(outer.size(), inner.size())
+		for i in count:
+			var next := (i + 1) % count
+			var o0 := outer[i]
+			var o1 := outer[next]
+			var i0 := inner[i]
+			var i1 := inner[next]
+			_water_tri_tones(surface, o0, o1, i0, Vector3(_depth_tone(terrain, o0), _depth_tone(terrain, o1), _depth_tone(terrain, i0)), WATER_HEIGHT)
+			_water_tri_tones(surface, o1, i1, i0, Vector3(_depth_tone(terrain, o1), _depth_tone(terrain, i1), _depth_tone(terrain, i0)), WATER_HEIGHT)
+	var last: PackedVector2Array = rings[rings.size() - 1]
+	var center_tone := _depth_tone(terrain, center)
+	for i in last.size():
+		var next := (i + 1) % last.size()
+		_water_tri_tones(surface, last[i], last[next], center, Vector3(_depth_tone(terrain, last[i]), _depth_tone(terrain, last[next]), center_tone), WATER_HEIGHT)
+	var mat := water_material.duplicate() as ShaderMaterial
+	mat.set_shader_parameter("seed", float(index) * 1.37 + 0.5)
+	water_materials.append(mat)
+	mesh_node(surface.commit(), Vector3.ZERO, mat)
+
+	_foam_ring(outline, center, radius, index)
+
+func _beach_ring(outline: PackedVector2Array, center: Vector2, width: float) -> void:
+	var outer := _offset_polygon(outline, center, width)
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var count := outline.size()
+	for i in count:
+		var next := (i + 1) % count
+		_water_tri_tones(surface, outline[i], outline[next], outer[i], Vector3.ONE, 0.20)
+		_water_tri_tones(surface, outline[next], outer[next], outer[i], Vector3.ONE, 0.20)
+	mesh_node(surface.commit(), Vector3.ZERO, material(Color("8a7d5f")))
+
+func _depth_tone(terrain: TerrainMap, at: Vector2) -> float:
+	if terrain == null:
+		return 0.4
+	return clampf((terrain.water_depth_at(at) - 24.0) / 55.0, 0.0, 1.0)
+
+func _bounds_of(polygon: PackedVector2Array) -> Rect2:
+	if polygon.is_empty():
+		return Rect2()
+	var rect := Rect2(polygon[0], Vector2.ZERO)
+	for point: Vector2 in polygon:
+		rect = rect.expand(point)
+	return rect
+
+func _foam_ring(outline: PackedVector2Array, center: Vector2, radius: float, index: int) -> void:
+	var width := maxf(9.0, radius * 0.02)
+	var inner_factor := clampf(width / maxf(radius, 1.0), 0.02, 0.5)
+	var outer := _offset_polygon(outline, center, width)
+	var inner := _inset_polygon(outline, center, inner_factor)
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var count := mini(mini(outer.size(), outline.size()), inner.size())
+	for i in count:
+		var next := (i + 1) % count
+		_foam_tri(surface, outer[i], outer[next], outline[i], Vector3(0.0, 0.0, 1.0), FOAM_HEIGHT)
+		_foam_tri(surface, outline[next], outer[next], outline[i], Vector3(1.0, 0.0, 1.0), FOAM_HEIGHT)
+		_foam_tri(surface, outline[i], outline[next], inner[i], Vector3(1.0, 1.0, 0.0), FOAM_HEIGHT)
+		_foam_tri(surface, outline[next], inner[next], inner[i], Vector3(1.0, 0.0, 0.0), FOAM_HEIGHT)
+	mesh_node(surface.commit(), Vector3.ZERO, foam_material)
+
+func water_river(river: Dictionary, index: int) -> void:
+	var points: PackedVector2Array = river.get("points", PackedVector2Array())
+	var widths: PackedFloat32Array = river.get("widths", PackedFloat32Array())
+	if points.size() < 2:
+		return
+	if widths.size() < points.size():
+		widths.resize(points.size())
+		widths.fill(float(river.get("width", 40.0)))
+	var lanes := [-1.0, -0.55, 0.0, 0.55, 1.0]
+	var tones := [0.05, 0.44, 0.96, 0.44, 0.05]
+	# One normal per centreline point keeps the ribbon continuous through bends.
+	var normals: Array[Vector2] = []
+	for i in points.size():
+		var previous := points[maxi(0, i - 1)]
+		var following := points[mini(points.size() - 1, i + 1)]
+		var direction := (following - previous).normalized()
+		if direction == Vector2.ZERO:
+			direction = Vector2.RIGHT
+		normals.append(direction.orthogonal())
+	_river_banks(points, widths, normals)
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in range(points.size() - 1):
+		var normal_a: Vector2 = normals[i]
+		var normal_b: Vector2 = normals[i + 1]
+		var half_a := maxf(widths[i], 2.0) * 0.5
+		var half_b := maxf(widths[i + 1], 2.0) * 0.5
+		for lane in range(lanes.size() - 1):
+			var la := float(lanes[lane])
+			var lb := float(lanes[lane + 1])
+			var a0 := points[i] + normal_a * la * half_a
+			var a1 := points[i] + normal_a * lb * half_a
+			var b0 := points[i + 1] + normal_b * la * half_b
+			var b1 := points[i + 1] + normal_b * lb * half_b
+			var t0 := float(tones[lane])
+			var t1 := float(tones[lane + 1])
+			_water_tri_tones(surface, a0, b0, a1, Vector3(t0, t0, t1), WATER_HEIGHT)
+			_water_tri_tones(surface, b0, b1, a1, Vector3(t0, t1, t1), WATER_HEIGHT)
+	var mat := water_material.duplicate() as ShaderMaterial
+	mat.set_shader_parameter("seed", float(index) * 1.37 + 2.1)
+	water_materials.append(mat)
+	mesh_node(surface.commit(), Vector3.ZERO, mat)
+	_foam_river(points, widths, normals)
+
+func _river_banks(points: PackedVector2Array, widths: PackedFloat32Array, normals: Array[Vector2]) -> void:
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in range(points.size() - 1):
+		var normal_a: Vector2 = normals[i]
+		var normal_b: Vector2 = normals[i + 1]
+		var half_a := maxf(widths[i], 2.0) * 0.5
+		var half_b := maxf(widths[i + 1], 2.0) * 0.5
+		for side in [-1.0, 1.0]:
+			var inner_a := points[i] + normal_a * float(side) * half_a
+			var outer_a := points[i] + normal_a * float(side) * (half_a + 26.0)
+			var inner_b := points[i + 1] + normal_b * float(side) * half_b
+			var outer_b := points[i + 1] + normal_b * float(side) * (half_b + 26.0)
+			_water_tri_tones(surface, inner_a, inner_b, outer_a, Vector3.ONE, 0.16)
+			_water_tri_tones(surface, inner_b, outer_b, outer_a, Vector3.ONE, 0.16)
+	mesh_node(surface.commit(), Vector3.ZERO, material(Color("8a7d5f")))
+
+func _foam_river(points: PackedVector2Array, widths: PackedFloat32Array, normals: Array[Vector2]) -> void:
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in range(points.size() - 1):
+		var normal_a: Vector2 = normals[i]
+		var normal_b: Vector2 = normals[i + 1]
+		var half_a := maxf(widths[i], 2.0) * 0.5
+		var half_b := maxf(widths[i + 1], 2.0) * 0.5
+		for side in [-1.0, 1.0]:
+			var outer_a := points[i] + normal_a * float(side) * (half_a + 9.0)
+			var inner_a := points[i] + normal_a * float(side) * half_a
+			var outer_b := points[i + 1] + normal_b * float(side) * (half_b + 9.0)
+			var inner_b := points[i + 1] + normal_b * float(side) * half_b
+			_foam_tri(surface, outer_a, outer_b, inner_a, Vector3(0.0, 0.0, 1.0), FOAM_HEIGHT)
+			_foam_tri(surface, outer_b, inner_b, inner_a, Vector3(0.0, 1.0, 1.0), FOAM_HEIGHT)
+	mesh_node(surface.commit(), Vector3.ZERO, foam_material)
+
 func rebuild(world: Ruins) -> void:
 	if scenery:
 		remove_child(scenery)
@@ -174,6 +450,10 @@ func rebuild(world: Ruins) -> void:
 	scenery=Node3D.new()
 	scenery.name="Scenery"
 	add_child(scenery)
+	water_materials.clear()
+	if water_material != null:
+		water_materials.append(water_material)
+		_apply_water_quality(_current_quality())
 	chest_meshes.clear()
 	source=world
 	seed_value=world.map_seed
@@ -185,10 +465,28 @@ func rebuild(world: Ruins) -> void:
 		for site in world.sites:
 			box(site.rect,0.5,Color("9b8d93"))
 	else:
-		for y in 3:
-			for x in 4:
-				floor_tile(Rect2(Vector2(x,y)*1600*Ruins.MAP_SCALE,Vector2.ONE*1600*Ruins.MAP_SCALE),load("res://assets/world/ground-%d-%d.jpg" % [x,y]))
-		polygon(world.river,0.8,Color("416c7f"))
+		var tile_size := 1600.0*Ruins.MAP_SCALE
+		var tiles_x := int(ceil(world.extent.x/tile_size))
+		var tiles_y := int(ceil(world.extent.y/tile_size))
+		for y in tiles_y:
+			for x in tiles_x:
+				var key := "res://assets/world/ground-%d-%d.jpg" % [x%4,y%3]
+				if world.generated:
+					var tile_center := (Vector2(x,y)+Vector2(0.5,0.5))*tile_size
+					var biome := clampi(world.biome_at(tile_center), 0, GROUND_BY_BIOME.size() - 1)
+					key = "res://assets/world/terrain-%d.png" % int(GROUND_BY_BIOME[biome])
+				floor_tile(Rect2(Vector2(x,y)*tile_size,Vector2.ONE*tile_size),load(key))
+		if world.generated:
+			ensure_water()
+			var water_index := 0
+			for lake in world.lakes:
+				water_lake(lake, water_index)
+				water_index += 1
+			for river in world.rivers:
+				water_river(river, water_index)
+				water_index += 1
+		elif not world.river.is_empty():
+			polygon(world.river,0.8,Color("416c7f"))
 		for feature in world.features:
 			if feature.kind=="lake": polygon(feature.polygon,1,Color("446d80"))
 			else:

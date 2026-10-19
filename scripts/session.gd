@@ -70,6 +70,7 @@ var spawn_timer := 0.0
 var input_timer := 0.0
 var next_enemy := 0
 var selected_mode := "expedition"
+var mapgen_enabled := false
 var local_config: Dictionary = {}
 var local_input := {"move":Vector2.ZERO,"aim":Vector2.RIGHT,"fire":false,"interact":false}
 var rng := RandomNumberGenerator.new()
@@ -1562,9 +1563,9 @@ func launch(_long_run: bool = false, fixed_seed: int = 0) -> bool:
 			Catalog.add_item(players[id].backpack,"medicine")
 			players[id].backpack.items.back()["provision"]=true
 		i+=1
-	begin(seed_value,duration,players,mode)
+	begin(seed_value,duration,players,mode,mapgen_enabled)
 	if online:
-		begin.rpc(seed_value,duration,players,mode)
+		begin.rpc(seed_value,duration,players,mode,mapgen_enabled)
 	if roguelike.active(self): return true
 	for site in ruins.sites:
 		for j in (4 if site.tier==2 else 2):
@@ -1572,14 +1573,19 @@ func launch(_long_run: bool = false, fixed_seed: int = 0) -> bool:
 	return true
 
 @rpc("authority","call_remote","reliable")
-func begin(value: int, seconds: float, roster: Dictionary, mode: String = "expedition") -> void:
+func begin(value: int, seconds: float, roster: Dictionary, mode: String = "expedition", generated: bool = false) -> void:
 	seed_value=value
 	duration=seconds
 	players=roster
 	map_id="border"
 	map_states.clear()
-	ruins=Ruins.new()
-	ruins.generate(value)
+	var generated_ok := generated and mode=="expedition"
+	ruins=MapFactory.create(value,{"generated":generated_ok,"extent":Ruins.SIZE})
+	if generated_ok and mode=="expedition":
+		var index := 0
+		for id in players:
+			players[id].p=ruins.spawn+Vector2(index*42,0)
+			index+=1
 	rng.seed=value+71
 	enemies.clear()
 	bullets.clear()
@@ -1599,10 +1605,16 @@ func begin(value: int, seconds: float, roster: Dictionary, mode: String = "exped
 	report_paid=false
 	running=true
 	selected_mode=mode
+	mapgen_enabled=generated
 	if mode=="roguelike":
 		roguelike.reset(self)
 	else:
 		expedition.reset(self)
+	if not raid.is_empty():
+		raid["map_seed"]=ruins.map_seed
+		raid["layout_version"]=ruins.layout_version
+		raid["layout_hash"]=ruins.layout_hash
+		raid["sealed_exits"]=ruins.sealed_exits.duplicate()
 	started.emit()
 
 func _physics_process(delta: float) -> void:
@@ -1664,8 +1676,17 @@ func snapshot(packet: PackedByteArray) -> void:
 			ruins.generate(seed_value+int(next_raid.floor)*100+int(next_raid.area))
 			ruins.configure(int(next_raid.floor)-1,int(next_raid.area),next_raid.room not in ["shop","treasure","talent","curse","event","forge","gamble","mirror"],str(next_raid.room))
 		else:
-			ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
-			ruins.generate(seed_value)
+			var is_generated := str(next_raid.get("layout_hash","")) != ""
+			var map_seed := int(next_raid.get("map_seed", seed_value))
+			if map_id=="city":
+				ruins=RoyalCity.new()
+				ruins.generate(map_seed)
+			else:
+				ruins=MapFactory.create(map_seed,{"generated":is_generated,"extent":Ruins.SIZE})
+				if is_generated and (ruins.layout_hash != str(next_raid.get("layout_hash","")) or ruins.layout_version != int(next_raid.get("layout_version",0))):
+					message.emit("地图版本不一致，请更新客户端后重新加入。")
+					running=false
+					return
 		map_changed.emit()
 	if rogue:
 		roguelike.combat.effects=next_raid.get("visual_effects",[])
@@ -3340,7 +3361,7 @@ func simulate(dt: float) -> void:
 		settle()
 
 func safe_center() -> Vector2:
-	return raid.get("center",Ruins.CENTER)
+	return raid.get("center",ruins.center)
 
 # 逐天时长的唯一真值：房主在 prepare_day 写入 raid.day_duration，随快照同步给客户端。
 # 兜底按天号取 DAY_DURATIONS，保证 raid 尚未生成（或旧包缺字段）时也能算。
@@ -3357,19 +3378,26 @@ func shrink_start() -> float:
 func safe_radius() -> float:
 	if roguelike.active(self): return 10000.0
 	if map_id=="city": return 10000.0
-	if raid.is_empty(): return Ruins.SIZE.length()
-	if raid.phase in ["choice","complete"]: return Ruins.SIZE.length()
+	if raid.is_empty(): return ruins.extent.length()
+	if raid.phase in ["choice","complete"]: return ruins.extent.length()
 	var final_radius := 620.0 if raid.day==3 else 540.0
 	if raid.phase=="boss": return final_radius
 	# Start large enough to cover every corner even for an off-centre arena.
 	var center := safe_center()
-	var full := maxf(center.distance_to(Vector2.ZERO),center.distance_to(Ruins.SIZE))
-	full=maxf(full,maxf(center.distance_to(Vector2(Ruins.SIZE.x,0)),center.distance_to(Vector2(0,Ruins.SIZE.y))))+100
+	var full := maxf(center.distance_to(Vector2.ZERO),center.distance_to(ruins.extent))
+	full=maxf(full,maxf(center.distance_to(Vector2(ruins.extent.x,0)),center.distance_to(Vector2(0,ruins.extent.y))))+100
 	return lerpf(full,final_radius,clampf((float(raid.time)-shrink_start())/maxf(1.0,day_duration()-shrink_start()),0,1))
 
 func can_extract() -> bool:
 	if roguelike.active(self): return false
 	return not raid.is_empty() and (raid.day==2 or raid.phase=="complete")
+
+func can_extract_at(index: int) -> bool:
+	if not can_extract(): return false
+	if ruins == null: return true
+	if ruins.generated and index in ruins.sealed_exits: return false
+	var sealed: Array = raid.get("sealed_exits", [])
+	return not (index in sealed)
 
 # --- the hidden ending -------------------------------------------------------
 # Lighting all three sunrise bells costs a whole raid: the shrines only exist on
@@ -3757,7 +3785,7 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			break
 	if target.is_empty():
 		for i in ruins.exits.size():
-			if can_extract() and p.p.distance_to(ruins.exits[i])<EXIT_RADIUS:
+			if can_extract_at(i) and p.p.distance_to(ruins.exits[i])<EXIT_RADIUS:
 				target="exit:%d" % i
 				seconds=4.0
 				break
@@ -4293,7 +4321,7 @@ func return_to_camp() -> void:
 	push_lobby()
 
 func portal_position() -> Vector2:
-	return RoyalCity.GATE if map_id=="city" else CITY_GATE
+	return RoyalCity.GATE if map_id=="city" else ruins.city_gate
 
 func party_at_gate() -> bool:
 	for p in players.values():
@@ -4308,8 +4336,11 @@ func travel_city(forced: bool = false) -> bool:
 	map_id="city" if map_id=="border" else "border"
 	var fresh := not map_states.has(map_id)
 	if fresh:
-		ruins=RoyalCity.new() if map_id=="city" else Ruins.new()
-		ruins.generate(seed_value)
+		if map_id=="city":
+			ruins=RoyalCity.new()
+			ruins.generate(seed_value)
+		else:
+			ruins=MapFactory.create(seed_value,{"generated":mapgen_enabled,"extent":Ruins.SIZE})
 		enemies=[]
 		world_drops=[]
 	else:

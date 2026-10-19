@@ -6,6 +6,8 @@ var landmarks: Array[Texture2D]=[]
 var chunks: Array[Texture2D]=[]
 var chart: Texture2D
 var candle_glow: GradientTexture2D
+var _land_world: Ruins
+var _land_texture: ImageTexture
 
 func candle_positions() -> Array[Vector2]:
 	var points: Array[Vector2]=[]
@@ -40,9 +42,17 @@ func terrain(f: Node2D, world: Ruins, camera: Vector2, time: float) -> void:
 		for x in 4:
 			var rect := Rect2(Vector2(x,y)*1600*Ruins.MAP_SCALE,Vector2.ONE*1600*Ruins.MAP_SCALE)
 			if rect.grow(1000).has_point(camera): f.draw_texture_rect(chunks[y*4+x],rect,false)
-	for y in range(maxi(0,int(camera.y-650)),mini(int(world.extent.y),int(camera.y+650)),42):
-		var p := Vector2(Ruins.river_x(y),y)
-		f.draw_line(p+Vector2(-65+sin(time+y)*12,0),p+Vector2(55+sin(time+y)*12,-5),Color(0.75,0.91,0.89,0.25),2)
+	if not world.generated:
+		for y in range(maxi(0,int(camera.y-650)),mini(int(world.extent.y),int(camera.y+650)),42):
+			var p := Vector2(Ruins.river_x(y),y)
+			f.draw_line(p+Vector2(-65+sin(time+y)*12,0),p+Vector2(55+sin(time+y)*12,-5),Color(0.75,0.91,0.89,0.25),2)
+	if world.generated:
+		for river in world.rivers:
+			var points: PackedVector2Array=river.get("points",PackedVector2Array())
+			var width: float=float(river.get("width",40.0))
+			for i in range(points.size()-1):
+				if points[i].distance_to(camera)>1400 and points[i+1].distance_to(camera)>1400: continue
+				f.draw_line(points[i],points[i+1],Color(0.75,0.91,0.89,0.25),maxf(2.0,width*0.16))
 	for bridge in world.bridges:
 		f.draw_rect(bridge.grow(9),Color("777578"))
 		f.draw_rect(bridge,Color("d5ccb4"))
@@ -64,7 +74,7 @@ func terrain(f: Node2D, world: Ruins, camera: Vector2, time: float) -> void:
 		f.draw_rect(Rect2(wall.position-Vector2(0,14),wall.size),Color("f3e2c6"),false,2)
 	# Blood moon grades scenery before interactables and combat are drawn.
 	f.draw_rect(Rect2(Vector2.ZERO,world.extent),Color(0.13,0.025,0.085,0.63))
-	var moon := Vector2(Ruins.river_x(2400*Ruins.MAP_SCALE),2400*Ruins.MAP_SCALE)
+	var moon := world.center if world.generated else Vector2(Ruins.river_x(2400*Ruins.MAP_SCALE),2400*Ruins.MAP_SCALE)
 	if moon.distance_to(camera)<1100:
 		f.draw_texture_rect(candle_glow,Rect2(moon-Vector2(140,220),Vector2(280,440)),false,Color(1,0.22,0.25,0.65))
 		for stripe in range(-54,55,4):
@@ -100,7 +110,83 @@ func prop(f: Node2D, item: Dictionary, camera: Vector2, player: Vector2, time: f
 		tint=tint.lerp(Color(0.91,0.72,0.48,alpha),light)
 	f.draw_texture_rect(tex,rect,false,tint)
 
+func _generated_atlas(f: Node2D, world: Ruins, rect: Rect2, big: bool) -> void:
+	var scale := rect.size/world.extent
+	f.draw_rect(rect,Color("16242d"))
+	if not world.coast.is_empty():
+		_land_fill(f,world,rect)
+	for region in world.regions:
+		var polygon: PackedVector2Array=region.get("polygon",PackedVector2Array())
+		if polygon.size()<3: continue
+		var color := MapMinimap.region_color(str(region.get("type","explore")))
+		color.a=0.35
+		var screen_polygon := _screen_polygon(polygon,rect,scale)
+		if Geometry2D.triangulate_polygon(screen_polygon).is_empty(): continue
+		f.draw_colored_polygon(screen_polygon,color)
+	for lake in world.lakes:
+		var polygon: PackedVector2Array=lake.get("polygon",PackedVector2Array())
+		if polygon.size()>=3:
+			var screen_polygon := _screen_polygon(polygon,rect,scale)
+			if not Geometry2D.triangulate_polygon(screen_polygon).is_empty():
+				f.draw_colored_polygon(screen_polygon,Color("2b5a6e"))
+			var outline := screen_polygon.duplicate()
+			outline.append(outline[0])
+			f.draw_polyline(outline,Color(0.52,0.76,0.74,0.5),1.0,true)
+	for river in world.rivers:
+		var points: PackedVector2Array=river.get("points",PackedVector2Array())
+		var width: float=float(river.get("width",40.0))
+		for i in range(points.size()-1):
+			var a := rect.position+points[i]*scale
+			var b := rect.position+points[i+1]*scale
+			f.draw_line(a,b,Color("356a7c"),maxf(2.0,width*scale.x))
+			f.draw_line(a,b,Color("5d939c"),maxf(0.8,width*scale.x*0.35))
+	for bridge in world.bridges:
+		var bridge_rect := Rect2(rect.position+bridge.position*scale,bridge.size*scale)
+		f.draw_rect(bridge_rect,Color("9a8d72"))
+	for road in world.roads:
+		var points: PackedVector2Array=road
+		for i in range(points.size()-1):
+			f.draw_line(rect.position+points[i]*scale,rect.position+points[i+1]*scale,Color(0.74,0.66,0.48,0.55),1.5)
+	if big:
+		for region in world.regions:
+			if not bool(region.get("named",false)): continue
+			var at: Vector2=rect.position+region.center*scale
+			f.label(at-Vector2(36,0),str(region.name),13,Color("eadfc8"))
+
+func _screen_polygon(points: PackedVector2Array, rect: Rect2, scale: Vector2) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for point in points:
+		var screen := rect.position+point*scale
+		if not out.is_empty() and out[out.size()-1].is_equal_approx(screen):
+			continue
+		out.append(screen)
+	while out.size() > 2 and out[out.size()-1].is_equal_approx(out[0]):
+		out.remove_at(out.size()-1)
+	return out
+
+## Coast fill from the land mask instead of the contour polygon: the 32px contour
+## can touch itself at one-cell bridges, and `draw_colored_polygon()` then fails
+## triangulation for the whole island (map showed no land at all). One cached
+## 300x225 texture per generated world is cheaper and always exact.
+func _land_fill(f: Node2D, world: Ruins, rect: Rect2) -> void:
+	var t: Variant = world.terrain
+	if t == null or not (t is TerrainMap):
+		return
+	var grid: TerrainMap = t
+	if _land_texture == null or _land_world != world:
+		var image := Image.create(grid.cols, grid.rows, false, Image.FORMAT_RGBA8)
+		var land_color := Color("5c6a57")
+		for i in grid.land.size():
+			if grid.land[i] != 0:
+				image.set_pixel(i % grid.cols, i / grid.cols, land_color)
+		_land_texture = ImageTexture.create_from_image(image)
+		_land_world = world
+	f.draw_texture_rect(_land_texture, rect, false)
+
 func atlas(f: Node2D, world: Ruins, rect: Rect2, big: bool) -> void:
+	if world.generated:
+		_generated_atlas(f,world,rect,big)
+		return
 	var scale := rect.size/world.extent
 	if world.interior:
 		f.draw_rect(rect,Color("383344"))

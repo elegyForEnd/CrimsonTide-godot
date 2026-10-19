@@ -21,7 +21,7 @@ func guardian_site(s, radius: float) -> int:
 		var site: Dictionary=s.ruins.sites[i]
 		var at: Vector2=site.p
 		if site.get("cleared",false) or s.ruins.blocked(at,maxf(radius,58)): continue
-		if at.distance_to(Ruins.SPAWN)<700 or at.distance_to(s.raid.center)<1000: continue
+		if at.distance_to(s.ruins.spawn)<700 or at.distance_to(s.raid.center)<1000: continue
 		var spacing := INF
 		for guardian in guardians:
 			spacing=minf(spacing,at.distance_to(guardian.get("home",guardian.p)))
@@ -51,8 +51,8 @@ const HIDDEN_KIND := 4
 const DAWN_KINDS := [0,1]
 
 func reset(s) -> void:
-	s.raid={"day":1,"phase":"explore","time":0.0,"center":Ruins.CENTER,"kind":0,"hazards":[],"choices":{},"kills":0,"final_spawned":false,"wild_seals":{},"map_boss_defeats":{},"abyss_spawned":false,
-		"hidden_spawned":false,"hidden_slain":false,"ended":false,"sealed_bells":{},"boss_kinds":{}}
+	s.raid={"day":1,"phase":"explore","time":0.0,"center":s.ruins.center,"kind":0,"hazards":[],"choices":{},"kills":0,"final_spawned":false,"wild_seals":{},"map_boss_defeats":{},"abyss_spawned":false,
+		"hidden_spawned":false,"hidden_slain":false,"ended":false,"sealed_bells":{},"boss_kinds":{},"map_seed":s.ruins.map_seed,"layout_version":s.ruins.layout_version,"layout_hash":s.ruins.layout_hash,"sealed_exits":s.ruins.sealed_exits.duplicate()}
 	prepare_day(s,1)
 
 func prepare_day(s, day: int) -> void:
@@ -139,7 +139,7 @@ func arena(s) -> Vector2:
 			var edge := at+Vector2.from_angle(TAU*i/16.0)*185
 			if s.ruins.blocked(edge,22) or not s.ruins.clear_line(at,edge): clear=false
 		if clear: candidates.append(at)
-	if candidates.is_empty(): return Ruins.SPAWN
+	if candidates.is_empty(): return s.ruins.spawn
 	var previous: Vector2=s.raid.center
 	var alternatives := candidates.filter(func(at: Vector2): return at.distance_to(previous)>700)
 	if not alternatives.is_empty(): return alternatives[s.rng.randi_range(0,alternatives.size()-1)]
