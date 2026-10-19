@@ -208,6 +208,7 @@ P2P 房间需要配置可访问的 API 和 UDP 3478 STUN 服务。对称 NAT、�
 - 语音来源：フリーボイス素材屋すぱらんど。/すぱるな瀟洒。允许免费商用、编辑及嵌入游戏发布，不属于 CC0；禁止独立再分发音频或用于 AI 训练。仅修剪首尾静音、统一音量和采样格式，不变调、不合成。详见 `VOICE-CREDITS.txt` 和 `assets/audio/voices/voice-manifest.json`。可用 `python tools/prepare_free_voices.py` 按固定来源及哈希重建，随后运行 `python tools/prepare_anime_audio.py` 同步大招音效时长。
 - 角色语音随游戏播放；便携包不单独分发语音试听文件。完整音频鸣谢见 `AUDIO-CREDITS.txt`、`VOICE-CREDITS.txt`。
 - Godot 引擎许可证见便携包 `GODOT-LICENSE.txt`。
+- **清理"没用到的素材"前先读 [PROJECT-GUIDE.md §11.87](PROJECT-GUIDE.md)**：本项目有内容是**运行时拼路径**加载的（故事模式按 `--preview-story` + 幕/段拼 `scenes/story/act<幕>-<段>.tscn`），所以"全仓搜不到这个文件的路径"**不能**当作可以删除的依据。正确顺序：路径与 `uid://` 双通道搜 → 搜动态拼接（`"res://" + 变量`、`%` 格式化）与该后缀是否在代码里出现 → 查 `*.cmd` 里的独立入口 → 查 `tools/*.ps1|*.py` 是否把它当输入/产物 → 先移出 `res://`（或加 `.gdignore`）跑一次对应入口确认，再真删并把清单留在 `dist/`（可 `git restore` 恢复）。
 
 ## 工程与验证
 
