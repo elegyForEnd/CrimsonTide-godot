@@ -655,7 +655,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if not gate.is_empty() and str(gate.action) in ["launch","rogue","hunt"]:
 				station_requested.emit(str(gate.action))
 			else:
-				say("先走到搜打撤闸门、魔境传送门或血潮猎场入口，再按 Space。")
+				say("先走到搜打撤闸门、魔境传送门或血潮深潜入口，再按 Space。")
 			get_viewport().set_input_as_handled()
 			return
 		match code:

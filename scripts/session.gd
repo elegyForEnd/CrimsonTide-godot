@@ -1340,6 +1340,12 @@ func chest_loot(bonus_relic: bool = false, backpack_chance: float = -1.0, cache_
 	var loot: Array = []
 	for i in rng.randi_range(2,4):
 		loot.append(kinds[rng.randi_range(0,kinds.size()-1)])
+	# 血潮深潜的物品也会在这一带的箱子里出现（白/绿/蓝，尺寸按价值分档）。
+	for i in 2:
+		if rng.randf() < (0.62 if i == 0 else 0.30):
+			var hunt_kind: String = Catalog.roll_hunt_loot(rng)
+			if not hunt_kind.is_empty():
+				loot.append({"kind":hunt_kind,"tier":Catalog.hunt_loot_tier(hunt_kind,grade,rng)})
 	if bonus_relic or rng.randf()<0.2:
 		loot.append("relic")
 	if biome>=0 and biome<Catalog.BIOME_COLLECTIBLES.size():
@@ -1369,6 +1375,12 @@ func place_entry(container: Dictionary, entry) -> bool:
 	var kind := str(entry.kind) if entry is Dictionary else str(entry)
 	if not Catalog.ITEMS.has(kind):
 		return false
+	# 深潜物品带实例品质：不能走 `place_loot()` 的堆叠合并（不同品质不能并堆），
+	# 直接摆一件、随机横竖，尺寸仍由 `Catalog.item_size()` 按价值推导。
+	if entry is Dictionary and entry.has("tier") and Catalog.is_hunt_loot(kind):
+		var probe := {"kind":kind,"tier":clampi(int(entry.get("tier",0)),0,5),
+			"count":1,"rot":rng.randf()<0.5}
+		return Catalog.place_item(container,probe)
 	if not Catalog.place_loot(container,kind):
 		return false
 	if not entry is Dictionary:

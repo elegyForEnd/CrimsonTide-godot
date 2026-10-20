@@ -1,5 +1,5 @@
 extends SceneTree
-## 血潮猎场 V2「点得动」回归：全部走真实 UI 节点信号（Z 形态 / W 搜索 / 互动点 /
+## 血潮深潜 V2「点得动」回归：全部走真实 UI 节点信号（Z 形态 / W 搜索 / 互动点 /
 ## 战斗按钮 / 地图 / 撤离 / 返回），不直接调 run 的动作函数（调试钩子只用来摆场景）。
 const Screen = preload("res://scripts/hunt/hunt_screen.gd")
 const Data = preload("res://scripts/hunt/hunt_data.gd")
@@ -115,17 +115,30 @@ func run() -> void:
 	check(run.hp < hp_before_passive, "a passive hit costs hp")
 	check(run.counter_hits > counters_before, "the hunter counters a passive hit")
 
-	# 6) 互动点：点街角神龛，一次性。
+	# 6) 随机事件：黑箱问号点 → 中等互动窗 → 选项耗时 → 收起。
 	run.debug_kill_enemies()
+	run.debug_clear_events()
+	var uid: String = run.debug_spawn_event("cellar_door")
 	screen._refresh_all()
 	await process_frame
-	check(screen.site_nodes.has("shrine"), "shrine marker exists")
-	var shrine = screen.site_nodes.get("shrine")
-	if shrine:
-		shrine.pressed.emit()
+	check(screen.site_nodes.has(uid), "event marker exists")
+	var marker_node = screen.site_nodes.get(uid)
+	if marker_node:
+		marker_node.pressed.emit()
 		await process_frame
-	check(run.site_done("shrine"), "clicking a site resolves it")
-	check(not screen.site_nodes.has("shrine"), "used site disappears from the scene")
+	check(not run.event_state.is_empty(), "clicking a question mark opens the interaction")
+	check(screen.event_open and screen.event_overlay.visible, "the interaction window is shown")
+	check(run.paused, "the interaction pauses the run")
+	var clock_before: float = run.clock
+	check(not screen.event_option_buttons.is_empty(), "the window lists options")
+	if not screen.event_option_buttons.is_empty():
+		screen.event_option_buttons[0].pressed.emit()
+		await process_frame
+	check(run.clock > clock_before, "an option advances in-game time")
+	screen._close_event_window()
+	await process_frame
+	check(not screen.event_open, "closing the window resumes the run")
+	check(not run.paused, "the run is unpaused after the window closes")
 
 	# 7) 地图信号换区（到晨钟广场）。
 	screen._open_map()

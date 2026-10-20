@@ -18,8 +18,10 @@ var data: Dictionary = {"version":1,"name":"守夜人","coins":160,"xp":0,"runs"
 	# CHANGE-LOG v3-1 adds `daily`: the per-day daily-challenge record written by
 	# `roguelike.record_daily()` through the session's `profile_data()` channel.
 	"controller_rumble":true,"controller_rumble_strength":1.0,"ashes":0,"growth":{},"daily":{},
-	# 血潮猎场：独立单局模式的档案统计。只记结果，不保存局内背包。
-	"hunt":{"runs":0,"extracts":0,"wins":0,"best_day":0}}
+	# 血潮深潜：独立单局模式的档案统计。只记结果，不保存局内背包。
+	# `hunt_pocket` 是深潜自己的「随身物」：3 格、只收普通物品，跨局保留，
+	# 与角色/仓库/搜打撤完全隔离（见 hunt_pocket_* 系列）。
+	"hunt":{"runs":0,"extracts":0,"wins":0,"best_day":0},"hunt_pocket":[]}
 const Homestead = preload("res://scripts/homestead.gd")
 # 窗口设置的键名/默认值/档位表都在这一个文件里，`boot.gd`（启动器）与
 # `main.gd`（设置页）共用它；这里只借它的常量做范围夹取，保证三处不会分叉。
@@ -71,6 +73,94 @@ func sanitize_hunt() -> void:
 			clean[key] = maxi(0, int(raw.get(key, 0)))
 		clean["best_day"] = mini(3, clean["best_day"])
 	data["hunt"] = clean
+	var pockets: Array = []
+	var raw_pocket = data.get("hunt_pocket", [])
+	if raw_pocket is Array:
+		for entry in raw_pocket:
+			var item := Catalog.clean_slot_entry(entry)
+			if item.is_empty():
+				continue
+			# 随身物只收普通物品：武器/防具/饰品/背包进不了深潜口袋。
+			if not Catalog.hunt_exportable(str(item.get("kind", ""))):
+				continue
+			pockets.append(item)
+			if pockets.size() >= HUNT_POCKET_SLOTS:
+				break
+	data["hunt_pocket"] = pockets
+
+# --- 血潮深潜的「随身物」-----------------------------------------------
+# 3 个格子，只能从营地仓库取普通物品带进深潜；一旦带进去就再也回不到仓库，
+# 撤离成功时随机消失 2~3 件，阵亡/放弃则整袋清空。规则只写在这里。
+const HUNT_POCKET_SLOTS := 3
+
+func hunt_pocket() -> Array:
+	sanitize_hunt()
+	return data.get("hunt_pocket", [])
+
+func hunt_pocket_count() -> int:
+	return hunt_pocket().size()
+
+func hunt_pocket_names() -> Array:
+	var names: Array = []
+	for entry in hunt_pocket():
+		names.append(Catalog.item_name(entry))
+	return names
+
+# 从仓库把一个堆叠整件挪进随身物。带进去不退不换：仓库那一份直接消失。
+func hunt_pocket_take(index: int) -> bool:
+	var item := warehouse_item(index)
+	if item.is_empty():
+		return false
+	var kind := str(item.get("kind", ""))
+	if not Catalog.hunt_exportable(kind):
+		return false
+	var pockets: Array = hunt_pocket()
+	# 同种物品优先并进已有格，否则占一个空格。
+	var placed := false
+	for entry in pockets:
+		if str(entry.get("kind", "")) == kind and Catalog.stacks(kind):
+			var room := Catalog.max_stack(kind) - int(entry.get("count", 1))
+			if room > 0:
+				var move := mini(room, Catalog.units_of_item(item))
+				entry["count"] = int(entry.get("count", 1)) + move
+				item["count"] = int(item.get("count", 1)) - move
+				if int(item.get("count", 1)) <= 0:
+					warehouse_remove(index)
+				placed = true
+				break
+	if not placed:
+		if pockets.size() >= HUNT_POCKET_SLOTS:
+			return false
+		pockets.append(item.duplicate(true))
+		warehouse_remove(index)
+	data["hunt_pocket"] = pockets
+	save_profile()
+	return true
+
+# 撤离成功：随身物随机消失 2~3 件，剩下的留到下一局。
+func hunt_pocket_attrition(min_pieces: int = 2, max_pieces: int = 3) -> Array:
+	var pockets: Array = hunt_pocket()
+	if pockets.is_empty():
+		return []
+	var count := clampi(randi_range(min_pieces, max_pieces), 1, pockets.size())
+	var lost: Array = []
+	for i in count:
+		if pockets.is_empty():
+			break
+		var pick := randi_range(0, pockets.size() - 1)
+		var entry: Dictionary = pockets[pick]
+		lost.append(Catalog.item_name(entry))
+		pockets.remove_at(pick)
+	data["hunt_pocket"] = pockets
+	save_profile()
+	return lost
+
+# 阵亡 / 提前退出：整袋随手物被血潮吞掉。
+func hunt_pocket_clear() -> Array:
+	var lost := hunt_pocket_names()
+	data["hunt_pocket"] = []
+	save_profile()
+	return lost
 
 func apply_data(parsed) -> void:
 	# Contracts §4.1. `version` is never bumped, but a save whose version is
@@ -393,6 +483,8 @@ func place_vault_unit(kind: String, blank: Dictionary) -> bool:
 	var issued := bool(blank.get("provision",false))
 	for existing in Catalog.container_items(vault):
 		if str(existing.get("kind",""))!=kind: continue
+		# 深潜物品带着白/绿/蓝品质：不同品质的同种物品不能并成一堆。
+		if Catalog.is_hunt_loot(kind) and int(existing.get("tier",-1))!=int(blank.get("tier",-1)): continue
 		if bool(existing.get("provision",false))!=issued: continue
 		if int(existing.get("count",1))>=Catalog.max_stack(kind): continue
 		existing["count"]=int(existing.get("count",1))+1

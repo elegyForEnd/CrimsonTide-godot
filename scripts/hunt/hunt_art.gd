@@ -1,5 +1,5 @@
 extends RefCounted
-## 血潮猎场的取图口：正式素材（assets/hunt）优先，缺失时回退到旧占位图。
+## 血潮深潜的取图口：正式素材（assets/hunt）优先，缺失时回退到旧占位图。
 ##
 ## 正式素材由 HUNT-ART-PROMPTS.md 的提示词逐张生成（gpt-image-2.5-sunburst，2K），
 ## 品红底版本用 tools 里的脚本抠成 `*_alpha.png`，图标/敌人再按格切成 individual。
@@ -16,6 +16,7 @@ const BG_DIR := HUNT + "backgrounds/"
 const ICON_DIR := HUNT + "icons/individual/"
 const ENEMY_DIR := HUNT + "enemies/individual/"
 const PORTRAIT_DIR := HUNT + "portraits/"
+const EVENT_DIR := HUNT + "events/"
 const UI_DIR := HUNT + "ui/"
 const UI_CROP := UI_DIR + "crops/"
 
@@ -149,6 +150,12 @@ static func background(area: String, phase: String) -> Texture2D:
 static func map_texture() -> Texture2D:
 	return texture(HUNT + "map/region_map.png")
 
+## 互动事件的物件插图：黑底生图，暗色面板上直接铺；缺图返回 null（只显示文字）。
+static func event_texture(key: String) -> Texture2D:
+	if key.is_empty():
+		return null
+	return texture("%s%s.png" % [EVENT_DIR, key])
+
 static func ui_texture(name: String) -> Texture2D:
 	return texture(UI_DIR + name)
 
@@ -234,7 +241,7 @@ static func enemy_texture(kind: String) -> Texture2D:
 static func portrait_data(hero: int) -> Dictionary:
 	return Data.PORTRAITS.get(clampi(hero, 0, 3), Data.PORTRAITS[3])
 
-## 三位基础角色沿用 vn-full-v3 整张差分；隐藏角色（墓煜）用猎场新画的 8 表情立绘。
+## 三位基础角色沿用 vn-full-v3 整张差分；隐藏角色（墓煜）用深潜新画的 8 表情立绘。
 ## `StoryArt.layers()` 已经是 vn-full-v3 的唯一读取口，这里不另抄 manifest。
 static func portrait_texture(hero: int, expression: String) -> Texture2D:
 	if hero >= 3:

@@ -1,5 +1,5 @@
 extends SceneTree
-## 猎场页面的 headless 冒烟：只验证脚本能编译、页面能创建、简报与一局能起，
+## 深潜页面的 headless 冒烟：只验证脚本能编译、页面能创建、简报与一局能起，
 ## 以及正式美术（背景 / 地图 / 图标 / 敌人 / 立绘 / UI 九宫格）能被解析到。
 const Screen = preload("res://scripts/hunt/hunt_screen.gd")
 const Art = preload("res://scripts/hunt/hunt_art.gd")
@@ -59,5 +59,7 @@ func run() -> void:
 	check(Art.crop_texture("panel.png") != null and Art.crop_texture("toast.png") != null, "ui nine-slice crops")
 	check(Art.button_style(false, "normal") != null and Art.button_style(true, "pressed") != null, "ui button styles")
 	check(Art.hotspot_texture("locked") != null, "hotspot ring art")
+	check(Art.event_texture("reliquary") != null and Art.event_texture("blood_clock") != null, "event illustrations")
+	check(Art.event_texture("missing") == null, "missing event art falls back to text only")
 	print("HUNT UI SMOKE: ", checks, " checks, ", failures, " failures")
 	quit(1 if failures else 0)

@@ -1,5 +1,5 @@
 extends SceneTree
-## 营地入口可视化 + 点击链路：出征栏出现「血潮猎场」，点它传送到新站点，
+## 营地入口可视化 + 点击链路：出征栏出现「血潮深潜」，点它传送到新站点，
 ## 再按 E 走 station_requested → main.show_hunt()。出图 build/hunt-camp.png。
 const MainScene = preload("res://scenes/main.tscn")
 var checks := 0
@@ -31,7 +31,7 @@ func run() -> void:
 	root.get_texture().get_image().save_png("res://build/hunt-camp.png")
 	check(app.camp.station_shortcuts.has("hunt_gate"), "camp shortcut row")
 	var shortcut: Button = app.camp.station_shortcuts.get("hunt_gate")
-	check(shortcut != null and shortcut.text == "血潮猎场", "shortcut label")
+	check(shortcut != null and shortcut.text == "血潮深潜", "shortcut label")
 	if shortcut:
 		shortcut.emit_signal("pressed")
 		await process_frame

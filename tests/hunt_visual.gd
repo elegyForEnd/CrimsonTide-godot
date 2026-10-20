@@ -1,5 +1,5 @@
 extends SceneTree
-## 血潮猎场可视化回归：真实窗口渲染，出图到 build/hunt-*.png。
+## 血潮深潜可视化回归：真实窗口渲染，出图到 build/hunt-*.png。
 ## 断言只守"页面能开、面板能开、不崩"；画面细节靠出图肉眼验收。
 const Screen = preload("res://scripts/hunt/hunt_screen.gd")
 const Data = preload("res://scripts/hunt/hunt_data.gd")
@@ -74,6 +74,23 @@ func run() -> void:
 	await shot("05-bag")
 	check(screen.bag_overlay.visible, "bag visible")
 	screen._close_overlay()
+	# 随身物面板（空袋也要能开）。
+	screen._open_overlay("pocket")
+	await shot("05a-pocket")
+	check(screen.pocket_overlay.visible, "pocket overlay visible")
+	screen._close_overlay()
+	# 随机事件互动窗：黑箱问号点 → 中等窗口 + 物件插图 + 选项耗时。
+	var event_uid: String = screen.run.debug_spawn_event("cellar_door")
+	screen.run.begin_event(event_uid)
+	screen._open_event_window()
+	await shot("05b-event")
+	check(screen.event_open, "event window visible")
+	check(screen.event_art.texture != null, "event illustration loaded")
+	if not screen.event_option_buttons.is_empty():
+		screen.event_option_buttons[0].pressed.emit()
+		await shot("05c-event-step")
+		check(str(screen.run.event_state.get("step", "")) == "shape", "event advanced a step in the window")
+	screen._close_event_window()
 	# Force an encounter in the current area for the combat panel.
 	screen.run.debug_kill_enemies()
 	screen.run.debug_spawn_enemy("scavenger")

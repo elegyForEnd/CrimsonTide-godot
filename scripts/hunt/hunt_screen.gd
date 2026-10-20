@@ -1,5 +1,5 @@
 extends Control
-## 血潮猎场 · 模式页面
+## 血潮深潜 · 模式页面
 ##
 ## 三层：SubViewport 里的固定第一人称 3D 舞台 → 2D 热点/敌人 → HUD 与面板。
 ## 规则全部在 `hunt_run.gd`；这里只发动作、读字段、画界面，不写存档。
@@ -29,7 +29,7 @@ const CARD := Color("1a202c")
 
 const VIEW := Vector2(1440, 900)
 const HERO_CARD_W := 270.0
-const HERO_CARD_H := 520.0
+const HERO_CARD_H := 470.0
 
 var profile: Profile
 var sound
@@ -94,6 +94,19 @@ var combat_smoke: Button
 var combat_flee: Button
 var pause_layer: Control
 var result_built_for := ""
+var pocket_overlay: Control
+var pocket_list: VBoxContainer
+var pocket_hint: Label
+var pocket_button: Button
+var event_overlay: Control
+var event_title: Label
+var event_sub: Label
+var event_art: TextureRect
+var event_log: Label
+var event_options: VBoxContainer
+var event_option_buttons: Array = []
+var event_open := false
+var event_sig := ""
 
 var spot_nodes: Dictionary = {}
 var enemy_nodes: Dictionary = {}
@@ -215,8 +228,8 @@ func show_briefing() -> void:
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	briefing.add_child(dim)
-	_label(briefing, "血 潮 猎 场", Vector2(70, 42), Vector2(760, 70), 46, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
-	_label(briefing, "C R I M S O N   H U N T   /   三 日 禁 区", Vector2(74, 112), Vector2(760, 30), 15, GOLD)
+	_label(briefing, "血 潮 深 潜", Vector2(70, 42), Vector2(760, 70), 46, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(briefing, "C R I M S O N   D I V E   /   三 日 禁 区", Vector2(74, 112), Vector2(760, 30), 15, GOLD)
 	_label(briefing, "在血潮漫上来之前，搜到能活过第三夜的东西。", Vector2(74, 154), Vector2(900, 32), 19, MUTED)
 	_label(briefing, "8 分钟 = 1 天，共 3 天。搜索消耗体力，地区资源有限；搜到的东西可以在局内合成。\n撤离成功才能把战利品带回晨钟家园；倒下就什么都没有。", Vector2(74, 192), Vector2(1180, 58), 16, MUTED)
 	var slot := 0
@@ -228,29 +241,47 @@ func show_briefing() -> void:
 			card.modulate = Color(0.62, 0.62, 0.66, 0.95)
 		var art = Portrait.new()
 		art.name = "HeroPortrait%d" % hero
-		art.size = Vector2(HERO_CARD_W - 22, 330)
+		art.size = Vector2(HERO_CARD_W - 22, 300)
 		art.position = Vector2(11, 10)
 		art.set_hero(hero)
 		card.add_child(art)
 		var hd: Dictionary = Catalog.HEROES[hero]
-		_label(card, str(hd.name), Vector2(16, 344), Vector2(220, 32), 26, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
-		_label(card, str(hd.title), Vector2(16, 376), Vector2(240, 18), 13, GOLD)
+		_label(card, str(hd.name), Vector2(16, 316), Vector2(220, 32), 26, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+		_label(card, str(hd.title), Vector2(16, 348), Vector2(240, 18), 13, GOLD)
 		if unlocked:
 			var desc := _label(card, "%s\nHP %d · 攻击 %d" % [str(hd.desc), int(hd.hp), int(hd.damage)],
-				Vector2(16, 398), Vector2(238, 64), 11, MUTED, HORIZONTAL_ALIGNMENT_LEFT, null, true)
+				Vector2(16, 366), Vector2(238, 54), 10, MUTED, HORIZONTAL_ALIGNMENT_LEFT, null, true)
 			desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		else:
-			var hint := _label(card, "隐藏角色\n抵达护身符结局后解锁", Vector2(16, 400), Vector2(238, 60), 12, MUTED,
+			var hint := _label(card, "隐藏角色\n抵达护身符结局后解锁", Vector2(16, 370), Vector2(238, 60), 12, MUTED,
 				HORIZONTAL_ALIGNMENT_LEFT, null, true)
 			hint.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-		var choose := _button(card, "选择" if unlocked else "未解锁", Vector2(16, 470), Vector2(238, 38), func(): _select_hero(hero), hero == selected_hero)
+		var choose := _button(card, "选择" if unlocked else "未解锁", Vector2(16, 426), Vector2(238, 36), func(): _select_hero(hero), hero == selected_hero)
 		choose.disabled = not unlocked
 		slot += 1
-	_label(briefing, "已解锁 %d / 4 名守夜人。每次进入猎场只带一名角色；局内装备与仓库分离，撤离后结算。" % profile.roster_size(),
+	# 随身物：深潜自己的 3 格口袋。只能从营地仓库拿普通物品进来，且带进来就回不去。
+	_panel(briefing, Vector2(74, 744), Vector2(1180, 56), Color(0.05, 0.058, 0.082, 0.94))
+	_label(briefing, "随 身 物", Vector2(90, 752), Vector2(84, 40), 15, GOLD, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	var slots := profile.hunt_pocket()
+	for i in 3:
+		var at := Vector2(178.0 + i * 142.0, 752)
+		var text := "空"
+		if i < slots.size():
+			var entry: Dictionary = slots[i]
+			text = "%s ×%d" % [Data.item_name(str(entry.get("kind", ""))), int(entry.get("count", 1))]
+		var b := _button(briefing, text, at, Vector2(134, 40), func(): _open_pocket_picker(), false)
+		b.name = "HuntPocket%d" % i
+		b.add_theme_font_size_override("font_size", 12)
+	var take := _button(briefing, "从营地仓库取物", Vector2(612, 752), Vector2(190, 40), func(): _open_pocket_picker(), true)
+	take.name = "HuntPocketTake"
+	var warn := _label(briefing, "深潜只认它自己的规矩：从这里带下去的东西，血潮不会再让它回到营地。",
+		Vector2(814, 750), Vector2(430, 44), 12, Color("b58f8a"), HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	warn.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_label(briefing, "已解锁 %d / 4 名守夜人。每次进入深潜只带一名角色；武器、防具与饰品都带不出来。" % profile.roster_size(),
 		Vector2(74, 806), Vector2(1000, 26), 14, MUTED)
 	var back := _button(briefing, "返回营地", Vector2(74, 842), Vector2(200, 44), func(): exit_requested.emit())
 	back.name = "HuntBack"
-	var start := _button(briefing, "进入猎场  →", Vector2(1060, 824), Vector2(300, 62), func(): _start_selected(), true)
+	var start := _button(briefing, "进入深潜  →", Vector2(1060, 824), Vector2(300, 62), func(): _start_selected(), true)
 	start.name = "HuntStart"
 	start.add_theme_font_size_override("font_size", 24)
 	visible = true
@@ -266,7 +297,102 @@ func _select_hero(hero: int) -> void:
 func _start_selected() -> void:
 	if selected_hero >= profile.roster_size():
 		return
+	_close_pocket_picker()
 	start_run(selected_hero)
+
+# ------------------------------------------------------------ 随身物（简报）
+# 3 格，只能从营地仓库取普通物品。取走即从仓库消失——带进深潜的东西
+# 不会被血潮放回营地，这是玩法的一部分，不是 bug。
+
+func _open_pocket_picker() -> void:
+	if pocket_overlay == null or not is_instance_valid(pocket_overlay):
+		_build_pocket_picker()
+	pocket_overlay.visible = true
+	_refresh_pocket_picker()
+
+func _close_pocket_picker() -> void:
+	if pocket_overlay and is_instance_valid(pocket_overlay):
+		pocket_overlay.visible = false
+
+func _build_pocket_picker() -> void:
+	pocket_overlay = Control.new()
+	pocket_overlay.name = "HuntPocketPicker"
+	pocket_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	pocket_overlay.visible = false
+	pocket_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(pocket_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(0.012, 0.016, 0.024, 0.9)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	pocket_overlay.add_child(dim)
+	var panel := _panel(pocket_overlay, Vector2(300, 70), Vector2(840, 760), Color(0.03, 0.04, 0.06, 0.99))
+	panel.name = "PocketPanel"
+	_label(panel, "从 营 地 仓 库 取 物", Vector2(28, 18), Vector2(600, 40), 28, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "只挑三件普通物品。它们会离开仓库，跟着你沉进血潮——带不回来。",
+		Vector2(30, 58), Vector2(780, 44), 13, Color("b58f8a"), HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	var scroll := ScrollContainer.new()
+	scroll.position = Vector2(26, 112)
+	scroll.size = Vector2(788, 560)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.add_theme_stylebox_override("panel", _style(Color(0.02, 0.03, 0.045, 0.9), Color(0.18, 0.20, 0.25)))
+	panel.add_child(scroll)
+	pocket_list = VBoxContainer.new()
+	pocket_list.name = "PocketList"
+	pocket_list.custom_minimum_size = Vector2(770, 0)
+	pocket_list.add_theme_constant_override("separation", 4)
+	scroll.add_child(pocket_list)
+	pocket_hint = _label(panel, "", Vector2(30, 684), Vector2(560, 30), 13, GOLD)
+	_button(panel, "关闭", Vector2(660, 680), Vector2(150, 44), func(): _close_pocket_picker())
+	_refresh_pocket_picker()
+
+func _refresh_pocket_picker() -> void:
+	if pocket_list == null:
+		return
+	for child in pocket_list.get_children():
+		child.queue_free()
+	var pockets: Array = profile.hunt_pocket()
+	var room: int = 3 - pockets.size()
+	for i in profile.warehouse_items().size():
+		var item: Dictionary = profile.warehouse_item(i)
+		if item.is_empty():
+			continue
+		var kind := str(item.get("kind", ""))
+		if not Catalog.hunt_exportable(kind):
+			continue
+		var row := Panel.new()
+		row.custom_minimum_size = Vector2(760, 46)
+		row.add_theme_stylebox_override("panel", _style(Color(0.05, 0.06, 0.085, 0.82), Color(0.16, 0.18, 0.22)))
+		var icon := TextureRect.new()
+		icon.texture = Art.icon(kind)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.position = Vector2(8, 7)
+		icon.size = Vector2(32, 32)
+		icon.modulate = Art.icon_modulate(kind)
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(icon)
+		_label(row, Catalog.item_name(item), Vector2(50, 6), Vector2(430, 34), 15, INK)
+		_label(row, "×%d" % int(item.get("count", 1)), Vector2(470, 6), Vector2(90, 34), 13, GOLD)
+		var b := _button(row, "带下去", Vector2(600, 5), Vector2(150, 36), func(): _take_pocket_item(i), true)
+		b.disabled = room <= 0
+		pocket_list.add_child(row)
+	if profile.warehouse_items().is_empty():
+		var empty := _label(pocket_list, "仓库是空的。先去搜打撤里带点东西回来。", Vector2(10, 10), Vector2(700, 40), 15, MUTED)
+		empty.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	if pocket_hint:
+		pocket_hint.text = "随身物 %d / 3。撤离成功也会随机沉掉 2~3 件。" % profile.hunt_pocket_count()
+
+func _take_pocket_item(index: int) -> void:
+	if profile.hunt_pocket_take(index):
+		if pocket_overlay and pocket_overlay.visible:
+			_refresh_pocket_picker()
+		show_briefing()
+		if pocket_overlay:
+			pocket_overlay.visible = true
+	else:
+		if pocket_hint:
+			pocket_hint.text = "随身物已经满了，或者这件东西带不进去。"
 
 func start_run(hero: int) -> void:
 	_clear(briefing)
@@ -281,7 +407,7 @@ func start_run(hero: int) -> void:
 	hotspot_layer.visible = true
 	vignette.visible = true
 	run = Run.new()
-	run.setup(hero, 0, int(profile.data.get("gear", -1)), profile.data.get("talents", [0, 0, 0]))
+	run.setup(hero, 0, int(profile.data.get("gear", -1)), profile.data.get("talents", [0, 0, 0]), profile.hunt_pocket())
 	run.changed.connect(_on_run_changed)
 	run.logged.connect(_on_run_log)
 	run.finished.connect(_on_run_finished)
@@ -324,6 +450,10 @@ func _build_run_ui() -> void:
 	# V2 形态切换：行动 act / 隐藏 hide（Z）。
 	form_button = _button(hud, "形态：行动  Z", Vector2(24, 118), Vector2(186, 38), _do_form)
 	form_button.name = "HuntFormButton"
+	# 随身物：深潜自己的 3 格口袋，跨局保留，撤离/阵亡都会损耗。
+	pocket_button = _button(hud, "随身物", Vector2(218, 118), Vector2(140, 38), func(): _open_overlay("pocket"))
+	pocket_button.name = "HuntPocketButton"
+	pocket_button.add_theme_font_size_override("font_size", 14)
 	# 立绘：不再垫底板，整张透明 PNG 直接浮在场景上。
 	portrait = Portrait.new()
 	portrait.name = "HuntPortrait"
@@ -390,6 +520,8 @@ func _build_run_ui() -> void:
 	_build_map_overlay()
 	_build_craft_overlay()
 	_build_bag_overlay()
+	_build_pocket_overlay()
+	_build_event_window()
 	_build_pause_overlay()
 
 func _on_run_changed() -> void:
@@ -481,7 +613,14 @@ func _refresh_all() -> void:
 		elif run.has_enemy():
 			hint_label.text = "附近有东西在动。压低身形（Z）会更安全"
 		else:
-			hint_label.text = "W 翻找 / Z 换形态 / M 换区" if run.search_cd <= 0.0 else "缓一缓再翻（%.1fs）" % run.search_cd
+			var unknown := 0
+			for marker in run.events_here():
+				if not bool(marker.get("used", false)):
+					unknown += 1
+			if unknown > 0:
+				hint_label.text = "这一带有 %d 处说不清的动静（问号）　W 翻找 / Z 换形态" % unknown
+			else:
+				hint_label.text = "W 翻找 / Z 换形态 / M 换区" if run.search_cd <= 0.0 else "缓一缓再翻（%.1fs）" % run.search_cd
 		hp_bar.max_value = maxf(1.0, run.total_max_hp())
 		hp_bar.value = run.hp
 		sp_bar.max_value = maxf(1.0, run.max_stamina)
@@ -534,11 +673,24 @@ func _refresh_all() -> void:
 	_refresh_markers()
 	_refresh_combat()
 	_refresh_bag_text()
+	_refresh_pocket_text()
+	if pocket_overlay and pocket_overlay.visible:
+		_refresh_pocket_overlay()
+	if event_open:
+		if _event_window_open():
+			_refresh_event_window()
+		else:
+			_close_event_window()
 
 func _refresh_bag_text() -> void:
 	var b := hud.get_node_or_null("HuntBagButton")
 	if b is Button:
 		b.text = "背包 %d/%d" % [run.bag.size(), run.capacity]
+
+func _refresh_pocket_text() -> void:
+	if pocket_button == null:
+		return
+	pocket_button.text = "随身物 %d/3" % run.pocket.size()
 
 # --------------------------------------------------------------- scene markers
 
@@ -550,13 +702,15 @@ func _refresh_markers() -> void:
 			child.queue_free()
 		site_nodes.clear()
 		return
-	var sig := "%s|%s|%s|%s|%s" % [run.area_id, run.day, run.phase_id(), run.search.size(), run.sites_done.size()]
+	var markers: Array = run.events_here()
+	var uids: Array = []
+	for marker in markers:
+		if not bool(marker.get("used", false)):
+			uids.append(str(marker.get("uid", "")))
+	var sig := "%s|%s|%s|%s" % [run.area_id, run.day, run.phase_id(), "|".join(uids)]
 	if sig == marker_signature:
 		return
 	marker_signature = sig
-	for child in hotspot_layer.get_children():
-		child.queue_free()
-	site_nodes.clear()
 	spot_nodes.clear()
 	enemy_nodes.clear()
 	var area := Vector2(hotspot_layer.size)
@@ -565,30 +719,42 @@ func _refresh_markers() -> void:
 	# Keep interactive markers out of the portrait/stat corner and the bottom action
 	# strip: the authored 0..1 coordinates describe the painted scene, not the HUD.
 	var scene_rect := Rect2(Vector2(372, 128), Vector2(area.x - 396, area.y - 368))
-	# V2：搜索不再点位置、怪物不再有判定圈，只剩可互动的事件点。
-	for site in run.sites():
-		var sid := str(site.get("id", ""))
-		if run.site_done(sid):
+	# 淡出已经解决/不在本时段的问号点，再把新的淡入。
+	for uid in site_nodes.keys():
+		if uid in uids:
 			continue
-		var node := SiteButton.new()
-		node.name = "Site_" + sid
+		var gone = site_nodes[uid]
+		site_nodes.erase(uid)
+		if gone and is_instance_valid(gone):
+			var fade_out := create_tween()
+			fade_out.tween_property(gone, "modulate:a", 0.0, 0.28)
+			fade_out.tween_callback(gone.queue_free)
+	for marker in markers:
+		var uid := str(marker.get("uid", ""))
+		if bool(marker.get("used", false)) or site_nodes.has(uid):
+			continue
+		var node := EventMarker.new()
+		node.name = "Event_" + uid.replace(":", "_")
 		node.run = run
-		node.site = site
+		node.marker = marker
 		node.size = Vector2(150, 150)
-		var at: Vector2 = site.get("at", Vector2(0.5, 0.5))
+		var at: Vector2 = marker.get("at", Vector2(0.5, 0.5))
 		node.position = scene_rect.position + at * scene_rect.size - node.size * 0.5
 		node.position.x = clampf(node.position.x, scene_rect.position.x, scene_rect.end.x - node.size.x)
 		node.position.y = clampf(node.position.y, scene_rect.position.y, scene_rect.end.y - node.size.y)
-		node.pressed.connect(_on_site_pressed.bind(sid))
+		node.modulate = Color(1, 1, 1, 0.0)
+		node.pressed.connect(_on_event_pressed.bind(uid))
 		hotspot_layer.add_child(node)
-		site_nodes[sid] = node
-	for node in site_nodes.values():
-		node.queue_redraw()
+		site_nodes[uid] = node
+		var fade_in := create_tween()
+		fade_in.tween_interval(0.05)
+		fade_in.tween_property(node, "modulate:a", 1.0, 0.45)
 
-func _on_site_pressed(id: String) -> void:
+func _on_event_pressed(uid: String) -> void:
 	if run == null or run.ended_flag:
 		return
-	run.interact(id)
+	if run.begin_event(uid):
+		_open_event_window()
 	_refresh_all()
 
 ## W 键 / 「搜索」按钮共用的入口：随机抽一个已解锁的点位，3 秒，可被打断。
@@ -611,9 +777,10 @@ func _close_overlay(resume: bool = true) -> void:
 	if map_overlay: map_overlay.visible = false
 	if craft_overlay: craft_overlay.visible = false
 	if bag_overlay: bag_overlay.visible = false
+	if pocket_overlay: pocket_overlay.visible = false
 	if pause_layer: pause_layer.visible = false
 	overlay_kind = ""
-	if run and resume and not run.ended_flag:
+	if run and resume and not run.ended_flag and not _event_window_open():
 		run.set_paused(false)
 
 func _open_overlay(kind: String) -> void:
@@ -631,6 +798,9 @@ func _open_overlay(kind: String) -> void:
 		"bag":
 			bag_overlay.visible = true
 			_refresh_bag_overlay()
+		"pocket":
+			pocket_overlay.visible = true
+			_refresh_pocket_overlay()
 		"pause":
 			pause_layer.visible = true
 
@@ -660,7 +830,7 @@ func _build_map_overlay() -> void:
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	map_overlay.add_child(dim)
 	var panel := _panel(map_overlay, Vector2(70, 44), Vector2(1300, 812), Color(0.03, 0.04, 0.06, 0.98))
-	_label(panel, "血 潮 猎 场 · 地 区 图", Vector2(30, 20), Vector2(600, 40), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "血 潮 深 潜 · 地 区 图", Vector2(30, 20), Vector2(600, 40), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
 	_label(panel, "邻近地区才能移动；第 2 / 3 天会解锁更深的区域。", Vector2(32, 62), Vector2(900, 24), 14, MUTED)
 	map_view = MapView.new()
 	map_view.position = Vector2(30, 100)
@@ -891,6 +1061,235 @@ func _use_bag_slot(index: int) -> void:
 		_refresh_all()
 		_refresh_bag_overlay()
 
+# --------------------------------------------------------------- 随身物（局内）
+# 3 格独立口袋：不占背包、不进仓库、撤离也不会被带回去。
+
+func _build_pocket_overlay() -> void:
+	if pocket_overlay: return
+	pocket_overlay = Control.new()
+	pocket_overlay.name = "HuntPocket"
+	pocket_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	pocket_overlay.visible = false
+	pocket_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(pocket_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(0.015, 0.02, 0.03, 0.9)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	pocket_overlay.add_child(dim)
+	var panel := _panel(pocket_overlay, Vector2(400, 170), Vector2(640, 540), Color(0.03, 0.04, 0.06, 0.99))
+	panel.name = "PocketRunPanel"
+	_label(panel, "随 身 物", Vector2(28, 18), Vector2(300, 40), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "三格。跟着你下来的东西，血潮不会放它回去。", Vector2(30, 60), Vector2(560, 26), 13, MUTED)
+	var box := VBoxContainer.new()
+	box.name = "PocketRows"
+	box.position = Vector2(28, 104)
+	box.size = Vector2(584, 330)
+	box.add_theme_constant_override("separation", 8)
+	panel.add_child(box)
+	_label(panel, "点击使用。用完就没了；没用的会留到下一局。", Vector2(30, 444), Vector2(560, 24), 12, MUTED)
+	_button(panel, "关闭  Esc", Vector2(28, 476), Vector2(160, 44), func(): _close_overlay())
+	_refresh_pocket_overlay()
+
+func _refresh_pocket_overlay() -> void:
+	if pocket_overlay == null or run == null:
+		return
+	var box := pocket_overlay.get_node_or_null("PocketRunPanel/PocketRows") as VBoxContainer
+	if box == null:
+		return
+	for child in box.get_children():
+		child.queue_free()
+	for i in 3:
+		var row := Panel.new()
+		row.custom_minimum_size = Vector2(580, 96)
+		row.add_theme_stylebox_override("panel", _style(Color(0.05, 0.06, 0.085, 0.86), Color(0.16, 0.18, 0.22)))
+		if i < run.pocket.size():
+			var entry: Dictionary = run.pocket[i]
+			var kind := str(entry.get("kind", ""))
+			var icon := TextureRect.new()
+			icon.texture = Art.icon(kind)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon.position = Vector2(12, 12)
+			icon.size = Vector2(56, 56)
+			icon.modulate = Art.icon_modulate(kind)
+			icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			row.add_child(icon)
+			_label(row, Data.item_name(kind), Vector2(82, 12), Vector2(300, 30), 17, INK)
+			_label(row, "×%d" % int(entry.get("count", 1)), Vector2(82, 44), Vector2(120, 24), 13, GOLD)
+			var desc := _label(row, str(Data.item(kind).get("desc", "")), Vector2(82, 64), Vector2(380, 26), 11, MUTED,
+				HORIZONTAL_ALIGNMENT_LEFT, null, true)
+			desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+			var use := _button(row, "使用", Vector2(470, 28), Vector2(96, 40), func(): _use_pocket_slot(i), true)
+			use.name = "PocketUse%d" % i
+			use.disabled = kind in ["snare", "alchemist_flare", "smoke_pouch"] and run.combat.is_empty()
+		else:
+			_label(row, "空", Vector2(20, 32), Vector2(160, 32), 14, DIM)
+		box.add_child(row)
+
+func _use_pocket_slot(index: int) -> void:
+	if run == null:
+		return
+	if run.pocket_use(index):
+		_refresh_all()
+		_refresh_pocket_overlay()
+
+# --------------------------------------------------------------- 互动事件窗
+# 老式 2D 解谜的"调查窗口"：中等大小、非全屏，压住场景但留出画面边缘。
+# 默认时停；每个选项标注要花掉的局内时间，点下去时间照走。`live` 事件不暂停。
+
+func _build_event_window() -> void:
+	if event_overlay: return
+	event_overlay = Control.new()
+	event_overlay.name = "HuntEvent"
+	event_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	event_overlay.visible = false
+	event_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(event_overlay)
+	var dim := ColorRect.new()
+	dim.color = Color(0.008, 0.01, 0.016, 0.74)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	event_overlay.add_child(dim)
+	var panel := _panel(event_overlay, Vector2(240, 108), Vector2(960, 668), Color(0.028, 0.036, 0.054, 0.99), true)
+	panel.name = "EventPanel"
+	# 左：物件插图（黑底生图，融进暗色面板）。
+	var frame := Panel.new()
+	frame.position = Vector2(28, 92)
+	frame.size = Vector2(352, 352)
+	frame.add_theme_stylebox_override("panel", _style(Color(0.012, 0.016, 0.024, 1.0), Color(0.24, 0.22, 0.24, 0.9)))
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(frame)
+	event_art = TextureRect.new()
+	event_art.name = "EventArt"
+	event_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	event_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	event_art.position = Vector2(8, 8)
+	event_art.size = Vector2(336, 336)
+	event_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.add_child(event_art)
+	event_title = _label(panel, "", Vector2(404, 20), Vector2(520, 44), 30, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	event_sub = _label(panel, "", Vector2(406, 66), Vector2(520, 24), 12, GOLD)
+	var log_panel := Panel.new()
+	log_panel.position = Vector2(398, 98)
+	log_panel.size = Vector2(532, 300)
+	log_panel.add_theme_stylebox_override("panel", _style(Color(0.018, 0.024, 0.036, 1.0), Color(0.16, 0.18, 0.22)))
+	log_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(log_panel)
+	var scroll := ScrollContainer.new()
+	scroll.name = "EventLogScroll"
+	scroll.position = Vector2(12, 12)
+	scroll.size = Vector2(508, 276)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	scroll.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	log_panel.add_child(scroll)
+	event_log = Label.new()
+	event_log.name = "EventLog"
+	event_log.autowrap_mode = TextServer.AUTOWRAP_ARBITRARY
+	event_log.add_theme_font_override("font", face_font)
+	event_log.add_theme_font_size_override("font_size", 15)
+	event_log.add_theme_color_override("font_color", Color("d8d2c6"))
+	event_log.add_theme_constant_override("line_spacing", 5)
+	event_log.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	event_log.custom_minimum_size = Vector2(488, 0)
+	scroll.add_child(event_log)
+	event_options = VBoxContainer.new()
+	event_options.name = "EventOptions"
+	event_options.position = Vector2(398, 414)
+	event_options.size = Vector2(532, 190)
+	event_options.add_theme_constant_override("separation", 6)
+	panel.add_child(event_options)
+	_button(panel, "收起  Esc", Vector2(398, 612), Vector2(150, 40), func(): _close_event_window())
+	_label(panel, "左下的时间会照常走：撬锁、拆解、翻找都要花时间。", Vector2(28, 456), Vector2(344, 60), 12, MUTED,
+		HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	_label(panel, "看清了，就动手。", Vector2(28, 520), Vector2(344, 60), 12, Color("b58f8a"),
+		HORIZONTAL_ALIGNMENT_LEFT, null, true)
+
+func _event_window_open() -> bool:
+	return event_open and run != null and not run.event_state.is_empty()
+
+func _open_event_window() -> void:
+	if run == null or run.event_state.is_empty():
+		return
+	event_open = true
+	event_sig = ""
+	event_overlay.visible = true
+	event_overlay.modulate = Color(1, 1, 1, 0.0)
+	var tw := create_tween()
+	tw.tween_property(event_overlay, "modulate:a", 1.0, 0.22)
+	_refresh_event_window()
+
+func _close_event_window() -> void:
+	if not event_open and (run == null or run.event_state.is_empty()):
+		return
+	event_open = false
+	if event_overlay:
+		event_overlay.visible = false
+	if run and not run.event_state.is_empty():
+		run.close_event()
+
+func _refresh_event_window() -> void:
+	if event_overlay == null or run == null:
+		return
+	if run.event_state.is_empty():
+		_close_event_window()
+		return
+	var state: Dictionary = run.event_state
+	var live := bool(state.get("live", false))
+	# 只在内容真的变了才重建按钮：live 事件每帧 tick 都会发 changed，
+	# 每帧重建按钮会把点击吃掉。
+	var log_lines: Array = state.get("log", [])
+	var sig := "%s|%d|%s|%d|%d" % [str(state.get("step", "")), log_lines.size(),
+		str(state.get("finished", false)), int(run.hp), int(run.stamina)]
+	if sig == event_sig:
+		return
+	event_sig = sig
+	event_title.text = str(state.get("name", ""))
+	event_sub.text = "这里的时间没有停 · 你随时可能被打断" if live else "时间暂停 · 动作会消耗局内时间"
+	event_sub.add_theme_color_override("font_color", Color("d98b7a") if live else GOLD)
+	var art_tex := Art.event_texture(str(state.get("art", "")))
+	event_art.texture = art_tex
+	var lines: Array = state.get("log", [])
+	event_log.text = "\n\n".join(lines)
+	var scroll := event_overlay.get_node_or_null("EventPanel/EventLogScroll") as ScrollContainer
+	if scroll:
+		await get_tree().process_frame
+		if scroll:
+			scroll.scroll_vertical = 99999
+	for child in event_options.get_children():
+		child.queue_free()
+	event_option_buttons.clear()
+	if bool(state.get("finished", false)):
+		var done := _button(event_options, "离开这里", Vector2(0, 0), Vector2(532, 50), func(): _close_event_window(), true)
+		done.name = "EventLeave"
+		return
+	var options: Array = run.event_options()
+	for i in options.size():
+		var opt: Dictionary = options[i]
+		var label := str(opt.get("label", "继续"))
+		var cost := int(opt.get("time", 0))
+		if cost > 0:
+			label += "   ·   %d 秒" % cost
+		var b := _button(event_options, label, Vector2(0, 0), Vector2(532, 44), func(): _choose_event_option(i), i == 0)
+		b.name = "EventOption%d" % i
+		b.add_theme_font_size_override("font_size", 15)
+		var ok := bool(opt.get("ok", false))
+		b.disabled = not ok
+		if not ok:
+			b.tooltip_text = str(opt.get("why", ""))
+		event_option_buttons.append(b)
+
+func _choose_event_option(index: int) -> void:
+	if run == null or run.event_state.is_empty():
+		return
+	run.event_choose(index)
+	if run.event_state.is_empty() or run.ended_flag:
+		_close_event_window()
+	else:
+		_refresh_event_window()
+	_refresh_all()
+
 # ------------------------------------------------------------------- combat
 
 func _build_combat_panel() -> void:
@@ -946,6 +1345,9 @@ func _refresh_combat() -> void:
 func _on_run_finished(result: Dictionary) -> void:
 	mode = "result"
 	last_result = result
+	event_open = false
+	if event_overlay:
+		event_overlay.visible = false
 	_close_overlay(false)
 	run_finished.emit(result)
 	_refresh_all()
@@ -965,7 +1367,7 @@ func _build_result(result: Dictionary) -> void:
 	result_layer.add_child(dim)
 	var victory := bool(result.get("victory", false))
 	var panel := _panel(result_layer, Vector2(300, 90), Vector2(840, 720), Color(0.035, 0.045, 0.07, 0.99), victory)
-	_label(panel, "撤离成功" if victory else "猎场吞没了你", Vector2(36, 30), Vector2(760, 54), 38, GOLD if victory else RED, HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	_label(panel, "撤离成功" if victory else "深潜吞没了你", Vector2(36, 30), Vector2(760, 54), 38, GOLD if victory else RED, HORIZONTAL_ALIGNMENT_LEFT, title_font)
 	_label(panel, str(result.get("reason", "")), Vector2(38, 90), Vector2(720, 30), 17, MUTED)
 	_label(panel, "第 %d 天 · %s   ·   击杀 %d   ·   搜索 %d 次   ·   战利品价值 %d ◈" % [
 		int(result.get("day", 1)), _clock_text(float(result.get("clock", 0.0))), int(result.get("kills", 0)),
@@ -988,14 +1390,33 @@ func _build_result(result: Dictionary) -> void:
 			tex.size = Vector2(30, 30)
 			tex.modulate = Art.icon_modulate(kind)
 			panel.add_child(tex)
-			_label(panel, "%s ×%d" % [Data.item_name(kind), int(entry.get("count", 1))], Vector2(82, y), Vector2(600, 28), 16, INK)
+			var label_text := Data.item_name(kind)
+			if entry.has("tier"):
+				label_text = "%s%s" % [Data.tier_name(int(entry.tier)), label_text]
+			var suffix := ""
+			if victory and not Catalog.hunt_exportable(kind):
+				suffix = "   · 血潮留下的东西，带不出去"
+			_label(panel, "%s ×%d%s" % [label_text, int(entry.get("count", 1)), suffix],
+				Vector2(82, y), Vector2(700, 28), 16, INK)
 			y += 34.0
-			if y > 610:
+			if y > 566:
 				_label(panel, "……还有更多，已经一并结算。", Vector2(82, y), Vector2(600, 24), 13, MUTED)
 				break
-	_label(panel, "战利品已存入守夜人仓库。" if victory else "本局战利品全部丢失；仓库里的东西不会受影响。", Vector2(38, 626), Vector2(760, 26), 14, GREEN if victory else MUTED)
-	_button(panel, "返回营地", Vector2(38, 660), Vector2(220, 44), func(): exit_requested.emit(), victory)
-	_button(panel, "再来一局", Vector2(272, 660), Vector2(180, 44), func(): _retry())
+	var gear_lost: Array = result.get("gear_lost", [])
+	if not gear_lost.is_empty():
+		_label(panel, "带不出来的装备：%s" % "、".join(gear_lost), Vector2(38, 596), Vector2(760, 24), 12, Color("b58f8a"))
+	var pocket_lost: Array = result.get("pocket_lost", [])
+	var pocket_kept: Array = result.get("pocket_kept", [])
+	var pocket_text := "随身物：这一局没有带东西下去。"
+	if not pocket_lost.is_empty() or not pocket_kept.is_empty():
+		pocket_text = "随身物：沉掉 %d 件%s · 留在袋里 %d 件" % [
+			pocket_lost.size(),
+			("（%s）" % "、".join(pocket_lost)) if not pocket_lost.is_empty() else "",
+			pocket_kept.size()]
+	_label(panel, pocket_text, Vector2(38, 618), Vector2(760, 24), 12, MUTED)
+	_label(panel, "战利品已存入守夜人仓库。" if victory else "本局战利品全部丢失；仓库里的东西不会受影响。", Vector2(38, 644), Vector2(760, 24), 14, GREEN if victory else MUTED)
+	_button(panel, "返回营地", Vector2(38, 674), Vector2(220, 44), func(): exit_requested.emit(), victory)
+	_button(panel, "再来一局", Vector2(272, 674), Vector2(180, 44), func(): _retry())
 
 func _retry() -> void:
 	_clear(result_layer)
@@ -1021,7 +1442,7 @@ func _build_pause_overlay() -> void:
 	pause_layer.add_child(dim)
 	var panel := _panel(pause_layer, Vector2(470, 300), Vector2(500, 280), Color(0.035, 0.045, 0.07, 0.99))
 	_label(panel, "暂 停", Vector2(30, 24), Vector2(300, 44), 32, INK, HORIZONTAL_ALIGNMENT_LEFT, title_font)
-	_label(panel, "时间暂停。继续猎场，或放弃本局回到营地。", Vector2(32, 78), Vector2(430, 44), 14, MUTED)
+	_label(panel, "时间暂停。继续深潜，或放弃本局回到营地。", Vector2(32, 78), Vector2(430, 44), 14, MUTED)
 	_button(panel, "继续", Vector2(32, 146), Vector2(190, 48), func(): _close_overlay(), true)
 	_button(panel, "放弃本局", Vector2(238, 146), Vector2(190, 48), _forfeit)
 	_button(panel, "回营地", Vector2(32, 210), Vector2(396, 40), func(): exit_requested.emit())
@@ -1038,6 +1459,12 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var code: int = event.physical_keycode if event.physical_keycode else event.keycode
+		# 互动窗口吃掉其余按键，只留 Esc 收起（事件点本身会保留）。
+		if event_open:
+			if code == KEY_ESCAPE:
+				_close_event_window()
+				get_viewport().set_input_as_handled()
+			return
 		if overlay_kind != "":
 			if code == KEY_ESCAPE or (overlay_kind == "map" and code == KEY_M) or (overlay_kind == "craft" and code == KEY_C) or (overlay_kind == "bag" and code == KEY_TAB):
 				_close_overlay()
@@ -1079,7 +1506,12 @@ func _process(dt: float) -> void:
 	if mode == "run" and run:
 		run.tick(dt)
 		if run.ended_flag:
+			if event_open:
+				_close_event_window()
 			return
+		# live 事件不暂停：被耗死或被打断时把窗口收掉，别挡住结算。
+		if event_open and run.event_state.is_empty():
+			_close_event_window()
 
 # ------------------------------------------------------------------ helpers
 
@@ -1245,18 +1677,20 @@ class Bar extends Control:
 		var w: float = maxf(size.x * ratio, minf(size.y, size.x))
 		draw_style_box(_fill, Rect2(Vector2(1, 1), Vector2(w - 2.0, size.y - 2.0)))
 
-## V2 的可点击互动点：神龛、血池、尸体、许愿井、暗格、陷阱、血契石。
-## 只画在有互动点的地区；点一次结算一次（一次性）。
-class SiteButton extends Control:
+## 随机事件点：黄色圆环 + 问号，不显示名字与提示。
+## 同一个点可能是神龛、上锁的箱子、一具尸体或一条会动的走廊——点下去才知道。
+## 圆环有一点点呼吸，悬停变亮；进出场由 `_refresh_markers()` 的 Tween 负责。
+class EventMarker extends Control:
 	signal pressed
 	const Art = preload("res://scripts/hunt/hunt_art.gd")
 	var run
-	var site: Dictionary = {}
+	var marker: Dictionary = {}
 	var hover := false
 	var font: Font
+	var pulse := 0.0
 
 	func _ready() -> void:
-		size = Vector2(150, 150)
+		size = Vector2(140, 140)
 		mouse_filter = Control.MOUSE_FILTER_STOP
 		focus_mode = Control.FOCUS_NONE
 		font = ThemeDB.fallback_font
@@ -1264,11 +1698,16 @@ class SiteButton extends Control:
 		face.base_font = load("res://assets/NotoSansSC.ttf")
 		if face.base_font:
 			font = face
-		mouse_entered.connect(func(): hover = true; queue_redraw())
-		mouse_exited.connect(func(): hover = false; queue_redraw())
+		mouse_entered.connect(func():
+			hover = true
+			queue_redraw())
+		mouse_exited.connect(func():
+			hover = false
+			queue_redraw())
 		set_process(true)
 
-	func _process(_dt: float) -> void:
+	func _process(dt: float) -> void:
+		pulse = fmod(pulse + dt, 4.0)
 		queue_redraw()
 
 	func _gui_input(event: InputEvent) -> void:
@@ -1277,58 +1716,28 @@ class SiteButton extends Control:
 			accept_event()
 
 	func _draw() -> void:
-		if run == null or site.is_empty():
+		if run == null or marker.is_empty():
 			return
 		var c := size * 0.5
-		var verdict: Dictionary = run.can_interact(str(site.get("id", "")))
-		var ready := bool(verdict.get("ok", false))
-		var hint := str(verdict.get("why", ""))
-		var state := "ready" if ready else ("locked" if not hint.is_empty() else "used")
-		var colour := Color("d9b36a") if ready else Color(0.55, 0.52, 0.48)
-		if hover and ready:
-			colour = colour.lightened(0.22)
-		var tex := Art.hotspot_texture(state)
+		var breath := 0.86 + sin(pulse * 1.3) * 0.08
+		var tint := Color(0.72, 0.66, 0.52, 0.80 * breath)
+		if hover:
+			tint = Color(0.92, 0.84, 0.66, 0.95)
+		var tex := Art.hotspot_texture("ready")
 		if tex != null:
-			var ring := 112.0
+			var ring := 104.0
 			var ring_h := ring * float(tex.get_height()) / float(tex.get_width())
-			# 原画的黄环带红晕，直接上屏像霓虹；乘成旧金/灰紫才融得进猎场。
-			var tint := Color(0.66, 0.61, 0.50, 0.84) if ready else Color(0.50, 0.49, 0.56, 0.78)
-			if hover and ready:
-				tint = Color(0.82, 0.76, 0.62, 0.92)
 			draw_texture_rect(tex, Rect2(c - Vector2(ring, ring_h) * 0.5, Vector2(ring, ring_h)), false, tint)
-			if ready:
-				# 圆心留空，只放一个呼吸的小光点：锁和虚线已经由图本身表达。
-				draw_circle(c, 3.8, Color(1.0, 0.86, 0.55, 0.70))
 		else:
 			draw_circle(c, 26.0, Color(0.02, 0.025, 0.04, 0.72))
-			draw_arc(c, 30.0, 0, TAU, 40, Color(colour, 0.9), 2.5, true)
-			draw_arc(c, 38.0, 0, TAU, 40, Color(colour, 0.18), 1.0, true)
-			var glyph := "?"
-			match str(site.get("kind", "")):
-				"shrine":
-					glyph = "†"
-				"blood":
-					glyph = "◆"
-				"corpse":
-					glyph = "⌁"
-				"well":
-					glyph = "○"
-				"cache":
-					glyph = "▣"
-				"trap":
-					glyph = "!"
-				"sigil":
-					glyph = "✦"
-			var glyph_w := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
-			draw_string(font, c + Vector2(-glyph_w * 0.5, 7), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, colour)
-		var label := str(site.get("name", ""))
-		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
-		draw_rect(Rect2(c + Vector2(-width * 0.5 - 5, 64), Vector2(width + 10, 20)), Color(0.008, 0.01, 0.016, 0.55), true)
-		draw_string(font, c + Vector2(-width * 0.5, 78), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(colour, 0.95))
-		if not ready:
-			var hint_w := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
-			draw_rect(Rect2(c + Vector2(-hint_w * 0.5 - 4, 84), Vector2(hint_w + 8, 18)), Color(0.008, 0.01, 0.016, 0.5), true)
-			draw_string(font, c + Vector2(-hint_w * 0.5, 97), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.72, 0.67, 0.62))
+			draw_arc(c, 30.0, 0, TAU, 40, Color(tint, 0.9), 2.5, true)
+			draw_arc(c, 38.0, 0, TAU, 40, Color(tint, 0.18), 1.0, true)
+		# 圆心永远只有一个问号：名字、种类、危险程度都不提前透露。
+		var glyph := "?"
+		var glyph_w := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 30).x
+		draw_string(font, c + Vector2(-glyph_w * 0.5, 11), glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, 30,
+			Color(1.0, 0.90, 0.66, 0.92 * breath))
+
 
 class SpotButton extends Control:
 	signal pressed

@@ -102,10 +102,10 @@ const ITEMS = {
 	,"carrot_seed":{"name":"赤霞萝卜种", "size":Vector2i(1,1), "value":9, "color":Color("d4823f"), "desc":"家园商店购入的萝卜种。每份可播种一块田畦。"}
 	,"herb_seed":{"name":"月露草种", "size":Vector2i(1,1), "value":13, "color":Color("7fbfa4"), "desc":"家园商店购入的月露草种。每份可播种一块田畦。"}
 	,"bait":{"name":"鱼饵", "size":Vector2i(1,1), "value":2, "color":Color("b9a48f"), "desc":"家园商店购入的钓饵。每次抛竿消耗一份，收竿失败不返还。"}
-	# ---- 血潮猎场（hunt_data.gd 的 ITEMS 是同一批物品的规则/文案来源；
+	# ---- 血潮深潜（hunt_data.gd 的 ITEMS 是同一批物品的规则/文案来源；
 	# 这里是仓库、交易行与图标解析需要的目录行。新增时两处一起加。 ----
 	,"branch": {"name": "树枝", "size": Vector2i(1, 1), "value": 3, "color": Color("8d6f4d"), "cat": "material", "desc": "干燥的硬枝，能做柄也能当柴。"}
-	,"stone": {"name": "石块", "size": Vector2i(1, 1), "value": 4, "color": Color("8b8a84"), "cat": "material", "desc": "边缘锋利的碎石，猎场里最不缺的东西。"}
+	,"stone": {"name": "石块", "size": Vector2i(1, 1), "value": 4, "color": Color("8b8a84"), "cat": "material", "desc": "边缘锋利的碎石，血潮漫过的地方最不缺这种东西。"}
 	,"cloth": {"name": "碎布", "size": Vector2i(1, 1), "value": 5, "color": Color("b9ad9b"), "cat": "material", "desc": "从旧衣和窗帘上撕下来的布条。"}
 	,"dirty_water": {"name": "污水", "size": Vector2i(1, 1), "value": 2, "color": Color("6f8077"), "cat": "material", "desc": "混着泥沙的脏水，滤过之后还能用。"}
 	,"clean_water": {"name": "净水", "size": Vector2i(1, 1), "value": 8, "color": Color("9fd1d2"), "cat": "material", "desc": "滤掉泥沙的清水，能直接喝。"}
@@ -113,7 +113,7 @@ const ITEMS = {
 	,"wild_herb": {"name": "野草", "size": Vector2i(1, 1), "value": 7, "color": Color("7da77b"), "cat": "material", "desc": "气味苦涩的草药，能止血也能提神。"}
 	,"iron": {"name": "铁片", "size": Vector2i(1, 1), "value": 14, "color": Color("9da6b2"), "cat": "material", "desc": "从旧铁器上敲下来的铁片，边缘还带着锈。"}
 	,"nail": {"name": "钉子", "size": Vector2i(1, 1), "value": 6, "color": Color("b7b3a8"), "cat": "material", "desc": "生锈但还算直的铁钉。"}
-	,"leather": {"name": "兽皮", "size": Vector2i(1, 1), "value": 16, "color": Color("9a6f52"), "cat": "material", "desc": "从猎场野兽身上剥下的皮，还带着腥气。"}
+	,"leather": {"name": "兽皮", "size": Vector2i(1, 1), "value": 16, "color": Color("9a6f52"), "cat": "material", "desc": "从血潮野兽身上剥下的皮，还带着腥气。"}
 	,"rope": {"name": "绳索", "size": Vector2i(1, 1), "value": 10, "color": Color("b7a27a"), "cat": "material", "desc": "几股旧麻绳拧成的结实绳子。"}
 	,"resin": {"name": "松脂", "size": Vector2i(1, 1), "value": 8, "color": Color("c7b98d"), "cat": "material", "desc": "从松树里熬出的黏稠树胶，能粘合木石。"}
 	,"storm_phial": {"name": "封雷瓶", "size": Vector2i(1, 1), "value": 18, "color": Color("c9b45c"), "cat": "material", "desc": "封着一小团雷的玻璃瓶，炼金术士用它代替火种。"}
@@ -456,7 +456,11 @@ static func item_name(item: Dictionary) -> String:
 		return "%s %s" % [quality_name(int(item.get("tier",0))),weapon(int(item.get("weapon",0))).name]
 	if kind=="gear":
 		return "%s %s" % [quality_name(int(item.get("tier",0))),GEAR[gear_slot(item)].name]
-	return str(ITEMS.get(kind,{"name":kind}).name)
+	var base_name := str(ITEMS.get(kind,{"name":kind}).name)
+	# 深潜物品在仓库/搜打撤里也带品质前缀：白/绿/蓝由实例的 `tier` 决定。
+	if is_hunt_loot(kind) and item.has("tier"):
+		return "%s %s" % [quality_name(int(item.get("tier",0))), base_name]
+	return base_name
 
 # The same name without the quality prefix, for cells too narrow to show it. The
 # quality is already carried by the slot colour and the border.
@@ -489,6 +493,8 @@ static func item_value(item: Dictionary) -> int:
 		return int(round(float(info.value)*(1.0+0.65*tier_index(bag_key_of_item(item)))))
 	if is_equipment(kind):
 		return int(round(float(info.value)*(1.0+0.45*float(tier_of(int(item.get("tier",0)))))))
+	if is_hunt_loot(kind) and item.has("tier"):
+		return int(round(float(info.value)*(1.0+0.30*float(tier_of(int(item.get("tier",0)))))))
 	return int(info.value)
 
 static func market_value(item: Dictionary) -> int:
@@ -573,6 +579,82 @@ const BULKY_BAG_TIER := 3
 static func backpack_cells(key: String) -> Vector2i:
 	return Vector2i(2,2) if tier_index(key)>=BULKY_BAG_TIER else Vector2i(1,1)
 
+# --- 血潮深潜物品进入搜打撤 ------------------------------------------------
+# 需求（2026-10-20）：深潜模式里的道具也要能在搜打撤里搜到，尺寸按价值分档、
+# 稀有度只做白/绿/蓝三档。这里只放"哪些 kind 算深潜物品"和三条纯查询，
+# 掉落表在 `session.chest_loot()` 里接一次；尺寸判定统一走 `item_size()`。
+# ⚠️ 新增深潜物品时两处一起加：`hunt_data.ITEMS` 和这张表。
+const HUNT_LOOT_KINDS := [
+	"branch", "stone", "cloth", "dirty_water", "clean_water", "honey", "wild_herb",
+	"iron", "nail", "leather", "rope", "resin", "storm_phial", "glass", "paper",
+	"oil", "brimstone", "bandage", "mead", "herbal_tea", "poppy_syrup",
+	"blood_draught", "salve", "herbal_bandage", "frenzy_phial",
+	"stone_axe", "spear", "spiked_club", "iron_mace", "machete", "crossbow",
+	"hand_cannon", "heavy_axe", "iron_maul", "cloth_armor", "leather_armor",
+	"ring_mail", "hunter_cloak", "armor_patch", "torch", "lockpick", "snare",
+	"alchemist_flare", "smoke_pouch", "armor_kit", "lead_shot", "spirit_horn",
+	"pack_straps", "plague_mask", "key", "blood_sigil", "hunt_bait", "charcoal_filter",
+]
+
+static func is_hunt_loot(kind: String) -> bool:
+	return kind in HUNT_LOOT_KINDS
+
+# 价值 → 占地。深潜物品目录行仍写 1x1，真正的尺寸只在这里推导（含旋转）。
+static func hunt_loot_size(kind: String) -> Vector2i:
+	var value := int(ITEMS.get(kind,{}).get("value",0))
+	if value >= 65:
+		return Vector2i(2,2)
+	if value >= 40:
+		return Vector2i(2,1)
+	if value >= 24:
+		return Vector2i(1,2)
+	return Vector2i(1,1)
+
+# 从深潜物品池里抽一件：便宜货更常见，贵的东西是运气。
+static func roll_hunt_loot(rng: RandomNumberGenerator) -> String:
+	var total := 0.0
+	for kind in HUNT_LOOT_KINDS:
+		if kind == "blood_sigil":
+			continue
+		total += hunt_loot_weight(kind)
+	if total <= 0.0:
+		return ""
+	var roll := rng.randf() * total
+	for kind in HUNT_LOOT_KINDS:
+		if kind == "blood_sigil":
+			continue
+		roll -= hunt_loot_weight(kind)
+		if roll <= 0.0:
+			return kind
+	return "branch"
+
+static func hunt_loot_weight(kind: String) -> float:
+	var value := maxi(4, int(ITEMS.get(kind,{}).get("value",4)))
+	return 60.0 / float(value) + 0.4
+
+# 稀有度 0..2（白/绿/蓝）：越贵越偏向高的那一档，深层箱子也更容易出蓝。
+static func hunt_loot_tier(kind: String, grade: int, rng: RandomNumberGenerator) -> int:
+	var value := float(ITEMS.get(kind,{}).get("value",0))
+	var bias := clampf(value / 70.0, 0.0, 1.0)
+	var white := 0.62 - 0.18 * bias - 0.07 * float(clampi(grade,0,4))
+	var green := white + 0.28
+	var roll := rng.randf()
+	if roll < white:
+		return 0
+	if roll < green:
+		return 1
+	return 2
+
+# 深潜装备（武器/防具/饰品/背包）一律"带不出来"：撤离结算时只把这之外的
+# 普通道具送进仓库。规则只写这一次，`main.on_hunt_finished()` 只调用它。
+static func hunt_exportable(kind: String) -> bool:
+	if kind in ["weapon", "gear", "backpack", "charm"]:
+		return false
+	var entry: Dictionary = ITEMS.get(kind,{})
+	var cat := str(entry.get("cat",""))
+	return cat != "weapon" and cat != "armor"
+
+
 # A bag on the floor or in a container remembers its quality in "quality"; the
 # equipped one keeps it in "key". Reading both is what makes a loose purple pack
 # really take its 2x2 block instead of claiming a single cell.
@@ -582,7 +664,10 @@ static func bag_key_of_item(item: Dictionary) -> String:
 static func item_size(item: Dictionary) -> Vector2i:
 	if str(item.get("kind",""))=="backpack":
 		return backpack_cells(bag_key_of_item(item))
-	var s: Vector2i = ITEMS[item.kind].size
+	var kind := str(item.get("kind",""))
+	# 深潜物品在搜打撤里按价值占格：越值钱的东西越占地方（1x1 → 1x2 → 2x1 → 2x2）。
+	# 尺寸只在这里推导一次，网格/仓库/容器全部走这条路径，别在别处再写阈值。
+	var s: Vector2i = hunt_loot_size(kind) if is_hunt_loot(kind) else ITEMS[kind].size
 	return Vector2i(s.y,s.x) if item.get("rot",false) else s
 
 # Two items overlap when they share a cell. This is spelled out as four integer
@@ -707,6 +792,9 @@ static func clamp_entry(item: Dictionary) -> Dictionary:
 		item["tier"]=tier_of(int(item.get("tier",0)))
 	elif kind=="backpack":
 		item["quality"]=bag_key({"key":item.get("quality",DEFAULT_BAG_KEY)})
+	# 深潜物品的实例品质（白/绿/蓝）存 `tier`；读档时统一夹回 0..5。
+	if item.has("tier"):
+		item["tier"]=tier_of(int(item.get("tier",0)))
 	return item
 
 # The worn kit as it is stored in the save file: one weapon, three gear pieces, two
@@ -794,7 +882,7 @@ const STACK_LIMITS := {
 	"crystal":5, "scrap":5, "charm":5, "bait":5,
 	"wheat":5, "carrot":5, "herb":5, "silver":5, "moon":5, "gold":5,
 	"wheat_seed":5, "carrot_seed":5, "herb_seed":5,
-	# 血潮猎场材料：同一张表决定"能不能叠"与"一叠多少"，不要在别处再写阈值。
+	# 血潮深潜材料：同一张表决定"能不能叠"与"一叠多少"，不要在别处再写阈值。
 	"branch":10, "stone":10, "cloth":10, "dirty_water":10, "clean_water":10,
 	"honey":10, "wild_herb":10, "iron":10, "nail":10, "leather":10,
 	"rope":10, "resin":10, "storm_phial":10, "glass":10, "paper":10,

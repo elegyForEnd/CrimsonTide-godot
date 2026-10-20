@@ -1,5 +1,5 @@
 extends RefCounted
-## 血潮猎场 · 一局运行状态与规则
+## 血潮深潜 · 一局运行状态与规则
 ##
 ## 纯逻辑：不建节点、不读 Profile、不碰 TideSession。UI 只调用这里的动作并读字段，
 ## 因此整局可以在 headless 里用固定种子跑完（见 tests/hunt_rules.gd）。
@@ -31,6 +31,9 @@ const NOTICE_RATE := 0.05         # 每点攻击欲望每秒积累的"察觉"进
 const COUNTER_CD := 0.1           # 双向反击的统一冷却，无视普攻 CD
 const SEARCH_SECONDS := 3.0       # 一次搜索的基准时长
 const SEARCH_ENCOUNTER := 0.16    # 搜索把东西引出来的基础概率
+const EVENTS_PER_DAY_MIN := 2     # 每区每天最少刷几个事件点
+const EVENTS_PER_DAY_MAX := 3     # 每区每天最多刷几个
+const EVENT_SPECIAL_CHANCE := 0.35 # 满足条件时，额外再挂一个时段/天数专属事件
 
 var hero := 0
 var hero_data: Dictionary = {}
@@ -61,6 +64,14 @@ var form_cd := 0.0
 var search_cd := 0.0
 var counter_lock := 0.0
 var sites_done: Dictionary = {}
+## 随机事件：每个地区每天的刷新结果 + 正在执行的事件状态（互动窗口）。
+## `area_events` 的 uid 形如 `area:event_id:index`，UI 只认 uid。
+var area_events: Dictionary = {}
+var events_used: Dictionary = {}
+var event_state: Dictionary = {}
+var event_rng := RandomNumberGenerator.new()
+## 随身物：从营地仓库带进深潜的 3 格普通物品，跨局保留，撤离/阵亡都会损耗。
+var pocket: Array = []
 var unlocked_spots: Dictionary = {}
 var area_notified: Dictionary = {}
 var flags := {"torch": false, "mask": false, "charcoal_filter": false, "map_revealed": false, "spirit_safe": false}
@@ -77,7 +88,7 @@ var last_phase := ""
 var gear_index := -1
 var counter_hits := 0
 
-func setup(p_hero: int, p_seed: int = 0, p_gear: int = -1, talents: Array = [0, 0, 0]) -> void:
+func setup(p_hero: int, p_seed: int = 0, p_gear: int = -1, talents: Array = [0, 0, 0], p_pocket: Array = []) -> void:
 	hero = clampi(p_hero, 0, CatalogRef.HEROES.size() - 1)
 	hero_data = CatalogRef.HEROES[hero]
 	run_seed = p_seed if p_seed != 0 else randi_range(1, 9999999)
@@ -105,6 +116,13 @@ func setup(p_hero: int, p_seed: int = 0, p_gear: int = -1, talents: Array = [0, 
 	counter_lock = 0.0
 	counter_hits = 0
 	sites_done = {}
+	area_events = {}
+	events_used = {}
+	event_state = {}
+	pocket = []
+	for entry in p_pocket:
+		if entry is Dictionary and not str(entry.get("kind", "")).is_empty():
+			pocket.append({"kind": str(entry.get("kind", "")), "count": maxi(1, int(entry.get("count", 1)))})
 	unlocked_spots = {}
 	area_notified = {}
 	kills = 0
@@ -125,10 +143,11 @@ func setup(p_hero: int, p_seed: int = 0, p_gear: int = -1, talents: Array = [0, 
 	last_phase = phase_id()
 	_reset_uses()
 	_refresh_area_enemies()
+	_roll_all_events()
 	add_item("bandage", 1)
 	add_item("dirty_water", 1)
 	_notify_area_threat()
-	note("第 1 天 · 白昼。猎场在等你。")
+	note("第 1 天 · 白昼。深潜在等你。")
 	changed.emit()
 
 func note(text: String) -> void:
@@ -414,12 +433,16 @@ func _complete_search(spot_id: String) -> void:
 	searched += 1
 	var loot: Dictionary = spot.get("loot", {})
 	var got: Array = []
+	# 搜到的东西带白/绿/蓝品质：越深的点位越容易出好东西。
+	var loot_tier := clampi(int(spot.get("tier", 1)) - 1, 0, 2)
+	if is_night():
+		loot_tier = mini(2, loot_tier + 1)
 	for i in 2:
 		var kind := _roll_table(loot)
 		if kind.is_empty():
 			break
-		if add_item(kind, 1):
-			got.append(Data.item_name(kind))
+		if add_item(kind, 1, loot_tier):
+			got.append("%s%s" % [Data.tier_name(loot_tier), Data.item_name(kind)])
 		else:
 			note("背包满了，%s 留在了原地。" % Data.item_name(kind))
 	if got.is_empty():
@@ -474,13 +497,16 @@ func _spawn_encounter() -> void:
 	note("搜索声惊动了什么：%s。" % str(base.get("name", kind)))
 	start_combat(str(enemy.uid))
 
-func add_item(kind: String, count: int = 1) -> bool:
+func add_item(kind: String, count: int = 1, tier: int = -1) -> bool:
 	if count <= 0 or not CatalogRef.ITEMS.has(kind):
 		return false
 	var left := count
 	if CatalogRef.stacks(kind):
 		for entry in bag:
 			if str(entry.kind) != kind:
+				continue
+			# 有品质的堆叠只并进同品质的堆：白/绿/蓝不能混在一格里。
+			if tier >= 0 and int(entry.get("tier", -1)) != tier:
 				continue
 			var room := CatalogRef.max_stack(kind) - int(entry.count)
 			if room <= 0:
@@ -496,7 +522,10 @@ func add_item(kind: String, count: int = 1) -> bool:
 		var take := 1
 		if CatalogRef.stacks(kind):
 			take = mini(left, CatalogRef.max_stack(kind))
-		bag.append({"kind": kind, "count": take})
+		var entry := {"kind": kind, "count": take}
+		if tier >= 0:
+			entry["tier"] = tier
+		bag.append(entry)
 		left -= take
 	return left < count
 
@@ -530,7 +559,10 @@ func bag_space() -> int:
 func bag_value() -> int:
 	var total := 0
 	for entry in bag:
-		total += int(Data.item(str(entry.kind)).get("value", 0)) * int(entry.count)
+		var item := {"kind": str(entry.kind), "count": int(entry.count)}
+		if entry.has("tier"):
+			item["tier"] = int(entry.tier)
+		total += CatalogRef.item_value(item) * int(entry.count)
 	return total
 
 func can_craft(recipe: Dictionary) -> bool:
@@ -613,6 +645,20 @@ func use_item(index: int) -> bool:
 		return equip(kind)
 	if Data.is_armor(kind):
 		return equip(kind)
+	if kind in ["snare", "alchemist_flare", "smoke_pouch"]:
+		return use_combat_item(kind)
+	var used := _apply_consumable(kind)
+	if used:
+		if not search.is_empty():
+			cancel_search("你停下手里的活，用了一件东西。")
+		consume(kind, 1)
+		refresh_max_hp()
+		set_expression("smile", 1.5)
+		changed.emit()
+	return used
+
+## 消耗品/工具的共用效果：背包与随身物各走各的扣除，效果只在这里写一次。
+func _apply_consumable(kind: String) -> bool:
 	var info: Dictionary = Data.item(kind)
 	var used := false
 	if info.has("heal"):
@@ -623,10 +669,10 @@ func use_item(index: int) -> bool:
 			floated.emit("heal", "player", hp - before, false)
 		note("使用 %s，恢复 %d 生命。" % [Data.item_name(kind), int(hp - before)])
 	if info.has("stamina"):
-		var before := stamina
+		var before_sp := stamina
 		stamina = minf(max_stamina, stamina + float(info.stamina))
-		used = used or stamina > before
-		note("使用 %s，恢复 %d 体力。" % [Data.item_name(kind), int(stamina - before)])
+		used = used or stamina > before_sp
+		note("使用 %s，恢复 %d 体力。" % [Data.item_name(kind), int(stamina - before_sp)])
 	match kind:
 		"frenzy_phial":
 			attack_buff_time = 30.0
@@ -678,16 +724,45 @@ func use_item(index: int) -> bool:
 		"lockpick", "key":
 			note("这类工具在搜索上锁容器时会自动使用。")
 			return false
-		"snare", "alchemist_flare", "smoke_pouch":
-			return use_combat_item(kind)
-	if used:
-		if not search.is_empty():
-			cancel_search("你停下手里的活，用了一件东西。")
-		consume(kind, 1)
-		refresh_max_hp()
-		set_expression("smile", 1.5)
-		changed.emit()
 	return used
+
+## 随身物：深潜自己的 3 格口袋。效果与背包一致，但绝不进背包、也绝不被带出深潜。
+func pocket_of(kind: String) -> int:
+	if pocket.is_empty():
+		return 0
+	var total := 0
+	for entry in pocket:
+		if str(entry.get("kind", "")) == kind:
+			total += int(entry.get("count", 1))
+	return total
+
+func pocket_use(index: int) -> bool:
+	if index < 0 or index >= pocket.size():
+		return false
+	var entry: Dictionary = pocket[index]
+	var kind := str(entry.get("kind", ""))
+	if Data.is_weapon(kind) or Data.is_armor(kind):
+		note("这件东西不该在随身物里。")
+		return false
+	if kind in ["snare", "alchemist_flare", "smoke_pouch"]:
+		return use_combat_item(kind)
+	var used := _apply_consumable(kind)
+	if not used:
+		return false
+	entry["count"] = int(entry.get("count", 1)) - 1
+	if int(entry.get("count", 1)) <= 0:
+		pocket.remove_at(index)
+	note("%s 从随身物里用掉了。" % Data.item_name(kind))
+	refresh_max_hp()
+	set_expression("smile", 1.2)
+	changed.emit()
+	return true
+
+func pocket_names() -> Array:
+	var names: Array = []
+	for entry in pocket:
+		names.append("%s ×%d" % [Data.item_name(str(entry.get("kind", ""))), int(entry.get("count", 1))])
+	return names
 
 func use_combat_item(kind: String) -> bool:
 	if combat.is_empty():
@@ -875,12 +950,13 @@ func _win_combat() -> void:
 func _loot_enemy(enemy: Dictionary) -> void:
 	var loot: Dictionary = Data.enemy(str(enemy.get("kind", ""))).get("loot", {})
 	var got: Array = []
+	var loot_tier := 2 if bool(enemy.get("boss", false)) else (1 if is_night() else 0)
 	for i in 2:
 		var kind := _roll_table(loot)
 		if kind.is_empty():
 			break
-		if add_item(kind, 1):
-			got.append(Data.item_name(kind))
+		if add_item(kind, 1, loot_tier):
+			got.append("%s%s" % [Data.tier_name(loot_tier), Data.item_name(kind)])
 		else:
 			note("背包满了，%s 掉在了地上。" % Data.item_name(kind))
 	if not got.is_empty():
@@ -950,11 +1026,15 @@ func advance_day() -> void:
 	stamina = max_stamina
 	search = {}
 	combat = {}
+	event_state = {}
+	paused = false
 	sites_done.clear()
+	events_used.clear()
 	area_notified.clear()
 	_reset_uses()
 	area_enemies.clear()
 	_refresh_area_enemies()
+	_roll_all_events()
 	note("第 %d 天。天色变了。" % day)
 	_notify_area_threat()
 	set_expression("determined", 2.0)
@@ -1016,13 +1096,13 @@ func toggle_form() -> bool:
 
 ## ------------------------------------------------------------------ 互动点
 
-func sites() -> Array:
+func _legacy_sites() -> Array:
 	return Data.sites_for(area_id)
 
-func site_done(site_id: String) -> bool:
+func _legacy_site_done(site_id: String) -> bool:
 	return bool(sites_done.get("%s:%s" % [area_id, site_id], false))
 
-func can_interact(site_id: String) -> Dictionary:
+func _legacy_can_interact(site_id: String) -> Dictionary:
 	var site: Dictionary = Data.site(area_id, site_id)
 	if site.is_empty():
 		return {"ok": false, "why": "这里什么也没有。"}
@@ -1032,7 +1112,7 @@ func can_interact(site_id: String) -> Dictionary:
 		return {"ok": false, "why": "先脱离战斗。"}
 	if not search.is_empty():
 		return {"ok": false, "why": "正在翻找。"}
-	if site_done(site_id):
+	if _legacy_site_done(site_id):
 		return {"ok": false, "why": "这里已经没有别的了。"}
 	var req: Array = site.get("requires", [])
 	if not req.is_empty():
@@ -1045,8 +1125,8 @@ func can_interact(site_id: String) -> Dictionary:
 	return {"ok": true, "why": ""}
 
 ## 场景互动：一次性，立即结算，结果写进日志。
-func interact(site_id: String) -> bool:
-	var verdict := can_interact(site_id)
+func _legacy_interact(site_id: String) -> bool:
+	var verdict := _legacy_can_interact(site_id)
 	if not bool(verdict.ok):
 		note(str(verdict.why))
 		return false
@@ -1145,11 +1225,375 @@ func interact(site_id: String) -> bool:
 		changed.emit()
 	return true
 
+## ------------------------------------------------------------------ 随机事件
+##
+## 事件点由 `run_seed + day + phase + area` 决定（同一局可复现，不同局不一样）。
+## 地图上只显示带问号的圆环；名字与描述在被点开时才揭示。
+## 互动本身是一串 steps：每个选项花的是**局内时间**，失败会受伤/惊动怪物。
+## `live` 事件在窗口打开时**不暂停**——怪物照常积累察觉、照常出手。
+
+func events_here() -> Array:
+	return area_events.get(area_id, [])
+
+func find_event(uid: String) -> Dictionary:
+	for marker in events_here():
+		if str(marker.get("uid", "")) == uid:
+			return marker
+	return {}
+
+func event_marker_used(uid: String) -> bool:
+	var marker := find_event(uid)
+	return marker.is_empty() or bool(marker.get("used", false))
+
+func can_begin_event(uid: String) -> Dictionary:
+	if ended_flag:
+		return {"ok": false, "why": "这一局已经结束了。"}
+	if not combat.is_empty():
+		return {"ok": false, "why": "先脱离战斗。"}
+	if not search.is_empty():
+		return {"ok": false, "why": "正在翻找。"}
+	if not event_state.is_empty():
+		return {"ok": false, "why": "你已经在做别的事了。"}
+	if event_marker_used(uid):
+		return {"ok": false, "why": "这里已经没有别的了。"}
+	return {"ok": true, "why": ""}
+
+## 点开一个事件点：进入互动窗口。默认暂停；`live` 事件继续走时间。
+func begin_event(uid: String) -> bool:
+	var verdict := can_begin_event(uid)
+	if not bool(verdict.ok):
+		note(str(verdict.why))
+		return false
+	var marker := find_event(uid)
+	var ev := Data.event(str(marker.get("id", "")))
+	if ev.is_empty():
+		return false
+	event_rng.seed = int(run_seed) * 977 + absi(uid.hash()) + day * 31
+	event_state = {
+		"uid": uid,
+		"id": str(marker.get("id", "")),
+		"name": str(ev.get("name", "未命名")),
+		"art": str(ev.get("art", "reliquary")),
+		"live": bool(ev.get("live", false)),
+		"log": [str(ev.get("reveal", ""))],
+		"step": "",
+		"options": [],
+		"finished": false,
+		"granted": {},
+	}
+	paused = not bool(event_state.get("live", false))
+	if bool(event_state.get("live", false)):
+		note("这里的时间没有停。你的手得快一点。")
+	_enter_step(str(ev.get("start", "start")))
+	changed.emit()
+	return true
+
+func event_options() -> Array:
+	return event_state.get("options", [])
+
+func event_choose(index: int) -> bool:
+	if event_state.is_empty() or bool(event_state.get("finished", false)):
+		return false
+	var shown: Array = event_options()
+	if index < 0 or index >= shown.size():
+		return false
+	var pick: Dictionary = shown[index]
+	var step: Dictionary = Data.event(str(event_state.get("id", ""))).get("steps", {}).get(str(event_state.get("step", "")), {})
+	var raw: Array = step.get("options", [])
+	if raw.is_empty():
+		_close_event_state(true)
+		changed.emit()
+		return true
+	var opt: Dictionary = raw[int(pick.get("index", index))]
+	var verdict := _option_verdict(opt)
+	if not bool(verdict.ok):
+		event_state.log.append(str(verdict.why))
+		changed.emit()
+		return false
+	var cost := float(opt.get("time", 0))
+	if cost > 0.0:
+		_spend_event_time(cost)
+		if event_state.is_empty():
+			return true
+	if opt.has("log"):
+		event_state.log.append(str(opt.log))
+	if opt.has("hp"):
+		_event_hp(float(opt.hp))
+	if opt.has("stamina"):
+		_event_stamina(float(opt.stamina))
+	if opt.has("noise"):
+		_event_noise(float(opt.noise))
+	var next := str(opt.get("next", ""))
+	if opt.has("check"):
+		var check: Dictionary = opt.check
+		var chance := float(check.get("chance", 0.6))
+		if event_rng.randf() < chance:
+			next = str(check.get("success", next))
+			if not str(check.get("success_log", "")).is_empty():
+				event_state.log.append(str(check.success_log))
+		else:
+			next = str(check.get("fail", next))
+			if not str(check.get("fail_log", "")).is_empty():
+				event_state.log.append(str(check.fail_log))
+	if hp <= 0.0:
+		_close_event_state(false)
+		finish(false, "死在了不该碰的东西上")
+		return true
+	if not search.is_empty():
+		cancel_search("你被别的事分了神。")
+	if next.is_empty():
+		_close_event_state(true)
+	else:
+		_enter_step(next)
+	changed.emit()
+	return true
+
+## 玩家主动关掉窗口（相当于放弃这次调查，事件点保留）。
+func close_event() -> void:
+	if event_state.is_empty():
+		return
+	event_state = {}
+	paused = false
+	changed.emit()
+
+func _enter_step(step_id: String) -> void:
+	var ev := Data.event(str(event_state.get("id", "")))
+	var steps: Dictionary = ev.get("steps", {})
+	var step: Dictionary = steps.get(step_id, {})
+	if step.is_empty():
+		_close_event_state(true)
+		return
+	event_state["step"] = step_id
+	if not str(step.get("text", "")).is_empty():
+		event_state.log.append(str(step.text))
+	var granted: Dictionary = event_state.get("granted", {})
+	var stamp := "step:" + step_id
+	if not granted.has(stamp):
+		granted[stamp] = true
+		event_state["granted"] = granted
+		if step.has("hp"):
+			_event_hp(float(step.hp))
+		if step.has("stamina"):
+			_event_stamina(float(step.stamina))
+		if step.has("noise"):
+			_event_noise(float(step.noise))
+		if step.has("reward"):
+			_apply_event_reward(step.reward)
+	var options: Array = []
+	var raw: Array = step.get("options", [])
+	for i in raw.size():
+		var opt: Dictionary = raw[i]
+		var verdict := _option_verdict(opt)
+		options.append({
+			"index": i,
+			"label": str(opt.get("label", "继续")),
+			"ok": bool(verdict.get("ok", false)),
+			"why": str(verdict.get("why", "")),
+			"time": int(opt.get("time", 0)),
+		})
+	if options.is_empty():
+		options.append({"index": 0, "label": "离开", "ok": true, "why": "", "time": 0})
+	event_state["options"] = options
+	changed.emit()
+
+## 分支条件只用"模糊回应"表达：需要道具时不报物品名，只说人话。
+func _option_verdict(opt: Dictionary) -> Dictionary:
+	var items: Array = opt.get("items", [])
+	if not items.is_empty():
+		var has := false
+		for kind in items:
+			if item_count(str(kind)) > 0 or pocket_of(str(kind)) > 0:
+				has = true
+		if not has:
+			return {"ok": false, "why": "你摸了摸身上，没有能派上用场的东西。"}
+	var flag_list: Array = opt.get("flags", [])
+	if not flag_list.is_empty():
+		var lit := false
+		for flag in flag_list:
+			if bool(flags.get(str(flag), false)):
+				lit = true
+		if not lit:
+			return {"ok": false, "why": "这里太暗了，你得先弄出一点亮。"}
+	if opt.has("hp") and hp + float(opt.hp) <= 0.0:
+		return {"ok": false, "why": "这一下会要了你的命。你不敢。"}
+	if opt.has("stamina") and stamina + float(opt.stamina) < 0.0:
+		return {"ok": false, "why": "你累得抬不起手。"}
+	return {"ok": true, "why": ""}
+
+func _apply_event_reward(reward: Dictionary) -> void:
+	var table := str(reward.get("table", ""))
+	var tier := int(reward.get("tier", 0))
+	var rolls: Array = reward.get("rolls", [1, 1])
+	var count := event_rng.randi_range(int(rolls[0]), int(rolls[1]))
+	var got: Array = []
+	for i in count:
+		var kind := Data.roll_event_loot(table, event_rng)
+		if kind.is_empty():
+			break
+		if add_item(kind, 1, tier):
+			got.append("%s%s" % [Data.tier_name(tier), Data.item_name(kind)])
+		else:
+			event_state.log.append("背包塞满了，%s 只能留在原地。" % Data.item_name(kind))
+	if not got.is_empty():
+		event_state.log.append("你拿到了：%s。" % "、".join(got))
+
+func _event_hp(amount: float) -> void:
+	if amount <= 0.0:
+		var dealt := -amount
+		hp = maxf(0.0, hp - dealt)
+		floated.emit("hurt", "player", dealt, false)
+		event_state.log.append("你受了 %d 点伤。" % int(dealt))
+	else:
+		var before := hp
+		hp = minf(total_max_hp(), hp + amount)
+		if hp > before:
+			floated.emit("heal", "player", hp - before, false)
+			event_state.log.append("你缓过来 %d 点。" % int(hp - before))
+
+func _event_stamina(amount: float) -> void:
+	var before := stamina
+	stamina = clampf(stamina + amount, 0.0, max_stamina)
+	if amount < 0.0:
+		event_state.log.append("这一下耗掉了 %d 点体力。" % int(before - stamina))
+	elif stamina > before:
+		event_state.log.append("你喘匀了气，回复 %d 点体力。" % int(stamina - before))
+
+func _event_noise(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	var stirred := false
+	for enemy in active_enemies():
+		enemy.wake = minf(1.0, float(enemy.wake) + amount * float(enemy.aggression))
+		stirred = true
+	if stirred:
+		event_state.log.append("你弄出的动静传了出去。附近有什么被惊动了。")
+
+func _spend_event_time(seconds: float) -> void:
+	if seconds <= 0.0:
+		return
+	clock += seconds
+	event_state.log.append("（时间过去了 %d 秒。）" % int(seconds))
+	if clock >= Data.DAY_SECONDS:
+		clock = Data.DAY_SECONDS
+		event_state = {}
+		paused = false
+		advance_day()
+
+func _close_event_state(done: bool) -> void:
+	if event_state.is_empty():
+		return
+	var uid := str(event_state.get("uid", ""))
+	if done and not uid.is_empty():
+		events_used["%s:%s:%d" % [area_id, str(event_state.get("id", "")), day]] = true
+		var list: Array = area_events.get(area_id, [])
+		for marker in list:
+			if str(marker.get("uid", "")) == uid:
+				marker["used"] = true
+		area_events[area_id] = list
+		note("你离开了那处地方。")
+	event_state["finished"] = true
+	paused = false
+
+## 每天/每时段重刷：权重抽 2~3 个，再按条件追加专属事件；always 事件必出。
+func _roll_all_events() -> void:
+	if ended_flag:
+		return
+	area_events.clear()
+	for area in Data.AREAS:
+		area_events[area] = _roll_events(str(area))
+
+func _roll_events(area: String) -> Array:
+	var grng := RandomNumberGenerator.new()
+	grng.seed = int(run_seed) * 7919 + day * 131 + absi(area.hash()) + absi(phase_id().hash()) * 17
+	var anchors: Array = Data.event_spawns(area).duplicate()
+	for i in range(anchors.size() - 1, 0, -1):
+		var j := grng.randi_range(0, i)
+		var swap = anchors[i]
+		anchors[i] = anchors[j]
+		anchors[j] = swap
+	var chosen: Array = []
+	for id in Data.EVENTS:
+		var ev: Dictionary = Data.EVENTS[id]
+		if bool(ev.get("always", false)) and Data.event_matches(ev, area, day, phase_id()):
+			if not events_used.has("%s:%s:%d" % [area, str(id), day]):
+				chosen.append(str(id))
+	var pool: Array = []
+	for id in Data.EVENTS:
+		var ev: Dictionary = Data.EVENTS[id]
+		if str(id) in chosen:
+			continue
+		if not Data.event_matches(ev, area, day, phase_id()):
+			continue
+		if events_used.has("%s:%s:%d" % [area, str(id), day]):
+			continue
+		pool.append(str(id))
+	var count := grng.randi_range(EVENTS_PER_DAY_MIN, EVENTS_PER_DAY_MAX)
+	while chosen.size() < count and not pool.is_empty():
+		var total := 0.0
+		for id in pool:
+			total += float(Data.EVENTS[id].get("weight", 1))
+		var roll := grng.randf() * total
+		var picked: String = str(pool[0])
+		for i in pool.size():
+			roll -= float(Data.EVENTS[pool[i]].get("weight", 1))
+			if roll <= 0.0:
+				picked = str(pool[i])
+				break
+		chosen.append(picked)
+		pool.erase(picked)
+	if grng.randf() < EVENT_SPECIAL_CHANCE:
+		var specials: Array = []
+		for id in Data.EVENTS:
+			var ev: Dictionary = Data.EVENTS[id]
+			if not Data.event_matches(ev, area, day, phase_id()):
+				continue
+			var special := not str(ev.get("phase", "")).is_empty() or int(ev.get("min_day", 1)) > 1
+			if not special or str(id) in chosen:
+				continue
+			if events_used.has("%s:%s:%d" % [area, str(id), day]):
+				continue
+			specials.append(str(id))
+		if not specials.is_empty():
+			chosen.append(str(specials[grng.randi_range(0, specials.size() - 1)]))
+	var out: Array = []
+	var fixed_anchors: Array = Data.event_spawns(area)
+	for i in chosen.size():
+		var id := str(chosen[i])
+		var ev: Dictionary = Data.EVENTS[id]
+		var fixed := int(ev.get("anchor", -1))
+		var at: Vector2 = anchors[i % anchors.size()]
+		if fixed >= 0 and fixed < fixed_anchors.size():
+			at = fixed_anchors[fixed]
+		out.append({"uid": "%s:%s:%d" % [area, id, i], "id": id, "at": at, "used": false})
+	return out
+
+## 测试/调试用：在当前地区强制摆一个事件点。
+func debug_spawn_event(event_id: String, anchor: int = -1) -> String:
+	var ev := Data.event(event_id)
+	if ev.is_empty():
+		return ""
+	var anchors: Array = Data.event_spawns(area_id)
+	var at: Vector2 = anchors[clampi(anchor, 0, anchors.size() - 1)]
+	var uid := "%s:%s:debug" % [area_id, event_id]
+	var list: Array = area_events.get(area_id, [])
+	for i in range(list.size() - 1, -1, -1):
+		if str(list[i].get("uid", "")) == uid:
+			list.remove_at(i)
+	list.append({"uid": uid, "id": event_id, "at": at, "used": false})
+	area_events[area_id] = list
+	changed.emit()
+	return uid
+
+func debug_clear_events() -> void:
+	area_events[area_id] = []
+	changed.emit()
+
 func finish(victory: bool, reason: String) -> void:
 	if ended_flag:
 		return
 	ended_flag = true
 	paused = true
+	event_state = {}
 	combat = {}
 	search = {}
 	expression = "joy" if victory else "sad"
@@ -1193,6 +1637,8 @@ func tick(dt: float) -> void:
 		last_phase = now_phase
 		note("天色转为%s。" % phase_name())
 		_refresh_area_enemies()
+		# 时段专属事件在这一刻才可能出现：整片区域的问号点重新洗一遍。
+		_roll_all_events()
 	if not combat.is_empty():
 		_tick_combat(dt)
 		if ended_flag:

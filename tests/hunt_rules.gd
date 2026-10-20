@@ -1,5 +1,5 @@
 extends SceneTree
-## 血潮猎场规则层回归：不建 3D、不开窗口，只跑纯逻辑。
+## 血潮深潜规则层回归：不建 3D、不开窗口，只跑纯逻辑。
 const Data = preload("res://scripts/hunt/hunt_data.gd")
 const Run = preload("res://scripts/hunt/hunt_run.gd")
 
@@ -19,12 +19,22 @@ func run() -> void:
 	check(Data.AREAS.size() >= 8, "at least eight areas")
 	check(Data.RECIPES.size() >= 30, "at least thirty recipes")
 	check(Data.ENEMIES.size() >= 4, "at least four enemy kinds")
+	check(Data.EVENTS.size() >= 30, "at least thirty random events")
+	check(Data.EVENT_SPAWNS.size() >= 8, "every area has event spawn points")
 	for kind in Data.ITEMS:
 		check(Catalog.ITEMS.has(kind), "Catalog has hunt item: " + kind)
 	check(Data.DAY_SECONDS == 480.0, "eight minute day")
 	check(Data.DAYS == 3, "three day run")
 	check(Data.area("old_town").get("neighbors", []).has("bell_square"), "old town connects to square")
 	check(Data.recipe("stone_axe").get("out", "") == "stone_axe", "stone axe recipe")
+	# 深潜物品进搜打撤：尺寸按价值分档、稀有度只做白/绿/蓝。
+	check(Catalog.is_hunt_loot("iron") and not Catalog.is_hunt_loot("scrap"), "catalog marks hunt loot")
+	check(Catalog.hunt_loot_size("branch") == Vector2i(1, 1), "cheap hunt loot takes one cell")
+	check(Catalog.hunt_loot_size("hand_cannon") == Vector2i(2, 2), "expensive hunt loot takes a 2x2 block")
+	check(Catalog.hunt_loot_size("machete") == Vector2i(2, 1), "mid-value hunt loot takes two cells")
+	check(Catalog.item_size({"kind": "hand_cannon"}) == Vector2i(2, 2), "item_size derives from value")
+	check(not Catalog.hunt_exportable("stone_axe") and not Catalog.hunt_exportable("cloth_armor"), "gear cannot leave the dive")
+	check(Catalog.hunt_exportable("iron") and Catalog.hunt_exportable("herbal_bandage"), "ordinary loot can leave the dive")
 	check(Data.weapon("stone_axe").get("damage", 0) > 0, "stone axe has damage")
 
 	var run = Run.new()
@@ -253,33 +263,86 @@ func run() -> void:
 	loud.tick(60.0)
 	check(bool(loud.active_enemies()[0].alert), "act form gets noticed within a minute")
 
-	# ---------------------------------------------------------------- V2 互动
-	var site_run = Run.new()
-	site_run.setup(0, 81, -1, [0, 0, 0])
-	check(site_run.interact("shrine"), "old town shrine can be used")
-	check(site_run.site_done("shrine"), "shrine is marked done")
-	check(not site_run.interact("shrine"), "a site can only be used once")
-	# 陷阱：没面具 14 伤害，戴面具 4 伤害。
-	var trap_run = Run.new()
-	trap_run.setup(0, 82, -1, [0, 0, 0])
-	var hp_before_trap: float = trap_run.hp
-	trap_run.interact("sinkhole")
-	check(trap_run.hp == hp_before_trap - 14.0, "trap hurts 14 without a mask")
-	var mask_run = Run.new()
-	mask_run.setup(0, 82, -1, [0, 0, 0])
-	mask_run.area_id = "hospital"
-	mask_run._refresh_area_enemies()
-	mask_run.flags.mask = true
-	var hp_before_gas: float = mask_run.hp
-	mask_run.interact("gas_hall")
-	check(mask_run.hp == hp_before_gas - 4.0, "plague mask cuts gas damage to 4")
-	# 血契石：猫猫墓道拿到它。
-	var sigil_run = Run.new()
-	sigil_run.setup(0, 83, -1, [0, 0, 0])
-	sigil_run.area_id = "catacombs"
-	sigil_run._refresh_area_enemies()
-	check(sigil_run.interact("blood_sigil"), "sigil stone can be touched")
-	check(sigil_run.item_count("blood_sigil") == 1, "sigil adds the blood sigil item")
+	# ---------------------------------------------------------------- 随机事件
+	var ev_run = Run.new()
+	ev_run.setup(0, 91, -1, [0, 0, 0])
+	check(ev_run.events_here().size() >= 2, "each area seeds at least two event markers")
+	for marker in ev_run.events_here():
+		check(not marker.has("name") and not marker.has("desc"), "markers are black boxes before interaction")
+	# 同一个种子 + 同一天，事件点完全一致；换一个种子就换一套。
+	var ev_twin = Run.new()
+	ev_twin.setup(0, 91, -1, [0, 0, 0])
+	var ids_a: Array = []
+	var ids_b: Array = []
+	for marker in ev_run.events_here():
+		ids_a.append(str(marker.id))
+	for marker in ev_twin.events_here():
+		ids_b.append(str(marker.id))
+	check(ids_a == ids_b, "the run seed reproduces the same event set")
+	var ev_other = Run.new()
+	ev_other.setup(0, 92, -1, [0, 0, 0])
+	var ids_c: Array = []
+	for marker in ev_other.events_here():
+		ids_c.append(str(marker.id))
+	check(ids_a != ids_c or ev_run.events_here().is_empty(), "a different seed can roll a different set")
+	# 互动窗口：默认暂停；选项消耗局内时间；名字点开才揭示。
+	var uid := ev_run.debug_spawn_event("cellar_door")
+	check(not uid.is_empty(), "debug event spawns in the current area")
+	check(ev_run.begin_event(uid), "clicking an event opens the interaction")
+	check(ev_run.paused, "the interaction pauses the run by default")
+	check(str(ev_run.event_state.get("name", "")) == "地窖铁门", "the event title is revealed after opening")
+	var clock_before: float = ev_run.clock
+	check(ev_run.event_choose(0), "the first option resolves")
+	check(ev_run.clock > clock_before, "event actions consume in-game time")
+	check(str(ev_run.event_state.get("step", "")) == "shape", "the interaction advances a step")
+	# 需要道具的分支：没有铁片/钉子时点不动，而且只说人话。
+	var bag_before_ev: int = ev_run.bag.size()
+	check(not ev_run.event_choose(0), "an item-gated action refuses without the item")
+	check(ev_run.bag.size() == bag_before_ev, "a refused action changes nothing")
+	ev_run.close_event()
+	check(ev_run.event_state.is_empty() and not ev_run.paused, "closing the interaction resumes the run")
+	# 奖励：进入带 reward 的步骤时按稀有度入包。
+	var gift_run = Run.new()
+	gift_run.setup(0, 93, -1, [0, 0, 0])
+	var gift_uid := gift_run.debug_spawn_event("blood_sigil_site")
+	var bag_before_gift: int = gift_run.bag.size()
+	check(gift_run.begin_event(gift_uid), "sigil event opens")
+	gift_run.event_choose(1)
+	check(gift_run.bag.size() > bag_before_gift, "event rewards land in the bag")
+	var tiered := false
+	for entry in gift_run.bag:
+		if entry.has("tier"):
+			tiered = true
+	check(tiered, "event rewards carry a rarity tier")
+	gift_run.close_event()
+	# live 事件不暂停：窗口开着的时候时间照走。
+	var live_run = Run.new()
+	live_run.setup(0, 94, -1, [0, 0, 0])
+	var live_uid := live_run.debug_spawn_event("gas_corridor")
+	check(live_run.begin_event(live_uid), "live event opens")
+	check(not live_run.paused, "a live event never pauses the run")
+	live_run.close_event()
+
+	# ---------------------------------------------------------------- 随身物
+	var pocket_run = Run.new()
+	pocket_run.setup(0, 96, -1, [0, 0, 0], [{"kind": "mead", "count": 1}, {"kind": "torch", "count": 1}])
+	check(pocket_run.pocket.size() == 2, "the pocket seeds from the profile")
+	pocket_run.stamina = 10.0
+	check(pocket_run.pocket_use(0), "a pocket item can be used in the dive")
+	check(pocket_run.stamina > 10.0, "pocket mead restores stamina")
+	check(pocket_run.pocket.size() == 1, "a used pocket pile leaves the pocket")
+	check(pocket_run.pocket_use(0), "pocket torch lights up")
+	check(bool(pocket_run.flags.torch), "pocket torch sets the torch flag")
+	# 搜索战利品也带稀有度。
+	var rarity_run = Run.new()
+	rarity_run.setup(0, 97, -1, [0, 0, 0])
+	rarity_run.start_search("car")
+	rarity_run.tick(9.0)
+	var any_tier := false
+	for entry in rarity_run.bag:
+		if entry.has("tier"):
+			any_tier = true
+	check(any_tier, "searched loot carries a rarity tier")
 
 	print("HUNT RULES: ", checks, " checks, ", failures, " failures")
 	quit(1 if failures else 0)

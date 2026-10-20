@@ -57,7 +57,7 @@ const RogueMapScreen := preload("res://scripts/rogue_map_screen.gd")
 # `CM_ROUTES`/`HC_ROUTES` 与它们真实的前置门槛（锻造 +2 核心 / +3 补正 / 铭刻），
 # 不新增同步字段、不消耗 `s.rng`、不写任何玩家状态。同一个 preload 规则。
 const RogueBuildPreview := preload("res://scripts/rogue_build_preview.gd")
-# 血潮猎场：营地「出征」栏的新模式。逻辑在 scripts/hunt/，这里只负责页面生命周期、
+# 血潮深潜：营地「出征」栏的新模式。逻辑在 scripts/hunt/，这里只负责页面生命周期、
 # 战利品入仓和档案统计，避免新模式把 session 的搜打撤/魔境流程分叉。
 const HuntScreen := preload("res://scripts/hunt/hunt_screen.gd")
 # 开发者模式 · 判定框总览（环境变量 CRIMSON_DEV_RANGES 才创建，见 开发者模式启动.cmd / 任务.md）
@@ -889,7 +889,7 @@ func new_page(name_value: String) -> void:
 	# The camp map is switched off, never freed: it keeps its storm and meshes.
 	if camp and not camp.is_queued_for_deletion():
 		camp.set_active(false)
-	# 血潮猎场也是常驻页面（它的 3D 舞台很贵），离开时只藏不释放。
+	# 血潮深潜也是常驻页面（它的 3D 舞台很贵），离开时只藏不释放。
 	if hunt_screen and is_instance_valid(hunt_screen):
 		hunt_screen.set_active(name_value == "hunt")
 	clear(page)
@@ -1023,7 +1023,7 @@ func ensure_camp() -> Control:
 	return camp
 
 
-## 血潮猎场是独立页面：它有自己的 3D 舞台、规则模块和结算，不共用 session 的
+## 血潮深潜是独立页面：它有自己的 3D 舞台、规则模块和结算，不共用 session 的
 ## 搜打撤/魔境状态机。这里只创建一次、把档案和返回营地的接线接好。
 func ensure_hunt() -> Control:
 	if hunt_screen and is_instance_valid(hunt_screen):
@@ -1040,7 +1040,7 @@ func ensure_hunt() -> Control:
 	return hunt_screen
 
 
-## 从营地站点 E / 左侧「血潮猎场」快捷按钮进入。先走简报/选人页，再由它开始一局。
+## 从营地站点 E / 左侧「血潮深潜」快捷按钮进入。先走简报/选人页，再由它开始一局。
 func show_hunt() -> void:
 	ensure_hunt()
 	new_page("hunt")
@@ -1048,17 +1048,31 @@ func show_hunt() -> void:
 	hunt_screen.show_briefing()
 
 
-## 猎场结算：撤离/通关才把局内背包搬进守夜人仓库；阵亡/放弃一律丢失。
+## 深潜结算：撤离/通关才把局内背包搬进守夜人仓库；阵亡/放弃一律丢失。
 ## 档案只记结果，不保存局内背包；save_profile 仍然是唯一落盘点。
 func on_hunt_finished(result: Dictionary) -> void:
 	var extracted := bool(result.get("extracted", false))
+	var gear_lost: Array = []
 	if extracted:
 		for entry in result.get("loot", []):
 			var kind := str(entry.get("kind", ""))
 			var count := maxi(1, int(entry.get("count", 1)))
+			# 深潜里找到的武器/防具/饰品/背包一律"带不出来"，只有普通道具进仓库。
+			if not Catalog.hunt_exportable(kind):
+				gear_lost.append(Catalog.item_name(entry))
+				continue
 			var item := {"kind": kind, "count": count}
+			if entry.has("tier"):
+				item["tier"] = int(entry["tier"])
 			if not profile.bank_item(item):
 				profile.spill_item(item, count)
+		# 随身物是带进深潜的代价：撤离成功也随机消失 2~3 件，剩下的留到下一局。
+		result["pocket_lost"] = profile.hunt_pocket_attrition(2, 3)
+		result["pocket_kept"] = profile.hunt_pocket_names()
+	else:
+		result["pocket_lost"] = profile.hunt_pocket_clear()
+		result["pocket_kept"] = []
+	result["gear_lost"] = gear_lost
 	var hunt: Dictionary = profile.data.get("hunt", {})
 	hunt["runs"] = int(hunt.get("runs", 0)) + 1
 	if extracted:
@@ -1093,7 +1107,7 @@ func go_camp() -> void:
 	# The camp owns the bottom of the screen here, so the hint goes through its
 	# own line instead of the shared toast band.
 	if camp.has_method("say"):
-		camp.say("营地 · 南侧闸门进入搜打撤，东侧紫门进入魔境，东侧红环进入血潮猎场。走近按 E 或 Space。")
+		camp.say("营地 · 南侧闸门进入搜打撤，东侧紫门进入魔境，东侧红环进入血潮深潜。走近按 E 或 Space。")
 
 func go_story(save_path: String = "") -> void:
 	if session.online: session.disconnect_room()
@@ -1853,7 +1867,7 @@ func _notification(what: int) -> void:
 
 func _input(event: InputEvent) -> void:
 	if page_name=="story": return
-	# 猎场页面自己处理鼠标/键盘（它不经过 session 的袋控器）。
+	# 深潜页面自己处理鼠标/键盘（它不经过 session 的袋控器）。
 	if page_name=="hunt": return
 	if event is InputEventMouseMotion and event.device==-2:
 		pass
