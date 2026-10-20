@@ -972,6 +972,7 @@ func _build_stations() -> void:
 	]
 	stations.append_array([
 		{"id":"rogue_gate","name":"魔境传送门","en":"ROGUE ADVENTURE","no":"10","at":Vector2(4050,3450),"offset":Vector2.ZERO,"radius":230.0,"hint":"五层闯关 · 开局商店 · 联机合作","tint":Color("ce92ff"),"icon":"codex","action":"rogue"},
+		{"id":"hunt_gate","name":"血潮深潜","en":"CRIMSON DIVE","no":"11","at":Vector2(3320,4240),"offset":Vector2.ZERO,"radius":205.0,"hint":"三天禁区 · 搜打撤 · 局内合成","tint":Color("e08a8a"),"icon":"launch","action":"hunt"},
 		{"id":"garden","name":"晨光菜园","en":"THE GARDEN","no":"06","at":Vector2(2030,2300),"offset":Vector2.ZERO,"radius":200.0,"hint":"播种 · 浇水 · 收获","tint":Color("a8db93"),"icon":"supply","action":"garden"},
 		{"id":"fish","name":"月湾栈桥","en":"MOONWATER","no":"07","at":Vector2(3370,2390),"offset":Vector2.ZERO,"radius":170.0,"hint":"抛竿 · 精准收竿","tint":Color("80d8df"),"icon":"supply","action":"fish"},
 		{"id":"kitchen","name":"炉边厨房","en":"HEARTH KITCHEN","no":"08","at":Vector2(2650,2060),"offset":Vector2(0,100),"radius":170.0,"hint":"烹饪 · 出征餐食","tint":Color("efbe87"),"icon":"forge","action":"kitchen"},
@@ -991,6 +992,21 @@ func _build_stations() -> void:
 		pillar.size=Vector3(.38,1.5,.48)
 		mesh_node(pillar,point(portal_at+Vector2(side*118,0),75),material(Color("403752")))
 		obstacles.append({"at":portal_at+Vector2(side*118,0),"half":Vector2(19,24),"angle":0.0})
+	# 血潮深潜入口：东侧石板路上一圈低矮的暗红裂隙。只做视觉，不加障碍，
+	# 免得把通往搜打撤闸门的主路堵窄。
+	var hunt_at := Vector2(3320,4240)
+	var hunt_ring := TorusMesh.new()
+	hunt_ring.inner_radius=0.82
+	hunt_ring.outer_radius=0.96
+	hunt_ring.rings=28
+	hunt_ring.ring_segments=10
+	var hunt_portal := mesh_node(hunt_ring,point(hunt_at,80),glow_material(Color("c95666"),1.2))
+	hunt_portal.rotation.x=PI/2
+	for i in 6:
+		var angle := TAU * float(i) / 6.0
+		var shard := BoxMesh.new()
+		shard.size=Vector3(.22,1.1,.22)
+		mesh_node(shard,point(hunt_at+Vector2.from_angle(angle)*105,55),glow_material(Color("d3556b"),0.7))
 	for station in stations:
 		var node := Node3D.new()
 		node.name = "Station_"+str(station.id)

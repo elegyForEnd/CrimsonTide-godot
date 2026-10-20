@@ -1,6 +1,7 @@
 extends RefCounted
 ## Host-authoritative build rules. Child damage never starts another hit chain.
 const Content = preload("res://scripts/rogue_content.gd")
+const Abilities = preload("res://scripts/rogue_abilities.gd")
 const HERO_BASE := [[12,11,12,15,21,10,17],[12,18,11,10,12,21,14],[16,10,17,23,12,10,10],[11,16,11,11,12,20,17]]
 const HERO_GRADES := [{"strength":"D","dexterity":"B","arcane":"C"},{"intelligence":"B","arcane":"C"},{"strength":"B","dexterity":"D"},{"intelligence":"B","arcane":"B"}]
 const FORGE_COST := [1,1,2,2,2]
@@ -32,8 +33,12 @@ const SOUL_UNREACHABLE := 1.5  # 放弃后多久才重新尝试追同一只（�
 
 static func reset(s, p: Dictionary) -> void:
 	p.erase("build_dodge_fire")
-	p.merge({"build_version":3,"build_talents":{},"build_library":[],"build_cultivation":0,"build_attributes":{},"build_attribute_points":0,
-		"build_level":1,"build_xp":0,"build_xp_total":0,"build_chest_attribute_drops":0,
+	p.erase("build_art_echo")
+	p.erase("build_pending_art")
+	p.erase("build_pending_art_tail")
+	p.merge({"build_version":3,"build_talents":{},"build_abilities":{},"build_library":[],"build_cultivation":0,"build_attributes":{},"build_attribute_points":0,
+		"build_level":1,"build_xp":0,"build_xp_total":0,
+		"build_pending_levels":0,"build_pending_abilities":0,"build_ability_offers":[],
 		"build_forge_points":0,"build_forge_level":0,"build_forge_bound":"","build_core":"","build_temper":"","build_awards":{},
 		"build_cd":{},"build_buffs":{},"build_counts":{},"build_heals":[],"build_mana_returns":[],"build_summons":[],"build_fields":[],
 		"soul_focus":-1,
@@ -145,7 +150,7 @@ static func stat(s, p: Dictionary, name: String) -> float:
 		"mana": return r(p,49,[10,16,22])+r(p,89,[4,6,8])
 		"damage": return forge_level(p)*.03+(.08 if gear(p,23) and alone(s,p) else 0)
 		"defense": return r(p,66,[.03,.05,.07])+aura(s,p,90,[.02,.03,.04])+(.04 if gear(p,24) and not alone(s,p,240) else 0)
-		"speed": return r(p,42,[8,12,16])+r(p,73,[8,12,16])+buff(p,"speed",s.elapsed)+(15 if gear(p,72) and p.hp<p.max_hp*.4 and s.players.size()==1 else 0)
+		"speed": return r(p,42,[8,12,16])+r(p,73,[8,12,16])+Abilities.move_speed(p)+buff(p,"speed",s.elapsed)+(15 if gear(p,72) and p.hp<p.max_hp*.4 and s.players.size()==1 else 0)
 		"regen": return clampf(r(p,50,[.10,.15,.20])+aura(s,p,91,[.06,.09,.12])+(0.25 if rank(p,56)>0 else 0)-(.2 if rank(p,32)>0 else 0)+(.25 if gear(p,4) and p.hp>=p.max_hp*.8 else 0)+(r(p,36,[.1,.15,.2]) if s.elapsed-float(p.get("build_last_hurt",-10))>=3 else 0),-.5,.5)
 		"art_cdr": return minf(.25,r(p,58,[.04,.06,.08])+(.08 if gear(p,42) else 0)+(.05 if engraving(p,14) else 0))
 		"dodge_cdr": return minf(.2,r(p,74,[.05,.08,.12])+(.08 if gear(p,69) else 0))
@@ -177,7 +182,8 @@ static func conditional_defense(s, p: Dictionary) -> float:
 	if p.mana>=p.max_mana*.7: value+=r(p,54,[.06,.1])
 	if not p.get("build_summons",[]).is_empty(): value+=r(p,87,[.04,.07])+(.06 if gear(p,19) else 0)
 	if gear(p,22) and p.channel>0: value+=.15
-	return minf(.2,value+buff(p,"defense",s.elapsed))
+	value+=Abilities.guard(p)
+	return minf(.35,value+buff(p,"defense",s.elapsed))
 
 static func ready(s, p: Dictionary, key: String, seconds: float) -> bool:
 	if s.elapsed<float(p.get("build_cd",{}).get(key,0)): return false
@@ -237,6 +243,8 @@ static func heal(s, source: Dictionary, target: Dictionary, ratio: float, passiv
 	if source.id==target.id and passive: wanted=minf(wanted,maxf(0,target.max_hp*.1-own))
 	target.hp+=wanted
 	if wanted>0:
+		if s.has_method("broadcast_combat"):
+			s.broadcast_combat({"kind":"heal","p":target.p,"amount":wanted,"id":target.id})
 		recent.append({"time":s.elapsed,"amount":wanted,"source":source.id,"passive":passive})
 		if rank(source,95)>0 and ready(s,source,"T095",5): grant(source,"healed",r(source,95,[.10,.15]),4,s.elapsed)
 	target.build_heals=recent
@@ -301,7 +309,7 @@ static func mana_cost(s, p: Dictionary, base: float, kind: String) -> float:
 	var reduction := .1 if gear(p,13) and p.mana>=p.max_mana*.75 else 0.0
 	if kind=="attack" and Catalog.weapon_family(int(p.weapon))==3:
 		reduction+=r(p,52,[.05,.08,.12])+(.1 if gear(p,43) else 0)+buff(p,"landing_cost",s.elapsed)
-	if kind=="art": reduction+=buff(p,"hammer_cost",s.elapsed)+(.2 if buff(p,"rotation",s.elapsed)>0 else 0)-(.15 if rank(p,56)>0 else 0)
+	if kind=="art": reduction+=buff(p,"hammer_cost",s.elapsed)+(.2 if buff(p,"rotation",s.elapsed)>0 else 0)-(.15 if rank(p,56)>0 else 0)+Abilities.art_mana(p)
 	return maxf(1.0 if kind=="attack" else 6.0 if kind=="art" else 20.0,base*(1.0-clampf(reduction,-.15,.25)))
 
 static func attenuation(p: Dictionary, base: float) -> float:
@@ -516,7 +524,9 @@ static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> 
 	if forge_level(p)>=3 and p.get("build_temper","")=="steady" and (normal or art): local_a+=.04
 	if blood>=3: c+=r(p,3,[.06,.09,.12])
 	if blood>=5 and gear(p,5): c+=.12
-	if fire>0: c+=r(p,27,[.05,.08,.11])
+	if fire>0: c+=r(p,27,[.05,.08,.11])+Abilities.status_bonus(p,"burn")
+	if frost>0: c+=Abilities.status_bonus(p,"frost")
+	if shock>0: c+=Abilities.status_bonus(p,"shock")
 	if frost>=3: c+=r(p,35,[.06,.09,.12])+(.12 if spell and gear(p,37) else 0)
 	if frost==5 and e.get("rogue_guardian",false) and spell and rank(p,40)>0: c+=.20
 	if float(e.get("build_break_time",0))>0: c+=.12+r(p,13,[.12,.18])
@@ -544,12 +554,12 @@ static func hit_multiplier(s, p: Dictionary, e: Dictionary, ctx: Dictionary) -> 
 		if w==22 and distance>=150: c+=.10
 		if w==24 and enemy_hp<=.35: c+=.14
 		if w==31 and float(p.get("build_stationary",0))>=.8: c+=.12
-	var crit: float=.05+s.rogue_equipment_stat(p,"crit")+(.04 if engraving(p,16) and hp>=.5 else 0)+(r(p,21,[.08,.12]) if marked else 0)+(r(p,44,[.04,.06,.08]) if shock>=3 else 0)+(.06 if gear(p,30) and blood>=3 else 0)
+	var crit: float=.05+s.rogue_equipment_stat(p,"crit")+Abilities.crit_chance(p)+(.04 if engraving(p,16) and hp>=.5 else 0)+(r(p,21,[.08,.12]) if marked else 0)+(r(p,44,[.04,.06,.08]) if shock>=3 else 0)+(.06 if gear(p,30) and blood>=3 else 0)
 	if not ctx.has("crit_targets"): ctx.crit_targets={}
-	if not ctx.crit_targets.has(e.id): ctx.crit_targets[e.id]=s.rng.randf()<minf(.35,crit)
+	if not ctx.crit_targets.has(e.id): ctx.crit_targets[e.id]=s.rng.randf()<minf(.45,crit)
 	var critical: bool=ctx.crit_targets[e.id]
 	ctx["critical"]=critical
-	var crit_damage := minf(1.75,1.5+(.1 if gear(p,33) and distance>=220 and normal else 0)) if critical else 1.0
+	var crit_damage := minf(1.9,1.5+Abilities.crit_damage(p)+(.1 if gear(p,33) and distance>=220 and normal else 0)) if critical else 1.0
 	# Local A is added to A, rather than multiplying a second A pool.
 	return (1.0+minf(1.2,s.rogue_damage_pool(p)+local_a))/(1.0+s.rogue_damage_pool(p))*(1.0+minf(.6,c))*penalty*crit_damage
 
@@ -591,6 +601,30 @@ static func hit_event(s, p: Dictionary, e: Dictionary, actual: float, killed: bo
 	if status(e,p.id,"frost")>=3 and gear(p,10): grant(p,"defense",.08,2,s.elapsed)
 	if status(e,p.id,"bleed")>0 and gear(p,54) and ready(s,p,"E054",3): grant(p,"defense",.06,2,s.elapsed)
 	if normal and first:
+		# AB01 · 连锁雷：第三段引雷，弹射目标数随阶位提高。
+		if int(ctx.get("combo",0))==2 and Abilities.rank(p,"attack")>0 and ready(s,p,"AB01",0.9):
+			var chain := Abilities.chain_ratio(p)
+			proc(s,p,e,chain,power)
+			s.broadcast_combat({"kind":"spell_burst","p":e.p,"aim":p.aim,"spell":"chain","radius":96.0,"id":p.id,"weapon_index":-1})
+			for target in nearby(s,p,e,220.0,Abilities.chain_count(p)):
+				proc(s,p,target,chain*.6,power)
+				s.broadcast_combat({"kind":"spell_arc","p":e.p,"target":target.p,"spell":"chain","id":p.id,"weapon_index":-1,"aim":(target.p-e.p).normalized()})
+		# AB05 · 雷血：下一发普攻的引雷。
+		if buff(p,"ab05_charge",s.elapsed)>0 and ready(s,p,"AB05",1):
+			p.build_buffs.erase("ab05_charge")
+			var charged := Abilities.flask_charge(p)
+			proc(s,p,e,charged,power)
+			s.broadcast_combat({"kind":"spell_burst","p":e.p,"aim":p.aim,"spell":"chain","radius":84.0,"id":p.id,"weapon_index":-1})
+		# AB09 · 引魂：按普攻次数召唤。
+		var every := Abilities.summon_every(p)
+		if every>0 and int(p.build_counts.get("attacks",0))%every==every-1 and ready(s,p,"AB09",0.4):
+			summon(s,p,Abilities.summon_seconds(p),Abilities.summon_ratio(p))
+		# AB10~12 · 烬印/霜印/感电：每条轨道独立计时，不互相吃掉触发。
+		for pair in [["burn","AB10"],["frost","AB11"],["shock","AB12"]]:
+			var key: String=pair[0]
+			var stacks := Abilities.status_stacks(p,key)
+			if stacks>0 and ready(s,p,pair[1],Abilities.status_icd(p,key)):
+				add_status(s,p,e,key,stacks,power)
 		p.build_counts["attacks"]=int(p.build_counts.get("attacks",0))+1
 		p.build_counts["same"]=int(p.build_counts.get("same",0))+1 if int(p.build_counts.get("target",-1))==int(e.id) else 1
 		p.build_counts["target"]=e.id
@@ -747,6 +781,8 @@ static func reactions(s, p: Dictionary, e: Dictionary, family: int, power: float
 static func perfect(s, p: Dictionary) -> void:
 	if buff(p,"dodge_age",s.elapsed)<=0 or not ready(s,p,"perfect",3): return
 	if gear(p,70) and ready(s,p,"E070",5): grant(p,"perfect_strike",.18,2,s.elapsed)
+	var ability_counter := Abilities.perfect_strike(p)
+	if ability_counter>0: grant(p,"perfect_strike",maxf(float(buff(p,"perfect_strike",s.elapsed)),ability_counter),2,s.elapsed)
 	if rank(p,76)>0 and ready(s,p,"T076",4): mana(s,p,r(p,76,[2,3,4]))
 	if rank(p,77)>0 and ready(s,p,"T077",5): shield(s,p,r(p,77,[.04,.06]),3,"T077")
 	if core(p,3)>0 and ready(s,p,"WC003",5):
@@ -798,14 +834,10 @@ static func action_event(s, p: Dictionary, token: String) -> void:
 	sequence.append({"key":token,"time":now,"hit":token!="A","root":""})
 	if sequence.size()>10: sequence.pop_front()
 	p.build_inputs=sequence
-	var keys := ""
-	for input in sequence: keys+=str(input.key)
-	var route_index: int=[1,2,0,3].find(family)
-	var level := forge_level(p)
 	p["build_next_route"]=-1; p["build_next_hero"]=-1
 	if token=="D":
 		grant(p,"dodge_window",1,2,now)
-		grant(p,"dodge_age",1,.12,now)
+		grant(p,"dodge_age",1,Abilities.perfect_window(p),now)
 		var bonus: float=(r(p,75,[.08,.12,.16]) if rank(p,75)>0 and ready(s,p,"T075",4) else 0)+(.12 if engraving(p,20) and ready(s,p,"I020",4) else 0)+(.08 if core(p,1)==1 or core(p,7)==1 else .12 if core(p,1)==2 or core(p,7)==2 else 0)
 		if bonus>0: grant(p,"dodge_strike",bonus,2,now)
 		if weapon_id(p)==5 and ready(s,p,"W005",4): grant(p,"w5_strike",.16,2,now)
@@ -830,16 +862,8 @@ static func action_event(s, p: Dictionary, token: String) -> void:
 			var target := aimed_enemy(s,p)
 			if not target.is_empty(): grant(p,"soul_target",float(target.id),3,now)
 		if gear(p,46): extend_summons(p,1)
-	for i in CM_ROUTES[route_index].size():
-		var required: int=[0,1,3,3][i] if family==1 else [0,1,0,3][i]
-		if level>=required and keys.ends_with(CM_ROUTES[route_index][i]):
-			p.build_next_route=i
-			p.build_combo_label=["闪避追击","折返派生","升空 / 跃击","落地连段"][i]
-			p.build_combo_time=1.3
-	if level>=3 and p.build_hero_cd<=0:
-		for i in HC_ROUTES[int(p.hero)].size():
-			if keys.ends_with(HC_ROUTES[int(p.hero)][i]): p.build_next_hero=i; break
-	if token=="S" and keys.ends_with("AAS") and core(p,9)>0: grant(p,"combo_refund",.05 if core(p,9)==1 else .08,1,now)
+	# 派生链/组合路线已在魔境模式移除：不再把 A/S/D/U 序列解析成 CM/HC 派生。
+	# `build_next_route` / `build_next_hero` 保持 -1，后续 `hit_event` 不会进入角色派生分支。
 	if token=="A" and family==0 and p.build_next_route==0 and core(p,7)>0:
 		grant(p,"reload_haste",.05 if core(p,7)==1 else .08,INF,now); core_visual(s,p,7,p.p)
 
@@ -876,7 +900,7 @@ static func flask_cap(s, p: Dictionary) -> float:
 static func drink(s, p: Dictionary) -> bool:
 	if p.status!="active" or p.hp>=p.max_hp or p.flask<25 or p.flask_cd>0 or p.flask_time>0 or p.height>0 or p.pending_strike or p.cast_time>0 or p.dodge_time>0: return false
 	p.flask_time=.75
-	p.flask_cd=2.5
+	p.flask_cd=Abilities.flask_cd(p)
 	p.flask_committed=false
 	p["flask_pending_commit"]=false
 	p.build_inputs=[]
@@ -946,7 +970,20 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 	if move.normalized().dot(p.aim)<-.6: p["build_back_time"]=s.elapsed
 	p.build_stationary=float(p.get("build_stationary",0))+dt if move.length()<.1 and p.dodge_time<=0 else 0.0
 	var dodge_active: bool=p.dodge_time>0
-	if p.get("build_was_dodging",false) and not dodge_active and gear(p,67) and ready(s,p,"E067",6): shield(s,p,.04,2,"E067")
+	if p.get("build_was_dodging",false) and not dodge_active:
+		if gear(p,67) and ready(s,p,"E067",6): shield(s,p,.04,2,"E067")
+		var counter := Abilities.dodge_counter(p)
+		if counter>0 and ready(s,p,"AB04",0.6):
+			var target: Dictionary={}
+			var best := 340.0
+			for enemy in s.enemies:
+				if enemy.hp<=0 or enemy.get("boss_construct",false): continue
+				var gap: float=p.p.distance_to(enemy.p)
+				if gap<best and s.ruins.clear_line(p.p,enemy.p): best=gap; target=enemy
+			if not target.is_empty():
+				proc(s,p,target,counter,float(unit(s,p)))
+				s.broadcast_combat({"kind":"spell_arc","p":p.p,"target":target.p,"spell":"chain","id":p.id,"weapon_index":-1,"aim":(target.p-p.p).normalized()})
+				s.broadcast_combat({"kind":"spell_burst","p":target.p,"aim":p.aim,"spell":"chain","radius":80.0,"id":p.id,"weapon_index":-1})
 	p["build_was_dodging"]=dodge_active
 	if p.has("build_dodge_fire"):
 		var trail: Dictionary=p.build_dodge_fire
@@ -1155,7 +1192,7 @@ static func award(s, p: Dictionary) -> void:
 		if floor_index==2 and not bool(p.get("build_core_granted",false)):
 			p.build_reward_queue.append("core")
 			p.build_core_granted=true
-	if (floor_index==1 and area==3) or (floor_index in [2,3,4] and area in [2,4]) or (floor_index==5 and area==3): p.build_forge_points+=1
+	# 装备锻造已移除：不再发放锻造点。
 	if s.raid.room in ["combat","elite"]:
 		if p.flask_combat_awards<4:
 			p.flask_combat_awards+=1; p.flask=minf(flask_cap(s,p),p.flask+10); p.flask_refills+=10
@@ -1168,7 +1205,6 @@ static func award(s, p: Dictionary) -> void:
 static func floor_enter(p: Dictionary, s = null) -> void:
 	p.erase("build_dodge_fire")
 	p["build_air_cast"]=false
-	p.build_chest_attribute_drops=0
 	p.flask=minf(flask_cap(s,p),p.flask+50)
 	p.mana=minf(p.max_mana,p.mana+p.max_mana*.5)
 	p.flask_refills=0
@@ -1179,14 +1215,15 @@ static func floor_enter(p: Dictionary, s = null) -> void:
 	p.soul_focus=-1
 
 static func hero_skill(s, p: Dictionary, aim: Vector2) -> void:
-	var power := unit(s,p,true)
+	var power := unit(s,p,true)*(1.0+Abilities.ultimate_damage(p))
+	var reach := (260.0 if p.hero==2 else 420.0)*(1.0+Abilities.ultimate_radius(p))
 	var ctx: Dictionary=p.get("build_skill_context",{})
 	if ctx.is_empty(): ctx=context(s,p,"skill")
 	s.broadcast_combat({"kind":"skill","p":p.p,"aim":aim,"hero":p.hero,"weapon":Catalog.weapon_family(p.weapon),"id":p.id})
 	var count := 0
 	for e in s.enemies:
 		var delta: Vector2=e.p-p.p
-		if e.hp<=0 or not s.ruins.clear_line(p.p,e.p) or delta.length()>(260 if p.hero==2 else 420) or (p.hero in [0,3] and delta.normalized().dot(aim)<.2): continue
+		if e.hp<=0 or not s.ruins.clear_line(p.p,e.p) or delta.length()>reach or (p.hero in [0,3] and delta.normalized().dot(aim)<.2): continue
 		if count>=5: break
 		var ratio: float=[2.0,.8,1.6,1.2][int(p.hero)]*(1.0 if count==0 else .65)
 		s.damage_enemy(e,power*ratio,p.id,delta.normalized(),20,4,-1,ctx)
@@ -1197,6 +1234,11 @@ static func hero_skill(s, p: Dictionary, aim: Vector2) -> void:
 			if ally.status=="active" and ally.p.distance_to(p.p)<=240: heal(s,p,ally,.12,false); shield(s,ally,.06,4,"Q:%s" % p.id)
 	elif p.hero==2: shield(s,p,.08,4,"Q:%s" % p.id)
 	elif p.hero==3: field(p,s.ruins.move(p.p,aim*160),4,160,.20,power,5,"Q")
+	if Abilities.ultimate_awakened(p):
+		# AB03 · 雷狱：落点持续雷场。`field` 的 ratio 是“每秒”口径；卡面写的是每秒值。
+		var center: Vector2=s.ruins.move(p.p,aim*160.0,8)
+		field(p,center,Abilities.ultimate_field_duration(p),180.0*(1.0+Abilities.ultimate_radius(p)),Abilities.ultimate_field_ratio(p),power,5,"AB03")
+		s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":"chain","radius":190.0,"id":p.id,"weapon_index":-1})
 
 static func enemy_budget(s, e: Dictionary) -> void:
 	var floor_index := clampi(int(s.raid.floor)-1,0,4)
@@ -1300,10 +1342,64 @@ static func add_experience(s, p: Dictionary, amount: int) -> void:
 	var gained := 0
 	while p.build_xp>=xp_needed(int(p.build_level)):
 		p.build_xp-=xp_needed(int(p.build_level))
-		p.build_level+=1; p.build_attribute_points+=2; gained+=2
+		p.build_level+=1
+		gained+=1
+		p.build_pending_levels=int(p.get("build_pending_levels",0))+1
+		if int(p.build_level)%3==0:
+			p.build_pending_abilities=int(p.get("build_pending_abilities",0))+1
 	if gained>0:
 		p.rogue_inventory_revision+=1
-		if p.id==s.my_id(): s.message.emit("局内等级升至 %d · 属性点 +%d · Tab → 构筑 → 七属性" % [p.build_level,gained])
+		ensure_ability_offers(s,p)
+		if p.id==s.my_id(): s.message.emit("局内等级升至 %d · 升级加点 +%d 次 · 每 3 级获得能力" % [p.build_level,gained])
+
+## 每 3 级一次的雷霆能力弹窗。候选是 3 个不同能力，同名最多 3 次。
+## 十二式全满后把里程碑直接折算成魔晶（不弹空卡）。
+static func ensure_ability_offers(s, p: Dictionary) -> void:
+	var pending := int(p.get("build_pending_abilities",0))
+	if pending<=0:
+		p.build_ability_offers=[]
+		return
+	if not p.get("build_ability_offers",[]).is_empty(): return
+	var offers: Array=Abilities.roll_offers(s,p,3)
+	if offers.is_empty():
+		var gold := 150*pending
+		p.rogue_gold=int(p.get("rogue_gold",0))+gold
+		p.build_pending_abilities=0
+		p.build_ability_offers=[]
+		if p.id==s.my_id(): s.message.emit("雷霆十二式已全部满级 · 里程碑折算 %d 魔晶" % gold)
+		return
+	p.build_ability_offers=offers
+
+static func level_choice(s, p: Dictionary, stat: String) -> String:
+	if int(p.get("build_pending_levels",0))<=0: return "没有待分配的升级点"
+	if stat not in WatcherAttributes.KEYS: return "未知属性"
+	if int(attributes(p)[stat])>=99: return "该属性已达 99 上限"
+	p.build_attributes[stat]=int(p.get("build_attributes",{}).get(stat,0))+1
+	p.build_pending_levels=int(p.build_pending_levels)-1
+	s.refresh_max_hp(p)
+	p.rogue_inventory_revision=int(p.get("rogue_inventory_revision",0))+1
+	s.raid.revision+=1
+	ensure_ability_offers(s,p)
+	s.message.emit("升级加点 · %s +1" % WatcherAttributes.NAMES[WatcherAttributes.KEYS.find(stat)])
+	return ""
+
+static func ability_choice(s, p: Dictionary, index: int) -> String:
+	if int(p.get("build_pending_abilities",0))<=0: return "没有待选的能力"
+	var offers: Array=p.get("build_ability_offers",[])
+	if index<0 or index>=offers.size(): return "这张能力卡已失效"
+	var offer: Dictionary=offers[index]
+	var key := str(offer.get("ability_key",""))
+	var current := Abilities.rank(p,key)
+	if Abilities.track(key).is_empty() or current>=Abilities.MAX_RANK: return "该能力已满 3 次"
+	if not (p.get("build_abilities",{}) is Dictionary): p["build_abilities"]={}
+	p.build_abilities[key]=current+1
+	p.build_pending_abilities=int(p.build_pending_abilities)-1
+	p.build_ability_offers=[]
+	p.rogue_inventory_revision=int(p.get("rogue_inventory_revision",0))+1
+	s.raid.revision+=1
+	ensure_ability_offers(s,p)
+	s.message.emit("雷能获取 · %s %s（%d / %d）" % [str(Abilities.track(key).get("name",key)),Abilities.pips(p,key),current+1,Abilities.MAX_RANK])
+	return ""
 
 static func enemy_experience(s, e: Dictionary) -> void:
 	# Only original encounter enemies carry XP. Summons/constructs cannot be farmed.
@@ -1344,6 +1440,15 @@ static func commit_flask(s, p: Dictionary) -> void:
 	# 对最主要的治疗来源完全无效。无诅咒时乘数恒为 1.0，`tests/rogue_build_system.gd` 与
 	# `tests/rogue_build_rules.gd` 的 `hp==20+max_hp*0.3` 逐位不变。
 	var curse_heal := maxf(0.0,1.0+hook_mod(s,p,"heal_scale"))
-	p.hp=minf(p.max_hp,p.hp+p.max_hp*.3*(1+minf(.3,amp))*curse_heal)
+	var before: float=float(p.hp)
+	p.hp=minf(p.max_hp,p.hp+p.max_hp*.3*(1+minf(.3,amp))*(1.0+Abilities.flask_heal(p))*curse_heal)
+	var healed: float=float(p.hp)-before
+	if healed>0.0 and s.has_method("broadcast_combat"):
+		s.broadcast_combat({"kind":"heal","p":p.p,"amount":healed,"id":p.id})
+	if Abilities.flask_shield(p)>0: shield(s,p,Abilities.flask_shield(p),4.0,"AB05")
+	if Abilities.flask_awakened(p):
+		grant(p,"ab05_charge",1.0,3.0,s.elapsed)
+		if s.has_method("broadcast_combat"):
+			s.broadcast_combat({"kind":"spell_burst","p":p.p,"aim":p.aim,"spell":"chain","radius":110.0,"id":p.id,"weapon_index":-1})
 	s.broadcast_audio("heal",p)
 	p.rogue_inventory_revision+=1

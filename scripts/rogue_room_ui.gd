@@ -232,8 +232,8 @@ static func footer(kind: String, raid: Dictionary, phase: String, near_loot: boo
 		return "击败镜像领取奖励 · 挑战者倒地即失败"
 	if phase == "rogue_reward":
 		if near_loot:
-			return "E 开箱 / 拾取 · 每人武器与装备三选一 · Tab 管理构筑"
-		return "搜刮战利品 · 每人武器与装备三选一"
+			return "E 开箱 / 拾取 · 每人能力或装备三选一 · Tab 管理构筑"
+		return "搜刮战利品 · 普通战斗铭刻战技，精英/首领/宝藏出装备"
 	if phase in ["rogue_shop", "rogue_exit"]:
 		if near_fork:
 			return "全队向右集合 · 靠近目标路线末端按 E"

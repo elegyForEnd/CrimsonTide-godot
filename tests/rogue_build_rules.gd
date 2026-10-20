@@ -50,18 +50,18 @@ func run() -> void:
 			check(icon!=null and icon.get_width()>4 and icon.get_height()>4,"Painted icon exists: "+str(def.id))
 			var key := str(icon.atlas.resource_path)+str(icon.region)
 			check(not seen.has(key),"Independent painted region: "+str(def.id)); seen[key]=true
-	# Test32 input routes, using accepted hit edges, not held-input frame counting.
+	# 派生链/组合路线已从魔境移除：同样的输入序列不再产生 CM/HC 派生。
 	for family_index in 4:
 		reset(); p.weapon=600+[0,12,24,36][family_index]
 		for i in 4:
 			p.rules_last_route=-1; s.inputs[p.id]={}
 			sequence(Build.CM_ROUTES[family_index][i])
-			check(int(p.rules_last_route)==i or int(p.get("build_next_route",-1))==i,"Family combo CM%02d" % (family_index*4+i+1))
+			check(int(p.get("build_next_route",-1))==-1 and int(p.rules_last_route)==-1,"Family derivation CM%02d stays disabled" % (family_index*4+i+1))
 	for hero in 4:
 		reset(); p.hero=hero
 		for i in 4:
 			s.inputs[p.id]={}; sequence(Build.HC_ROUTES[hero][i])
-			check(p.build_hero_cd>0,"Hero combo HC%02d" % (hero*4+i+1))
+			check(int(p.get("build_next_hero",-1))==-1 and p.build_hero_cd==0,"Hero derivation HC%02d stays disabled" % (hero*4+i+1))
 	reset()
 	Build.action_event(s,p,"A"); Build.context(s,p,"attack")
 	Build.action_event(s,p,"S")
@@ -132,7 +132,7 @@ func run() -> void:
 	reset(); p.hp=2; p.invuln=0; p.flask=100
 	Build.drink(s,p); Build.tick(s,p,.46)
 	s.hurt(p,50,e); Build.commit_flask(s,p)
-	check(p.status=="down" and p.hp==0 and p.flask==100,"Same-frame lethal hit wins over flask commit without spending capacity")
+	check(p.status in ["down","dead"] and p.hp==0 and p.flask==100,"Same-frame lethal hit wins over flask commit without spending capacity")
 	reset(); p.hp=20; p.flask=100
 	Build.drink(s,p); Build.tick(s,p,.8); Build.commit_flask(s,p)
 	check(p.flask==75 and is_equal_approx(p.hp,20+p.max_hp*.3),"Low frame rate crossing complete drink still commits once")

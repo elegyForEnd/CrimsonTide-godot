@@ -19,7 +19,7 @@ const STACK_TINT := Color("ff9000")
 # separate cells rather than one wide smear.
 const INSET := 9.0
 
-static func tile(host, at: Vector2, size: Vector2, item: Dictionary = {}, tone: Color = GOLD, secure: bool = false) -> Control:
+static func tile(host, at: Vector2, size: Vector2, item: Dictionary = {}, tone: Color = GOLD, secure: bool = false, slice_shape: bool = true) -> Control:
 	var node := Socket.new()
 	node.position=at
 	node.size=size
@@ -32,14 +32,34 @@ static func tile(host, at: Vector2, size: Vector2, item: Dictionary = {}, tone: 
 	node.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	host.overlay.add_child(node)
 	if not item.is_empty():
-		var icon_size := size-Vector2(INSET*2,INSET*2)
-		var icon=host.item_icon(node,Catalog.item_icon(item),Vector2(INSET,INSET),icon_size)
-		icon.pivot_offset=icon.size*0.5
-		if bool(item.get("rot",false)):
-			icon.size=Vector2(icon_size.y,icon_size.x)
+		var bbox := Catalog.item_size(item)
+		var cells := Catalog.shape_cells(item)
+		var rect_cells := bbox.x * bbox.y
+		if slice_shape and cells.size() < rect_cells:
+			# 非矩形：把图标铺满 bbox，再用每格一个 `clip_contents` 的窗口裁出来。
+			# 没被轮廓覆盖的格子自然什么都不画，玩家看到的就是真实占格。
+			var cell_w := size.x / float(maxi(1, bbox.x))
+			var cell_h := size.y / float(maxi(1, bbox.y))
+			for c in cells:
+				var holder := Control.new()
+				holder.position = Vector2(c.x * cell_w, c.y * cell_h)
+				holder.size = Vector2(cell_w, cell_h)
+				holder.clip_contents = true
+				holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				node.add_child(holder)
+				var full := Vector2(-c.x * cell_w, -c.y * cell_h) + Vector2(INSET, INSET)
+				var icon_size := size - Vector2(INSET * 2, INSET * 2)
+				var icon=host.item_icon(holder,Catalog.item_icon(item),full,icon_size)
+				icon.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		else:
+			var icon_size := size-Vector2(INSET*2,INSET*2)
+			var icon=host.item_icon(node,Catalog.item_icon(item),Vector2(INSET,INSET),icon_size)
 			icon.pivot_offset=icon.size*0.5
-			icon.position=(size-icon.size)*0.5
-			icon.rotation=PI*0.5
+			if bool(item.get("rot",false)):
+				icon.size=Vector2(icon_size.y,icon_size.x)
+				icon.pivot_offset=icon.size*0.5
+				icon.position=(size-icon.size)*0.5
+				icon.rotation=PI*0.5
 		var count := int(item.get("count",1))
 		if count>1:
 			# The stack badge sits in the cell's own bottom-right corner and in the game's

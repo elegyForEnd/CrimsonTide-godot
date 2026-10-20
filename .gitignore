@@ -7,6 +7,9 @@ build/
 # 所以对该目录开例外，保证全新 clone 也能拿到"能编译"的最小集合（内容说明见该目录 PLACEHOLDER-README.txt）。
 !/assets/rogue/build/
 dist/
+# 生图工作台的原图落点（wb_generate_image 的 outbox 副本）；游戏实际用的是
+# assets/hunt/events 里缩放后的版本，原图不入库。
+generated/
 output/imagegen/
 *.log
 *.tmp

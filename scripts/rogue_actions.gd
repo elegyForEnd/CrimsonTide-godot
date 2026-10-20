@@ -3,6 +3,8 @@ const Build = preload("res://scripts/rogue_build.gd")
 const Content = preload("res://scripts/rogue_content.gd")
 const Choreography = preload("res://scripts/weapon_batch_choreography.gd")
 
+const Abilities = preload("res://scripts/rogue_abilities.gd")
+
 static func height_hit(player_height: float, tag: String) -> bool:
 	match tag:
 		"low": return player_height<=24
@@ -22,7 +24,7 @@ static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
 	# A2 (R9 hook 8): CU09「迟滞」的 `cooldown`（CAPS 锁在 [0,0.60]，正=冷却更久）乘进技能冷却。
 	# 无诅咒时乘数恒为 1.0，数值与接线前逐位相同。
 	if charged.is_empty():
-		p.art_cd=maxf(3,float(move.cooldown)*(1.0-Build.stat(s,p,"art_cdr"))*(1.15 if Build.rank(p,64)>0 else 1.0)*(1.0+maxf(0.0,Build.hook_mod(s,p,"cooldown"))))
+		p.art_cd=maxf(3,float(move.cooldown)*(1.0-Build.stat(s,p,"art_cdr"))*(1.0-Abilities.art_cdr(p))*(1.15 if Build.rank(p,64)>0 else 1.0)*(1.0+maxf(0.0,Build.hook_mod(s,p,"cooldown"))))
 		p["build_art_base"]=p.art_cd
 		Build.action_event(s,p,"S")
 	else:
@@ -31,7 +33,7 @@ static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
 	var ctx := Build.context(s,p,"art" if charged.is_empty() else "attack")
 	ctx["vfx_action"]="art" if charged.is_empty() else "heavy"
 	if not charged.is_empty(): ctx["charged"]=true
-	var windup: float={1:.35,2:.5,0:.30,3:.45}.get(family,.35)
+	var windup: float={1:.35,2:.5,0:.30,3:.45}.get(family,.35)*(1.0-Abilities.art_windup(p))
 	if p.height>0:
 		p.air_art=true
 		if Build.core(p,10)>0: windup=maxf(.25,windup*(.95 if Build.core(p,10)==1 else .92))
@@ -44,7 +46,7 @@ static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
 	if charged.is_empty() and route==2 and family==1: move.kind="thrust"; move.reach=200.0
 	if route==3 and family==0 and p.height>35: windup=maxf(windup,.35)
 	var split: bool=charged.is_empty() and ((family in [1,2,3] and route in [2,3]) or int(ctx.get("hero_route",-1))==0 and p.hero==2)
-	p["build_pending_art"]={"move":move,"ctx":ctx,"aim":p.aim.normalized(),"origin":p.p,"damage":s.weapon_damage(p)*float(move.damage),"remaining":windup,"split":split}
+	p["build_pending_art"]={"move":move,"ctx":ctx,"aim":p.aim.normalized(),"origin":p.p,"damage":s.weapon_damage(p)*float(move.damage)*(1.0+Abilities.art_damage(p)),"remaining":windup,"split":split}
 	p.cast_time=windup+(float(move.get("recovery",.35)) if not charged.is_empty() else .35 if split else .12)
 	p.attack=p.cast_time
 	p.swing_time=p.cast_time
@@ -67,6 +69,7 @@ static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
 	return true
 
 static func tick(s, p: Dictionary, dt: float) -> void:
+	tick_echo(s,p,dt)
 	if p.has("build_art_sequence"):
 		sequence_tick(s,p,dt)
 		return
@@ -139,6 +142,17 @@ static func sequence_tick(s,p: Dictionary,dt: float) -> void:
 			p.erase("build_art_sequence"); p.swing_time=.22; p.swing_total=float(step[0])+.22
 			p["build_landing_time"]=.18
 		else: sequence_windup(s,p)
+
+static func tick_echo(s, p: Dictionary, dt: float) -> void:
+	if not p.has("build_art_echo"): return
+	var echo: Dictionary=p.build_art_echo
+	if p.status!="active" or p.dodge_time>0 or p.cast_time>0:
+		p.erase("build_art_echo")
+		return
+	echo.remaining=float(echo.remaining)-dt
+	if float(echo.remaining)>0: return
+	p.erase("build_art_echo")
+	resolve_art(s,p,echo.pending,float(echo.get("share",.45)))
 
 static func tail(s, p: Dictionary, dt: float) -> void:
 	if not p.has("build_pending_art_tail"): return

@@ -142,6 +142,9 @@ func monster(skin: int, pose: int) -> Dictionary:
 	return monster_frames[clampi(skin,0,4)*4+clampi(pose,0,3)]
 
 func offer_icon(offer: Dictionary) -> Texture2D:
+	if offer.has("ability_id"):
+		var ability_icon: Texture2D=BuildArt.icon(str(offer.get("icon_id","T001")))
+		return ability_icon if ability_icon!=null else item_icons[10]
 	if offer.has("attribute_points"): return BuildArt.icon("I016")
 	if offer.has("flask_refill"): return flask_icon
 	if offer.has("talent_id"): return BuildArt.icon(str(offer.talent_id))

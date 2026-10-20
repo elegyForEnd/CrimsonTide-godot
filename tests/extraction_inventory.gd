@@ -159,8 +159,8 @@ func check_no_overlap(container: Dictionary, text: String) -> void:
 	var list: Array=Catalog.container_items(container)
 	for i in list.size():
 		for j in range(i+1,list.size()):
-			var at := Vector2i(int(list[i].x),int(list[i].y))
-			check(not Catalog.overlaps(at,Catalog.item_size(list[i]),list[j]),text+" (%s covers %s)" % [list[i].kind,list[j].kind])
+
+			check(not Catalog.items_overlap(list[i], list[j]),text+" (%s covers %s)" % [list[i].kind, list[j].kind])
 
 func run() -> void:
 	app=load("res://scenes/main.tscn").instantiate()

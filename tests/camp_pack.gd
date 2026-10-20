@@ -97,8 +97,8 @@ func run() -> void:
 	app.camp_pack_open=false
 	app.close_bag()
 	reset_kit(app)
-	p["equipped"]["weapon"]={"kind":"weapon","weapon":3,"tier":4}
-	p["weapon"]=3
+	p["equipped"]["weapon"]={"kind":"weapon","weapon":1,"tier":4}
+	p["weapon"]=1
 	app.show_camp_pack(false)
 	var sig_before: String=app.bag_signature
 	app.take_off_worn("weapon")
@@ -110,8 +110,8 @@ func run() -> void:
 	p.backpack.items.clear()
 	for i in 9:
 		Catalog.add_item(p.backpack,"crystal")
-	p["equipped"]["weapon"]={"kind":"weapon","weapon":3,"tier":4}
-	p["weapon"]=3
+	p["equipped"]["weapon"]={"kind":"weapon","weapon":1,"tier":4}
+	p["weapon"]=1
 	var solid_vault: Dictionary=app.profile.data.warehouse
 	for y in Catalog.WAREHOUSE_GRID.y:
 		for x in Catalog.WAREHOUSE_GRID.x:

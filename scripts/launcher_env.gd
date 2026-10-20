@@ -127,15 +127,53 @@ static func _exact(scripts: Array, imports: Array) -> Dictionary:
 	out["ok"]=duplicates.is_empty()
 	return out
 
+## 每个资源平均产出多少个 `.godot/imported` 条目。
+##
+## **实测**（2026-10-19 一次完整首导，4138 个资源）：7248 条目 / 4138 = **1.75**。
+## 构成：贴图/音频/字体各产 1 份产物 + 1 份 `.md5`；`.glb`/`.fbx` 产 `.scn` + 一份
+## 编辑器 folding `.cfg`。旧值 2.1（来自更早一次 6195/2945 的抽样）把分母撑大 20%，
+## 结果是主进度条最多只爬到 **83%** 然后跳到 100%——"结尾猛跳一下"的真因。
+const ENTRIES_PER_ASSET := 1.75
+
+static func entries_per_asset() -> float:
+	return ENTRIES_PER_ASSET
+
 ## 进度条用：0..1。
 ## ⚠️ 这里刻意**不**逐条查产物（`count_pending`）：首次下载时 pending 有近 3000 条，
 ## 一轮存在性检查实测 247ms，而轮询是每 0.35s 一次——那会把循环播放的 PV 卡成
-## 幻灯片。改成列一次 `.godot/imported` 数条目（实测 16ms/6195 条），按"每个资源
-## 产出约两个文件"折算（本机实测 6195 条目 / 2945 资源 = 2.10）。进度条只要大致准，
+## 幻灯片。改成列一次 `.godot/imported` 数条目（实测 16ms/7.2k 条）。进度条只要大致准，
 ## 真正的判定留给收尾那一次精确的 `count_pending`。
-static func progress(report: Dictionary) -> float:
-	var total := maxi(1,int(report.get("total_assets",1)))
-	return clampf(float(entry_count())/2.1/float(total),0.0,0.98)
+##
+## `counts` 可以把 `entry_counts_by_type()` 的结果递进来，避免一次轮询列两遍目录。
+static func progress(report: Dictionary, counts := {}) -> float:
+	var total := maxf(1.0,float(report.get("total_assets",1)))
+	if counts.is_empty():
+		counts=entry_counts_by_type()
+	var entries := 0
+	for key in counts:
+		entries+=int(counts[key])
+	return clampf(float(entries)/ENTRIES_PER_ASSET/total,0.0,0.98)
+
+## 子进度条用：一次列目录，返回"扩展名 → 条目数"（实测 16ms / 7.2k 条，0.35s 轮询负担得起）。
+##
+## 为什么要按类型分：首次导入的耗时**极不均匀**。实测 55 个 `.ctexarray`
+## （1024×4096×2 切片、HDR BPTC 编码）串行跑了 **6.4 分钟**，占全程 11 分钟的 **58%**，
+## 而它们只占资源总数的 **1.3%**——只按总条目数算进度时，主条在这 6 分钟里
+## 从 0% 爬到 1.2%，玩家看到的就是"卡在 1%"。子条按阶段显示，才有可见的位移。
+static func entry_counts_by_type(path: String = IMPORT_DIR) -> Dictionary:
+	var out := {}
+	var dir := DirAccess.open(path)
+	if dir==null:
+		return out
+	dir.list_dir_begin()
+	var name := dir.get_next()
+	while not name.is_empty():
+		if not dir.current_is_dir():
+			var ext := name.get_extension()
+			out[ext]=int(out.get(ext,0))+1
+		name=dir.get_next()
+	dir.list_dir_end()
+	return out
 
 ## 还缺的产物里"现在已经有了"的那些剔掉，返回剩下的数量。只对传进来的那一小份
 ## 列表做存在性检查，所以可以每半秒调一次。

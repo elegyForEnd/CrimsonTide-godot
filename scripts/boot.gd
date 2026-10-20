@@ -30,6 +30,27 @@ const VIDEO_PATH := "res://pv/pv.ogv"
 const ADVICE_HOLD_SECONDS := 4.5
 const FLAVOR_SECONDS := 4.0
 const POLL_SECONDS := 0.35
+## 进度条框尺寸：主条在上、子条在下，共用同一个描金框（用户要求：子条不单独加边框，
+## 只把框高适配两行）。⚠️ 与 `scripts/launcher_bar.gd` 的 PAD/MAIN_H/GAP/SUB_H 是同
+## 一套布局：11 + 25 + 6 + 8 = 50，余 12 为下留白。
+const BAR_SIZE := Vector2(760,62)
+## 子进度条的阶段顺序（同一时刻有多个阶段在推进时先显示谁；正确性不依赖它）。
+## 引擎实际是**按资源类型分批**导入的，而且耗时极不均匀，见 `launcher_env.gd`
+## `entry_counts_by_type()` 的注释与下面的 `_update_sub_progress()`。
+const PHASE_ORDER := ["ctexarray","fontdata","scn","oggvorbisstr","sample","ctex"]
+const PHASE_LABELS := {
+	"ctexarray":"HDR 环境贴图",
+	"ctex":"贴图",
+	"scn":"模型与场景",
+	"sample":"音效",
+	"oggvorbisstr":"音乐",
+	"fontdata":"字体",
+}
+
+## 供回归测试对账：进度条框高必须同时装下主条和子条（布局常量分散在两个文件里，
+## 只改一边就会让子条挤出框外，而玩家只会看到"子条没了"）。
+static func bar_frame_ok() -> bool:
+	return BAR_SIZE.y>=Bar.needed_height()
 # 忠告画面为了等预热最多多停多久。弱机上 `load(main.tscn)` + 它的 `_ready()` 要十秒级，
 # 与其让 PV 卡住，不如让**静态**的忠告多停一会儿（玩家看不出静止画面多停了）；到点必须
 # 放行，否则预热一旦卡死，闸门永远不开 = 玩家永远进不去。
@@ -70,6 +91,14 @@ const ADVICE_BODY := "抵制不良游戏，拒绝盗版游戏。\n注意自我�
 ## 编译期间轮播的世界观文案（用户要求：一行一句、结尾统一 `~`、只讲氛围不剧透
 ## 议会谎言/钟灭那条线）。术语取自 `血潮守望_CrimsonTide_PV/00_世界观与美术圣经.md`
 ## （守夜姬/血晶/钟影/钟门/血香/涨潮倒计时/晨钟城/影蚀之地）。
+##
+## ⚠️ **`~` 不是无条件的**（2026-10-19 用户第 2 轮）：`~` 是"轻松/日常/自嘲"的语气尾，
+## 给预言、威胁、死亡意象加就变成了轻佻。所以规矩是：**氛围/日常句带 `~`，严肃句不带**。
+## 下面三条刻意不带（用户点名的那一类），改文案时别再统一补回来：
+##   · 鸦羽说，斩血潮者必先沾血   —— 谚语/血誓
+##   · 血香散出去之后，异兽总会来 —— 威胁
+##   · 白骨王座上的钟摆，有人正在拨动 —— 有人动了死者的东西
+## `tests/launcher_progress.gd` 用 XOR 钉住这条规矩（带 `~` 的不能是严肃句，反之亦然）。
 const FLAVOR: Array[String] = [
 	"守夜姬正在整备装备~",
 	"圣钟的影子，又缩了一小圈~",
@@ -78,11 +107,11 @@ const FLAVOR: Array[String] = [
 	"影蚀之地的雾，还没散~",
 	"钟摆还在走，先别让它停下~",
 	"雪璃的圣歌，正在为钟声定调~",
-	"鸦羽说，斩血潮者必先沾血~",
+	"鸦羽说，斩血潮者必先沾血",
 	"钟门那边的暗金火光，一直亮着~",
-	"血香散出去之后，异兽总会来~",
+	"血香散出去之后，异兽总会来",
 	"涨潮倒计时，还没开始~",
-	"白骨王座上的钟摆，有人正在拨动~",
+	"白骨王座上的钟摆，有人正在拨动",
 	"晨钟城的窗火，还醒着几盏~",
 	"灰烬和血滴，在空气里浮着~",
 	"装备一件件归位，别落下什么~",
@@ -102,10 +131,23 @@ var advice: VBoxContainer
 var video_frame: AspectRatioContainer
 var video: VideoStreamPlayer
 var compile_root: Control
+## 编译页那块压暗 PV 的黑纱；单独留引用是因为窗口尺寸变了要跟着改大小。
+var shade: ColorRect
 var blocked_root: Panel
 var confirm_root: Panel
 var bar: Control
 var stage_label: Label
+## 子进度条下面那行小字：阶段名 + 已完成/总数 + 剩余时间。
+var sub_label: Label
+## 子进度条的阶段表：`[{key,label,total,done}]`，`_prepare_phases()` 在导入前建好。
+var phases: Array = []
+## 导入开始前各类型在 `.godot/imported` 里的条目数；`done = 现在 - 基线`。
+var phase_baseline := {}
+## 当前显示在子条上的阶段 key（没有阶段在推进时保持上一次的选择）。
+var phase_pick := ""
+var _last_entries := 0
+var _entry_rate := 0.0
+var _last_poll_at := 0.0
 var flavor_label: Label
 var mute: Button
 var prompt: Label
@@ -191,6 +233,9 @@ func _build_scene_ui() -> void:
 	dissolve.size=view
 	dissolve.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	add_child(dissolve)
+	# 建完容器立刻按**当前画布**落一次布局，并挂上窗口尺寸变化的重排
+	# （`_apply_launcher_layout()` 在第一次调用时自己 connect，见那里的注释）。
+	_apply_launcher_layout()
 	# 水滴材质的"编译期"：必须排在 `black` **之前**，让那块不透明黑底把它整层盖住。
 	_shader_warm_setup()
 	black=ColorRect.new()
@@ -508,6 +553,11 @@ func _begin_compile() -> void:
 	flavor_label.text=FLAVOR[0]
 	stage_label.text="正在检查运行环境…"
 	bar.set_ratio(0.0)
+	bar.set_sub_ratio(0.0)
+	if sub_label!=null:
+		sub_label.text="正在准备资源清单…"
+	# 阶段表必须在拉起子进程**之前**建好：基线取"现在的条目数"，之后只做减法。
+	_prepare_phases()
 	compile_started=Time.get_ticks_msec()/1000.0
 	import_pid=Env.start_import()
 	if import_pid<0:
@@ -537,11 +587,124 @@ func _process(dt: float) -> void:
 		return
 	poll_timer=POLL_SECONDS
 	var running: bool = import_pid>=0 and OS.is_process_running(import_pid)
-	var ratio := Env.progress(env_report) if running else 1.0
+	# 一次列目录同时喂两条进度条：主条吃总条目数，子条吃"按类型分"的条目数。
+	var counts := Env.entry_counts_by_type()
+	var entries := 0
+	for key in counts:
+		entries+=int(counts[key])
+	var ratio := 1.0 if not running else Env.progress(env_report,counts)
 	bar.set_ratio(ratio)
 	stage_label.text="正在导入资源  ·  %d%%" % int(round(ratio*100.0))
+	var now := Time.get_ticks_msec()/1000.0
+	var elapsed := maxf(0.05,now-_last_poll_at)
+	_last_poll_at=now
+	_update_sub_progress(counts,entries,elapsed,running)
 	if not running:
 		_finish_compile()
+
+## 子进度条：把"还缺哪些产物"按类型分组，只显示**当前正在推进**的那一组。
+##
+## 为什么非要它：实测一次全新 clone 的导入（4138 个资源、11 分钟）里，55 张
+## `.ctexarray`（1024×4096×2、HDR BPTC）串行跑了 **6.4 分钟 = 全程 58%**，而它们
+## 只占资源总数 **1.3%**——主条在那 6 分钟里从 0% 爬到 1.2%，看着就像死了。
+## 子条按阶段走：那 6 分钟里它从 1/55 一格格爬到 55/55，每 7 秒动一次。
+## 代价是 0：数据来自主条那一次目录列举，不额外扫盘（逐条 file_exists 要 247ms，
+## 绝不能放进 0.35s 的轮询里，那会把 PV 卡成幻灯片）。
+func _update_sub_progress(counts: Dictionary, entries: int, elapsed: float, running: bool) -> void:
+	if not running:
+		bar.set_sub_ratio(1.0)
+		if sub_label!=null:
+			sub_label.text="资源已就绪"
+		return
+	var total_done := 0
+	var total := 0
+	var best := ""
+	var best_delta := 0.0
+	for phase in phases:
+		var key := str(phase["key"])
+		var done := maxi(0,int(counts.get(key,0))-int(phase_baseline.get(key,0)))
+		done=mini(done,int(phase["total"]))
+		var delta := done-int(phase["done"])
+		phase["done"]=done
+		total_done+=done
+		total+=int(phase["total"])
+		# "谁在动就显示谁"：引擎的分批顺序不稳定（不同机器/不同缓存状态下会变），
+		# 所以不按固定顺序挑，按"这一轮谁长了最多"挑。
+		if done<int(phase["total"]) and delta>best_delta:
+			best_delta=delta
+			best=key
+	if not best.is_empty():
+		phase_pick=best
+	# 速率用条目数算（比资源数稳）：指数平滑，避免单次抖动把 ETA 甩飞。
+	if _last_entries>0:
+		var instant := maxf(0.0,float(entries-_last_entries)/elapsed)
+		_entry_rate=instant if _entry_rate<=0.0 else _entry_rate*0.7+instant*0.3
+	_last_entries=entries
+	var picked := {}
+	for phase in phases:
+		if str(phase["key"])==phase_pick:
+			picked=phase
+			break
+	var sub := 1.0
+	if not picked.is_empty() and int(picked["done"])<int(picked["total"]):
+		sub=float(picked["done"])/maxf(1.0,float(picked["total"]))
+	bar.set_sub_ratio(sub)
+	if sub_label==null:
+		return
+	var text := ""
+	if not picked.is_empty():
+		text="%s  %d/%d" % [str(picked["label"]),int(picked["done"]),int(picked["total"])]
+	else:
+		text="已导入 %d/%d" % [total_done,total]
+	var eta := _eta_seconds(entries)
+	if eta>=0.0:
+		text+="  ·  "+_eta_text(eta)
+	sub_label.text=text
+
+## 预计还要多久（秒）；数据不够（速率≈0）时返回 -1，界面就不显示 ETA。
+func _eta_seconds(entries: int) -> float:
+	if _entry_rate<=0.5:
+		return -1.0
+	var expected := float(env_report.get("total_assets",1))*Env.entries_per_asset()
+	var left := expected-float(entries)
+	if left<=0.0:
+		return 0.0
+	return left/_entry_rate
+
+func _eta_text(seconds: float) -> String:
+	if seconds<=0.5:
+		return "即将完成"
+	if seconds<60.0:
+		return "剩余约 %d 秒" % int(ceil(seconds))
+	return "剩余约 %d 分" % int(ceil(seconds/60.0))
+
+## 把"还缺的产物"按扩展名分组成阶段，并记下导入前各类型的条目数基线。
+## 数据全来自精确自检已经算好的 `pending`（不再扫盘），一次几百微秒。
+func _prepare_phases() -> void:
+	phases.clear()
+	phase_baseline=Env.entry_counts_by_type()
+	phase_pick=""
+	_last_entries=0
+	for key in phase_baseline:
+		_last_entries+=int(phase_baseline[key])
+	_entry_rate=0.0
+	_last_poll_at=Time.get_ticks_msec()/1000.0
+	var totals := {}
+	for path in (env_report.get("pending",[]) as Array):
+		var key := str(path).get_extension()
+		# `.md5` 是旁产物，跟着主产物一起出现，不单独成阶段。
+		if key.is_empty() or key=="md5":
+			continue
+		totals[key]=int(totals.get(key,0))+1
+	var order: Array = PHASE_ORDER.duplicate()
+	for key in totals:
+		if not order.has(key):
+			order.append(key)
+	for key in order:
+		if not totals.has(key):
+			continue
+		phases.append({"key":key,"label":str(PHASE_LABELS.get(key,key)),
+			"total":int(totals[key]),"done":0})
 
 func _finish_compile() -> void:
 	import_pid=-1
@@ -560,6 +723,9 @@ func _finish_compile() -> void:
 		_show_blocked("资源导入没有完成。",Env.log_tail())
 		return
 	bar.set_ratio(1.0)
+	bar.set_sub_ratio(1.0)
+	if sub_label!=null:
+		sub_label.text="资源已就绪"
 	stage_label.text="资源已就绪"
 	phase=Phase.CONFIRM
 	_build_confirm_card()
@@ -847,10 +1013,11 @@ func _show_mute_button() -> void:
 	if mute==null:
 		mute=MuteButton.new()
 		mute.size=Vector2(58,58)
-		mute.position=Vector2(VIEW.x-58.0-30.0,30.0)
 		mute.tooltip_text="静音 PV（只影响启动画面）"
 		mute.pressed.connect(_toggle_mute)
 		dissolve.add_child(mute)
+	# 尺寸/位置由布局真值统一落（大屏上跟着画布放大，不再是左上角一个固定小框）。
+	_apply_launcher_layout()
 	mute.show()
 
 # --- 界面构件（全部程序化：首次下载时一张贴图都加载不了） ----------------------
@@ -913,37 +1080,143 @@ func _make_button(parent: Node, text: String, at: Vector2, dimensions: Vector2,
 	parent.add_child(button)
 	return button
 
+## 启动器界面的一次性布局真值（纯函数，`tests/launcher_progress.gd` 钉住比例）。
+##
+## 基准设计 = 1440×900，但**不能**把它当布局真值：工程是 `stretch=canvas_items` +
+## `aspect=expand`，画布会随窗口比例变宽（实测 1920×1080 的窗口里画布是 1600×900，
+## 2560×1600 是 1467×900）。写死 1440 的后果就是"PV 铺满、进度条和静音按钮却缩在
+## 左上角那个 1440 宽的框里"——2026-10-19 用户在大屏机器上撞到的正是这个。
+##
+## 所以：`scale` 只跟**宽度**走（大屏上条子仍然占屏 52.8%），纵向用画布比例
+## （0.47 / 0.53），任何宽高比都不会跑位。
+static func launcher_layout(canvas: Vector2) -> Dictionary:
+	var s := clampf(canvas.x/1440.0,0.7,2.6)
+	var bar_size := BAR_SIZE*s
+	return {
+		"scale":s,
+		"bar_size":bar_size,
+		"bar_pos":Vector2((canvas.x-bar_size.x)*0.5,canvas.y*0.53),
+		"flavor_y":canvas.y*0.47,
+		"flavor_size":maxi(14,int(round(24.0*s))),
+		"stage_y":canvas.y*0.53+bar_size.y+8.0*s,
+		"stage_size":maxi(12,int(round(18.0*s))),
+		"sub_y":canvas.y*0.53+bar_size.y+34.0*s,
+		"sub_size":maxi(11,int(round(15.0*s))),
+		"mute_size":Vector2(58.0*s,58.0*s),
+		"mute_pos":Vector2(canvas.x-88.0*s,30.0*s),
+	}
+
+## 画布尺寸 = 窗口经 `canvas_items` 拉伸后的设计空间（**不是**窗口像素）。
+func _canvas() -> Vector2:
+	var viewport := get_viewport()
+	if viewport==null:
+		return VIEW
+	return viewport.get_visible_rect().size
+
+## 按当前画布重排启动器的所有程序化控件；窗口尺寸一变就再跑一次。
+## 只在第一次调用时 connect `size_changed`——这样不用改 `_ready()`，也不会重复连。
+func _apply_launcher_layout() -> void:
+	var viewport := get_viewport()
+	if viewport!=null and not viewport.size_changed.is_connected(_apply_launcher_layout):
+		viewport.size_changed.connect(_apply_launcher_layout)
+	var canvas := _canvas()
+	var layout := launcher_layout(canvas)
+	var s := float(layout["scale"])
+	if dissolve!=null:
+		dissolve.size=canvas
+	if black!=null:
+		black.size=canvas
+	if video_frame!=null:
+		video_frame.position=Vector2.ZERO
+		video_frame.size=canvas
+	if advice!=null:
+		var inset := Vector2(canvas.x*0.16,canvas.y*0.26)
+		advice.position=inset
+		advice.size=canvas-inset*2.0
+		# 忠告标题/正文也是程序化建的：宽度跟容器走，字号跟 `scale` 走，
+		# 否则大屏上忠告会变成居中一小撮。
+		if advice.get_child_count()>=2:
+			var title: Label = advice.get_child(0)
+			var body: Label = advice.get_child(1)
+			title.size.x=advice.size.x
+			title.add_theme_font_size_override("font_size",maxi(20,int(round(38.0*s))))
+			body.size.x=advice.size.x
+			body.size.y=maxf(80.0,advice.size.y-90.0)
+			body.add_theme_font_size_override("font_size",maxi(16,int(round(30.0*s))))
+	if compile_root!=null:
+		compile_root.size=canvas
+	if shade!=null:
+		shade.size=canvas
+	if flavor_label!=null:
+		flavor_label.position=Vector2(0.0,float(layout["flavor_y"]))
+		flavor_label.size=Vector2(canvas.x,float(layout["flavor_size"])*2.0)
+		flavor_label.add_theme_font_size_override("font_size",int(layout["flavor_size"]))
+	if bar!=null:
+		# 用 `scale` 而不是把 size 改大：条子的内部分层（11/25/6/8）都在 760×62 这套
+		# 基准里，整体缩放才能保证两行条在任何屏幕上比例一致、不糊不错位。
+		bar.size=BAR_SIZE
+		bar.scale=Vector2(s,s)
+		bar.position=Vector2(layout["bar_pos"])
+	for pair in [[stage_label,"stage_y","stage_size"],[sub_label,"sub_y","sub_size"]]:
+		var label: Label = pair[0]
+		if label==null:
+			continue
+		label.position=Vector2(0.0,float(layout[pair[1]]))
+		label.size=Vector2(canvas.x,float(layout[pair[2]])*2.0)
+		label.add_theme_font_size_override("font_size",int(layout[pair[2]]))
+	if mute!=null:
+		mute.size=Vector2(layout["mute_size"])
+		mute.position=Vector2(layout["mute_pos"])
+	if prompt!=null:
+		prompt.position=Vector2(0.0,canvas.y*0.72)
+		prompt.size=Vector2(canvas.x,80.0)
+		prompt.add_theme_font_size_override("font_size",maxi(22,int(round(40.0*s))))
+	for card in [confirm_root,blocked_root]:
+		if card==null:
+			continue
+		var panel: Control = card
+		panel.scale=Vector2(s,s)
+		panel.position=(canvas-panel.size*s)*0.5
+
 func _build_compile_ui() -> void:
 	if compile_root:
 		return
+	var canvas := _canvas()
 	compile_root=Control.new()
 	compile_root.position=Vector2.ZERO
-	compile_root.size=VIEW
+	compile_root.size=canvas
 	compile_root.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	dissolve.add_child(compile_root)
 	# 压暗 PV：不然进度条和文案在亮画面上读不清
-	var shade := ColorRect.new()
+	shade=ColorRect.new()
 	shade.color=Color(0.02,0.015,0.03,0.55)
 	shade.position=Vector2.ZERO
-	shade.size=VIEW
+	shade.size=canvas
 	shade.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	compile_root.add_child(shade)
 	# 进度条前端那行世界观文案（用户要求：固定一行、循环换）
-	flavor_label=_make_label(FLAVOR[0],Vector2(0.0,VIEW.y*0.47),VIEW.x,24,Color("e8d9b4"))
+	flavor_label=_make_label(FLAVOR[0],Vector2(0.0,canvas.y*0.47),canvas.x,24,Color("e8d9b4"))
 	compile_root.add_child(flavor_label)
 	bar=Bar.new()
-	bar.size=Vector2(760,36)
-	bar.position=Vector2((VIEW.x-760.0)*0.5,VIEW.y*0.53)
+	bar.size=BAR_SIZE
+	# 主条与子条共用一圈描金框：布局常量一半在 `launcher_bar.gd`，对不上就会溢出。
+	assert(BAR_SIZE.y>=Bar.needed_height(), "BAR_SIZE 装不下主条+子条，改布局常量要对账")
 	bar.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	compile_root.add_child(bar)
-	stage_label=_make_label("正在检查运行环境…",Vector2(0.0,VIEW.y*0.53+48.0),VIEW.x,18,Color("969aaa"))
+	stage_label=_make_label("正在检查运行环境…",Vector2(0.0,canvas.y*0.53),canvas.x,18,Color("969aaa"))
 	compile_root.add_child(stage_label)
+	# 子进度条下面那行小字（阶段 + 进度 + 剩余时间）。用户要求：主条不动的时候，
+	# 玩家得能看见"确实在动"，所以这行必须比主条的百分比更细。
+	sub_label=_make_label("正在准备资源清单…",Vector2(0.0,canvas.y*0.53),canvas.x,15,Color("7d818f"))
+	compile_root.add_child(sub_label)
+	# 位置/字号全部交给布局真值（含窗口尺寸变化的第一次落位）。
+	_apply_launcher_layout()
 
 func _build_confirm_card() -> void:
 	if confirm_root:
 		return
 	var dimensions := Vector2(720,272)
-	var panel := _make_panel(dissolve,(VIEW-dimensions)*0.5,dimensions)
+	var panel := _make_panel(dissolve,Vector2.ZERO,dimensions)
 	confirm_root=panel
 	panel.add_child(_make_label("资源编译完成",Vector2(0.0,30.0),dimensions.x,30,Color("cbb087"),true))
 	panel.add_child(_make_label(
@@ -951,12 +1224,13 @@ func _build_confirm_card() -> void:
 		Vector2(0.0,84.0),dimensions.x,20,Color("ede5d8")))
 	_make_button(panel,"立即重启并进入游戏",Vector2((dimensions.x-360.0)*0.5,192.0),
 		Vector2(360,54),_restart_into_game,true)
+	_apply_launcher_layout()
 
 func _build_blocked_card(reason: String, detail: String) -> void:
 	if blocked_root:
 		blocked_root.queue_free()
 	var dimensions := Vector2(900,420)
-	var panel := _make_panel(dissolve,(VIEW-dimensions)*0.5,dimensions)
+	var panel := _make_panel(dissolve,Vector2.ZERO,dimensions)
 	blocked_root=panel
 	panel.add_child(_make_label("无法进入游戏",Vector2(0.0,26.0),dimensions.x,30,Color("d2405c"),true))
 	panel.add_child(_make_label(reason,Vector2(40.0,82.0),dimensions.x-80.0,21,Color("ede5d8")))
@@ -968,6 +1242,7 @@ func _build_blocked_card(reason: String, detail: String) -> void:
 	panel.add_child(body)
 	_make_button(panel,"重试导入",Vector2(60.0,340.0),Vector2(260,54),_retry_compile)
 	_make_button(panel,"退出游戏",Vector2(dimensions.x-320.0,340.0),Vector2(260,54),_quit_game)
+	_apply_launcher_layout()
 
 func _retry_compile() -> void:
 	if blocked_root:

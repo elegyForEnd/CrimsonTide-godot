@@ -14,6 +14,11 @@ var item_texture: Texture2D
 # unless clip_text is on, and a long name like "金色 守夜护甲" was widening a 1x2
 # cell until the icon and the label spilled over the neighbouring slots.
 var rotated := false
+# 非矩形占格：`shape_cells` 是相对 (0,0) 的小格，`shape_cols/rows` 是外包矩形。
+# 有这组数据时图标按格切片绘制，缺的格子不画，玩家能看到真实的 L / T 轮廓。
+var shape_cells: Array = []
+var shape_cols := 0
+var shape_rows := 0
 # Optional shorter caption ("守夜护甲" instead of "红色 守夜护甲") used when the
 # slot is too narrow for the full name.
 var short_caption := ""
@@ -76,7 +81,19 @@ func _draw() -> void:
 			# The icon owns the cell; the name rides a translucent strip along the
 			# bottom so it never covers the art or the neighbouring slot.
 			var edge := minf(w-6.0,h-6.0)
-			if item_texture and edge>0.0:
+			var shaped := not shape_cells.is_empty() and shape_cols > 0 and shape_rows > 0 \
+				and shape_cells.size() < shape_cols * shape_rows
+			if shaped and item_texture:
+				# 与背包网格同一套轮廓：按小格切图标、只画被占的格子。
+				var cw := w / float(shape_cols)
+				var ch := h / float(shape_rows)
+				var tw := item_texture.get_width() / float(shape_cols)
+				var th := item_texture.get_height() / float(shape_rows)
+				for c in shape_cells:
+					draw_texture_rect_region(item_texture,
+						Rect2(Vector2(c.x * cw, c.y * ch), Vector2(cw, ch)),
+						Rect2(Vector2(c.x * tw, c.y * th), Vector2(tw, th)))
+			elif item_texture and edge>0.0:
 				if rotated:
 					# The art turns with the item: a 1x2 piece laid on its side has to
 					# look laid on its side, not like the same upright picture.

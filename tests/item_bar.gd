@@ -124,7 +124,7 @@ func run() -> void:
 	check(int(app.session.item_slot(walker,1).get("weapon",-1))==2,"the socket holds the sword itself")
 	check(walker.backpack.items.is_empty(),"the parked weapon left the backpack")
 	check(app.selected_item_slot==1,"the socket a drag lands in becomes the selected one")
-	check(Catalog.item_size(app.session.item_slot(walker,1))==Vector2i(2,2),"a socket keeps the real 2x2 footprint")
+	check(Catalog.item_size(app.session.item_slot(walker,1))==Vector2i(2,3),"a socket keeps the real 2x3 greatsword footprint")
 	check(not app.session.item_slot(walker,1).has("x"),"a socket strips the grid coordinates it came with")
 	# Clicking selects a socket; number keys also apply its item immediately.
 	await app.slot_at(app.slot_zones()[0].get_center())

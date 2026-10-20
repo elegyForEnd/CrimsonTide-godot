@@ -55,6 +55,12 @@ static func icon(kind: String) -> Texture2D:
 		return icons[kind]
 	var index := KINDS.find(kind)
 	if index < 0:
+		# 血潮深潜的新材料/合成物还没有独立美术：先按分类复用现有图标，
+		# 等 assets/icons/<kind>.svg 出现后自动改用真图。
+		var hunt := preload("res://scripts/hunt/hunt_art.gd").icon(kind)
+		if hunt != null:
+			icons[kind]=hunt
+			return hunt
 		# The last resort is a bespoke SVG, and whether one exists is asked *before*
 		# loading it: a missing file used to print "Resource file not found" for every kind
 		# the tables do not know, which is noise rather than information. Returning null

@@ -398,8 +398,7 @@ func sync_music() -> void:
 	if scene!=last_music: last_music=scene; sound.set_scene(scene)
 func on_combat_event(event: Dictionary) -> void:
 	world.effect(event)
-	if event.kind=="hit": floating.append({"p":event.p,"text":str(int(event.damage)),"time":.8,"total":.8})
-	elif event.kind=="fieldwork_complete": floating.append({"p":event.p,"text":"✓  "+event.label,"time":2.8,"total":2.8})
+	if event.kind=="fieldwork_complete": floating.append({"p":event.p,"text":"✓  "+event.label,"time":2.8,"total":2.8})
 	
 	if sound:
 		if event.kind=="attack": sound.play("magic" if event.hero==1 else "slash")

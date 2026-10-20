@@ -333,7 +333,7 @@ func _build_hud() -> void:
 	var facilities := PanelContainer.new()
 	facilities.name = "HomeFacilities"
 	facilities.position = Vector2(24,150)
-	facilities.size = Vector2(250,592)
+	facilities.size = Vector2(250,640)
 	var facility_style := StyleBoxFlat.new()
 	facility_style.bg_color = Color(0.035,0.032,0.065,0.90)
 	facility_style.border_color = Color("655f50")
@@ -355,7 +355,7 @@ func _build_hud() -> void:
 	facilities_title.add_theme_color_override("font_color",GOLD)
 	facilities_title.custom_minimum_size.y = 32
 	links.add_child(facilities_title)
-	for group in [["生活",["garden","fish","kitchen","home_shop"]],["整备",["table","forge","quarter","codex"]],["出征",["gate","rogue_gate"]]]:
+	for group in [["生活",["garden","fish","kitchen","home_shop"]],["整备",["table","forge","quarter","codex"]],["出征",["gate","rogue_gate","hunt_gate"]]]:
 		var group_title := Label.new()
 		group_title.text = group[0]
 		group_title.custom_minimum_size.y = 24
@@ -652,10 +652,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		# Space is the hard commitment: it only exists at the departure gate.
 		if code == KEY_SPACE:
 			var gate: Dictionary = site.station_at(site.hero_position())
-			if not gate.is_empty() and str(gate.action) in ["launch","rogue"]:
+			if not gate.is_empty() and str(gate.action) in ["launch","rogue","hunt"]:
 				station_requested.emit(str(gate.action))
 			else:
-				say("先走到搜打撤闸门或魔境传送门，再按 Space 出发。")
+				say("先走到搜打撤闸门、魔境传送门或血潮深潜入口，再按 Space。")
 			get_viewport().set_input_as_handled()
 			return
 		match code:

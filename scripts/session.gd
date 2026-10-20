@@ -485,6 +485,7 @@ func equipment_hp(p: Dictionary) -> float:
 
 const RogueEquipment = preload("res://scripts/rogue_equipment.gd")
 const RogueBuild = preload("res://scripts/rogue_build.gd")
+const RogueAbilities = preload("res://scripts/rogue_abilities.gd")
 const RogueActions = preload("res://scripts/rogue_actions.gd")
 const RogueVariants = preload("res://scripts/rogue_variants.gd")
 const RogueCurses = preload("res://scripts/rogue_curses.gd")
@@ -1340,6 +1341,12 @@ func chest_loot(bonus_relic: bool = false, backpack_chance: float = -1.0, cache_
 	var loot: Array = []
 	for i in rng.randi_range(2,4):
 		loot.append(kinds[rng.randi_range(0,kinds.size()-1)])
+	# 血潮深潜的物品也会在这一带的箱子里出现（白/绿/蓝，尺寸按价值分档）。
+	for i in 2:
+		if rng.randf() < (0.62 if i == 0 else 0.30):
+			var hunt_kind: String = Catalog.roll_hunt_loot(rng)
+			if not hunt_kind.is_empty():
+				loot.append({"kind":hunt_kind,"tier":Catalog.hunt_loot_tier(hunt_kind,grade,rng)})
 	if bonus_relic or rng.randf()<0.2:
 		loot.append("relic")
 	if biome>=0 and biome<Catalog.BIOME_COLLECTIBLES.size():
@@ -1369,6 +1376,12 @@ func place_entry(container: Dictionary, entry) -> bool:
 	var kind := str(entry.kind) if entry is Dictionary else str(entry)
 	if not Catalog.ITEMS.has(kind):
 		return false
+	# 深潜物品带实例品质：不能走 `place_loot()` 的堆叠合并（不同品质不能并堆），
+	# 直接摆一件、随机横竖，尺寸仍由 `Catalog.item_size()` 按价值推导。
+	if entry is Dictionary and entry.has("tier") and Catalog.is_hunt_loot(kind):
+		var probe := {"kind":kind,"tier":clampi(int(entry.get("tier",0)),0,5),
+			"count":1,"rot":rng.randf()<0.5}
+		return Catalog.place_item(container,probe)
 	if not Catalog.place_loot(container,kind):
 		return false
 	if not entry is Dictionary:
@@ -1782,7 +1795,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				if roguelike.active(self):
 					if p.height>0:
 						p.air_dodge=true; p.dodge_time=.18; p.invuln=.08
-					p.dash=2.0*(1.0-RogueBuild.stat(self,p,"dodge_cdr"))
+					p.dash=maxf(0.8,2.0*(1.0-RogueBuild.stat(self,p,"dodge_cdr")-RogueAbilities.dodge_cdr(p)))
 					RogueBuild.action_event(self,p,"D")
 				broadcast_combat({"kind":"dodge","p":p.p,"aim":p.dodge_dir,"id":id})
 				emit_effect("dash",p.p)
@@ -1793,7 +1806,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 					return
 				p["attack_buffer"]=0.0
 				p.combo_timeout=0.0
-				p.skill=18.0
+				p.skill=18.0*(1.0-RogueAbilities.ultimate_cdr(p))
 				# A2 (R9 hook 8): CU09「迟滞」的 `cooldown` 同样作用在奥义冷却上（与武器技的
 				# `p.art_cd`、连招技的 `p.build_hero_cd` 是同一份诅咒的三个消费点）。
 				# 非魔境路径不读该键，保持 18.0 原值。
@@ -2211,8 +2224,12 @@ func apply_medkit(p: Dictionary) -> bool:
 		p.self_revive=false
 		p.status="active"
 		p.invuln=3.0
+	var before: float = p.hp
 	p.hp=minf(p.max_hp,p.hp+45)
 	p.sanity=minf(100,p.sanity+10)
+	var healed: float = p.hp-before
+	if healed>0.0:
+		broadcast_combat({"kind":"heal","p":p.p,"amount":healed,"id":p.id})
 	emit_effect("skill",p.p)
 	return true
 
@@ -2449,7 +2466,7 @@ func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
 	if name!="backpack" and name!="pocket":
 		return false
 	var kind := str(entry.get("kind",""))
-	if kind.is_empty() or not Catalog.can_hold(p[name],kind):
+	if kind.is_empty() or not Catalog.can_hold_entry(p[name],entry):
 		return false
 	var container: Dictionary=p[name]
 	var trial := Catalog.make_container([],Catalog.container_grid(container))
@@ -2472,7 +2489,7 @@ func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
 ## own coordinates, which mean nothing inside a backpack.
 func container_accepts(container: Dictionary, entry: Dictionary, cell: Vector2i, rot: bool = false) -> bool:
 	var kind := str(entry.get("kind",""))
-	if kind.is_empty() or not Catalog.can_hold(container,kind):
+	if kind.is_empty() or not Catalog.can_hold_entry(container,entry):
 		return false
 	# A stack merges into its own pile rather than taking the aimed cell, so the
 	# only question it asks is whether the container takes that kind at all.
@@ -2859,7 +2876,7 @@ func container_would_receive(container: Dictionary, entry: Dictionary) -> bool:
 	if container.is_empty() or entry.is_empty():
 		return false
 	var kind := str(entry.get("kind",""))
-	if kind.is_empty() or not Catalog.can_hold(container,kind):
+	if kind.is_empty() or not Catalog.can_hold_entry(container,entry):
 		return false
 	var trial := Catalog.make_container([],Catalog.container_grid(container))
 	trial["items"]=Catalog.container_items(container).duplicate()
@@ -3005,7 +3022,11 @@ func release_ultimate(id: int) -> void:
 		for ally in players.values():
 			if ally.status=="active" and ally.p.distance_to(p.p)<300:
 				var healing := clampf(45.0+0.15*(ally.max_hp-100.0),45.0,70.0)
+				var before: float = ally.hp
 				ally.hp=minf(ally.max_hp,ally.hp+healing)
+				var healed: float = ally.hp-before
+				if healed>0.0:
+					broadcast_combat({"kind":"heal","p":ally.p,"amount":healed,"id":ally.id})
 				ally.sanity=minf(100,ally.sanity+15)
 	else:
 		p.invuln=maxf(p.invuln,1.0)
@@ -3405,7 +3426,9 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 		return
 	if p.dodge_time>0:
 		var step := minf(dt,p.dodge_time)
-		p.p=ruins.move(p.p,p.dodge_dir*((80.0/.18 if p.get("height",0)>0 else DODGE_DISTANCE/DODGE_DURATION)*(1.12 if roguelike.active(self) and RogueBuild.gear(p,61) else 1.0))*step)
+		var dodge_reach := (80.0/.18 if p.get("height",0)>0 else DODGE_DISTANCE/DODGE_DURATION)*(1.12 if roguelike.active(self) and RogueBuild.gear(p,61) else 1.0)
+		if roguelike.active(self): dodge_reach*=RogueAbilities.dodge_distance(p)
+		p.p=ruins.move(p.p,p.dodge_dir*dodge_reach*step)
 		p.dodge_time=maxf(0,p.dodge_time-dt)
 		p.move_dir=p.dodge_dir
 		p.motion="dodge" if p.dodge_time>0 else "idle"
@@ -3477,7 +3500,7 @@ func attack(p: Dictionary) -> void:
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
 	p.combo_timeout=maxf(1.2,float(weapon.rate)*equipment_rate(p)+.65)
 	# A looted weapon of matching quality swings faster than the issue weapon.
-	var rate: float=weapon.rate*equipment_rate(p)
+	var rate: float=weapon.rate*equipment_rate(p)*RogueAbilities.attack_interval(p)
 	p.attack=rate
 	p.swing_total=rate
 	p["build_strike_kind"]=""
@@ -3686,7 +3709,7 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 	e.p=ruins.move(e.p,direction*knock)
 	if players.has(owner):
 		players[owner].hitstop=0.045 if knock<40 else 0.085
-	var impact_data := {"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id}
+	var impact_data := {"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id,"damage_tag":str(build_context.get("kind",""))}
 	if build_context.has("vfx"): impact_data["vfx"]=build_context.vfx
 	impact_data["vfx_action"]=str(build_context.get("vfx_action","heavy" if build_context.get("charged",false) else "art" if build_context.get("kind","")=="art" else "normal"))
 	broadcast_combat(impact_data)
@@ -3787,9 +3810,14 @@ func interact(p: Dictionary, held: bool, dt: float) -> void:
 			p.status="extracted"
 			emit_effect("extract",p.p)
 		"revive":
-			players[index].status="active"
-			players[index].hp=players[index].max_hp*0.4
-			players[index].invuln=2
+			var revived: Dictionary=players[index]
+			var before: float=revived.hp
+			revived.status="active"
+			revived.hp=revived.max_hp*0.4
+			revived.invuln=2
+			var healed: float=revived.hp-before
+			if healed>0.0:
+				broadcast_combat({"kind":"heal","p":revived.p,"amount":healed,"id":revived.id})
 			emit_effect("skill",p.p)
 			broadcast_audio("heal",p)
 		"shrine":
@@ -4068,6 +4096,8 @@ func hurt(p: Dictionary, damage: float, source: Dictionary = {}, height_tag: Str
 	# 这里曾再挂一个 RogueEquipment.has(p,"mana_guard") 的 30% 吸收：它长期是死代码（没有任何
 	# 条目带 passive 字段），一旦有人给条目补上该字段就会**重复扣蓝**。已删除，避免双重结算。
 	p.hp-=received
+	if received>0.0:
+		broadcast_combat({"kind":"hurt","p":p.p,"damage":received,"id":p.id})
 	p.invuln=0.3
 	p.channel=0
 	# Taking a hit is what a channel counts against: the key-held ring restarts

@@ -102,6 +102,62 @@ const ITEMS = {
 	,"carrot_seed":{"name":"赤霞萝卜种", "size":Vector2i(1,1), "value":9, "color":Color("d4823f"), "desc":"家园商店购入的萝卜种。每份可播种一块田畦。"}
 	,"herb_seed":{"name":"月露草种", "size":Vector2i(1,1), "value":13, "color":Color("7fbfa4"), "desc":"家园商店购入的月露草种。每份可播种一块田畦。"}
 	,"bait":{"name":"鱼饵", "size":Vector2i(1,1), "value":2, "color":Color("b9a48f"), "desc":"家园商店购入的钓饵。每次抛竿消耗一份，收竿失败不返还。"}
+	# ---- 血潮深潜（hunt_data.gd 的 ITEMS 是同一批物品的规则/文案来源；
+	# 这里是仓库、交易行与图标解析需要的目录行。新增时两处一起加。 ----
+	,"branch": {"name": "树枝", "size": Vector2i(1, 1), "value": 3, "color": Color("8d6f4d"), "cat": "material", "desc": "干燥的硬枝，能做柄也能当柴。"}
+	,"stone": {"name": "石块", "size": Vector2i(1, 1), "value": 4, "color": Color("8b8a84"), "cat": "material", "desc": "边缘锋利的碎石，血潮漫过的地方最不缺这种东西。"}
+	,"cloth": {"name": "碎布", "size": Vector2i(1, 1), "value": 5, "color": Color("b9ad9b"), "cat": "material", "desc": "从旧衣和窗帘上撕下来的布条。"}
+	,"dirty_water": {"name": "污水", "size": Vector2i(1, 1), "value": 2, "color": Color("6f8077"), "cat": "material", "desc": "混着泥沙的脏水，滤过之后还能用。"}
+	,"clean_water": {"name": "净水", "size": Vector2i(1, 1), "value": 8, "color": Color("9fd1d2"), "cat": "material", "desc": "滤掉泥沙的清水，能直接喝。"}
+	,"honey": {"name": "蜂蜜", "size": Vector2i(1, 1), "value": 12, "color": Color("d5a33f"), "cat": "material", "desc": "从废弃蜂箱里刮下来的浓稠蜂蜜。"}
+	,"wild_herb": {"name": "野草", "size": Vector2i(1, 1), "value": 7, "color": Color("7da77b"), "cat": "material", "desc": "气味苦涩的草药，能止血也能提神。"}
+	,"iron": {"name": "铁片", "size": Vector2i(1, 1), "value": 14, "color": Color("9da6b2"), "cat": "material", "desc": "从旧铁器上敲下来的铁片，边缘还带着锈。"}
+	,"nail": {"name": "钉子", "size": Vector2i(1, 1), "value": 6, "color": Color("b7b3a8"), "cat": "material", "desc": "生锈但还算直的铁钉。"}
+	,"leather": {"name": "兽皮", "size": Vector2i(1, 1), "value": 16, "color": Color("9a6f52"), "cat": "material", "desc": "从血潮野兽身上剥下的皮，还带着腥气。"}
+	,"rope": {"name": "绳索", "size": Vector2i(1, 1), "value": 10, "color": Color("b7a27a"), "cat": "material", "desc": "几股旧麻绳拧成的结实绳子。"}
+	,"resin": {"name": "松脂", "size": Vector2i(1, 1), "value": 8, "color": Color("c7b98d"), "cat": "material", "desc": "从松树里熬出的黏稠树胶，能粘合木石。"}
+	,"storm_phial": {"name": "封雷瓶", "size": Vector2i(1, 1), "value": 18, "color": Color("c9b45c"), "cat": "material", "desc": "封着一小团雷的玻璃瓶，炼金术士用它代替火种。"}
+	,"glass": {"name": "玻璃", "size": Vector2i(1, 1), "value": 6, "color": Color("9fc6c8"), "cat": "material", "desc": "教堂彩窗的碎片，边缘锋利得能割开皮肉。"}
+	,"paper": {"name": "纸页", "size": Vector2i(1, 1), "value": 4, "color": Color("d0c7b5"), "cat": "material", "desc": "受潮的羊皮纸页，能引火也能包东西。"}
+	,"oil": {"name": "灯油", "size": Vector2i(1, 1), "value": 15, "color": Color("c7a35b"), "cat": "material", "desc": "从教堂长明灯里倒出来的灯油。"}
+	,"brimstone": {"name": "硫磺", "size": Vector2i(1, 1), "value": 22, "color": Color("8f7b6d"), "cat": "material", "desc": "磨碎的硫磺与炭，炼金火器的引药。"}
+	,"bandage": {"name": "绷带", "size": Vector2i(1, 1), "value": 14, "color": Color("d8c9b5"), "cat": "recovery", "heal": 28, "desc": "碎布缠成的绷带，恢复 28 生命。"}
+	,"mead": {"name": "蜜酒", "size": Vector2i(1, 1), "value": 20, "color": Color("d9b25c"), "cat": "recovery", "stamina": 45, "desc": "蜂蜜兑水的粗酿，恢复 45 体力。"}
+	,"herbal_tea": {"name": "草药汤", "size": Vector2i(1, 1), "value": 18, "color": Color("8fb88a"), "cat": "recovery", "heal": 16, "stamina": 20, "desc": "苦味压住了恐慌，恢复 16 生命与 20 体力。"}
+	,"poppy_syrup": {"name": "罂粟膏", "size": Vector2i(1, 1), "value": 30, "color": Color("b8c9d8"), "cat": "recovery", "heal": 42, "desc": "罂粟熬出的黑膏，压住疼痛，恢复 42 生命。"}
+	,"blood_draught": {"name": "血酿", "size": Vector2i(1, 1), "value": 26, "color": Color("d3a45f"), "cat": "recovery", "stamina": 60, "desc": "一小瓶温热的血酿，恢复 60 体力，喝下去心跳发慌。"}
+	,"salve": {"name": "药膏", "size": Vector2i(1, 1), "value": 24, "color": Color("9cbe8a"), "cat": "recovery", "heal": 34, "desc": "草药和油脂熬成的药膏，恢复 34 生命。"}
+	,"herbal_bandage": {"name": "草药绷带", "size": Vector2i(1, 1), "value": 28, "color": Color("b7c9a4"), "cat": "recovery", "heal": 46, "desc": "浸过草汁的绷带，恢复 46 生命。"}
+	,"frenzy_phial": {"name": "狂血药剂", "size": Vector2i(1, 1), "value": 35, "color": Color("d27f65"), "cat": "recovery", "buff": "attack", "desc": "炼金术士的狂血药剂，短时间提高攻击力，代价是体力见底。"}
+	,"stone_axe": {"name": "燧石斧", "size": Vector2i(1, 1), "value": 30, "color": Color("9a7b5d"), "cat": "weapon", "desc": "燧石绑在树枝上，粗糙但劈得开骨头。"}
+	,"spear": {"name": "长矛", "size": Vector2i(1, 1), "value": 34, "color": Color("a98a62"), "cat": "weapon", "desc": "两根白蜡木接成的长杆，前端削尖烤黑。"}
+	,"spiked_club": {"name": "钉头棒", "size": Vector2i(1, 1), "value": 38, "color": Color("8b7a68"), "cat": "weapon", "desc": "钉满铁钉的木棒，挥起来带着风声。"}
+	,"iron_mace": {"name": "铁头槌", "size": Vector2i(1, 1), "value": 36, "color": Color("9da6ad"), "cat": "weapon", "desc": "锻铁槌头装在木柄上，缠着防滑的麻布。"}
+	,"machete": {"name": "砍刀", "size": Vector2i(1, 1), "value": 48, "color": Color("b2a18b"), "cat": "weapon", "desc": "铁片磨出的刀身，缠着皮革刀柄。"}
+	,"crossbow": {"name": "十字弩", "size": Vector2i(1, 1), "value": 60, "color": Color("a98963"), "cat": "weapon", "desc": "白蜡木和绳索拼成的弩，近距离很致命。"}
+	,"hand_cannon": {"name": "手铳", "size": Vector2i(1, 1), "value": 72, "color": Color("8d9199"), "cat": "weapon", "desc": "短铁管缠上铁箍，用硫磺点火；打一发要重新装填。"}
+	,"heavy_axe": {"name": "战斧", "size": Vector2i(1, 1), "value": 78, "color": Color("9d8064"), "cat": "weapon", "desc": "燧石斧加铁箍加固，挥空会露出破绽。"}
+	,"iron_maul": {"name": "铁槌", "size": Vector2i(1, 1), "value": 70, "color": Color("8c7b6a"), "cat": "weapon", "desc": "钉头棒外箍铁环，砸下去像一记闷雷。"}
+	,"cloth_armor": {"name": "衬垫甲", "size": Vector2i(1, 1), "value": 32, "color": Color("b9aa94"), "cat": "armor", "desc": "多层碎布缝成的护身衣。"}
+	,"leather_armor": {"name": "皮胸甲", "size": Vector2i(1, 1), "value": 46, "color": Color("997055"), "cat": "armor", "desc": "兽皮裁成的硬皮护胸。"}
+	,"ring_mail": {"name": "环甲", "size": Vector2i(1, 1), "value": 64, "color": Color("9aa3ad"), "cat": "armor", "desc": "铁环缝在皮甲外侧，沉得压肩。"}
+	,"hunter_cloak": {"name": "猎人斗篷", "size": Vector2i(1, 1), "value": 58, "color": Color("7d6d5e"), "cat": "armor", "desc": "带兜帽的厚斗篷，夜里能挡住一些视线。"}
+	,"armor_patch": {"name": "甲片补丁", "size": Vector2i(1, 1), "value": 20, "color": Color("a99a86"), "cat": "armor", "desc": "使用后永久提高 1 点防御，最多叠 5 层。"}
+	,"torch": {"name": "火把", "size": Vector2i(1, 1), "value": 22, "color": Color("d39a52"), "cat": "tool", "desc": "夜里搜索不再摸黑，敌人也更早发现你。"}
+	,"lockpick": {"name": "开锁针", "size": Vector2i(1, 1), "value": 26, "color": Color("b9b1a0"), "cat": "tool", "desc": "能打开一次上锁的容器。"}
+	,"snare": {"name": "捕兽夹", "size": Vector2i(1, 1), "value": 28, "color": Color("8f7a5e"), "cat": "tool", "desc": "战斗中使用，造成 40 伤害并让敌人停顿。"}
+	,"alchemist_flare": {"name": "炼金焰筒", "size": Vector2i(1, 1), "value": 30, "color": Color("d76b5f"), "cat": "tool", "desc": "战斗中使用，必定脱离战斗。"}
+	,"smoke_pouch": {"name": "烟囊", "size": Vector2i(1, 1), "value": 32, "color": Color("9a9a9a"), "cat": "tool", "desc": "战斗中使用，降低敌人下一次攻击的伤害。"}
+	,"armor_kit": {"name": "修甲工具", "size": Vector2i(1, 1), "value": 34, "color": Color("a6a08e"), "cat": "tool", "desc": "使用后恢复 20 生命并提高 1 点防御。"}
+	,"lead_shot": {"name": "铅弹", "size": Vector2i(1, 1), "value": 20, "color": Color("c4ad82"), "cat": "tool", "desc": "手铳与弩用的铅弹；也可以直接卖掉。"}
+	,"spirit_horn": {"name": "通灵骨笛", "size": Vector2i(1, 1), "value": 44, "color": Color("8d9a9d"), "cat": "tool", "desc": "吹响后能听见远处的动静：揭示所有地区，下一次换区不会遇袭。"}
+	,"pack_straps": {"name": "行囊背带", "size": Vector2i(1, 1), "value": 40, "color": Color("b2a084"), "cat": "tool", "desc": "使用后背包容量 +4 格。"}
+	,"plague_mask": {"name": "瘟疫面具", "size": Vector2i(1, 1), "value": 12, "color": Color("c8c3b7"), "cat": "tool", "desc": "遮住口鼻，减少毒气与陷阱带来的伤害。"}
+	,"key": {"name": "铁钥匙", "size": Vector2i(1, 1), "value": 18, "color": Color("c0b28d"), "cat": "tool", "desc": "可以打开一次上锁的容器。"}
+	,"blood_sigil": {"name": "血契石", "size": Vector2i(1, 1), "value": 0, "color": Color("c95666"), "cat": "tool", "desc": "刻满凹槽的黑石。带着它才能走进血月祭坛。"}
+	,"hunt_bait": {"name": "血饵", "size": Vector2i(1, 1), "value": 10, "color": Color("b39a6d"), "cat": "tool", "desc": "抹了血的饵料，能引开当前地区的敌人。"}
+	,"charcoal_filter": {"name": "炭滤器", "size": Vector2i(1, 1), "value": 24, "color": Color("9fb1a6"), "cat": "tool", "desc": "持有后每份污水可多滤出一份净水。"}
+
 }
 const BIOME_COLLECTIBLES := [
 	["wind_chime","rabbit_bell","oath_banner"],
@@ -400,7 +456,11 @@ static func item_name(item: Dictionary) -> String:
 		return "%s %s" % [quality_name(int(item.get("tier",0))),weapon(int(item.get("weapon",0))).name]
 	if kind=="gear":
 		return "%s %s" % [quality_name(int(item.get("tier",0))),GEAR[gear_slot(item)].name]
-	return str(ITEMS.get(kind,{"name":kind}).name)
+	var base_name := str(ITEMS.get(kind,{"name":kind}).name)
+	# 深潜物品在仓库/搜打撤里也带品质前缀：白/绿/蓝由实例的 `tier` 决定。
+	if is_hunt_loot(kind) and item.has("tier"):
+		return "%s %s" % [quality_name(int(item.get("tier",0))), base_name]
+	return base_name
 
 # The same name without the quality prefix, for cells too narrow to show it. The
 # quality is already carried by the slot colour and the border.
@@ -433,6 +493,8 @@ static func item_value(item: Dictionary) -> int:
 		return int(round(float(info.value)*(1.0+0.65*tier_index(bag_key_of_item(item)))))
 	if is_equipment(kind):
 		return int(round(float(info.value)*(1.0+0.45*float(tier_of(int(item.get("tier",0)))))))
+	if is_hunt_loot(kind) and item.has("tier"):
+		return int(round(float(info.value)*(1.0+0.30*float(tier_of(int(item.get("tier",0)))))))
 	return int(info.value)
 
 static func market_value(item: Dictionary) -> int:
@@ -517,17 +579,222 @@ const BULKY_BAG_TIER := 3
 static func backpack_cells(key: String) -> Vector2i:
 	return Vector2i(2,2) if tier_index(key)>=BULKY_BAG_TIER else Vector2i(1,1)
 
+# --- 血潮深潜物品进入搜打撤 ------------------------------------------------
+# 需求（2026-10-20）：深潜模式里的材料/消耗品/工具也要能在搜打撤里搜到，稀有度只做
+# 白/绿/蓝三档。这里只放"哪些 kind 算深潜物品"和几条纯查询，掉落表在
+# `session.chest_loot()` 里接一次；占地统一由下面的形状表推导（`shape_cells()`），
+# 不再按价值猜尺寸。
+# ⚠️ 新增深潜物品时两处一起加：`hunt_data.ITEMS` 和这张表；需要非矩形轮廓时再去
+# 下面的 `SHAPES` 登记。
+const HUNT_LOOT_KINDS := [
+	"branch", "stone", "cloth", "dirty_water", "clean_water", "honey", "wild_herb",
+	"iron", "nail", "leather", "rope", "resin", "storm_phial", "glass", "paper",
+	"oil", "brimstone", "bandage", "mead", "herbal_tea", "poppy_syrup",
+	"blood_draught", "salve", "herbal_bandage", "frenzy_phial",
+	"stone_axe", "spear", "spiked_club", "iron_mace", "machete", "crossbow",
+	"hand_cannon", "heavy_axe", "iron_maul", "cloth_armor", "leather_armor",
+	"ring_mail", "hunter_cloak", "armor_patch", "torch", "lockpick", "snare",
+	"alchemist_flare", "smoke_pouch", "armor_kit", "lead_shot", "spirit_horn",
+	"pack_straps", "plague_mask", "key", "blood_sigil", "hunt_bait", "charcoal_filter",
+]
+
+static func is_hunt_loot(kind: String) -> bool:
+	return kind in HUNT_LOOT_KINDS
+
+# 占地统一由 `item_size()` 的形状推导；保留这个入口给文档/测试查询。
+static func hunt_loot_size(kind: String) -> Vector2i:
+	return item_size({"kind": kind})
+
+# 搜打撤能搜到的深潜物品：只有材料 / 消耗品 / 工具。
+# 武器、防具、饰品、背包一律排除——深潜装备本来也带不出来。
+static func hunt_searchable(kind: String) -> bool:
+	if not is_hunt_loot(kind) or kind == "blood_sigil":
+		return false
+	var cat := str(ITEMS.get(kind, {}).get("cat", ""))
+	return cat != "weapon" and cat != "armor"
+
+# 从深潜物品池里抽一件：便宜货更常见，贵的东西是运气。
+static func roll_hunt_loot(rng: RandomNumberGenerator) -> String:
+	var total := 0.0
+	for kind in HUNT_LOOT_KINDS:
+		if not hunt_searchable(kind):
+			continue
+		total += hunt_loot_weight(kind)
+	if total <= 0.0:
+		return ""
+	var roll := rng.randf() * total
+	for kind in HUNT_LOOT_KINDS:
+		if not hunt_searchable(kind):
+			continue
+		roll -= hunt_loot_weight(kind)
+		if roll <= 0.0:
+			return kind
+	return "branch"
+
+static func hunt_loot_weight(kind: String) -> float:
+	var value := maxi(4, int(ITEMS.get(kind,{}).get("value",4)))
+	return 60.0 / float(value) + 0.4
+
+# 稀有度 0..2（白/绿/蓝）：越贵越偏向高的那一档，深层箱子也更容易出蓝。
+static func hunt_loot_tier(kind: String, grade: int, rng: RandomNumberGenerator) -> int:
+	var value := float(ITEMS.get(kind,{}).get("value",0))
+	var bias := clampf(value / 70.0, 0.0, 1.0)
+	var white := 0.62 - 0.18 * bias - 0.07 * float(clampi(grade,0,4))
+	var green := white + 0.28
+	var roll := rng.randf()
+	if roll < white:
+		return 0
+	if roll < green:
+		return 1
+	return 2
+
+# 深潜装备（武器/防具/饰品/背包）一律"带不出来"：撤离结算时只把这之外的
+# 普通道具送进仓库。规则只写这一次，`main.on_hunt_finished()` 只调用它。
+static func hunt_exportable(kind: String) -> bool:
+	if kind in ["weapon", "gear", "backpack", "charm"]:
+		return false
+	var entry: Dictionary = ITEMS.get(kind,{})
+	var cat := str(entry.get("cat",""))
+	return cat != "weapon" and cat != "armor"
+
+
 # A bag on the floor or in a container remembers its quality in "quality"; the
 # equipped one keeps it in "key". Reading both is what makes a loose purple pack
 # really take its 2x2 block instead of claiming a single cell.
 static func bag_key_of_item(item: Dictionary) -> String:
 	return bag_key({"key":str(item.get("quality",item.get("key",DEFAULT_BAG_KEY)))})
 
+# --- footprints: rectangles plus polyominoes --------------------------------
+# A footprint is a list of small squares (column, row) anchored at (0,0), and every
+# square shares a **full edge** with its neighbours: no half-step offsets, no
+# diagonal-only contact. Rectangles stay the default (`ITEMS[kind].size`); SHAPES
+# overrides the interesting pieces (L-shaped tools, axes, bows), and weapons/gear
+# follow the actual piece rather than one generic block.
+#
+# 新增搜打撤物品时：先想清楚它"实际有多大、放进包里是什么轮廓"（一把剑 1×3、
+# 大剑 2×3、法杖 1×4、弩 1×2），再决定要不要写成 L 形；不需要矩形，但每个小格
+# 必须边对边对齐。没写的 kind 默认取 ITEMS 里的 size 矩形。
+const SHAPES := {
+	# --- 弹药 / 零件 / 随身工具 ---
+	"ammo": [Vector2i(0, 0)],
+	"scrap": [Vector2i(0, 0), Vector2i(1, 0)],
+	"torch": [Vector2i(0, 0), Vector2i(0, 1)],
+	"pack_straps": [Vector2i(0, 0), Vector2i(0, 1)],
+	"armor_kit": [Vector2i(0, 0), Vector2i(0, 1)],
+	"snare": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1)],
+	"spirit_horn": [Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 1)],
+	"alchemist_flare": [Vector2i(0, 0)],
+	"smoke_pouch": [Vector2i(0, 0)],
+	"lead_shot": [Vector2i(0, 0)],
+	"plague_mask": [Vector2i(0, 0)],
+	"key": [Vector2i(0, 0)],
+	"lockpick": [Vector2i(0, 0)],
+	"hunt_bait": [Vector2i(0, 0)],
+	"charcoal_filter": [Vector2i(0, 0)],
+	"blood_sigil": [Vector2i(0, 0)],
+	# --- 深潜武器（本身带不出深潜，但交易/调试/道具栏仍要量尺寸） ---
+	"spear": [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 3)],
+	"stone_axe": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(0, 2)],
+	"heavy_axe": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(0, 2)],
+	"iron_mace": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(0, 2)],
+	"iron_maul": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(0, 2)],
+	"spiked_club": [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2)],
+	"machete": [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2)],
+	"crossbow": [Vector2i(0, 0), Vector2i(1, 0)],
+	"hand_cannon": [Vector2i(0, 0), Vector2i(1, 0)],
+	# --- 深潜防具 ---
+	"cloth_armor": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+	"leather_armor": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+	"ring_mail": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+	"hunter_cloak": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+	"armor_patch": [Vector2i(0, 0)],
+}
+
+static func _rect_cells(w: int, h: int) -> Array:
+	var out: Array = []
+	for y in h:
+		for x in w:
+			out.append(Vector2i(x, y))
+	return out
+
+## 武器占格跟着"实际是什么"走：短剑/刺剑 1×3、巨剑 2×3、法杖 1×4、长弓是一张
+## 带缺口的 L（2×3）、镰刀是 L（2×4）。STARTER_BASE 起的角色初始武器也在这里。
+static func weapon_shape(index: int) -> Array:
+	if is_starter(index):
+		match index - STARTER_BASE:
+			0:
+				return _rect_cells(1, 3)
+			1:
+				return _rect_cells(1, 3)
+			2:
+				return _rect_cells(2, 3)
+			_:
+				return [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 3), Vector2i(1, 3)]
+	# 场上 17 把武器按"实际是什么"分：短剑/刺剑/弯刀/短杖 1×3，巨剑 2×3，
+	# 步枪与法杖 1×4，长弓是带握把缺口的 L。新增武器若不在这里登记，默认 1×4。
+	match index:
+		1, 5, 12, 13:
+			return _rect_cells(1, 3)
+		2, 14, 15:
+			return _rect_cells(2, 3)
+		16:
+			return [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(1, 1)]
+		_:
+			return _rect_cells(1, 4)
+
+static func gear_shape(slot: int) -> Array:
+	match clampi(slot, 0, 2):
+		0:
+			return _rect_cells(2, 2)
+		1:
+			return _rect_cells(1, 1)
+		_:
+			return _rect_cells(1, 2)
+
+static func base_cells(item: Dictionary) -> Array:
+	var kind := str(item.get("kind", ""))
+	if kind == "weapon":
+		return weapon_shape(int(item.get("weapon", 0)))
+	if kind == "gear":
+		return gear_shape(gear_slot(item))
+	if kind == "backpack":
+		var cells := backpack_cells(bag_key_of_item(item))
+		return _rect_cells(cells.x, cells.y)
+	if SHAPES.has(kind):
+		return SHAPES[kind]
+	var entry: Dictionary = ITEMS.get(kind, {"size": Vector2i(1, 1)})
+	var s: Vector2i = entry.get("size", Vector2i(1, 1))
+	return _rect_cells(s.x, s.y)
+
+## 顺时针 90°：坐标始终重新左/上对齐，保证旋转后的轮廓仍然边对边。
+static func rotated_cells(cells: Array) -> Array:
+	var max_y := 0
+	for c in cells:
+		max_y = maxi(max_y, c.y)
+	var out: Array = []
+	for c in cells:
+		out.append(Vector2i(max_y - c.y, c.x))
+	return out
+
+static func shape_cells(item: Dictionary) -> Array:
+	var cells := base_cells(item)
+	if bool(item.get("rot", false)):
+		cells = rotated_cells(cells)
+	return cells
+
+static func shape_size_of(cells: Array) -> Vector2i:
+	var w := 0
+	var h := 0
+	for c in cells:
+		w = maxi(w, c.x + 1)
+		h = maxi(h, c.y + 1)
+	return Vector2i(w, h)
+
+static func shape_area(item: Dictionary) -> int:
+	return shape_cells(item).size()
+
 static func item_size(item: Dictionary) -> Vector2i:
-	if str(item.get("kind",""))=="backpack":
-		return backpack_cells(bag_key_of_item(item))
-	var s: Vector2i = ITEMS[item.kind].size
-	return Vector2i(s.y,s.x) if item.get("rot",false) else s
+	return shape_size_of(shape_cells(item))
 
 # Two items overlap when they share a cell. This is spelled out as four integer
 # comparisons rather than handed to Rect2i.intersects(), which in this build
@@ -543,14 +810,24 @@ static func overlaps(at: Vector2i, size: Vector2i, other: Dictionary) -> bool:
 		return false
 	return true
 
+## 真正决定能不能放的判定：逐个小格比较，L 形的空缺不会挡住邻居。
 static func can_place(bag: Array, item: Dictionary, at: Vector2i, ignore: int = -1, grid: Vector2i = Vector2i.ZERO) -> bool:
 	var dims := grid_of(grid)
-	var s := item_size(item)
-	if at.x < 0 or at.y < 0 or at.x+s.x > dims.x or at.y+s.y > dims.y:
-		return false
-	for i in bag.size():
-		if i != ignore and overlaps(at,s,bag[i]):
+	var cells := shape_cells(item)
+	var occupied: Array = []
+	for c in cells:
+		var cell: Vector2i = at + c
+		if cell.x < 0 or cell.y < 0 or cell.x >= dims.x or cell.y >= dims.y:
 			return false
+		occupied.append(cell)
+	for i in bag.size():
+		if i == ignore or not bag[i] is Dictionary:
+			continue
+		var other: Dictionary = bag[i]
+		var other_at := Vector2i(int(other.get("x", 0)), int(other.get("y", 0)))
+		for oc in shape_cells(other):
+			if other_at + oc in occupied:
+				return false
 	return true
 
 static func insert(bag: Array, kind: String, grid: Vector2i = Vector2i.ZERO) -> bool:
@@ -589,8 +866,7 @@ static func container_grid(container: Dictionary) -> Vector2i:
 static func container_free(container: Dictionary) -> int:
 	var total := container_grid(container).x*container_grid(container).y
 	for item in container_items(container):
-		var size := item_size(item)
-		total-=size.x*size.y
+		total -= shape_area(item)
 	return total
 
 static func clean_container(container: Dictionary, grid: Vector2i) -> Dictionary:
@@ -651,6 +927,9 @@ static func clamp_entry(item: Dictionary) -> Dictionary:
 		item["tier"]=tier_of(int(item.get("tier",0)))
 	elif kind=="backpack":
 		item["quality"]=bag_key({"key":item.get("quality",DEFAULT_BAG_KEY)})
+	# 深潜物品的实例品质（白/绿/蓝）存 `tier`；读档时统一夹回 0..5。
+	if item.has("tier"):
+		item["tier"]=tier_of(int(item.get("tier",0)))
 	return item
 
 # The worn kit as it is stored in the save file: one weapon, three gear pieces, two
@@ -738,6 +1017,13 @@ const STACK_LIMITS := {
 	"crystal":5, "scrap":5, "charm":5, "bait":5,
 	"wheat":5, "carrot":5, "herb":5, "silver":5, "moon":5, "gold":5,
 	"wheat_seed":5, "carrot_seed":5, "herb_seed":5,
+	# 血潮深潜材料：同一张表决定"能不能叠"与"一叠多少"，不要在别处再写阈值。
+	"branch":10, "stone":10, "cloth":10, "dirty_water":10, "clean_water":10,
+	"honey":10, "wild_herb":10, "iron":10, "nail":10, "leather":10,
+	"rope":10, "resin":10, "storm_phial":10, "glass":10, "paper":10,
+	"oil":10, "brimstone":10,
+	"bandage":5, "mead":5, "herbal_tea":5, "poppy_syrup":5,
+	"blood_draught":5, "salve":5, "herbal_bandage":5, "frenzy_phial":3,
 }
 
 static func max_stack(kind: String) -> int:
@@ -778,10 +1064,23 @@ static func place_loot(container: Dictionary, kind: String) -> bool:
 # ends somewhere, while a single aimed unit has to say "here, or not at all" and
 # let the caller decide whether to fall back.
 
-# Whether `item`'s footprint already covers `cell`.
+# Whether `item`'s footprint already covers `cell` (L 形的空缺不算覆盖)。
 static func covers(item: Dictionary, cell: Vector2i) -> bool:
-	var s := item_size(item)
-	return cell.x>=int(item.x) and cell.x<int(item.x)+s.x and cell.y>=int(item.y) and cell.y<int(item.y)+s.y
+	var base := Vector2i(int(item.get("x", 0)), int(item.get("y", 0)))
+	for c in shape_cells(item):
+		if base + c == cell:
+			return true
+	return false
+
+## 两个已摆好的物品是否真的占了同一格（按轮廓，不按外包矩形）。测试与调试用。
+static func items_overlap(a: Dictionary, b: Dictionary) -> bool:
+	var a_at := Vector2i(int(a.get("x", 0)), int(a.get("y", 0)))
+	var b_at := Vector2i(int(b.get("x", 0)), int(b.get("y", 0)))
+	for ca in shape_cells(a):
+		for cb in shape_cells(b):
+			if a_at + ca == b_at + cb:
+				return true
+	return false
 
 # Index of the pile sitting on `cell` that would take one more unit of `kind`, or -1.
 static func stack_at(items: Array, kind: String, cell: Vector2i) -> int:
@@ -977,15 +1276,19 @@ static func place_item(container: Dictionary, entry: Dictionary) -> bool:
 	var grid := container_grid(container)
 	var list: Array = container.get("items",[])
 	var probe: Dictionary=entry.duplicate()
-	probe["rot"]=bool(entry.get("rot",false))
-	for y in grid.y:
-		for x in grid.x:
-			if can_place(list,probe,Vector2i(x,y),-1,grid):
-				probe["x"]=x
-				probe["y"]=y
-				list.append(probe)
-				container["next"]=int(container.get("next",1))+1
-				return true
+	var prefer := bool(entry.get("rot",false))
+	# Try the orientation the item came in first, then the other one: an L-shaped
+	# piece that cannot sit upright should still get its turn laid sideways.
+	for rotate in [prefer, not prefer]:
+		probe["rot"]=rotate
+		for y in grid.y:
+			for x in grid.x:
+				if can_place(list,probe,Vector2i(x,y),-1,grid):
+					probe["x"]=x
+					probe["y"]=y
+					list.append(probe)
+					container["next"]=int(container.get("next",1))+1
+					return true
 	return false
 
 # Rearranges every item into row-major order, so a searched container looks
@@ -1035,8 +1338,26 @@ static func tidy_around(container: Dictionary, focus: Dictionary) -> Array:
 static func can_hold(container: Dictionary, kind: String) -> bool:
 	if not ITEMS.has(kind):
 		return false
-	var probe: Array = container_items(container).duplicate()
-	return insert(probe,kind,container_grid(container))
+	return can_hold_entry(container,{"kind":kind,"x":0,"y":0,"rot":false})
+
+## "Could this container take this exact piece?" — asked with the real entry, because
+## the footprint belongs to the instance, not to the kind: a 2x3 greatsword, a 2x2
+## purple pack and an L-shaped snare are only measurable through their own fields.
+static func can_hold_entry(container: Dictionary, entry: Dictionary) -> bool:
+	var kind := str(entry.get("kind",""))
+	if not ITEMS.has(kind):
+		return false
+	var list: Array = container_items(container).duplicate()
+	var grid := container_grid(container)
+	var probe: Dictionary = entry.duplicate()
+	var prefer := bool(entry.get("rot",false))
+	for rotate in [prefer, not prefer]:
+		probe["rot"]=rotate
+		for y in grid.y:
+			for x in grid.x:
+				if can_place(list,probe,Vector2i(x,y),-1,grid):
+					return true
+	return false
 
 # Swaps the equipped backpack with a spare from the cabinet. Items already in the
 # equipped backpack must still fit, otherwise the swap is refused (not destroyed).
@@ -1141,25 +1462,24 @@ static func empty_cells(grid: Vector2i) -> Array:
 	taken.fill(false)
 	return taken
 
-# Throws a placed item over every cell it covers.
+# Throws a placed item over every cell its shape really covers.
 static func mark_cells(taken: Array, grid: Vector2i, entry: Dictionary, at: Vector2i) -> void:
-	var size := item_size(entry)
-	for y in range(at.y,at.y+size.y):
-		for x in range(at.x,at.x+size.x):
-			taken[y*grid.x+x]=true
+	for c in shape_cells(entry):
+		var p: Vector2i = at + c
+		if p.x>=0 and p.y>=0 and p.x<grid.x and p.y<grid.y:
+			taken[p.y*grid.x+p.x]=true
 
 # The first free cells of a given shape, scanning top to bottom and left to
-# right. This is the single placement rule every automatic fill is built on.
-static func first_cell_in(taken: Array, grid: Vector2i, size: Vector2i) -> Vector2i:
+# right. `cells` is the polyomino in its local coordinates, `size` its bbox.
+# This is the single placement rule every automatic fill is built on.
+static func first_cell_in(taken: Array, grid: Vector2i, cells: Array, size: Vector2i) -> Vector2i:
 	for y in range(0,grid.y-size.y+1):
 		for x in range(0,grid.x-size.x+1):
 			var free := true
-			for cy in range(y,y+size.y):
-				for cx in range(x,x+size.x):
-					if taken[cy*grid.x+cx]:
-						free=false
-						break
-				if not free:
+			for c in cells:
+				var p:=Vector2i(x+c.x,y+c.y)
+				if p.x<0 or p.y<0 or p.x>=grid.x or p.y>=grid.y or taken[p.y*grid.x+p.x]:
+					free=false
 					break
 			if free:
 				return Vector2i(x,y)
@@ -1169,18 +1489,21 @@ static func first_cell_in(taken: Array, grid: Vector2i, size: Vector2i) -> Vecto
 # turned. Returns {at, rot}, or an empty dictionary when it cannot be seated at
 # all. Everything below works in these plain positions, so a fill that runs out
 # of room never leaves a stray coordinate on a real item.
-static func find_seat(taken: Array, grid: Vector2i, kind: String) -> Dictionary:
-	var base: Vector2i=ITEMS[kind].size
-	for rotate in [false,true]:
-		var size := Vector2i(base.y,base.x) if rotate else base
-		var spot := first_cell_in(taken,grid,size)
+static func find_seat(taken: Array, grid: Vector2i, entry: Dictionary) -> Dictionary:
+	var probe: Dictionary=entry.duplicate()
+	var prefer := bool(entry.get("rot",false))
+	for rotate in [prefer, not prefer]:
+		probe["rot"]=rotate
+		var cells := shape_cells(probe)
+		var size := shape_size_of(cells)
+		var spot := first_cell_in(taken,grid,cells,size)
 		if spot.x>=0:
 			return {"at":spot,"rot":rotate}
 	return {}
 
 # Seats one item where find_seat() says it goes, and covers those cells.
 static func seat_item(taken: Array, grid: Vector2i, entry: Dictionary) -> bool:
-	var seat := find_seat(taken,grid,str(entry.kind))
+	var seat := find_seat(taken,grid,entry)
 	if seat.is_empty():
 		return false
 	entry["x"]=seat.at.x
@@ -1220,8 +1543,8 @@ static func layout_copies(items: Array) -> Array:
 static func layout_order(copies: Array) -> Array:
 	var plan: Array = []
 	for i in copies.size():
-		var size := item_size(copies[i])
-		plan.append({"index":i,"area":size.x*size.y})
+		var area := shape_area(copies[i])
+		plan.append({"index":i,"area":area})
 	plan.sort_custom(func(a, b): return a.area>b.area if a.area!=b.area else a.index<b.index)
 	var order: Array = []
 	for step in plan:
@@ -1254,10 +1577,9 @@ static func compact_arrivals(container: Dictionary) -> void:
 static func occupied_score(items: Array, grid: Vector2i) -> int:
 	var score := 0
 	for item in items:
-		var size := item_size(item)
-		for cy in size.y:
-			for cx in size.x:
-				score+=int(item.y+cy)*grid.x+int(item.x+cx)
+		var base := Vector2i(int(item.x), int(item.y))
+		for c in shape_cells(item):
+			score += (base.y + c.y) * grid.x + (base.x + c.x)
 	return score
 
 # How far down the grid the haul reaches. A refill that does not beat this has
@@ -1266,7 +1588,7 @@ static func occupied_score(items: Array, grid: Vector2i) -> int:
 static func rows_used(items: Array) -> int:
 	var rows := 0
 	for item in items:
-		rows=maxi(rows,int(item.y)+item_size(item).y)
+		rows = maxi(rows, int(item.y) + item_size(item).y)
 	return rows
 
 # The whole haul, each item seated by size. An arriving item is laid out with it
@@ -1297,18 +1619,16 @@ static func fill(items: Array, grid: Vector2i, probe: Dictionary = {}, reserve: 
 # item or it fails, and an arrangement that seats them all is by definition one
 # that fits.
 static func fill_reserving(items: Array, grid: Vector2i, probe: Dictionary) -> Array:
-	# The footprint comes from item_size(), not from the kind's table entry: a
-	# turned item, and a backpack whose quality decides its own shape, are both
-	# only measurable through it. Reading the raw table here reserved the wrong
-	# room — a turned 1x2 asked for a 1x2 — and could refuse an arrival the grid
-	# could really hold.
-	var base: Vector2i=item_size(probe)
+	# The footprint comes from item_size()/shape_cells(), not from the kind's table
+	# entry: a turned L and a backpack whose quality decides its own shape are both
+	# only measurable through the item itself.
 	for rotate in [false,true]:
-		var size := Vector2i(base.y,base.x) if rotate else base
+		var seat_probe: Dictionary=probe.duplicate()
+		seat_probe["rot"]=rotate
+		var size := item_size(seat_probe)
 		for y in range(0,grid.y-size.y+1):
 			for x in range(0,grid.x-size.x+1):
-				var seat: Dictionary=probe.duplicate()
-				seat["rot"]=rotate
+				var seat: Dictionary=seat_probe.duplicate()
 				var filled := fill(items,grid,seat,Vector2i(x,y))
 				if not filled.is_empty():
 					return filled

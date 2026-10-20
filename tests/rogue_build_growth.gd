@@ -17,12 +17,12 @@ func run() -> void:
 	Build.add_experience(s,p,39)
 	check(p.build_level==1 and p.build_xp==39 and p.build_attribute_points==0,"XP below threshold grants no points")
 	Build.add_experience(s,p,1)
-	check(p.build_level==2 and p.build_xp==0 and p.build_attribute_points==2,"First level needs 40 XP and grants two points")
+	check(p.build_level==2 and p.build_xp==0 and p.build_pending_levels==1 and p.build_attribute_points==0,"First level queues one attribute choice")
 	Build.add_experience(s,p,125)
-	check(p.build_level==4 and p.build_xp==0 and p.build_attribute_points==6,"Large XP grant crosses multiple thresholds exactly")
+	check(p.build_level==4 and p.build_xp==0 and p.build_pending_levels==3 and p.build_pending_abilities==1,"Large XP grant crosses thresholds and queues three choices plus one ability")
 	check(p.hp==hp,"Level-up does not heal")
 	Build.floor_enter(p)
-	check(p.build_level==4 and p.build_xp_total==165 and p.build_attribute_points==6,"Floor entry preserves XP and grants no points")
+	check(p.build_level==4 and p.build_xp_total==165 and p.build_pending_levels==3,"Floor entry preserves pending choices")
 	var ally: Dictionary=s.make_player(2,{"hero":1,"mode":"roguelike"})
 	s.players[2]=ally; Build.reset(s,ally); ally.status="down"
 	var enemy := {"hp":0.0,"build_xp_reward":6}
@@ -46,28 +46,24 @@ func run() -> void:
 	for area in range(1,6):
 		s.raid.area=area; s.raid.room="combat"; Build.award(s,p)
 	check(p.build_attribute_points==points,"Area awards grant no attributes")
-	# Measure actual opened-chest RNG, not a parallel formula.
+	# 宝箱：金币必得，不再掉属性晶/能力；守层者 100% 装备。
 	var counts := []
 	for room in ["combat","boss"]:
 		var drops := 0
-		for trial in 1000:
-			p.build_chest_attribute_drops=0; s.raid.room=room
+		for trial in 200:
+			s.raid.room=room
 			s.raid.reward_chest={"p":p.p,"opened":false,"tier":0}; s.raid.reward_drops=[]
+			p.rogue_gold=0
 			s.roguelike.loot_interact(s,p)
-			var shards: Array=s.raid.reward_drops.filter(func(drop): return drop.category=="attribute")
-			drops+=shards.size()
-			check(shards.size()<=1,"Each chest has at most one personal attribute drop")
+			drops+=s.raid.reward_drops.size()
+			check(int(p.rogue_gold)>0,"Chest opening pays gold")
+			check(not s.raid.reward_drops.any(func(drop): return drop.category in ["attribute","ability"]),"Chests never drop attribute shards or abilities")
 			var packets: int=s.raid.reward_drops.size()
 			s.roguelike.loot_interact(s,p)
-			check(s.raid.reward_drops.size()==packets,"Reopening chest cannot reroll attribute drop")
+			check(s.raid.reward_drops.size()==packets,"Reopening chest cannot reroll equipment")
 		counts.append(drops)
-	check(counts[0] in range(140,261) and counts[1] in range(420,581),"Observed normal/boss drop rates match 20%/50%: "+str(counts))
-	for trial in 50:
-		p.build_chest_attribute_drops=2; s.raid.reward_chest={"p":p.p,"opened":false,"tier":0}; s.raid.reward_drops=[]
-		s.roguelike.loot_interact(s,p)
-		check(not s.raid.reward_drops.any(func(drop): return drop.category=="attribute"),"Two drops per floor cap enforced")
-	Build.floor_enter(p)
-	check(p.build_chest_attribute_drops==0,"Next floor resets only drop cap")
+	check(counts[1]==200,"Boss chest guarantees one equipment packet per open: "+str(counts))
+	check(counts[0]<=200,"Combat chest never exceeds one packet: "+str(counts))
 	s.raid.reward_chest={}; s.raid.reward_drops=[]; s.elapsed+=2
 	s.roguelike.add_reward_drop(s,p.p,0,{"name":"属性灵晶 +1","attribute_points":1},0,1,"attribute")
 	s.raid.reward_drops[0]["personal"]=true

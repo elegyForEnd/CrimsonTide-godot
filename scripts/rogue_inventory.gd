@@ -19,7 +19,7 @@ var tooltip: Panel
 var menu: Control
 
 func signature(p: Dictionary, s) -> String:
-	return str([p.get("equipped",{}),p.get("rogue_stash",[]),p.get("rogue_inventory_revision",0),p.weapon,p.get("build_talents",{}),p.get("flask",0),p.rogue_gold,p.rogue_rerolls,s.raid.floor,s.raid.area,s.raid.phase])
+	return str([p.get("equipped",{}),p.get("rogue_stash",[]),p.get("rogue_inventory_revision",0),p.weapon,p.get("build_talents",{}),p.get("build_abilities",{}),p.get("flask",0),p.rogue_gold,p.rogue_rerolls,s.raid.floor,s.raid.area,s.raid.phase])
 
 func text(parent: Node, value: String, at: Vector2, size: Vector2, font_size: int = 18, color: Color = PAPER) -> Label:
 	return host.label(parent,value,at,font_size,color,size)
@@ -154,7 +154,8 @@ func update_live(p: Dictionary) -> void:
 	var s=host.session
 	var speed: float=Homestead.bonus(p,"speed")+Catalog.HEROES[p.hero].speed+p.talents[2]*9+float(Catalog.gear_of(int(p.gear)).get("speed",0.0))+s.equipment_speed(p)+float(p.rogue_speed)
 	speed*=1.0-float(p.get("rogue_slow",0))
-	var values: Array=["%.1f" % s.weapon_damage(p),"%.2f s" % (Catalog.weapon(p.weapon).rate*s.equipment_rate(p)),"%.0f" % speed,str(int(p.max_hp)),"%d / %d" % [p.mana,p.max_mana],"%.1f%%" % ((1.0-s.incoming_damage(p,1.0))*100)]
+	var ability_interval=preload("res://scripts/rogue_abilities.gd").attack_interval(p)
+	var values: Array=["%.1f" % s.weapon_damage(p),"%.2f s" % (Catalog.weapon(p.weapon).rate*s.equipment_rate(p)*ability_interval),"%.0f" % speed,str(int(p.max_hp)),"%d / %d" % [p.mana,p.max_mana],"%.1f%%" % ((1.0-s.incoming_damage(p,1.0))*100)]
 	for i in stat_values.size(): stat_values[i].text=values[i]
 	health.text="%d / %d" % [maxf(0,p.hp),p.max_hp]
 	health_bar.size.x=244*clampf(p.hp/maxf(1,p.max_hp),0,1)
@@ -211,7 +212,7 @@ func show_tooltip(item: Dictionary, starter: bool) -> void:
 			preview.equipped.weapon={}
 			preview.weapon=int(item.weapon)
 			damage=host.session.weapon_damage(preview)
-		var interval: float=info.rate*host.session.equipment_rate(p)
+		var interval: float=info.rate*host.session.equipment_rate(p)*preload("res://scripts/rogue_abilities.gd").attack_interval(p)
 		description="基础伤害  %.1f\n当前构筑伤害  %.1f   (%+.1f)\n攻击间隔  %.2f 秒\n攻击距离  %.0f   ·   蓝耗  %.0f\n\n%s\n\n%s" % [info.damage,damage,damage-host.session.weapon_damage(p),interval,info.get("reach",0),info.get("mana_cost",0),Catalog.scaling_text(int(item.weapon)),WeaponArts.text(int(item.weapon))]
 	elif item.kind=="medicine":
 		description="血瓶初始容量100%。\n每次喝下25%容量，回复30%最大生命。\n饮用0.75秒，在0.45秒时生效；受击/闪避可中断。\n每层补充50%容量，清场可补充少量。\n血瓶不可丢弃、不可自救。倒地后长按F两秒使用独立魂灯，每局一次。"
@@ -225,7 +226,7 @@ func show_tooltip(item: Dictionary, starter: bool) -> void:
 			preview.equipped.weapon=item.duplicate(true)
 			preview.weapon=int(item.weapon)
 			var damage: float=host.session.weapon_damage(preview)
-			description+="\n\n构筑伤害 %.1f（%+.1f）\n攻击间隔 %.2f 秒 · 蓝耗 %.0f\n%s\n%s" % [damage,damage-host.session.weapon_damage(p),Catalog.weapon(int(item.weapon)).rate*host.session.equipment_rate(preview),Catalog.weapon(int(item.weapon)).get("mana_cost",0),Catalog.scaling_text(int(item.weapon)),WeaponArts.text(int(item.weapon))]
+			description+="\n\n构筑伤害 %.1f（%+.1f）\n攻击间隔 %.2f 秒 · 蓝耗 %.0f\n%s\n%s" % [damage,damage-host.session.weapon_damage(p),Catalog.weapon(int(item.weapon)).rate*host.session.equipment_rate(preview)*preload("res://scripts/rogue_abilities.gd").attack_interval(preview),Catalog.weapon(int(item.weapon)).get("mana_cost",0),Catalog.scaling_text(int(item.weapon)),WeaponArts.text(int(item.weapon))]
 		else: description+="\n\n部位："+["护甲","法器 / 瞄具","战靴"][Catalog.gear_slot(item)]+"\n同部位互相替换，旧装备自动收纳。"
 		description+="\n\n品质只提升基础属性；条件伤害被动相加。"
 	var wide := 430.0 if item.has("rogue_id") else 360.0

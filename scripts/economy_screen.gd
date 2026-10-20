@@ -206,7 +206,7 @@ func index_at_cell(slot: String, cell: Vector2i) -> int:
 		var item: Dictionary=list[i]
 		if slot==CampStorage.VAULT and (int(item.get("x",-1))<0 or int(item.get("y",-1))<0): continue
 		var dims := Catalog.item_size(item)
-		if Rect2i(Vector2i(int(item.get("x",0)),int(item.get("y",0))),dims).has_point(cell):
+		if Catalog.covers(item, cell):
 			return i
 	return -1
 

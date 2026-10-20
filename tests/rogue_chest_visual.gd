@@ -14,6 +14,8 @@ func run() -> void:
 	s.launch(false,1729)
 	s.set_physics_process(false)
 	s.enemies.clear()
+	# 守层者宝箱必掉一件武器/装备；这段视觉验收走装备包，保留“选中后分享”的旧路径。
+	s.raid.room="boss"
 	var p: Dictionary=s.players[1]
 	s.roguelike.clear_room(s)
 	p.p=s.raid.reward_chest.p-Vector2(55,0)
@@ -23,7 +25,11 @@ func run() -> void:
 	await capture("burst")
 	s.elapsed+=2
 	await capture("ground")
-	p.p=s.raid.reward_drops[0].p
+	var gear_drop: Dictionary={}
+	for drop in s.raid.reward_drops:
+		if str(drop.category) in ["gear","weapon"]: gear_drop=drop; break
+	assert(not gear_drop.is_empty())
+	p.p=gear_drop.p
 	s.perform(1,"rogue_loot")
 	assert(p.rogue_selection.offers.size()==3)
 	await capture("selection")

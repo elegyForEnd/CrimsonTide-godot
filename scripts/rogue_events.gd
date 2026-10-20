@@ -40,7 +40,7 @@ const TABLE := [
 		{"name": "掘出树心", "desc": "获得 1 条诅咒，并立刻得到一次装备三选一", "result": {"curse": "CU07", "gear_reward": 1}, "require": {"curse_slots": 1}},
 	]},
 	{"id": "EV05", "name": "深渊回声", "floor_min": 2, "options": [
-		{"name": "侧耳倾听", "desc": "失去 20% 生命，换取 1 点锻造点", "result": {"hp_ratio": -0.20, "forge_points": 1}, "require": {"hp_ratio": 0.25}},
+		{"name": "侧耳倾听", "desc": "失去 20% 生命，换取 90 魔晶", "result": {"hp_ratio": -0.20, "gold": 90}, "require": {"hp_ratio": 0.25}},
 		{"name": "掩耳离开", "desc": "魔晶 +30", "result": {"gold": 30}},
 	]},
 	{"id": "EV06", "name": "贪婪秤盘", "floor_min": 3, "options": [
@@ -55,7 +55,7 @@ const TABLE := [
 	]},
 	{"id": "EV08", "name": "无名祭坛", "floor_min": 4, "options": [
 		{"name": "供奉魔晶", "desc": "花 200 魔晶，换取一次装备三选一", "result": {"gold": -200, "gear_reward": 1}, "require": {"gold": 200}},
-		{"name": "供奉生命", "desc": "失去 25% 生命，换取 1 点锻造点", "result": {"hp_ratio": -0.25, "forge_points": 1}, "require": {"hp_ratio": 0.30}},
+		{"name": "供奉生命", "desc": "失去 25% 生命，换取 120 魔晶", "result": {"hp_ratio": -0.25, "gold": 120}, "require": {"hp_ratio": 0.30}},
 		{"name": "供奉理智", "desc": "获得 1 条诅咒，魔晶 +150", "result": {"curse": "CU10", "gold": 150}, "require": {"curse_slots": 1}},
 	]},
 	{"id": "EV09", "name": "星屑坠地", "floor_min": 4, "options": [

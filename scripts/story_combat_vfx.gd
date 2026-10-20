@@ -12,8 +12,14 @@ var weapon_world: Node3D
 var weapon_flights: Node3D
 var flight_serial := 0
 
+var text: Node2D
+
 func _ready() -> void:
 	add_child(finish); add_child(primary)
+	text=preload("res://scripts/combat_text.gd").new()
+	text.projector=screen.project
+	text.z_index=50
+	add_child(text)
 	screen.world.add_child(lights)
 	weapon_world=preload("res://scripts/weapon_combat_vfx_3d.gd").new()
 	weapon_world.camera=screen.world.view_camera
@@ -54,6 +60,7 @@ func socket(id: int) -> Dictionary:
 
 func event(data: Dictionary) -> void:
 	if not screen.active: return
+	text.on_event(data)
 	if data.kind=="windup":
 		casts[int(data.hero)]=data.duplicate()
 		if weapon_world.event(data,int(data.hero)): return
@@ -125,7 +132,7 @@ func advance(dt: float) -> void:
 func reset() -> void:
 	if is_instance_valid(weapon_world): weapon_world.reset()
 	if is_instance_valid(weapon_flights): weapon_flights.reset()
-	casts.clear(); drops.clear(); payloads.clear(); primary.reset(); finish.reset(); lights.reset(); queue_redraw()
+	casts.clear(); drops.clear(); payloads.clear(); primary.reset(); finish.reset(); lights.reset(); text.reset(); queue_redraw()
 
 func _draw() -> void:
 	for payload in payloads:
