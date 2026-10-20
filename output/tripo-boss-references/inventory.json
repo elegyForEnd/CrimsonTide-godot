@@ -1,0 +1,226 @@
+[
+  {
+    "boss": "01-grove",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2509348
+  },
+  {
+    "boss": "01-grove",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2335477
+  },
+  {
+    "boss": "01-grove",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2183956
+  },
+  {
+    "boss": "01-grove",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2286998
+  },
+  {
+    "boss": "02-furnace",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2212536
+  },
+  {
+    "boss": "02-furnace",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2295826
+  },
+  {
+    "boss": "02-furnace",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1885104
+  },
+  {
+    "boss": "02-furnace",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1965281
+  },
+  {
+    "boss": "03-astral",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2319483
+  },
+  {
+    "boss": "03-astral",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2450805
+  },
+  {
+    "boss": "03-astral",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2104969
+  },
+  {
+    "boss": "03-astral",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2115529
+  },
+  {
+    "boss": "04-wing",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2339154
+  },
+  {
+    "boss": "04-wing",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2362834
+  },
+  {
+    "boss": "04-wing",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1803492
+  },
+  {
+    "boss": "04-wing",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2066104
+  },
+  {
+    "boss": "05-obsidian",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1893481
+  },
+  {
+    "boss": "05-obsidian",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1788632
+  },
+  {
+    "boss": "05-obsidian",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1854274
+  },
+  {
+    "boss": "05-obsidian",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1731130
+  },
+  {
+    "boss": "06-bell",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2280844
+  },
+  {
+    "boss": "06-bell",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2083438
+  },
+  {
+    "boss": "06-bell",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2057487
+  },
+  {
+    "boss": "06-bell",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2329925
+  },
+  {
+    "boss": "07-earth",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2040404
+  },
+  {
+    "boss": "07-earth",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1911399
+  },
+  {
+    "boss": "07-earth",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1962125
+  },
+  {
+    "boss": "07-earth",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2102670
+  },
+  {
+    "boss": "08-abyss",
+    "view": "back",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1915782
+  },
+  {
+    "boss": "08-abyss",
+    "view": "front",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1702551
+  },
+  {
+    "boss": "08-abyss",
+    "view": "left",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1846336
+  },
+  {
+    "boss": "08-abyss",
+    "view": "three-quarter",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1964548
+  }
+]

@@ -29,7 +29,7 @@ const MOVES := [
 
 static func of(index: int) -> Dictionary:
 	var build: Dictionary=preload("res://scripts/rogue_content.gd").weapon(index)
-	if not build.is_empty(): return build.art
+	if not build.is_empty(): return preload("res://scripts/weapon_batch_choreography.gd").describe(index,build.art)
 	return MOVES[clampi(index,0,MOVES.size()-1)]
 
 static func text(index: int) -> String:

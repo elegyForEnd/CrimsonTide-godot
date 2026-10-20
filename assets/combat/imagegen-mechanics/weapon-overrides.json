@@ -1,0 +1,109 @@
+{
+  "version": "layered-v2",
+  "releases": [
+    {
+      "weapon": 17,
+      "role": "motion_thrust",
+      "source": "renewal_17_thrust_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 19,
+      "role": "motion_heavy_overhead",
+      "source": "renewal_19_overhead_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 19,
+      "role": "motion_heavy_slash",
+      "source": "renewal_19_overhead_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 20,
+      "role": "motion_scythe",
+      "source": "renewal_20_hook_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 20,
+      "role": "motion_spin",
+      "source": "renewal_20_hook_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 2,
+      "role": "motion_quake",
+      "source": "renewal_2_fault_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 15,
+      "role": "motion_quake",
+      "source": "renewal_614_fault_v2",
+      "scope": "exact"
+    },
+    {
+      "weapon": 613,
+      "role": "motion_heavy_slash",
+      "source": "renewal_613_wave_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 616,
+      "role": "motion_heavy_slash",
+      "source": "renewal_616_chop_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 617,
+      "role": "motion_heavy_slash",
+      "source": "renewal_617_cleave_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 620,
+      "role": "motion_heavy_slash",
+      "source": "renewal_620_shear_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 602,
+      "role": "motion_spin",
+      "source": "renewal_602_fold_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 609,
+      "role": "motion_spin",
+      "source": "authored_609_art",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 614,
+      "role": "motion_heavy_spin",
+      "source": "renewal_614_fault_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 622,
+      "role": "motion_scythe",
+      "source": "renewal_622_soul_v2",
+      "scope": "canonical"
+    },
+    {
+      "weapon": 622,
+      "role": "motion_spin",
+      "source": "authored_622_art",
+      "scope": "canonical"
+    }
+  ],
+  "payloads": [
+    {
+      "weapon": 18,
+      "payload": "projectile",
+      "source": "renewal_18_projectile_v2",
+      "scope": "exact"
+    }
+  ]
+}

@@ -30,7 +30,8 @@ func run() -> void:
 		fx.reset()
 		c.combat_event.emit({"kind":"attack","hero":hero,"p":c.hero_at,"direction":Vector2.RIGHT,"radius":float(Catalog.weapon(weapon).reach)*c.terrain().speed_scale(),"special":0,"weapon_index":weapon})
 		screen.world.sync(.06)
-		check(not fx.primary.effects.is_empty(),"shared combat effect emitted %d" % weapon)
+		check(not fx.weapon_world.effects.is_empty(),"native world combat effect emitted %d" % weapon)
+		check(fx.primary.effects.is_empty(),"weapon %d does not duplicate a Canvas painting" % weapon)
 		c.combat_event.emit({"kind":"weapon_drop","p":c.hero_at,"weapon_index":weapon,"quality":1})
 		for i in 2: await process_frame
 		if weapon in [600,615,625,639]:

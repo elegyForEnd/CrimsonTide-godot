@@ -1,0 +1,9 @@
+{
+  "layer": "charge",
+  "generator": "built-in ImageGen",
+  "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+  "prompt_file": "art/weapon-606-reference/prompts/charge.txt",
+  "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-02db3b95-8755-493a-a901-74167fda56b6.png",
+  "file": "res://assets/combat/weapon-606-reference/charge.png",
+  "status": "pending_visual_review"
+}

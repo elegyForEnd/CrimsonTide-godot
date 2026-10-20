@@ -3400,6 +3400,9 @@ func can_travel() -> bool:
 
 func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, speed: float) -> void:
 	var before: Vector2=p.p
+	if p.has("build_art_sequence") and p.dodge_time<=0:
+		p.motion="idle"; p.move_dir=p.strike_aim
+		return
 	if p.dodge_time>0:
 		var step := minf(dt,p.dodge_time)
 		p.p=ruins.move(p.p,p.dodge_dir*((80.0/.18 if p.get("height",0)>0 else DODGE_DISTANCE/DODGE_DURATION)*(1.12 if roguelike.active(self) and RogueBuild.gear(p,61) else 1.0))*step)
@@ -3441,7 +3444,7 @@ func down(p: Dictionary) -> void:
 		p.flask_time=0.0; p.height=0.0; p.height_velocity=0.0
 		p["flask_pending_commit"]=false
 		p.build_inputs=[]; p.build_summons=[]; p.build_fields=[]
-		p.erase("build_pending_art"); p.erase("build_pending_art_tail"); p.erase("build_pending_action")
+		p.erase("build_pending_art"); p.erase("build_pending_art_tail"); p.erase("build_pending_action"); p.erase("build_art_sequence")
 	else: spill_storage(p)
 	emit_effect("hurt",p.p)
 	broadcast_audio("down",p)
@@ -3522,6 +3525,7 @@ func release_weapon_art(p: Dictionary, charged: Dictionary = {}) -> bool:
 	# 删掉后本函数的非 roguelike 路径逐字不变：`build_ctx` 仍为 `{}`（与原先不可达块执行时一致）。
 	var build_ctx: Dictionary={}
 	build_ctx["vfx"]=weapon_visual_state(p)
+	build_ctx["vfx_action"]="art" if charged.is_empty() else "heavy"
 	if not charged.is_empty(): build_ctx["charged"]=true
 	p.cast_time=float(move.get("recovery",.35))
 	p["build_strike_kind"]=str(move.kind)
@@ -3556,9 +3560,9 @@ func release_weapon_art(p: Dictionary, charged: Dictionary = {}) -> bool:
 	if kind=="burst":
 		# Keep the impact on the caster's side of walls.
 		center=ruins.move(p.p,aim*reach)
-		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",180)),"id":p.id,"weapon_index":int(p.weapon),"charged":not charged.is_empty()})
+		broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",180)),"id":p.id,"weapon_index":int(p.weapon),"charged":not charged.is_empty(),"vfx_action":build_ctx.vfx_action})
 	elif kind=="beam":
-		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"spell":spell,"id":p.id,"weapon_index":int(p.weapon),"charged":not charged.is_empty()})
+		broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"spell":spell,"id":p.id,"weapon_index":int(p.weapon),"charged":not charged.is_empty(),"vfx_action":build_ctx.vfx_action})
 	for e in enemies:
 		if e.hp<=0 or not ruins.clear_line(p.p,e.p): continue
 		var delta: Vector2=e.p-p.p
@@ -3684,6 +3688,7 @@ func damage_enemy(e: Dictionary, damage: float, owner: int, direction: Vector2, 
 		players[owner].hitstop=0.045 if knock<40 else 0.085
 	var impact_data := {"kind":"impact","p":impact,"aim":direction,"damage":damage,"heavy":knock>=40,"id":owner,"weapon":weapon,"weapon_index":weapon_index if weapon_index>=0 else int(players.get(owner,{}).get("weapon",maxi(weapon,0))),"enemy_type":e.type,"rogue_floor":e.get("rogue_skin",-1),"enemy_id":e.id}
 	if build_context.has("vfx"): impact_data["vfx"]=build_context.vfx
+	impact_data["vfx_action"]=str(build_context.get("vfx_action","heavy" if build_context.get("charged",false) else "art" if build_context.get("kind","")=="art" else "normal"))
 	broadcast_combat(impact_data)
 
 func broadcast_audio(cue: String, p: Dictionary, variant: int = -1) -> void:
@@ -4159,6 +4164,7 @@ func spell_burst(b: Dictionary, at: Vector2) -> void:
 			e.p=ruins.move(e.p,pull*(35 if roguelike.active(self) else 42))
 	var burst_data := {"kind":"spell_burst","p":at,"spell":spell,"radius":radius,"id":int(b.owner),"weapon_index":int(b.get("weapon_index",players.get(b.owner,{}).get("weapon",3)))}
 	burst_data["charged"]=bool(b.get("charged",false))
+	burst_data["vfx_action"]=str(b.get("build_context",{}).get("vfx_action","normal"))
 	if b.get("build_context",{}).has("vfx"): burst_data["vfx"]=b.build_context.vfx
 	broadcast_combat(burst_data)
 
@@ -4177,6 +4183,7 @@ func spell_chain(b: Dictionary, first: Dictionary) -> void:
 			break
 		var arc_data := {"kind":"spell_arc","p":from.p,"target":nearest.p,"spell":"chain","id":int(b.owner),"weapon_index":int(b.get("weapon_index",6))}
 		arc_data["charged"]=bool(b.get("charged",false))
+		arc_data["vfx_action"]=str(b.get("build_context",{}).get("vfx_action","normal"))
 		if b.get("build_context",{}).has("vfx"): arc_data["vfx"]=b.build_context.vfx
 		broadcast_combat(arc_data)
 		var direction: Vector2=(nearest.p-from.p).normalized()

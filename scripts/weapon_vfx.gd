@@ -1,4 +1,5 @@
 extends RefCounted
+const Curves=preload("res://scripts/vfx_curves.gd")
 ## Authored weapon identities and screen-space geometry. Presentation only.
 ## Run weapons intentionally keep their own identity instead of the icon mapping.
 const CAMPAIGN := [
@@ -114,7 +115,7 @@ static func draw(target: CanvasItem, fx: Dictionary, glow: bool) -> void:
 	var stage: int=fx.stage
 	var t := clampf(float(fx.age)/float(fx.life),0,1)
 	var birth := smoothstep(0.0,.045 if family!=2 else .07,float(fx.age))
-	var fade := pow(1.0-t,1.35)*smoothstep(0,.012,float(fx.age))
+	var fade := Curves.envelope(float(fx.age),float(fx.life),"flash" if glow else "body",str(fx.kind))
 	var color := Color(identity.color,fade*.88)
 	var r: float=fx.radius
 	var kind: String=fx.kind
@@ -128,10 +129,7 @@ static func draw(target: CanvasItem, fx: Dictionary, glow: bool) -> void:
 			target.draw_texture_rect(art,Rect2(-size*.5,size),false,Color(1,1,1,color.a*(.08 if glow else .38)))
 		return
 	if kind=="impact":
-		gem(target,Vector2.ZERO,r*.72,0,Color(color.lerp(Color.WHITE,.7),fade),glow)
-		gem(target,Vector2.ZERO,r*.42,PI*.5,Color(color,fade*.55),glow)
-		if motif in ["frost","storm","mirror"]:
-			for i in 3: gem(target,Vector2.from_angle(i*TAU/3)*r*t,r*.22,i*TAU/3,color,glow)
+		Curves.contact(target,r,float(fx.age),float(fx.life),identity.color,glow)
 		return
 	if kind=="core":
 		var art := preload("res://scripts/weapon_image_art.gd").core_texture(int(fx.get("core_id",0)))

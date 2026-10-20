@@ -1,0 +1,20 @@
+{
+  "tool": "built-in imagegen",
+  "user_authorization": "Use the VFX parts in the generated reference as textures, combined with custom effects",
+  "reference": "build/vfx-crystal/reference.png",
+  "transparent": true,
+  "records": [
+    {
+      "asset": "ribbon.png",
+      "original": "C:/Users/wangk/.codex/generated_images/01a153ef-40a0-7ae1-9a96-9eac5c3934c3/exec-a4f099a2-07e9-49e4-b5ad-d18776d90348.png",
+      "prompt": "Edit target: the attached game VFX reference. Make ONE production-ready isolated game texture from ONLY its pink glass slash effect. Remove the girl, sword, tree enemy, stone floor, all scenery and all unrelated particles. Reconstruct/unwrap the luminous pink crystal cutting ribbon as ONE STRAIGHT HORIZONTAL STRIP pointing left to right on a genuinely transparent canvas. This is a reusable texture to bend around a native-engine trail mesh, not a screenshot or a whole attack decal. Preserve the reference's refined painted glass facets: pale hot-pink razor rim, translucent rosy internal planes with irregular smoky dark reflections, sharp broken micro crystal teeth and wispy thin strands. Long slender organic taper on both ends, strongest width near 65% of the length. Fill about 85% of image width and 25% of image height centered. Plenty of transparent padding. High-detail hand-painted anime action game finish, luminous but not a white solid bar. No curve, no circle, no target burst, no character, no floor, no text, no grid, no multiple examples, no checkerboard pattern painted in. Output actual RGBA transparency and only this single horizontal ribbon.",
+      "sha256": "ce2bdbaea852cb7a5bf3d07dd93aa067460ae6f05293cc59cd8cba0b763b2277"
+    },
+    {
+      "asset": "shard.png",
+      "original": "C:/Users/wangk/.codex/generated_images/01a153ef-40a0-7ae1-9a96-9eac5c3934c3/exec-74cc4b78-f44e-4fc4-8501-11725b4600a7.png",
+      "prompt": "Edit target: attached pink crystal sword VFX game reference. Extract/reconstruct ONE standalone large flying glass splinter from the impact burst on the right, as a production game sprite on genuinely transparent RGBA background. A single elongated asymmetric prismatic shard, long axis exactly horizontal pointing right. Preserve the original painting quality: sharp pale pink-white rim, layered glassy translucent pink facets, rich charcoal and smoky rose interior reflections, luminous magenta hairline cracks, internal reflected flecks, nuanced shading. The asymmetrical shard is about 3.5 times longer than wide, with a narrow irregular pointed tip and a jagged lower edge, one dominant bright facet and several dark reflective facets. Single connected object only, no orbit or slash, no cluster, no scene, no character, no tree or stone background, no text, no border or grid, no opaque aura or painted checkerboard. Center the one shard, occupy 80% of canvas width, with generous truly transparent padding. This asset will be individually rotated and ejected by the game engine; do not include motion trail or contact explosion.",
+      "sha256": "7b5f79312458a067301e2edc5ff12b4e352405550f091f2be0d530dbf8f7fde8"
+    }
+  ]
+}

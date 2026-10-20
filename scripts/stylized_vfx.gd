@@ -11,6 +11,9 @@ var light: Node2D
 var charged_ground: Node2D
 var density := 1.0
 const Motion = preload("res://scripts/effect_motion.gd")
+const Curves = preload("res://scripts/vfx_curves.gd")
+const ReleaseSurface = preload("res://scripts/vfx_release_surface.gd")
+const EffectProfiles = preload("res://scripts/weapon_effect_profiles.gd")
 const Library = preload("res://scripts/vfx_library.gd")
 const WeaponVfx = preload("res://scripts/weapon_vfx.gd")
 const Mechanics = preload("res://scripts/weapon_mechanics.gd")
@@ -48,6 +51,7 @@ func _ready() -> void:
 	material=painted
 
 func reset() -> void:
+	for fx in effects: dispose_surface(fx)
 	effects.clear()
 	current_charged=false
 	current_weapon_art=false
@@ -62,6 +66,14 @@ func reset() -> void:
 	if light: light.queue_redraw()
 	if charged_ground: charged_ground.queue_redraw()
 
+func dispose_surface(fx: Dictionary) -> void:
+	for key in ["surface","mist_surface"]:
+		if not fx.has(key): continue
+		var surface: Node2D=fx[key]
+		fx.erase(key)
+		surface.hide()
+		surface.queue_free()
+
 func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 		life: float, reverse: float = 1.0, delay: float = 0.0, priority: int = 1) -> bool:
 	if effects.size()>=MAX_EFFECTS:
@@ -71,6 +83,7 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 				victim=i
 				break
 		if victim<0: return false
+		dispose_surface(effects[victim])
 		effects.remove_at(victim)
 	var effect := {"kind":kind,"p":at,"aim":aim.normalized() if aim.length_squared()>.01 else Vector2.RIGHT,
 		"color":color,"radius":radius,"life":maxf(.05,life),"age":-delay,"reverse":reverse,"priority":priority,"hero":current_hero,"source":current_source,"texture":current_texture if current_texture!="" else "hero_%d_%s" % [current_hero,"slash" if kind=="echo" else "sigil" if kind=="ring" else "dash" if kind=="lance" else kind]}
@@ -89,6 +102,13 @@ func emit(kind: String, at: Vector2, aim: Vector2, color: Color, radius: float,
 			effect["socket_axis"]=socket.get("blade_axis",Vector2.ZERO)
 			if socket.has("grip"): effect["socket_grip"]=get_global_transform().affine_inverse()*socket.get("stroke_pivot",socket.grip)
 	effects.append(effect)
+	if current_identity.is_empty() and (current_texture.ends_with("_ultimate") or (kind=="dash" and current_texture.begins_with("hero_"))):
+		effect["presentation"]=EffectProfiles.profile([600,606,623,622][current_hero])
+		effect["mist_life"]=float(effect.life)+.08
+		var mist_surface := preload("res://scripts/weapon_release_mist.gd").new()
+		mist_surface.host=self; mist_surface.effect=effect
+		effect["mist_surface"]=mist_surface
+		add_child(mist_surface)
 	return true
 
 func uses_weapon_socket(effect: Dictionary) -> bool:
@@ -100,6 +120,8 @@ func emit_mechanic(kind: String, role: String, at: Vector2, aim: Vector2, color:
 	if not emit(kind,at,aim,color,radius,life,reverse,delay): return false
 	effects.back()["art_role"]=role
 	effects.back()["charged"]=current_charged
+	effects.back()["presentation"]=EffectProfiles.profile(int(current_identity.get("weapon",0)),role)
+	if kind!="charge": effects.back()["mist_life"]=life+clampf(float(effects.back().presentation.attack.tail)*.16,.04,.12)
 	if not current_identity.is_empty() and kind in ["slash","lance","spin","muzzle","cast","echo","route"]:
 		effects.back()["art_source"]=ImageArt.release_source(int(current_identity.weapon),role,current_stage,current_weapon_art)
 		if current_charged: effects.back().art_source=ImageArt.charged_source(int(current_identity.weapon),"release",effects.back().art_source)
@@ -110,6 +132,13 @@ func emit_mechanic(kind: String, role: String, at: Vector2, aim: Vector2, color:
 		var socket: Dictionary=socket_provider.call(current_source)
 		if not socket.is_empty() and absf(get_global_transform().determinant())>.000001:
 			effects.back()["beam_start_local"]=get_global_transform().affine_inverse()*socket.tip
+	# Each released painting owns its shader phase. Charges and ground-clearance
+	# paintings keep their specialized materials and cannot be dissolved by a hit.
+	if kind in ["slash","echo","lance","spin","muzzle","cast","detonation","beam","chain"] and effects.back().get("art_source","") not in ["charged_614_v1","charged_615_v1","charged_619_v1"]:
+		var surface := ReleaseSurface.new()
+		surface.host=self; surface.effect=effects.back()
+		effects.back()["surface"]=surface
+		add_child(surface)
 	return true
 
 func cancel_charge(source: int) -> void:
@@ -303,7 +332,13 @@ func advance(dt: float) -> void:
 	particles.advance(dt)
 	for i in range(effects.size()-1,-1,-1):
 		effects[i].age+=dt
-		if effects[i].age>=effects[i].life: effects.remove_at(i)
+		var render_life := maxf(float(effects[i].life),float(effects[i].get("mist_life",effects[i].life))) if effects[i].has("surface") or effects[i].has("mist_surface") else float(effects[i].life)
+		if effects[i].age>=render_life:
+			dispose_surface(effects[i])
+			effects.remove_at(i)
+		else:
+			if effects[i].has("surface"): effects[i].surface.sync()
+			if effects[i].has("mist_surface"): effects[i].mist_surface.sync()
 	for i in range(shards.size()-1,-1,-1):
 		var s: Dictionary=shards[i]
 		s.age+=dt
@@ -323,6 +358,7 @@ func diamond(target: CanvasItem, extent: Vector2, color: Color) -> void:
 func draw_pass(target: CanvasItem, additive: bool, ground_only: bool = false) -> void:
 	if absf(get_global_transform().determinant())<.000001: return
 	for fx in effects:
+		if fx.has("surface"): continue
 		if fx.age<0: continue
 		var ground_fx: bool=fx.get("art_source","") in ["charged_614_v1","charged_615_v1","charged_619_v1"]
 		if ground_fx!=ground_only: continue
@@ -332,7 +368,7 @@ func draw_pass(target: CanvasItem, additive: bool, ground_only: bool = false) ->
 		var t: float=clampf(fx.age/fx.life,0,1)
 		var profile := Motion.profile(fx.texture,str(fx.kind))
 		var birth := Motion.coverage(float(fx.age),float(fx.life),float(profile.birth))
-		var fade := smoothstep(0.0,.025,float(fx.age))*pow(1.0-t,1.25)
+		var fade := Curves.envelope(float(fx.age),float(fx.life),"flash" if additive else "body",str(fx.kind))
 		if fx.kind=="charge": fade=smoothstep(0.0,.12,t)*(1.0-smoothstep(.85,1.0,t))
 		if fx.has("hold_time"):
 			t=clampf(float(fx.age)/maxf(.01,float(fx.hold_time)),0,1)
@@ -432,12 +468,15 @@ func draw_pass(target: CanvasItem, additive: bool, ground_only: bool = false) ->
 	target.draw_set_transform(Vector2.ZERO)
 
 func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
+	ImageArt.load_mechanic_manifest()
 	var role: String=fx.art_role
 	var source: String=fx.get("art_source",ImageArt.mechanic_source(role))
-	var authored := source.begins_with("weapon_") or source.begins_with("identity_") or source.begins_with("authored_") or source.begins_with("audit_") or source.begins_with("charged_")
+	var authored := source.begins_with("weapon_") or source.begins_with("identity_") or source.begins_with("authored_") or source.begins_with("audit_") or source.begins_with("charged_") or source.begins_with("renewal_")
 	var t := clampf(float(fx.age)/float(fx.life),0,1)
-	# Hold a crisp luminous attack through its contact, then fade during recovery.
-	var fade := smoothstep(0,.008,float(fx.age))*(1-smoothstep(.56,1.0,t))
+	# Flash and material decay independently instead of holding a static neon stamp.
+	var fade := Curves.weapon_envelope(float(fx.age),float(fx.life),fx.get("presentation",{}),"flash" if additive else "body",str(fx.kind))
+	if additive: fade=maxf(fade,Curves.envelope(float(fx.age),float(fx.life),"wake",str(fx.kind))*.16)
+	if fx.kind=="charge": fade=smoothstep(0,.008,float(fx.age))*(1-smoothstep(.56,1.0,t))
 	if fx.has("hold_time"):
 		t=clampf(float(fx.age)/maxf(.01,float(fx.hold_time)),0,1)
 		fade=smoothstep(0,.08,float(fx.age))*(.88+.12*sin(float(fx.age)*12))
@@ -491,6 +530,10 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 	var angle: float=fx.aim.angle()
 	var at: Vector2=fx.p
 	var stroke := Mechanics.heavy_stroke(int(fx.get("identity",{}).get("weapon",-1)),role) if fx.has("identity") else {}
+	var layout: Dictionary=ImageArt.mechanics.get(source,{}).get("presentation",{})
+	if not layout.is_empty():
+		var aspect: Array=layout.get("aspect",[1.8,1.4])
+		stroke={"plane":str(layout.get("plane","diagonal")),"angle":float(layout.get("angle",0)),"aspect":Vector2(float(aspect[0]),float(aspect[1]))}
 	if source.begins_with("charged_"):
 		var plane: String=ImageArt.mechanics.get(source,{}).get("plane","")
 		stroke={} if plane=="radial" else {"plane":plane,"angle":0.0,"aspect":Vector2(1.4,1.8) if plane=="overhead" else Vector2(1.8,1.4)} if plane in ["overhead","diagonal"] else {}
@@ -512,7 +555,7 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 	elif Mechanics.body_centered(role):
 		# Full circle attacks are centered on the captured body, never on a blade tip.
 		bounds=Vector2.ONE*r*2
-		angle=float(fx.stage)*.25 if role=="motion_quake" else t*.7*float(fx.reverse)
+		angle=0.0 if role=="motion_quake" else fx.aim.angle()+TAU*(1-pow(1-t,2.5))*float(fx.reverse)
 		var body_pose := get_global_transform()*Transform2D(angle,at)
 		body_pose.origin.y-=float(fx.get("height",0))
 		# Circular payload follows authoritative reach, independent of sprite blade length.
@@ -570,7 +613,7 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 				elif int(fx.route)==3: offset=Vector2(-r*.3,r*.55); bounds*=.72
 			var mirror := Vector2(1,float(fx.reverse))
 			if source=="identity_600_compact_v2": mirror=Vector2(float(fx.reverse),1)
-			if authored and source!="identity_600_compact_v2" and ImageArt.distinct_stage(int(fx.identity.weapon),int(fx.stage)): mirror.y=1
+			if authored and source!="identity_600_compact_v2" and ImageArt.distinct_source_stage(int(fx.identity.weapon),int(fx.stage),source): mirror.y=1
 			var contact := ImageArt.mechanic_contact(role,bounds,source) if fx.kind!="charge" else Vector2.ZERO
 			var release: Vector2=socket.tip+offset.rotated(angle)-(contact*mirror).rotated(angle)
 			if role.begins_with("motion_") and fx.kind!="charge" and fx.has("socket_grip"):
@@ -607,6 +650,11 @@ func draw_mechanic(target: CanvasItem, fx: Dictionary, additive: bool) -> void:
 	target.draw_set_transform(Vector2.ZERO)
 
 func _draw() -> void:
+	# Preview tools also seek effect ages directly; keep per-effect uniforms in
+	# sync with that deterministic path, without depending on wall-clock TIME.
+	for fx in effects:
+		if fx.has("surface"): fx.surface.sync()
+		if fx.has("mist_surface"): fx.mist_surface.sync()
 	draw_pass(self,false)
 
 func draw_light() -> void:

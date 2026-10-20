@@ -1,0 +1,161 @@
+{
+  "weapon": 608,
+  "batch": 1,
+  "status": "awaiting_user_acceptance",
+  "layers": {
+    "surface": {
+      "id": 608,
+      "layer": "surface",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-31b703e0-17a8-4ec8-8f06-537415926ab4.png",
+      "file": "res://assets/combat/weapon-batch-01/608/surface.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "d3c1cf1a71d447a32a09d7b163c8f57aa55fc3ecdbe50047a441a3737b54d0dd",
+      "size": [
+        2172,
+        724
+      ],
+      "uv": [
+        0.007366482504604052,
+        0.1505524861878453,
+        0.9815837937384899,
+        0.75
+      ],
+      "aspect": 3.9263351749539597
+    },
+    "charge": {
+      "id": 608,
+      "layer": "charge",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-bc251701-fc8d-47b9-983a-b4fe7bb9dfc4.png",
+      "file": "res://assets/combat/weapon-batch-01/608/charge.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "26206f1c75823d06c2543a23c1db452fbaef5d478561a671cd1fd904e270ea1d",
+      "size": [
+        1774,
+        887
+      ],
+      "uv": [
+        0.06482525366403608,
+        0.25366403607666294,
+        0.8500563697857948,
+        0.5073280721533259
+      ],
+      "aspect": 3.351111111111111
+    },
+    "impact": {
+      "id": 608,
+      "layer": "impact",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-4f92a3c4-b4fd-4072-b286-adac702b8711.png",
+      "file": "res://assets/combat/weapon-batch-01/608/impact.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "41de77adbaa55323d1e76b3e8772f96b0f7123a709093e00b6879497926fa14c",
+      "size": [
+        1586,
+        992
+      ],
+      "uv": [
+        0.013871374527112233,
+        0.1159274193548387,
+        0.9709962168978562,
+        0.7993951612903226
+      ],
+      "aspect": 1.9419924337957124
+    },
+    "mist": {
+      "id": 608,
+      "layer": "mist",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-4e6834a6-4492-4176-91a1-2324136c464d.png",
+      "file": "res://assets/combat/weapon-batch-01/608/mist.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "42e3d287348b25594fdbaf1aa32c0e0fa40a0f8a755eb648df317d000ae4e3ef",
+      "size": [
+        2172,
+        724
+      ],
+      "uv": [
+        0.015193370165745856,
+        0.23342541436464087,
+        0.9613259668508287,
+        0.6450276243093923
+      ],
+      "aspect": 4.471092077087794
+    },
+    "ground": {
+      "id": 608,
+      "layer": "ground",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-792908a0-933b-4c6e-bbc5-71a4c4504f6f.png",
+      "file": "res://assets/combat/weapon-batch-01/608/ground.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "9a013b94041a89550359c9b57e10fc366e7769dbdb50fefc80eb9d8976086283",
+      "size": [
+        2142,
+        734
+      ],
+      "uv": [
+        0.029878618113912233,
+        0.20844686648501362,
+        0.9495798319327731,
+        0.6989100817438693
+      ],
+      "aspect": 3.9649122807017543
+    },
+    "shard": {
+      "id": 608,
+      "layer": "shard",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-0203eaa8-1a95-4f5d-b975-18b6796148a3.png",
+      "file": "res://assets/combat/weapon-batch-01/608/shard.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "b9a94e16acdfee398416f923c9a2a7f50f8c906f5748550be309b7d5b60330d4",
+      "size": [
+        1774,
+        887
+      ],
+      "uv": [
+        0.22040586245772267,
+        0.266065388951522,
+        0.5422773393461104,
+        0.5580608793686584
+      ],
+      "aspect": 1.9434343434343435
+    },
+    "trail": {
+      "id": 608,
+      "layer": "trail",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-8bab8c22-55f0-4ece-bad3-5f29a1cec423.png",
+      "file": "res://assets/combat/weapon-batch-01/608/trail.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "02406f34390078adaab541934180532c6432a470518110f00e2d0feaee66d193",
+      "size": [
+        2172,
+        724
+      ],
+      "uv": [
+        0.016114180478821363,
+        0.212707182320442,
+        0.9774401473296501,
+        0.5994475138121547
+      ],
+      "aspect": 4.891705069124424
+    }
+  }
+}

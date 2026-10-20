@@ -929,7 +929,7 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 		p.flask_time=maxf(0,p.flask_time-dt)
 		if p.flask_time<=.3 and not p.flask_committed:
 			p["flask_pending_commit"]=true
-	if p.height>0 or p.height_velocity>0:
+	if (p.height>0 or p.height_velocity>0) and not (p.has("build_art_sequence") and bool(p.build_art_sequence.grounded)):
 		# Integrate the ballistic arc exactly, so apex/airtime are frame independent.
 		p.height+=p.height_velocity*dt-600*dt*dt
 		p.height_velocity-=1200*dt

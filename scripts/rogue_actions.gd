@@ -1,6 +1,7 @@
 extends RefCounted
 const Build = preload("res://scripts/rogue_build.gd")
 const Content = preload("res://scripts/rogue_content.gd")
+const Choreography = preload("res://scripts/weapon_batch_choreography.gd")
 
 static func height_hit(player_height: float, tag: String) -> bool:
 	match tag:
@@ -11,7 +12,7 @@ static func height_hit(player_height: float, tag: String) -> bool:
 	return player_height<=100
 
 static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
-	if not s.authority() or p.status!="active" or s.raid.phase!="rogue_combat" or (charged.is_empty() and p.art_cd>0) or p.reload>0 or p.swing_time>0 or p.attack>0 or p.cast_time>0 or p.dodge_time>0 or p.flask_time>0 or (p.height>0 and p.air_art) or s.pending_ultimates.has(p.id): return false
+	if not s.authority() or p.status!="active" or s.raid.phase!="rogue_combat" or p.has("build_art_sequence") or (charged.is_empty() and p.art_cd>0) or p.reload>0 or p.swing_time>0 or p.attack>0 or p.cast_time>0 or p.dodge_time>0 or p.flask_time>0 or (p.height>0 and p.air_art) or s.pending_ultimates.has(p.id): return false
 	var move: Dictionary=WeaponArts.of(int(p.weapon)).duplicate(true) if charged.is_empty() else charged.duplicate(true)
 	var family := Catalog.weapon_family(int(p.weapon))
 	if not charged.is_empty() and family==0 and p.ammo<=0:
@@ -28,6 +29,7 @@ static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
 		if family==0: p.ammo-=1
 		Build.action_event(s,p,"A")
 	var ctx := Build.context(s,p,"art" if charged.is_empty() else "attack")
+	ctx["vfx_action"]="art" if charged.is_empty() else "heavy"
 	if not charged.is_empty(): ctx["charged"]=true
 	var windup: float={1:.35,2:.5,0:.30,3:.45}.get(family,.35)
 	if p.height>0:
@@ -52,12 +54,22 @@ static func start_art(s, p: Dictionary, charged: Dictionary = {}) -> bool:
 	# The art's windup can differ from the previous normal attack's windup.
 	p["build_strike_windup"]=windup
 	p["build_strike_kind"]=str(move.kind)
-	s.broadcast_combat({"kind":"windup","p":p.p,"aim":p.aim,"weapon":family,"weapon_index":p.weapon,"windup":windup,"id":p.id,"combo":2,"vfx":ctx.get("vfx",{})})
+	if charged.is_empty() and Choreography.enabled(int(p.weapon)):
+		p.erase("build_pending_art")
+		p["build_art_sequence"]={"pending":{"move":move,"ctx":ctx,"aim":p.aim.normalized(),"damage":s.weapon_damage(p)*float(move.damage)},"weapon":int(p.weapon),"step":0,"age":0.0,"moved":0.0,"grounded":p.height<=0}
+		p.cast_time=Choreography.duration(int(p.weapon)); p.attack=p.cast_time
+		sequence_windup(s,p)
+		for key in ["hammer_cost","rotation","relay"]: p.build_buffs.erase(key)
+		return true
+	s.broadcast_combat({"kind":"windup","p":p.p,"aim":p.aim,"weapon":family,"weapon_index":p.weapon,"windup":windup,"id":p.id,"combo":2,"vfx":ctx.get("vfx",{}),"vfx_action":ctx.vfx_action,"attack_kind":str(move.kind),"reach":float(move.reach),"width":float(move.get("width",35)),"height":float(p.get("height",0))})
 	if charged.is_empty():
 		for key in ["hammer_cost","rotation","relay"]: p.build_buffs.erase(key)
 	return true
 
 static func tick(s, p: Dictionary, dt: float) -> void:
+	if p.has("build_art_sequence"):
+		sequence_tick(s,p,dt)
+		return
 	if not p.has("build_pending_art"): return
 	var pending: Dictionary=p.build_pending_art
 	if p.status!="active" or p.dodge_time>0 or p.cast_time<=0:
@@ -72,6 +84,61 @@ static func tick(s, p: Dictionary, dt: float) -> void:
 	if not pending.split and not pending.move.get("charged",false): p.swing_time=minf(p.swing_time,.12)
 	if pending.split:
 		p["build_pending_art_tail"]={"remaining":.24,"pending":pending}
+
+static func sequence_windup(s,p: Dictionary) -> void:
+	var seq: Dictionary=p.build_art_sequence
+	var step: Array=Choreography.of(int(seq.weapon)).steps[int(seq.step)]
+	var aim: Vector2=Vector2(seq.pending.aim).rotated(float(step[5]))
+	p.swing_total=float(step[0]); p.swing_time=p.swing_total
+	p.strike_aim=aim; p["build_strike_windup"]=p.swing_total
+	p["build_strike_kind"]=str(step[7]) if step.size()>7 else "cone"
+	s.broadcast_combat({"kind":"windup","p":p.p,"aim":aim,"weapon":Catalog.weapon_family(int(p.weapon)),"weapon_index":p.weapon,"id":p.id,"windup":float(step[0]),"vfx_action":"art","attack_kind":p.build_strike_kind,"reach":Choreography.phase_reach(step,int(seq.step)),"width":70.0,"height":float(p.height),"combo":int(seq.step),"sequence_step":int(seq.step),"sequence_shape":str(step[6]),"sequence_final":int(seq.step)==Choreography.of(int(seq.weapon)).steps.size()-1,"vfx":seq.pending.ctx.get("vfx",{})})
+
+static func sequence_tick(s,p: Dictionary,dt: float) -> void:
+	var seq: Dictionary=p.build_art_sequence
+	if p.status!="active" or s.raid.phase!="rogue_combat" or p.dodge_time>0 or p.cast_time<=0 or int(p.weapon)!=int(seq.weapon):
+		p.erase("build_art_sequence")
+		p.swing_time=0.0; p.cast_time=0.0
+		s.broadcast_combat({"kind":"hold_cancel","p":p.p,"id":p.id})
+		return
+	# Consume phase boundaries exactly, including a long simulation frame.
+	var remaining := maxf(0,dt)
+	while remaining>0 and p.has("build_art_sequence"):
+		var step: Array=Choreography.of(int(seq.weapon)).steps[int(seq.step)]
+		var used := minf(remaining,maxf(.000001,float(step[0])-float(seq.age)))
+		seq.age=float(seq.age)+used; remaining-=used
+		var t := clampf(float(seq.age)/float(step[0]),0,1)
+		var travel := float(step[3])*smoothstep(0,1,t)
+		var base_aim: Vector2=seq.pending.aim
+		var side_travel: float=float(step[10])*smoothstep(0,1,t) if step.size()>10 else 0.0
+		var side := Vector2(-base_aim.y,base_aim.x)
+		p.p=s.ruins.move(p.p,base_aim*(travel-float(seq.moved))+side*(side_travel-float(seq.get("side_moved",0))),18)
+		seq.moved=travel
+		seq["side_moved"]=side_travel
+		if bool(seq.grounded):
+			p.height=sin(t*PI)*float(step[4]); p.height_velocity=0.0
+		if float(seq.age)+.000001<float(step[0]): continue
+		if bool(seq.grounded): p.height=0.0
+		var pending: Dictionary=seq.pending.duplicate(true)
+		# All authored releases remain one cast for per-cast procs and refunds.
+		pending.ctx=seq.pending.ctx
+		pending.aim=base_aim.rotated(float(step[5]))
+		pending.move.kind=str(step[7]) if step.size()>7 else "circle" if int(seq.weapon)==614 and int(seq.step)==1 else "cone"
+		if step.size()>8: pending.move.count=int(step[8])
+		if step.size()>9: pending.move.radius=float(step[9])
+		pending.move.reach=Choreography.phase_reach(step,int(seq.step)); pending.move.width=30.0 if Catalog.weapon_family(int(seq.weapon))==3 else 70.0
+		pending.move["sequence_step"]=int(seq.step)
+		pending.move["sequence_shape"]=str(step[6]); pending.move["sequence_final"]=int(seq.step)==Choreography.of(int(seq.weapon)).steps.size()-1
+		pending.move["target_limit"]=7 if int(seq.step)==Choreography.of(int(seq.weapon)).steps.size()-1 else 5
+		pending.move["attack_height"]=0.0
+		pending.ctx["sequence_step"]=int(seq.step)
+		pending.ctx["sequence_final"]=pending.move.sequence_final
+		resolve_art(s,p,pending,float(step[1]))
+		seq.step=int(seq.step)+1; seq.age=0.0; seq.moved=0.0; seq.side_moved=0.0
+		if int(seq.step)>=Choreography.of(int(seq.weapon)).steps.size():
+			p.erase("build_art_sequence"); p.swing_time=.22; p.swing_total=float(step[0])+.22
+			p["build_landing_time"]=.18
+		else: sequence_windup(s,p)
 
 static func tail(s, p: Dictionary, dt: float) -> void:
 	if not p.has("build_pending_art_tail"): return
@@ -111,6 +178,8 @@ static func projectile(s, p: Dictionary, aim: Vector2, damage: float, reach: flo
 	if spell=="scatter": shot["pellet_hits"]=pellets
 	shot["charged"]=bool(ctx.get("charged",false))
 	shot["ground_origin"]=p.p
+	shot["sequence_step"]=int(ctx.get("sequence_step",-1))
+	shot["sequence_final"]=bool(ctx.get("sequence_final",false))
 	s.tag_visual_projectile(shot)
 	s.bullets.append(shot)
 
@@ -126,28 +195,29 @@ static func resolve_art(s, p: Dictionary, pending: Dictionary, share: float) -> 
 	var reach: float=move.reach
 	if family==3 and int(ctx.get("route",-1))==1:
 		aim=(art_target(s,p,pending)-p.p).normalized()
-	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":2,"art":move.name,"charged":bool(move.get("charged",false)),"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{})})
+	s.broadcast_combat({"kind":"strike","p":p.p,"aim":aim,"weapon":family,"weapon_index":p.weapon,"spell":spell,"pattern":"thrust" if kind=="thrust" else "spin" if kind=="circle" else "cleave","attack_kind":kind,"width":float(move.get("width",35)),"radius":float(move.get("radius",100)),"reach":reach,"id":p.id,"combo":int(move.get("sequence_step",2)),"art":move.name,"charged":bool(move.get("charged",false)),"height":p.height,"combo_route":int(ctx.get("route",-1)),"vfx":ctx.get("vfx",{}),"sequence_step":int(move.get("sequence_step",-1)),"sequence_shape":str(move.get("sequence_shape","")),"sequence_final":bool(move.get("sequence_final",false))})
 	if kind=="volley":
 		var count: int=int(move.get("count",3))
 		var pellets: Dictionary={}
 		for i in count:
 			var weight: float=[.5,.3,.2][i] if count==3 else 1.0/1.48 if spell=="scatter" else 1.0/count
+			if int(move.get("sequence_step",-1))>=0: weight=1.0/count
 			var pierce: int=int(move.get("pierce",1))
 			var next: float=clampf(.65+(.05 if Build.core(p,8)==1 else .08 if Build.core(p,8)==2 else 0),0,.8)
 			var decay: Array=[1.0,next,next] if pierce>1 else []
 			projectile(s,p,aim.rotated((i-(count-1)*.5)*float(move.get("spread",.12))),damage*weight,reach,spell,ctx,pierce,decay,pellets)
 		return
 	var center: Vector2=art_target(s,p,pending) if kind=="burst" else p.p
-	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",100)),"id":p.id,"weapon_index":p.weapon,"charged":bool(move.get("charged",false)),"vfx":ctx.get("vfx",{})})
-	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"height":float(p.height),"spell":spell,"id":p.id,"weapon_index":p.weapon,"charged":bool(move.get("charged",false)),"vfx":ctx.get("vfx",{})})
+	if kind=="burst": s.broadcast_combat({"kind":"spell_burst","p":center,"aim":aim,"spell":spell,"radius":float(move.get("radius",100)),"id":p.id,"weapon_index":p.weapon,"charged":bool(move.get("charged",false)),"vfx":ctx.get("vfx",{}),"vfx_action":ctx.vfx_action,"sequence_step":int(move.get("sequence_step",-1)),"sequence_shape":str(move.get("sequence_shape","")),"sequence_final":bool(move.get("sequence_final",false))})
+	elif kind=="beam": s.broadcast_combat({"kind":"spell_beam","p":p.p,"aim":aim,"reach":reach,"width":float(move.get("width",35)),"height":float(p.height),"spell":spell,"id":p.id,"weapon_index":p.weapon,"charged":bool(move.get("charged",false)),"vfx":ctx.get("vfx",{}),"vfx_action":ctx.vfx_action,"sequence_step":int(move.get("sequence_step",-1)),"sequence_shape":str(move.get("sequence_shape","")),"sequence_final":bool(move.get("sequence_final",false))})
 	var index := 0
 	for e in ordered_targets(s,p.p):
-		if index>=(3 if family in [2,3] else 5): break
+		if index>=int(move.get("target_limit",3 if family in [2,3] else 5)): break
 		if e.hp<=0 or not s.ruins.clear_line(p.p,e.p): continue
 		var delta: Vector2=e.p-p.p
 		var hit := false
 		match kind:
-			"thrust", "beam", "circle", "cone": hit=s.enemy_bodies.attack_hit(e,p.p,aim,reach,s.elapsed,true,kind,float(move.get("width",35)),.5,float(p.height))
+			"thrust", "beam", "circle", "cone": hit=s.enemy_bodies.attack_hit(e,p.p,aim,reach,s.elapsed,true,kind,float(move.get("width",35)),.5,float(move.get("attack_height",p.height)))
 			"burst": hit=s.enemy_bodies.attack_hit(e,center,aim,float(move.get("radius",100)),s.elapsed,true,"circle") and s.ruins.clear_line(center,e.p)
 		if not hit: continue
 		var falloff: float=1.0 if index==0 else .65

@@ -8,6 +8,9 @@ const WeaponVfx = preload("res://scripts/weapon_vfx.gd")
 var stylized = preload("res://scripts/stylized_vfx.gd").new()
 var finish: Node2D
 var light_pool: Node3D
+var weapon_world: Node3D
+var weapon_flights: Node3D
+var weapon_view: Node2D
 var extraction_vortex: Texture2D = preload("res://assets/world/landmarks/extraction-vortex.png")
 const SPELL_CELLS := {"meteor":0,"needle":1,"chain":2,"moon":3,"prism":4,"scatter":5,"vortex":6,"eclipse":7}
 var motes: Array = []
@@ -17,6 +20,22 @@ var extract_flashes: Array = []
 var rune_patches: Array = []
 var flames: Array = []
 var trauma := 0.0
+var sample_kick := {}
+var sample_reactions := {}
+var crystal_reflections: Array=[]
+
+func impact_camera_offset() -> Vector2:
+	if sample_kick.is_empty(): return Vector2.ZERO
+	var age := float(sample_kick.age)
+	return Vector2(sample_kick.aim)*float(sample_kick.force)*cos(age*52)*exp(-age*25)
+
+func enemy_impact_pose(id: int) -> Dictionary:
+	var reaction: Dictionary=sample_reactions.get(id,{})
+	if reaction.is_empty(): return {"offset":Vector2.ZERO,"scale":Vector2.ONE}
+	var envelope := exp(-float(reaction.age)*32)
+	var compression := Vector2(1-.13*envelope,1+.07*envelope) if absf(Vector2(reaction.aim).x)>=absf(Vector2(reaction.aim).y) else Vector2(1+.07*envelope,1-.13*envelope)
+	return {"offset":Vector2(reaction.aim)*float(reaction.force)*envelope,
+		"scale":compression}
 var numbers: Array = []
 var particles=preload("res://scripts/combat_particles.gd").new()
 # The same danger palette the ground telegraph uses, so the charge motes and the
@@ -66,9 +85,29 @@ func _ready() -> void:
 	add_child(stylized)
 	finish=preload("res://scripts/combat_finish.gd").new(); add_child(finish)
 	if field.get("world_3d")!=null:
+		weapon_world=preload("res://scripts/weapon_combat_vfx_3d.gd").new()
+		weapon_world.camera=field.world_3d.view_camera
+		weapon_world.socket_provider=field.weapon_effect_socket
+		field.world_3d.add_child(weapon_world)
+		weapon_flights=preload("res://scripts/weapon_projectile_vfx_3d.gd").new()
+		weapon_flights.camera=field.world_3d.view_camera
+		field.world_3d.add_child(weapon_flights)
 		light_pool=preload("res://scripts/combat_light_pool.gd").new()
 		field.world_3d.add_child(light_pool)
 		finish.lights=light_pool.pulse
+	elif field.has_method("camera_offset"):
+		weapon_view=preload("res://scripts/weapon_vfx_viewport.gd").new()
+		weapon_view.field=field; add_child(weapon_view)
+		weapon_world=preload("res://scripts/weapon_combat_vfx_3d.gd").new()
+		weapon_world.camera=weapon_view.view_camera
+		weapon_world.socket_provider=weapon_view.socket
+		weapon_world.body_gain=1.0
+		weapon_world.melee_reach_gain=1.0
+		weapon_view.world.add_child(weapon_world)
+		weapon_flights=preload("res://scripts/weapon_projectile_vfx_3d.gd").new()
+		weapon_flights.camera=weapon_view.view_camera
+		weapon_flights.body_gain=1.0
+		weapon_view.world.add_child(weapon_flights)
 	if field.has_method("weapon_effect_socket"):
 		stylized.socket_provider=field.weapon_effect_socket
 	spell_light=Node2D.new()
@@ -79,6 +118,8 @@ func _ready() -> void:
 	spell_light.draw.connect(draw_spells)
 
 func reset() -> void:
+	if is_instance_valid(weapon_world): weapon_world.reset()
+	if is_instance_valid(weapon_flights): weapon_flights.reset()
 	motes.clear()
 	particles.reset()
 	enemy_particle_states.clear()
@@ -91,6 +132,8 @@ func reset() -> void:
 	if light_pool: light_pool.reset()
 	numbers.clear()
 	trauma=0.0
+	sample_kick.clear(); sample_reactions.clear()
+	crystal_reflections.clear()
 
 # Loaded on first use: the necromancer's art is optional, so a missing file
 # degrades to individual common textures if optional art is unavailable.
@@ -155,6 +198,7 @@ func spell_fx(spell: String, at: Vector2, size: Vector2, duration: float, angle:
 	motes[motes.size()-1]["spell_art"]=true
 
 func event(data: Dictionary) -> void:
+	if is_instance_valid(weapon_view): weapon_view.sync()
 	if field.has_method("ground_transform"): transform=field.ground_transform()
 	var at: Vector2=data.p
 	if at.distance_to(field.camera)>1100:
@@ -172,6 +216,18 @@ func event(data: Dictionary) -> void:
 	if not data.has("hero") and not source.is_empty(): source_hero=int(source.get("hero",source_hero))
 	var visual_data := data
 	if data.kind=="impact":
+		var sample_id := preload("res://scripts/weapon_motion_design.gd").identity(int(data.get("weapon_index",-1)))
+		if preload("res://scripts/weapon_motion_design.gd").CURVES.has(sample_id) and float(data.get("damage",0))>0:
+			var strong := str(data.get("vfx_action","normal"))!="normal"
+			var family := Catalog.weapon_family(int(data.weapon_index))
+			var weight := family==2
+			if (strong or weight) and crystal_reflections.size()<8:
+				crystal_reflections.append({"age":0.0,"p":at,"color":WeaponVfx.profile(int(data.weapon_index)).color,"radius":110.0 if weight else 85.0})
+			var force := (9.0 if strong else 6.0) if weight else (4.5 if strong else 2.8) if family==1 else (3.0 if strong else 1.6)
+			# One short directional kick, capped across a crowd of simultaneous hits.
+			if sample_kick.is_empty() or float(sample_kick.age)>.065 or force>float(sample_kick.force):
+				sample_kick={"age":0.0,"force":force,"aim":aim_dir.normalized()}
+			sample_reactions[int(data.get("enemy_id",-1))]={"age":0.0,"force":4.0 if weight else 2.0,"aim":aim_dir.normalized()}
 		visual_data=data.duplicate()
 		var radius := 20.0
 		for enemy in field.session.enemies:
@@ -181,9 +237,14 @@ func event(data: Dictionary) -> void:
 			var screen_aim := get_global_transform().basis_xform(aim_dir).normalized()
 			var contact := get_global_transform()*at-screen_aim*radius*.65-Vector2(0,26)
 			visual_data["contact_p"]=get_global_transform().affine_inverse()*contact
-	stylized.event(visual_data,source_hero)
-	finish.event(visual_data)
-	spell_energy(data,spell,at,aim_dir)
+	var world_handled: bool=is_instance_valid(weapon_world) and weapon_world.event(data,source_hero)
+	if not world_handled:
+		stylized.event(visual_data,source_hero)
+		finish.event(visual_data)
+		spell_energy(data,spell,at,aim_dir)
+	elif data.kind=="impact" and light_pool:
+		var crystal_cut := preload("res://scripts/weapon_motion_design.gd").identity(int(data.weapon_index))==600 and str(data.get("vfx_action","normal"))=="art"
+		light_pool.pulse(at,Color("f494c3") if crystal_cut else WeaponVfx.profile(int(data.weapon_index)).color,1.1 if crystal_cut else .7,.22 if crystal_cut else .16)
 	match data.kind:
 		"spell_beam":
 			if not painted_weapon: spell_fx("prism",at,Vector2.ONE*70,0.26,angle)
@@ -204,7 +265,7 @@ func event(data: Dictionary) -> void:
 			motes.back()["socket_source"]=int(data.get("id",-1))
 		"strike":
 			if weapon==2: trauma=maxf(trauma,.3)
-			if weapon in [0,3]:
+			if weapon in [0,3] and not world_handled:
 				spawn(4,at,Vector2.ONE*18,.12,angle,Color.WHITE)
 				motes.back()["launch_source"]=int(data.get("id",-1))
 				if field.has_method("weapon_effect_socket") and absf(get_global_transform().determinant())>.000001:
@@ -256,18 +317,42 @@ func legacy(kind: String, at: Vector2) -> void:
 
 func _process(dt: float) -> void:
 	if not field.visible:
+		if is_instance_valid(weapon_view): weapon_view.sync()
 		return
+	if is_instance_valid(weapon_view): weapon_view.sync()
 	elapsed+=dt
+	for i in range(crystal_reflections.size()-1,-1,-1):
+		crystal_reflections[i].age+=dt
+		if float(crystal_reflections[i].age)>.31: crystal_reflections.remove_at(i)
+	if field.get("backdrop")!=null:
+		for layer in field.backdrop.get_children():
+			if layer is Node2D: layer.queue_redraw()
+	if not sample_kick.is_empty():
+		sample_kick.age+=dt
+		if float(sample_kick.age)>.18: sample_kick.clear()
+	for target in sample_reactions.keys():
+		sample_reactions[target].age+=dt
+		if float(sample_reactions[target].age)>.16: sample_reactions.erase(target)
 	energy.advance(dt)
 	for player in field.session.players.values():
 		if player.status!="active" or player.dodge_time>0 or (not player.pending_strike and player.cast_time<=0 and not player.has("weapon_hold")):
 			stylized.cancel_charge(int(player.id))
+			if is_instance_valid(weapon_world): weapon_world.cancel_charge(int(player.id))
 	stylized.advance(dt)
 	finish.advance(dt)
+	if is_instance_valid(weapon_world): weapon_world.advance(dt)
 	var nearby: Array=[]
 	for bullet in field.session.bullets:
-		if Vector2(bullet.p).distance_to(field.camera)<1100: nearby.append(bullet)
-	finish.observe(nearby,dt)
+		if Vector2(bullet.p).distance_to(field.camera)<1100:
+			if bullet.get("boss_projectile",false) or bullet.has("rogue_tone"): continue
+			# Simulation flight height describes the collision plane; the sprite's
+			# weapon is held above that plane. Presentation lift never alters it.
+			var visual: Dictionary=bullet.duplicate()
+			visual.height=float(bullet.get("height",0))+55.0
+			nearby.append(visual)
+	if is_instance_valid(weapon_flights):
+		weapon_flights.advance(dt); weapon_flights.observe(nearby,dt)
+	else: finish.observe(nearby,dt)
 	if light_pool: light_pool.advance(dt)
 	observe_particles(dt)
 	trauma=move_toward(trauma,0,dt*2.6)
@@ -675,6 +760,7 @@ func stamp_spell(cell: int, at: Vector2, size: Vector2, angle: float, tint: Colo
 	spell_light.draw_set_transform(Vector2.ZERO)
 
 func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> void:
+	if is_instance_valid(weapon_flights): return
 	if bullet.p.distance_to(field.camera)>1100: return
 	var world := get_global_transform()
 	if absf(world.determinant())<.000001: return
@@ -693,11 +779,12 @@ func draw_run_projectile(target: CanvasItem, bullet: Dictionary, glow: bool) -> 
 	var tint := Color(identity.color)
 	tint.s=maxf(tint.s,.72)
 	tint.v=1.7
-	if source.begins_with("authored_") or source.begins_with("charged_"): tint=Color.WHITE
+	var original_paint := source.begins_with("authored_") or source.begins_with("charged_") or source.begins_with("renewal_")
+	if original_paint: tint=Color.WHITE
 	tint.a=.48+forge*.008+quality*.004 if glow else 1.0
 	var bounds: Vector2=semantics.projectile_size(role,int(bullet.weapon_index))
 	if source.begins_with("charged_"): bounds*=1.35
-	if source.begins_with("authored_") or source.begins_with("charged_"):
+	if original_paint:
 		# Flight has an authoritative longitudinal/transverse footprint.
 		# Wide painted wakes must not turn a needle into a broad collision wave.
 		target.draw_texture_rect_region(art.mechanic_texture(source),Rect2(-bounds*.5,bounds),art.mechanic_ink(source),tint)
@@ -760,6 +847,7 @@ func observe_particles(dt: float) -> void:
 	if elapsed-last_particle_trail>=.035:
 		last_particle_trail=elapsed
 		for b in field.session.bullets:
+			if is_instance_valid(weapon_flights) and b.has("weapon_index") and b.has("fx_id"): continue
 			if b.get("boss_projectile",false) or b.p.distance_to(field.camera)>1100: continue
 			var index := int(b.get("weapon_index",field.session.players.get(b.get("owner",0),{}).get("weapon",3)))
 			var style := particles.weapon_style(index)

@@ -1,0 +1,7 @@
+{
+  "file": "res://assets/combat/ground-rupture-v3/earth.png",
+  "original": "C:/Users/wangk/.codex/generated_images/01a1575a-b51f-7823-8a0e-d02dc8b742de/exec-fec41b2d-c151-4a47-83b1-eb29f6778d91.png",
+  "generator": "built-in image_gen",
+  "sha256": "c41e1f2b7c56fbfd7805006cdd394f5c962ab8a54f260c9baa9eacd527dc94fc",
+  "usage": "Continuous terrain rupture under physical stone-breaking attacks; reveal follows strike direction; original RGBA pixels preserved"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "weapon": 607,
+    "kind": "basic",
+    "file": "res://assets/combat/weapon-batch-01/607/basic-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-4034c286-39d6-43e8-af93-03ad8f2454ed.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 607,
+    "kind": "finisher",
+    "file": "res://assets/combat/weapon-batch-01/607/finisher-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-7b834843-a3d9-4616-adfb-e56d21ab2cda.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 608,
+    "kind": "basic",
+    "file": "res://assets/combat/weapon-batch-01/608/basic-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-c4cf22f1-3b98-4f3d-a04a-a4779ddb2b98.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 608,
+    "kind": "finisher",
+    "file": "res://assets/combat/weapon-batch-01/608/finisher-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-cc4c6869-8ac3-40c5-9d35-2615e57bceac.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 612,
+    "kind": "basic",
+    "file": "res://assets/combat/weapon-batch-01/612/basic-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-cf554478-edd2-44b2-9e00-214e741db149.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 612,
+    "kind": "finisher",
+    "file": "res://assets/combat/weapon-batch-01/612/finisher-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-11939cdd-1140-4947-9b63-768c2f974dce.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 614,
+    "kind": "basic",
+    "file": "res://assets/combat/weapon-batch-01/614/basic-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a6faad72-5b7f-4420-b5fc-76f577a2a3fe.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 614,
+    "kind": "finisher",
+    "file": "res://assets/combat/weapon-batch-01/614/finisher-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-20a0b3e4-9870-4045-a3ab-b5e89185c46e.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 617,
+    "kind": "basic",
+    "file": "res://assets/combat/weapon-batch-01/617/basic-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-86b06e4d-8d1a-49e5-9470-a83123d34065.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  },
+  {
+    "weapon": 617,
+    "kind": "finisher",
+    "file": "res://assets/combat/weapon-batch-01/617/finisher-peak-v2.png",
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-16c4466d-1412-4ec1-a488-69e9b1163159.png",
+    "tool": "built-in imagegen",
+    "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "id": 612,
+  "action": "art",
+  "generator": "built-in ImageGen",
+  "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-2470502b-e56c-4c52-a0ad-2974fed81e63.png",
+  "file": "res://assets/combat/weapon-batch-01/612/art-shape-v1.png",
+  "layout": "one column, four registered actual-shaped stages",
+  "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2097f3bb-e91a-4570-ab48-a2b587630c28.png",
+  "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\612.png",
+  "status": "pending_frame_registration_and_visual_review"
+}

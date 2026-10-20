@@ -1,0 +1,139 @@
+{
+  "weapon": 634,
+  "layers": {
+    "normal": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.0634765625,
+        0.06770833333333333,
+        0.3974609375,
+        0.10807291666666667
+      ],
+      "aspect": 2.4518072289156625,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "heavy": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.525390625,
+        0.047526041666666664,
+        0.4345703125,
+        0.15494791666666666
+      ],
+      "aspect": 1.8697478991596639,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "art": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.0380859375,
+        0.23697916666666666,
+        0.455078125,
+        0.17513020833333334
+      ],
+      "aspect": 1.7323420074349443,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "impact": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.5458984375,
+        0.20247395833333334,
+        0.4072265625,
+        0.208984375
+      ],
+      "aspect": 1.2990654205607477,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "charge": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.0732421875,
+        0.412109375,
+        0.3974609375,
+        0.18815104166666666
+      ],
+      "aspect": 1.4083044982698962,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "shard": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.63671875,
+        0.4798177083333333,
+        0.2041015625,
+        0.10026041666666667
+      ],
+      "aspect": 1.3571428571428572,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "mist": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.0400390625,
+        0.6002604166666666,
+        0.421875,
+        0.19791666666666666
+      ],
+      "aspect": 1.4210526315789473,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "trail": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.5283203125,
+        0.6868489583333334,
+        0.4267578125,
+        0.06966145833333333
+      ],
+      "aspect": 4.08411214953271,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "projectile": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.0830078125,
+        0.8697916666666666,
+        0.3857421875,
+        0.057291666666666664
+      ],
+      "aspect": 4.488636363636363,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "projectile_art": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.5224609375,
+        0.8515625,
+        0.439453125,
+        0.08072916666666667
+      ],
+      "aspect": 3.629032258064516,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "surface": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.0634765625,
+        0.06770833333333333,
+        0.3974609375,
+        0.10807291666666667
+      ],
+      "aspect": 2.4518072289156625,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    },
+    "ground": {
+      "file": "res://assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "uv": [
+        0.5458984375,
+        0.20247395833333334,
+        0.4072265625,
+        0.208984375
+      ],
+      "aspect": 1.2990654205607477,
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866"
+    }
+  },
+  "family": 0,
+  "status": "pending_visual_qa"
+}

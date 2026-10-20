@@ -1,0 +1,2749 @@
+{
+	"version": 6,
+	"weapons": {
+		"600": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/art-body.png",
+						"ink": [
+							9,
+							0,
+							305,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/heavy-body.png",
+						"ink": [
+							19,
+							0,
+							293,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/heavy-mist.png",
+						"ink": [
+							0,
+							0,
+							312,
+							314
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/normal-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							310,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/600.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "blade",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/600.0/keyframe-anticipation.png",
+					"ink": [
+						0,
+						33,
+						314,
+						281
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/600.0/keyframe-release.png",
+					"ink": [
+						0,
+						31,
+						313,
+						283
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/600.0/keyframe-contact.png",
+					"ink": [
+						0,
+						9,
+						314,
+						305
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/600.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						21,
+						307,
+						293
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "blood",
+			"name": "绯红单手剑",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-600.png",
+			"sha256": "89692ac831d2afb46c9d3c1f1aa37f078e33920e58e11d6a071d939e3d769b89",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"601": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/art-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							303,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/heavy-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/heavy-mist.png",
+						"ink": [
+							0,
+							1,
+							303,
+							313
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/normal-body.png",
+						"ink": [
+							25,
+							1,
+							289,
+							312
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/601.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "blade",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/601.0/keyframe-anticipation.png",
+					"ink": [
+						33,
+						19,
+						280,
+						295
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/601.0/keyframe-release.png",
+					"ink": [
+						0,
+						7,
+						313,
+						307
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/601.0/keyframe-contact.png",
+					"ink": [
+						0,
+						13,
+						314,
+						301
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/601.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						0,
+						312,
+						314
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "metal",
+			"name": "鸦喙刺剑",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-601.png",
+			"sha256": "9688b4ead156d266469723b61971a4c8cce13de81f7555e8578adde5668d46ea",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"602": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/art-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/heavy-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/heavy-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/normal-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/602.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "blade",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/602.0/keyframe-anticipation.png",
+					"ink": [
+						19,
+						15,
+						295,
+						299
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/602.0/keyframe-release.png",
+					"ink": [
+						0,
+						19,
+						313,
+						295
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/602.0/keyframe-contact.png",
+					"ink": [
+						0,
+						25,
+						314,
+						289
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/602.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						35,
+						307,
+						279
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "cloth",
+			"name": "回环弯刀",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-602.png",
+			"sha256": "86e9b6f59610e8fb95d6bedb3808d10c259c9bae2d941402953041eac8af4b62",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"603": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/art-body.png",
+						"ink": [
+							21,
+							0,
+							293,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							299,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/heavy-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/heavy-mist.png",
+						"ink": [
+							0,
+							0,
+							293,
+							314
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/normal-body.png",
+						"ink": [
+							25,
+							0,
+							289,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							303,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/603.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "blade",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/603.0/keyframe-anticipation.png",
+					"ink": [
+						25,
+						8,
+						289,
+						306
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/603.0/keyframe-release.png",
+					"ink": [
+						0,
+						19,
+						313,
+						295
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/603.0/keyframe-contact.png",
+					"ink": [
+						1,
+						9,
+						313,
+						305
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/603.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						17,
+						303,
+						297
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "blood",
+			"name": "血棘双刃",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-603.png",
+			"sha256": "c043354d9b765187ea7122d5b66d70227a91420a23b34b915c174243d9d10004",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"613": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/art-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/heavy-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/heavy-mist.png",
+						"ink": [
+							0,
+							0,
+							312,
+							314
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/normal-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/613.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "great",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/613.0/keyframe-anticipation.png",
+					"ink": [
+						0,
+						0,
+						314,
+						314
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/613.0/keyframe-release.png",
+					"ink": [
+						0,
+						8,
+						313,
+						306
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/613.0/keyframe-contact.png",
+					"ink": [
+						0,
+						17,
+						314,
+						297
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/613.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						9,
+						307,
+						305
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "tide",
+			"name": "断潮巨刃",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-613.png",
+			"sha256": "d267891b71393450743b65dd265dd23cac66df14a337b1361bf9af9cdd4aae6a",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"615": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/art-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							307,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/heavy-body.png",
+						"ink": [
+							25,
+							0,
+							289,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/heavy-mist.png",
+						"ink": [
+							0,
+							7,
+							299,
+							307
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/normal-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							310,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/615.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "great",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/615.0/keyframe-anticipation.png",
+					"ink": [
+						0,
+						0,
+						314,
+						314
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/615.0/keyframe-release.png",
+					"ink": [
+						0,
+						7,
+						313,
+						307
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/615.0/keyframe-contact.png",
+					"ink": [
+						1,
+						17,
+						313,
+						297
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/615.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						9,
+						309,
+						305
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "stone",
+			"name": "熔炉巨锤",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-615.png",
+			"sha256": "cd33e045fc9daf989bff486ad9bd2b645928930a3c864428ced6fd21c80931f2",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"624": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/art-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							303,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/heavy-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/heavy-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/normal-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/624.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "ranged",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/624.0/keyframe-anticipation.png",
+					"ink": [
+						0,
+						0,
+						314,
+						314
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/624.0/keyframe-release.png",
+					"ink": [
+						0,
+						7,
+						313,
+						307
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/624.0/keyframe-contact.png",
+					"ink": [
+						0,
+						8,
+						314,
+						306
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/624.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						9,
+						312,
+						305
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "metal",
+			"name": "守夜步枪",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-624.png",
+			"sha256": "82eebe5bc60d2af77adefc556084d17b2801bf957aecea9e46fbf4b2c132df25",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		},
+		"636": {
+			"actions": {
+				"art": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/art-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							0,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/art-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							941,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/art-mist.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							941,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/art-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							941,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				},
+				"heavy": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/heavy-body.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							0,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/heavy-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							314
+						],
+						"region": [
+							627,
+							627,
+							314,
+							314
+						],
+						"size": [
+							314,
+							314
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/heavy-mist.png",
+						"ink": [
+							0,
+							0,
+							312,
+							314
+						],
+						"region": [
+							941,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/heavy-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							314
+						],
+						"region": [
+							314,
+							627,
+							313,
+							314
+						],
+						"size": [
+							313,
+							314
+						]
+					}
+				},
+				"normal": {
+					"body": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/normal-body.png",
+						"ink": [
+							17,
+							0,
+							297,
+							313
+						],
+						"region": [
+							0,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"impact": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/normal-impact.png",
+						"ink": [
+							0,
+							0,
+							314,
+							313
+						],
+						"region": [
+							627,
+							314,
+							314,
+							313
+						],
+						"size": [
+							314,
+							313
+						]
+					},
+					"mist": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/normal-mist.png",
+						"ink": [
+							0,
+							0,
+							307,
+							313
+						],
+						"region": [
+							941,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					},
+					"trail": {
+						"file": "res://assets/combat/weapon-vfx-v6/split/636.0/normal-trail.png",
+						"ink": [
+							0,
+							0,
+							313,
+							313
+						],
+						"region": [
+							314,
+							314,
+							313,
+							313
+						],
+						"size": [
+							313,
+							313
+						]
+					}
+				}
+			},
+			"anchor": [
+				0.2,
+				0.5
+			],
+			"family": "magic",
+			"impact_anchor": [
+				0.5,
+				0.5
+			],
+			"keyframes": [
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/636.0/keyframe-anticipation.png",
+					"ink": [
+						9,
+						15,
+						305,
+						299
+					],
+					"region": [
+						0,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/636.0/keyframe-release.png",
+					"ink": [
+						0,
+						13,
+						313,
+						301
+					],
+					"region": [
+						314,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/636.0/keyframe-contact.png",
+					"ink": [
+						0,
+						9,
+						314,
+						305
+					],
+					"region": [
+						627,
+						0,
+						314,
+						314
+					],
+					"size": [
+						314,
+						314
+					]
+				},
+				{
+					"file": "res://assets/combat/weapon-vfx-v6/split/636.0/keyframe-aftermath.png",
+					"ink": [
+						0,
+						7,
+						307,
+						307
+					],
+					"region": [
+						941,
+						0,
+						313,
+						314
+					],
+					"size": [
+						313,
+						314
+					]
+				}
+			],
+			"material": "star",
+			"name": "星辉法杖",
+			"plate": "res://assets/combat/weapon-vfx-v6/plates/weapon-636.png",
+			"sha256": "20c11439671b35519f9e83f980694e5e7664161cd4308905f36ab033d1692a08",
+			"timing": {
+				"art": [
+					0.22,
+					0.38
+				],
+				"heavy": [
+					0.18,
+					0.3
+				],
+				"normal": [
+					0.1,
+					0.18
+				]
+			}
+		}
+	}
+}

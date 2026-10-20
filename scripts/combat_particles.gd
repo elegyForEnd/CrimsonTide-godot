@@ -39,6 +39,8 @@ static func weapon_style(index: int) -> String: return preload("res://scripts/we
 static func boss_style(key: String) -> String:
 	var authored := preload("res://scripts/boss_effect_language.gd").particle_style(key)
 	return authored if not authored.is_empty() else BOSS_STYLES.get(key,"spark")
+static func follows_velocity(style: String) -> bool:
+	return style in ["spark","ember","electric","soul","water"] or style.begins_with("charge")
 func spawn(at: Vector2, velocity: Vector2, color: Color, style: String, power: float=1.0, source: String="", target: Vector2=Vector2.ZERO, gathering: bool=false) -> void:
 	draw_dirty=true
 	if particles.size()>=MAX_PARTICLES:
@@ -56,6 +58,8 @@ func spawn(at: Vector2, velocity: Vector2, color: Color, style: String, power: f
 	if style=="electric": lifetime=.19; gravity=Vector2.ZERO; drag=3.0
 	if gathering: lifetime=.45; gravity=Vector2.ZERO; size*=.75; drag=.6
 	particles.append({"p":at,"previous":at,"v":velocity,"age":0.0,"life":lifetime,"color":color,"style":style,"size":size,"gravity":gravity,"drag":drag,"angle":rng.randf()*TAU,"spin":rng.randf_range(-4,4),"source":source,"target":target,"gather":gathering,"seed":rng.randf()*10})
+	# Keep RNG consumption stable, but never give a moving streak a random first pose.
+	if follows_velocity(style): particles.back().angle=velocity.angle() if velocity.length_squared()>.000001 else 0.0
 	if not source.is_empty() or gathering:
 		if not source_particles.has(source): source_particles[source]=[]
 		source_particles[source].append(particles.back())
@@ -157,7 +161,9 @@ func advance(dt: float) -> void:
 		else: p.v+=p.gravity*dt
 		p.v*=exp(-p.drag*dt)
 		p.p+=p.v*dt
-		p.angle+=p.spin*dt
+		if follows_velocity(p.style):
+			if p.v.length_squared()>.000001: p.angle=p.v.angle()
+		else: p.angle+=p.spin*dt
 		if p.has("mask") and not safe_particle(p.mask,p.p,float(p.size)): remove_particle(i)
 	queue_redraw()
 	if light: light.queue_redraw()
@@ -172,7 +178,13 @@ func prepare_draw_items(world: Transform2D) -> void:
 		color.a=fade
 		var size: float=p.size*(.65+.35*sin(t*PI))
 		var screen: Vector2=world*p.p
-		draw_items.append({"pose":Transform2D(float(p.angle),screen),"screen":screen,"color":color,"fade":fade,"size":size,"t":t,"style":p.style,"seed":p.seed,"speed":p.v.length()})
+		var angle: float=p.angle
+		if follows_velocity(p.style):
+			# Ground foreshortening, rotation and mirroring affect the motion direction.
+			# Both geometry and glow consume this same screen-space pose.
+			var heading: Vector2=world.basis_xform(Vector2.from_angle(angle))
+			if heading.length_squared()>.000001: angle=heading.angle()
+		draw_items.append({"pose":Transform2D(angle,screen),"screen":screen,"color":color,"fade":fade,"size":size,"t":t,"style":p.style,"seed":p.seed,"speed":p.v.length()})
 	draw_frame=Engine.get_process_frames(); draw_world=world; draw_dirty=false
 
 func draw_particles(target: CanvasItem, glow: bool) -> void:

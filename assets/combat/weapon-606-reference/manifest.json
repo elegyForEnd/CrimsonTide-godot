@@ -1,0 +1,135 @@
+{
+  "weapon": 606,
+  "status": "awaiting_user_acceptance",
+  "layers": {
+    "surface": {
+      "layer": "surface",
+      "generator": "built-in ImageGen",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-9871363f-27e0-4887-ac02-3c1da47f2942.png",
+      "file": "res://assets/combat/weapon-606-reference/surface-v2.png",
+      "status": "awaiting_material_review",
+      "revision": 2,
+      "uv": [
+        0.010128913443830571,
+        0.1878453038674033,
+        0.9834254143646409,
+        0.643646408839779
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "aspect": 4.583690987124464,
+      "sha256": "f8649b6735802ac385b8cd912991ac29e857bf8a1da06f6e10496444936187f8"
+    },
+    "impact": {
+      "layer": "impact",
+      "generator": "built-in ImageGen",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "material_reference": "assets/combat/weapon-606-reference/surface-v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-8cda05db-4d62-4aa0-b5a9-8b38ed2c2d2c.png",
+      "file": "res://assets/combat/weapon-606-reference/impact-v2.png",
+      "status": "awaiting_material_review",
+      "revision": 2,
+      "uv": [
+        0.017825311942959002,
+        0.059893048128342244,
+        0.964349376114082,
+        0.8994652406417112
+      ],
+      "size": [
+        1683,
+        935
+      ],
+      "aspect": 1.929845422116528,
+      "sha256": "f753668b002ef1b2e817ba0294cf446c16104cf2c46ffb59c3abc9d0ec98c753"
+    },
+    "mist": {
+      "layer": "mist",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-ae8abad8-deea-4c5f-9497-30a1c5edb898.png",
+      "file": "res://assets/combat/weapon-606-reference/mist-v3.png",
+      "revision": 3,
+      "status": "awaiting_material_review",
+      "reference_style": "606 polished blue-white material, component silhouette corrected",
+      "uv": [
+        0.05386740331491713,
+        0.1270718232044199,
+        0.8835174953959485,
+        0.761049723756906
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "aspect": 3.4827586206896552,
+      "sha256": "4e1e99dc246b7adee43dd1c844a427b8f6fcb26171347d5933f9ba3fc7cc7f8e"
+    },
+    "ground": {
+      "layer": "ground",
+      "generator": "built-in ImageGen",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "material_reference": "assets/combat/weapon-606-reference/surface-v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-19e69210-6a7f-4a57-8f3c-64353f5cc4fd.png",
+      "file": "res://assets/combat/weapon-606-reference/ground-v2.png",
+      "status": "awaiting_material_review",
+      "revision": 2,
+      "uv": [
+        0.007826887661141806,
+        0.1505524861878453,
+        0.9848066298342542,
+        0.7914364640883977
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "aspect": 3.7329842931937174,
+      "sha256": "4b0720bfc877abd1b01b2aa5d132a50b9e3d2ebc4fa0d8f880d3c868d786a116"
+    },
+    "shard": {
+      "layer": "shard",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-be71699b-8ad8-4a0d-8cc9-5876da6dabfa.png",
+      "file": "res://assets/combat/weapon-606-reference/shard-v3.png",
+      "revision": 3,
+      "status": "awaiting_material_review",
+      "reference_style": "606 polished blue-white material, component silhouette corrected",
+      "uv": [
+        0.12852311161217586,
+        0.22435174746335965,
+        0.7491544532130778,
+        0.5073280721533259
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "aspect": 2.953333333333333,
+      "sha256": "2b4e14bf7564c9b0217244c9f9b4d1229ac473dfdbba3b5bde90bcd83924f855"
+    },
+    "charge": {
+      "layer": "charge",
+      "generator": "built-in ImageGen",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "material_reference": "assets/combat/weapon-606-reference/surface-v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-b5b447ee-f626-48a1-935f-383728f2abfd.png",
+      "file": "res://assets/combat/weapon-606-reference/charge-v2.png",
+      "status": "awaiting_material_review",
+      "revision": 2,
+      "uv": [
+        0.019729425028184894,
+        0.22998872604284104,
+        0.9650507328072153,
+        0.5862457722660653
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "aspect": 3.292307692307692,
+      "sha256": "81faf94ec60bf91c03b0869b02017f27c02d949be8a8b08b3aeb0e3480cbbb5d"
+    }
+  }
+}

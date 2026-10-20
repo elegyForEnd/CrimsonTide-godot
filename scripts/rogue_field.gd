@@ -41,6 +41,8 @@ func _ready() -> void:
 	combat.field=self
 	combat.modulate=Color.WHITE
 	add_child(combat)
+	var reflected=preload("res://scripts/weapon_crystal_ground.gd").new()
+	reflected.field=self; backdrop.add_child(reflected)
 	enemy_fx=preload("res://scripts/rogue_enemy_vfx.gd").new()
 	enemy_fx.field=self
 	add_child(enemy_fx)
@@ -70,10 +72,10 @@ func ground_transform() -> Transform2D:
 	return Transform2D(0,-camera_offset())
 
 func camera_offset() -> Vector2:
-	return Vector2(camera_x,camera_y)
+	return Vector2(camera_x,camera_y)+(combat.impact_camera_offset() if is_instance_valid(combat) else Vector2.ZERO)
 
 func camera_target(at: Vector2) -> Vector2:
-	var target := camera_offset()
+	var target := Vector2(camera_x,camera_y)
 	var screen := at-target
 	if screen.x<CAMERA_DEAD_ZONE.position.x: target.x=at.x-CAMERA_DEAD_ZONE.position.x
 	elif screen.x>CAMERA_DEAD_ZONE.end.x: target.x=at.x-CAMERA_DEAD_ZONE.end.x
@@ -114,7 +116,7 @@ func weapon_effect_socket(source: int) -> Dictionary:
 	for i in charge_points.size(): charge_points[i]=canvas*charge_points[i]
 	for points: Array in charge_paths:
 		for i in points.size(): points[i]=canvas*Vector2(points[i])
-	return {"charge_paths":charge_paths,"charge_points":charge_points,"tip":canvas*(origin+tip*HERO_SCALE),"stroke_tip":canvas*stroke_tip,"stroke_pivot":canvas*stroke_pivot,"stroke_center":canvas*Vector2(mount.center),"aim":canvas.basis_xform(aim).normalized(),
+	return {"actor_p":p.p,"actor_height":float(p.height),"swing_remaining":maxf(float(p.swing_time),float(p.cast_time)),"charge_paths":charge_paths,"charge_points":charge_points,"tip":canvas*(origin+tip*HERO_SCALE),"stroke_tip":canvas*stroke_tip,"stroke_pivot":canvas*stroke_pivot,"stroke_center":canvas*Vector2(mount.center),"aim":canvas.basis_xform(aim).normalized(),
 		"grip":canvas*(origin+grip*HERO_SCALE),"blade_axis":canvas.basis_xform(tip-grip).normalized(),"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":p.swing_time>0 or p.cast_time>0}
 
 func _process(dt: float) -> void:
@@ -353,7 +355,8 @@ func _draw() -> void:
 			# Rendering and authoritative damage use the same pose and foot pivot.
 			var pose: Dictionary=session.enemy_bodies.pose(actor,session.elapsed,true)
 			var texture: Texture2D=pose.texture
-			draw_set_transform((at-camera_offset()+Vector2(0,float(pose.hover))).round(),0,Vector2(float(pose.facing),1))
+			var reaction := combat.enemy_impact_pose(int(actor.id))
+			draw_set_transform((at-camera_offset()+Vector2(0,float(pose.hover))+Vector2(reaction.offset)).round(),0,Vector2(float(pose.facing),1)*Vector2(reaction.scale))
 			var tint := Color(1.6,1.2,1.2) if actor.get("flash",0)>0 else Color.WHITE
 			if boss_models.draws(actor):
 				draw_set_transform(at-camera_offset())

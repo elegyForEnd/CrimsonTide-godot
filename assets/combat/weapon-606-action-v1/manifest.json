@@ -1,0 +1,154 @@
+{
+  "weapon": 606,
+  "status": "awaiting_user_acceptance",
+  "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+  "layers": {
+    "surface": {
+      "layer": "surface",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-2df83f92-d39b-42f0-b23b-9d0140dd7348.png",
+      "file": "res://assets/combat/weapon-606-action-v1/surface.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.014732965009208104,
+        0.19060773480662985,
+        0.9686924493554327,
+        0.7058011049723757
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "aspect": 4.117416829745597,
+      "sha256": "d8db43712ceb0985b84ee4e70f491cd26a46f5b4fa315f692b14d8d829a073bb"
+    },
+    "impact": {
+      "layer": "impact",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-cc135975-837e-4625-9062-8ab181d79804.png",
+      "file": "res://assets/combat/weapon-606-action-v1/impact.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.040983606557377046,
+        0.1814516129032258,
+        0.9287515762925599,
+        0.7016129032258065
+      ],
+      "size": [
+        1586,
+        992
+      ],
+      "aspect": 2.1163793103448274,
+      "sha256": "e0ffeb153da2c3f285a29ca4d25b734d16ffaa54384a2b0ce36942327aed5480"
+    },
+    "mist": {
+      "layer": "mist",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-5852a319-8dba-4647-a930-68303d08c19c.png",
+      "file": "res://assets/combat/weapon-606-action-v1/mist.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.017797017797017797,
+        0.2552910052910053,
+        0.9518999518999519,
+        0.593915343915344
+      ],
+      "size": [
+        2079,
+        756
+      ],
+      "aspect": 4.4075723830734965,
+      "sha256": "80860cdd18cd1393c37a12f0dccbffe0659e3e1dcde5fb390965c9fee13c6ec7"
+    },
+    "ground": {
+      "layer": "ground",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-8babed8d-9802-42a3-9a72-8a9eef9ee9da.png",
+      "file": "res://assets/combat/weapon-606-action-v1/ground.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.05156537753222836,
+        0.26519337016574585,
+        0.9484346224677717,
+        0.5607734806629834
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "aspect": 5.073891625615763,
+      "sha256": "830fe01bed6d0f93b64134b9cf5af1dcd189736ab9af6b08b047a5f1794a3801"
+    },
+    "shard": {
+      "layer": "shard",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-cb5f3738-01b5-4440-b1ef-9ce7b756a779.png",
+      "file": "res://assets/combat/weapon-606-action-v1/shard.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.1386696730552424,
+        0.3134160090191657,
+        0.7232243517474634,
+        0.37316798196166856
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "aspect": 3.876132930513595,
+      "sha256": "81b71fd233e13600b24e0f25f21dc6714d8a8c5c21fe8946c15b63cbef8a3f53"
+    },
+    "charge": {
+      "layer": "charge",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-e8c9b13c-fed1-43ec-8cca-550a30c95c0a.png",
+      "file": "res://assets/combat/weapon-606-action-v1/charge.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.3258064516129032,
+        0.3309692671394799,
+        0.39838709677419354,
+        0.34397163120567376
+      ],
+      "size": [
+        1860,
+        846
+      ],
+      "aspect": 2.5463917525773194,
+      "sha256": "8d985cee0eb14b9816e2775ca1448eb9406362c45e950ab0a4a243eceb8bd63d"
+    },
+    "trail": {
+      "layer": "trail",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-442ff5ee-6c67-465e-8d43-ed3f1ef61447.png",
+      "file": "res://assets/combat/weapon-606-action-v1/trail.png",
+      "storyboard": "output/weapon-606-action-reference/full-action-v1.png",
+      "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "status": "generated_pending_visual_review",
+      "uv": [
+        0.03551296505073281,
+        0.3878241262683202,
+        0.9385569334836528,
+        0.2277339346110485
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "aspect": 8.242574257425742,
+      "sha256": "ee59342694271d520ab430999e935a24e4b413f5dcbddd5bf4e47c8dfdcac5be"
+    }
+  }
+}

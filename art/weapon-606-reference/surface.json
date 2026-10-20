@@ -1,0 +1,9 @@
+{
+  "layer": "surface",
+  "generator": "built-in ImageGen",
+  "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+  "prompt_file": "art/weapon-606-reference/prompts/surface.txt",
+  "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-1ed7e314-92c7-4d88-9e5c-03e19ff94ca9.png",
+  "file": "res://assets/combat/weapon-606-reference/surface.png",
+  "status": "pending_visual_review"
+}

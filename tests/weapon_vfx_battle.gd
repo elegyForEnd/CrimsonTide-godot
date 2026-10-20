@@ -24,7 +24,7 @@ func run() -> void:
 	field.set_process(false); field.combat.set_process(false)
 	var received: Array=[]
 	s.combat_event.connect(func(data): received.append(data.duplicate(true)))
-	for weapon in [600,603,606,613,615,617,631,637,643]:
+	for weapon in range(600,648)+range(21):
 		p.weapon=weapon; p.combo=2
 		p.attack=0; p.cast_time=0; p.swing_time=0; p.dodge_time=0
 		p.strike_aim=Vector2.RIGHT; p.aim=Vector2.RIGHT
@@ -35,17 +35,34 @@ func run() -> void:
 		p.build_strike_context.route=2
 		field.combat.reset(); s.bullets.clear()
 		Actions.normal(s,p)
-		check(received.back().kind=="strike" and received.back().weapon_index==weapon and received.back().combo_route==2,"Authoritative strike sends concrete weapon and combo route")
-		field.combat.stylized.advance(.065)
+		check(received.any(func(event): return event.kind=="strike" and event.weapon_index==weapon and event.combo_route==2),"Authoritative strike sends concrete weapon and combo route")
+		field.combat.weapon_world.advance(.065)
 		field.queue_redraw(); field.combat.queue_redraw(); field.combat.spell_light.queue_redraw()
 		await process_frame; await RenderingServer.frame_post_draw
-		root.get_texture().get_image().save_png("res://build/weapon-vfx-battle-%d.png" % weapon)
-		check(not field.combat.stylized.effects.is_empty(),"Real battle consumes weapon events")
+		if weapon in [600,603,606,613,615,617,631,637,643]: root.get_texture().get_image().save_png("res://build/weapon-vfx-battle-%d.png" % weapon)
+		check(not field.combat.weapon_world.effects.is_empty(),"Real battle consumes weapon events in the native 3D world")
+		check(field.combat.stylized.effects.is_empty(),"World weapon releases do not duplicate the old Canvas painting")
 		for effect in field.combat.stylized.effects:
 			if effect.has("socket_local"):
 				var socket: Dictionary=field.weapon_effect_socket(1)
 				check((field.combat.stylized.get_global_transform()*effect.socket_local).distance_to(socket.stroke_tip)<.05,"Released combat geometry captures the real weapon mount")
 	# Fixed-facing artwork supplies a release point, never the mouse strike direction.
+	# Exercise the real left-button hold lifecycle, not synthetic presentation events.
+	var hold=preload("res://scripts/weapon_hold_attack.gd")
+	field.combat.reset(); p.weapon=613; p.attack=0; p.swing_time=0; p.cast_time=0; p.reload=0; p.dodge_time=0; p.flask_time=0; p.height=0; p.mana=1000; p.art_cd=0; p.air_art=false
+	hold.begin(s,p); hold.tick(s,p,{},.4)
+	check(field.combat.weapon_world.charges.has(1),"Actual hold gesture starts native spatial gathering")
+	field.combat.weapon_world.advance(.04)
+	check(field.combat.weapon_world.charges[1].ribbon.visible,"Actual held weapon shows gathering even outside an active swing")
+	hold.tick(s,p,{},1.0)
+	check(field.combat.weapon_world.charges[1].data.ready,"Actual full-charge event activates ready feedback")
+	hold.release(s,p)
+	check(p.has("build_pending_art") and p.build_pending_art.move.charged,"Releasing left-button hold retains charged gameplay rules")
+	p.build_pending_art.remaining=0; Actions.tick(s,p,0)
+	check(field.combat.weapon_world.charges.is_empty() and field.combat.weapon_world.effects.any(func(fx): return fx.action=="heavy" and fx.kind=="release"),"Actual release replaces gathering with an independent heavy effect")
+	field.combat.reset(); p.attack=0; p.swing_time=0; p.cast_time=0
+	hold.begin(s,p); hold.tick(s,p,{},.4); hold.cancel(s,p)
+	check(field.combat.weapon_world.charges.is_empty() and field.combat.weapon_world.effects.is_empty(),"Actual cancellation immediately removes all gathering geometry")
 	for hero in 4:
 		p.hero=hero
 		for weapon in range(600,648):
