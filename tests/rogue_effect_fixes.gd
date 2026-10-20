@@ -143,7 +143,7 @@ func run() -> void:
 	reset(24); f.p.build_core="WC007"; Build.action_event(f.s,f.p,"D")
 	check(Build.buff(f.p,"reload_haste",f.s.elapsed)==0,"WC007 no reload haste without sliding shot")
 	Build.action_event(f.s,f.p,"A"); f.s.elapsed+=6
-	check(Build.buff(f.p,"reload_haste",f.s.elapsed)==.08,"WC007 sliding shot haste persists until reload")
+	check(Build.buff(f.p,"reload_haste",f.s.elapsed)==0,"WC007 stays dormant after forging removal")
 	Build.reload_event(f.s,f.p)
 	check(Build.buff(f.p,"reload_haste",f.s.elapsed)==0,"WC007 haste consumed by one completed reload")
 	reset(); f.gear(18); f.p.swing_time=1; var origin: Vector2=f.p.p

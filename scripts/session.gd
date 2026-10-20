@@ -485,6 +485,7 @@ func equipment_hp(p: Dictionary) -> float:
 
 const RogueEquipment = preload("res://scripts/rogue_equipment.gd")
 const RogueBuild = preload("res://scripts/rogue_build.gd")
+const RogueAbilities = preload("res://scripts/rogue_abilities.gd")
 const RogueActions = preload("res://scripts/rogue_actions.gd")
 const RogueVariants = preload("res://scripts/rogue_variants.gd")
 const RogueCurses = preload("res://scripts/rogue_curses.gd")
@@ -1794,7 +1795,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 				if roguelike.active(self):
 					if p.height>0:
 						p.air_dodge=true; p.dodge_time=.18; p.invuln=.08
-					p.dash=2.0*(1.0-RogueBuild.stat(self,p,"dodge_cdr"))
+					p.dash=maxf(0.8,2.0*(1.0-RogueBuild.stat(self,p,"dodge_cdr")-RogueAbilities.dodge_cdr(p)))
 					RogueBuild.action_event(self,p,"D")
 				broadcast_combat({"kind":"dodge","p":p.p,"aim":p.dodge_dir,"id":id})
 				emit_effect("dash",p.p)
@@ -1805,7 +1806,7 @@ func perform(id: int, kind: String, payload: Dictionary = {}) -> void:
 					return
 				p["attack_buffer"]=0.0
 				p.combo_timeout=0.0
-				p.skill=18.0
+				p.skill=18.0*(1.0-RogueAbilities.ultimate_cdr(p))
 				# A2 (R9 hook 8): CU09「迟滞」的 `cooldown` 同样作用在奥义冷却上（与武器技的
 				# `p.art_cd`、连招技的 `p.build_hero_cd` 是同一份诅咒的三个消费点）。
 				# 非魔境路径不读该键，保持 18.0 原值。
@@ -3422,7 +3423,9 @@ func move_player(p: Dictionary, direction: Vector2, sprint: bool, dt: float, spe
 	var before: Vector2=p.p
 	if p.dodge_time>0:
 		var step := minf(dt,p.dodge_time)
-		p.p=ruins.move(p.p,p.dodge_dir*((80.0/.18 if p.get("height",0)>0 else DODGE_DISTANCE/DODGE_DURATION)*(1.12 if roguelike.active(self) and RogueBuild.gear(p,61) else 1.0))*step)
+		var dodge_reach := (80.0/.18 if p.get("height",0)>0 else DODGE_DISTANCE/DODGE_DURATION)*(1.12 if roguelike.active(self) and RogueBuild.gear(p,61) else 1.0)
+		if roguelike.active(self): dodge_reach*=RogueAbilities.dodge_distance(p)
+		p.p=ruins.move(p.p,p.dodge_dir*dodge_reach*step)
 		p.dodge_time=maxf(0,p.dodge_time-dt)
 		p.move_dir=p.dodge_dir
 		p.motion="dodge" if p.dodge_time>0 else "idle"
@@ -3494,7 +3497,7 @@ func attack(p: Dictionary) -> void:
 	p.combo=(int(p.combo)+1)%3 if p.combo_timeout>0 else 0
 	p.combo_timeout=maxf(1.2,float(weapon.rate)*equipment_rate(p)+.65)
 	# A looted weapon of matching quality swings faster than the issue weapon.
-	var rate: float=weapon.rate*equipment_rate(p)
+	var rate: float=weapon.rate*equipment_rate(p)*RogueAbilities.attack_interval(p)
 	p.attack=rate
 	p.swing_total=rate
 	p["build_strike_kind"]=""

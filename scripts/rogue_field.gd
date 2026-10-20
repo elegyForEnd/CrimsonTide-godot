@@ -215,15 +215,16 @@ func draw_rewards() -> void:
 	for drop in session.raid.get("reward_drops",[]):
 		var age: float=maxf(0,session.elapsed-float(drop.born))
 		var at: Vector2=drop.p
-		var tone: Color=Catalog.BAG_TIERS[int(drop.tier)].color
+		var drop_kind := str(drop.get("category","gear"))
+		var tone: Color=Color("83dcff") if drop_kind=="ability" else Catalog.BAG_TIERS[int(drop.tier)].color
 		var travel: float=clampf(age/maxf(0.01,float(drop.delay)),0,1)
 		if travel<1 and not chest.is_empty(): at=chest.p.lerp(at,travel)+Vector2(0,-sin(travel*PI)*100)
 		glow(at,tone,22)
-		var category_name: String={"gear":"装备","weapon":"武器","boon":"天赋","attribute":"属性灵晶"}.get(drop.get("category","gear"),"秘藏")
-		var picture: Texture2D=art.item_icons[{"gear":4,"weapon":0,"boon":12}.get(drop.get("category","gear"),10)] if drop.offer.is_empty() else art.offer_icon(drop.offer)
+		var category_name: String={"gear":"装备","weapon":"武器","boon":"天赋","attribute":"属性灵晶","ability":"战技铭刻"}.get(drop_kind,"秘藏")
+		var picture: Texture2D=art.item_icons[{"gear":4,"weapon":0,"boon":12,"ability":8}.get(drop_kind,10)] if drop.offer.is_empty() else art.offer_icon(drop.offer)
 		draw_texture_rect(picture,Rect2(at+Vector2(-24,-46-sin(clock*2.5+drop.id)*4),Vector2(48,48)),false,tone if drop.offer.is_empty() else Color.WHITE)
 		Semantics.reward(self,at-Vector2(0,18),tone,0,clock+drop.id,false)
-		var drop_label: String="属性灵晶 +1" if drop.offer.has("attribute_points") else (Catalog.BAG_TIERS[int(drop.tier)].quality+category_name if drop.offer.is_empty() else Catalog.BAG_TIERS[int(drop.tier)].quality)
+		var drop_label: String="属性灵晶 +1" if drop.offer.has("attribute_points") else ("战技铭刻" if drop_kind=="ability" else Catalog.BAG_TIERS[int(drop.tier)].quality+category_name if drop.offer.is_empty() else Catalog.BAG_TIERS[int(drop.tier)].quality)
 		draw_string(get_theme_default_font(),at+Vector2(-35,24),drop_label,HORIZONTAL_ALIGNMENT_LEFT,110,13,tone)
 		if drop.id==nearest and travel>=1:
 			var caption: String="%s · E 三选一" % category_name if drop.offer.is_empty() else "%s · E 拾取" % drop.offer.name

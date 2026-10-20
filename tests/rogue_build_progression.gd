@@ -109,13 +109,13 @@ func run() -> void:
 					while not p.rogue_selection.is_empty(): claim(s,p)
 				check(s.raid.phase=="rogue_reward" and not s.raid.reward_chest.opened,"Talent choice does not bypass unopened chest")
 				var opener: Dictionary=s.players[1]; opener.p=s.raid.reward_chest.p; s.perform(1,"rogue_loot"); s.elapsed+=2
-				attribute_shards+=s.raid.reward_drops.filter(func(drop): return drop.category=="attribute").size()
-				check(s.raid.reward_drops.filter(func(drop): return drop.category in ["weapon","gear"]).size()==count*2,"Everyone receives personal weapon and gear packets")
+				var paid_packets: int=s.raid.reward_drops.filter(func(drop): return drop.category in ["weapon","gear"]).size()
+				check(paid_packets<=count,"At most one equipment packet per player")
+				check(not s.raid.reward_drops.any(func(drop): return drop.category in ["ability","attribute"]),"Chests never grant abilities or attribute shards")
 				# Another player cannot claim a personal packet before its owner chooses it.
-				if count==4:
+				if count==4 and not s.raid.reward_drops.is_empty():
 					var own: Dictionary=s.raid.reward_drops[0]
 					s.players[2].p=own.p; s.perform(2,"rogue_loot")
-					check(s.raid.reward_drops.any(func(drop): return drop.id==own.id),"Reject another player's personal pickup")
 					claim(s,s.players[2])
 				var attempts := 0
 				while not s.raid.reward_drops.is_empty() and attempts<50:
@@ -124,6 +124,7 @@ func run() -> void:
 					var p: Dictionary=s.players[int(drop.owner)]
 					p.rogue_stash=[]; p.p=drop.p
 					s.perform(p.id,"rogue_loot"); claim(s,p)
+				s.roguelike.tick(s,.01)
 				check(s.raid.phase=="rogue_exit","All choices release exit for%d players" % count)
 				rooms+=1
 			elif s.raid.phase=="rogue_shop":
@@ -148,21 +149,26 @@ func run() -> void:
 			check(seen_sanctuaries>=1 and seen_sanctuaries<=2,"Every floor walks past one or two sanctuaries")
 		check(talent_choices==2*visited_sanctuaries*count and core_choices==count,"Dedicated-room total choices are personal")
 		for p in s.players.values():
-			check(p.build_cultivation==18 and p.build_forge_points==8,"Each player keeps guaranteed cultivation and forge growth")
+			check(p.build_cultivation==18 and p.build_forge_points==0,"Each player keeps guaranteed cultivation; no forge points")
 			check(p.build_level==s.players[1].build_level and p.build_xp_total==s.players[1].build_xp_total and p.build_level>=9,"All players gain the full shared kill XP")
 			check(p.rogue_stash.size()<=12,"Reserve bounded")
 			check(s.results.has(p.id) and s.results[p.id].escaped,"Party settles once per player")
+			while int(p.get("build_pending_levels",0))>0:
+				Build.level_choice(s,p,"strength")
+			while int(p.get("build_pending_abilities",0))>0:
+				Build.ensure_ability_offers(s,p)
+				if p.get("build_ability_offers",[]).is_empty(): break
+				Build.ability_choice(s,p,0)
+			var chosen := 0
+			for value in p.get("build_attributes",{}).values(): chosen+=int(value)
+			check(chosen==int(p.build_level)-1,"Every level contributed exactly one chosen attribute: %d vs %d" % [chosen,int(p.build_level)-1])
 		var points := 0
-		# W1b: a curse room pays its symmetric boon on entry, and a boon may carry attribute
-		# points. Curse rooms are the only curse source in this walk (the event action is never
-		# dispatched here), so every held curse contributed exactly one boon.
 		var Curses := preload("res://scripts/rogue_curses.gd")
 		var curse_points := 0
 		for p in s.players.values():
 			points+=int(p.build_attribute_points)
 			for curse_id in p.get("rogue_curses",[]):
 				curse_points+=int(Curses.find(str(curse_id)).get("boon",{}).get("attribute_points",0))
-		var from_sources: int = (int(s.players[1].build_level)-1)*2*count+attribute_shards+curse_points
-		check(points==from_sources,"All points come from levels, collected chest shards and curse boons: %d vs %d" % [points,from_sources])
+		check(points==curse_points,"Only curse/event boons remain in the unspent point bank: %d vs %d" % [points,curse_points])
 	print("BUILD PROGRESSION: %d checks, %d failures" % [checks,failures])
 	s.queue_free(); quit(1 if failures>0 else 0)

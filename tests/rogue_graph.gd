@@ -126,9 +126,10 @@ func audit(g: Dictionary, tag: String, seen_kinds: Dictionary) -> Dictionary:
 func run() -> void:
 	# ① 对外契约：kinds() / node() / neighbors() / signature() 的边界行为。
 	var kinds: Array = Graph.kinds()
-	check(kinds.size() == 10, "kinds() must advertise ten non-boss room types (got %d)" % kinds.size())
-	for kind in ["combat", "elite", "shop", "treasure", "talent", "curse", "event", "forge", "gamble", "mirror"]:
+	check(kinds.size() == 9, "kinds() must advertise nine non-boss room types after forge removal (got %d)" % kinds.size())
+	for kind in ["combat", "elite", "shop", "treasure", "talent", "curse", "event", "gamble", "mirror"]:
 		check(kind in kinds, "kinds() must contain %s" % kind)
+	check(not ("forge" in kinds), "forge must not be generated any more")
 	check(not (Graph.BOSS in kinds), "kinds() must not contain the boss itself")
 	check(Graph.signature({}).length() == 64, "signature() must digest even an empty graph")
 	var sample: Dictionary = Graph.build(7, 1)

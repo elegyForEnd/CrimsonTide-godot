@@ -26,7 +26,7 @@ func run() -> void:
 	app.inventory_open=true; app.show_inventory(); await capture("inventory")
 	app.rogue_inventory.selected_tab="build"
 	var UI=load("res://scripts/rogue_build_ui.gd")
-	for section in ["talents","attributes","forge","combos","codex"]:
+	for section in ["abilities","talents","attributes","codex"]:
 		UI.section=section; app.show_inventory(); await capture(section)
 	app.close_bag()
 	app.session.raid.phase="rogue_shop"; app.session.raid.room="shop"; app.session.roguelike.roll_offers(app.session,true)
@@ -45,5 +45,5 @@ func run() -> void:
 	p.build_shield=p.max_hp*.1; p.build_summons=[{"p":p.p+Vector2(55,0),"time":5}]
 	p.build_combo_label="红莲追影"; p.build_combo_time=2
 	await capture("jump")
-	print("BUILD VISUAL: 12 views captured")
+	print("BUILD VISUAL: 11 views captured")
 	app.queue_free(); await process_frame; quit()

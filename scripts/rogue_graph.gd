@@ -28,11 +28,11 @@ const ENTRY_KIND := "combat"
 ## 旧版每层槽位模板（`roguelike.gd:59` `new_floor()` 写的就是这一串）。
 const LEGACY_ROUTE := ["combat", "talent", "elite", "shop", "combat", "treasure", "boss"]
 ## 非 boss 的可出现房间类型（= `kinds()` 的返回值）。
-const MIDDLE_KINDS := ["combat", "elite", "shop", "treasure", "talent", "curse", "event", "forge", "gamble", "mirror"]
+const MIDDLE_KINDS := ["combat", "elite", "shop", "treasure", "talent", "curse", "event", "gamble", "mirror"]
 ## 紧邻 boss 的那一层只放常规战斗房，避免"守层者门前是商店/赌徒"的节奏问题。
 const PREBOSS_KINDS := ["combat", "elite"]
 ## 新房间允许出现的最小深度（1-based）；mirror 更晚，避免开局就被镜像挑战打断。
-const NEW_KIND_MIN_DEPTH := {"curse": 3, "event": 3, "forge": 3, "gamble": 4, "mirror": 5}
+const NEW_KIND_MIN_DEPTH := {"curse": 3, "event": 3, "gamble": 4, "mirror": 5}
 const SUPPLY_KINDS := ["shop", "treasure"]
 const MIN_DEPTHS := 8
 const MAX_DEPTHS := 9
@@ -94,7 +94,7 @@ static func build(seed_value: int, floor: int) -> Dictionary:
 	# Every path fights at least six encounters (including the guardian).
 	var kinds_by_depth: Array = []
 	var side_depth := depths - 2
-	var services := ["curse", "event", "forge", "gamble", "mirror"]
+	var services := ["curse", "event", "gamble", "mirror"]
 	for d in range(1, depths + 1):
 		var row: Array = PREBOSS_KINDS.duplicate()
 		if d == 1: row = [ENTRY_KIND]

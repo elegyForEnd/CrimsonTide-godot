@@ -64,16 +64,16 @@ func base_ctx(floor_index: int = 3) -> Dictionary:
 
 func run() -> void:
 	# ============================================================ A. 表结构与交叉一致性
-	check(Rooms.KINDS.size()==3, "Exactly three new room kinds")
+	check(Rooms.KINDS.size()==2, "Forge removed: two new room kinds remain")
 	check(Rooms.kinds().size()==Rooms.KINDS.size(), "kinds() mirrors the frozen list")
 	for kind in Rooms.KINDS:
 		check(str(kind) in Rooms.ROOM_NAMES, "Each kind has a display name: "+str(kind))
 		check(not str(Rooms.ROOM_NAMES[kind]).is_empty(), "Display name is non-empty: "+str(kind))
 		check(str(kind) in Graph.kinds(), "Room kind also exists in the node graph: "+str(kind))
 		check(int(Rooms.MIN_DEPTH[kind])==int(Graph.NEW_KIND_MIN_DEPTH[kind]), "Depth floor matches RogueGraph for "+str(kind))
-	check(Rooms.min_depth("forge")==3 and Rooms.min_depth("gamble")==4 and Rooms.min_depth("mirror")==5, "Frozen depth floors are 3/4/5")
+	check(Rooms.min_depth("gamble")==4 and Rooms.min_depth("mirror")==5, "Remaining depth floors are 4/5")
 	check(Rooms.min_depth("nope")==0 and Rooms.min_depth("")==0, "Unknown kind has no depth floor")
-	check(not Rooms.appears_at("forge", 3, 2) and Rooms.appears_at("forge", 3, 3), "forge needs depth >= 3")
+	check(not Rooms.appears_at("forge", 3, 3), "forge is no longer a rogue room kind")
 	check(not Rooms.appears_at("gamble", 3, 3) and Rooms.appears_at("gamble", 3, 4), "gamble needs depth >= 4")
 	check(not Rooms.appears_at("mirror", 3, 4) and Rooms.appears_at("mirror", 3, 5), "mirror needs depth >= 5")
 	check(not Rooms.appears_at("nope", 5, 9), "Unknown kind never appears")
