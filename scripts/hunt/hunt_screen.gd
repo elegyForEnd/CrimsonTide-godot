@@ -105,8 +105,29 @@ var event_art: TextureRect
 var event_log: Label
 var event_options: VBoxContainer
 var event_option_buttons: Array = []
+var event_action_box: Control
+var event_action_bar
+var event_action_label: Label
+var event_action_hint: Label
+var event_puzzle_box: Control
+var event_puzzle_sig := ""
+var event_puzzle_hint: Label
+var event_puzzle_seal: TextureRect
+var event_puzzle_art: TextureRect
+var event_seal: TextureRect
+var event_was_puzzle := false
 var event_open := false
 var event_sig := ""
+# 搜索仪式：屏幕中央的探针 + 血环 + 进度环，只在 run.search 非空时出现。
+var search_fx: Control
+var search_fx_probe: TextureRect
+var search_fx_ring
+var search_fx_label: Label
+var search_fx_hint: Label
+var search_fx_was_active := false
+var search_fx_break := 0.0
+var search_fx_hide := 0.0
+var search_fx_last_searched := 0
 
 var spot_nodes: Dictionary = {}
 var enemy_nodes: Dictionary = {}
@@ -429,6 +450,9 @@ func _build_run_ui() -> void:
 	spot_nodes.clear()
 	enemy_nodes.clear()
 	marker_signature = ""
+	search_fx_was_active = false
+	search_fx_break = 0.0
+	search_fx_hide = 0.0
 	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Top-left area plaque.
 	_panel(hud, Vector2(24, 20), Vector2(370, 92), Color(0.035, 0.045, 0.07, 0.86))
@@ -517,6 +541,7 @@ func _build_run_ui() -> void:
 	combat_text = preload("res://scripts/combat_text.gd").new()
 	combat_text.name = "HuntCombatText"
 	hud.add_child(combat_text)
+	_build_search_fx()
 	_build_map_overlay()
 	_build_craft_overlay()
 	_build_bag_overlay()
@@ -588,6 +613,105 @@ func _spawn_toast(text: String) -> void:
 	tween.tween_interval(0.05)
 	tween.tween_property(panel, "modulate:a", 0.0, 0.45)
 	tween.tween_callback(panel.queue_free)
+
+## 搜索仪式：屏幕中央一枚血锈探针在轻微摆动，外面一圈血环一圈圈填满。
+## 它只在 `run.search` 非空时出现；被打断会红一下再散掉，正常搜完是金色收束。
+func _build_search_fx() -> void:
+	search_fx = Control.new()
+	search_fx.name = "HuntSearchFX"
+	search_fx.position = Vector2(520, 236)
+	search_fx.size = Vector2(400, 330)
+	search_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	search_fx.visible = false
+	hud.add_child(search_fx)
+	var back := Panel.new()
+	back.position = Vector2(80, 0)
+	back.size = Vector2(240, 240)
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(0.012, 0.015, 0.022, 0.55)
+	plate.border_color = Color(0.30, 0.20, 0.20, 0.55)
+	plate.set_border_width_all(1)
+	plate.set_corner_radius_all(120)
+	back.add_theme_stylebox_override("panel", plate)
+	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	search_fx.add_child(back)
+	search_fx_ring = SearchRing.new()
+	search_fx_ring.position = Vector2(80, 0)
+	search_fx_ring.size = Vector2(240, 240)
+	search_fx_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	search_fx.add_child(search_fx_ring)
+	search_fx_probe = TextureRect.new()
+	search_fx_probe.name = "SearchProbe"
+	search_fx_probe.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	search_fx_probe.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	search_fx_probe.position = Vector2(130, 50)
+	search_fx_probe.size = Vector2(140, 140)
+	search_fx_probe.pivot_offset = Vector2(70, 70)
+	search_fx_probe.texture = Art.search_probe()
+	search_fx_probe.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	search_fx.add_child(search_fx_probe)
+	# 文字压在一条半透明石板上，不然浅色地面会把提示吃掉。
+	var text_back := Panel.new()
+	text_back.position = Vector2(64, 246)
+	text_back.size = Vector2(272, 72)
+	var text_plate := StyleBoxFlat.new()
+	text_plate.bg_color = Color(0.02, 0.024, 0.033, 0.82)
+	text_plate.border_color = Color(0.32, 0.22, 0.22, 0.6)
+	text_plate.set_border_width_all(1)
+	text_plate.set_corner_radius_all(6)
+	text_back.add_theme_stylebox_override("panel", text_plate)
+	text_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	search_fx.add_child(text_back)
+	search_fx_label = _label(search_fx, "", Vector2(64, 250), Vector2(272, 32), 20, GOLD,
+		HORIZONTAL_ALIGNMENT_CENTER, title_font)
+	search_fx_hint = _label(search_fx, "别被撞见 · 换形态、换区或离开都会打断",
+		Vector2(64, 282), Vector2(272, 30), 12, Color("c99a86"), HORIZONTAL_ALIGNMENT_CENTER)
+
+## 每帧：摆动、进度、打断/完成的一瞬反馈。规则不在这里，只读 run.search。
+func _refresh_search_fx(dt: float) -> void:
+	if run == null or search_fx == null:
+		return
+	var active: bool = not run.search.is_empty()
+	if active:
+		search_fx.visible = true
+		search_fx_hide = 0.0
+		search_fx.modulate = Color(1, 1, 1, 1)
+		var left := maxf(0.0, float(run.search.get("left", 0.0)))
+		var total := maxf(0.01, float(run.search.get("total", 1.0)))
+		search_fx_ring.ratio = clampf(1.0 - left / total, 0.0, 1.0)
+		search_fx_ring.tone = Color("c95666") if search_fx_break <= 0.0 else Color("e08a7a")
+		var t := Time.get_ticks_msec() / 1000.0
+		search_fx_probe.rotation = sin(t * 4.2) * 0.12
+		search_fx_probe.scale = Vector2.ONE * (1.0 + sin(t * 6.0) * 0.02)
+		search_fx_break = maxf(0.0, search_fx_break - dt)
+		search_fx_label.text = "翻找中…… %.1f 秒" % left
+		search_fx_hint.text = "别被撞见 · 换形态、换区或离开都会打断"
+		search_fx_was_active = true
+		search_fx_last_searched = run.searched
+		return
+	if not search_fx_was_active:
+		search_fx.visible = false
+		return
+	search_fx_was_active = false
+	if run.searched > search_fx_last_searched:
+		search_fx_label.text = "找到了点什么。"
+		search_fx_hint.text = "战利品已进背包，腾出格子再翻。"
+		search_fx_ring.tone = GOLD
+	else:
+		search_fx_label.text = "翻找被打断了。"
+		search_fx_hint.text = "东西还在原地，缓一缓再来。"
+		search_fx_ring.tone = Color("e08a7a")
+		search_fx_break = 0.5
+	search_fx_ring.ratio = 1.0
+	search_fx_hide = 0.9
+
+func _tick_search_fx_fade(dt: float) -> void:
+	if search_fx == null or not search_fx.visible or search_fx_hide <= 0.0:
+		return
+	search_fx_hide = maxf(0.0, search_fx_hide - dt)
+	search_fx.modulate = Color(1, 1, 1, clampf(search_fx_hide / 0.6, 0.0, 1.0))
+	if search_fx_hide <= 0.0:
+		search_fx.visible = false
 
 func _refresh_all() -> void:
 	if run == null:
@@ -1200,10 +1324,63 @@ func _build_event_window() -> void:
 	event_options.size = Vector2(532, 190)
 	event_options.add_theme_constant_override("separation", 6)
 	panel.add_child(event_options)
-	_button(panel, "收起  Esc", Vector2(398, 612), Vector2(150, 40), func(): _close_event_window())
-	_label(panel, "左下的时间会照常走：撬锁、拆解、翻找都要花时间。", Vector2(28, 456), Vector2(344, 60), 12, MUTED,
+	# 实时动作：一个进度条 + 剩余秒数。世界在跑，所以这里还要提醒别被撞见。
+	event_action_box = Control.new()
+	event_action_box.name = "EventActionBox"
+	event_action_box.position = Vector2(398, 440)
+	event_action_box.size = Vector2(532, 150)
+	event_action_box.visible = false
+	event_action_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(event_action_box)
+	event_action_label = _label(event_action_box, "", Vector2(0, 0), Vector2(532, 40), 22, INK,
+		HORIZONTAL_ALIGNMENT_LEFT, title_font)
+	event_action_bar = _bar(event_action_box, Vector2(0, 52), Vector2(532, 16), GOLD)
+	event_action_hint = _label(event_action_box, "保持动作中…… 世界没有停，怪物正在靠近。按 收起/Esc 可以中止（时间不退）。",
+		Vector2(0, 82), Vector2(532, 60), 12, Color("c99a86"), HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	# 时停解密：三环血纹锁 / 记忆符文。
+	event_puzzle_box = Control.new()
+	event_puzzle_box.name = "EventPuzzleBox"
+	event_puzzle_box.position = Vector2(398, 414)
+	event_puzzle_box.size = Vector2(532, 190)
+	event_puzzle_box.visible = false
+	event_puzzle_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(event_puzzle_box)
+	# 血纹盘的整张底图压在按钮下面：黑底生图，只提一点亮度，不抢字的可读性。
+	event_puzzle_art = TextureRect.new()
+	event_puzzle_art.name = "PuzzleArt"
+	event_puzzle_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	event_puzzle_art.stretch_mode = TextureRect.STRETCH_SCALE
+	event_puzzle_art.position = Vector2(344, 4)
+	event_puzzle_art.size = Vector2(180, 180)
+	event_puzzle_art.texture = Art.puzzle_dial()
+	event_puzzle_art.modulate = Color(1, 1, 1, 0.78)
+	event_puzzle_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	event_puzzle_box.add_child(event_puzzle_art)
+	event_puzzle_hint = _label(event_puzzle_box, "", Vector2(0, 148), Vector2(532, 42), 12, MUTED,
 		HORIZONTAL_ALIGNMENT_LEFT, null, true)
-	_label(panel, "看清了，就动手。", Vector2(28, 520), Vector2(344, 60), 12, Color("b58f8a"),
+	event_puzzle_seal = TextureRect.new()
+	event_puzzle_seal.name = "EventPuzzleSeal"
+	event_puzzle_seal.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	event_puzzle_seal.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	event_puzzle_seal.position = Vector2(196, 16)
+	event_puzzle_seal.size = Vector2(140, 140)
+	event_puzzle_seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	event_puzzle_seal.visible = false
+	event_puzzle_box.add_child(event_puzzle_seal)
+	# 解开/失败时盖在插图上的血印（成功/失败各一张素材）。
+	event_seal = TextureRect.new()
+	event_seal.name = "EventSeal"
+	event_seal.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	event_seal.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	event_seal.position = Vector2(104, 244)
+	event_seal.size = Vector2(196, 196)
+	event_seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	event_seal.visible = false
+	panel.add_child(event_seal)
+	_button(panel, "收起  Esc", Vector2(398, 612), Vector2(150, 40), func(): _close_event_window())
+	_label(panel, "动手之后，时间会照常走：撬锁、拆解、翻找都要花时间。", Vector2(28, 456), Vector2(344, 60), 12, MUTED,
+		HORIZONTAL_ALIGNMENT_LEFT, null, true)
+	_label(panel, "解密时，时间会为你停住。", Vector2(28, 520), Vector2(344, 60), 12, Color("c99a86"),
 		HORIZONTAL_ALIGNMENT_LEFT, null, true)
 
 func _event_window_open() -> bool:
@@ -1214,6 +1391,9 @@ func _open_event_window() -> void:
 		return
 	event_open = true
 	event_sig = ""
+	event_was_puzzle = run != null and run.puzzle_active()
+	if event_seal:
+		event_seal.visible = false
 	event_overlay.visible = true
 	event_overlay.modulate = Color(1, 1, 1, 0.0)
 	var tw := create_tween()
@@ -1224,6 +1404,13 @@ func _close_event_window() -> void:
 	if not event_open and (run == null or run.event_state.is_empty()):
 		return
 	event_open = false
+	event_was_puzzle = false
+	if event_action_box:
+		event_action_box.visible = false
+	if event_puzzle_box:
+		event_puzzle_box.visible = false
+	if event_seal:
+		event_seal.visible = false
 	if event_overlay:
 		event_overlay.visible = false
 	if run and not run.event_state.is_empty():
@@ -1237,17 +1424,36 @@ func _refresh_event_window() -> void:
 		return
 	var state: Dictionary = run.event_state
 	var live := bool(state.get("live", false))
+	var action: Dictionary = run.event_action()
+	var puzzle: Dictionary = run.event_puzzle()
+	var was_puzzle := event_was_puzzle
+	event_was_puzzle = not puzzle.is_empty()
+	if was_puzzle and puzzle.is_empty():
+		_flash_event_seal("fail" if bool(state.get("finished", false)) else "success")
+	# 进度条每帧都要跟手，但它不在签名里——重建按钮会把点击吃掉。
+	_update_event_action_ui(action)
 	# 只在内容真的变了才重建按钮：live 事件每帧 tick 都会发 changed，
 	# 每帧重建按钮会把点击吃掉。
 	var log_lines: Array = state.get("log", [])
-	var sig := "%s|%d|%s|%d|%d" % [str(state.get("step", "")), log_lines.size(),
-		str(state.get("finished", false)), int(run.hp), int(run.stamina)]
+	var puzzle_sig := _puzzle_sig(puzzle)
+	var sig := "%s|%d|%s|%d|%d|%d|%s" % [str(state.get("step", "")), log_lines.size(),
+		str(state.get("finished", false)), int(run.hp), int(run.stamina), action.size(), puzzle_sig]
 	if sig == event_sig:
 		return
 	event_sig = sig
 	event_title.text = str(state.get("name", ""))
-	event_sub.text = "这里的时间没有停 · 你随时可能被打断" if live else "时间暂停 · 动作会消耗局内时间"
-	event_sub.add_theme_color_override("font_color", Color("d98b7a") if live else GOLD)
+	if not puzzle.is_empty():
+		event_sub.text = "时间停住了 · 解开它，或者收起走人"
+		event_sub.add_theme_color_override("font_color", GOLD)
+	elif not action.is_empty():
+		event_sub.text = "动作进行中 · 世界没有停，别被撞见"
+		event_sub.add_theme_color_override("font_color", Color("d98b7a"))
+	elif live:
+		event_sub.text = "这里的时间没有停 · 你随时可能被打断"
+		event_sub.add_theme_color_override("font_color", Color("d98b7a"))
+	else:
+		event_sub.text = "时间暂停 · 动手之后世界会继续走"
+		event_sub.add_theme_color_override("font_color", GOLD)
 	var art_tex := Art.event_texture(str(state.get("art", "")))
 	event_art.texture = art_tex
 	var lines: Array = state.get("log", [])
@@ -1261,16 +1467,30 @@ func _refresh_event_window() -> void:
 		child.queue_free()
 	event_option_buttons.clear()
 	if bool(state.get("finished", false)):
+		event_puzzle_box.visible = false
 		var done := _button(event_options, "离开这里", Vector2(0, 0), Vector2(532, 50), func(): _close_event_window(), true)
 		done.name = "EventLeave"
 		return
+	if not puzzle.is_empty():
+		event_options.visible = false
+		event_action_box.visible = false
+		event_puzzle_box.visible = true
+		_rebuild_puzzle_ui(puzzle)
+		return
+	event_puzzle_box.visible = false
+	if not action.is_empty():
+		event_options.visible = false
+		event_action_box.visible = true
+		return
+	event_action_box.visible = false
+	event_options.visible = true
 	var options: Array = run.event_options()
 	for i in options.size():
 		var opt: Dictionary = options[i]
 		var label := str(opt.get("label", "继续"))
 		var cost := int(opt.get("time", 0))
 		if cost > 0:
-			label += "   ·   %d 秒" % cost
+			label += "   ·   %d 秒（真实）" % cost
 		var b := _button(event_options, label, Vector2(0, 0), Vector2(532, 44), func(): _choose_event_option(i), i == 0)
 		b.name = "EventOption%d" % i
 		b.add_theme_font_size_override("font_size", 15)
@@ -1279,6 +1499,134 @@ func _refresh_event_window() -> void:
 		if not ok:
 			b.tooltip_text = str(opt.get("why", ""))
 		event_option_buttons.append(b)
+
+## 进度条与剩余秒数：只更新数值，不碰按钮。
+func _update_event_action_ui(action: Dictionary) -> void:
+	if event_action_box == null:
+		return
+	if action.is_empty():
+		event_action_box.visible = false
+		return
+	event_action_box.visible = true
+	var left: float = run.event_action_left()
+	var total := maxf(0.01, float(action.get("total", 1.0)))
+	event_action_label.text = "动作中…… 还剩 %.1f / %.0f 秒" % [left, total]
+	event_action_bar.max_value = total
+	event_action_bar.value = total - left
+
+func _puzzle_sig(p: Dictionary) -> String:
+	if p.is_empty():
+		return ""
+	var rings := ""
+	for v in p.get("rings", []):
+		rings += str(int(v))
+	return "%s|%d|%d|%s|%s|%s" % [str(p.get("kind", "")), int(p.get("attempts", 0)),
+		int(p.get("progress", 0)), rings, str(p.get("last_fail", "")), str(p.get("reveal", false))]
+
+## 时停解密的界面：三环锁逐环转，记忆序列逐个敲。所有按钮都是 Godot Button；
+## 解密状态下事件窗不重建选项，所以点击不会丢。
+func _rebuild_puzzle_ui(p: Dictionary) -> void:
+	for child in event_puzzle_box.get_children():
+		if child != event_puzzle_hint and child != event_puzzle_seal and child != event_puzzle_art:
+			child.queue_free()
+	event_puzzle_seal.visible = false
+	var glyphs := int(p.get("glyphs", 6))
+	var attempts := int(p.get("attempts", 0))
+	var max_attempts := int(p.get("max_attempts", 3))
+	var at := int(p.get("attempts", 0))
+	event_puzzle_art.visible = str(p.get("kind", "")) == "dial"
+	if str(p.get("kind", "")) == "sequence":
+		var seq: Array = p.get("sequence", [])
+		event_puzzle_hint.text = "记忆符文 · 记住盒盖内侧亮起的顺序，然后照着重敲一遍。"
+		for i in glyphs:
+			var glyph: String = run.puzzle_glyph(i)
+			var b := _button(event_puzzle_box, glyph, Vector2(i * 74, 0), Vector2(64, 56),
+				func(): run.puzzle_press(i); _refresh_all(), false)
+			b.add_theme_font_size_override("font_size", 26)
+			b.add_theme_font_override("font", title_font)
+			b.name = "PuzzleGlyph%d" % i
+		var progress := int(p.get("progress", 0))
+		_label(event_puzzle_box, "已经敲对 %d / %d" % [progress, seq.size()], Vector2(0, 64), Vector2(300, 26), 14, GOLD)
+		var again := _button(event_puzzle_box, "再听一次", Vector2(0, 94), Vector2(140, 36),
+			func(): if run != null: run.puzzle_replay(); _play_puzzle_reveal(); _refresh_all())
+		again.name = "PuzzleReplay"
+		_label(event_puzzle_box, "机会 %d / %d" % [at, max_attempts], Vector2(160, 100), Vector2(220, 26), 14,
+			RED if at <= 1 else MUTED)
+		if bool(p.get("reveal", false)):
+			_play_puzzle_reveal()
+	else:
+		var rings: Array = p.get("rings", [])
+		event_puzzle_hint.text = "三环血纹锁 · 把三道铜环转到封蜡上刻的那组血纹。机会 %d/%d" % [at, max_attempts]
+		var names := ["第一环", "第二环", "第三环"]
+		for r in rings.size():
+			var y := r * 44
+			_label(event_puzzle_box, names[r], Vector2(0, y + 6), Vector2(64, 30), 13, MUTED)
+			var step := 68
+			var left_b := _button(event_puzzle_box, "◀", Vector2(step, y), Vector2(34, 36),
+				func(): run.puzzle_rotate(r, -1); _refresh_all(), false)
+			left_b.name = "PuzzleRing%dLeft" % r
+			var glyph: String = run.puzzle_glyph(int(rings[r]))
+			var face := _label(event_puzzle_box, glyph, Vector2(step + 38, y), Vector2(44, 36), 24, INK,
+				HORIZONTAL_ALIGNMENT_CENTER, title_font)
+			face.name = "PuzzleRing%dFace" % r
+			var right_b := _button(event_puzzle_box, "▶", Vector2(step + 84, y), Vector2(34, 36),
+				func(): run.puzzle_rotate(r, 1); _refresh_all(), false)
+			right_b.name = "PuzzleRing%dRight" % r
+		var try_btn := _button(event_puzzle_box, "试 转", Vector2(210, 26), Vector2(124, 54),
+			func(): run.puzzle_try(); _refresh_all(), true)
+		try_btn.name = "PuzzleTry"
+		_label(event_puzzle_box, "机会 %d / %d" % [at, max_attempts], Vector2(210, 88), Vector2(120, 26), 14,
+			RED if at <= 1 else MUTED)
+	if not str(p.get("last_fail", "")).is_empty():
+		event_puzzle_seal.texture = Art.puzzle_seal("fail")
+		event_puzzle_seal.visible = event_puzzle_seal.texture != null
+		_fade_puzzle_seal()
+
+## 记忆序列的回放：依次点亮每个符文，然后藏起来。
+func _play_puzzle_reveal() -> void:
+	if run == null:
+		return
+	var p: Dictionary = run.event_puzzle()
+	var seq: Array = p.get("sequence", [])
+	if seq.is_empty() or event_puzzle_box == null:
+		return
+	for child in event_puzzle_box.get_children():
+		if str(child.name).begins_with("PuzzleGlyph") and child is Button:
+			child.modulate = Color(1, 1, 1, 1)
+	for step in seq.size():
+		var idx := int(seq[step])
+		var node := event_puzzle_box.get_node_or_null("PuzzleGlyph%d" % idx) as Button
+		if node == null:
+			return
+		node.modulate = Color(1.0, 0.72, 0.62, 1.0)
+		await get_tree().create_timer(0.28).timeout
+		if not is_instance_valid(node):
+			return
+		node.modulate = Color(1, 1, 1, 1)
+		await get_tree().create_timer(0.12).timeout
+
+## 解开或失败时，在物件插图正中盖一枚血印，1 秒后褪掉。
+func _flash_event_seal(kind: String) -> void:
+	if event_seal == null:
+		return
+	event_seal.texture = Art.puzzle_seal(kind)
+	if event_seal.texture == null:
+		return
+	event_seal.visible = true
+	event_seal.modulate = Color(1, 1, 1, 0)
+	var tw := create_tween()
+	tw.tween_property(event_seal, "modulate:a", 1.0, 0.12)
+	tw.tween_interval(0.7)
+	tw.tween_property(event_seal, "modulate:a", 0.0, 0.35)
+	tw.tween_callback(func(): if is_instance_valid(event_seal): event_seal.visible = false)
+
+func _fade_puzzle_seal() -> void:
+	if event_puzzle_seal == null:
+		return
+	var node := event_puzzle_seal
+	await get_tree().create_timer(0.9).timeout
+	if is_instance_valid(node):
+		node.visible = false
 
 func _choose_event_option(index: int) -> void:
 	if run == null or run.event_state.is_empty():
@@ -1505,6 +1853,8 @@ func _process(dt: float) -> void:
 		return
 	if mode == "run" and run:
 		run.tick(dt)
+		_refresh_search_fx(dt)
+		_tick_search_fx_fade(dt)
 		if run.ended_flag:
 			if event_open:
 				_close_event_window()
@@ -1676,6 +2026,29 @@ class Bar extends Control:
 			return
 		var w: float = maxf(size.x * ratio, minf(size.y, size.x))
 		draw_style_box(_fill, Rect2(Vector2(1, 1), Vector2(w - 2.0, size.y - 2.0)))
+
+## 搜索仪式的进度环：底圈常驻，已完成的弧随 ratio 长出来。
+class SearchRing extends Control:
+	var ratio := 0.0:
+		set(v):
+			ratio = v
+			queue_redraw()
+	var tone := Color("c95666"):
+		set(v):
+			tone = v
+			queue_redraw()
+
+	func _draw() -> void:
+		var centre := size * 0.5
+		var radius := minf(size.x, size.y) * 0.5 - 8.0
+		draw_arc(centre, radius, 0.0, TAU, 72, Color(0.22, 0.17, 0.19, 0.75), 2.0, true)
+		draw_arc(centre, radius - 5.0, 0.0, TAU, 72, Color(0.14, 0.10, 0.12, 0.55), 1.0, true)
+		if ratio <= 0.0:
+			return
+		draw_arc(centre, radius, -PI * 0.5, -PI * 0.5 + TAU * clampf(ratio, 0.0, 1.0), 72, tone, 4.0, true)
+		# 弧头一颗小血珠，转起来更像在"抽丝"。
+		var head := -PI * 0.5 + TAU * clampf(ratio, 0.0, 1.0)
+		draw_circle(centre + Vector2(cos(head), sin(head)) * radius, 4.0, tone.lightened(0.15))
 
 ## 随机事件点：黄色圆环 + 问号，不显示名字与提示。
 ## 同一个点可能是神龛、上锁的箱子、一具尸体或一条会动的走廊——点下去才知道。

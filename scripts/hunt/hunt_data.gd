@@ -1178,8 +1178,16 @@ const EVENTS := {
 					{"label": "顺着蜡的裂缝撬开", "time": 12, "items": ["lockpick", "nail"],
 						"check": {"chance": 0.65, "success": "open", "fail": "crack"}},
 					{"label": "用火把把蜡烤化", "time": 9, "flags": ["torch"], "next": "melt"},
+					{"label": "转动门边的三道铜环", "next": "rings"},
 					{"label": "离开", "next": ""},
 				],
+			},
+			"rings": {
+				"text": "门框内侧嵌着三道铜环，环上各刻着一个血纹字。蜡封上那只衔尾鸟的羽毛恰好把三个字连了起来。",
+				"puzzle": {"kind": "dial", "rings": 3, "glyphs": 6, "attempts": 3,
+					"intro": "你把手按在铜环上。指尖下的铁很凉，像刚从水里捞出来。",
+					"success_log": "三道铜环同时咬合，蜡封底下传来一声很轻的『咔』。"},
+				"next": "open",
 			},
 			"seal": {
 				"text": "印记是一只衔着自己尾巴的鸟。你数了数，它衔了不止一圈。",
@@ -1306,8 +1314,16 @@ const EVENTS := {
 					{"label": "照锁孔的形状找工具", "time": 10, "items": ["lockpick", "nail", "key"],
 						"check": {"chance": 0.75, "success": "open", "fail": "stuck"}},
 					{"label": "从缝隙往里看", "time": 4, "next": "peek"},
+					{"label": "照着被划掉的名字敲柜门", "next": "knock"},
 					{"label": "离开", "next": ""},
 				],
+			},
+			"knock": {
+				"text": "柜门内侧传来三下轻响，隔一会儿又是三下。你贴着门数，那节奏不像求救，更像有人在报自己的名字。",
+				"puzzle": {"kind": "sequence", "length": 3, "glyphs": 6, "attempts": 3,
+					"intro": "你把手贴在柜门上，里面的敲击停了。它在等你先敲。",
+					"success_log": "你敲完最后一下，柜门自己弹开了一指宽，里面全是纸。"},
+				"next": "open",
 			},
 			"peek": {
 				"text": "柜子里没有衣服，只有一层层码好的纸。最上面那张画着一个和你同姿势的人。",
@@ -1373,8 +1389,16 @@ const EVENTS := {
 				"options": [
 					{"label": "用铁器敲开封泥", "time": 12, "items": ["iron", "nail"], "noise": 0.4, "next": "open"},
 					{"label": "徒手把泥掰开", "time": 10, "hp": -7, "next": "open"},
+					{"label": "照着封泥上的掌印拨开骨环", "next": "bone_lock"},
 					{"label": "离开", "next": ""},
 				],
+			},
+			"bone_lock": {
+				"text": "封泥上的掌印少了一根指节。瓮口下方藏着三圈骨环，每一圈都能单独转动，环内侧刻着字。",
+				"puzzle": {"kind": "dial", "rings": 3, "glyphs": 6, "attempts": 3,
+					"intro": "你捏住第一圈骨环。它转得很涩，像里面卡着什么东西。",
+					"success_log": "三圈骨环对齐的瞬间，瓮里传来一声叹息，然后彻底静了。"},
+				"next": "open",
 			},
 			"open": {
 				"text": "封泥底下不是骨灰，是一层层叠好的布片，每一片上都绣着同一个名字。最上面那片还很新。",
@@ -1469,8 +1493,16 @@ const EVENTS := {
 					{"label": "用手指拨动指针", "time": 10, "next": "hand"},
 					{"label": "找机会打开钟匣", "time": 14,
 						"check": {"chance": 0.55, "success": "case", "fail": "slip"}},
+					{"label": "听钟面里侧的敲击", "next": "chime"},
 					{"label": "离开", "next": ""},
 				],
+			},
+			"chime": {
+				"text": "钟面玻璃上有一层从里面按出来的雾。雾里慢慢浮出四个字的印子，一个接一个，像有人在里面用指甲划。",
+				"puzzle": {"kind": "sequence", "length": 4, "glyphs": 6, "attempts": 3,
+					"intro": "你把手按在玻璃上。四个印子淡下去了，钟摆停了一拍，等你。",
+					"success_log": "四个字都亮过一遍，钟匣的锁舌自己缩了回去。"},
+				"next": "case",
 			},
 			"hand": {
 				"text": "指针很沉，拨到三点十八分时，整座钟楼响了一声，像有人在你耳边叹了口气。",

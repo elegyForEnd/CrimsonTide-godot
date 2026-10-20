@@ -294,9 +294,16 @@ func run() -> void:
 	check(ev_run.paused, "the interaction pauses the run by default")
 	check(str(ev_run.event_state.get("name", "")) == "地窖铁门", "the event title is revealed after opening")
 	var clock_before: float = ev_run.clock
-	check(ev_run.event_choose(0), "the first option resolves")
-	check(ev_run.clock > clock_before, "event actions consume in-game time")
+	check(ev_run.event_choose(0), "the first timed option starts an action")
+	check(ev_run.clock == clock_before, "a timed action does not jump the clock any more")
+	check(not ev_run.event_action().is_empty(), "the timed action is now running in real time")
+	check(not ev_run.paused, "the world keeps running while the action plays out")
+	ev_run.tick(2.0)
+	check(ev_run.clock > clock_before and not ev_run.event_action().is_empty(), "half the action is half the clock")
+	ev_run.tick(2.0)
+	check(ev_run.event_action().is_empty(), "the action finishes exactly when the clock catches up")
 	check(str(ev_run.event_state.get("step", "")) == "shape", "the interaction advances a step")
+	check(ev_run.paused, "reading is paused again once the action is done")
 	# 需要道具的分支：没有铁片/钉子时点不动，而且只说人话。
 	var bag_before_ev: int = ev_run.bag.size()
 	check(not ev_run.event_choose(0), "an item-gated action refuses without the item")
@@ -310,7 +317,9 @@ func run() -> void:
 	var bag_before_gift: int = gift_run.bag.size()
 	check(gift_run.begin_event(gift_uid), "sigil event opens")
 	gift_run.event_choose(1)
-	check(gift_run.bag.size() > bag_before_gift, "event rewards land in the bag")
+	check(gift_run.bag.size() == bag_before_gift, "a timed choice waits before handing out loot")
+	gift_run.tick(5.0)
+	check(gift_run.bag.size() > bag_before_gift, "event rewards land in the bag when the action ends")
 	var tiered := false
 	for entry in gift_run.bag:
 		if entry.has("tier"):
@@ -324,6 +333,69 @@ func run() -> void:
 	check(live_run.begin_event(live_uid), "live event opens")
 	check(not live_run.paused, "a live event never pauses the run")
 	live_run.close_event()
+
+	# 时停解密：三环血纹锁。解密期间不推进 clock；对上就进下一步。
+	var pz_run = Run.new()
+	pz_run.setup(0, 97, -1, [0, 0, 0])
+	var pz_uid := pz_run.debug_spawn_event("sealed_vault")
+	check(pz_run.begin_event(pz_uid), "the sealed vault opens")
+	var dial_at := _option_index(pz_run.event_options(), "铜环")
+	check(dial_at >= 0, "the vault offers a rune dial")
+	check(pz_run.event_choose(dial_at), "the dial option opens the puzzle")
+	check(pz_run.puzzle_active(), "the dial puzzle is active")
+	check(pz_run.paused, "a puzzle stops time")
+	var pz_clock: float = pz_run.clock
+	pz_run.tick(30.0)
+	check(pz_run.clock == pz_clock, "thinking at a puzzle costs no in-game time")
+	var dial_state: Dictionary = pz_run.event_puzzle()
+	var rings: Array = dial_state.get("rings", [])
+	var target: Array = dial_state.get("target", [])
+	check(rings.size() == 3 and target.size() == 3, "the dial has three rings")
+	for r in rings.size():
+		var guard := 0
+		while int(rings[r]) != int(target[r]) and guard < 12:
+			var want := int(target[r])
+			var now := int(rings[r])
+			pz_run.puzzle_rotate(r, 1 if posmod(want - now, 6) <= 3 else -1)
+			rings = pz_run.event_puzzle().get("rings", [])
+			guard += 1
+	check(pz_run.puzzle_try(), "trying the aligned dial resolves")
+	check(not pz_run.puzzle_active(), "a solved dial closes")
+	check(str(pz_run.event_state.get("step", "")) == "open", "solving the dial advances the event")
+	pz_run.close_event()
+
+	# 记忆符文：按对顺序成功；按错会扣机会，用尽后当天锁死。
+	var seq_run = Run.new()
+	seq_run.setup(0, 98, -1, [0, 0, 0])
+	var seq_uid := seq_run.debug_spawn_event("stopped_clock")
+	check(seq_run.begin_event(seq_uid), "the stopped clock opens")
+	var seq_at := _option_index(seq_run.event_options(), "敲击")
+	check(seq_at >= 0, "the clock offers a memory sequence")
+	seq_run.event_choose(seq_at)
+	check(seq_run.puzzle_active(), "the sequence puzzle is active")
+	var seq: Array = seq_run.event_puzzle().get("sequence", [])
+	check(seq.size() == 4, "the clock's sequence is four glyphs long")
+	for g in seq:
+		seq_run.puzzle_press(int(g))
+	check(not seq_run.puzzle_active(), "a correct sequence opens the clock")
+	check(str(seq_run.event_state.get("step", "")) == "case", "the sequence leads to the clock case")
+	seq_run.close_event()
+
+	var fail_run = Run.new()
+	fail_run.setup(0, 99, -1, [0, 0, 0])
+	var fail_uid := fail_run.debug_spawn_event("stopped_clock")
+	fail_run.begin_event(fail_uid)
+	fail_run.event_choose(_option_index(fail_run.event_options(), "敲击"))
+	var bad := (int(fail_run.event_puzzle().sequence[0]) + 1) % 6
+	for i in 3:
+		var fp: Dictionary = fail_run.event_puzzle()
+		if fp.is_empty():
+			break
+		fail_run.puzzle_press(bad)
+	check(bool(fail_run.event_state.get("finished", false)), "three wrong presses lock the event for the day")
+	check(fail_run.event_marker_used(fail_uid), "a locked puzzle marker stays used today")
+	fail_run.close_event()
+	check(not fail_run.paused, "closing a locked puzzle resumes the run")
 
 	# ---------------------------------------------------------------- 随身物
 	var pocket_run = Run.new()
@@ -348,3 +420,9 @@ func run() -> void:
 
 	print("HUNT RULES: ", checks, " checks, ", failures, " failures")
 	quit(1 if failures else 0)
+
+func _option_index(options: Array, needle: String) -> int:
+	for i in options.size():
+		if needle in str(options[i].get("label", "")):
+			return i
+	return -1

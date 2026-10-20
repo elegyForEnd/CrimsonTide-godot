@@ -61,5 +61,10 @@ func run() -> void:
 	check(Art.hotspot_texture("locked") != null, "hotspot ring art")
 	check(Art.event_texture("reliquary") != null and Art.event_texture("blood_clock") != null, "event illustrations")
 	check(Art.event_texture("missing") == null, "missing event art falls back to text only")
+	# 2026-10-20：搜索仪式与两种时停解密的素材。
+	check(Art.search_probe() != null, "search ritual probe art")
+	check(Art.puzzle_dial() != null, "three-ring rune dial art")
+	check(Art.puzzle_seal("success") != null and Art.puzzle_seal("fail") != null, "puzzle success and failure seals")
+	check(Art.search_probe() != Art.puzzle_dial(), "search art and puzzle art are distinct")
 	print("HUNT UI SMOKE: ", checks, " checks, ", failures, " failures")
 	quit(1 if failures else 0)

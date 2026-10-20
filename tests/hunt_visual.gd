@@ -88,9 +88,48 @@ func run() -> void:
 	check(screen.event_art.texture != null, "event illustration loaded")
 	if not screen.event_option_buttons.is_empty():
 		screen.event_option_buttons[0].pressed.emit()
-		await shot("05c-event-step")
-		check(str(screen.run.event_state.get("step", "")) == "shape", "event advanced a step in the window")
+		await shot("05c-event-action")
+		check(not screen.run.event_action().is_empty(), "event action is running in real time")
+		screen.run.tick(4.2)
+		screen._refresh_all()
+		await shot("05c2-event-step")
+		check(str(screen.run.event_state.get("step", "")) == "shape", "event advanced a step after the action")
 	screen._close_event_window()
+	# 时停解密：三环血纹锁与记忆符文各来一张，验收按钮/符文盘/机会文本的位置。
+	screen.run.debug_clear_events()
+	var dial_uid: String = screen.run.debug_spawn_event("sealed_vault")
+	screen.run.begin_event(dial_uid)
+	var dial_at := -1
+	for i in screen.run.event_options().size():
+		if "铜环" in str(screen.run.event_options()[i].get("label", "")):
+			dial_at = i
+	if dial_at >= 0:
+		screen.run.event_choose(dial_at)
+		screen._open_event_window()
+		await shot("05d-puzzle-dial")
+		check(screen.run.puzzle_active(), "dial puzzle visible")
+	screen._close_event_window()
+	screen.run.debug_clear_events()
+	var seq_uid: String = screen.run.debug_spawn_event("stopped_clock")
+	screen.run.begin_event(seq_uid)
+	var seq_at := -1
+	for i in screen.run.event_options().size():
+		if "敲击" in str(screen.run.event_options()[i].get("label", "")):
+			seq_at = i
+	if seq_at >= 0:
+		screen.run.event_choose(seq_at)
+		screen._open_event_window()
+		await shot("05e-puzzle-sequence")
+		check(screen.run.puzzle_active(), "sequence puzzle visible")
+	screen._close_event_window()
+	# 搜索仪式：中央探针 + 血环 + 进度环。
+	screen.run.search_cd = 0.0
+	screen.run.start_search()
+	screen._process(1.1)
+	await shot("05f-search")
+	check(screen.search_fx.visible, "search ritual visible")
+	screen.run.cancel_search("出图用")
+	screen._process(0.2)
 	# Force an encounter in the current area for the combat panel.
 	screen.run.debug_kill_enemies()
 	screen.run.debug_spawn_enemy("scavenger")

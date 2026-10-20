@@ -1909,6 +1909,12 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.pressed:
 		var point := mouse_point()
+		# A real Godot Button gets the click first. `_input` runs before `_gui_input`, so
+		# without this guard a small button drawn on top of a grid/socket (the item bar's
+		# "收回", the worn kit's "卸") was swallowed by the drag controller underneath and
+		# never fired — the reported "button does nothing" bug.
+		if mouse_over_button():
+			return
 		# A left click while the right-button hand is holding units sets exactly **one**
 		# of them down, on the cell under the cursor.
 		if int(drag.get("carry",0))>0:
@@ -1923,6 +1929,24 @@ func _input(event: InputEvent) -> void:
 		# stale rectangle would swallow a click meant for a grid.
 		var bar_slot := slot_at(point) if not slot_bar_stale() else -1
 		if bar_slot>=0:
+			var slot_now := Time.get_ticks_msec()
+			var quick_slot := last_click_slot=="slot" and bar_slot==last_click_index and slot_now-last_click_ms<450
+			last_click_ms=0
+			if quick_slot:
+				# Double tap on the bar: spend a supply, swap a worn piece, or — for
+				# something with no verb at all — put it away exactly like Ctrl+left.
+				double_click_slot(bar_slot)
+				get_viewport().set_input_as_handled()
+				return
+			if ctrl_held():
+				# Ctrl+left is the tidy verb: the socket's item goes back into the
+				# backpack, or the pocket when the bag has no room.
+				take_item_slot(bar_slot)
+				get_viewport().set_input_as_handled()
+				return
+			last_click_slot="slot"
+			last_click_index=bar_slot
+			last_click_ms=slot_now
 			select_item_slot(bar_slot)
 			get_viewport().set_input_as_handled()
 			return
@@ -2508,12 +2532,32 @@ func apply_item_slot(index: int) -> bool:
 	return true
 
 # "收回": the socket's item goes back into the backpack, or into the pocket when
-# the bag has no room left for it.
+# the bag has no room left for it. This is also what Ctrl+left and the double tap on
+# an item with no verb do — one tidy verb, three ways in.
 func take_item_slot(index: int) -> void:
 	session.action("slot_take",{"slot":index})
 	selected=-1
 	if inventory_open:
 		show_inventory()
+
+# Double tap on the item bar, by the item's own priority: a supply is spent, a
+# weapon / gear / backpack trades places with what is worn (it never detours through
+# the bag), and anything else is just put away with the tidy verb. This is the bar
+# only — the same tap on a bag item keeps its older meanings.
+func double_click_slot(index: int) -> bool:
+	var p: Dictionary=session.players.get(session.my_id(),{})
+	if p.is_empty():
+		return false
+	var entry: Dictionary=session.item_slot(p,clampi(index,0,session.ITEM_SLOT_COUNT-1))
+	if entry.is_empty():
+		return false
+	var kind := str(entry.kind)
+	if kind=="medicine" or kind=="ammo":
+		return apply_item_slot(index)
+	if kind=="backpack" or Catalog.is_wearable(kind):
+		return apply_item_slot(index)
+	take_item_slot(index)
+	return true
 
 # A drop from a container into a socket. One item in, one item out: the socket
 # hands back whatever it was holding, because the bar holds exactly one thing.

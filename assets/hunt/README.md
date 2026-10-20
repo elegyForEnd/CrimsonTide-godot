@@ -18,6 +18,9 @@
 | `ui/crops/` | 运行时实际使用的九宫格小图（脚本裁） | 11 | 见下节「接入」 |
 | `portraits/` | 隐藏角色墓煜立绘（1 张常规 + 7 表情差分） | 8 | 1152×2048（9:16），品红底 |
 | `events/` | 互动事件窗里的物件插图（reliquary/astrolabe/music_box/balance/ledger/surgery/cage/blood_clock） | 8 | 900×900（1:1），**纯黑底**（暗色面板上直接铺，不需要抠图） |
+| `ui/search-probe_alpha.png` | W 搜索仪式中央的血锈探针 | 1 | 512×512，黑底抠透明 |
+| `ui/rune-dial_alpha.png` | 三环血纹锁底图 | 1 | 1024×1024，黑底抠透明 |
+| `ui/seal-success_alpha.png` / `seal-fail_alpha.png` | 解密成功/失败时盖在物件插图上的血印 | 2 | 512×512，黑底抠透明 |
 
 ## 抠图 / 切图说明
 
@@ -48,6 +51,9 @@
 | `ui/crops/toast.png` | `Art.toast_style()` | 裁掉 16:9 画布空白，44px 高的浮动提示条 |
 | `ui/crops/hotspot_*.png` | `EventMarker._draw()` | ready / used / locked 三态互动圆环；随机事件点只显示问号 |
 | `events/<art>.png` | `Art.event_texture()` → `hunt_screen._build_event_window()` | 事件窗左侧插图；缺图返回 null，窗口只显示文字 |
+| `ui/search-probe_alpha.png` | `Art.search_probe()` → `hunt_screen._build_search_fx()` | 搜索仪式中央的探针，代码只做摆动/缩放 |
+| `ui/rune-dial_alpha.png` | `Art.puzzle_dial()` → `hunt_screen._rebuild_puzzle_ui()` | 三环锁右侧底图；序列解密不显示 |
+| `ui/seal-*_alpha.png` | `Art.puzzle_seal(kind)` → `_flash_event_seal()` | 解密成功/失败血印，盖 1 秒后淡出 |
 | `ui/bar.png` | 暂未接入 | 2K 条压到 9~14px 会糊成一条，细条继续用自绘 `Bar` |
 
 - 裁图脚本：`python tools/build_hunt_ui_crops.py`。改完任何 `*_alpha.png` 后重跑它，再让 Godot `--import` 一次。

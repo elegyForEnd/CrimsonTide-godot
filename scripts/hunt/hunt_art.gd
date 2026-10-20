@@ -159,6 +159,25 @@ static func event_texture(key: String) -> Texture2D:
 static func ui_texture(name: String) -> Texture2D:
 	return texture(UI_DIR + name)
 
+## 黑底生图优先取 `*_alpha.png`（抠过黑底），缺了才退回原图。
+static func _alpha_pref(path: String) -> Texture2D:
+	var keyed := path.replace(".png", "_alpha.png")
+	if ResourceLoader.exists(keyed):
+		return texture(keyed)
+	return texture(path)
+
+## 搜索仪式中央的探针/提灯（黑底生图，靠代码做摆动与透明叠加）。
+static func search_probe() -> Texture2D:
+	return _alpha_pref(UI_DIR + "search-probe.png")
+
+## 时停解密的三环血纹盘底图（黑底生图，环与符文本体仍由代码画/换字）。
+static func puzzle_dial() -> Texture2D:
+	return _alpha_pref(UI_DIR + "rune-dial.png")
+
+## 解密结果血印：success / fail。
+static func puzzle_seal(kind: String) -> Texture2D:
+	return _alpha_pref(UI_DIR + "seal-%s.png" % kind)
+
 static func crop_texture(name: String) -> Texture2D:
 	return texture(UI_CROP + name)
 

@@ -34,6 +34,8 @@ const SEARCH_ENCOUNTER := 0.16    # 搜索把东西引出来的基础概率
 const EVENTS_PER_DAY_MIN := 2     # 每区每天最少刷几个事件点
 const EVENTS_PER_DAY_MAX := 3     # 每区每天最多刷几个
 const EVENT_SPECIAL_CHANCE := 0.35 # 满足条件时，额外再挂一个时段/天数专属事件
+## 时停解密的六个血纹符号：三环锁与记忆序列共用同一套字。
+const PUZZLE_GLYPHS := ["血", "骨", "月", "门", "火", "眼"]
 
 var hero := 0
 var hero_data: Dictionary = {}
@@ -1157,14 +1159,20 @@ func begin_event(uid: String) -> bool:
 func event_options() -> Array:
 	return event_state.get("options", [])
 
+## 选项里的 `time` 是**真实倒计时**：动作开始后世界照常走（怪物积累察觉、可能偷袭），
+## 走完才结算效果。等待中窗口锁住，只能中止（中止不退已花的时间）。
 func event_choose(index: int) -> bool:
 	if event_state.is_empty() or bool(event_state.get("finished", false)):
+		return false
+	if not event_puzzle().is_empty():
+		return false
+	if not event_action().is_empty():
 		return false
 	var shown: Array = event_options()
 	if index < 0 or index >= shown.size():
 		return false
 	var pick: Dictionary = shown[index]
-	var step: Dictionary = Data.event(str(event_state.get("id", ""))).get("steps", {}).get(str(event_state.get("step", "")), {})
+	var step: Dictionary = _current_event_step()
 	var raw: Array = step.get("options", [])
 	if raw.is_empty():
 		_close_event_state(true)
@@ -1178,9 +1186,69 @@ func event_choose(index: int) -> bool:
 		return false
 	var cost := float(opt.get("time", 0))
 	if cost > 0.0:
-		_spend_event_time(cost)
-		if event_state.is_empty():
-			return true
+		# The clock and the world run for real from here: this is the tense part.
+		event_state["action"] = {
+			"left": cost,
+			"total": cost,
+			"index": int(pick.get("index", index)),
+			"step": str(event_state.get("step", "")),
+		}
+		event_state.log.append("你动手了：%s（%d 秒，中途会被打断。）" % [str(pick.get("label", "…")), int(cost)])
+		paused = false
+		changed.emit()
+		return true
+	_apply_event_opt(opt)
+	changed.emit()
+	return true
+
+## 等待中的动作还剩几秒；UI 的进度环读它。
+func event_action() -> Dictionary:
+	return event_state.get("action", {})
+
+func event_action_ratio() -> float:
+	var act := event_action()
+	if act.is_empty():
+		return 0.0
+	var total := maxf(0.01, float(act.get("total", 1.0)))
+	return clampf(1.0 - float(act.get("left", 0.0)) / total, 0.0, 1.0)
+
+func event_action_left() -> float:
+	return maxf(0.0, float(event_action().get("left", 0.0)))
+
+## 一帧一帧地把动作推完：世界时间由 tick 自己走，这里只扣动作剩余时间。
+func _advance_event_action(dt: float) -> void:
+	var act := event_action()
+	if act.is_empty():
+		return
+	act["left"] = float(act.get("left", 0.0)) - dt
+	event_state["action"] = act
+	if float(act.left) > 0.0:
+		return
+	event_state["action"] = {}
+	# 回到"读文本"：非 live 事件重新时停；live 事件本来就不停。
+	if not bool(event_state.get("live", false)):
+		paused = true
+	var step: Dictionary = _current_event_step()
+	var raw: Array = step.get("options", [])
+	var at := int(act.get("index", -1))
+	if at < 0 or at >= raw.size():
+		_close_event_state(true)
+		return
+	_apply_event_opt(raw[at])
+
+## 被偷袭时打断动作：时间不退、效果不结算，事件还留在原地可以再来一次。
+func _abort_event_action(reason: String) -> void:
+	if event_action().is_empty():
+		return
+	event_state["action"] = {}
+	if not bool(event_state.get("live", false)):
+		paused = true
+	event_state.log.append(reason)
+	changed.emit()
+
+func _apply_event_opt(opt: Dictionary) -> void:
+	if event_state.is_empty():
+		return
 	if opt.has("log"):
 		event_state.log.append(str(opt.log))
 	if opt.has("hp"):
@@ -1204,15 +1272,13 @@ func event_choose(index: int) -> bool:
 	if hp <= 0.0:
 		_close_event_state(false)
 		finish(false, "死在了不该碰的东西上")
-		return true
+		return
 	if not search.is_empty():
 		cancel_search("你被别的事分了神。")
 	if next.is_empty():
 		_close_event_state(true)
 	else:
 		_enter_step(next)
-	changed.emit()
-	return true
 
 ## 玩家主动关掉窗口（相当于放弃这次调查，事件点保留）。
 func close_event() -> void:
@@ -1220,6 +1286,167 @@ func close_event() -> void:
 		return
 	event_state = {}
 	paused = false
+	changed.emit()
+
+func _current_event_step() -> Dictionary:
+	if event_state.is_empty():
+		return {}
+	return Data.event(str(event_state.get("id", ""))).get("steps", {}).get(str(event_state.get("step", "")), {})
+
+## ---------------------------------------------------------------- 时停小游戏
+##
+## 解密是**时停**的：不推进 clock，不计入动作耗时；玩家思考多久都不会被怪咬。
+## 失败次数用尽才把事件点当天锁死（有限次数可重试，见用户 2026-10-20 决策）。
+
+func event_puzzle() -> Dictionary:
+	return event_state.get("puzzle", {})
+
+func puzzle_active() -> bool:
+	return not event_puzzle().is_empty()
+
+func puzzle_glyph(index: int) -> String:
+	return PUZZLE_GLYPHS[clampi(index, 0, PUZZLE_GLYPHS.size() - 1)]
+
+func _start_puzzle(step: Dictionary) -> void:
+	var spec: Dictionary = step.get("puzzle", {})
+	var kind := str(spec.get("kind", "dial"))
+	var glyphs := int(spec.get("glyphs", PUZZLE_GLYPHS.size()))
+	var attempts := int(spec.get("attempts", 3))
+	var p := {
+		"kind": kind,
+		"attempts": attempts,
+		"max_attempts": attempts,
+		"glyphs": glyphs,
+		"last_fail": "",
+		"success_log": str(spec.get("success_log", "机关松开了。")),
+	}
+	if kind == "sequence":
+		var length := int(spec.get("length", 3))
+		var seq: Array = []
+		for i in length:
+			seq.append(event_rng.randi_range(0, glyphs - 1))
+		p["sequence"] = seq
+		p["progress"] = 0
+		p["reveal"] = true
+	else:
+		var rings := int(spec.get("rings", 3))
+		var cur: Array = []
+		var target: Array = []
+		for i in rings:
+			cur.append(event_rng.randi_range(0, glyphs - 1))
+			target.append(event_rng.randi_range(0, glyphs - 1))
+		if cur == target:
+			cur[0] = (int(cur[0]) + 1) % glyphs
+		p["rings"] = cur
+		p["target"] = target
+	event_state["puzzle"] = p
+	paused = true
+	if not str(spec.get("intro", "")).is_empty():
+		event_state.log.append(str(spec.intro))
+	changed.emit()
+
+## 三环锁：把某一环顺时针/逆时针转一格。
+func puzzle_rotate(ring: int, delta: int) -> bool:
+	var p := event_puzzle()
+	if p.is_empty() or str(p.get("kind", "")) != "dial":
+		return false
+	var rings: Array = p.get("rings", [])
+	if ring < 0 or ring >= rings.size():
+		return false
+	var glyphs := int(p.get("glyphs", PUZZLE_GLYPHS.size()))
+	rings[ring] = posmod(int(rings[ring]) + delta, glyphs)
+	p["rings"] = rings
+	p["last_fail"] = ""
+	event_state["puzzle"] = p
+	changed.emit()
+	return true
+
+## 尝试开锁：三道环都对上才成功，否则扣一次机会。
+func puzzle_try() -> bool:
+	var p := event_puzzle()
+	if p.is_empty() or str(p.get("kind", "")) != "dial":
+		return false
+	var rings: Array = p.get("rings", [])
+	var target: Array = p.get("target", [])
+	var ok := rings.size() == target.size()
+	if ok:
+		for i in rings.size():
+			if int(rings[i]) != int(target[i]):
+				ok = false
+				break
+	if ok:
+		_puzzle_solved()
+	else:
+		_puzzle_failed("环没有咬合。铜环里的东西轻轻动了一下，像是被你碰醒。", 5.0, 0.35)
+	return true
+
+## 记忆符文：按序列敲下一个符号。
+func puzzle_press(glyph: int) -> bool:
+	var p := event_puzzle()
+	if p.is_empty() or str(p.get("kind", "")) != "sequence":
+		return false
+	var seq: Array = p.get("sequence", [])
+	var at := int(p.get("progress", 0))
+	if at < 0 or at >= seq.size():
+		return false
+	if int(seq[at]) == int(glyph):
+		p["progress"] = at + 1
+		p["last_fail"] = ""
+		event_state["puzzle"] = p
+		if int(p["progress"]) >= seq.size():
+			_puzzle_solved()
+		else:
+			changed.emit()
+		return true
+	_puzzle_failed("顺序错了。盒子里的东西停了一拍，像是在等你再来一次。", 3.0, 0.25)
+	return true
+
+## 重放记忆序列（UI 用来做"再听一次"；本身不耗时间、不扣次数）。
+func puzzle_replay() -> Array:
+	var p := event_puzzle()
+	if p.is_empty():
+		return []
+	p["reveal"] = true
+	event_state["puzzle"] = p
+	changed.emit()
+	return p.get("sequence", [])
+
+func _puzzle_solved() -> void:
+	var p := event_puzzle()
+	var step := _current_event_step()
+	event_state["puzzle"] = {}
+	event_state.log.append(str(p.get("success_log", "机关开了。")))
+	if step.has("reward"):
+		_apply_event_reward(step.reward)
+	var next := str(step.get("next", ""))
+	if next.is_empty():
+		_close_event_state(true)
+	else:
+		_enter_step(next)
+	changed.emit()
+
+func _puzzle_failed(reason: String, damage: float, noise: float) -> void:
+	var p := event_puzzle()
+	if p.is_empty():
+		return
+	var left := int(p.get("attempts", 1)) - 1
+	p["attempts"] = left
+	p["last_fail"] = reason
+	event_state["puzzle"] = p
+	event_state.log.append(reason)
+	_event_hp(-damage)
+	if hp <= 0.0:
+		_close_event_state(false)
+		finish(false, "死在了不该碰的东西上")
+		return
+	_event_noise(noise)
+	if left <= 0:
+		event_state.log.append("机簧彻底咬死了。今天不会再有第二次机会。")
+		_close_event_state(true)
+	elif str(p.get("kind", "")) == "sequence":
+		p["progress"] = 0
+		p["reveal"] = true
+		event_state["puzzle"] = p
 	changed.emit()
 
 func _enter_step(step_id: String) -> void:
@@ -1230,6 +1457,8 @@ func _enter_step(step_id: String) -> void:
 		_close_event_state(true)
 		return
 	event_state["step"] = step_id
+	event_state["action"] = {}
+	event_state.erase("puzzle")
 	if not str(step.get("text", "")).is_empty():
 		event_state.log.append(str(step.text))
 	var granted: Dictionary = event_state.get("granted", {})
@@ -1260,6 +1489,8 @@ func _enter_step(step_id: String) -> void:
 	if options.is_empty():
 		options.append({"index": 0, "label": "离开", "ok": true, "why": "", "time": 0})
 	event_state["options"] = options
+	if step.has("puzzle"):
+		_start_puzzle(step)
 	changed.emit()
 
 ## 分支条件只用"模糊回应"表达：需要道具时不报物品名，只说人话。
@@ -1334,17 +1565,6 @@ func _event_noise(amount: float) -> void:
 	if stirred:
 		event_state.log.append("你弄出的动静传了出去。附近有什么被惊动了。")
 
-func _spend_event_time(seconds: float) -> void:
-	if seconds <= 0.0:
-		return
-	clock += seconds
-	event_state.log.append("（时间过去了 %d 秒。）" % int(seconds))
-	if clock >= Data.DAY_SECONDS:
-		clock = Data.DAY_SECONDS
-		event_state = {}
-		paused = false
-		advance_day()
-
 func _close_event_state(done: bool) -> void:
 	if event_state.is_empty():
 		return
@@ -1357,6 +1577,8 @@ func _close_event_state(done: bool) -> void:
 				marker["used"] = true
 		area_events[area_id] = list
 		note("你离开了那处地方。")
+	event_state["action"] = {}
+	event_state.erase("puzzle")
 	event_state["finished"] = true
 	paused = false
 
@@ -1495,6 +1717,11 @@ func tick(dt: float) -> void:
 	if ended_flag or paused:
 		return
 	clock += dt
+	# 事件动作的真实倒计时：世界在这一段里照常运转，怪物也在靠近。
+	if not event_state.is_empty() and not event_action().is_empty():
+		_advance_event_action(dt)
+		if ended_flag:
+			return
 	form_cd = maxf(0.0, form_cd - dt)
 	search_cd = maxf(0.0, search_cd - dt)
 	counter_lock = maxf(0.0, counter_lock - dt)
@@ -1557,6 +1784,9 @@ func _tick_area_enemies(dt: float) -> void:
 		enemy.next = float(enemy.get("interval", 2.0)) * rng.randf_range(0.8, 1.2)
 		if not search.is_empty():
 			cancel_search("你被从背后抓了一下，翻找中断了。")
+		# 事件动作也会被打断：手停在半空，时间已经花掉，效果不结算。
+		if not event_action().is_empty():
+			_abort_event_action("你被从背后抓了一下，手上的事断了。")
 		_enemy_hits_player(float(enemy.get("damage", 5.0)), false)
 		if ended_flag:
 			return

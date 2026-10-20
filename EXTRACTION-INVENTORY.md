@@ -6,6 +6,10 @@
 
 保留拖拽、旋转、双击、Ctrl 快捷操作、F、装备槽、背包换装、快捷栏与搜索进度。悬停详情由界面统一处理，可显示物品说明、武器战斗数值、占格和价值；未搜索物品不显示名称、品质和图标。角色生命与攻击等属性持续更新。
 
+快捷栏（[1][2][3]）的手势（2026-10-20）：**双击**按物品自己的优先级执行——消耗品直接使用；武器/防具/饰品/背包与身上那件互换，不经过背包；既不能用也不是装备的杂物，双击等同于**整理回背包**。**Ctrl+左键**无论什么物品都只做整理：背包优先、放不下再进次元口袋；面板上的「收回」小按钮走同一条 `take_item_slot()`。背包格里的双击保持原义（装备/收纳），不会触发"整理整包"。
+
+「收回」「卸」这类叠在格子上的小按钮之前点不动，根因是 `main._input()` 早于 Godot Button 的 `_gui_input`：`slot_at()` 命中后直接 `set_input_as_handled()`，按钮永远收不到点击。现在左键按下先判 `mouse_over_button()` 放行，所有面板小按钮一起修好。
+
 实现：scripts/extraction_inventory.gd 绘制界面并注册原拖拽系统使用的 grids、equip_zones、slot_zone_rects；scripts/extraction_inventory_socket.gd 使用真实裁剪矩形加载内置 ImageGen 生成的格子图集。资源和完整提示词记录位于 assets/ui/extraction-inventory-generation.json。
 
 验证：tests/extraction_inventory.gd 在真实 GPU 界面执行 53 项检查，覆盖六容量布局、口袋位置、真实鼠标滚轮、底部物品选择、滚动命中坐标、裁剪外点击保护、普通 TAB 无宝箱、悬停、旋转、拖拽装备、Ctrl 收回、快捷道具、未搜索与已揭示物品、拾取与关闭；0 failures。tests/systems.gd 10812 项通过，tests/rogue_inventory.gd 使用 GPU 执行 29 项通过。截图位于（旧截图已清理）。

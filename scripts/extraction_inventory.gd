@@ -64,7 +64,7 @@ func draw(app, p: Dictionary, container: Dictionary) -> void:
 		search_grid(container)
 	current_pack(p)
 	quick_slots(p)
-	text("拖拽整理 · R / 右键旋转 · 双击装备 · Ctrl 快捷操作",Vector2(87,865),Vector2(700,26),14,MUTED)
+	text("拖拽整理 · R 旋转 · 双击装备 · Ctrl+左键 使用/换装 · 快捷栏 Ctrl+左键 收回",Vector2(87,865),Vector2(650,26),13,MUTED)
 	text("TAB / ESC  关闭",Vector2(1160 if search else 750,865),Vector2(190,26),14,GOLD)
 	# Protect the three columns from an accidental drop outside their grids, and tell
 	# the drag system where the panel ends: outside the backdrop a released item is
@@ -188,7 +188,10 @@ func quick_slots(p: Dictionary) -> void:
 		text("[%d]" % (i+1),at+Vector2(0,87),Vector2(84,20),12,MUTED).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		if not item.is_empty():
 			zones.append({"rect":area,"item":item,"key":"slot%d" % i})
-			host.button(host.overlay,"收回",at+Vector2(43,65),Vector2(40,18),func(): host.take_item_slot(i),false,10)
+			# Kept as the visible way out; the same thing also answers to a double tap
+			# and Ctrl+left in `main._input()`.
+			var back: Button=host.button(host.overlay,"收回",at+Vector2(43,65),Vector2(40,18),func(): host.take_item_slot(i),false,10)
+			back.tooltip_text="放回背包（也可双击或 Ctrl+左键）"
 
 func current_pack(p: Dictionary) -> void:
 	var at := Vector2(806,562)
