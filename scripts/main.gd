@@ -2052,17 +2052,14 @@ func index_at(slot: String, cell: Vector2i) -> int:
 			return -1
 		var shown: Array=session.visible_items(container)
 		for i in shown.size():
-			var dims := Catalog.item_size(shown[i])
-			if Rect2i(Vector2i(int(shown[i].x),int(shown[i].y)),dims).has_point(cell):
+			if Catalog.covers(shown[i], cell):
 				return i
 		return -1
 	if camp_pack_open:
 		return CampStorage.index_at(profile,camp_player(),slot,cell)
 	var list: Array=session.players[session.my_id()][slot].items
 	for i in list.size():
-		var at := Vector2i(int(list[i].x),int(list[i].y))
-		var size := Catalog.item_size(list[i])
-		if Rect2i(at,size).has_point(cell):
+		if Catalog.covers(list[i], cell):
 			return i
 	return -1
 
@@ -4215,9 +4212,15 @@ func draw_search_window(container: Dictionary, x: float, y: float) -> void:
 		card.slot=true
 		card.item_kind=Catalog.item_icon(item)
 		card.rotated=bool(item.get("rot",false))
+		# 非矩形占格：把真实轮廓交给按钮，卡片只画被占的格子。
+		var shape_cells := Catalog.shape_cells(item)
+		if shape_cells.size() < dims.x * dims.y:
+			card.shape_cells=shape_cells
+			card.shape_cols=dims.x
+			card.shape_rows=dims.y
 		card.short_caption=Catalog.item_short_name(item)+(" ×%d" % count if count>1 else "")
 		card.accent=Catalog.item_color(item)
-		card.tooltip_text="%s\n%s\n占 %d×%d 格 · 悬停按 [F] 快捷拾取 / 双击自动收纳 / 拖入背包" % [Catalog.item_name(item),Catalog.item_desc(item),dims.x,dims.y]
+		card.tooltip_text="%s\n%s\n占 %d×%d 格（%d 个小格） · 悬停按 [F] 快捷拾取 / 双击自动收纳 / 拖入背包" % [Catalog.item_name(item),Catalog.item_desc(item),dims.x,dims.y,shape_cells.size()]
 		card.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	# progress bar
 	var bar_w := wide-44.0

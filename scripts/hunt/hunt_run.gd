@@ -63,7 +63,6 @@ var form := FORM_ACT
 var form_cd := 0.0
 var search_cd := 0.0
 var counter_lock := 0.0
-var sites_done: Dictionary = {}
 ## 随机事件：每个地区每天的刷新结果 + 正在执行的事件状态（互动窗口）。
 ## `area_events` 的 uid 形如 `area:event_id:index`，UI 只认 uid。
 var area_events: Dictionary = {}
@@ -115,7 +114,6 @@ func setup(p_hero: int, p_seed: int = 0, p_gear: int = -1, talents: Array = [0, 
 	search_cd = 0.0
 	counter_lock = 0.0
 	counter_hits = 0
-	sites_done = {}
 	area_events = {}
 	events_used = {}
 	event_state = {}
@@ -1028,7 +1026,6 @@ func advance_day() -> void:
 	combat = {}
 	event_state = {}
 	paused = false
-	sites_done.clear()
 	events_used.clear()
 	area_notified.clear()
 	_reset_uses()
@@ -1092,137 +1089,6 @@ func toggle_form() -> bool:
 		note("你直起身，重新行动。")
 		set_expression("neutral", 1.0)
 	changed.emit()
-	return true
-
-## ------------------------------------------------------------------ 互动点
-
-func _legacy_sites() -> Array:
-	return Data.sites_for(area_id)
-
-func _legacy_site_done(site_id: String) -> bool:
-	return bool(sites_done.get("%s:%s" % [area_id, site_id], false))
-
-func _legacy_can_interact(site_id: String) -> Dictionary:
-	var site: Dictionary = Data.site(area_id, site_id)
-	if site.is_empty():
-		return {"ok": false, "why": "这里什么也没有。"}
-	if ended_flag:
-		return {"ok": false, "why": "这一局已经结束了。"}
-	if not combat.is_empty():
-		return {"ok": false, "why": "先脱离战斗。"}
-	if not search.is_empty():
-		return {"ok": false, "why": "正在翻找。"}
-	if _legacy_site_done(site_id):
-		return {"ok": false, "why": "这里已经没有别的了。"}
-	var req: Array = site.get("requires", [])
-	if not req.is_empty():
-		var has := false
-		for kind in req:
-			if item_count(str(kind)) > 0:
-				has = true
-		if not has:
-			return {"ok": false, "why": "需要 %s。" % Data.item_name(str(req[0]))}
-	return {"ok": true, "why": ""}
-
-## 场景互动：一次性，立即结算，结果写进日志。
-func _legacy_interact(site_id: String) -> bool:
-	var verdict := _legacy_can_interact(site_id)
-	if not bool(verdict.ok):
-		note(str(verdict.why))
-		return false
-	var site: Dictionary = Data.site(area_id, site_id)
-	var kind := str(site.get("kind", "shrine"))
-	match kind:
-		"shrine":
-			var roll := rng.randf()
-			if roll < 0.5:
-				var before_shrine := hp
-				hp = minf(total_max_hp(), hp + 18.0)
-				if hp > before_shrine:
-					floated.emit("heal", "player", hp - before_shrine, false)
-				note("神龛的香灰还温着。恢复 18 生命。")
-			elif roll < 0.8:
-				stamina = minf(max_stamina, stamina + 30.0)
-				note("神龛里有人留了半壶蜜酒。恢复 30 体力。")
-			else:
-				hp = maxf(0.0, hp - 10.0)
-				floated.emit("hurt", "player", 10.0, false)
-				note("木像的眼睛转了一下。你掉了 10 生命。")
-		"blood":
-			if hp <= 20.0:
-				note("血不够，祭坛没有回应。")
-				return false
-			hp -= 15.0
-			floated.emit("hurt", "player", 15.0, false)
-			stamina = minf(max_stamina, stamina + 15.0)
-			var pool := ["relic", "crystal", "ring_mail", "hand_cannon", "spirit_horn"]
-			var gift := str(pool[rng.randi_range(0, pool.size() - 1)])
-			add_item(gift, 1)
-			note("你在血池里按了一下手印，%s 浮了上来；代价是 15 生命。" % Data.item_name(gift))
-		"corpse":
-			var table := {"cloth": 3, "iron": 2, "lead_shot": 1, "herbal_bandage": 1, "hunt_bait": 1}
-			var got: Array = []
-			for i in 2:
-				var item_kind := _roll_table(table)
-				if item_kind.is_empty():
-					break
-				if add_item(item_kind, 1):
-					got.append(Data.item_name(item_kind))
-			note("你翻了翻遗骸：%s。" % ("、".join(got) if not got.is_empty() else "什么都没有"))
-			if rng.randf() < 0.35:
-				for enemy in active_enemies():
-					enemy.wake = minf(1.0, float(enemy.wake) + 0.5 * float(enemy.aggression))
-				note("血味散开了，附近的东西开始躁动。")
-		"well":
-			var roll := rng.randf()
-			if roll < 0.4:
-				var pool := ["crystal", "relic", "charm"]
-				var gift := str(pool[rng.randi_range(0, pool.size() - 1)])
-				add_item(gift, 1)
-				note("井底传来一声闷响，%s 被水推了上来。" % Data.item_name(gift))
-			elif roll < 0.7:
-				var before_well := hp
-				hp = minf(total_max_hp(), hp + 15.0)
-				if hp > before_well:
-					floated.emit("heal", "player", hp - before_well, false)
-				note("井水是温的。恢复 15 生命。")
-			elif roll < 0.85:
-				stamina = minf(max_stamina, stamina + 20.0)
-				note("你喝了一口，喉咙里泛起铁味。恢复 20 体力。")
-			else:
-				hp = maxf(0.0, hp - 8.0)
-				floated.emit("hurt", "player", 8.0, false)
-				note("井底有什么拽了一下你的袖子。你掉了 8 生命。")
-		"cache":
-			var opened_key := false
-			if item_count("key") > 0:
-				consume("key", 1)
-				opened_key = true
-			else:
-				consume("lockpick", 1)
-			var pool := ["ring_mail", "hand_cannon", "spirit_horn", "relic", "crystal"]
-			var got: Array = []
-			for i in 2:
-				var gift := str(pool[rng.randi_range(0, pool.size() - 1)])
-				if add_item(gift, 1):
-					got.append(Data.item_name(gift))
-			note("%s打开暗格：%s。" % ["用钥匙" if opened_key else "撬开锁", "、".join(got) if not got.is_empty() else "只有灰"])
-		"trap":
-			var damage := 4.0 if bool(flags.mask) else 14.0
-			hp = maxf(0.0, hp - damage)
-			floated.emit("hurt", "player", damage, false)
-			if bool(flags.mask):
-				note("面具滤掉了大半毒气，你只受到 %d 伤害。" % int(damage))
-			else:
-				note("你踩进了机关，受到 %d 伤害。" % int(damage))
-		"sigil":
-			add_item("blood_sigil", 1)
-			note("血契石认了你的手印。祭坛的方向传来一声闷响。")
-	sites_done["%s:%s" % [area_id, site_id]] = true
-	if hp <= 0.0:
-		finish(false, "死在了不该碰的东西上")
-	else:
-		changed.emit()
 	return true
 
 ## ------------------------------------------------------------------ 随机事件

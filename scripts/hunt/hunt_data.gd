@@ -383,60 +383,6 @@ const ENEMIES := {
 		"loot": {"crystal": 4, "relic": 3, "charm": 2, "brimstone": 3}},
 }
 
-## 一次性互动点：每个地区 2 个。`kind` 决定效果，`requires` 是前置条件，
-## `at` 是 0..1 的归一化画面坐标（与热点同一套场景矩形）。
-## 只在本局生效，用 `sites_done` 记录，换日不重置（一次性 = 一局一次）。
-const SITES := {
-	"old_town": [
-		{"id": "shrine", "name": "街角神龛", "kind": "shrine", "at": Vector2(0.12, 0.44),
-			"desc": "一尊被雨水泡烂的木像，前面还摆着发黑的面包。"},
-		{"id": "sinkhole", "name": "塌陷路面", "kind": "trap", "at": Vector2(0.58, 0.78),
-			"desc": "石板下面空了，踩上去会整块翻下去。"},
-	],
-	"black_pines": [
-		{"id": "hunter", "name": "猎人尸体", "kind": "corpse", "at": Vector2(0.34, 0.66),
-			"desc": "挂在树根上的猎人，背包还扣在腰间。"},
-		{"id": "wish_well", "name": "林间许愿井", "kind": "well", "at": Vector2(0.62, 0.72),
-			"desc": "井口结着白霜，往里面扔东西会听见很远的回声。"},
-	],
-	"hospital": [
-		{"id": "medicine_cabinet", "name": "上锁的药柜", "kind": "cache", "requires": ["key", "lockpick"],
-			"at": Vector2(0.30, 0.60), "desc": "柜门被铁链缠了三圈，锁眼里塞着蜡。"},
-		{"id": "gas_hall", "name": "毒气走廊", "kind": "trap", "at": Vector2(0.78, 0.66), "mask_saves": true,
-			"desc": "走廊里的雾是绿的，灯罩上结了一层结晶。"},
-	],
-	"docks": [
-		{"id": "sailor", "name": "溺亡水手", "kind": "corpse", "at": Vector2(0.44, 0.70),
-			"desc": "半个身子泡在水里，手里还攥着绳头。"},
-		{"id": "hold_cache", "name": "船坞暗格", "kind": "cache", "requires": ["key", "lockpick"],
-			"at": Vector2(0.74, 0.56), "desc": "地板上有一圈被反复撬开的划痕。"},
-	],
-	"institute": [
-		{"id": "lab_cache", "name": "实验台暗格", "kind": "cache", "requires": ["key", "lockpick"],
-			"at": Vector2(0.26, 0.58), "desc": "台面下有一层不该存在的夹层。"},
-		{"id": "burst_pipe", "name": "破损管道", "kind": "trap", "at": Vector2(0.70, 0.74), "mask_saves": true,
-			"desc": "管道里还在往外渗冷雾，金属上全是霜。"},
-	],
-	"catacombs": [
-		{"id": "blood_sigil", "name": "血契石", "kind": "sigil", "at": Vector2(0.36, 0.62),
-			"desc": "一块刻满凹槽的黑石，槽里是干涸的血。"},
-		{"id": "nameless_stone", "name": "无字碑", "kind": "shrine", "at": Vector2(0.72, 0.68),
-			"desc": "碑面被磨得发亮，一个字也没有。"},
-	],
-	"bell_square": [
-		{"id": "dry_well", "name": "干涸许愿井", "kind": "well", "at": Vector2(0.36, 0.62),
-			"desc": "井底铺满了硬币和骨头。"},
-		{"id": "tower_shrine", "name": "钟楼神龛", "kind": "shrine", "at": Vector2(0.66, 0.54),
-			"desc": "钟绳垂在神龛前，绳结里夹着头发。"},
-	],
-	"altar": [
-		{"id": "blood_pool", "name": "血池祭坛", "kind": "blood", "at": Vector2(0.42, 0.64),
-			"desc": "池子里的血还在缓慢转动，等着有人伸手。"},
-		{"id": "offering", "name": "献祭者遗骸", "kind": "corpse", "at": Vector2(0.62, 0.70),
-			"desc": "被摆成跪姿的遗骸，胸口插着一把没有柄的刀。"},
-	],
-}
-
 ## 立绘合成：三位基础角色有 body + face 差分；隐藏角色用整张 portrait-3.png。
 ## face_rect 与 assets/story/portraits/manifest.json 同源，改图时两边一起改。
 const PORTRAITS := {
@@ -496,15 +442,6 @@ static func weapon(kind: String) -> Dictionary:
 
 static func armor(kind: String) -> Dictionary:
 	return ARMORS.get(kind, {})
-
-static func sites_for(area: String) -> Array:
-	return SITES.get(area, [])
-
-static func site(area: String, id: String) -> Dictionary:
-	for entry in SITES.get(area, []):
-		if str(entry.get("id", "")) == id:
-			return entry
-	return {}
 
 static func enemy(kind: String) -> Dictionary:
 	return ENEMIES.get(kind, {})

@@ -109,7 +109,7 @@ func worn_kit(p: Dictionary) -> void:
 		var row: Dictionary=rows[i]
 		var at := Vector2(PORTRAIT_X if i%2==0 else PORTRAIT_X+204,249+int(i/2)*123)
 		var item: Dictionary=row.item
-		var node := ItemTile.tile(host,at,Vector2(67,67),item)
+		var node := ItemTile.tile(host,at,Vector2(67,67),item,GOLD,false,false)
 		var key: String="weapon" if row.type=="weapon" else "%s%d" % [row.type,row.index]
 		host.equip_zones[key]=Rect2(at,Vector2(67,67))
 		text(row.title,at+Vector2(-5,72),Vector2(77,24),14,GOLD).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -131,7 +131,7 @@ func quick_slots(p: Dictionary) -> void:
 	for i in 3:
 		var at := Vector2(PORTRAIT_X+i*99,688)
 		var item: Dictionary=host.session.item_slot(p,i)
-		var body := ItemTile.tile(host,at,Vector2(84,84),item)
+		var body := ItemTile.tile(host,at,Vector2(84,84),item,GOLD,false,false)
 		if host.selected_item_slot==i: body.selected=true
 		var area := Rect2(at,Vector2(84,84))
 		host.slot_zone_rects.append(area)
@@ -151,7 +151,7 @@ func cabinet(p: Dictionary) -> void:
 		var at := Vector2(PORTRAIT_X+78+i*(CABINET_CELL+8),786)
 		var key := str(cabinet[i].get("key",Catalog.DEFAULT_BAG_KEY))
 		var item: Dictionary=host.session.bag_as_item(key)
-		ItemTile.tile(host,at,Vector2(CABINET_CELL,CABINET_CELL),item)
+		ItemTile.tile(host,at,Vector2(CABINET_CELL,CABINET_CELL),item,GOLD,false,false)
 		host.cabinet_zones[i]=Rect2(at,Vector2(CABINET_CELL,CABINET_CELL))
 		zones.append({"rect":Rect2(at,Vector2(CABINET_CELL,CABINET_CELL)),"item":item,"key":"cab%d" % i})
 	if cabinet.is_empty():
@@ -167,7 +167,7 @@ func carried(p: Dictionary) -> void:
 	text("阵亡保留 · 固定 4×4",Vector2(CARRIED_X,518),Vector2(251,24),13,MUTED)
 	grid_cells("pocket",p.pocket,Vector2(CARRIED_X,548),CELL,GAP,Catalog.container_grid(p.pocket),POCKET_TONE)
 	var at := Vector2(CARRIED_X,690)
-	ItemTile.tile(host,at,Vector2(58,58),{"kind":"backpack","quality":p.backpack.key})
+	ItemTile.tile(host,at,Vector2(58,58),{"kind":"backpack","quality":p.backpack.key},GOLD,false,false)
 	host.equip_zones["bag"]=Rect2(at,Vector2(58,58))
 	text("当前背包",at+Vector2(-8,65),Vector2(88,24),13,GOLD)
 	host.button(host.overlay,"脱下",at+Vector2(66,36),Vector2(52,22),func(): host.camp_unwear_bag(),false,12).tooltip_text="把背包脱下来变成仓库里的一件物品，可以出售"

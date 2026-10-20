@@ -418,17 +418,17 @@ func run() -> void:
 	# full of relics makes room for a red weapon by giving relics back to the bag,
 	# because the relic is white and the weapon is the top tier.
 	drop.items.clear()
-	drop.items.append(Catalog.make_equipment("weapon",2,5))
+	drop.items.append(Catalog.make_equipment("weapon",1,5))
 	drop["searched"]=1
 	p.backpack.items.clear()
 	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
-	for i in 4:
-		Catalog.add_item(p.pocket,"relic")
+	for i in 16:
+		Catalog.add_item(p.pocket,"crystal")
 	check(Catalog.container_free(p.pocket)==0,"the pocket really is full")
 	check(session.auto_store(p,0),"a red weapon is accepted by a pocket full of relics")
 	check(Catalog.container_count(p.pocket,"weapon")==1,"the white relic gave the pocket up to the red weapon")
-	check(Catalog.container_count(p.pocket,"relic")==3,"exactly one relic paid for the weapon's 2x2")
-	check(Catalog.container_count(p.backpack,"relic")==1,"the evicted relic reached the backpack instead of the floor")
+	check(Catalog.container_count(p.pocket,"crystal")==13,"three crystals paid for the sword's 1x3")
+	check(Catalog.container_count(p.backpack,"crystal")==3,"the evicted crystals reached the backpack instead of the floor")
 	# Both containers sorted and still no room: the click does nothing at all.
 	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
 	p.pocket=Catalog.make_container([],Catalog.POCKET_GRID)
@@ -466,8 +466,8 @@ func run() -> void:
 	p["search_ref"]=drop_ref
 	check(session.auto_store(p,0),"gold loot is accepted by a pocket packed with white junk")
 	check(Catalog.container_count(p.pocket,"weapon")==1,"the gold weapon takes the room the junk gave up")
-	check(Catalog.container_count(p.pocket,"crystal")==12,"exactly four crystals paid for a 2x2 of room")
-	check(session.container_units(p.backpack)==4,"every evicted crystal reached the backpack rather than the floor")
+	check(Catalog.container_count(p.pocket,"crystal")==13,"exactly three crystals paid for a 1x3 of room")
+	check(session.container_units(p.backpack)==3,"every evicted crystal reached the backpack rather than the floor")
 	# Walking away proves the count: a crystal dropped at the player's feet is
 	# absorbed by walking over it, so the floor is read from a safe distance.
 	p.p+=Vector2(600,0)
@@ -484,8 +484,8 @@ func run() -> void:
 	p["search_ref"]=drop_ref
 	check(session.auto_store(p,0),"red gear is accepted by the same solid pocket")
 	check(Catalog.container_count(p.pocket,"gear")==1,"the red gear piece takes the pocket room")
-	check(Catalog.container_count(p.pocket,"crystal")==14,"a 1x2 footprint costs two crystals")
-	check(session.container_units(p.backpack)==2,"the two evicted crystals reached the backpack")
+	check(Catalog.container_count(p.pocket,"crystal")==12,"a 2x2 footprint costs four crystals")
+	check(session.container_units(p.backpack)==4,"the four evicted crystals reached the backpack")
 	# With the backpack full as well the evicted items have nowhere to go but the
 	# ground, and the high quality loot still lands.
 	p.backpack=Catalog.make_container([],Catalog.tier("white").grid)
@@ -502,7 +502,7 @@ func run() -> void:
 	drop["searched"]=1
 	p["search_ref"]=drop_ref
 	check(session.auto_store(p,0),"red loot is accepted by a full bag and a solid pocket")
-	check(session.world_drops.size()==3,"the two evicted crystals joined the chest on the floor")
+	check(session.world_drops.size()==5,"the four evicted crystals joined the chest on the floor")
 	check(session.container_units(p.backpack)==9,"the full backpack kept everything it had")
 	# Equal quality is never evicted: four relics tile the pocket exactly, and a
 	# fifth one is refused by the pocket rather than pushing a relic out.
@@ -717,7 +717,13 @@ func run() -> void:
 	Catalog.add_item(doomed.pocket,"relic")
 	var drop_count: int=session.world_drops.size()
 	session.down(doomed)
-	check(doomed.status=="down","downing sets the downed state")
+	# Solo has no teammate to revive the player, so downing settles the run on
+	# the spot instead of leaving a body on the floor.
+	check(doomed.status=="dead","solo going down ends the run at once")
+	check(not session.running,"the solo run settles the moment the player falls")
+	check(session.results.has(3),"the fallen player already holds a settlement entry")
+	check(session.results[3].bags[0].key=="white","a dead player restarts from the white backpack")
+	check(session.results[3].loot==Catalog.market_total(session.results[3].pocket.items),"a dead player banks the pocket and no backpack loot")
 	check(doomed.backpack.items.is_empty(),"death empties the backpack")
 	check(doomed.bags.is_empty(),"death also scatters the spare backpacks")
 	check(Catalog.container_count(doomed.pocket,"relic")==1,"the pocket survives going down")
@@ -761,6 +767,9 @@ func run() -> void:
 	session.players.erase(3)
 	session.players[2]=session.make_player(2,{"name":"Ally","hero":1})
 	session.players[2].status="dead"
+	# The solo fall above already settled this run; settle() is re-armed to check
+	# a mixed roster of one survivor and one corpse from the same expedition.
+	session.running=true
 	session.settle()
 	check(session.results[1].escaped,"extraction recorded")
 	check(Catalog.container_count(session.results[1].pocket,"relic")==1,"the pocket is handed to the save file")
@@ -851,8 +860,10 @@ func run() -> void:
 		check(float(issue.reach)<=float(field.reach),"%s has no more reach than %s" % [issue.name,field.name])
 	# --- weapon and gear found in the field ---------------------------------
 	check(Catalog.ITEMS.has("weapon") and Catalog.ITEMS.has("gear"),"weapons and gear are loot kinds")
-	check(Catalog.ITEMS["weapon"].size==Vector2i(2,2),"a weapon takes a 2x2 block")
-	check(Catalog.ITEMS["gear"].size==Vector2i(1,2),"a gear piece takes a 1x2 block")
+	check(Catalog.item_size({"kind":"weapon","weapon":2})==Vector2i(2,3),"a greatsword takes a 2x3 block")
+	check(Catalog.item_size({"kind":"weapon","weapon":1})==Vector2i(1,3),"a shortsword takes a 1x3 block")
+	check(Catalog.item_size({"kind":"gear","gear":0})==Vector2i(2,2),"a suit of armour takes a 2x2 block")
+	check(Catalog.item_size({"kind":"gear","gear":1})==Vector2i(1,1),"a sight takes a single cell")
 	var white_blade := Catalog.make_equipment("weapon",2,0)
 	var red_blade := Catalog.make_equipment("weapon",2,5)
 	check(int(white_blade.tier)==0 and int(red_blade.tier)==5,"equipment remembers its quality")
@@ -874,7 +885,7 @@ func run() -> void:
 		saved_vest,
 		{"kind":"ammo","x":3,"y":0,"rot":true,"count":3},
 		{"kind":"backpack","x":4,"y":0,"rot":false,"quality":"gold"},
-		{"kind":"medicine","x":0,"y":2,"rot":false,"provision":true}],"gw":8,"gh":8},Vector2i(8,8))
+		{"kind":"medicine","x":2,"y":2,"rot":false,"provision":true}],"gw":8,"gh":8},Vector2i(8,8))
 	var saved_weapon := index_of(saved_pack,"weapon")
 	var saved_gear := index_of(saved_pack,"gear")
 	var saved_ammo := index_of(saved_pack,"ammo")
@@ -884,7 +895,7 @@ func run() -> void:
 	check(Catalog.container_count(saved_pack,"backpack")==1 and str(saved_pack.items[index_of(saved_pack,"backpack")].quality)=="gold","a saved loose backpack keeps its quality")
 	check(bool(saved_pack.items[index_of(saved_pack,"medicine")].get("provision",false)),"a saved provision keeps its free flag")
 	# Re-packing a looted container must not strip what an item is.
-	var chest_pack := {"items":[],"gw":4,"gh":4,"next":1}
+	var chest_pack := {"items":[],"gw":5,"gh":5,"next":1}
 	Catalog.place_loot(chest_pack,"crystal")
 	Catalog.place_loot(chest_pack,"crystal")
 	Catalog.place_loot(chest_pack,"weapon")
@@ -1041,6 +1052,9 @@ func run() -> void:
 	# Dying scatters the worn kit as well as the backpack.
 	var doomed_kit: Dictionary=kit_session.make_player(7,{"name":"Worn"})
 	kit_session.players[7]=doomed_kit
+	# The starting 3x3 pack cannot hold a 1x4 two-handed weapon, so this doomed
+	# Watcher is given a green 4x4 pack to carry the sword they will drop.
+	doomed_kit.backpack=Catalog.make_bag("green")
 	Catalog.add_item(doomed_kit.backpack,"weapon")
 	doomed_kit.backpack.items[0]["weapon"]=1
 	doomed_kit.backpack.items[0]["tier"]=3
@@ -1066,8 +1080,10 @@ func run() -> void:
 			empty_sockets=false
 	check(empty_sockets,"the item bar starts empty")
 	check(kit_session.slot_use(bar,0)==false,"an empty socket does nothing")
-	# A socket is not a grid: a 2x2 weapon fits one, and the item keeps the
-	# footprint it would need in a backpack.
+	# A socket is not a grid: a 2x3 greatsword fits one, and the item keeps the
+	# footprint it would need in a backpack. The starting 3x3 pack is too small to
+	# hold a two-handed weapon, so this Watcher carries a green 4x4 pack.
+	bar.backpack=Catalog.make_bag("green")
 	bar.backpack.items.clear()
 	check(Catalog.add_item(bar.backpack,"weapon"),"a weapon waits for the item bar")
 	bar.backpack.items[0]["weapon"]=2
@@ -1075,7 +1091,7 @@ func run() -> void:
 	kit_session.perform(8,"slot_put",{"slot":0,"from":"backpack","index":0})
 	check(bar.backpack.items.is_empty(),"the socket took the weapon out of the bag")
 	check(str(kit_session.item_slot(bar,0).get("kind",""))=="weapon","the weapon is in the socket")
-	check(Catalog.item_size(kit_session.item_slot(bar,0))==Vector2i(2,2),"a socket keeps the real 2x2 footprint of what it holds")
+	check(Catalog.item_size(kit_session.item_slot(bar,0))==Vector2i(2,3),"a socket keeps the real 2x3 footprint of what it holds")
 	check(not kit_session.item_slot(bar,0).has("x"),"a socket strips the grid coordinates it came with")
 	# E on a weapon swaps it with whatever is in hand; the old one takes the socket.
 	check(kit_session.slot_use(bar,0),"E on a socket with a weapon swaps it into the hand")

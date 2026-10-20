@@ -2465,7 +2465,7 @@ func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
 	if name!="backpack" and name!="pocket":
 		return false
 	var kind := str(entry.get("kind",""))
-	if kind.is_empty() or not Catalog.can_hold(p[name],kind):
+	if kind.is_empty() or not Catalog.can_hold_entry(p[name],entry):
 		return false
 	var container: Dictionary=p[name]
 	var trial := Catalog.make_container([],Catalog.container_grid(container))
@@ -2488,7 +2488,7 @@ func container_receive(p: Dictionary, name: String, entry: Dictionary) -> bool:
 ## own coordinates, which mean nothing inside a backpack.
 func container_accepts(container: Dictionary, entry: Dictionary, cell: Vector2i, rot: bool = false) -> bool:
 	var kind := str(entry.get("kind",""))
-	if kind.is_empty() or not Catalog.can_hold(container,kind):
+	if kind.is_empty() or not Catalog.can_hold_entry(container,entry):
 		return false
 	# A stack merges into its own pile rather than taking the aimed cell, so the
 	# only question it asks is whether the container takes that kind at all.
@@ -2875,7 +2875,7 @@ func container_would_receive(container: Dictionary, entry: Dictionary) -> bool:
 	if container.is_empty() or entry.is_empty():
 		return false
 	var kind := str(entry.get("kind",""))
-	if kind.is_empty() or not Catalog.can_hold(container,kind):
+	if kind.is_empty() or not Catalog.can_hold_entry(container,entry):
 		return false
 	var trial := Catalog.make_container([],Catalog.container_grid(container))
 	trial["items"]=Catalog.container_items(container).duplicate()

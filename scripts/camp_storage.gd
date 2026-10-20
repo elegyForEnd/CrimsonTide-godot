@@ -68,8 +68,7 @@ static func index_at(profile, p: Dictionary, slot: String, cell: Vector2i) -> in
 	var list: Array=items_of(profile,p,slot)
 	for i in list.size():
 		var item: Dictionary=list[i]
-		var dims := Catalog.item_size(item)
-		if Rect2i(Vector2i(int(item.get("x",0)),int(item.get("y",0))),dims).has_point(cell):
+		if Catalog.covers(item, cell):
 			return i
 	return -1
 

@@ -18,10 +18,10 @@ var layout_shift := Vector2.ZERO
 func text(value: String, at: Vector2, size: Vector2, font_size: int = 17, color: Color = INK) -> Label:
 	return host.label(host.overlay,value,at,font_size,color,size)
 
-func tile(at: Vector2, size: Vector2, item: Dictionary = {}, tone: Color = GOLD, secure: bool = false) -> Control:
+func tile(at: Vector2, size: Vector2, item: Dictionary = {}, tone: Color = GOLD, secure: bool = false, slice_shape: bool = true) -> Control:
 	# The cell look itself lives in `item_tile.gd`, so the camp panel draws exactly
 	# the same sockets, linings, rotations and stack badges as a raid.
-	return ItemTile.tile(host,at,size,item,tone,secure)
+	return ItemTile.tile(host,at,size,item,tone,secure,slice_shape)
 
 func draw(app, p: Dictionary, container: Dictionary) -> void:
 	host=app
@@ -108,7 +108,7 @@ func character(p: Dictionary) -> void:
 		var row: Dictionary=rows[i]
 		var at := Vector2(88 if i%2==0 else 327,239+int(i/2)*123)
 		var item: Dictionary=row.item
-		var node := tile(at,Vector2(67,67),item)
+		var node := tile(at,Vector2(67,67),item,GOLD,false,false)
 		var key: String="weapon" if row.type=="weapon" else "%s%d" % [row.type,row.index]
 		host.equip_zones[key]=Rect2(at,Vector2(67,67))
 		text(row.title,at+Vector2(-5,72),Vector2(77,24),14,GOLD).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -180,7 +180,7 @@ func quick_slots(p: Dictionary) -> void:
 	for i in 3:
 		var at := Vector2(100+i*99,721)
 		var item: Dictionary=host.session.item_slot(p,i)
-		var body := tile(at,Vector2(84,84),item)
+		var body := tile(at,Vector2(84,84),item,GOLD,false,false)
 		if host.selected_item_slot==i: body.selected=true
 		var area := Rect2(at,Vector2(84,84))
 		host.slot_zone_rects.append(area)
@@ -192,7 +192,7 @@ func quick_slots(p: Dictionary) -> void:
 
 func current_pack(p: Dictionary) -> void:
 	var at := Vector2(806,562)
-	tile(at,Vector2(58,58),{"kind":"backpack","quality":p.backpack.key})
+	tile(at,Vector2(58,58),{"kind":"backpack","quality":p.backpack.key},GOLD,false,false)
 	host.equip_zones["bag"]=Rect2(at,Vector2(58,58))
 	text("当前背包",at+Vector2(-8,65),Vector2(88,24),13,GOLD)
 

@@ -27,14 +27,16 @@ func run() -> void:
 	check(Data.DAYS == 3, "three day run")
 	check(Data.area("old_town").get("neighbors", []).has("bell_square"), "old town connects to square")
 	check(Data.recipe("stone_axe").get("out", "") == "stone_axe", "stone axe recipe")
-	# 深潜物品进搜打撤：尺寸按价值分档、稀有度只做白/绿/蓝。
+	# 深潜物品进搜打撤：尺寸按实际形状、稀有度只做白/绿/蓝。
 	check(Catalog.is_hunt_loot("iron") and not Catalog.is_hunt_loot("scrap"), "catalog marks hunt loot")
-	check(Catalog.hunt_loot_size("branch") == Vector2i(1, 1), "cheap hunt loot takes one cell")
-	check(Catalog.hunt_loot_size("hand_cannon") == Vector2i(2, 2), "expensive hunt loot takes a 2x2 block")
-	check(Catalog.hunt_loot_size("machete") == Vector2i(2, 1), "mid-value hunt loot takes two cells")
-	check(Catalog.item_size({"kind": "hand_cannon"}) == Vector2i(2, 2), "item_size derives from value")
+	check(Catalog.hunt_loot_size("branch") == Vector2i(1, 1), "a branch takes one cell")
+	check(Catalog.hunt_loot_size("hand_cannon") == Vector2i(2, 1), "a hand cannon lies two cells wide")
+	check(Catalog.hunt_loot_size("machete") == Vector2i(1, 3), "a machete is 1x3")
+	check(Catalog.item_size({"kind": "hand_cannon"}) == Vector2i(2, 1), "item_size follows the real piece")
 	check(not Catalog.hunt_exportable("stone_axe") and not Catalog.hunt_exportable("cloth_armor"), "gear cannot leave the dive")
 	check(Catalog.hunt_exportable("iron") and Catalog.hunt_exportable("herbal_bandage"), "ordinary loot can leave the dive")
+	check(not Catalog.hunt_searchable("stone_axe") and not Catalog.hunt_searchable("ring_mail"), "dive gear never drops in a raid")
+	check(Catalog.hunt_searchable("iron") and Catalog.hunt_searchable("key"), "materials and the plain key still drop")
 	check(Data.weapon("stone_axe").get("damage", 0) > 0, "stone axe has damage")
 
 	var run = Run.new()
