@@ -632,6 +632,8 @@ project.godot:18  主场景 = scenes/boot.tscn
 
 **测试**：`hunt_rules` 199、`hunt_playtest` 40、`hunt_ui_smoke` 27、`hunt_integration` 23、`hunt_visual` 28、`item_bar_gestures` 20（新增，纯规则手势）；`extraction_inventory` 53/10 与 `item_bar` 49/19 与本机 HEAD 基线逐条一致（鼠标注入环境限制）。
 
+**提交**：`2709dd8a`（23 个文件；代码 6 + 测试 4 + 素材 8 + 文档 5），随本轮一起推送 master，不涉及其他分支。
+
 ## 5. 「我要改 X」速查表
 
 故事随机词缀／暗金／套装／镶嵌 → §4.S、docs/rpg/EQUIPMENT-SYSTEM.md；内容改tools/build_rpg_equipment.py后生成JSON，规则改rpg_equipment，库存事务改story_inventory，临时战斗改scarlet/equipment_combat，比较／图鉴改story_items_ui。
@@ -1173,7 +1175,7 @@ git status --porcelain
 
 ### 12.6 修订记录
 
-2026-10-20（第 5 轮，未提交）**深潜真实耗时事件 + 两种时停解密 + 搜索仪式 + 快捷栏手势**：①事件 `time` 从"瞬间跳时钟"改成**真实倒计时**（`event_choose()` 只登记、`_advance_event_action()` 在 `tick()` 扣），等待期世界照走、被动挨打 `_abort_event_action()` 中断且不退时间；②新增**三环血纹锁 / 记忆符文**两种时停解密（`hunt_run.gd` 的 `puzzle_*`、`hunt_data.EVENTS.steps.*.puzzle`），已挂 `sealed_vault`/`sealed_ossuary`/`apprentice_locker`/`stopped_clock`，有限次数用尽当天锁死；③W 搜索加中央**搜索仪式**（探针摆动 + 血环进度 + 完成/打断反馈，`hunt_screen._build_search_fx()`）；④搜打撤快捷栏补**双击优先级（使用→换装互换→整理回背包）**与 **Ctrl+左键整理**，并修掉 `_input` 抢在 Button 前面吃掉「收回」「卸」点击的老 bug（`mouse_over_button()` 放行）；⑤生图 4 张并抠底为 `assets/hunt/ui/*_alpha.png`；⑥新增 `tests/item_bar_gestures.gd`（20 项），深潜 rules 199 / ui 27 / visual 28 全绿。同步 §4.G（快捷栏手势 + 按钮放行）、§4.T（实时动作/解密/搜索仪式 + T.3）、§5、§6、§11.90/95–97、`HUNT-DIVE-DESIGN.md`、`EXTRACTION-INVENTORY.md`。未重新导出 dist。
+2026-10-20（第 5 轮，提交 `2709dd8a`）**深潜真实耗时事件 + 两种时停解密 + 搜索仪式 + 快捷栏手势**：①事件 `time` 从"瞬间跳时钟"改成**真实倒计时**（`event_choose()` 只登记、`_advance_event_action()` 在 `tick()` 扣），等待期世界照走、被动挨打 `_abort_event_action()` 中断且不退时间；②新增**三环血纹锁 / 记忆符文**两种时停解密（`hunt_run.gd` 的 `puzzle_*`、`hunt_data.EVENTS.steps.*.puzzle`），已挂 `sealed_vault`/`sealed_ossuary`/`apprentice_locker`/`stopped_clock`，有限次数用尽当天锁死；③W 搜索加中央**搜索仪式**（探针摆动 + 血环进度 + 完成/打断反馈，`hunt_screen._build_search_fx()`）；④搜打撤快捷栏补**双击优先级（使用→换装互换→整理回背包）**与 **Ctrl+左键整理**，并修掉 `_input` 抢在 Button 前面吃掉「收回」「卸」点击的老 bug（`mouse_over_button()` 放行）；⑤生图 4 张并抠底为 `assets/hunt/ui/*_alpha.png`；⑥新增 `tests/item_bar_gestures.gd`（20 项），深潜 rules 199 / ui 27 / visual 28 全绿。同步 §4.G（快捷栏手势 + 按钮放行）、§4.T（实时动作/解密/搜索仪式 + T.3）、§5、§6、§11.90/95–97、`HUNT-DIVE-DESIGN.md`、`EXTRACTION-INVENTORY.md`。未重新导出 dist。
 
 2026-10-20（本轮）**血潮猎场改名血潮深潜 + 2D 探索玩法拓展**：①模式所有词条改名「血潮深潜 / CRIMSON DIVE」（营地站点、简报、地图、结算、测试断言；内部 id 仍是 `hunt`）。②深潜 55 种道具接入搜打撤搜索：尺寸按价值分档（`Catalog.hunt_loot_size()`）、实例稀有度只做白/绿/蓝（`hunt_loot_tier()`），`session.chest_loot()` 每箱 0~2 件、`place_entry()` 保留品质，仓库按 `tier` 分堆。③新增「随身物」3 格口袋：简报页从营地仓库取普通物品（取出即从仓库删除、永不回营），局内可用，撤离随机沉 2~3 件、阵亡清空；武器/防具/饰品/背包一律带不出深潜（`Catalog.hunt_exportable()`）。④旧的固定互动点全部换成**随机事件系统**：36 个 2~4 步事件（撬锁/拆解/下井/读档/献祭）、按 `run_seed+day+phase+area` 每日每区抽 2~3 个、时段/地区/天数限定 + 5 个生成点、黑箱问号点与淡入淡出、中等非全屏互动窗（默认时停、动作耗时、`live` 事件不暂停）、模糊文本提示、白/绿/蓝分级奖励。⑤生图 8 张 900² 黑底事件插图（reliquary/astrolabe/music_box/balance/ledger/surgery/cage/blood_clock），缺图回退纯文本。测试：rules 172 / playtest 40 / ui 23 / integration 23 / visual 24 / camp 6 = 288 全绿；出图 `build/hunt-05b-event.png` 等。同步 §4.T、§5、§6、§11.89–92、`assets/hunt/README.md`、新文档 `HUNT-DIVE-DESIGN.md`。未重新导出 dist。
 
