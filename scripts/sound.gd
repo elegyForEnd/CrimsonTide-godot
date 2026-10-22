@@ -14,12 +14,17 @@ const LEVELS := {"shot":-12.0,"hit":-10.0,"loot":-14.0,"skill":-5.0,"dash":-11.0
 	"step":-17.0,"run":-14.0,"land":-13.0,"ui":-14.0,"ui-open":-17.0,"ui-close":-17.0,
 	"equip":-12.0,"reload":-13.0,"reload-end":-12.0,"heal":-11.0,"burn":-12.0,
 	"death":-16.0,"enemy-cast":-14.0,"chest":-13.0,
-	"search-open":-16.0,"search-reveal":-13.0,"type":-17.0}
+	"search-open":-16.0,"search-reveal":-13.0,"type":-5.0}
 const UI_CUES := ["ui","ui-open","ui-close"]
 ## 逐字台词音要压在台词下面，不能和按钮/战斗抢声部；独立小池 6 个足够
 ## 同时接住「光标字 + 自动播放 + 一段快读」，满了就按轮转复用最早的。
 const TYPE_VOICES := 6
 const TYPE_MIN_GAP_MS := 12
+## 音量刻度：0% 接近静音，50% = 中等 = 游戏里最响的技能/受击档（-5dB），
+## 100% 再高 5dB。设置面板的滑杆只改这个百分比，不碰 `type_sound` 开关。
+const TYPE_DB_QUIET := -60.0
+const TYPE_DB_MEDIUM := -5.0
+const TYPE_DB_LOUD := 0.0
 var voices: Array[AudioStreamPlayer2D] = []
 var ui_voices: Array[AudioStreamPlayer] = []
 var type_voices: Array[AudioStreamPlayer] = []
@@ -229,10 +234,18 @@ func stop_cue(kind: String, emitter: int) -> void:
 		if voice.get_meta("cue","")==kind and int(voice.get_meta("emitter",0))==emitter:
 			voice.stop()
 
+## 把 0~100 的音量百分比换成 dB。两段直线：0→-60、50→-5（中等）、100→0。
+## 50% 刻意对齐 `LEVELS` 里最响的技能/受击档，玩家说的"中等"就是这一档。
+static func type_db(percent: float) -> float:
+	var p := clampf(percent,0.0,100.0)
+	if p<=50.0:
+		return lerpf(TYPE_DB_QUIET,TYPE_DB_MEDIUM,p/50.0)
+	return lerpf(TYPE_DB_MEDIUM,TYPE_DB_LOUD,(p-50.0)/50.0)
+
 ## 故事台词逐字显示时的 8-bit 小音。与普通 `play()` 分开：它不走 2D 定位、
 ## 不受战斗声部优先级影响，也不进 `last_played` 的公共冷却（否则会被战斗音撞掉）。
 ## `glyph` 只用于语气：句末更沉、逗号略沉、空白不出声。
-func play_type(glyph: String = "") -> void:
+func play_type(glyph: String = "", volume_percent: float = 50.0) -> void:
 	if not clips.has("type") or type_voices.is_empty(): return
 	if glyph.strip_edges()=="": return
 	var now := Time.get_ticks_msec()
@@ -255,7 +268,7 @@ func play_type(glyph: String = "") -> void:
 	var index := randi_range(0,samples.size()-1)
 	voice.stream=samples[index]
 	voice.pitch_scale=pitch*randf_range(.96,1.05)
-	voice.volume_db=float(LEVELS["type"])+randf_range(-1.5,0.5)
+	voice.volume_db=type_db(volume_percent)+randf_range(-1.0,0.5)
 	voice.play()
 
 func boss(data: Dictionary) -> void:

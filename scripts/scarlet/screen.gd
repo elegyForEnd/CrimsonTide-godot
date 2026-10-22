@@ -362,17 +362,29 @@ func show_menu() -> void:
 			close_panel()
 			if campaign.restore_snapshot(".pre-choice"): campaign.begin(); world.build(); refresh()
 			else: toast("回答前记录无法读取，当前进度保留。"))).disabled=not FileAccess.file_exists(campaign.path+".pre-choice")
-	label(p,"阅读速度",Vector2(660,212),Vector2(440,35),21)
-	var speed:=HSlider.new(); speed.position=Vector2(660,270); speed.size=Vector2(440,35); speed.min_value=15; speed.max_value=80; speed.value=campaign.state.settings.speed
+	label(p,"阅读速度",Vector2(660,268),Vector2(200,35),21)
+	var speed:=HSlider.new(); speed.position=Vector2(660,326); speed.size=Vector2(440,35); speed.min_value=15; speed.max_value=80; speed.value=campaign.state.settings.speed
 	speed.value_changed.connect(func(value: float): campaign.state.settings.speed=value; campaign.save_campaign()); p.add_child(speed)
-	label(p,"打字音效",Vector2(660,316),Vector2(180,35),21)
-	var type_button: Button
-	type_button=button(p,"开" if bool(campaign.state.settings.get("type_sound",true)) else "关",Vector2(835,314),Vector2(140,38),func():
-		var enabled:=!bool(campaign.state.settings.get("type_sound",true))
-		campaign.state.settings["type_sound"]=enabled
-		type_button.text="开" if enabled else "关"
+	label(p,"打字音效",Vector2(660,374),Vector2(180,35),21)
+	var type_check:=CheckBox.new(); type_check.name="TypeSoundCheck"; type_check.text="启用"
+	type_check.position=Vector2(850,368); type_check.size=Vector2(160,40); type_check.custom_minimum_size=Vector2(160,40)
+	type_check.add_theme_font_size_override("font_size",20)
+	type_check.button_pressed=bool(campaign.state.settings.get("type_sound",true))
+	type_check.toggled.connect(func(on: bool): campaign.state.settings["type_sound"]=on; campaign.save_campaign())
+	p.add_child(type_check)
+	label(p,"打字音量",Vector2(660,422),Vector2(180,35),21)
+	var volume:=HSlider.new(); volume.name="TypeVolumeSlider"
+	volume.position=Vector2(660,480); volume.size=Vector2(380,35)
+	volume.min_value=0; volume.max_value=100; volume.step=1
+	volume.value=float(campaign.state.settings.get("type_volume",50.0))
+	var readout:=label(p,"%d%%" % int(round(volume.value)),Vector2(1050,472),Vector2(90,35),18)
+	readout.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+	volume.value_changed.connect(func(value: float):
+		campaign.state.settings["type_volume"]=value
+		readout.text="%d%%" % int(round(value))
 		campaign.save_campaign())
-	label(p,"当前记录：\n"+campaign.path+"\n\n旧版战役记录不会被覆盖。\n视频尚未制作，当前用对应场景文字衔接。",Vector2(660,365),Vector2(450,200),17)
+	p.add_child(volume)
+	label(p,"当前记录：\n"+campaign.path+"\n\n旧版战役记录不会被覆盖。\n视频尚未制作，当前用对应场景文字衔接。",Vector2(660,548),Vector2(450,160),16)
 func new_slot() -> void:
 	var p:=panel("新建一条独立的旅程")
 	label(p,"现有战役文件保留。新旅程使用新的时间戳槽位，从序章开始。",Vector2(100,145),Vector2(1000,90),23)

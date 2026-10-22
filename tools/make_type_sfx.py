@@ -19,9 +19,9 @@ import wave
 from pathlib import Path
 
 SAMPLE_RATE = 48000
-DURATION = 0.06
-PEAK = 0.30
-VARIANTS = (700.0, 790.0, 880.0)  # a small rising set; the game transposes per char
+DURATION = 0.075
+PEAK = 0.45
+VARIANTS = (520.0, 590.0, 660.0)  # lower than the first pass: easier to hear under music
 OUT_DIR = Path("assets/audio")
 
 
@@ -35,14 +35,14 @@ def render(base_hz: float, seed: int) -> list[int]:
     for i in range(frames):
         t = i / SAMPLE_RATE
         progress = i / max(1, frames - 1)
-        hz = base_hz * (1.05 - 0.16 * progress) * (1.0 + wobble * math.sin(t * 90.0 + seed))
+        hz = base_hz * (1.06 - 0.18 * progress) * (1.0 + wobble * math.sin(t * 90.0 + seed))
         phase += hz / SAMPLE_RATE
         square = 1.0 if (phase % 1.0) < 0.32 else -1.0
         triangle = 4.0 * abs((phase % 1.0) - 0.5) - 1.0
         attack = min(1.0, t / 0.0015)
-        decay = math.exp(-t * 62.0)
-        tail = 1.0 - progress ** 3
-        value = (square * 0.62 + triangle * 0.38) * attack * decay * tail
+        decay = math.exp(-t * 38.0)
+        tail = 1.0 - progress ** 2
+        value = (square * 0.58 + triangle * 0.42) * attack * decay * tail
         out.append(int(max(-1.0, min(1.0, value * PEAK)) * 32767))
     return out
 

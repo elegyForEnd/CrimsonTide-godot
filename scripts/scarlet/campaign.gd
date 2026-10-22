@@ -66,7 +66,7 @@ func new_state() -> Dictionary:
 		"gallery":[],"cinema_seen":[],"pending":{},"position":[900,1530],"hp":180.0,
 		"potions":5,"coins":100,"xp":0,"weapon_rank":0,"armor_rank":0,"level_points":[0,0,0],
 		"unlocked":["1:0"],"visited":["1:0"],"tracked":"","checkpoint":{},"encounter":{},"escort_task":{},"escort_people":[],
-		"ending_seen":false,"ending_collection":[],"history":[],"read":{},"settings":{"speed":35.0,"auto_delay":1.8,"type_sound":true},"trial_task":{},
+		"ending_seen":false,"ending_collection":[],"history":[],"read":{},"settings":{"speed":35.0,"auto_delay":1.8,"type_sound":true,"type_volume":50.0},"trial_task":{},
 		"party":[0,1,2],"sword":"contract","finale_backed_up":false,"started":false,"map_revision":"original-maps-1","intake_viewed":{},
 		"fieldwork":{},"fieldwork_relaxed":false,
 		"materials":0,"forged":0,"specialties":[[0,0,0],[0,0,0],[0,0,0]],"bag":[],"stash":[],"kits":[{"blade":1,"armor":1,"charm":0},{"blade":1,"armor":1,"charm":0},{"blade":1,"armor":1,"charm":0}],"gear":{},
@@ -128,6 +128,7 @@ func load_campaign(save_path: String = "") -> bool:
 	# Old slots predate the typewriter toggle; fill the field here instead of
 	# rejecting the save or silently reading a missing key as "off".
 	state.settings["type_sound"]=bool(state.settings.get("type_sound",true))
+	state.settings["type_volume"]=clampf(float(state.settings.get("type_volume",50.0)),0.0,100.0)
 	state.act=int(state.zone.get_slice(":",0)); state.stage=int(state.zone.get_slice(":",1))
 	state.hero=int(state.hero)
 	for entry in state.fieldwork.values():

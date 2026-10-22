@@ -44,7 +44,7 @@ func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=MOUSE_FILTER_STOP
 	typer.on_char=func(_index: int,glyph: String):
 		if bool(campaign.state.settings.get("type_sound",true)) and screen and screen.sound:
-			screen.sound.play_type(glyph)
+			screen.sound.play_type(glyph,float(campaign.state.settings.get("type_volume",50.0)))
 	shade=ColorRect.new(); shade.size=size; shade.color=Color(.014,.016,.03,.55); shade.mouse_filter=MOUSE_FILTER_IGNORE; add_child(shade)
 	backdrop=TextureRect.new(); backdrop.size=size; backdrop.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; backdrop.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_COVERED; backdrop.mouse_filter=MOUSE_FILTER_IGNORE
 	if event.get("background","")!="": backdrop.texture=Art.texture("res://assets/story/scarlet/bg/"+event.background+".png")

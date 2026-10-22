@@ -19,6 +19,8 @@ func run() -> void:
 		for clip in sound.clips[kind]:
 			check(clip is AudioStreamWAV and clip.get_length()>.05,"Imported sample exists: "+kind)
 	check(sound.clips.has("type") and sound.clips["type"].size()==3,"Story typewriter ships three blip variants")
+	check(is_equal_approx(TideSound.type_db(50.0),-5.0),"Typewriter medium equals the loudest combat cue")
+	check(TideSound.type_db(0.0)<TideSound.type_db(50.0) and TideSound.type_db(100.0)>TideSound.type_db(50.0),"Typewriter volume curve runs quiet-to-loud through medium")
 	var type_wav: AudioStreamWAV=sound.clips["type"][0]
 	var peak:=0
 	for sample in int(type_wav.data.size()/2):
@@ -39,6 +41,19 @@ func run() -> void:
 	for voice in sound.type_voices:
 		if voice.playing: punctuation_pitch=voice.pitch_scale
 	check(punctuation_pitch<.85,"A full stop drops the blip to a closing pitch")
+	for voice in sound.type_voices: voice.stop()
+	sound.last_type_ms=-1000
+	sound.play_type("血",0.0)
+	var quiet_db:=-999.0
+	for voice in sound.type_voices:
+		if voice.playing: quiet_db=voice.volume_db
+	for voice in sound.type_voices: voice.stop()
+	sound.last_type_ms=-1000
+	sound.play_type("血",100.0)
+	var loud_db:=-999.0
+	for voice in sound.type_voices:
+		if voice.playing: loud_db=voice.volume_db
+	check(quiet_db<-40.0 and loud_db>-5.0 and loud_db>quiet_db+50.0,"The volume slider really moves the typewriter voice")
 	sound.last_type_ms=-1000
 	sound.play_type(" ")
 	check(sound.last_type_ms==-1000,"Whitespace never spends a typewriter voice")

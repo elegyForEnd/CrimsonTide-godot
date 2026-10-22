@@ -26,6 +26,10 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://build"))
 	var screen=preload("res://scripts/story_screen.gd").new()
 	root.add_child(screen)
+	var sound:=TideSound.new()
+	root.add_child(sound)
+	sound.ambience.stop()
+	screen.sound=sound
 	screen.campaign.state=screen.campaign.new_state()
 	screen.campaign.save_enabled=false
 	screen.world.build()
@@ -50,6 +54,11 @@ func run() -> void:
 	d._tick_type(0.07+2.2/speed)
 	check(d.typer.revealed>0 and d.typer.revealed<d.typer.total,"the captured page is genuinely mid-reveal")
 	check(d.body.visible_characters==d.typer.revealed,"visible characters follow the typewriter")
+	check(sound.last_type_ms>0,"the real ADV reaches TideSound.play_type")
+	var type_playing:=false
+	for voice in sound.type_voices:
+		if voice.playing: type_playing=true
+	check(type_playing,"a typewriter voice is actually playing")
 	var partial: int=int(d.typer.revealed)
 	await process_frame
 	shot("typewriter-cg-partial")
@@ -67,5 +76,6 @@ func run() -> void:
 	check(FileAccess.file_exists("res://build/typewriter-settings.png"),"settings screenshot is on disk")
 	print("TYPEWRITER_VISUAL %d checks, %d failures, partial=%d glyphs, total=%d" % [checks,failures,partial,total])
 	screen.queue_free()
+	sound.queue_free()
 	await process_frame
 	quit(1 if failures else 0)
