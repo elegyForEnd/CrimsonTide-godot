@@ -163,7 +163,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | **存档唯一写入点**（原子写 %APPDATA%/…/profile.json） | `scripts/profile.gd:338 save_profile()`；读档清洗 `profile.gd:165 apply_data()` |
 | 次元口袋/背包柜/**仓库**的存档形状 | `profile.gd:168 sanitize_storage()`、`profile.gd:467 sanitize_warehouse()`（⚠️ 仓库已是 **15×15 真网格容器** + `warehouse_spill` 溢出暂存，旧扁平数组自动升级）、进局负载 `profile.gd:244 storage_payload()` |
-| **穿戴装备持久化**（撤离写回 / 阵亡清空） | 存档字段 `profile.gd:497 empty_loadout()`、清洗 `profile.gd:500 sanitize_loadout()`（形状与逐槽校验在 `catalog.gd:650 clean_loadout()`）；结算取回 `session.gd:4278 saved_loadout()` |
+| **穿戴装备持久化**（撤离写回 / 阵亡清空） | 存档字段 `profile.gd:497 empty_loadout()`、清洗 `profile.gd:500 sanitize_loadout()`（形状与逐槽校验在 `catalog.gd:650 clean_loadout()`）；结算取回 `session.gd:4288 saved_loadout()` |
 | 仓库容量与「只计一次价值」 | `catalog.gd:295 WAREHOUSE_GRID=15×15`；入库 `profile.gd:431 bank_item()` / 指格入库 `profile.gd:386 bank_item_at()` / 结算批量入库 `profile.gd:450 bank_carried_items()`；累计战利品价值 `profile.gd:470 credit_loot_value()`（靠物品自带 `valued` 标记去重，见 §11.16） |
 | 家园产物作为真实掉落物（塞背包→口袋→落地） | `profile.gd:693 receive_product()`（先 `bags[0]` 再 `pocket`，返回装不下的余量）、`profile.gd:545 product_count()`（按实例 `count` 累加背包/口袋/仓库网格+溢出区）、`profile.gd:558 spend_product()`（烹饪/交易真扣实例）、`profile.gd:592 migrate_home_stock()`（一次性把旧 `home.stock` 计数迁进仓库，在 `apply_data()` 末尾 `sanitize_storage()` 之后调用） |
 | 肉鸽成长 / 每日记录的存档清洗 | `profile.gd:160 sanitize_growth()`、`profile.gd:177 sanitize_daily()`（常量 `Daily` profile.gd:17、`MAX_DAILY_RECORDS` profile.gd:21） |
@@ -183,15 +183,15 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 动作总线（所有交互的唯一入口） | `session.gd:1712 perform()`——heal/dash/skill/bag_*/equip/use/search/pickup/raid_choice 全在这；rogue_* 由 session.gd:1618 直通 `roguelike.choose()`。⚠️ **`perform()` 开头 `if not running: return`**：营地没有权威会话，营地里的存储编辑一律走 `camp_storage.gd`（见 §4.G），不要指望 `session.action()` |
 | 玩家数值（伤害公式/防御/抗性/掉落率/属性补正） | `session.gd:465 weapon_scaling()`、`session.gd:508 weapon_damage()`、`session.gd:441 stat_defense()`、`session.gd:455 stat_resistance()`、`session.gd:461 enemy_drop_chance()`；肉鸽补正 `rogue_equipment_stat()` session.gd:438、`rogue_damage_pool()` session.gd:469、`rogue_mods()` session.gd:477 |
 | 移动/奔跑/闪避 | `session.gd:2843 move_player()`（调用点在 session.gd:2684）、常量 session.gd:34-36（闪避时长/距离/奔跑倍率） |
-| 攻击三连击/武器技/弹丸生成 | `scripts/session.gd:3396 attack()`、`session.gd:3445 release_weapon_art()`、`session.gd:3599 release_strike()`；战技事件携带 attack_kind、width、radius，飞行弹体保留具体武器与强化快照 |
-| 伤害结算中枢（韧性/格挡/硬直/击退/hitstop） | `session.gd:3644 damage_enemy()` |
-| 弹丸飞行/链电/陨石落点 | `session.gd:4106 update_bullets()` |
+| 攻击三连击/武器技/弹丸生成 | `scripts/session.gd:3396 attack()`、`session.gd:3445 release_weapon_art()`、`session.gd:3606 release_strike()`；战技事件携带 attack_kind、width、radius，飞行弹体保留具体武器与强化快照 |
+| 伤害结算中枢（韧性/格挡/硬直/击退/hitstop） | `session.gd:3651 damage_enemy()` |
+| 弹丸飞行/链电/陨石落点 | `session.gd:4114 update_bullets()` |
 | 大招（雪璃治疗/死灵法师魂收+冥火地带全套常量） | `session.gd:2436 release_ultimate()`、死灵常量块 session.gd:2481-2498（NECROMANCER/FIRE_*/BURN_*/SOUL_REAP_*） |
 | 理智/血晶气味/威胁度/环境刷怪 | 理智+血晶气味 `session.gd:2685-2698`；威胁度公式 `session.gd:2624`；环境刷怪 `session.gd:2629-2632` |
 | **血潮缩圈**（数值） | `session.gd:3314 safe_center()`、`session.gd:3329 safe_radius()`；逐天时长真源 `session.gd:60 DAY_DURATIONS=[660,660,480]` + `:56 SHRINK_RATIO=0.6`；换算口 `session.gd:3359 day_duration()` / `:3326 shrink_start()`（缩圈从当天 60% 时刻开始，逐天不等长） |
 | 搜索容器（F 逐件浮出） | `session.gd:931-979`（`begin_search()` / `advance_search()` / `search_seconds()`） |
-| 死亡散包/撤离带入/口袋保护 | `session.gd:819 spill_storage()`、结算 `session.gd:4223 settle()`；**穿戴装备同背包**：撤离保留穿着（写回 loadout，`session.gd:4278 saved_loadout()`）、阵亡散落并清空存档 loadout |
-| 据点守军锁定/清剿宝箱 | `session.gd:3945 resolve_site_defeat()` |
+| 死亡散包/撤离带入/口袋保护 | `session.gd:819 spill_storage()`、结算 `session.gd:4233 settle()`；**穿戴装备同背包**：撤离保留穿着（写回 loadout，`session.gd:4288 saved_loadout()`）、阵亡散落并清空存档 loadout |
+| 据点守军锁定/清剿宝箱 | `session.gd:3953 resolve_site_defeat()` |
 | 王城进出（全队集合/双地图状态机/骑士奖励） | `session.gd:3702 travel_city()`、奖励 `session.gd:3755 knight_reward()` |
 | 失乡骑士 AI 与出招 | `session.gd:3754 update_knight()`、`session.gd:3852 start_knight_attack()` |
 | 隐藏结局触发（三钟+护身符+女王死） | 判定/触发 `session.gd:2772-2774`；`session.gd:2819 bells_lit()`、`session.gd:2822 seal_bell()`、`session.gd:2849 carries_amulet()`、`session.gd:2836 hidden_ending_ready()`（常量 `BELL_SEALS` session.gd:2814） |
@@ -333,9 +333,9 @@ project.godot:18  主场景 = scenes/boot.tscn
 |---|---|
 | 特效编排总控（事件→贴图特效/死灵法印/剑雨/敌方弹幕） | `scripts/combat_visuals.gd`（事件入口 `event` combat_visuals.gd:157；剑雨布局 `blade_layout()` combat_visuals.gd:523；与服务端判定共形 `patch_local_rect` combat_visuals.gd:491；敌方弹幕可读性常量 combat_visuals.gd:316-334、绘制 `draw_enemy_bolt()` combat_visuals.gd:379） |
 | **战斗飘字**（全模式：对敌伤害/玩家受伤/治疗/灼烧 DoT；Fusion Pixel 20/30px + B 双描边 + D 余像残影 + 闪白） | `scripts/combat_text.gd`（字体 `combat_text.gd:18 FONT_PATH`；常规/重击字号 :23-24；色表 :25；事件映射 `on_event()` :57；压字 `push()` :77；绘制 `_draw()` :134；硬描边 `_draw_ring()` :185；设置读取 `_option()` :194）。接入：`battlefield.gd:113`、`rogue_field.gd:56`、`story_combat_vfx.gd:15`、`scripts/hunt/hunt_screen.gd:387`（`run.floated` 信号在 `scripts/hunt/hunt_run.gd:13`）。设置开关：`scripts/graphics_quality.gd:13 damage_ghost` / `:14 damage_flash`、`scripts/graphics_settings_ui.gd:16 ghost` / `:22 flash`。授权/来源 `assets/fonts/FUSION-PIXEL-README.txt`、`assets/fonts/FUSION-PIXEL-OFL.txt` | `tests/combat_text.gd`（34 项、`tests/combat_text_integration.gd`（15 项）、`tests/hunt_combat_text.gd`（9 项）；出图 `tests/combat_text_visual.gd`、`tests/combat_text_scene_visual.gd`、`tests/combat_text_rogue_visual.gd`、`tests/combat_text_hunt_visual.gd`、`tests/graphics_settings_visual.gd` |
-| 刀光/突刺/蓄力/连招/大招 | `scripts/stylized_vfx.gd:55 emit()`、`stylized_vfx.gd:111 event()`、`stylized_vfx.gd:271 advance()`；释放固定在世界坐标，蓄力跟随；圆斩围绕身体并读取实际 height；光束起点捕获为局部坐标。渐进揭示保留原画UV与挂点；2026-10-11圆斩已固定角色圆心/真实reach，不再随精灵刀长扩大。其他近战刀光与判定末端仍有既有差异（§11.54）。 |
-| 69 把武器身份与实际招式选图 | `scripts/weapon_vfx.gd:34 profile()`；`scripts/weapon_mechanics.gd:3 normal_role()` 与 projectile_role()/strike_role()/burst_role() 从实际 family/pattern/spell/attack_kind 选图；飞行弹体 `combat_visuals.gd:670 draw_run_projectile()`；角色确认派生 `rogue_build.gd:1287 hero_effect()` |
-| 按用途制作的 ImageGen 方图（50 张原图留档） | `scripts/weapon_image_art.gd:73 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；mechanic_source() 选择各轮新版，重刃 v3、双刃 v3、震地 v2、重刃终结 v2 已接入；出手、弹体、光束与爆发分开；旧图保留来源记录 |
+| 刀光/突刺/蓄力/连招/大招 | `scripts/stylized_vfx.gd:55 emit()`、`stylized_vfx.gd:111 event()`、`stylized_vfx.gd:300 advance()`；释放固定在世界坐标，蓄力跟随；圆斩围绕身体并读取实际 height；光束起点捕获为局部坐标。渐进揭示保留原画UV与挂点；2026-10-11圆斩已固定角色圆心/真实reach，不再随精灵刀长扩大。其他近战刀光与判定末端仍有既有差异（§11.54）。 |
+| 69 把武器身份与实际招式选图 | `scripts/weapon_vfx.gd:34 profile()`；`scripts/weapon_mechanics.gd:3 normal_role()` 与 projectile_role()/strike_role()/burst_role() 从实际 family/pattern/spell/attack_kind 选图；飞行弹体 `combat_visuals.gd:755 draw_run_projectile()`；角色确认派生 `rogue_build.gd:1287 hero_effect()` |
+| 按用途制作的 ImageGen 方图（50 张原图留档） | `scripts/weapon_image_art.gd:104 stamp_mechanic()` 从 assets/combat/imagegen-mechanics/manifest.json 读取原始 RGBA 与有效墨迹边界；mechanic_source() 选择各轮新版，重刃 v3、双刃 v3、震地 v2、重刃终结 v2 已接入；出手、弹体、光束与爆发分开；旧图保留来源记录 |
 | 全部武器逐项视觉验收 | `tests/weapon_full_visual_audit.gd` 生成 69 页四角色核对图与 coverage.json；`tests/weapon_full_matrix.gd` 验证全部武器、四角色、八方向、两模式、三播放时刻与真实战技姿势；报告 WEAPON-FULL-AUDIT.md，浏览入口（旧文件已清理） |
 | 强化/品质快照与核心确认事件 | `scripts/rogue_build.gd:80 visual_state()`、`rogue_build.gd:217 core_visual()`；session.gd 的 weapon_visual_state() 处理远征品质；出手时冻结状态传给弹丸/爆炸/连锁/命中；+2 核心 I、+3 角色连招、+4 核心 II、+5 角色连招增强，详见 WEAPON-IMAGE-VFX.md |
 | CPU 粒子（1400 上限/21 武器材质物理/双通道渲染） | `scripts/combat_particles.gd`（WEAPON_STYLES combat_particles.gd:7；材质参数 spawn combat_particles.gd:42） |
@@ -674,7 +674,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 改**设置页的窗口那一段**（全屏按钮/档位按钮/手拖回写） | `scripts/main.gd`（`main.gd:4574 show_settings()`、`main.gd:4646 choose_window_preset()`、`main.gd:4741 apply_window_setting()`、`main.gd:4752 note_window_size()`） | `tests/window_settings.gd`；手拖尺寸有 0.6s 防抖（`main.gd:4682-4688`），别指望一拖就落盘 |
 | 调远征三天时长/跨天恢复/黎明 Boss 数值 | expedition.gd:6-93 + session.gd:60-56（:54 逐天时长 DAY_DURATIONS、:56 缩圈比例 SHRINK_RATIO、helper day_duration()/shrink_start() :3319/:3326；prepare_day 写入 raid.day_duration expedition.gd:68） | tests/expedition*.gd；EXPEDITION.md |
 | 改主线 Boss/隐藏 Boss 招式 | boss_choreography.gd（编排）+ expedition.gd:424-614（legacy） | tests/boss_choreography.gd；BOSS-REWORK.md |
-| 调骑士数值/格挡 | boss_tactics.gd（KNIGHT_MOVES :10）+ `session.gd:4393 KNIGHT_MOVES`（招式表用在 :3845 与 :3905） | tests/boss_tactics.gd |
+| 调骑士数值/格挡 | boss_tactics.gd（KNIGHT_MOVES :10）+ `session.gd:4403 KNIGHT_MOVES`（招式表用在 :3845 与 :3905） | tests/boss_tactics.gd |
 | 加新 Boss（身份） | boss_choreography.gd `MOVES` + boss_effect_art.gd（`KEYS` :4 / `MOTIFS` :6 / `color()` 色表 :55-57，按 KEYS 索引）+ assets/bosses/imagegen/ + boss_frames.gd `SPECIAL_KEYS`（**追加表尾**，`COLORS` 在 boss_frames.gd:9）+ boss_presentation.gd cue + boss_hud.gd 颜色/阶段 | tests/boss_*；BOSS-REWORK.md |
 | 调缩圈数值/时序 | session.gd:60-56、3314-3327（safe_center/day_duration/shrink_start/safe_radius/final_radius）；逐天时长同步走 raid.day_duration | tests/balance.gd tests/expedition.gd；视觉另改 blood_tide.gdshader |
 | 调理智/气味/威胁度/刷怪 | session.gd:2624-2632、2688-2696、3247-3319 | tests/ecology.gd |
@@ -685,9 +685,9 @@ project.godot:18  主场景 = scenes/boot.tscn
 | 改家园数值（作物/鱼/料理/价格） | homestead.gd:3-17 + buy/fish_key；图标 home_art.gd | tests/homestead.gd |
 | 改种子/鱼饵买入落点（仓库→背包→落地） | `homestead.gd buy()` :77 / `plant()` :116 / `cast()` :172 + `profile.gd deposit_backpack()` :583 / `migrate_home_seeds_bait()` :720 + `home_screen.gd buy_report()` :76 | tests/homestead.gd、homestead_ui.gd、camp_activities.gd |
 | 改七属性曲线 | attributes.gd（⚠️ `clean(value, budget := 623)` attributes.gd:16 的预算要与 `point_budget` 同步） | tests/attributes.gd |
-| 改结算奖励/XP | session.gd:4223 settle()；入库 main.gd:3389 | tests/systems.gd |
+| 改结算奖励/XP | session.gd:4233 settle()；入库 main.gd:3389 | tests/systems.gd |
 | 改隐藏结局/招募墓煜 | expedition.gd:236-288 + session.gd:2750-2775（隐藏判定 :2774）+ profile.gd:27-32、81-95 + main.gd:3100-3108 | tests/hidden_ending.gd；HIDDEN-ENDING.md |
-| 改王城（布局/进出/珍藏） | royal_city.gd + `session.gd:4291 receive_results()`（portal_position :3759 / travel_city :3768） | tests/city.gd；CITY-UPDATE.md |
+| 改王城（布局/进出/珍藏） | royal_city.gd + `session.gd:4301 receive_results()`（portal_position :3759 / travel_city :3768） | tests/city.gd；CITY-UPDATE.md |
 | 改边境地图布局 | ruins.gd（⚠️ 改地形后必须重跑 `tools/export_world_layout.gd` + `tools/bake_world_art.py`，见 MAP-UPDATE.md:37-39） | tests/map.gd |
 | 改闯关流程（房间/出口/商店/奖励） | roguelike.gd | tests/roguelike*.gd、rogue_build_progression.gd |
 | 改闯关地图/换背景图/分叉口碰撞 | `rogue_map.gd` + `assets/rogue/regions/ground-manifest.json`（⚠️ 分叉口不许再退回"两条走廊并起来"的写法：`fork_junction()` 负责把路口补平成广场，见 §11.43） | tests/roguelike_routes.gd（含"岔口到两个门口无隐形墙"的全地图断言）、tests/roguelike_geometry.gd |
@@ -719,7 +719,7 @@ project.godot:18  主场景 = scenes/boot.tscn
 | **改营地存储规则**（跨区搬运、穿脱、入库/取出、脱下背包） | `scripts/camp_storage.gd`（分发 `drop()` :81，各分支见 §4.G）——**规则一律复用 session 的纯 `p` 变更函数**，不要在这里重写一遍装箱 | tests/camp_storage.gd（51 项） |
 | **改仓库尺寸/容量/溢出行为** | `catalog.gd:295 WAREHOUSE_GRID`；清洗与迁移 `profile.gd:467 sanitize_warehouse()`、溢出暂存 `profile.gd:467 spill_item()`；入库 `bank_item()`/`bank_item_at()`/`bank_carried_items()` | tests/economy.gd（含 225 格满仓、溢出、旧档迁移） |
 | **改「累计战利品价值」口径** | `profile.gd:470 credit_loot_value()` + 物品字段 `valued`（`catalog.gd:223 SAVED_ITEM_KEYS`） | tests/economy.gd `lifetime_tally()` |
-| **改装备持久化/结算语义**（撤离保留、阵亡清空） | `session.gd:4278 saved_loadout()` + `main.gd:4554 on_finished()`（写回 `profile.data.loadout`）+ `session.gd:878 spill_storage()` | tests/economy.gd `settlement()`；改完必须同步 §11.8 |
+| **改装备持久化/结算语义**（撤离保留、阵亡清空） | `session.gd:4288 saved_loadout()` + `main.gd:4554 on_finished()`（写回 `profile.data.loadout`）+ `session.gd:878 spill_storage()` | tests/economy.gd `settlement()`；改完必须同步 §11.8 |
 | **新增野战武器**（远征） | ① catalog.gd:147 WEAPONS ② catalog.gd:225 WEAPON_ICONS ③ weapon_arts.gd:6 MOVES ④ 特殊法术在 session.gd release_strike/update_bullets 加分支 ⑤ ⚠️ 若 WEAPONS.size() 变化，同步 `STARTER_BASE`（catalog.gd:176） | tests/systems.gd（STARTER_BASE 断言）、combat.gd |
 | 新增装备/背包品质 | catalog.gd:183 GEAR / :234 BAG_TIERS + 品质数组 catalog.gd:209-215 + session.gd:1323 CACHE_QUALITY_WEIGHTS | tests/systems.gd |
 | 新增普通物品/藏品 | catalog.gd:17 ITEMS + 藏品分组表 :95-121（⚠️ `NEW_COLLECTIBLES` catalog.gd:115 只能追加，影响存档序号） | tests/collectibles.gd；COLLECTIBLES.md |
@@ -968,9 +968,9 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 3. **藏品序号只追加不插入**：`catalog.gd:179 NEW_COLLECTIBLES` 的顺序就是存档解锁序号（`collectible_index`），中间插入会毁掉玩家存档。
 4. **`BossFrames.SPECIAL_KEYS` 顺序被按下标硬引用**（enemy_body.gd:35、boss_cinematic.gd:75、boss_hud.gd:70，另有 battlefield.gd:28-30 的 `SPECIAL_BOSS_ART` 同序），且 `boss_effect_art.gd:55-57` 颜色表按 `KEYS.find` 索引——新增 Boss 身份一律**追加到表尾**并同步颜色表。
 5. **Boss 伤害几何三处同步**：新形状要同时改 `boss_geometry.gd`、`expedition.gd:350 hazard_contains()`、`resources/boss_damage_shape.gdshader`，回归看 `tests/boss_damage_geometry.gd`（CPU 与 GPU 必须逐像素一致）。
-6. **特效必须走 battlefield.gd:764 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:92 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
+6. **特效必须走 battlefield.gd:764 `weapon_effect_socket` 挂点契约**，`stroke_tip` 必须等于真实 `tip`，不得按攻击方向另造剑尖；亮刃接触点由 `weapon_image_art.gd:123 mechanic_contact()` 等比映射，`stylized_vfx.gd:368 draw_mechanic()` 不再额外旋转释放刀光。释放类特效仍然"一次捕获、原地淡出"，蓄力才跟随。配套 `tests/weapon_mechanic_contact.gd`、`tests/weapon_stroke_directions.gd`、`tests/weapon_stroke_stability.gd`。
 7. **改 ruins.gd 地形后必须重跑烘焙管线**（tools/export_world_layout.gd → tools/bake_world_art.py），否则 3D 表现与碰撞错位。
-8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4278 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4264 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:687 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
+8. **穿戴装备是存档的一部分**（旧契约「穿上的战利品永不写存档」已作废）：撤离时 `session.gd:4288 saved_loadout()` 把 `p.equipped`/`p.slots` 交回，`main.gd:4264 on_finished()` 写进 `profile.data.loadout`，下一局 `session.gd:687 storage_from_config()` 再穿上；**阵亡**照旧由 `spill_storage()` 散落并写回一个空 loadout。⚠️ 由此**撤离时身上装备不再计入 loot 估值、也不再入库**（否则同一件东西既带着又卖了）；**次元口袋是唯一免死容器**——改动结算/散包逻辑时保持这两条契约。
 9. **权威端才做规则**：main.gd/各 UI 只发 `session.action()`；不要在表现层（battlefield/world_3d/combat_visuals 等 "Presentation only" 文件）里写伤害或状态逻辑。**营地是例外但要显式**：营地 `session.running==false`，`perform()` 会直接 return，所以营地的存储编辑全部集中在 `scripts/camp_storage.gd`，并且**只调用 session 的纯 `p` 变更函数**（`move_between`/`equip_item`/`clear_worn_slot`/`slot_put`/`resolve_drop`）——不要在营地面板里重写一套装箱或装备规则。
 10. **存档唯一写入点是 profile.gd:338 `save_profile()`**（.tmp + rename 原子写）；其他任何地方直接写 profile.json 都是错的。
 11. `output/`、`pv/`、`DEPRECATED-*` 目录不是游戏资源（导出已排除）；`DEPRECATED-character-animations-2026-09-25` 是被否决的 12 帧动画归档，勿复用。
@@ -1030,7 +1030,7 @@ v11契约：弹体fx_id只用于表现与快照身份，三处玩家弹体入口
 
 53. **工作区常年显示 ` M` 的两个幽灵文件永远不要 `git add`**：`scripts/rogue_backdrop.gd` 与 `tests/direct_fallback.gd` 是 CRLF/归一化导致的 stat-cache 幽灵——`git status` 天天列它们"已修改"，但 `git diff --ignore-cr-at-eol` 对它们是 **0 真实改动**（内容根本没变）。它们是 §11.36 那条 autocrlf 假象的具体实例，也是禁止 `git add .` 最现实的理由：一旦提交就把这俩脏进去。提交一律**显式列自己改的文件路径**（`git add -- 路牌 脚本…`），别 `git add -A` / `git add .`。
 
-54. **近战特效原点=角色自身，与判定框普遍不重合（已知缺口，2026-10-08 用户拍板：本轮只登记、暂不改）**：所有近战/圆斩特效的**生成原点都锚在角色身体**（`stylized_vfx.gd:133 event()` 里 `at=data.p`，圆斩 `emit_mechanic("spin",…,reach,…)` 在 `stylized_vfx.gd:166`），而权威命中判定用的是另一套几何（`enemy_body.gd:124 attack_hit()`），两者口径不同，导致"看到的特效"和"实际打到的范围"经常对不上，玩家体感就是**范围不符**。两类具体表现：
+54. **近战特效原点=角色自身，与判定框普遍不重合（已知缺口，2026-10-08 用户拍板：本轮只登记、暂不改）**：所有近战/圆斩特效的**生成原点都锚在角色身体**（`stylized_vfx.gd:162 event()` 里 `at=data.p`，圆斩 `emit_mechanic("spin",…,reach,…)` 在 `stylized_vfx.gd:166`），而权威命中判定用的是另一套几何（`enemy_body.gd:124 attack_hit()`），两者口径不同，导致"看到的特效"和"实际打到的范围"经常对不上，玩家体感就是**范围不符**。两类具体表现：
     - **圆环战技（右键 `kind:"circle"`）异常**：判定是**以角色为圆心、半径 = `reach`** 的整圆（`enemy_body.gd:133` 用 `half=PI` 画满圆，半径取 `reach`，例如冥潮仪镰 W023 `rogue_build_content.json` 的 `art.reach=170`）；但绘制阶段 `stylized_vfx.gd:400-413` 的 `body_centered` 分支先按 `bounds=Vector2.ONE*r*2`（身体居中、半径=reach，本应与判定一致），紧接着一段 `if role!="motion_quake" and fx.has("socket_grip")…`（`:406-412`）又把圆**重新以武器握把(grip)为圆心、缩成刀刃长度 `blade_length`**——于是屏幕上是一枚又小又偏到一边的旋涡，而真正会掉血的是围绕身体的一整圈。修法（留给后人）：去掉 `:406-412` 这段 grip 重定心/缩刃，让圆斩保持身体居中 + `reach*2`。⚠️ 该分支同时服务平A的 spin 类武器（`weapon_mechanics.gd:75 body_centered()` 含 `motion_spin/motion_heavy_spin/motion_quake/motion_hammer_spin`），改动会波及平A观感，须重跑 `tests/weapon_mechanics.gd`（`:46` 断言"Full circle follows captured body center"）、`tests/weapon_heavy_strokes.gd`、`tests/weapon_full_matrix.gd`。
     - **多数近战刀光末端 ≠ 攻击范围最远处**：月牙/横扫类贴图的"刀尖"是从角色位置向外画的装饰，判定框（`attack_hit()` 的 cone/thrust 多边形）最远处与贴图末端不重合，月牙常把角色整个包住或明显短于/超出真实 reach。用户实测反馈：这类要"往角色外的方向移动很多"才能对齐实际判定。根治需要把特效末端与 `reach` 建立显式映射（当前 `mechanic_contact()` 只处理接触点、不处理 reach 对齐），属独立批次，勿与功能提交混做。
 
