@@ -10,11 +10,17 @@ static func profile(index: int) -> Dictionary:
 	var family := Catalog.weapon_family(index)
 	# Same-name campaign weapons share the charged move as well as its new image.
 	# Otherwise an older campaign volley could accidentally request a new beam.
-	var move := WeaponArts.of(ImageArt.canonical(index)).duplicate(true)
+	var canonical := ImageArt.canonical(index)
+	var original: Dictionary=preload("res://scripts/rogue_content.gd").weapon(canonical)
+	var move: Dictionary=original.art.duplicate(true) if preload("res://scripts/weapon_batch_choreography.gd").enabled(canonical) else WeaponArts.of(canonical).duplicate(true)
 	move["hold_time"]={0:.70,1:.65,2:1.05,3:.85}.get(family,.8)
 	move["mana"]=float(move.mana)*.35
 	move["damage"]=1.65 if family!=2 else 2.15
 	move["reach"]=maxf(float(w.reach),float(move.reach)*.85)
+	if family==3:
+		move.reach=float(move.reach)*.65
+		move.radius=float(move.get("radius",100))*.65
+		move.width=float(move.get("width",30))*.7
 	move["recovery"]={0:.30,1:.35,2:.55,3:.40}.get(family,.35)
 	move["charged"]=true
 	move["spread"]=.06

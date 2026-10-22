@@ -1,0 +1,139 @@
+{
+  "weapon": 637,
+  "layers": {
+    "normal": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.0947265625,
+        0.057291666666666664,
+        0.2998046875,
+        0.10221354166666667
+      ],
+      "aspect": 1.9554140127388535,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "heavy": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.55859375,
+        0.03125,
+        0.37890625,
+        0.150390625
+      ],
+      "aspect": 1.6796536796536796,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "art": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.037109375,
+        0.21028645833333334,
+        0.4970703125,
+        0.208984375
+      ],
+      "aspect": 1.5856697819314642,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "impact": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.5341796875,
+        0.24609375,
+        0.416015625,
+        0.17057291666666666
+      ],
+      "aspect": 1.6259541984732824,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "charge": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.111328125,
+        0.45703125,
+        0.37890625,
+        0.13997395833333334
+      ],
+      "aspect": 1.8046511627906976,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "shard": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.63671875,
+        0.4759114583333333,
+        0.2548828125,
+        0.10807291666666667
+      ],
+      "aspect": 1.572289156626506,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "mist": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.0517578125,
+        0.6328125,
+        0.4560546875,
+        0.16015625
+      ],
+      "aspect": 1.8983739837398375,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "trail": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.5078125,
+        0.6888020833333334,
+        0.4404296875,
+        0.09440104166666667
+      ],
+      "aspect": 3.110344827586207,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "projectile": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.048828125,
+        0.865234375,
+        0.3798828125,
+        0.052734375
+      ],
+      "aspect": 4.802469135802469,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "projectile_art": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.53125,
+        0.8248697916666666,
+        0.4345703125,
+        0.12565104166666666
+      ],
+      "aspect": 2.305699481865285,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "surface": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.0947265625,
+        0.057291666666666664,
+        0.2998046875,
+        0.10221354166666667
+      ],
+      "aspect": 1.9554140127388535,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    },
+    "ground": {
+      "file": "res://assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "uv": [
+        0.5341796875,
+        0.24609375,
+        0.416015625,
+        0.17057291666666666
+      ],
+      "aspect": 1.6259541984732824,
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e"
+    }
+  },
+  "family": 3,
+  "status": "pending_visual_qa"
+}

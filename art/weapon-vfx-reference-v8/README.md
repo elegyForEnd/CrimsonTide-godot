@@ -1,0 +1,1 @@
+SUPERSEDED. Batch generation was stopped at user request. These drafts are not runtime assets and must not be used for subsequent weapons. Only 606 is being made, based directly on the user reference. Wait for explicit user acceptance before another weapon.

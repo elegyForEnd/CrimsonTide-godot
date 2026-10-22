@@ -1,0 +1,63 @@
+{
+  "batch": 1,
+  "scope": "Five weapons only, wait for user acceptance before the next batch",
+  "weapons": [
+    {
+      "id": 607,
+      "name": "鸣电军刀",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-e03632b1-4f07-496f-b59a-f1f3994529c1.png",
+      "motion": "A fast rapier-like forward thrust. Pull the saber back, violet charges gather in a few tiny discontinuous arcs, lunge and stab in a narrow straight axis, then instantly disconnect and withdraw.",
+      "look": "Exceptionally thin silver-white straight blade core with fine violet branching lightning, two or three small white-violet star contacts along the axis and a larger irregular branching contact at the stump. Almost no opaque mass. Violet light, tiny warm contact spark. Lightning blinks out rapidly rather than becoming an ice spear.",
+      "smoke": "very faint short-lived lavender-grey ionized air, thin airy wisps with no hard lines",
+      "ground": "fine broken violet discharge forks along the ground under the thrust, separate tiny contact scorch flecks, no molten cracks",
+      "fragment": "ONE tiny silver-metal sliver accompanied by a tiny violet pinprick, no crystal cluster",
+      "status": "awaiting_user_acceptance"
+    },
+    {
+      "id": 608,
+      "name": "断誓直剑",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "motion": "A straight sword thrust. Draw sword back as torn parchment seals wrap close to the blade, lunge along the axis, cream parchment bands peel outward, contact rips the seals, then paper scraps curl down and dust dissipates.",
+      "look": "Warm tan and cream torn parchment streamers on both sides of a thin bronze-gold puncturing blade, dark crimson round wax seals on the parchment, subtle engraved fibers and ragged torn margins. Warm narrow gold highlight at the contact, brown paper shadows. No purple energy, ice, giant neon arrow or massive fire.",
+      "smoke": "soft low warm-grey paper dust and amber-grey air, no fire or opaque smoke column",
+      "ground": "tiny scattered parchment shreds, broken red wax flecks and low dusty scrape along the forward stroke, transparent spaces, no lava or magical ring",
+      "fragment": "ONE small torn cream parchment scrap with one irregular dark crimson wax-seal fragment attached, ragged edges and warm tan shadow",
+      "status": "awaiting_user_acceptance"
+    },
+    {
+      "id": 612,
+      "name": "破晓双手剑",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2097f3bb-e91a-4570-ab48-a2b587630c28.png",
+      "motion": "A heavy descending two-handed sword chop into the earth. Lift and brace with both hands, a restrained gold light traces the cutting edge, press the blade DOWN into the floor, ONLY at contact dark layered slabs erupt forward/up from the impact, then fragments fall and dust spreads low.",
+      "look": "Large DARK brown-grey angular fractured stone slabs and displaced rock plates, with bright warm gold seams and contact light, a broad gold descending sweep behind the slabs. The earth has real dark mass; luminous gold is restricted to cracks, contact edges and the moving blade. Low amber-brown dust, branching narrow gold ground faults. No floating golden arrow or solid luminous wall.",
+      "smoke": "low expanding brown-grey impact dust with soft warm reflected gold, dark translucent pockets, no bright core",
+      "ground": "irregular branching GOLD-LIT EARTH FAULTS with dark narrow crack interiors and small displaced rock edges, no solid floor tile or circular border",
+      "fragment": "ONE irregular thick dark-brown stone slab with two broken angular planes and one very narrow warm-gold fracture along its edge",
+      "status": "awaiting_user_acceptance"
+    },
+    {
+      "id": 614,
+      "name": "裂地重剑",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "motion": "A heavy low sweeping earth slash driven by a two-handed sword. Wind the body to the side, bring the heavy blade forward across a low cutting plane, kick up an OPEN asymmetric crescent ridge of earth as it reaches contact; for surrounding action sequence separate passes rather than a closed glowing ring, then the ridges break and settle.",
+      "look": "An open low curved wedge of dark ochre-brown fractured earth plates, bright amber-gold slits BETWEEN slabs, thick angular fragments peeling upward from the forward half of the sweep, wide low lateral dust. More lateral and curved than the overhead slab eruption of 612. Keep dark rock mass and bright thin edges. No lava pool, neon donut, generic starburst or golden projectile.",
+      "smoke": "low rolling ochre-grey earth dust moving sideways with a little warm amber reflected light",
+      "ground": "long irregular swept earth shear, broken branching warm amber cracks and a few small dark slab lips, open crescent hints but no complete ring or opaque ground tile",
+      "fragment": "ONE flat ochre-brown broken stone plate, broad dark face, irregular chipped edge with a small thin amber slit",
+      "status": "awaiting_user_acceptance"
+    },
+    {
+      "id": 617,
+      "name": "雷骸重剑",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-a6cfc78c-1bde-4481-b08c-e754cf37a1a3.png",
+      "motion": "A weighty two-handed sword chop with a tall descending curved afterimage. Lift the black heavy blade overhead, violet sparks collect along its jagged steel edge, swing DOWN in a steep arc, black rock fragments and intense violet lightning burst at the floor contact, then the heavy arc disappears first and dark fragments fall into drifting grey dust.",
+      "look": "Broad dark translucent smoky-purple descending blade arc with a narrow brilliant VIOLET-WHITE cutting rim and a few jagged lightning branches. Large BLACK grey-purple heavy rock fragments at contact, a compact white-violet contact peak and fine violet branches along the broken ground. Preserve the difference from 607's hair-thin instantaneous rapier sparks. No blue ice, uniform purple ribbon, floating spear or magenta fire.",
+      "smoke": "grey-purple low stone dust mixed with very faint purple ionized wisps, no hard lightning strokes in the smoke",
+      "ground": "branching discontinuous violet electrical faults with small dark broken stone edges, dark grey base gaps, no solid tile, no circular ring",
+      "fragment": "ONE small irregular angular black grey-purple rock piece, two dark heavy faces and one very narrow violet-white electrical seam",
+      "status": "awaiting_user_acceptance"
+    }
+  ],
+  "status": "revision_ready_for_user_acceptance",
+  "character": "original sprites retained; replacement drafts canceled and excluded"
+}

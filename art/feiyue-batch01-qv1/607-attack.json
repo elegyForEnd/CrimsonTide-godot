@@ -1,0 +1,11 @@
+{
+  "hero": 0,
+  "weapon": 607,
+  "clip": "attack",
+  "generator": "built-in ImageGen",
+  "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-3132acbb-354a-4150-9423-9452cb38c279.png",
+  "file": "res://assets/combat/feiyue-batch01-qv1/607-attack.png",
+  "identity": "D:\\develop\\school\\CrimsonTide-godot\\assets\\combat\\hero-0.png",
+  "action_reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\607.png",
+  "status": "pending_pose_and_mount_audit"
+}

@@ -1,0 +1,170 @@
+{
+  "tool": "built-in imagegen",
+  "purpose": "Painted material and impact components on individually authored weapon geometry; not whole-attack screenshots",
+  "assets": [
+    {
+      "key": "metal",
+      "id": 601,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/plates/weapon-601.png",
+      "subject": "a narrow cold silver polished steel cutting wake with fine directional scratches and a few broken metallic edges, neutral slate silver, a thin pale razor rim",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: a narrow cold silver polished steel cutting wake with fine directional scratches and a few broken metallic edges, neutral slate silver, a thin pale razor rim.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-a9e610ad-652f-4d0a-ab7a-35a91a292269.png",
+      "sha256": "9b618c0422777390fffa240a4d82957d8c7ff8d72c9ab3b6bdc3917c5f963089"
+    },
+    {
+      "key": "blood",
+      "id": 603,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/plates/weapon-603.png",
+      "subject": "deep crimson torn liquid blood membranes, sharp thorn-like blood tongues, glossy red ridges, dark burgundy veins and trailing filaments, rich red body",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: deep crimson torn liquid blood membranes, sharp thorn-like blood tongues, glossy red ridges, dark burgundy veins and trailing filaments, rich red body.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-ecc05e15-c566-4d68-affa-4b887df270cb.png",
+      "sha256": "91ac06216f2fbe83d45ff7e897b436dd5d40e10dec6f181d38da8a9d4783e95e"
+    },
+    {
+      "key": "tide",
+      "id": 613,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/plates/weapon-613.png",
+      "subject": "a heavy deep teal blue translucent tidal water sheet, layered curling water folds, white foam cutting crests and sparse spray, dark indigo troughs",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: a heavy deep teal blue translucent tidal water sheet, layered curling water folds, white foam cutting crests and sparse spray, dark indigo troughs.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-a7754fe3-8948-4884-a271-321342fef28a.png",
+      "sha256": "ce99bd3ba0b546a31880076270bcf4506e92eaeb5b9af26e10e44e2233d265a0"
+    },
+    {
+      "key": "frost",
+      "id": 606,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-606.png",
+      "subject": "a pale icy cyan layered frozen cutting sheet, transparent glacial facets, frosty white rims, chipped ice plates and deep blue inclusions",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: a pale icy cyan layered frozen cutting sheet, transparent glacial facets, frosty white rims, chipped ice plates and deep blue inclusions.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-76daf191-2c77-4766-8c85-468121b51a41.png",
+      "sha256": "8bc7be7cb990ed31302ee3964f2578ca63898d98f06ecf0d87f524722fbf1eed"
+    },
+    {
+      "key": "storm",
+      "id": 607,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-607.png",
+      "subject": "an irregular bright electric cyan and violet branching discharge stretched along one horizontal lightning wake, thin hot white core, jagged side arcs with large transparent gaps",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: an irregular bright electric cyan and violet branching discharge stretched along one horizontal lightning wake, thin hot white core, jagged side arcs with large transparent gaps.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-6e018a92-8d2c-4d1c-ace0-b90408e415fe.png",
+      "sha256": "bf0d989a8162a0fc163abb5e39666ddb0b893679e93c698de6575f93b84eb7f5"
+    },
+    {
+      "key": "stone",
+      "id": 619,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-619.png",
+      "subject": "a dense slate and charcoal shattered rock wake with violet star mineral seams, a few broad irregular layered stone surfaces, warm dust between dark solid broken plates",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: a dense slate and charcoal shattered rock wake with violet star mineral seams, a few broad irregular layered stone surfaces, warm dust between dark solid broken plates.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-75a79ad2-fa4f-4016-be7f-ef39039adbfd.png",
+      "sha256": "0c11f84eecf5217a4f4508bfb4ee2851e071dabf32340b2556d0bd0ee6b3e525"
+    },
+    {
+      "key": "cloth",
+      "id": 621,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-621.png",
+      "subject": "ivory and muted cool pale green wind-torn silk streamers, long folded cloth membranes with thin frayed threads, elegant sharp tapered folds with transparent negative space",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: ivory and muted cool pale green wind-torn silk streamers, long folded cloth membranes with thin frayed threads, elegant sharp tapered folds with transparent negative space.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-65c9284d-77d4-4c2d-b081-9c76eda8a810.png",
+      "sha256": "6d6d71fb79d6aa053779bdb57b76ff8686ed59895ed9da3e2b4a5cd5db0c0ea3"
+    },
+    {
+      "key": "soul",
+      "id": 622,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-622.png",
+      "subject": "dark violet and lilac spectral silk folds, translucent layered soul gauze, hooked fine trailing threads, restrained luminous silver lavender seams and deep purple shadow folds",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: dark violet and lilac spectral silk folds, translucent layered soul gauze, hooked fine trailing threads, restrained luminous silver lavender seams and deep purple shadow folds.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-562c2312-ac1e-4680-93c5-938a2b289631.png",
+      "sha256": "ee287c6994bb7ed0598ba05c8a411fdb6c431776ba6a442193d51f4192749c07"
+    },
+    {
+      "key": "void",
+      "id": 643,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-643.png",
+      "subject": "near-black violet spatial rift folds with a sparse sharp lilac rim, dark smoky reflective planes, inward-hooking ragged stretched membranes and large transparent holes",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: near-black violet spatial rift folds with a sparse sharp lilac rim, dark smoky reflective planes, inward-hooking ragged stretched membranes and large transparent holes.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-683ee34e-a602-4609-a933-4202f3ddcc63.png",
+      "sha256": "c4b4a17ad02792ad371e1053fe4e76c1ec08642e38bdb6cd95d775d8ce27d409"
+    },
+    {
+      "key": "feather",
+      "id": 625,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-625.png",
+      "subject": "dark olive-black and muted bronze feather vanes swept into one directional airy wake, detailed separated barbs with sparse pale gold edge glints, strongly tapered quill-like details",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: dark olive-black and muted bronze feather vanes swept into one directional airy wake, detailed separated barbs with sparse pale gold edge glints, strongly tapered quill-like details.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-f248857d-a7aa-4dd5-94d3-62f81b4edfef.png",
+      "sha256": "8f336758321c7efbac3c926085c7868a6106bf574eb0a5e7d574f1d1bcd04c6b"
+    },
+    {
+      "key": "star",
+      "id": 636,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/plates/weapon-636.png",
+      "subject": "a rich cobalt and pale gold starlight energy wake with irregular angular star grit embedded along it, fine gold seams and cool bright silver slivers, no symbols or rings",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: a rich cobalt and pale gold starlight energy wake with irregular angular star grit embedded along it, fine gold seams and cool bright silver slivers, no symbols or rings.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-d2f7bb60-2afb-4454-acd1-92c3bbbb46e9.png",
+      "sha256": "42537be433c0460ad20a084357a1947b0b1fb6100ef4fd72a3d66ee55893275a"
+    },
+    {
+      "key": "sun",
+      "id": 612,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-612.png",
+      "subject": "warm sun-gold metal and orange light cutting sheet, layered gold plates and pale ivory sharp cutting highlights, rich darker amber internal folds",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: warm sun-gold metal and orange light cutting sheet, layered gold plates and pale ivory sharp cutting highlights, rich darker amber internal folds.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-ff136bf3-7f5d-4684-937b-2f127049af9a.png",
+      "sha256": "6e32da07e18807c61e49cc8257aed77585f8c5718d3e3cc9d670069edd93926e"
+    },
+    {
+      "key": "bell",
+      "id": 610,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-610.png",
+      "subject": "aged bronze and muted warm gold resonant silk wake, layered thin prayer cloth folds, fine bronze dust and delicate pale gold vibrating threads, no rings or lettering",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: aged bronze and muted warm gold resonant silk wake, layered thin prayer cloth folds, fine bronze dust and delicate pale gold vibrating threads, no rings or lettering.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-fe9f6f66-de0f-4147-b50c-04db04a7693f.png",
+      "sha256": "d5c9cd984fb52f11cb1b6923022153f26f85e1727b6c8aa4463c4bbf558b276d"
+    },
+    {
+      "key": "heat",
+      "id": 627,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-627.png",
+      "subject": "smoky ember-orange and molten red flame sheet, dark charred feather edges, detailed internal hot orange flow and a few small incandescent amber seams",
+      "prompt": "Reference image: attached weapon VFX concept. Derive ONE production game material texture from its effect only. Remove the character, literal weapon, target, floor, environment, all UI. Reconstruct and unwrap the material into ONE STRAIGHT HORIZONTAL left-to-right energy strip; not an entire attack, not a curved crescent and not an explosion. Preserve detailed painted surfaces, irregular sharp edges, real transparent openings and deep colored interior folds from the reference. The strip must occupy x=8..92% and y=30..70% of a wide canvas, taper on both ends with no clipping. Truly transparent RGBA background and generous padding; preserve substantial opaque/semiopaque colored interior for visibility on the dark game floor. No sheet, no grid, no labels, no diagram, no duplicated examples, no checkerboard baked in. Use a single coherent high-detail hand-painted anime action-game VFX surface. Specific material: smoky ember-orange and molten red flame sheet, dark charred feather edges, detailed internal hot orange flow and a few small incandescent amber seams.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-0e1ff673-052d-4be9-995b-4f758bf61467.png",
+      "sha256": "20bad895908ba8b575595e6be1cc68b547f1040c9f5dc16dfcef041ddfccffe3"
+    }
+  ],
+  "impact_assets": [
+    {
+      "key": "stone-impact",
+      "id": 619,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-619.png",
+      "subject": "a dense slate and charcoal shattered rock wake with violet star mineral seams, a few broad irregular layered stone surfaces, warm dust between dark solid broken plates",
+      "prompt": "Reference: attached weapon VFX concept. Reconstruct ONLY ONE isolated contact-burst component from its effect, not an entire attack. Production hand-painted anime action game transparent RGBA sprite, no character, no weapon, no tree target, no ground photo or scene, no UI, no letters, no sprite sheet, no multiple versions. Anchor at bottom-center with a bright compressed contact seam. Asymmetric wide fan of substantial opaque shards flying upward and outward, detailed dark painted interiors, brilliant thin edges, sparse trailing fragments, large true transparent spaces between pieces. Preserve enough dense color to be bold and legible at 160 pixels high on a dark floor, not a faint glow or white blob. Centered, all pieces inside canvas with 10% padding, roughly 1.3 times wider than high. Material: dense irregular slate-black broken rock plates, rich violet star-mineral fissures, luminous white-lilac contact cracks and low grey dust. Avoid regular crystals or rectangular blocks.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-1e974ebe-1255-48e9-977f-6a8b0c848488.png",
+      "sha256": "e2e81c48764c4d9765f1c90931ae9baef5aa5656142e45abfe710cc291edd4a7"
+    },
+    {
+      "key": "frost-impact",
+      "id": 606,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-606.png",
+      "subject": "a pale icy cyan layered frozen cutting sheet, transparent glacial facets, frosty white rims, chipped ice plates and deep blue inclusions",
+      "prompt": "Reference: attached weapon VFX concept. Reconstruct ONLY ONE isolated contact-burst component from its effect, not an entire attack. Production hand-painted anime action game transparent RGBA sprite, no character, no weapon, no tree target, no ground photo or scene, no UI, no letters, no sprite sheet, no multiple versions. Anchor at bottom-center with a bright compressed contact seam. Asymmetric wide fan of substantial opaque shards flying upward and outward, detailed dark painted interiors, brilliant thin edges, sparse trailing fragments, large true transparent spaces between pieces. Preserve enough dense color to be bold and legible at 160 pixels high on a dark floor, not a faint glow or white blob. Centered, all pieces inside canvas with 10% padding, roughly 1.3 times wider than high. Material: a violent icy cyan glacial shatter with large irregular translucent blue ice shards, chipped frosty facets, dense pale blue glass interiors and bright white razor rims, low frost spray. Avoid a symmetrical snowflake or circle.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-59732a9d-d2e7-4fe0-8b33-a80bd8abb3d0.png",
+      "sha256": "ecbf0615bebe75c6fedfd1cb2abe798d3f61a3ed43161317ffd8c2f846296755"
+    },
+    {
+      "key": "tide-impact",
+      "id": 613,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/plates/weapon-613.png",
+      "subject": "a heavy deep teal blue translucent tidal water sheet, layered curling water folds, white foam cutting crests and sparse spray, dark indigo troughs",
+      "prompt": "Reference: attached weapon VFX concept. Extract/reconstruct ONE isolated production game CONTACT BURST component, not a whole attack scene. Genuine transparent RGBA background. No girl, weapon, tree enemy, floor, map, UI, labels, ring or sprite sheet. Single coherent asymmetric fan-shaped burst anchored bottom-center, roughly 1.4 times wider than tall, all pieces within generous 10% padding. Dense painted surfaces and crisp bright contact highlights, a few larger flying fragments and wispy edges; visible strong colors at game scale, not a transparent fog or a white blob. Refined hand-painted anime action VFX matching the reference. Material: a heavy deep blue and turquoise water impact splash, curling thick water blades and foamy breaking crests, broad translucent blue water folds, white spray and a few elongated flying droplets. Transparent gaps between irregular water tongues.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-e6fd1f16-41ec-44b2-8237-eb4b0c7b1622.png",
+      "sha256": "60c671f03694ee657fefd72600ce45bbd9a34add23b072a36af28a42402c3afe"
+    },
+    {
+      "key": "heat-impact",
+      "id": 627,
+      "reference": "D:/develop/school/CrimsonTide-godot/art/weapon-vfx-reference-v6/finished/weapon-627.png",
+      "subject": "smoky ember-orange and molten red flame sheet, dark charred feather edges, detailed internal hot orange flow and a few small incandescent amber seams",
+      "prompt": "Reference: attached weapon VFX concept. Extract/reconstruct ONE isolated production game CONTACT BURST component, not a whole attack scene. Genuine transparent RGBA background. No girl, weapon, tree enemy, floor, map, UI, labels, ring or sprite sheet. Single coherent asymmetric fan-shaped burst anchored bottom-center, roughly 1.4 times wider than tall, all pieces within generous 10% padding. Dense painted surfaces and crisp bright contact highlights, a few larger flying fragments and wispy edges; visible strong colors at game scale, not a transparent fog or a white blob. Refined hand-painted anime action VFX matching the reference. Material: an explosive orange-red fire and molten slag impact plume, dark black charred shell plates with lava fissures, dense hot amber flame interior, thin white-yellow contact seam, sparse flying ember streaks and smoky brown trailing edges. Strong warm color, keep dark solid shards, avoid a generic round fireball.",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a153ef-40a0-7ae1-9a96-9eac5c3934c3\\exec-5c2e64f0-f8e8-4f1c-a642-ab853fa6ad20.png",
+      "sha256": "85e9d0411a28d66cc07e12d7b483ccf008db455c5dbb56b9987948b267ab6fb4"
+    }
+  ]
+}

@@ -1443,3 +1443,6 @@ git ls-files --others --exclude-standard | Select-String '\.uid$'
 
 2026-10-15 更正：以原游戏为基础添加剧情和玩法。撤下替代地图与替代渲染，原55张地图、连续连接路、副本进出、StoryWorld／World3D／GraphicsQuality、角色帧、接触阴影和StoryCombatVFX继续使用；行囊、仓库、商店、锻造、装备、专精、宝箱与传送阵已接回。绑定表见 docs/rpg/SCARLET-MAP-BINDINGS.md。
 
+### 2026-10-20 上游同步记录
+
+已合并 origin/master 的 20 个提交（至 1ce7e95b），保留本地武器特效、动作编排与素材。冲突合并同时保留上游像素飘字与肉鸽技能接线。合并后动作编排 1041、猎场规则 199、肉鸽技能 85、飘字集成 15 项检查通过；rogue_build_system 的连续遍历战技用例有 47 项失败，循环未清理本地新增的 build_art_sequence，暂未修改测试。资源导入仍报告上游删除 EXR 后的烘焙引用缺失。

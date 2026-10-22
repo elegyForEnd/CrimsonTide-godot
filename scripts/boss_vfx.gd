@@ -234,7 +234,7 @@ func _draw() -> void:
 	for fx in effects:
 		if fx.action=="release" and fx.get("choreographed",false): continue
 		var t: float=fx.age/fx.duration
-		var fade := pow(1-t,1.6)
+		var fade := preload("res://scripts/vfx_curves.gd").envelope(float(fx.age),float(fx.duration),"body","detonation")
 		var at: Vector2=fx.p
 		var aim: Vector2=fx.get("aim",Vector2.RIGHT)
 		if fx.action!="release":

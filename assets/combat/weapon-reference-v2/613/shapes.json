@@ -1,0 +1,266 @@
+{
+  "weapon": 613,
+  "clips": {
+    "normal": {
+      "file": "res://assets/combat/weapon-reference-v2/613/atlas-v1.png",
+      "sha256": "a78ba122a4f8357a101a9dc64b2f3436176044d741b957925b35d45317f5f47e",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-9267b306-e1df-46c8-807d-aeb6981f7556.png",
+      "single_peak": true,
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 2.6301369863013697,
+      "frame_rects": [
+        [
+          0.0,
+          0.0,
+          0.5,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.0,
+          0.5,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.0,
+          0.5,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.0,
+          0.5,
+          0.28515625
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0.0,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.28515625
+        ]
+      ],
+      "pivot": [
+        0.16,
+        0.72
+      ],
+      "contact": [
+        0.86,
+        0.83
+      ],
+      "reveal_mode": 0,
+      "placement": "blade"
+    },
+    "heavy": {
+      "file": "res://assets/combat/weapon-reference-v2/613/atlas-v1.png",
+      "sha256": "a78ba122a4f8357a101a9dc64b2f3436176044d741b957925b35d45317f5f47e",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-9267b306-e1df-46c8-807d-aeb6981f7556.png",
+      "single_peak": true,
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 2.6301369863013697,
+      "frame_rects": [
+        [
+          0.5,
+          0.0,
+          0.5,
+          0.28515625
+        ],
+        [
+          0.5,
+          0.0,
+          0.5,
+          0.28515625
+        ],
+        [
+          0.5,
+          0.0,
+          0.5,
+          0.28515625
+        ],
+        [
+          0.5,
+          0.0,
+          0.5,
+          0.28515625
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0.0,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.28515625
+        ],
+        [
+          0.0,
+          0.28515625
+        ]
+      ],
+      "pivot": [
+        0.16,
+        0.72
+      ],
+      "contact": [
+        0.86,
+        0.83
+      ],
+      "reveal_mode": 0,
+      "placement": "blade"
+    },
+    "art": {
+      "file": "res://assets/combat/weapon-reference-v2/613/atlas-v1.png",
+      "sha256": "a78ba122a4f8357a101a9dc64b2f3436176044d741b957925b35d45317f5f47e",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-9267b306-e1df-46c8-807d-aeb6981f7556.png",
+      "single_peak": true,
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 2.6033898305084744,
+      "frame_rects": [
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ],
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ],
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ],
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0.28515625,
+          0.5732421875
+        ],
+        [
+          0.28515625,
+          0.5732421875
+        ],
+        [
+          0.28515625,
+          0.5732421875
+        ],
+        [
+          0.28515625,
+          0.5732421875
+        ]
+      ],
+      "pivot": [
+        0.16,
+        0.72
+      ],
+      "contact": [
+        0.86,
+        0.83
+      ],
+      "reveal_mode": 0,
+      "placement": "blade"
+    },
+    "finisher": {
+      "file": "res://assets/combat/weapon-reference-v2/613/atlas-v1.png",
+      "sha256": "a78ba122a4f8357a101a9dc64b2f3436176044d741b957925b35d45317f5f47e",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-9267b306-e1df-46c8-807d-aeb6981f7556.png",
+      "single_peak": true,
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 2.6033898305084744,
+      "frame_rects": [
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ],
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ],
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ],
+        [
+          0.0,
+          0.28515625,
+          0.5,
+          0.2880859375
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0.28515625,
+          0.5732421875
+        ],
+        [
+          0.28515625,
+          0.5732421875
+        ],
+        [
+          0.28515625,
+          0.5732421875
+        ],
+        [
+          0.28515625,
+          0.5732421875
+        ]
+      ],
+      "pivot": [
+        0.16,
+        0.72
+      ],
+      "contact": [
+        0.86,
+        0.83
+      ],
+      "reveal_mode": 0,
+      "placement": "blade"
+    }
+  },
+  "status": "pending_visual_qa"
+}

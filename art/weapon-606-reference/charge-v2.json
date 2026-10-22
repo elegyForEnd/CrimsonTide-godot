@@ -1,0 +1,10 @@
+{
+  "layer": "charge",
+  "generator": "built-in ImageGen",
+  "reference": "output/texiaocankao/exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+  "material_reference": "assets/combat/weapon-606-reference/surface-v2.png",
+  "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-b5b447ee-f626-48a1-935f-383728f2abfd.png",
+  "file": "assets/combat/weapon-606-reference/charge-v2.png",
+  "status": "awaiting_material_review",
+  "revision": 2
+}

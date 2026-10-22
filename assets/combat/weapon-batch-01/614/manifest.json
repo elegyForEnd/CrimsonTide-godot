@@ -1,0 +1,160 @@
+{
+  "weapon": 614,
+  "batch": 1,
+  "status": "awaiting_user_acceptance",
+  "layers": {
+    "surface": {
+      "id": 614,
+      "layer": "surface",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-5e49c976-13b6-4569-8399-88c2a976804b.png",
+      "file": "res://assets/combat/weapon-batch-01/614/surface-v3.png",
+      "revision": 3,
+      "reference": "exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "status": "single-role component, no duplicated main effect",
+      "sha256": "1ab7dff932b370dd3e51608e13becc358e57701476a986e9be68580e93b2861c",
+      "size": [
+        2172,
+        724
+      ],
+      "uv": [
+        0.0,
+        0.2776243093922652,
+        1.0,
+        0.46685082872928174
+      ],
+      "aspect": 6.42603550295858
+    },
+    "charge": {
+      "id": 614,
+      "layer": "charge",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-3c437de0-e28a-4c12-bd2a-d5f1d7dfb994.png",
+      "file": "res://assets/combat/weapon-batch-01/614/charge.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\614.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "0a9a3fdec1afe0fb4d263ce0a567cb133b00028c8d7246a1d794db1a575d7c44",
+      "size": [
+        1774,
+        887
+      ],
+      "uv": [
+        0.0467869222096956,
+        0.20969560315670802,
+        0.9148816234498309,
+        0.6606538895152199
+      ],
+      "aspect": 2.7696245733788394
+    },
+    "impact": {
+      "id": 614,
+      "layer": "impact",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-62dbba87-cfe9-4eb7-878a-9def7bc6aa0c.png",
+      "file": "res://assets/combat/weapon-batch-01/614/impact.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\614.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "49f616d8f73ca3baf3982e01b3d7ea3783dc201d27fc9ed61cd325571995b26b",
+      "size": [
+        1586,
+        992
+      ],
+      "uv": [
+        0.013871374527112233,
+        0.15221774193548387,
+        0.9817150063051703,
+        0.7479838709677419
+      ],
+      "aspect": 2.0983827493261455
+    },
+    "mist": {
+      "id": 614,
+      "layer": "mist",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-f6162058-7196-4248-81a2-bcefa21a59d5.png",
+      "file": "res://assets/combat/weapon-batch-01/614/mist-v2.png",
+      "revision": 2,
+      "status": "component role corrected to match storyboard",
+      "sha256": "6715fed9a6ed5c944ffec0669281b150933fe059146da294cf23d568d3c0349e",
+      "size": [
+        2172,
+        724
+      ],
+      "uv": [
+        0.07550644567219153,
+        0.1132596685082873,
+        0.8558931860036832,
+        0.7776243093922652
+      ],
+      "aspect": 3.301953818827709
+    },
+    "ground": {
+      "id": 614,
+      "layer": "ground",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-145ab9c7-f012-4cfc-8faf-8bf35df0eb18.png",
+      "file": "res://assets/combat/weapon-batch-01/614/ground.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\614.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "e6c095a20fc2f412f7db023da7b344df93eb7a0dbae0769322efbfa940e205bd",
+      "size": [
+        2092,
+        752
+      ],
+      "uv": [
+        0.0124282982791587,
+        0.1276595744680851,
+        0.9732313575525813,
+        0.7992021276595744
+      ],
+      "aspect": 3.387687188019967
+    },
+    "shard": {
+      "id": 614,
+      "layer": "shard",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-418da963-070e-48fc-a6c8-22617b5d263f.png",
+      "file": "res://assets/combat/weapon-batch-01/614/shard.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\614.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "ce159d402cb37b08cba3d81e6428550f326bef7e643b53c5e84c037fdd95f58e",
+      "size": [
+        1536,
+        1024
+      ],
+      "uv": [
+        0.16666666666666666,
+        0.224609375,
+        0.693359375,
+        0.560546875
+      ],
+      "aspect": 1.8554006968641115
+    },
+    "trail": {
+      "id": 614,
+      "layer": "trail",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-ff5b3de2-785e-4c57-b89c-f119118ce957.png",
+      "file": "res://assets/combat/weapon-batch-01/614/trail.png",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\614.png",
+      "status": "generated_pending_visual_review",
+      "sha256": "85a9673d2d925be45a33da69103d64a5e3d549f8317e3ec83d15ed465df8e849",
+      "size": [
+        2172,
+        724
+      ],
+      "uv": [
+        0.01565377532228361,
+        0.22790055248618785,
+        0.9723756906077348,
+        0.606353591160221
+      ],
+      "aspect": 4.810933940774487
+    }
+  }
+}

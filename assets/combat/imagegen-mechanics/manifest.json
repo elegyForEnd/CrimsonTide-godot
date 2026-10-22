@@ -1307,23 +1307,26 @@
       "contact_method": "distal luminous core; original alpha"
     },
     "authored_609_art": {
-      "file": "raw/weapon-609-art-v1.png",
-      "ink": [
-        28,
-        106,
-        1235,
-        1145
-      ],
+      "file": "layered-v2/renewal_609_mirror_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ee0fb584-0035-4907-adc5-9fa21662514b.png",
       "size": [
-        1254,
-        1254
+        1562,
+        1007
       ],
-      "sha256": "0f35a4c8e3cb40834f5555108a4877c0ac504e730fe6c6267ec7afbeab081bf5",
-      "contact": [
-        1184,
-        669
+      "ink": [
+        185,
+        213,
+        1451,
+        829
       ],
-      "contact_method": "distal luminous core; original alpha"
+      "sha256": "ce40890f21957ef7fe0194d50d3726fe21fe813ca24fa7aa84e0b4a54f09fa29",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_609_mirror_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_609_art",
+      "prior_file": "raw/weapon-609-art-v1.png"
     },
     "authored_610_art": {
       "file": "raw/weapon-610-art-v1.png",
@@ -1383,51 +1386,70 @@
       "contact_method": "distal luminous core; original alpha"
     },
     "authored_622_art": {
-      "file": "raw/weapon-622-art-v1.png",
-      "ink": [
-        31,
-        67,
-        1225,
-        1223
-      ],
+      "file": "layered-v2/renewal_622_soul_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-1bf2f20b-c047-4bd9-8f4e-14da9f879830.png",
       "size": [
-        1254,
-        1254
+        1512,
+        1040
       ],
-      "sha256": "2140a583c88e625ec52588317432e0bd6ab0e62370907001cb6955c06dc7a2d0",
-      "contact": [
-        1174,
-        643
+      "ink": [
+        186,
+        179,
+        1434,
+        851
       ],
-      "contact_method": "distal luminous core; original alpha"
+      "sha256": "8ec8bf06c5a0c4aae49cf0c7a59d4b3ee82c3bc56340fb4c068b5f8613ce0a7e",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_622_soul_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_622_art",
+      "prior_file": "raw/weapon-622-art-v1.png"
     },
     "authored_624_projectile": {
-      "file": "raw/weapon-624-projectile-v1.png",
-      "ink": [
-        39,
-        447,
-        1202,
-        811
-      ],
+      "file": "layered-v2/renewal_624_projectile_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-a3935bae-9ecd-4097-842b-efee2e214fbd.png",
       "size": [
-        1254,
-        1254
+        2172,
+        724
       ],
-      "sha256": "87ec3880ac137aecdfc335bb18fc10f3bf3423703919f1638a4abac6b108f529"
+      "ink": [
+        602,
+        315,
+        1632,
+        414
+      ],
+      "sha256": "37c005306fdc86b020c8575868cba8fe2427f201cd8d941d8e9d5833bba1885e",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_624_projectile_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_624_projectile",
+      "prior_file": "raw/weapon-624-projectile-v1.png"
     },
     "authored_625_projectile": {
-      "file": "raw/weapon-625-projectile-v1.png",
-      "ink": [
-        24,
-        399,
-        1226,
-        791
-      ],
+      "file": "layered-v2/renewal_625_projectile_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ef30920d-7230-438a-92c8-0babba8f6c17.png",
       "size": [
-        1254,
-        1254
+        1774,
+        887
       ],
-      "sha256": "8cce81decd31996c2988691d881c07b8bafda2abbfa86d70f67535f087b3707d"
+      "ink": [
+        114,
+        375,
+        1624,
+        549
+      ],
+      "sha256": "1993cb2874392fd9e3fba5d85051c021ab8453a3641f502f25c6bdb70a20e510",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_625_projectile_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_625_projectile",
+      "prior_file": "raw/weapon-625-projectile-v1.png"
     },
     "authored_626_projectile": {
       "file": "raw/weapon-626-projectile-v1.png",
@@ -1486,18 +1508,26 @@
       "sha256": "90b16197364610f960fedac4d5cfc6d2318dbf5fe3985b3903703c7406be0ab8"
     },
     "authored_630_projectile": {
-      "file": "raw/weapon-630-projectile-v1.png",
-      "ink": [
-        83,
-        447,
-        1198,
-        812
-      ],
+      "file": "layered-v2/renewal_630_projectile_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-5f919bf3-86cf-4ac1-9bf0-9e8baffc0863.png",
       "size": [
-        1254,
-        1254
+        1774,
+        887
       ],
-      "sha256": "7681f4981d13ea9821dd5f1536738394fccd426c822f5aab36beec4ebe82413c"
+      "ink": [
+        243,
+        385,
+        1560,
+        534
+      ],
+      "sha256": "272013c7496082533249755df5c68b5691de13c1056b75ea0f0b5e1fd2d9c4c9",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_630_projectile_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_630_projectile",
+      "prior_file": "raw/weapon-630-projectile-v1.png"
     },
     "authored_631_projectile": {
       "file": "raw/weapon-631-projectile-v1.png",
@@ -1528,32 +1558,48 @@
       "sha256": "9d6e3207c6d53c7b45cd0e55dc64b97414bd6cde018a26f59e4c4f48e9134650"
     },
     "authored_633_projectile": {
-      "file": "raw/weapon-633-projectile-v1.png",
-      "ink": [
-        59,
-        453,
-        1200,
-        821
-      ],
+      "file": "layered-v2/renewal_633_projectile_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-651cc4c6-a059-41f6-8df2-509f69b39dc0.png",
       "size": [
-        1254,
-        1254
+        1989,
+        791
       ],
-      "sha256": "d8b4ca3672a1c9bbe96ee1e4b8adadee09fe8e3d147a132f5dbe2c917c1ded87"
+      "ink": [
+        319,
+        331,
+        1675,
+        459
+      ],
+      "sha256": "c7b91aaf640f4b5b11415af15b0d9d1eb687278f1ac7ad9a103d1e5db4ed02df",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_633_projectile_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_633_projectile",
+      "prior_file": "raw/weapon-633-projectile-v1.png"
     },
     "authored_634_projectile": {
-      "file": "raw/weapon-634-projectile-v1.png",
-      "ink": [
-        39,
-        422,
-        1230,
-        839
-      ],
+      "file": "layered-v2/renewal_634_projectile_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-a39aa57f-e730-4a36-abc4-633c37ec860c.png",
       "size": [
-        1254,
-        1254
+        1774,
+        887
       ],
-      "sha256": "812d51d3868d2e8e30c53ca85181afb62c9e46509e95b6c4fb8cf2eeecf9a568"
+      "ink": [
+        269,
+        389,
+        1534,
+        519
+      ],
+      "sha256": "84d60bb21af0bcdbdc3fce0c6ed2c2865f1edda66ca643e57546077c399e92b2",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_634_projectile_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "authored_634_projectile",
+      "prior_file": "raw/weapon-634-projectile-v1.png"
     },
     "authored_635_projectile": {
       "file": "raw/weapon-635-projectile-v1.png",
@@ -3074,6 +3120,2045 @@
       "palette": "jade white, aged gold light, mint turquoise",
       "style": "clean continuous contours; no scales, flakes, granular texture or micro-fragments",
       "generator": "built-in ImageGen; unchanged original transparent RGBA"
+    },
+    "density_sweep_v1": {
+      "file": "layered-v2/density_sweep_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-4480e547-6b7d-43e7-96e8-204a9a12ecca.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        62,
+        285,
+        1204,
+        929
+      ],
+      "sha256": "52b79a7f125a8659d6dacc7d9b85d2d18e9ae37b3cc6c00044305f74bcb6e9c3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/density_sweep_v1.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "density_sweep_v1",
+      "prior_file": "layered-v2/density_sweep_v1.png"
+    },
+    "density_flame_v1": {
+      "file": "layered-v2/density_flame_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-57d10167-03f6-4c5e-9b30-bd9ce4626bd3.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        328,
+        64,
+        949,
+        1138
+      ],
+      "sha256": "ccc7fedb29dd4fc0f27e81f3990498a0d3daf6ac61ca6d8a2b24735a3edae4c6",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/density_flame_v1.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "density_flame_v1",
+      "prior_file": "layered-v2/density_flame_v1.png"
+    },
+    "density_dust_v1": {
+      "file": "layered-v2/density_dust_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-1b04aa2f-41ad-4191-9e50-682c470ec967.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        31,
+        321,
+        1215,
+        963
+      ],
+      "sha256": "ad1ef49c80eaded1ea80300754f774c4ae2537fe030125f41655579e590c1652",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/density_dust_v1.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "density_dust_v1",
+      "prior_file": "layered-v2/density_dust_v1.png"
+    },
+    "renewal_17_thrust_v2": {
+      "file": "layered-v2/renewal_17_thrust_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-f37ab9bf-90b5-4b8d-80a4-a6feeff82960.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        349,
+        494,
+        1158,
+        790
+      ],
+      "sha256": "700f28d3cb87802fd5c86550d0c84b4559d53c90706310514d1b6a4837c4f0b8",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_17_thrust_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_17_thrust_v2",
+      "prior_file": "layered-v2/renewal_17_thrust_v2.png"
+    },
+    "renewal_18_projectile_v2": {
+      "file": "layered-v2/renewal_18_projectile_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-772ca16b-9d35-4a86-b3e8-c468a8d7d578.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        142,
+        479,
+        1013,
+        771
+      ],
+      "sha256": "d261a89eaf06b6bfe13eb97ed4dd610f6b90a5aa2ed434e1ef666033f28cebf9",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_18_projectile_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_18_projectile_v2",
+      "prior_file": "layered-v2/renewal_18_projectile_v2.png"
+    },
+    "renewal_19_overhead_v2": {
+      "file": "layered-v2/renewal_19_overhead_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-2cc955cf-51cd-4634-8959-f97722687139.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        85,
+        77,
+        1202,
+        1175
+      ],
+      "sha256": "ae510bb47744ffb373e0f0396bef49bdb1b116c9becdacb978a6f0dc47ff210f",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_19_overhead_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_19_overhead_v2",
+      "prior_file": "layered-v2/renewal_19_overhead_v2.png",
+      "presentation": {
+        "plane": "overhead",
+        "angle": 0,
+        "aspect": [
+          1.4,
+          1.8
+        ]
+      }
+    },
+    "renewal_20_hook_v2": {
+      "file": "layered-v2/renewal_20_hook_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-e629cf6f-17cd-4783-b2f5-bba5b0d50db7.png",
+      "size": [
+        1659,
+        948
+      ],
+      "ink": [
+        127,
+        83,
+        1516,
+        839
+      ],
+      "sha256": "3d1666a05e6ed6eb964fa1609f334a88f4c52936d578619c7a136d09daefb398",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_20_hook_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_20_hook_v2",
+      "prior_file": "layered-v2/renewal_20_hook_v2.png"
+    },
+    "renewal_2_fault_v2": {
+      "file": "layered-v2/renewal_2_fault_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-d6ac19b1-5943-42a4-9a78-fae5e9158f23.png",
+      "size": [
+        1503,
+        1046
+      ],
+      "ink": [
+        110,
+        156,
+        1424,
+        945
+      ],
+      "sha256": "22d028cb9f6db25fa7cf9489fc8164345c728680ccd6557ba29b3b013ac5bede",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_2_fault_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_2_fault_v2",
+      "prior_file": "layered-v2/renewal_2_fault_v2.png"
+    },
+    "density_wisp_v1": {
+      "file": "layered-v2/density_wisp_v1.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-c19e0c43-ac4e-45d3-95f1-d0fe731f45e2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        74,
+        441,
+        1219,
+        808
+      ],
+      "sha256": "480e3c688944798928b649a92c8601423037b263b1ed2d2425daac082f3876c5",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/density_wisp_v1.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "density_wisp_v1",
+      "prior_file": "layered-v2/density_wisp_v1.png"
+    },
+    "renewal_613_wave_v2": {
+      "file": "layered-v2/renewal_613_wave_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-7805e788-60dd-4e0b-a648-232dbf0d8650.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        32,
+        396,
+        1234,
+        908
+      ],
+      "sha256": "c6b43e15ade0b010d2a9b390e363d75f206ae830fbb30e355676233904043da6",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_613_wave_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_613_wave_v2",
+      "prior_file": "layered-v2/renewal_613_wave_v2.png",
+      "presentation": {
+        "plane": "diagonal",
+        "angle": 0,
+        "aspect": [
+          1.8,
+          1.1
+        ]
+      }
+    },
+    "renewal_616_chop_v2": {
+      "file": "layered-v2/renewal_616_chop_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-bea2824d-17ef-4cb1-826f-c0c085d51d7d.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "ink": [
+        83,
+        46,
+        989,
+        1437
+      ],
+      "sha256": "22173ab1516dce5cb83007a30d3b00f0fe9227b3dff8153846787c1e6194cf83",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_616_chop_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_616_chop_v2",
+      "prior_file": "layered-v2/renewal_616_chop_v2.png",
+      "presentation": {
+        "plane": "chop",
+        "angle": 0,
+        "aspect": [
+          1.15,
+          1.85
+        ]
+      }
+    },
+    "renewal_617_cleave_v2": {
+      "file": "layered-v2/renewal_617_cleave_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-325f5618-4cb1-46f8-8c7c-77bebe1d94d5.png",
+      "size": [
+        1599,
+        984
+      ],
+      "ink": [
+        114,
+        150,
+        1478,
+        886
+      ],
+      "sha256": "4002236a3c6ff37eb9e1713e012308f0de7809ceffac5ad30a66a75588511aa7",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_617_cleave_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_617_cleave_v2",
+      "prior_file": "layered-v2/renewal_617_cleave_v2.png",
+      "presentation": {
+        "plane": "diagonal",
+        "angle": 0,
+        "aspect": [
+          1.8,
+          1.1
+        ]
+      }
+    },
+    "renewal_620_shear_v2": {
+      "file": "layered-v2/renewal_620_shear_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-6645845f-372b-4d29-b429-17a7a87a4ac2.png",
+      "size": [
+        1448,
+        1086
+      ],
+      "ink": [
+        64,
+        61,
+        1376,
+        953
+      ],
+      "sha256": "33b83010e0de89aca25bc0c8c4a34c5b59760b48274fcc8bf85ff8b29aa25fb0",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_620_shear_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_620_shear_v2",
+      "prior_file": "layered-v2/renewal_620_shear_v2.png",
+      "presentation": {
+        "plane": "diagonal",
+        "angle": 0,
+        "aspect": [
+          1.8,
+          1.1
+        ]
+      }
+    },
+    "renewal_602_fold_v2": {
+      "file": "layered-v2/renewal_602_fold_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-e0a0f18b-df3a-400f-8bf3-bd232bf9617b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        49,
+        315,
+        1238,
+        927
+      ],
+      "sha256": "f1c24f8fae063148eb9d877198ebea623908bf5d35e1273f54450186ff8cee49",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_602_fold_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_602_fold_v2",
+      "prior_file": "layered-v2/renewal_602_fold_v2.png"
+    },
+    "renewal_609_mirror_v2": {
+      "file": "layered-v2/renewal_609_mirror_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ee0fb584-0035-4907-adc5-9fa21662514b.png",
+      "size": [
+        1562,
+        1007
+      ],
+      "ink": [
+        185,
+        213,
+        1451,
+        829
+      ],
+      "sha256": "ce40890f21957ef7fe0194d50d3726fe21fe813ca24fa7aa84e0b4a54f09fa29",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_609_mirror_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_609_mirror_v2",
+      "prior_file": "layered-v2/renewal_609_mirror_v2.png"
+    },
+    "renewal_614_fault_v2": {
+      "file": "layered-v2/renewal_614_fault_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-21e73c9e-40c4-4e4a-83d6-ae27c2c1bb4a.png",
+      "size": [
+        1586,
+        992
+      ],
+      "ink": [
+        94,
+        184,
+        1534,
+        852
+      ],
+      "sha256": "29b57a0ec152c5ef0715711c632a7526e94ed859f0b260534b014dbe963868bf",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_614_fault_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_614_fault_v2",
+      "prior_file": "layered-v2/renewal_614_fault_v2.png"
+    },
+    "renewal_622_soul_v2": {
+      "file": "layered-v2/renewal_622_soul_v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-1bf2f20b-c047-4bd9-8f4e-14da9f879830.png",
+      "size": [
+        1512,
+        1040
+      ],
+      "ink": [
+        186,
+        179,
+        1434,
+        851
+      ],
+      "sha256": "8ec8bf06c5a0c4aae49cf0c7a59d4b3ee82c3bc56340fb4c068b5f8613ce0a7e",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/layered-v2/renewal_622_soul_v2.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "layered-v2",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "renewal_622_soul_v2",
+      "prior_file": "layered-v2/renewal_622_soul_v2.png"
+    },
+    "density_wind_v3": {
+      "file": "smoke-v3/density_wind_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-7ef410f9-e457-498b-9760-89ff2043b3f0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        36,
+        108,
+        1214,
+        1164
+      ],
+      "sha256": "36c738869fd3fac2ac234480cd2d2eeb870d1a0d9fe94623d22e724366e2dacc",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_wind_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "wind smoke density; independent ImageGen original",
+      "smoke_type": "wind"
+    },
+    "density_dust_v3": {
+      "file": "smoke-v3/density_dust_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-0a720829-c05a-4c17-828b-838a3ec62862.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        30,
+        440,
+        1217,
+        931
+      ],
+      "sha256": "c1729800afe8a301be17567dd2feab4ec17e92943ab58987ff9bb72ef21f6092",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_dust_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "dust smoke density; independent ImageGen original",
+      "smoke_type": "dust"
+    },
+    "density_cold_v3": {
+      "file": "smoke-v3/density_cold_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-104f48d1-1e58-48d3-8a95-d9f0c61ee876.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        37,
+        56,
+        1235,
+        1203
+      ],
+      "sha256": "d265d4cd9eb2e04125943f934a0a0adda27103c539a9517c40cad274b1610f1e",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_cold_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "cold smoke density; independent ImageGen original",
+      "smoke_type": "cold"
+    },
+    "density_heat_v3": {
+      "file": "smoke-v3/density_heat_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-38114f96-8bd7-4c24-a3bc-0a60c4cc45b8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        335,
+        23,
+        1018,
+        1240
+      ],
+      "sha256": "521bcb2b69cb1985be6cdb4db00d0c9d1177b6586366bc7cd6331be5d7c56e19",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_heat_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "heat smoke density; independent ImageGen original",
+      "smoke_type": "heat"
+    },
+    "density_blood_v3": {
+      "file": "smoke-v3/density_blood_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-7c224156-9dc7-4216-8a89-d8fb0e0ca01e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        168,
+        169,
+        1094,
+        1063
+      ],
+      "sha256": "2fe78e1d27a389ac335e5df980f40c8e95bbd0c41f9e481b6cc059cd173c9945",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_blood_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "blood smoke density; independent ImageGen original",
+      "smoke_type": "blood"
+    },
+    "density_soul_v3": {
+      "file": "smoke-v3/density_soul_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-be22bbd2-ad93-4053-ab41-5f5d178d9193.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        406,
+        12,
+        942,
+        1239
+      ],
+      "sha256": "976069ac8f230da81c8f7601108c316121ca8dd974af21c7a9a8cee72cb541b6",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_soul_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "soul smoke density; independent ImageGen original",
+      "smoke_type": "soul"
+    },
+    "density_void_v3": {
+      "file": "smoke-v3/density_void_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-e807f66a-e8d6-4748-8439-415d3aabbf49.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        58,
+        110,
+        1214,
+        1169
+      ],
+      "sha256": "a0cb211c4266f4f296539de075eb94e0ccf11751cc34c849077471dc4c452331",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_void_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "void smoke density; independent ImageGen original",
+      "smoke_type": "void"
+    },
+    "density_ion_v3": {
+      "file": "smoke-v3/density_ion_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ced2de2c-e2a6-4fe1-a0e1-ce68f48c0495.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        40,
+        124,
+        1227,
+        1138
+      ],
+      "sha256": "f5cfbb4a98eb8f4f97d05803c1a8f0124e7436fb53526075bab1d2b574970ca2",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_ion_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "ion smoke density; independent ImageGen original",
+      "smoke_type": "ion"
+    },
+    "density_incense_v3": {
+      "file": "smoke-v3/density_incense_v3.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-df4ed8e6-40f5-4f21-8d9e-3a3c674b32cb.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        396,
+        33,
+        989,
+        1240
+      ],
+      "sha256": "180d738d7cf79e66f3290f737ee28311f9bd4081ca0311f40b52f94561704ee9",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/smoke-v3/density_incense_v3.txt",
+      "density_mask": true,
+      "native_aspect": true,
+      "vfx_version": "smoke-v3",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "incense smoke density; independent ImageGen original",
+      "smoke_type": "incense"
+    },
+    "blade_edge_v4": {
+      "file": "blade-v4/blade_edge_v4.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-22178d82-db11-4c66-8f3f-f746114d02fa.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        25,
+        506,
+        1238,
+        814
+      ],
+      "sha256": "53b86cea0858f2bfcfbafcc696455768a79e8a650532beb46209ef582c5c49e3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/blade-v4/blade_edge_v4.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "blade-v4",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "blade_edge_v4",
+      "uv_layout": "straight horizontal unwrapped ribbon",
+      "alpha_mask": true
+    },
+    "blade_flow_v4": {
+      "file": "blade-v4/blade_flow_v4.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-26a54232-f8b6-41cf-8266-4fe17c0336f6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        20,
+        538,
+        1243,
+        737
+      ],
+      "sha256": "85edb2d8e4141299dbd08be44927dd64b1f956f70a157a0ffe0e2570abd08b6d",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/blade-v4/blade_flow_v4.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "blade-v4",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "blade_flow_v4",
+      "uv_layout": "straight horizontal unwrapped ribbon",
+      "alpha_mask": true
+    },
+    "blade_fracture_v4": {
+      "file": "blade-v4/blade_fracture_v4.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-7ef57a2e-0687-43a8-9926-80a69fccdd63.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        19,
+        566,
+        1236,
+        718
+      ],
+      "sha256": "09af9382f8bd6c408faf65134d43b08bddfb5aa6c3b1f46bd3e71ce78ccf00a0",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/blade-v4/blade_fracture_v4.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "blade-v4",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "blade_fracture_v4",
+      "uv_layout": "straight horizontal unwrapped ribbon",
+      "alpha_mask": true
+    },
+    "weapon_600_surface_v5": {
+      "file": "weapon-v5/weapon_600_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-2a95ed91-e05f-497d-9847-67068cf0d67f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        18,
+        460,
+        1237,
+        797
+      ],
+      "sha256": "7df5f964f31d0ac94470f4537fa602fc26f95ea7fe469fe6a5d8d7a381c24c74",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_600_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A broad viscous blood membrane pulled into one long tapered cutting sheet, with a deep crescent-shaped empty tear near the left tail and two unequal stretched fluid strands. Substantial cohesive body, no droplets.",
+      "prior_file": "weapon-v5/weapon_600_surface_v5.png",
+      "weapon": 600,
+      "weapon_name": "绯红单手剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_601_surface_v5": {
+      "file": "weapon-v5/weapon_601_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-5efcc411-5e63-49c9-a9c2-ebe49cf79636.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        37,
+        506,
+        1232,
+        740
+      ],
+      "sha256": "26c1eef82d1b98f1b5e8f31243047327d5ceb66955eb0abddeabfe07891ffc1c",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_601_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "An extremely narrow axial piercing streak, an elongated needle-white upper spine and one short hooked beak notch below its right tip, thin tapering vanes confined behind the tip. Precise sparse hard metal.",
+      "prior_file": "weapon-v5/weapon_601_surface_v5.png",
+      "weapon": 601,
+      "weapon_name": "鸦喙刺剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_602_surface_v5": {
+      "file": "weapon-v5/weapon_602_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-69a0c5d8-69e6-4512-b2fe-aefa3681a692.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        41,
+        480,
+        1246,
+        762
+      ],
+      "sha256": "5cb89c90f419e24978b8aa461849586dc0b9becd03d5bcd9f15f86b2d2ccfc5c",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_602_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A folded silk cutting strip doubling back through one elongated open loop at its left third, three broad interleaving folds, asymmetric ribbon head at right. Flat unwrapped longitudinal layout despite the fold.",
+      "prior_file": "weapon-v5/weapon_602_surface_v5.png",
+      "weapon": 602,
+      "weapon_name": "回环弯刀",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_603_surface_v5": {
+      "file": "weapon-v5/weapon_603_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-40f58dd0-85a5-4d53-a579-d170331b693e.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        8,
+        494,
+        1250,
+        800
+      ],
+      "sha256": "cce1af6f406ac8b552911789640c6de46817ca4ec88374c0ebbcb7509ea1860f",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_603_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Two closely interlocked offset blood-thorn membranes, unequal opposing razor edges, three widely spaced pointed thorn notches carved into the lower contour. Two crossing transparent channels, no small thorns repeated.",
+      "prior_file": "weapon-v5/weapon_603_surface_v5.png",
+      "weapon": 603,
+      "weapon_name": "血棘双刃",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_604_surface_v5": {
+      "file": "weapon-v5/weapon_604_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-fae7ffeb-c703-4aa7-9d15-844601bfcd34.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        0,
+        0,
+        1238,
+        744
+      ],
+      "sha256": "4428acd78b5d0f242c4285899446d762ce755940305b0c4939e9d5e4a50714e4",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_604_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "One elegant very slender silver moon-reflection blade strip with a single long needle-bright edge, a broad shallow concave opening underneath, exceptionally sparse silvery inner glints.",
+      "prior_file": "weapon-v5/weapon_604_surface_v5.png",
+      "weapon": 604,
+      "weapon_name": "银月细剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true,
+      "render_ink": [
+        12,
+        544,
+        1238,
+        748
+      ]
+    },
+    "weapon_605_surface_v5": {
+      "file": "weapon-v5/weapon_605_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-fcf4848c-7154-4d2e-a5d4-0528d34be0a7.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        34,
+        352,
+        1225,
+        907
+      ],
+      "sha256": "23f43f17d5952fe91a8684feb07d5ee9eda1b1aa99a661a14a035342d8b68bc4",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_605_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "One compact stretched candle-flame veil, offset tall flame tongue near the right head, two long melted-wax translucent folds trailing left. Cohesive quiet flame, no cloud lobes, no noisy sparks.",
+      "prior_file": "weapon-v5/weapon_605_surface_v5.png",
+      "weapon": 605,
+      "weapon_name": "烛影短刀",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_606_surface_v5": {
+      "file": "weapon-v5/weapon_606_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ca16d8e2-f8aa-4dde-9083-943c369f9ef0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        25,
+        493,
+        1222,
+        794
+      ],
+      "sha256": "985098951e319cc0f80d639a6664a98027802dccf9e24007413be992a00539da",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_606_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Thin frozen glass blade sheet with five unequal long clean crystalline slits, a continuous icy edge and restrained angular stepped taper. Mostly transparent thin facets, no chunky ice rocks.",
+      "prior_file": "weapon-v5/weapon_606_surface_v5.png",
+      "weapon": 606,
+      "weapon_name": "星霜佩剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_607_surface_v5": {
+      "file": "weapon-v5/weapon_607_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-490b1819-0c66-4ab8-9221-cd968597c213.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        25,
+        523,
+        1240,
+        757
+      ],
+      "sha256": "9c20662fedd58063d8102d9008748b962c0c1167c3188689353047e3ac7526b1",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_607_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A crisp almost straight electric cutting spine disrupted by two irregular sharp offset kinks, one delayed thin secondary arc far below the left half, broad transparent space. No branching hairball.",
+      "prior_file": "weapon-v5/weapon_607_surface_v5.png",
+      "weapon": 607,
+      "weapon_name": "鸣电军刀",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_608_surface_v5": {
+      "file": "weapon-v5/weapon_608_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-16bcfde6-43df-4cb2-912f-38fa501841fc.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        19,
+        455,
+        1235,
+        907
+      ],
+      "sha256": "b1157b55f9b9c269b3bd9fdf54a1ea2dc98c5da87353a8b8503958cba0053467",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_608_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Three unequal long wax-seal membrane sections connected by a fine straight cutting seam, broad diagonal tears and blunt folded-back endings. Restrained cloth and hardened seal material, no actual text or runes.",
+      "prior_file": "weapon-v5/weapon_608_surface_v5.png",
+      "weapon": 608,
+      "weapon_name": "断誓直剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_609_surface_v5": {
+      "file": "weapon-v5/weapon_609_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-44aaa1f8-585a-456b-9bcd-12df9718d6fd.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        6,
+        487,
+        1247,
+        775
+      ],
+      "sha256": "bed77aeb2355915a0a08fbffe9bac1045f519af5631f8a8426cf768627d18d26",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_609_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Two offset translucent mirror blade sheets with one asymmetric diamond-shaped hollow and a misregistered secondary edge, sharp polished reflections confined to boundaries. Distinct overlapping long planar layers.",
+      "prior_file": "weapon-v5/weapon_609_surface_v5.png",
+      "weapon": 609,
+      "weapon_name": "镜花曲剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_610_surface_v5": {
+      "file": "weapon-v5/weapon_610_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-c6186736-f422-4894-9499-31a27286784d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        15,
+        497,
+        1237,
+        780
+      ],
+      "sha256": "7a2b70e5956f9b8d0d16e841166b2a01b2ffa5f3592d23b438ab462a7fc85b1b",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_610_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "An antique bronze-like monochrome blade veil with three long unequal resonant echo bands and two broad rounded negative-space slots. A solemn vibrating contour, no actual bells or circles.",
+      "prior_file": "weapon-v5/weapon_610_surface_v5.png",
+      "weapon": 610,
+      "weapon_name": "葬铃仪剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_611_surface_v5": {
+      "file": "weapon-v5/weapon_611_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-b2a5d1b8-b5e5-4ea9-8ed9-23a641e814a7.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        25,
+        421,
+        1246,
+        852
+      ],
+      "sha256": "ea67c87958ebe64b6d9483dded2269b4a6c68995642bf0d52ae2bf888b3f4588",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_611_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A single imposing obsidian energy wedge, wide right head cut from one flat angular slab, sharply stepped asymmetric lower contour and one deep central diagonal fracture. Heavy sparse geometry.",
+      "prior_file": "weapon-v5/weapon_611_surface_v5.png",
+      "weapon": 611,
+      "weapon_name": "黑曜戒律剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_612_surface_v5": {
+      "file": "weapon-v5/weapon_612_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-e3ff81c8-69da-4a9e-be00-2f7c92dffb24.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        11,
+        444,
+        1244,
+        812
+      ],
+      "sha256": "3127fa9f2b8cdf9f0b37c1169edd1899ee78423bd8c61b7a486528c3f3ba2d41",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_612_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A broad sunsteel cleaving membrane, one dominant bright cutting edge, five unequal elongated light rays embedded along the upper-right leading region, deep broad dark gaps underneath. Stately dawn light, no star icon.",
+      "prior_file": "weapon-v5/weapon_612_surface_v5.png",
+      "weapon": 612,
+      "weapon_name": "破晓双手剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_613_surface_v5": {
+      "file": "weapon-v5/weapon_613_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-52c47c52-670e-45a5-b57f-ea373a83bb62.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        23,
+        468,
+        1235,
+        821
+      ],
+      "sha256": "a650a7ec55d00bc15f808742cec17bc74dffeb382d49acfbf8aa12102a02071d",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_613_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A massive layered tidal blade sheet: three broad translucent water folds, a high smooth crest near right head and a deep flowing channel underneath, tapering back into one long left filament. No foam beads.",
+      "prior_file": "weapon-v5/weapon_613_surface_v5.png",
+      "weapon": 613,
+      "weapon_name": "断潮巨刃",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_614_surface_v5": {
+      "file": "weapon-v5/weapon_614_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-f9ce4524-3ccf-42ce-869c-b35bf97f1dd1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        12,
+        436,
+        1252,
+        828
+      ],
+      "sha256": "9b31a3d33018be47588e726e7fab5bfe12956d512ec83a785eb303e782673e12",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_614_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A long stratified rock-ridge impact ribbon, five unequal tectonic plates with broad stepped breaks, a low continuous luminous fissure running across the base, restrained lifted planar ridges. No tiny gravel.",
+      "prior_file": "weapon-v5/weapon_614_surface_v5.png",
+      "weapon": 614,
+      "weapon_name": "裂地重剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_615_surface_v5": {
+      "file": "weapon-v5/weapon_615_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-c0b75f3c-8d56-4b8d-896d-4ebd45c3215b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        28,
+        377,
+        1243,
+        916
+      ],
+      "sha256": "9441e995268c0ee87913a2e2a2df2aca6ea76b047964f347cdbe76495d4bc531",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_615_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A dense blunt hammer-impact front on the right, opening into four broad molten slag plates tapering left, a bright compressed core seam and large irregular cracks. Heavy short-range compression, no flame cloud.",
+      "prior_file": "weapon-v5/weapon_615_surface_v5.png",
+      "weapon": 615,
+      "weapon_name": "熔炉巨锤",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_616_surface_v5": {
+      "file": "weapon-v5/weapon_616_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-3ce661a8-0776-4245-beae-f7cfca541155.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        23,
+        405,
+        1234,
+        897
+      ],
+      "sha256": "fc8fc4091813b0e03f6696ba4a7a35f48dc4b7b4e97bd13b18b2cc734f429d88",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_616_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A wide heavy axe-like frozen membrane, three broad bone-shaped longitudinal ice struts with very large tapering hollow gaps, rough angular outside breaks but clean flat internal planes. No bone objects or small spikes.",
+      "prior_file": "weapon-v5/weapon_616_surface_v5.png",
+      "weapon": 616,
+      "weapon_name": "霜骨战斧",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_617_surface_v5": {
+      "file": "weapon-v5/weapon_617_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-333bba99-10c8-4a58-befc-cfda3d29922f.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        19,
+        446,
+        1236,
+        838
+      ],
+      "sha256": "7d4d7b210d5641b147694e03b6d46ffea82c70b2e781bf38aa92077b0319d935",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_617_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A thick weighted lightning-cleave plate, one deep downward diagonal fault in its long body, a delayed narrow lightning spine following its lower side, two wide empty angular gaps. Heavy not hair-thin.",
+      "prior_file": "weapon-v5/weapon_617_surface_v5.png",
+      "weapon": 617,
+      "weapon_name": "雷骸重剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_618_surface_v5": {
+      "file": "weapon-v5/weapon_618_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-06bf5da7-75c2-425b-953d-aee542f44b59.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        12,
+        400,
+        1244,
+        840
+      ],
+      "sha256": "f3ce2a9742c49711e438372f5b7fcf55b3a773cee1e67f71065db78c3bce0f6f",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_618_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "An execution-weight blood sheet, tall blunt right leading head, a thick stretching central membrane torn downward into two long tapering voids, falling viscous material. Quiet large forms, no droplets.",
+      "prior_file": "weapon-v5/weapon_618_surface_v5.png",
+      "weapon": 618,
+      "weapon_name": "血狱斩首刃",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_619_surface_v5": {
+      "file": "weapon-v5/weapon_619_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-e3316562-0b4a-44e0-8f5a-a7dec4c7aaba.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        21,
+        393,
+        1235,
+        850
+      ],
+      "sha256": "72893c623dfdd9e05002a27fe0e8faaaa786e88e04466b1dcd007da124a29c6b",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_619_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A compressed meteor-impact membrane, broad dense right strike mass and six unequal long crystalline rock plates fanning back left along the horizontal axis. One bright impact seam, large sparse faceted gaps.",
+      "prior_file": "weapon-v5/weapon_619_surface_v5.png",
+      "weapon": 619,
+      "weapon_name": "星陨石槌",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_620_surface_v5": {
+      "file": "weapon-v5/weapon_620_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-bdb5f4f8-d4c2-4760-876b-1cfd7eecaccd.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        34,
+        420,
+        1235,
+        869
+      ],
+      "sha256": "47b83e295734c72e63cfe3d5ae806a3a1da1dfeb0f454e972b1da8274f0238e3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_620_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A broad wall-like charcoal cutting slab peeling into three thin dark-gray translucent sheets on its lower half, one hot white seam along the upper edge, large eroded angular holes. No granular ash.",
+      "prior_file": "weapon-v5/weapon_620_surface_v5.png",
+      "weapon": 620,
+      "weapon_name": "余烬壁刃",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_621_surface_v5": {
+      "file": "weapon-v5/weapon_621_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-b0b7f749-e846-4916-9d0e-3618784b76a6.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        11,
+        307,
+        1247,
+        899
+      ],
+      "sha256": "50c8ed82018636d7a3f6e7da1dabd8f74beceba222481135a635bc04256efcf3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_621_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A long pennant-shaped wind-shear strip, four unequal folded banner membranes streaming left from one narrow right spear edge. Strong diagonal fold, long cutout channels and clean translucent cloth planes.",
+      "prior_file": "weapon-v5/weapon_621_surface_v5.png",
+      "weapon": 621,
+      "weapon_name": "风暴战戟",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_622_surface_v5": {
+      "file": "weapon-v5/weapon_622_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-982ee231-28d1-4454-9a59-b711e26626a9.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        13,
+        444,
+        1248,
+        836
+      ],
+      "sha256": "312e4e6c94b5b388d0015120a7ee541d16acb4a0e3781be46c0e36974316e0f5",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_622_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "An inward-pulling soul-tide veil: one strong hooked negative-space opening at the right head, three long gauze bands curling toward that hollow, a narrow silver outer cutting line. Horizontal unwrapped surface, no circular vortex.",
+      "prior_file": "weapon-v5/weapon_622_surface_v5.png",
+      "weapon": 622,
+      "weapon_name": "冥潮仪镰",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_623_surface_v5": {
+      "file": "weapon-v5/weapon_623_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-f8d74daa-974d-41b2-abf1-5deedc920ebf.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        13,
+        468,
+        1242,
+        779
+      ],
+      "sha256": "b5ac663dd6762a4f83248a5bd9d39c626ef60586151fd2ebd02cd24c4c879b44",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_623_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "An old royal steel cleave sheet with five unequal broad crown-like plate steps along one boundary, a weighty continuous cutting edge and shallow layered metal reflections. No literal crown object or repetitive teeth.",
+      "prior_file": "weapon-v5/weapon_623_surface_v5.png",
+      "weapon": 623,
+      "weapon_name": "无名王剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_624_surface_v5": {
+      "file": "weapon-v5/weapon_624_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-93d3e3de-8acb-4be4-a14c-9a7363e4c3ef.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        40,
+        473,
+        1219,
+        779
+      ],
+      "sha256": "5ee46aa542289f6a5636ba35e1c8cb6653ea26ef6a494856432465727ec3d222",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_624_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A compact rifle muzzle-and-wake membrane stretched along the horizontal firing axis: two narrow pressure vanes around one sharp central line, a blunt gas shock notch at right and restrained torn tail at left. No gun object.",
+      "prior_file": "weapon-v5/weapon_624_surface_v5.png",
+      "weapon": 624,
+      "weapon_name": "守夜步枪",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_625_surface_v5": {
+      "file": "weapon-v5/weapon_625_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-6335535f-1d3b-42b0-8c06-424f7d571830.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        22,
+        434,
+        1235,
+        803
+      ],
+      "sha256": "82539761325742e34181e208cf49cc34be583f66e53e7f0164644064866dbbf5",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_625_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A long quiet feather-flight membrane with three unequal broad translucent vanes along a gently bowed spine, a sharp right arrow-like tip and long soft left tail. No individual feather object or filigree.",
+      "prior_file": "weapon-v5/weapon_625_surface_v5.png",
+      "weapon": 625,
+      "weapon_name": "暮羽长弓",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_626_surface_v5": {
+      "file": "weapon-v5/weapon_626_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-bf2044df-3ad7-4d33-a666-1ebfd3ec9b89.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        48,
+        354,
+        1231,
+        900
+      ],
+      "sha256": "4d31f0b6f9a1eb9215b67c5584c72fbffdfd9eadc1c9997b4e45dbe5e94458d9",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_626_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A narrow blood-barb firing wake, three unequal long pointed membranes close to its axial spine and one large hooked side cutout, sharp forward right tip. Sparse barbed structure, no bead-like blood drops.",
+      "prior_file": "weapon-v5/weapon_626_surface_v5.png",
+      "weapon": 626,
+      "weapon_name": "血棘连弩",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_627_surface_v5": {
+      "file": "weapon-v5/weapon_627_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-c4d11d8d-9afd-49ad-b25e-9ff5d5d95b2a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        29,
+        455,
+        1237,
+        851
+      ],
+      "sha256": "6c7134b5397218d39d3453e07f0b3efde0a94c4f7af48232290541d653b460b3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_627_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A short blunt hot muzzle plume drawn as a cohesive planar flame veil, broad right pressure head with one split furnace slit, two charred tapering left tongues. No puffy smoke, no bird illustration.",
+      "prior_file": "weapon-v5/weapon_627_surface_v5.png",
+      "weapon": 627,
+      "weapon_name": "烬鸦火铳",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_628_surface_v5": {
+      "file": "weapon-v5/weapon_628_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-e9ed087e-6c61-4eae-a209-f790a2a6fb8a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        19,
+        432,
+        1244,
+        832
+      ],
+      "sha256": "5300f247639ca24198d5cdd09b8eae794a1a7fbf9ab6c25fff4c9ce35502f332",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_628_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Two unequal extremely elongated frost vanes around a clear narrow axial needle, one shallow moon-shaped empty channel running beneath, smooth icy edges tapering into thin left fibers. No round moon symbol.",
+      "prior_file": "weapon-v5/weapon_628_surface_v5.png",
+      "weapon": 628,
+      "weapon_name": "霜月猎弓",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_629_surface_v5": {
+      "file": "weapon-v5/weapon_629_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-99211454-d2a6-42fe-a8bc-078133430747.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        37,
+        445,
+        1236,
+        813
+      ],
+      "sha256": "7515e0b9f78093af408136e6fcaa171064fdd48b5bb7402f5a3d0ca2065461ef",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_629_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A compact charged electric core line with two short unequal swept-back wing branches and one large transparent break along its lower membrane. Fast short electric wake, few deliberate crisp kinks.",
+      "prior_file": "weapon-v5/weapon_629_surface_v5.png",
+      "weapon": 629,
+      "weapon_name": "雷翼卡宾枪",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_630_surface_v5": {
+      "file": "weapon-v5/weapon_630_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-9f3b8e6a-ec84-4823-b9ad-a03829554ae3.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        26,
+        475,
+        1235,
+        794
+      ],
+      "sha256": "97b80d05bff03745fbd0226e4e701e5efd115b1532ad5cc6639ecc02a38297f4",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_630_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "One very long heavy obsidian spear-wake strip, a dense angular right leading core and sparse double-shell outline tapering left, one severe diagonal open crack. Ominous broad planar geometry, no actual weapon.",
+      "prior_file": "weapon-v5/weapon_630_surface_v5.png",
+      "weapon": 630,
+      "weapon_name": "黑曜长枪",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_631_surface_v5": {
+      "file": "weapon-v5/weapon_631_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-79772eb2-ab15-4b80-9d95-5524e986203b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        21,
+        367,
+        1240,
+        835
+      ],
+      "sha256": "e54b27beb839f456cce7cb62f9dae7d36c1525769aa9c6bcae4af39b6c4dbad7",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_631_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Two narrow offset parallel mirror-rail membranes, one runs farther right and one ends earlier, broad irregular reflection patches separated by long transparent slits. Misaligned double firing tracks, no repeated stripes.",
+      "prior_file": "weapon-v5/weapon_631_surface_v5.png",
+      "weapon": 631,
+      "weapon_name": "镜轨双铳",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_632_surface_v5": {
+      "file": "weapon-v5/weapon_632_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-8ecce8ef-2c47-4908-adb0-e77584b65244.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        17,
+        444,
+        1238,
+        786
+      ],
+      "sha256": "4153dd16ef700e3a90e2c19c60f4131af269a9b3e3732ae674d73797cb29bfd6",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_632_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A light asymmetric wind vane, one long extremely thin trailing filament and two broad short off-axis feather-like folds near its right tip, generous transparent negative space. Airy crisp silhouette.",
+      "prior_file": "weapon-v5/weapon_632_surface_v5.png",
+      "weapon": 632,
+      "weapon_name": "逐风短弓",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_633_surface_v5": {
+      "file": "weapon-v5/weapon_633_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-5637604f-b792-4c19-a42e-57fdcf99ab53.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        18,
+        394,
+        1244,
+        854
+      ],
+      "sha256": "f7f51bc3bd41de7155265caf8401183c4c6a6661cc3e2aade6aae1a722b1b0b4",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_633_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A narrow armor-piercing wake with one straight brilliant needle spine, three unequal broad tapering sabot-shell membranes peeling away toward the left, sharp empty diagonal cuts. No actual bullets or cartridges.",
+      "prior_file": "weapon-v5/weapon_633_surface_v5.png",
+      "weapon": 633,
+      "weapon_name": "断誓穿甲枪",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_634_surface_v5": {
+      "file": "weapon-v5/weapon_634_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-626759d3-34c3-46db-b7c3-6a2f58faddfc.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        23,
+        381,
+        1234,
+        863
+      ],
+      "sha256": "4c4c40d8eaabfd62e95c44265a81e5d73fd6bf31c57fb23dc31e876c70c6aacf",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_634_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A spectral bronze-vane firing strip, three unequal long resonant laminae with fine luminous boundaries and two broad quiet gaps, compact pointed right core and trembling left contour. No literal bell.",
+      "prior_file": "weapon-v5/weapon_634_surface_v5.png",
+      "weapon": 634,
+      "weapon_name": "葬铃灵弩",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_635_surface_v5": {
+      "file": "weapon-v5/weapon_635_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-7cf2423c-de72-47c9-971c-209d872c1cc0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        30,
+        405,
+        1238,
+        855
+      ],
+      "sha256": "e8e8354fbd736dce8c53191567b1021acc8a6a5fde360f2e9c3e6f2e1da15ca8",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_635_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A warm signal-flare wake in monochrome, broad right luminous head splitting into four unequal long rising-ray membranes trailing left, one distinct open tapering channel. No sun disk or noisy spark cloud.",
+      "prior_file": "weapon-v5/weapon_635_surface_v5.png",
+      "weapon": 635,
+      "weapon_name": "晨曦信号枪",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_636_surface_v5": {
+      "file": "weapon-v5/weapon_636_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-c812b37b-cdbd-4135-8fb3-c8a8bee4d9da.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        26,
+        424,
+        1231,
+        866
+      ],
+      "sha256": "10caf289c1d06d476a261b05f4de803e41d079a4cab44f322c09e18f1774d4de",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_636_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A star-energy casting ribbon made from five unequal elongated pointed planar rays converging near the right head, a curved central fold and generous broad triangular gaps. Not a star icon or many sparkles.",
+      "prior_file": "weapon-v5/weapon_636_surface_v5.png",
+      "weapon": 636,
+      "weapon_name": "星辉法杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_637_surface_v5": {
+      "file": "weapon-v5/weapon_637_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-4f1ddc8b-1be1-4a92-9065-c37f3c9920c4.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        18,
+        446,
+        1238,
+        817
+      ],
+      "sha256": "703d9c42eae363633eb03bad7b46d70843e2e9370e559c413b7354999eaace3e",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_637_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A broad molten meteor wake with a heavy sharp right head, four long compressed fluid-rock lobes trailing left, a bright hot inner seam and one large dark shell tear. Cohesive large shapes, no lava bubbles.",
+      "prior_file": "weapon-v5/weapon_637_surface_v5.png",
+      "weapon": 637,
+      "weapon_name": "赤陨法杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_638_surface_v5": {
+      "file": "weapon-v5/weapon_638_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-121416e2-24b1-4d7d-b047-ff54352145a3.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        34,
+        487,
+        1223,
+        788
+      ],
+      "sha256": "1b4d7444cf7dccf7d8e01aa14a46998d35984487ba9830d8ac73bf6d5ed30143",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_638_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Four extremely thin unequal frozen needle vanes tightly aligned around one almost straight axial streak, a precise split tip at right and one sparse broad glass-plane connection. Elegant needle ice, no scattered ice chunks.",
+      "prior_file": "weapon-v5/weapon_638_surface_v5.png",
+      "weapon": 638,
+      "weapon_name": "霜针短杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_639_surface_v5": {
+      "file": "weapon-v5/weapon_639_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-a3d31913-39f9-48a0-ad13-5781b00ce58b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        10,
+        328,
+        1249,
+        914
+      ],
+      "sha256": "a7d6085d50a838bae3e90cdca6e3817f6b842ea9396aef809319f1307d554210",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_639_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A powerful discontinuous branching electric sheet with six unequal angular extensions, two large intentional black breaks and a dense right convergence, readable wide energy structure without dense hairline noise.",
+      "prior_file": "weapon-v5/weapon_639_surface_v5.png",
+      "weapon": 639,
+      "weapon_name": "鸣雷之杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_640_surface_v5": {
+      "file": "weapon-v5/weapon_640_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-f1895b5f-e0b0-4775-ae13-7a99dccb5941.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        8,
+        473,
+        1246,
+        797
+      ],
+      "sha256": "01562a4ad63104d84d8e39c13a377f905308bd3fd6dc212568e9188d5dd94baa",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_640_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Three unequal nested moon-edge membranes stretched as one horizontal strip, one broad open concave channel, two crisp silver rims and large quiet translucent planes. No literal circular moon.",
+      "prior_file": "weapon-v5/weapon_640_surface_v5.png",
+      "weapon": 640,
+      "weapon_name": "月弧法杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_641_surface_v5": {
+      "file": "weapon-v5/weapon_641_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-72e2ca89-0774-4ee2-9a9b-f71cc24be46a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        25,
+        334,
+        1233,
+        922
+      ],
+      "sha256": "5077704d6b0612c9a5d01ee9dc56c9494e46eb9ad6b4abe850d61984a299ba0a",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_641_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Three clean long prismatic light planes converging to one razor-sharp right point, unequal crystalline divisions and a broad central triangular empty wedge. Refined bright planar shafts without rainbow color.",
+      "prior_file": "weapon-v5/weapon_641_surface_v5.png",
+      "weapon": 641,
+      "weapon_name": "曦光棱镜杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_642_surface_v5": {
+      "file": "weapon-v5/weapon_642_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-85e3e2c1-4523-421d-b750-cea9ebcc3573.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        7,
+        319,
+        1249,
+        948
+      ],
+      "sha256": "c8951abbbb061d86db58f836febf0dba7e48f450dca80a50c1b9c8dcab1129b3",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_642_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Six unequal elongated charred-feather membranes opening into a broad asymmetric fan along the horizontal axis, alternating large translucent planes and open pointed gaps. No small feather debris or bird image.",
+      "prior_file": "weapon-v5/weapon_642_surface_v5.png",
+      "weapon": 642,
+      "weapon_name": "烬羽散华杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_643_surface_v5": {
+      "file": "weapon-v5/weapon_643_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ae8290ed-87ab-482b-b232-0f31cd705836.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        17,
+        384,
+        1230,
+        918
+      ],
+      "sha256": "3a12b1b105d68ba64aef518222f5dc8c3bf128c480a279b24201383197981982",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_643_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "An asymmetric inward-folding void membrane, four unequal broad spatial folds drawn toward an off-center open hollow near the right third, broad dark-gray planes and thin white inward edges. No full circular portal.",
+      "prior_file": "weapon-v5/weapon_643_surface_v5.png",
+      "weapon": 643,
+      "weapon_name": "虚涡法杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_644_surface_v5": {
+      "file": "weapon-v5/weapon_644_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-b4b81ddd-513f-4cec-b733-466ff18dbbc8.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        15,
+        440,
+        1236,
+        893
+      ],
+      "sha256": "f3c76a9bda1a241cf7ff4711ce269179bad3e81a454710e1289a309281422c2c",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_644_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "A long dark eclipsed lance-wake membrane, three unequal nested pointed shell plates around a narrow white axial seam, sharp elongated right tip and a very deep open lower slash. No moon disk.",
+      "prior_file": "weapon-v5/weapon_644_surface_v5.png",
+      "weapon": 644,
+      "weapon_name": "蚀月长枪杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_645_surface_v5": {
+      "file": "weapon-v5/weapon_645_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-c40506bc-f659-48c1-99b0-50668e2b6d9b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        9,
+        437,
+        1240,
+        845
+      ],
+      "sha256": "2873617b80a2b899367e00a2e6b1e8f7efd9a422353a7df01459892f51c68a58",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_645_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Four unequal long folded blood-ink page membranes, one pronounced diagonal page-turn fold near the right head, broad empty tears between flat translucent panels. No written words, symbols, actual books or paper rectangles.",
+      "prior_file": "weapon-v5/weapon_645_surface_v5.png",
+      "weapon": 645,
+      "weapon_name": "血契仪杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_646_surface_v5": {
+      "file": "weapon-v5/weapon_646_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-deed9a5a-8402-481a-96fa-eca10be09868.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        13,
+        432,
+        1239,
+        831
+      ],
+      "sha256": "f9c3f6752057f52e036232a97fc63062e1f6a88dcfd2c58b1f2d37e11ea98b1b",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_646_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Five unequal layered long soul-cloth membranes flowing in alternating gentle directions along the horizontal axis, one deep soft hooked opening and broad quiet negative channels. Gauzy but coherent, no smoke lumps.",
+      "prior_file": "weapon-v5/weapon_646_surface_v5.png",
+      "weapon": 646,
+      "weapon_name": "冥庭唤魂杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_647_surface_v5": {
+      "file": "weapon-v5/weapon_647_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-0d10ce05-18e4-48d5-b1b9-316fbab6b423.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        1,
+        429,
+        1254,
+        818
+      ],
+      "sha256": "0f8eae110819522965da0017cf493d911097875f63f1421b0f7a3678910f4130",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_647_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Six unequal broad prayer-veil folds arranged as a high asymmetrical longitudinal arch, soft gray inner membranes and luminous ivory outer boundaries, deep quiet open channels. No halo circles, religious icons or actual bells.",
+      "prior_file": "weapon-v5/weapon_647_surface_v5.png",
+      "weapon": 647,
+      "weapon_name": "晨钟祈愿杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_17_surface_v5": {
+      "file": "weapon-v5/weapon_17_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-cd2ea581-778f-46d8-abb4-e55ee7f413ba.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        55,
+        549,
+        1223,
+        739
+      ],
+      "sha256": "ec588ac9b5a70ae1f6825879388b5d8576c2279e61c8b5e1dadd5d95f37939ac",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_17_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "One short minimal iron cutting streak, a single straight pale upper edge and one modest short tapering lower metal membrane with a chipped right tip. Sparse utilitarian short sword energy.",
+      "prior_file": "weapon-v5/weapon_17_surface_v5.png",
+      "weapon": 17,
+      "weapon_name": "黑铁短剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_18_surface_v5": {
+      "file": "weapon-v5/weapon_18_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-99a1bc4c-1f43-4336-8eed-40d48bdc39e0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        19,
+        448,
+        1240,
+        874
+      ],
+      "sha256": "8d630dc8c70b6f647c258835ed44028e9f31d9e1b048dc97eb49481d1ee37fdf",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_18_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Three unequal small prayer-star ray membranes gently gathering into a soft compact right head, one long empty V-shaped channel, a quiet simple left taper. Subtle restrained ceremonial energy, no star icon.",
+      "prior_file": "weapon-v5/weapon_18_surface_v5.png",
+      "weapon": 18,
+      "weapon_name": "祭祀短杖",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_19_surface_v5": {
+      "file": "weapon-v5/weapon_19_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-ca21c7d2-27c7-4bc9-a171-249df54675ca.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        25,
+        426,
+        1250,
+        845
+      ],
+      "sha256": "37892cf04d18a604a40014d7656a8c4aff235c4c04cd19dde066ca0937099952",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_19_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Two unequal broad broken-steel cleave plates joined by one thin scar-like edge, a severe missing triangular wedge near the right leading half and a torn straight left tail. Weighty damaged blade energy.",
+      "prior_file": "weapon-v5/weapon_19_surface_v5.png",
+      "weapon": 19,
+      "weapon_name": "破碎大剑",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
+    },
+    "weapon_20_surface_v5": {
+      "file": "weapon-v5/weapon_20_surface_v5.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a14da6-50bb-7f52-8164-2dbb3317e7f9\\exec-dbf64e15-0034-429a-9266-79e2ae3317e2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "ink": [
+        46,
+        411,
+        1221,
+        890
+      ],
+      "sha256": "7d7ea68aaca9daba8b152bd40f261e3800d3bea6ca7d23e7db30cf0a5b8f1fc5",
+      "prompt": "assets/combat/imagegen-mechanics/prompts/weapon-v5/weapon_20_surface_v5.txt",
+      "density_mask": false,
+      "native_aspect": true,
+      "vfx_version": "weapon-v5",
+      "generator": "built-in ImageGen; original pixels preserved",
+      "design": "Two unequal long thin soul-scythe gauze membranes terminating in one strongly hooked right silhouette, a large deep open hook cavity and a long sparse tapering left fiber. Dark quiet soul energy, no vortex circle.",
+      "prior_file": "weapon-v5/weapon_20_surface_v5.png",
+      "weapon": 20,
+      "weapon_name": "湮魂之镰",
+      "uv_layout": "horizontal unwrapped RGBA surface",
+      "alpha_mask": true
     }
   }
 }

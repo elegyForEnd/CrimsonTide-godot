@@ -8,6 +8,10 @@ var lights=preload("res://scripts/combat_light_pool.gd").new()
 var casts: Dictionary={}
 var drops: Array=[]
 var payloads: Array=[]
+var weapon_world: Node3D
+var weapon_flights: Node3D
+var flight_serial := 0
+
 var text: Node2D
 
 func _ready() -> void:
@@ -17,6 +21,15 @@ func _ready() -> void:
 	text.z_index=50
 	add_child(text)
 	screen.world.add_child(lights)
+	weapon_world=preload("res://scripts/weapon_combat_vfx_3d.gd").new()
+	weapon_world.camera=screen.world.view_camera
+	weapon_world.height_at=func(p: Vector2): return screen.campaign.map.height_at(p)
+	weapon_world.socket_provider=world_socket
+	screen.world.add_child(weapon_world)
+	weapon_flights=preload("res://scripts/weapon_projectile_vfx_3d.gd").new()
+	weapon_flights.camera=screen.world.view_camera
+	weapon_flights.height_at=weapon_world.height_at
+	screen.world.add_child(weapon_flights)
 	finish.projector=screen.project
 	finish.lights=lights.pulse
 	lights.height_at=func(p: Vector2): return screen.campaign.map.height_at(p)
@@ -24,6 +37,10 @@ func _ready() -> void:
 	screen.campaign.combat_event.connect(event)
 	screen.campaign.location_changed.connect(reset)
 	for i in 3: primary.set_skin(i,TONES[i])
+
+func world_socket(id: int) -> Dictionary:
+	# StoryWorld returns native viewport pixels, before the campaign Canvas scale.
+	return screen.world.weapon_effect_socket(id)
 
 func socket(id: int) -> Dictionary:
 	if screen.has_method("weapon_effect_socket"):
@@ -46,6 +63,7 @@ func event(data: Dictionary) -> void:
 	text.on_event(data)
 	if data.kind=="windup":
 		casts[int(data.hero)]=data.duplicate()
+		if weapon_world.event(data,int(data.hero)): return
 		primary.transform=screen.ground_transform()
 		var prep := data.duplicate()
 		prep.p=primary.get_global_transform().affine_inverse()*(get_global_transform()*Vector2(screen.project(data.p)))
@@ -56,6 +74,9 @@ func event(data: Dictionary) -> void:
 		drops.append(drop)
 		queue_redraw(); return
 	if data.kind!="story_attack":
+		if weapon_world.event(data,int(data.get("hero",0))):
+			if data.kind=="impact": lights.pulse(data.p,preload("res://scripts/weapon_vfx.gd").profile(int(data.weapon_index)).color,.7,.16)
+			return
 		var fx := data.duplicate()
 		# True terrain projection owns contact height; no flat-plane offset.
 		fx["contact_p"]=fx.p
@@ -72,19 +93,22 @@ func event(data: Dictionary) -> void:
 	if special==2:
 		primary.event({"kind":"skill","p":at,"aim":data.aim,"hero":hero,"id":hero},hero)
 	else:
-		primary.event({"kind":"strike","p":at,"aim":data.aim,"hero":hero,"id":hero,"weapon":Catalog.weapon_family(weapon),
-			"weapon_index":weapon,"reach":reach,"combo":0 if special==0 else 2},hero)
+		weapon_world.event({"kind":"strike","p":data.p,"aim":data.aim,"hero":hero,"id":hero,"weapon":Catalog.weapon_family(weapon),
+			"weapon_index":weapon,"reach":reach,"combo":0 if special==0 else 2,"vfx_action":"normal" if special==0 else "art"},hero)
 		if Catalog.weapon_family(weapon) in [0,3]:
 			var spell: String=str(Catalog.weapon(weapon).get("spell","star"))
 			if spell=="prism":
-				primary.event({"kind":"spell_beam","p":at,"aim":data.aim,"hero":hero,"id":hero,"weapon":3,"weapon_index":weapon,"reach":reach,"width":30},hero)
+				weapon_world.event({"kind":"spell_beam","p":data.p,"aim":data.aim,"hero":hero,"id":hero,"weapon":3,"weapon_index":weapon,"reach":reach,"width":30,"vfx_action":"normal" if special==0 else "art"},hero)
 			else:
 				var role := preload("res://scripts/weapon_mechanics.gd").projectile_role(weapon,spell)
 				var mount := socket(hero)
 				var lift := Vector2(0,-28)
 				if not mount.is_empty(): lift=get_global_transform().affine_inverse()*Vector2(mount.tip)-Vector2(screen.project(data.p))
-				payloads.append({"p":data.p,"end":Vector2(data.p)+Vector2(data.aim)*reach,"lift":lift,"age":0.0,"life":.24,"weapon":weapon,"role":role,"hero":hero})
-	if special>0:
+				flight_serial+=1
+				# Campaign attacks resolve instantly; this is the same short visual
+				# travel as before, now rendered in the world instead of on the UI.
+				payloads.append({"p":data.p,"end":Vector2(data.p)+Vector2(data.aim)*reach,"lift":lift,"age":0.0,"life":.24,"weapon":weapon,"role":role,"hero":hero,"fx_id":-flight_serial,"vfx_action":"normal" if special==0 else "art"})
+	if special==2:
 		finish.event({"kind":"story_skill","p":data.p,"aim":data.aim,"radius":reach,"tone":TONES[hero],
 			"weapon_index":weapon,"cone":TAU if special==2 else acos(-.1)*2 if special==1 else acos(.25)*2})
 
@@ -96,12 +120,23 @@ func advance(dt: float) -> void:
 	queue_redraw()
 	primary.transform=screen.ground_transform()
 	primary.advance(dt); finish.advance(dt); lights.advance(dt)
+	if is_instance_valid(weapon_world): weapon_world.advance(dt)
+	if is_instance_valid(weapon_flights):
+		weapon_flights.advance(dt)
+		var visual_flights: Array=[]
+		for payload in payloads:
+			var progress := clampf(float(payload.age)/float(payload.life),0,1)
+			visual_flights.append({"fx_id":payload.fx_id,"weapon_index":payload.weapon,"p":Vector2(payload.p).lerp(payload.end,progress),"height":55.0,"v":(Vector2(payload.end)-Vector2(payload.p))/float(payload.life),"vfx_action":payload.vfx_action})
+		weapon_flights.observe(visual_flights,dt)
 
 func reset() -> void:
+	if is_instance_valid(weapon_world): weapon_world.reset()
+	if is_instance_valid(weapon_flights): weapon_flights.reset()
 	casts.clear(); drops.clear(); payloads.clear(); primary.reset(); finish.reset(); lights.reset(); text.reset(); queue_redraw()
 
 func _draw() -> void:
 	for payload in payloads:
+		if is_instance_valid(weapon_flights): continue
 		var progress: float=clampf(float(payload.age)/float(payload.life),0,1)
 		var from: Vector2=Vector2(screen.project(payload.p))+Vector2(payload.lift)
 		var to: Vector2=Vector2(screen.project(payload.end))+Vector2(payload.lift)

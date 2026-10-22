@@ -1,0 +1,10 @@
+{
+  "id": 614,
+  "layer": "ground",
+  "generator": "built-in ImageGen",
+  "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-145ab9c7-f012-4cfc-8faf-8bf35df0eb18.png",
+  "file": "res://assets/combat/weapon-batch-01/614/ground.png",
+  "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+  "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\614.png",
+  "status": "generated_pending_visual_review"
+}

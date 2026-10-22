@@ -1,0 +1,117 @@
+{
+  "weapon": 611,
+  "layers": {
+    "normal": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.0654296875,
+        0.037109375,
+        0.42578125,
+        0.21354166666666666
+      ],
+      "aspect": 1.329268292682927,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "heavy": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.548828125,
+        0.027994791666666668,
+        0.42578125,
+        0.23893229166666666
+      ],
+      "aspect": 1.1880108991825613,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "art": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.0302734375,
+        0.3014322916666667,
+        0.521484375,
+        0.212890625
+      ],
+      "aspect": 1.6330275229357798,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "impact": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.583984375,
+        0.3600260416666667,
+        0.384765625,
+        0.13802083333333334
+      ],
+      "aspect": 1.8584905660377358,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "charge": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.0546875,
+        0.5143229166666666,
+        0.466796875,
+        0.22916666666666666
+      ],
+      "aspect": 1.3579545454545454,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "shard": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.521484375,
+        0.5572916666666666,
+        0.322265625,
+        0.15234375
+      ],
+      "aspect": 1.4102564102564104,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "mist": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.0634765625,
+        0.7701822916666666,
+        0.4365234375,
+        0.197265625
+      ],
+      "aspect": 1.4752475247524752,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "trail": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.5,
+        0.765625,
+        0.4482421875,
+        0.18098958333333334
+      ],
+      "aspect": 1.6510791366906474,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "surface": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.0654296875,
+        0.037109375,
+        0.42578125,
+        0.21354166666666666
+      ],
+      "aspect": 1.329268292682927,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    },
+    "ground": {
+      "file": "res://assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "uv": [
+        0.583984375,
+        0.3600260416666667,
+        0.384765625,
+        0.13802083333333334
+      ],
+      "aspect": 1.8584905660377358,
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d"
+    }
+  },
+  "family": 1,
+  "status": "pending_visual_qa"
+}

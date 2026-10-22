@@ -108,4 +108,5 @@ func original_combat_event(event: Dictionary) -> void:
 	elif event.kind=="hit":
 		var hero := int(event.get("hero",0))
 		fx.kind="impact"; fx.weapon_index=campaign.action_weapon if hero==int(campaign.state.hero) and campaign.action_time>0 else campaign.equipped_weapon(hero)
+		fx["vfx_action"]="art" if campaign.action_time>0 and campaign.action_special==1 else "normal"
 	facade.combat_event.emit(fx)

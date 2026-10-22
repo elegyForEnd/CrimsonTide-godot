@@ -1,0 +1,2241 @@
+{
+  "version": 8,
+  "weapons": [
+    {
+      "id": 600,
+      "name": "绯红单手剑",
+      "family": "blade",
+      "material": "blood",
+      "palette": "deep crimson blood / black",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-600.png",
+      "reference_sha256": "89692ac831d2afb46c9d3c1f1aa37f078e33920e58e11d6a071d939e3d769b89",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/600.txt",
+      "stages": {
+        "anticipation": "刀根凝出少量浓血，靠刃侧绷紧",
+        "release": "普攻是有厚薄的黏性血刃；周身战技是先后接上的三段血布撕口，蓄力让血层压实后撕裂",
+        "contact": "接触边短白，血层拉出极短断丝；第三段确认出血才加局部渗痕",
+        "dissipation": "少量血滴顺挥击惯性分离，绝不整圈悬停；与 603 的双刃刺绣不同"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻是有厚薄的黏性血刃；周身战技是先后接上的三段血布撕口，蓄力让血层压实后撕裂",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻是有厚薄的黏性血刃；周身战技是先后接上的三段血布撕口，蓄力让血层压实后撕裂",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 601,
+      "name": "鸦喙刺剑",
+      "family": "blade",
+      "material": "metal",
+      "palette": "cold silver grey / black feather",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-601.png",
+      "reference_sha256": "9688b4ead156d266469723b61971a4c8cce13de81f7555e8578adde5668d46ea",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/601.txt",
+      "stages": {
+        "anticipation": "金属剑尖两侧细羽逆向收拢，身体蓄势",
+        "release": "剑尖带狭长硬质鸟喙切口，突刺后的羽片从两侧剥离；战技延长穿刺行程而非加粗光棒",
+        "contact": "短促凹入式刺孔、两片羽屑弹出，不能炸成大圆花",
+        "dissipation": "喙形头部先消失，羽屑滞后下落；保持现有窄线与穿透递减"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。剑尖带狭长硬质鸟喙切口，突刺后的羽片从两侧剥离；战技延长穿刺行程而非加粗光棒",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "剑尖带狭长硬质鸟喙切口，突刺后的羽片从两侧剥离；战技延长穿刺行程而非加粗光棒",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 602,
+      "name": "回环弯刀",
+      "family": "blade",
+      "material": "cloth",
+      "palette": "rose pink silver silk",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-602.png",
+      "reference_sha256": "86e9b6f59610e8fb95d6bedb3808d10c259c9bae2d941402953041eac8af4b62",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/602.txt",
+      "stages": {
+        "anticipation": "刀背卷起一缕空气，侧腰蓄转",
+        "release": "一把弯刀带动偏心卷曲的银绸切面，空隙随刀口移动；战技分两段交错掠过，蓄力绸层先收窄再展开",
+        "contact": "刀口切断绸面，方向性短碎片",
+        "dissipation": "绸面沿运动方向抽走而非圆周等速淡出；区别于血布与镜片"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。一把弯刀带动偏心卷曲的银绸切面，空隙随刀口移动；战技分两段交错掠过，蓄力绸层先收窄再展开",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "一把弯刀带动偏心卷曲的银绸切面，空隙随刀口移动；战技分两段交错掠过，蓄力绸层先收窄再展开",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 603,
+      "name": "血棘双刃",
+      "family": "blade",
+      "material": "blood",
+      "palette": "dark crimson thorn",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-603.png",
+      "reference_sha256": "c043354d9b765187ea7122d5b66d70227a91420a23b34b915c174243d9d10004",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/603.txt",
+      "stages": {
+        "anticipation": "两刃之间拉出两条有张力的短血丝",
+        "release": "普攻前后错拍双切；突刺主体为并行、偶尔交织的两根棘线，不能变成一支粗箭；蓄力让双线绞紧",
+        "contact": "双接触点相隔一瞬，刺线短暂钉入后扯断；第三次触发按真实出血条件显棘",
+        "dissipation": "棘丝断裂后快速回缩，少量黏连，不复制 600 血片"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻前后错拍双切；突刺主体为并行、偶尔交织的两根棘线，不能变成一支粗箭；蓄力让双线绞紧",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻前后错拍双切；突刺主体为并行、偶尔交织的两根棘线，不能变成一支粗箭；蓄力让双线绞紧",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 604,
+      "name": "银月细剑",
+      "family": "blade",
+      "material": "metal",
+      "palette": "icy silver blue",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-604.png",
+      "reference_sha256": "2b4ac3cea24cefdc5ad68355f197934cbecba9c761d64824a7256e82ead61e44",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/604.txt",
+      "stages": {
+        "anticipation": "一条反射高光沿刃背滑向尖端",
+        "release": "纤薄抛光金属划开空气，战技留下错开半拍的两片月银切面；“返刃”是视觉反光回收，不增加回程伤害",
+        "contact": "清脆针点与小月银屑，闪避加伤有效时才短暂增强边缘",
+        "dissipation": "高光沿刃退回，硬亮面骤灭，区别 601 的羽与 606 的冰"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。纤薄抛光金属划开空气，战技留下错开半拍的两片月银切面；“返刃”是视觉反光回收，不增加回程伤害",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "纤薄抛光金属划开空气，战技留下错开半拍的两片月银切面；“返刃”是视觉反光回收，不增加回程伤害",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 605,
+      "name": "烛影短刀",
+      "family": "blade",
+      "material": "cloth",
+      "palette": "warm amber orange candle",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-605.png",
+      "reference_sha256": "25a617f1f4264c264cb9af90439bc11ee04ece903c411712628f3c31ebe663d2",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/605.txt",
+      "stages": {
+        "anticipation": "火苗贴刀背俯低，刀尖只有一粒暗橙烛芯",
+        "release": "短而贴身的刀切，战技像烛芯刺穿后拉开的热蜡薄膜；蓄力使火苗被压扁，不放大火球",
+        "contact": "刀口热闪加少量蜡屑；仅已灼烧目标的条件命中强调暗火反应",
+        "dissipation": "黑烟先滞后再细散；不新增点燃、不得变成 627 火铳爆燃"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。短而贴身的刀切，战技像烛芯刺穿后拉开的热蜡薄膜；蓄力使火苗被压扁，不放大火球",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "短而贴身的刀切，战技像烛芯刺穿后拉开的热蜡薄膜；蓄力使火苗被压扁，不放大火球",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 606,
+      "name": "星霜佩剑",
+      "family": "blade",
+      "material": "frost",
+      "palette": "pale blue transparent ice / white edges",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "reference_sha256": "318a678cf58286d50158875c69f3ad3b532ba6d41f1579cb6558e727b5e27c0f",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/606.txt",
+      "stages": {
+        "anticipation": "刀根沿晶棱结霜，尖端结一小片薄冰",
+        "release": "普攻是晶面切片，突刺在窄路内依次展开两三片薄冰鳞；蓄力让冰层压密",
+        "contact": "小片平面冰屑脆断，真实冰缓触发时留下短霜纹",
+        "dissipation": "晶片翻面失亮后消失，不用放射星环；区别 616 的厚重霜骨"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻是晶面切片，突刺在窄路内依次展开两三片薄冰鳞；蓄力让冰层压密",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻是晶面切片，突刺在窄路内依次展开两三片薄冰鳞；蓄力让冰层压密",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 607,
+      "name": "鸣电军刀",
+      "family": "blade",
+      "material": "storm",
+      "palette": "violet lightning / white thin core",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-e03632b1-4f07-496f-b59a-f1f3994529c1.png",
+      "reference_sha256": "26b75626c863004fd59272c52978089187b43205717412f2803c563a313eee80",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/607.txt",
+      "stages": {
+        "anticipation": "两个局部金属节点间间歇跳弧",
+        "release": "刀口先切，电弧晚半拍在已划开的狭缝内跨接；战技是连续两个短放电段，不是长亮雷枪",
+        "contact": "接触点瞬时分叉后立刻断电；第三段真实感电时强化分叉",
+        "dissipation": "残余热光只留几帧，绝不电线整段悬停；区别 617 的重落雷"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。刀口先切，电弧晚半拍在已划开的狭缝内跨接；战技是连续两个短放电段，不是长亮雷枪",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "刀口先切，电弧晚半拍在已划开的狭缝内跨接；战技是连续两个短放电段，不是长亮雷枪",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 608,
+      "name": "断誓直剑",
+      "family": "blade",
+      "material": "cloth",
+      "palette": "ochre bronze / amber fractured wax",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "reference_sha256": "ba6a73b734ad02c89afc7d0d6f348f8a00c8bd4512b7298e16ac9c10d0cd48cf",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/608.txt",
+      "stages": {
+        "anticipation": "古旧刃面浮出一块裂开的封蜡薄片",
+        "release": "实体直剑推开两片断裂誓约薄片；战技用一条被刺开的封条贯入，蓄力表现封条绷紧再裂",
+        "contact": "钝金封蜡碎口与短红裂纹，低血增伤只在真实条件下加重破口",
+        "dissipation": "封条碎片向后折落，不出现虚假的治疗或额外斩杀"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。实体直剑推开两片断裂誓约薄片；战技用一条被刺开的封条贯入，蓄力表现封条绷紧再裂",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "实体直剑推开两片断裂誓约薄片；战技用一条被刺开的封条贯入，蓄力表现封条绷紧再裂",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 609,
+      "name": "镜花曲剑",
+      "family": "blade",
+      "material": "mirror",
+      "palette": "pale rose pink mirror",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-609.png",
+      "reference_sha256": "9dab07a4244f7a3cf98fdebd34412c34fe8e3eb75487560d550f819bb74604fa",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/609.txt",
+      "stages": {
+        "anticipation": "刀旁出现两片错位反射面，花瓣被吸向刀背",
+        "release": "普攻实体曲切与反射切口错拍；战技由几片有缺口的镜面绕身翻转，不围成闭合花环",
+        "contact": "普通命中只碎一片；第 4 次追加伤害真实发生时才有镜像补闪",
+        "dissipation": "镜片翻背变暗再碎，花瓣极少，区别 602 的连续柔绸"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻实体曲切与反射切口错拍；战技由几片有缺口的镜面绕身翻转，不围成闭合花环",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻实体曲切与反射切口错拍；战技由几片有缺口的镜面绕身翻转，不围成闭合花环",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 610,
+      "name": "葬铃仪剑",
+      "family": "blade",
+      "material": "bell",
+      "palette": "muted jade teal bronze",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-610.png",
+      "reference_sha256": "5540bc1fd527bf3cea569ec7b3963f20994f6c1b8d9052e2262b78ad9a7b99f6",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/610.txt",
+      "stages": {
+        "anticipation": "刃面一粒铜舌轻摆，青色雾附着剑根",
+        "release": "细剑切口伴随局部铜片颤动；战技刺出后两侧雾层被振开成断续叶片，不能排列一串圆环",
+        "contact": "接触处一小块金属颤片与短雾裂",
+        "dissipation": "战技后合法回蓝的下一次命中才有少量青光归手；区别 634 的弩矢与 647 的祈愿"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。细剑切口伴随局部铜片颤动；战技刺出后两侧雾层被振开成断续叶片，不能排列一串圆环",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "细剑切口伴随局部铜片颤动；战技刺出后两侧雾层被振开成断续叶片，不能排列一串圆环",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 611,
+      "name": "黑曜戒律剑",
+      "family": "blade",
+      "material": "void",
+      "palette": "black plum / magenta red edge",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-611.png",
+      "reference_sha256": "2af989a0a479b54f37f2f18e744e7cf95e1f8c02a0226afca7bb3dffbeea600f",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/611.txt",
+      "stages": {
+        "anticipation": "硬质暗面沿刀脊拼紧，缝隙透暗紫光",
+        "release": "普攻厚实脆硬的黑曜切面；战技把一块压紧的黑曜楔送入窄路，主体是有厚度的断面而非光箭",
+        "contact": "首要反馈是硬壳碎裂与目标压缩，第三段强调真实破势",
+        "dissipation": "黑片带重量下落，高光一闪即灭；与 630 弹体和 623 仪式重剑明确区分"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻厚实脆硬的黑曜切面；战技把一块压紧的黑曜楔送入窄路，主体是有厚度的断面而非光箭",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻厚实脆硬的黑曜切面；战技把一块压紧的黑曜楔送入窄路，主体是有厚度的断面而非光箭",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 612,
+      "name": "破晓双手剑",
+      "family": "great",
+      "material": "sun",
+      "palette": "dark earth / gold ochre contact",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2097f3bb-e91a-4570-ab48-a2b587630c28.png",
+      "reference_sha256": "099aa68102b2370d7cf547e57c51397c340984a2867bd93f81d0a020f7589d39",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/612.txt",
+      "stages": {
+        "anticipation": "刃面日光压向根部，地面近接触处先沉暗",
+        "release": "普攻是一整片宽重的斜落刃光；战技由剑落点向前掀开数块层叠土板，金光只从裂隙漏出；蓄力先压实再崩开",
+        "contact": "剑落点有窄白峰值、厚尘压扁与三五块有重量的碎石",
+        "dissipation": "大片先落、小尘后散，裂隙逐段熄灭；剧情周身动作按范围换裂层分布而非金环"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻是一整片宽重的斜落刃光；战技由剑落点向前掀开数块层叠土板，金光只从裂隙漏出；蓄力先压实再崩开",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻是一整片宽重的斜落刃光；战技由剑落点向前掀开数块层叠土板，金光只从裂隙漏出；蓄力先压实再崩开",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 613,
+      "name": "断潮巨刃",
+      "family": "great",
+      "material": "tide",
+      "palette": "deep blue cyan water / white foam",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-613.png",
+      "reference_sha256": "d267891b71393450743b65dd265dd23cac66df14a337b1361bf9af9cdd4aae6a",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/613.txt",
+      "stages": {
+        "anticipation": "刀后积一堵低矮厚水，水面被拉成斜面",
+        "release": "宽重横刃推起有厚度的破浪截面，140° 内前缘高、后缘断；战技把潮面劈开成两块不对称水板，蓄力先压低水层",
+        "contact": "宽接触面短白、水板受压折碎、向侧后飞沫；不能在前方出现一个尖箭头",
+        "dissipation": "大水片下坠、细飞沫顺刀向抛出，保持重刃速度感"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。宽重横刃推起有厚度的破浪截面，140° 内前缘高、后缘断；战技把潮面劈开成两块不对称水板，蓄力先压低水层",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "宽重横刃推起有厚度的破浪截面，140° 内前缘高、后缘断；战技把潮面劈开成两块不对称水板，蓄力先压低水层",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 614,
+      "name": "裂地重剑",
+      "family": "great",
+      "material": "stone",
+      "palette": "dark earth / warm ochre",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ef6874c7-9b93-4272-b8ba-3d64e043cd4a.png",
+      "reference_sha256": "318fd29c048c67526c288ace97f8a4ee27a46801c95d5b21a46f77d04f6fe309",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/614.txt",
+      "stages": {
+        "anticipation": "剑尖拖出一条短土痕，重心下沉",
+        "release": "普攻由沉重剑身带起两段旋转土脊，有明显先后和缺口；战技把局部地板掀成断层块，禁止满圆发光带",
+        "contact": "相遇目标处土脊塌碎，重剑接触边短亮",
+        "dissipation": "土块砸回地面，最后剩低矮尘幕；不能读成 615 火系环或危险持续圈"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻由沉重剑身带起两段旋转土脊，有明显先后和缺口；战技把局部地板掀成断层块，禁止满圆发光带",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻由沉重剑身带起两段旋转土脊，有明显先后和缺口；战技把局部地板掀成断层块，禁止满圆发光带",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 615,
+      "name": "熔炉巨锤",
+      "family": "great",
+      "material": "stone",
+      "palette": "dark iron slag / orange molten cracks",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-615.png",
+      "reference_sha256": "cd33e045fc9daf989bff486ad9bd2b645928930a3c864428ced6fd21c80931f2",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/615.txt",
+      "stages": {
+        "anticipation": "锤头下缘慢慢渗出高温熔渣，空气局部变形",
+        "release": "巨锤质量先行，火沿锤面受压挤出；战技用落点挤出的三片熔渣扇覆盖周身，蓄力熔层更厚而非长高火柱",
+        "contact": "锤底扁平强闪，熔渣贴地外挤，确认命中才有灼烧反馈",
+        "dissipation": "熔滴变暗冷却、烟慢升；与 619 碎石锤区别在液态与热"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。巨锤质量先行，火沿锤面受压挤出；战技用落点挤出的三片熔渣扇覆盖周身，蓄力熔层更厚而非长高火柱",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "巨锤质量先行，火沿锤面受压挤出；战技用落点挤出的三片熔渣扇覆盖周身，蓄力熔层更厚而非长高火柱",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 616,
+      "name": "霜骨战斧",
+      "family": "great",
+      "material": "frost",
+      "palette": "pale blue dense bone ice",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-616.png",
+      "reference_sha256": "b199e19ecffe3836ababf985d68e6ac871135ba92923629783b15bd0617dfc5a",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/616.txt",
+      "stages": {
+        "anticipation": "斧刃内侧结出不规则骨冰，抬斧时少量霜粉脱落",
+        "release": "厚重斧面斜砍，蓝白刃沿完整斧头运动面出现；战技在前方斧落处掀起锯齿状冰骨断面，不是飞出的冰箭",
+        "contact": "重斧压入、骨冰横向脆裂；只在冰缓≥3 的真实条件命中加重碎裂",
+        "dissipation": "大冰骨向下倒、粉末近地散；区别 606 的轻薄冰面与 638 冰针"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。厚重斧面斜砍，蓝白刃沿完整斧头运动面出现；战技在前方斧落处掀起锯齿状冰骨断面，不是飞出的冰箭",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "厚重斧面斜砍，蓝白刃沿完整斧头运动面出现；战技在前方斧落处掀起锯齿状冰骨断面，不是飞出的冰箭",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 617,
+      "name": "雷骸重剑",
+      "family": "great",
+      "material": "storm",
+      "palette": "dark rock / violet thunder",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-a6cfc78c-1bde-4481-b08c-e754cf37a1a3.png",
+      "reference_sha256": "6fb10f46f4a26dada8777a12c80bf55e192d53f519ed771810fcd945df63a918",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/617.txt",
+      "stages": {
+        "anticipation": "重剑脊上两处残骨节点充电，抬剑时电弧短跳",
+        "release": "实体重剑先斜落，雷在剑落路径上延迟接通；战技压出裂石后雷从裂缝不规则冒出，不能水平射雷箭",
+        "contact": "短厚白峰值、碎骨被压开、电弧只沿接触裂面跳一次",
+        "dissipation": "一两点残电立刻断，尘土继续下落；与 607 的迅捷刀电有重量差"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。实体重剑先斜落，雷在剑落路径上延迟接通；战技压出裂石后雷从裂缝不规则冒出，不能水平射雷箭",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "实体重剑先斜落，雷在剑落路径上延迟接通；战技压出裂石后雷从裂缝不规则冒出，不能水平射雷箭",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 618,
+      "name": "血狱斩首刃",
+      "family": "great",
+      "material": "blood",
+      "palette": "deep crimson / black",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-618.png",
+      "reference_sha256": "89c3b00164d24d4a984fa8d948d7af9fca3d9c2537f0ab3e3f113ec9771678f7",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/618.txt",
+      "stages": {
+        "anticipation": "厚刃外缘凝出黏血膜，靠斧口汇聚",
+        "release": "沉重斩首斧面带垂落血膜，战技是宽刃从高处压落，蓄力血膜向下拉长后断",
+        "contact": "硬重切口加血膜撕开；真实出血层消耗触发时才显二次断裂",
+        "dissipation": "血膜大块下坠后碎，不用 600 弧刀或 603 棘丝"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。沉重斩首斧面带垂落血膜，战技是宽刃从高处压落，蓄力血膜向下拉长后断",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "沉重斩首斧面带垂落血膜，战技是宽刃从高处压落，蓄力血膜向下拉长后断",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 619,
+      "name": "星陨石槌",
+      "family": "great",
+      "material": "stone",
+      "palette": "dark rock / lavender silver crystalline facets",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-619.png",
+      "reference_sha256": "389b8711114102cb7e83b8107cb3e73e3d038440518d38868728eecfc857168e",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/619.txt",
+      "stages": {
+        "anticipation": "石槌嵌着的碎晶缓慢压紧，粉尘下落",
+        "release": "有钝平接触面的石槌坠下，晶光藏在石层内部；战技让近地碎板错层翻起，蓄力提高砸地压缩感",
+        "contact": "面状挤压闪、块状星岩分裂，不能从天上扎一根装饰晶矛",
+        "dissipation": "有质量的晶石翻面下落，内部星光最后熄灭；不是 615 熔岩或 636 星弹"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。有钝平接触面的石槌坠下，晶光藏在石层内部；战技让近地碎板错层翻起，蓄力提高砸地压缩感",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "有钝平接触面的石槌坠下，晶光藏在石层内部；战技让近地碎板错层翻起，蓄力提高砸地压缩感",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 620,
+      "name": "余烬壁刃",
+      "family": "great",
+      "material": "stone",
+      "palette": "charcoal black / ember orange",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-620.png",
+      "reference_sha256": "f55703c40b63185ba239a0bb214c3a29d162f030d1c0f0b40fd0e9a14175656b",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/620.txt",
+      "stages": {
+        "anticipation": "宽刃如一块受热护墙，裂缝里积着暗红炭",
+        "release": "普攻宽厚横切推起一面短暂倾倒的炭灰板；战技让壁刃重斩、外壳向前层层剥落，蓄力压紧炭壳",
+        "contact": "低矮钝重接触、热壳碎裂，受击后合法护盾触发才在身侧拼回少量炭片",
+        "dissipation": "灰壳先坠、炭缝慢熄，不造可阻挡敌人的墙；区别 615 熔滴"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻宽厚横切推起一面短暂倾倒的炭灰板；战技让壁刃重斩、外壳向前层层剥落，蓄力压紧炭壳",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻宽厚横切推起一面短暂倾倒的炭灰板；战技让壁刃重斩、外壳向前层层剥落，蓄力压紧炭壳",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 621,
+      "name": "风暴战戟",
+      "family": "great",
+      "material": "cloth",
+      "palette": "jade teal / pale mint wind",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-a6489fc0-9198-4536-bdbc-c0a220f0349f.png",
+      "reference_sha256": "4312d5e58d8bf53b7fb8966cdd000c609cf4f2c07d1a46c08246e6f976a60bf3",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/621.txt",
+      "stages": {
+        "anticipation": "戟头拖出一小条扭紧的风布，柄端显示受力",
+        "release": "长柄带尖端扫出一条弯折的旗布风面；战技在窄扇面内压翻几片折皱风帆，保持 70° 规则",
+        "contact": "戟尖硬点加薄风布撕裂，远距离合法加伤只加强尖端",
+        "dissipation": "风布折回、散成细条，不变为大水浪或宽圆圈"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。长柄带尖端扫出一条弯折的旗布风面；战技在窄扇面内压翻几片折皱风帆，保持 70° 规则",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "长柄带尖端扫出一条弯折的旗布风面；战技在窄扇面内压翻几片折皱风帆，保持 70° 规则",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 622,
+      "name": "冥潮仪镰",
+      "family": "great",
+      "material": "soul",
+      "palette": "dark violet soul cloth",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-622.png",
+      "reference_sha256": "e9a1a43e2781ee56d37cd5f99fd6e224b21851885f19f1bcdae3ac228828a8dc",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/622.txt",
+      "stages": {
+        "anticipation": "透明魂雾先黏在内弯钩，少量雾被拉向镰根",
+        "release": "普攻钩状内侧先切入再带走魂雾；战技为两次有缺口的镰钩收割，魂数只按真实消耗增加雾层",
+        "contact": "接触点魂雾被剥离、牵出短丝，不能凭空新增召唤物",
+        "dissipation": "雾向镰背收拢后断，少量沉降，与 646 魂体飞行分开"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻钩状内侧先切入再带走魂雾；战技为两次有缺口的镰钩收割，魂数只按真实消耗增加雾层",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻钩状内侧先切入再带走魂雾；战技为两次有缺口的镰钩收割，魂数只按真实消耗增加雾层",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 623,
+      "name": "无名王剑",
+      "family": "great",
+      "material": "metal",
+      "palette": "dark steel / muted gold",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-623.png",
+      "reference_sha256": "e9fec31e22455721269f2e87cff186e8a2f30a1f484daf5adbfb5a840f396e95",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/623.txt",
+      "stages": {
+        "anticipation": "锈暗剑面透一线旧金，边缘碎掉一角残冠薄片",
+        "release": "重剑主体以暗金钢面为主，战技用压下的王权残冠碎片伴随剑落；蓄力使残冠碎片绷紧，不造皇冠法阵",
+        "contact": "低血条件真实成立时才让目标处金裂口突然更清楚",
+        "dissipation": "金属片落地失亮，金粉极少；与 612 日光土层、608 封蜡薄片区分"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。重剑主体以暗金钢面为主，战技用压下的王权残冠碎片伴随剑落；蓄力使残冠碎片绷紧，不造皇冠法阵",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "重剑主体以暗金钢面为主，战技用压下的王权残冠碎片伴随剑落；蓄力使残冠碎片绷紧，不造皇冠法阵",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 624,
+      "name": "守夜步枪",
+      "family": "ranged",
+      "material": "metal",
+      "palette": "brass / gunmetal / warm muzzle gas",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-624.png",
+      "reference_sha256": "82eebe5bc60d2af77adefc556084d17b2801bf957aecea9e46fbf4b2c132df25",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/624.txt",
+      "stages": {
+        "anticipation": "枪机短后坐、枪口一片扁燃气",
+        "release": "实体铜白弹头、极短热尾；战技按配置射 3 发，蓄力为一发紧实贯穿弹，不能额外画鸟群",
+        "contact": "硬点火星、受力侧少量碎屑；装填后首发标记触发才出小型目标戳记",
+        "dissipation": "枪烟停在枪口缓散，弹道不悬停；区别 633 的破甲壳片"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。实体铜白弹头、极短热尾；战技按配置射 3 发，蓄力为一发紧实贯穿弹，不能额外画鸟群",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "实体铜白弹头、极短热尾；战技按配置射 3 发，蓄力为一发紧实贯穿弹，不能额外画鸟群",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 625,
+      "name": "暮羽长弓",
+      "family": "ranged",
+      "material": "feather",
+      "palette": "muted olive gold / dark feather",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-7835d2fb-c135-4b58-bcb1-cb8355ed9d44.png",
+      "reference_sha256": "04c246ed6d28b920dce3343ecc548805dea17863a838995f26e297abc5a90821",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/625.txt",
+      "stages": {
+        "anticipation": "弓弦张力清楚，羽翎向箭尾贴紧",
+        "release": "单支实体长羽箭，羽缘在高速时压成薄片；战技单箭按既有配置穿 3 人，蓄力加强箭杆张力感",
+        "contact": "箭尖硬穿孔与两片短羽屑，穿透余尾变薄",
+        "dissipation": "羽屑缓坠，箭杆先离开；不可画三箭误导当前肉鸽弹数"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。单支实体长羽箭，羽缘在高速时压成薄片；战技单箭按既有配置穿 3 人，蓄力加强箭杆张力感",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "单支实体长羽箭，羽缘在高速时压成薄片；战技单箭按既有配置穿 3 人，蓄力加强箭杆张力感",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 626,
+      "name": "血棘连弩",
+      "family": "ranged",
+      "material": "blood",
+      "palette": "deep red / black bolt",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ea17a0b9-8c01-4a15-acb6-ad94325b1d5a.png",
+      "reference_sha256": "7ede4071d004860e82844a857bc55226d8f852a7db3c14bb11a37eb1643fd5d6",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/626.txt",
+      "stages": {
+        "anticipation": "短弩机械收紧，倒钩从矢尖侧面显形",
+        "release": "短、硬、有倒钩的弩矢，战技 3 发可读的离散矢体；蓄力为既有单发",
+        "contact": "倒钩刺入式小破口；第 3 次同目标有效命中才有一束短血棘",
+        "dissipation": "矢尾硬快，血丝停在接触附近即断；区别 625 长羽箭"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。短、硬、有倒钩的弩矢，战技 3 发可读的离散矢体；蓄力为既有单发",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "短、硬、有倒钩的弩矢，战技 3 发可读的离散矢体；蓄力为既有单发",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 627,
+      "name": "烬鸦火铳",
+      "family": "ranged",
+      "material": "cloth",
+      "palette": "orange ember / black core",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-cea1c3e9-bcb6-4aa3-8a64-c1857f7a346f.png",
+      "reference_sha256": "0bb6e30760488731a1cd82a33b47ca1a2e910adc7328a393637e0b6d501f55b4",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/627.txt",
+      "stages": {
+        "anticipation": "铳口喷出短促不对称浓燃气，少量炭粒",
+        "release": "钝圆燃烧弹丸带短烟，战技为配置 3 发，蓄力仍是一发，火羽仅作为烟中抽象碎屑",
+        "contact": "弹丸外壳破开再喷小片贴面火，按真实灼烧反馈",
+        "dissipation": "烟与炭粒慢于弹体，不能整条火线停留；区别 637 大陨石"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。钝圆燃烧弹丸带短烟，战技为配置 3 发，蓄力仍是一发，火羽仅作为烟中抽象碎屑",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "钝圆燃烧弹丸带短烟，战技为配置 3 发，蓄力仍是一发，火羽仅作为烟中抽象碎屑",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 628,
+      "name": "霜月猎弓",
+      "family": "ranged",
+      "material": "frost",
+      "palette": "pale ice blue",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-628.png",
+      "reference_sha256": "d7738cd2d12c48fcac4f3f24898c6c420a6084258b757ee51e69b5cc1f54b3fb",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/628.txt",
+      "stages": {
+        "anticipation": "薄霜沿弓弦凝在箭尖，月白反光沿箭杆滑动",
+        "release": "硬质细长冰箭包一层很薄的月银面；战技/蓄力保持单箭贯穿",
+        "contact": "细冰面脆裂、短穿孔；冰缓按真实命中",
+        "dissipation": "薄片失亮下落；区别 638 成簇无箭杆冰针与 616 重冰骨"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。硬质细长冰箭包一层很薄的月银面；战技/蓄力保持单箭贯穿",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "硬质细长冰箭包一层很薄的月银面；战技/蓄力保持单箭贯穿",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 629,
+      "name": "雷翼卡宾枪",
+      "family": "ranged",
+      "material": "storm",
+      "palette": "violet blue electric",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-d9193724-198f-408e-a704-c7295158c338.png",
+      "reference_sha256": "ddb6d20ce0e3467e08ac23a849f094d79b8115ba38374362aab0c5c8a9f4906d",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/629.txt",
+      "stages": {
+        "anticipation": "枪口导电齿只跳一次短弧",
+        "release": "短实体弹芯带间歇侧弧，战技是 3 发分离点射，蓄力压紧电层",
+        "contact": "小硬点加一次侧向放电；第 4 次命中真实感电才加强",
+        "dissipation": "侧弧比烟更早灭，不能持续接通枪到目标；区别 639 目标间连锁"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。短实体弹芯带间歇侧弧，战技是 3 发分离点射，蓄力压紧电层",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "短实体弹芯带间歇侧弧，战技是 3 发分离点射，蓄力压紧电层",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 630,
+      "name": "黑曜长枪",
+      "family": "ranged",
+      "material": "void",
+      "palette": "dark violet obsidian",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-630.png",
+      "reference_sha256": "7e302d2552815ed8a6106eb3302818799512d6e8865110c60b4bafd621be9636",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/630.txt",
+      "stages": {
+        "anticipation": "站定蓄稳时枪管局部暗面咬合，不画大瞄准环",
+        "release": "沉重黑曜弹芯，尖端一线紫白硬光、尾端短压缩空气；战技单发贯穿 3 人，蓄力同样强调单芯",
+        "contact": "黑曜硬面短碎、目标侧有受压凹口",
+        "dissipation": "碎片先翻黑后下落；站立条件只改变合法加强反馈，不造额外狙击技能"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。沉重黑曜弹芯，尖端一线紫白硬光、尾端短压缩空气；战技单发贯穿 3 人，蓄力同样强调单芯",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "沉重黑曜弹芯，尖端一线紫白硬光、尾端短压缩空气；战技单发贯穿 3 人，蓄力同样强调单芯",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 631,
+      "name": "镜轨双铳",
+      "family": "ranged",
+      "material": "mirror",
+      "palette": "pale lavender silver",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-db6ee3ba-c629-4f28-a62b-47719723fd76.png",
+      "reference_sha256": "66b810f3af5de3f7530cc7e5afda3fce3835e9c59744af570820f2302bd3e5a5",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/631.txt",
+      "stages": {
+        "anticipation": "两枪口微错拍，镜片各自拼出短暂反射面",
+        "release": "实体弹芯外是两片错位折射薄面；战技 3 发按真实射线分开，不能凭名字新增交叉光束",
+        "contact": "普通小碎镜；第 5 次真实追加到另一敌人时才出第二点镜裂",
+        "dissipation": "镜面翻背即暗，避免粉色换色子弹；不是无条件弹跳弹"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。实体弹芯外是两片错位折射薄面；战技 3 发按真实射线分开，不能凭名字新增交叉光束",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "实体弹芯外是两片错位折射薄面；战技 3 发按真实射线分开，不能凭名字新增交叉光束",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 632,
+      "name": "逐风短弓",
+      "family": "ranged",
+      "material": "feather",
+      "palette": "pale teal wind",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c67a3c19-e624-4ca9-81a7-328e8f00d6e9.png",
+      "reference_sha256": "b4bf0dbaec5d0eabda9de312f39f45b521dcf864245544d3e59f181006cac497",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/632.txt",
+      "stages": {
+        "anticipation": "短弓在移动中快速拉放，风只从后方掠过",
+        "release": "轻小实体箭，羽片在尾部轻颤；战技 3 羽各自成体，蓄力是单支紧弦箭",
+        "contact": "轻脆穿孔加被挤开的短气片",
+        "dissipation": "气片迅速摊开消失，羽毛少量下落；用敏捷轻量区别 625 长弓"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。轻小实体箭，羽片在尾部轻颤；战技 3 羽各自成体，蓄力是单支紧弦箭",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "轻小实体箭，羽片在尾部轻颤；战技 3 羽各自成体，蓄力是单支紧弦箭",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 633,
+      "name": "断誓穿甲枪",
+      "family": "ranged",
+      "material": "metal",
+      "palette": "gunmetal / amber gold flash",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-b5348117-46ce-4811-b52d-b3223ab7b90e.png",
+      "reference_sha256": "1f28a5f930c2db82c289860cbedfbf28c266265e69b1c6d396c2ce03402f5aad",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/633.txt",
+      "stages": {
+        "anticipation": "枪口显出一枚分瓣弹托，局部后坐",
+        "release": "狭长硬金穿甲芯，弹托在离枪后剥离；战技单发贯穿，蓄力核心更紧，不变粗火球",
+        "contact": "对护盾真实命中才破出盾壳片；生命命中保持普通硬点，不伪造增伤",
+        "dissipation": "弹托向后散、芯体迅速离开；区别 630 黑曜碎芯"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。狭长硬金穿甲芯，弹托在离枪后剥离；战技单发贯穿，蓄力核心更紧，不变粗火球",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "狭长硬金穿甲芯，弹托在离枪后剥离；战技单发贯穿，蓄力核心更紧，不变粗火球",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 634,
+      "name": "葬铃灵弩",
+      "family": "ranged",
+      "material": "bell",
+      "palette": "muted lavender bronze",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-634.png",
+      "reference_sha256": "539a810e320c0c4e0cc4724ce109a08418ab5bf293728b29f1c0dc4294e1d111",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/634.txt",
+      "stages": {
+        "anticipation": "弩弦上小铜片颤一下，雾贴住短矢",
+        "release": "细短实体灵矢带两片振动的薄金属尾翼，战技 3 发，蓄力仍单发",
+        "contact": "接触处铜片短振，不能每次都画回蓝光",
+        "dissipation": "第 4 次真实回蓝时一小缕雾回手；与 610 刀口声振、647 祈愿不同"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。细短实体灵矢带两片振动的薄金属尾翼，战技 3 发，蓄力仍单发",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "细短实体灵矢带两片振动的薄金属尾翼，战技 3 发，蓄力仍单发",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 635,
+      "name": "晨曦信号枪",
+      "family": "ranged",
+      "material": "sun",
+      "palette": "warm gold ochre",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-635.png",
+      "reference_sha256": "41e60b1d953e8ccfd452ec29bc8d29309bcdd34a67375f836bff0b24ad2cf244",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/635.txt",
+      "stages": {
+        "anticipation": "枪口明亮短喷，白烟压住小块金色弹壳",
+        "release": "小钝头信号弹，金核包着有密度的白烟；战技为配置 3 发，蓄力一发",
+        "contact": "短促信号火星，不画全场治愈圈",
+        "dissipation": "战技真实护盾成立才在受益者胸侧形成两片护光；远射路径不承担治疗提示"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。小钝头信号弹，金核包着有密度的白烟；战技为配置 3 发，蓄力一发",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "小钝头信号弹，金核包着有密度的白烟；战技为配置 3 发，蓄力一发",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 636,
+      "name": "星辉法杖",
+      "family": "magic",
+      "material": "star",
+      "palette": "deep cobalt blue stars",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\plates\\weapon-636.png",
+      "reference_sha256": "20c11439671b35519f9e83f980694e5e7664161cd4308905f36ab033d1692a08",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/636.txt",
+      "stages": {
+        "anticipation": "几片小星砂向杖端一颗不规则亮核聚拢",
+        "release": "普攻是有核、有迟滞砂尾的星粒；战技瞬时把一列分离星砂压成短暂贯通的晶尘切面，不能变成慢飞星箭",
+        "contact": "命中星核裂成三四颗小砂；第 4 次真实追加才补一次局部星闪",
+        "dissipation": "星砂各自减速熄灭，主体先断开，区别 641 的折射玻璃"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻是有核、有迟滞砂尾的星粒；战技瞬时把一列分离星砂压成短暂贯通的晶尘切面，不能变成慢飞星箭",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻是有核、有迟滞砂尾的星粒；战技瞬时把一列分离星砂压成短暂贯通的晶尘切面，不能变成慢飞星箭",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 637,
+      "name": "赤陨法杖",
+      "family": "magic",
+      "material": "stone",
+      "palette": "dark red rock / molten orange",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c416c1d5-cf07-4a99-a7be-8388d24f5c97.png",
+      "reference_sha256": "98c6e898c4cb0da473f0048ab383bf1e35faadc3fc58b6335458d904bff304e0",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/637.txt",
+      "stages": {
+        "anticipation": "粗糙小石核凝聚，表面裂缝先暗红再亮",
+        "release": "普攻带有重力视觉的熔壳陨石，战技按真实落点出现下落石核与接触爆裂；蓄力加强壳厚与落地停顿",
+        "contact": "石壳撞碎、短扁白闪、熔渣由内向外挤，范围由碎屑覆盖而不是火环",
+        "dissipation": "石块落、烟升、熔芯冷却；不能新增额外陨石伤害或持续火地"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻带有重力视觉的熔壳陨石，战技按真实落点出现下落石核与接触爆裂；蓄力加强壳厚与落地停顿",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻带有重力视觉的熔壳陨石，战技按真实落点出现下落石核与接触爆裂；蓄力加强壳厚与落地停顿",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 638,
+      "name": "霜针短杖",
+      "family": "magic",
+      "material": "frost",
+      "palette": "pale blue ice",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-638.png",
+      "reference_sha256": "bca1b4e0028cfa55f87902fb07f1b378d7f70d3ea1bcd1be491642cc6660e354",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/638.txt",
+      "stages": {
+        "anticipation": "杖端水汽瞬间冻成一小束有棱面的针",
+        "release": "普攻单枚硬冰针，高速不拖水浪；战技 5 枚离散冰针，蓄力仍服从相同散射配置",
+        "contact": "针尖入点后沿针轴纵裂，少量冰粉从背面喷出",
+        "dissipation": "碎针变暗后翻落，不用星形放射图；明确不换成 642 火羽"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻单枚硬冰针，高速不拖水浪；战技 5 枚离散冰针，蓄力仍服从相同散射配置",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻单枚硬冰针，高速不拖水浪；战技 5 枚离散冰针，蓄力仍服从相同散射配置",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 639,
+      "name": "鸣雷之杖",
+      "family": "magic",
+      "material": "storm",
+      "palette": "violet lightning / white core",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ff66f7ba-0eb0-4ed1-bc77-b5edf32a9477.png",
+      "reference_sha256": "55b07159ed6216a3a50d65064aad37585b5953d16d8a754144022c4746f1acf3",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/639.txt",
+      "stages": {
+        "anticipation": "杖端两极积出断续短弧，不规则充电",
+        "release": "普攻紧凑电核飞行，命中后只连接实际跳转目标；战技是在落点压出枝杈状短放电簇，爆发范围不画雷圈",
+        "contact": "先一处硬白点，再按实际目标瞬时接通/断开，分叉粗细有主次",
+        "dissipation": "电完全熄灭后只留少量热尘；区别 629 枪弹与 617 剑落雷"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻紧凑电核飞行，命中后只连接实际跳转目标；战技是在落点压出枝杈状短放电簇，爆发范围不画雷圈",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻紧凑电核飞行，命中后只连接实际跳转目标；战技是在落点压出枝杈状短放电簇，爆发范围不画雷圈",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 640,
+      "name": "月弧法杖",
+      "family": "magic",
+      "material": "metal",
+      "palette": "pale lavender silver moon",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-640.png",
+      "reference_sha256": "c8502d01cebea85d0431be29dfec91e4bf4e362e3b7e641782be77de6a69cb77",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/640.txt",
+      "stages": {
+        "anticipation": "薄银月面在杖端翻转到几乎看不见",
+        "release": "普攻是一片有刃厚的薄月面；战技在同一条合法贯通段内先后翻出三片错位月面，瞬时合切，不新增三次命中",
+        "contact": "银面切过后开一道细弧裂口，月片边缘脆断",
+        "dissipation": "月面侧转失亮，只留一两片薄银屑，区别 604 实体细剑"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻是一片有刃厚的薄月面；战技在同一条合法贯通段内先后翻出三片错位月面，瞬时合切，不新增三次命中",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻是一片有刃厚的薄月面；战技在同一条合法贯通段内先后翻出三片错位月面，瞬时合切，不新增三次命中",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 641,
+      "name": "曦光棱镜杖",
+      "family": "magic",
+      "material": "sun",
+      "palette": "warm gold / white prism",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c56de925-8212-49aa-a98f-4579ff1c271f.png",
+      "reference_sha256": "fa751ed3c5fd41e094871c172273cb525d55e030273b3f2fc2e436b8b91ba579",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/641.txt",
+      "stages": {
+        "anticipation": "两三片透明折射面在杖端快速对齐",
+        "release": "普攻/战技都是瞬时贯通：不等宽的亮芯穿过几片折射玻璃，沿途有离散折面而非整段实心长方形；蓄力先压紧棱面",
+        "contact": "目标接触处折面崩碎、中心短白，后续目标亮度可递减但范围不变",
+        "dissipation": "折面各自翻背后消失，不能以散射装饰暗示额外射线"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻/战技都是瞬时贯通：不等宽的亮芯穿过几片折射玻璃，沿途有离散折面而非整段实心长方形；蓄力先压紧棱面",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻/战技都是瞬时贯通：不等宽的亮芯穿过几片折射玻璃，沿途有离散折面而非整段实心长方形；蓄力先压紧棱面",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 642,
+      "name": "烬羽散华杖",
+      "family": "magic",
+      "material": "feather",
+      "palette": "orange red / charred black feather",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-642.png",
+      "reference_sha256": "f8c506aa676f1b2ff6415e750be593f7b3c70975c7e1cba229f2c71295c9ea94",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/642.txt",
+      "stages": {
+        "anticipation": "羽根先炭黑，羽枝从根向梢点亮",
+        "release": "5 枚各自弯曲的燃羽，正反面明暗不同、羽枝轻颤；蓄力不改真实弹数，改变炭核压缩与热感",
+        "contact": "羽枝受压折断，炭粉与短火片分开",
+        "dissipation": "火先熄、黑羽片后飘落；区别 627 钝头火弹和 637 石陨"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。5 枚各自弯曲的燃羽，正反面明暗不同、羽枝轻颤；蓄力不改真实弹数，改变炭核压缩与热感",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "5 枚各自弯曲的燃羽，正反面明暗不同、羽枝轻颤；蓄力不改真实弹数，改变炭核压缩与热感",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 643,
+      "name": "虚涡法杖",
+      "family": "magic",
+      "material": "void",
+      "palette": "black violet void",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ed145ea1-b809-46d9-ab85-26688336fcee.png",
+      "reference_sha256": "baec0d34ec72ac70af4686cad2ce88731800b82644610efacc42ed6609df8f73",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/643.txt",
+      "stages": {
+        "anticipation": "空气先局部折皱，附近紫尘向一个偏心裂口汇聚",
+        "release": "普攻是一团内层比外层先收缩的扭曲雾核；战技是三四片空间褶面向中心塌折，留偏心黑缝，不能轮廓完整画旋涡圆",
+        "contact": "物质朝内被扯断，中心压缩后极短反弹；只按现有拉拽反馈",
+        "dissipation": "外层褶面依次关合，黑缝最后消失，不留持续危险地面"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻是一团内层比外层先收缩的扭曲雾核；战技是三四片空间褶面向中心塌折，留偏心黑缝，不能轮廓完整画旋涡圆",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻是一团内层比外层先收缩的扭曲雾核；战技是三四片空间褶面向中心塌折，留偏心黑缝，不能轮廓完整画旋涡圆",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 644,
+      "name": "蚀月长枪杖",
+      "family": "magic",
+      "material": "void",
+      "palette": "deep magenta / black moon shell",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-e201d39b-f971-4a24-9842-c79226daac5f.png",
+      "reference_sha256": "cbacc974726751e521c9dcca2354c660aed6621ab0fc4ffc4a8590b0a2b61bc2",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/644.txt",
+      "stages": {
+        "anticipation": "暗月壳包住压缩核心，前摇中壳向尖端收紧",
+        "release": "普攻重魔枪是暗质芯体与被挤开的两片月壳；战技瞬时撕开狭长断层，裂缝两侧明暗错位，不是慢飞箭，也不是一根均匀紫线",
+        "contact": "接触处出现短暂被贯穿的壳裂与向后剥离的薄片",
+        "dissipation": "暗质芯先收走，壳片失光；区别 633 机械穿甲与 640 薄月切片"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻重魔枪是暗质芯体与被挤开的两片月壳；战技瞬时撕开狭长断层，裂缝两侧明暗错位，不是慢飞箭，也不是一根均匀紫线",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻重魔枪是暗质芯体与被挤开的两片月壳；战技瞬时撕开狭长断层，裂缝两侧明暗错位，不是慢飞箭，也不是一根均匀紫线",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 645,
+      "name": "血契仪杖",
+      "family": "magic",
+      "material": "blood",
+      "palette": "dark crimson blood ink / pink paper edge",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-bd5d7f5c-0652-4aaf-b3df-3ae04c8e9a8d.png",
+      "reference_sha256": "6750818d5b1e23b3f360414d5928239c0d1a1c92ea9a199778ad16175fad36e4",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/645.txt",
+      "stages": {
+        "anticipation": "杖端短血墨滴落在一片悬浮薄纸边上",
+        "release": "普攻像带黏性的血墨裁片，战技在落点把几页不规则契书撕开，墨从纸纤维切口渗出；蓄力压紧纸层",
+        "contact": "目标侧墨迹被扯开，真实首次出血才留短血契裂痕",
+        "dissipation": "纸先卷边再碎、血墨断丝，不出现吸血回流或治疗暗示"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻像带黏性的血墨裁片，战技在落点把几页不规则契书撕开，墨从纸纤维切口渗出；蓄力压紧纸层",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻像带黏性的血墨裁片，战技在落点把几页不规则契书撕开，墨从纸纤维切口渗出；蓄力压紧纸层",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 646,
+      "name": "冥庭唤魂杖",
+      "family": "magic",
+      "material": "soul",
+      "palette": "violet soul cloth / pale lavender",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c743dcea-b401-449b-8413-7061894fd4e1.png",
+      "reference_sha256": "27cccc1202055e301ccc7e2708a2caff219b50eb463ecb2cc4de586cd5b10131",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/646.txt",
+      "stages": {
+        "anticipation": "一层薄魂衣先从杖端拉出，内层雾延迟跟上",
+        "release": "普攻有头部体积与拖后魂衣，不能只是一条青色涡；战技在落点掀起不完整魂衣轮廓与竖向裂帛，蓄力先收紧衣层",
+        "contact": "魂衣被钉住一瞬再撕开；真实召唤成立时才出现灵体",
+        "dissipation": "灵雾分层回收、衣缘最后断，区别 622 钩状剥魂与 643 无机空间塌折"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻有头部体积与拖后魂衣，不能只是一条青色涡；战技在落点掀起不完整魂衣轮廓与竖向裂帛，蓄力先收紧衣层",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻有头部体积与拖后魂衣，不能只是一条青色涡；战技在落点掀起不完整魂衣轮廓与竖向裂帛，蓄力先收紧衣层",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 647,
+      "name": "晨钟祈愿杖",
+      "family": "magic",
+      "material": "bell",
+      "palette": "warm gold ivory cloth",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-504940bb-7bb4-4195-93d8-09fc39effb00.png",
+      "reference_sha256": "5b3aea58bdbf962f24b89e7aa1e7bc86e7676c6b599b26b6a29d23388340209c",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/647.txt",
+      "stages": {
+        "anticipation": "小铜舌贴着杖端振动，柔光从缝隙透出",
+        "release": "普攻为一小片折起的光帛，战技在落点展开两三片不对称帛幕，钟的声感由帛面起伏表现，不画同心波圈",
+        "contact": "光帛贴目标表面短压后碎开，战技合法回复才出现一点向施法者归拢的温光",
+        "dissipation": "帛纹先淡、边缘后散，暖白亮度克制；区别 635 信号弹护盾与 610 青铜剑振"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。普攻为一小片折起的光帛，战技在落点展开两三片不对称帛幕，钟的声感由帛面起伏表现，不画同心波圈",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "普攻为一小片折起的光帛，战技在落点展开两三片不对称帛幕，钟的声感由帛面起伏表现，不画同心波圈",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 17,
+      "name": "黑铁短剑",
+      "family": "blade",
+      "material": "metal",
+      "palette": "black crimson membrane",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-17.png",
+      "reference_sha256": "583e0a6e1dcdae3fc8c016e9b07e2df3dcfcffd1b966b260a9421049fbce17e1",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/17.txt",
+      "stages": {
+        "anticipation": "刀根凝出暗红短丝，手腕收紧",
+        "release": "严格照参考的黑红撕裂刃膜，短剑三段改变切向，重击压紧暗红膜后切开",
+        "contact": "紧凑红色断丝与暗屑",
+        "dissipation": "暗红膜撕碎后快速抽走"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。严格照参考的黑红撕裂刃膜，短剑三段改变切向，重击压紧暗红膜后切开",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "严格照参考的黑红撕裂刃膜，短剑三段改变切向，重击压紧暗红膜后切开",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 18,
+      "name": "祭祀短杖",
+      "family": "magic",
+      "material": "star",
+      "palette": "pale jade green spirit cloth",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\art\\weapon-vfx-reference-v6\\finished\\weapon-18.png",
+      "reference_sha256": "2d691ebcacee7de5533c657c48ee057fd6269258f5f6698580371677511d24ea",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/18.txt",
+      "stages": {
+        "anticipation": "杖端淡青绿薄光聚成祈愿折片",
+        "release": "严格照参考的青绿流动薄帛，重击压紧，战技按真实施法范围展开",
+        "contact": "青绿薄片与小块暗岩向外翻开",
+        "dissipation": "青绿光帛逐层失亮后收净"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。严格照参考的青绿流动薄帛，重击压紧，战技按真实施法范围展开",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "严格照参考的青绿流动薄帛，重击压紧，战技按真实施法范围展开",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 19,
+      "name": "破碎大剑",
+      "family": "great",
+      "material": "metal",
+      "palette": "dark grey rock / pale violet facets",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ea889bcc-3c18-47a0-b2f1-c7bb8023ba0d.png",
+      "reference_sha256": "f66ca8a5aa7946c296edb9f2c1b706ff0ecb51e21951a8953504a32f3877d1ce",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/19.txt",
+      "stages": {
+        "anticipation": "断刃缺口先有淡紫冷光",
+        "release": "严格照参考的灰紫缺齿厚切面与深色碎岩，重击向下压，战技沿真实扇面翻开",
+        "contact": "深色断片和淡紫晶屑由落点挤出",
+        "dissipation": "重碎片下落，紫灰薄尘分离消散"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。严格照参考的灰紫缺齿厚切面与深色碎岩，重击向下压，战技沿真实扇面翻开",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "严格照参考的灰紫缺齿厚切面与深色碎岩，重击向下压，战技沿真实扇面翻开",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": 20,
+      "name": "湮魂之镰",
+      "family": "great",
+      "material": "soul",
+      "palette": "black violet soul membrane / cyan blue souls",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c34b8121-6315-4d18-ab15-540d8ca8806d.png",
+      "reference_sha256": "c9c957ff268a815c62fcc4122eb5c3cb21ab650f26df967ecf89ddcd0c0564fd",
+      "prompt_file": "art/weapon-vfx-reference-v8/prompts/20.txt",
+      "stages": {
+        "anticipation": "紫黑镰钩内侧凝出薄魂衣",
+        "release": "大幅弯钩撕开黑紫魂膜，夹少量青蓝魂面；保持参考弧形，周身战技分先后与缺口",
+        "contact": "魂膜在受击点撕裂，少量幽魂向外扯开",
+        "dissipation": "青蓝魂丝先散，紫黑膜卷回断开"
+      },
+      "actions": {
+        "normal": {
+          "choreography": "沿现有三段普攻逐段改变出刀方向与接触面；枪械、弓与法杖遵循真实发射次数。",
+          "timing": "使用实际前摇/出刀/弹道/命中事件；主体快速回收。"
+        },
+        "heavy": {
+          "choreography": "聚能贴真实武器挂点，蓄满保持，松手压缩主体后集中释放；取消立即清理。大幅弯钩撕开黑紫魂膜，夹少量青蓝魂面；保持参考弧形，周身战技分先后与缺口",
+          "timing": "蓄力周期由真实 hold 事件驱动，不提前播放命中。"
+        },
+        "art": {
+          "choreography": "大幅弯钩撕开黑紫魂膜，夹少量青蓝魂面；保持参考弧形，周身战技分先后与缺口",
+          "timing": "以真实战技事件、范围、弹数、跳转目标为准；峰值与合法命中对齐。"
+        }
+      },
+      "layers": [
+        "surface",
+        "impact",
+        "mist",
+        "ground"
+      ],
+      "acceptance": [
+        "与参考同角度对照峰值主体、明暗比例、接触碎散",
+        "检查起手、释放、命中、消散及取消",
+        "游戏镜头尺寸下可读，同屏连续攻击不遮目标",
+        "只改表现，不添加伤害、弹数、命中或持续危险区域"
+      ],
+      "status": "planned"
+    }
+  ]
+}

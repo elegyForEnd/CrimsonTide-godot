@@ -7,6 +7,8 @@ static var cells: Dictionary={}
 static var mechanics: Dictionary={}
 static var weapon_manifest: Dictionary={}
 static var mechanic_contacts: Dictionary={}
+static var overrides: Dictionary={}
+static var overrides_loaded := false
 const REDRAWN := ["motion_slash","motion_double_slash","motion_thrust","motion_heavy_slash","motion_spin","motion_heavy_spin","motion_scythe","motion_narrow_sweep","projectile_moon","projectile_arrow","projectile_needle","projectile_bullet","projectile_lightning","release_bow"]
 
 static func mechanic_source(role: String) -> String:
@@ -22,9 +24,9 @@ static func mechanic_texture(role: String) -> Texture2D:
 	var key := "mechanic:"+source
 	if cells.has(key): return cells[key]
 	var path := (BASE if source.begins_with("weapon_") else MECHANICS_BASE)+source+".png"
-	if source.begins_with("authored_") or source.begins_with("audit_") or source.begins_with("charged_"):
-		load_mechanic_manifest()
-		path=MECHANICS_BASE+str(mechanics.get(source,{}).get("file",""))
+	load_mechanic_manifest()
+	if mechanics.has(source) and not str(mechanics[source].get("file","")).is_empty():
+		path=MECHANICS_BASE+str(mechanics[source].file)
 	if not ResourceLoader.exists(path): return null
 	cells[key]=load(path)
 	return cells[key]
@@ -34,8 +36,32 @@ static func load_mechanic_manifest() -> void:
 	var parsed: Variant=JSON.parse_string(FileAccess.get_file_as_string(MECHANICS_BASE+"manifest.json"))
 	if parsed is Dictionary: mechanics=parsed.get("assets",{})
 
+static func load_overrides() -> void:
+	if overrides_loaded: return
+	overrides_loaded=true
+	var path := MECHANICS_BASE+"weapon-overrides.json"
+	if not FileAccess.file_exists(path): return
+	var parsed: Variant=JSON.parse_string(FileAccess.get_file_as_string(path))
+	if parsed is Dictionary: overrides=parsed
+
+static func override_source(category: String, index: int, selector: String, weapon_art: bool=false) -> String:
+	load_overrides()
+	# An exact campaign action must win over a same-name canonical run weapon.
+	for scope in ["exact","canonical"]:
+		for rule in overrides.get(category,[]):
+			if not rule is Dictionary or str(rule.get("scope","exact"))!=scope: continue
+			var matched := index if scope=="exact" else canonical(index)
+			if int(rule.get("weapon",-1))!=matched: continue
+			if str(rule.get("role" if category=="releases" else "payload",""))!=selector: continue
+			if category=="releases" and rule.has("weapon_art") and bool(rule.weapon_art)!=weapon_art: continue
+			var source := str(rule.get("source",""))
+			if not source.is_empty(): return source
+	return ""
+
 ## Payload selection changes the painting, never the spell's collision rules.
 static func payload_source(index: int, payload: String, fallback: String) -> String:
+	var revised_override := override_source("payloads",index,payload)
+	if not revised_override.is_empty(): return revised_override
 	load_mechanic_manifest()
 	var revised := "audit_%d_%s_v2" % [canonical(index),payload]
 	if mechanics.has(revised): return revised
@@ -55,6 +81,11 @@ static func clean_charged(index: int) -> bool:
 	return str(mechanics.get("charged_%d_v1" % canonical(index),{}).get("style","")).begins_with("clean")
 
 static func mechanic_ink(role: String) -> Rect2:
+	load_mechanic_manifest()
+	var source := mechanic_source(role)
+	if mechanics.has(source) and mechanics[source].has("ink"):
+		var bounds: Array=mechanics[source].get("render_ink",mechanics[source].ink)
+		return Rect2(bounds[0],bounds[1],bounds[2]-bounds[0],bounds[3]-bounds[1])
 	if role.begins_with("weapon_"):
 		if weapon_manifest.is_empty():
 			var parsed: Variant=JSON.parse_string(FileAccess.get_file_as_string(BASE+"manifest.json"))
@@ -123,6 +154,8 @@ static func mechanic_contact(role: String, bounds: Vector2, painted_source: Stri
 ## The semantic role still controls hit geometry; the source owns weapon identity.
 ## A different weapon art (e.g. quake instead of cleave) must keep its own role.
 static func release_source(index: int, role: String, stage: int, weapon_art: bool = false) -> String:
+	var revised_override := override_source("releases",index,role,weapon_art)
+	if not revised_override.is_empty(): return revised_override
 	if canonical(index) in [615,619] and role=="motion_hammer_spin":
 		var hammer_source := "identity_%d_drop_v2" % canonical(index)
 		if ResourceLoader.exists(MECHANICS_BASE+hammer_source+".png"): return hammer_source
@@ -161,6 +194,11 @@ static func available(index: int) -> bool:
 static func distinct_stage(index: int, stage: int) -> bool:
 	var phase: String=["release","return","finisher"][clampi(stage,0,2)]
 	return ResourceLoader.exists(BASE+"weapon_%d_%s.png" % [canonical(index),phase])
+
+static func distinct_source_stage(index: int, stage: int, source: String) -> bool:
+	# An override painted for one motion must not inherit old row-frame metadata.
+	if source.begins_with("renewal_"): return false
+	return distinct_stage(index,stage)
 
 static func texture(index: int, stage: int) -> Texture2D:
 	var id := canonical(index)

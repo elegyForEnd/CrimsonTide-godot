@@ -1,0 +1,291 @@
+{
+  "weapon": 608,
+  "status": "awaiting_visual_acceptance",
+  "clips": {
+    "normal": {
+      "weapon": 608,
+      "kind": "basic",
+      "file": "res://assets/combat/weapon-batch-01/608/basic-peak-v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-c4cf22f1-3b98-4f3d-a04a-a4779ddb2b98.png",
+      "tool": "built-in imagegen",
+      "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png",
+      "single_peak": true,
+      "sha256": "c62a82bfe0bb2625959ab69f59dab77e6d7b760754f0d74684cb421decb3fea4",
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 1.5,
+      "frame_rects": [
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "pivot": [
+        0.3,
+        0.55
+      ],
+      "contact": [
+        0.88,
+        0.55
+      ],
+      "reveal_mode": 1,
+      "placement": "blade"
+    },
+    "heavy": {
+      "id": 608,
+      "action": "heavy",
+      "generator": "built-in ImageGen",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-2be5c9c0-ec27-48d5-8318-a131e27e8adf.png",
+      "file": "res://assets/combat/weapon-batch-01/608/heavy-shape-v1.png",
+      "layout": "one column, four registered actual-shaped stages",
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "storyboard": "D:\\develop\\school\\CrimsonTide-godot\\output\\weapon-batch-01\\storyboards\\608.png",
+      "status": "pending_frame_registration_and_visual_review",
+      "sha256": "65ec485ac08ccdef440ba4ae410c12f3189942612132b6a7c5f9bf48c9ffb9cd",
+      "size": [
+        793,
+        1983
+      ],
+      "canvas_aspect": 1.2980847929284662,
+      "frame_rects": [
+        [
+          0,
+          -0.029034291477559256,
+          1,
+          0.3080685829551185
+        ],
+        [
+          0,
+          0.22096570852244074,
+          1,
+          0.3080685829551185
+        ],
+        [
+          0,
+          0.47096570852244074,
+          1,
+          0.3080685829551185
+        ],
+        [
+          0,
+          0.7209657085224407,
+          1,
+          0.3080685829551185
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0.0,
+          0.25012607160867373
+        ],
+        [
+          0.25012607160867373,
+          0.49974785678265254
+        ],
+        [
+          0.49974785678265254,
+          0.7498739283913263
+        ],
+        [
+          0.7498739283913263,
+          1.0
+        ]
+      ],
+      "pivot": [
+        0.08,
+        0.5
+      ],
+      "contact": [
+        0.8679242783415954,
+        0.5946905188269956
+      ],
+      "cuts": [
+        0,
+        496,
+        991,
+        1487,
+        1983
+      ],
+      "reveal_mode": 1
+    },
+    "art": {
+      "weapon": 608,
+      "kind": "finisher",
+      "file": "res://assets/combat/weapon-batch-01/608/finisher-peak-v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-cc4c6869-8ac3-40c5-9d35-2615e57bceac.png",
+      "tool": "built-in imagegen",
+      "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png",
+      "single_peak": true,
+      "sha256": "f782876128c556048c609a4cf288d0e5a0f03fa6ddbc5d90e8f51bed13e759ce",
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 1.5,
+      "frame_rects": [
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "pivot": [
+        0.05,
+        0.49
+      ],
+      "contact": [
+        0.91,
+        0.56
+      ],
+      "reveal_mode": 1,
+      "placement": "blade"
+    },
+    "finisher": {
+      "weapon": 608,
+      "kind": "finisher",
+      "file": "res://assets/combat/weapon-batch-01/608/finisher-peak-v2.png",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-cc4c6869-8ac3-40c5-9d35-2615e57bceac.png",
+      "tool": "built-in imagegen",
+      "reference": "output/weapon-batch-01/storyboards/batch01-sequences-v2.png",
+      "single_peak": true,
+      "sha256": "f782876128c556048c609a4cf288d0e5a0f03fa6ddbc5d90e8f51bed13e759ce",
+      "size": [
+        1536,
+        1024
+      ],
+      "canvas_aspect": 1.5,
+      "frame_rects": [
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "frame_bounds": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "pivot": [
+        0.05,
+        0.49
+      ],
+      "contact": [
+        0.91,
+        0.56
+      ],
+      "reveal_mode": 1,
+      "placement": "blade"
+    }
+  },
+  "revision": "batch01-three-stage-v2"
+}

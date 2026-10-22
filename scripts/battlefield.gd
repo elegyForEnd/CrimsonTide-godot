@@ -805,7 +805,7 @@ func weapon_effect_socket(source: int) -> Dictionary:
 			var points: Array=[]
 			for site in track: points.append(at+site*Vector2(facing,1))
 			charge_paths.append(points)
-	return {"charge_paths":charge_paths,"charge_points":charge_points,"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":screen_aim,
+	return {"swing_remaining":maxf(float(p.swing_time),float(p.cast_time)),"charge_paths":charge_paths,"charge_points":charge_points,"tip":at+tip,"stroke_tip":stroke_tip,"stroke_pivot":stroke_pivot,"stroke_center":mount.center,"aim":screen_aim,
 		"grip":at+grip,"blade_axis":blade_axis,"frame":int(pose.get("frame",2)),"weapon_identity":preload("res://scripts/weapon_image_art.gd").canonical(p.weapon),"active":active_attack}
 
 func set_world_transform(at: Vector2 = Vector2.ZERO, angle: float = 0.0, scale_value: Vector2 = Vector2.ONE) -> void:

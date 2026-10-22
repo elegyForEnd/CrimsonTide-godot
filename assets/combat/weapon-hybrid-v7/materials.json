@@ -1,0 +1,268 @@
+{
+  "metal": {
+    "file": "res://assets/combat/weapon-hybrid-v7/metal.png",
+    "uv": [
+      0.030689329556185082,
+      0.22506738544474394,
+      0.940982058545798,
+      0.5714285714285714
+    ],
+    "sha256": "9b618c0422777390fffa240a4d82957d8c7ff8d72c9ab3b6bdc3917c5f963089",
+    "size": [
+      2118,
+      742
+    ]
+  },
+  "blood": {
+    "file": "res://assets/combat/weapon-hybrid-v7/blood.png",
+    "uv": [
+      0.03325526932084309,
+      0.21603260869565216,
+      0.94192037470726,
+      0.5978260869565217
+    ],
+    "sha256": "91ac06216f2fbe83d45ff7e897b436dd5d40e10dec6f181d38da8a9d4783e95e",
+    "size": [
+      2135,
+      736
+    ]
+  },
+  "tide": {
+    "file": "res://assets/combat/weapon-hybrid-v7/tide.png",
+    "uv": [
+      0.027898027898027897,
+      0.17063492063492064,
+      0.94997594997595,
+      0.6521164021164021
+    ],
+    "sha256": "ce99bd3ba0b546a31880076270bcf4506e92eaeb5b9af26e10e44e2233d265a0",
+    "size": [
+      2079,
+      756
+    ]
+  },
+  "frost": {
+    "file": "res://assets/combat/weapon-hybrid-v7/frost.png",
+    "uv": [
+      0.02394106813996317,
+      0.2803867403314917,
+      0.9525782688766115,
+      0.4516574585635359
+    ],
+    "sha256": "8bc7be7cb990ed31302ee3964f2578ca63898d98f06ecf0d87f524722fbf1eed",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "storm": {
+    "file": "res://assets/combat/weapon-hybrid-v7/storm.png",
+    "uv": [
+      0.02716390423572744,
+      0.22375690607734808,
+      0.9479742173112339,
+      0.5718232044198895
+    ],
+    "sha256": "bf0d989a8162a0fc163abb5e39666ddb0b893679e93c698de6575f93b84eb7f5",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "stone": {
+    "file": "res://assets/combat/weapon-hybrid-v7/stone.png",
+    "uv": [
+      0.01151012891344383,
+      0.21132596685082872,
+      0.9811233885819521,
+      0.6022099447513812
+    ],
+    "sha256": "0c11f84eecf5217a4f4508bfb4ee2851e071dabf32340b2556d0bd0ee6b3e525",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "cloth": {
+    "file": "res://assets/combat/weapon-hybrid-v7/cloth.png",
+    "uv": [
+      0.00046040515653775324,
+      0.24171270718232044,
+      0.988950276243094,
+      0.5607734806629834
+    ],
+    "sha256": "6d6d71fb79d6aa053779bdb57b76ff8686ed59895ed9da3e2b4a5cd5db0c0ea3",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "soul": {
+    "file": "res://assets/combat/weapon-hybrid-v7/soul.png",
+    "uv": [
+      0.01979742173112339,
+      0.24861878453038674,
+      0.9719152854511971,
+      0.5276243093922652
+    ],
+    "sha256": "ee287c6994bb7ed0598ba05c8a411fdb6c431776ba6a442193d51f4192749c07",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "void": {
+    "file": "res://assets/combat/weapon-hybrid-v7/void.png",
+    "uv": [
+      0.020666979802724285,
+      0.2259810554803789,
+      0.9713480507280413,
+      0.5886332882273342
+    ],
+    "sha256": "c4b4a17ad02792ad371e1053fe4e76c1ec08642e38bdb6cd95d775d8ce27d409",
+    "size": [
+      2129,
+      739
+    ]
+  },
+  "feather": {
+    "file": "res://assets/combat/weapon-hybrid-v7/feather.png",
+    "uv": [
+      0.01151012891344383,
+      0.2969613259668508,
+      0.9779005524861878,
+      0.44613259668508287
+    ],
+    "sha256": "8f336758321c7efbac3c926085c7868a6106bf574eb0a5e7d574f1d1bcd04c6b",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "star": {
+    "file": "res://assets/combat/weapon-hybrid-v7/star.png",
+    "uv": [
+      0.030847145488029467,
+      0.212707182320442,
+      0.9452117863720073,
+      0.5980662983425414
+    ],
+    "sha256": "42537be433c0460ad20a084357a1947b0b1fb6100ef4fd72a3d66ee55893275a",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "sun": {
+    "file": "res://assets/combat/weapon-hybrid-v7/sun.png",
+    "uv": [
+      0.03268876611418048,
+      0.24861878453038674,
+      0.9410681399631676,
+      0.505524861878453
+    ],
+    "sha256": "6e32da07e18807c61e49cc8257aed77585f8c5718d3e3cc9d670069edd93926e",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "bell": {
+    "file": "res://assets/combat/weapon-hybrid-v7/bell.png",
+    "uv": [
+      0.023480662983425413,
+      0.21961325966850828,
+      0.9516574585635359,
+      0.5953038674033149
+    ],
+    "sha256": "d5c9cd984fb52f11cb1b6923022153f26f85e1727b6c8aa4463c4bbf558b276d",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "heat": {
+    "file": "res://assets/combat/weapon-hybrid-v7/heat.png",
+    "uv": [
+      0.022099447513812154,
+      0.22375690607734808,
+      0.9567219152854513,
+      0.5773480662983426
+    ],
+    "sha256": "20bad895908ba8b575595e6be1cc68b547f1040c9f5dc16dfcef041ddfccffe3",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "mirror": {
+    "file": "res://assets/combat/crystal-cut-v1/ribbon.png",
+    "uv": [
+      0.029005524861878452,
+      0.2803867403314917,
+      0.9576427255985267,
+      0.42265193370165743
+    ],
+    "sha256": "ce2bdbaea852cb7a5bf3d07dd93aa067460ae6f05293cc59cd8cba0b763b2277",
+    "size": [
+      2172,
+      724
+    ]
+  },
+  "stone-impact": {
+    "file": "res://assets/combat/weapon-hybrid-v7/stone-impact.png",
+    "uv": [
+      0.05539971949509116,
+      0.1115140525838622,
+      0.9053295932678822,
+      0.8123300090661831
+    ],
+    "sha256": "e2e81c48764c4d9765f1c90931ae9baef5aa5656142e45abfe710cc291edd4a7",
+    "size": [
+      1426,
+      1103
+    ]
+  },
+  "frost-impact": {
+    "file": "res://assets/combat/weapon-hybrid-v7/frost-impact.png",
+    "uv": [
+      0.04195804195804196,
+      0.12363636363636364,
+      0.9328671328671329,
+      0.7663636363636364
+    ],
+    "sha256": "ecbf0615bebe75c6fedfd1cb2abe798d3f61a3ed43161317ffd8c2f846296755",
+    "size": [
+      1430,
+      1100
+    ]
+  },
+  "tide-impact": {
+    "file": "res://assets/combat/weapon-hybrid-v7/tide-impact.png",
+    "uv": [
+      0.01752021563342318,
+      0.2188679245283019,
+      0.9703504043126685,
+      0.720754716981132
+    ],
+    "sha256": "60c671f03694ee657fefd72600ce45bbd9a34add23b072a36af28a42402c3afe",
+    "size": [
+      1484,
+      1060
+    ]
+  },
+  "heat-impact": {
+    "file": "res://assets/combat/weapon-hybrid-v7/heat-impact.png",
+    "uv": [
+      0.03436657681940701,
+      0.1311320754716981,
+      0.9326145552560647,
+      0.7962264150943397
+    ],
+    "sha256": "85e9d0411a28d66cc07e12d7b483ccf008db455c5dbb56b9987948b267ab6fb4",
+    "size": [
+      1484,
+      1060
+    ]
+  }
+}

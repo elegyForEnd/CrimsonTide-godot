@@ -1,0 +1,32 @@
+[
+	{
+		"action": "normal",
+		"damage": 42.4799999999814,
+		"fps": 30,
+		"frames": 72,
+		"poster_frame": 5,
+		"real_hits": 1,
+		"revision": "606-storyboard-path-frost-2",
+		"weapon": 606
+	},
+	{
+		"action": "heavy",
+		"damage": 70.091999999946,
+		"fps": 30,
+		"frames": 72,
+		"poster_frame": 27,
+		"real_hits": 1,
+		"revision": "606-storyboard-path-frost-2",
+		"weapon": 606
+	},
+	{
+		"action": "art",
+		"damage": 84.9599999999627,
+		"fps": 30,
+		"frames": 72,
+		"poster_frame": 14,
+		"real_hits": 1,
+		"revision": "606-storyboard-path-frost-2",
+		"weapon": 606
+	}
+]

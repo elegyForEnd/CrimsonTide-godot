@@ -1,0 +1,32 @@
+[
+  {
+    "id": 600,
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-ee64f68f-bbd1-47c2-9294-9d6854d902ba.png",
+    "atlas": "assets/combat/weapon-reference-v2/600/atlas-v1.png",
+    "storyboard": "output/weapon-all-v2/storyboards/batch-02.png"
+  },
+  {
+    "id": 601,
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-90a89584-921e-41f3-80bf-6887d57d4241.png",
+    "atlas": "assets/combat/weapon-reference-v2/601/atlas-v1.png",
+    "storyboard": "output/weapon-all-v2/storyboards/batch-02.png"
+  },
+  {
+    "id": 602,
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-17b3ef78-47b3-41ed-ac1c-a9db99175872.png",
+    "atlas": "assets/combat/weapon-reference-v2/602/atlas-v1.png",
+    "storyboard": "output/weapon-all-v2/storyboards/batch-02.png"
+  },
+  {
+    "id": 603,
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-382d6e69-b11a-4986-8b6d-115ac08887a3.png",
+    "atlas": "assets/combat/weapon-reference-v2/603/atlas-v1.png",
+    "storyboard": "output/weapon-all-v2/storyboards/batch-02.png"
+  },
+  {
+    "id": 604,
+    "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a75096b5-a009-4717-a822-702d58f8dd8d.png",
+    "atlas": "assets/combat/weapon-reference-v2/604/atlas-v1.png",
+    "storyboard": "output/weapon-all-v2/storyboards/batch-02.png"
+  }
+]

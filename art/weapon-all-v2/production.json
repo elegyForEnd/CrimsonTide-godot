@@ -1,0 +1,5906 @@
+{
+  "scope": "All remaining 42 weapons; work in groups of five without waiting between groups, authorized by user 2026-10-20",
+  "size": "Per-weapon authored ranges; staff heavy .65 of previous range/radius; staff arts length 320-430, radius 45-82",
+  "actors": "Keep existing original sprites and atlases",
+  "weapons": [
+    {
+      "id": 600,
+      "name": "绯红单手剑",
+      "family": 1,
+      "batch": 2,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ea17a0b9-8c01-4a15-acb6-ad94325b1d5a.png",
+      "normal": "short crimson curved cut",
+      "heavy": "dense falling crimson wedge",
+      "finisher": "open crimson fan with trailing tear filaments",
+      "mist": "muted crimson grey air",
+      "shard": "ruby-dark flake",
+      "art_kind": "circle",
+      "spell": "star",
+      "original_art": {
+        "name": "绯红回旋·环",
+        "kind": "circle",
+        "damage": 2.0,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 130,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "环斩周围敌人。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-ee64f68f-bbd1-47c2-9294-9d6854d902ba.png",
+      "atlas": "assets/combat/weapon-reference-v2/600/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-02.png",
+      "sha256": "2c2c07f3aab88bf7196774ded1a134012364b294b00076572ba7497b83f6e5d0",
+      "qa": {
+        "cuts": [
+          0,
+          476,
+          867,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            536,
+            476
+          ],
+          "heavy": [
+            536,
+            0,
+            1024,
+            476
+          ],
+          "art": [
+            0,
+            476,
+            643,
+            867
+          ],
+          "impact": [
+            643,
+            476,
+            1024,
+            867
+          ],
+          "charge": [
+            0,
+            867,
+            576,
+            1152
+          ],
+          "shard": [
+            576,
+            867,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            603,
+            1536
+          ],
+          "trail": [
+            603,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "绯红·回旋返刃",
+        "desc": "贴身回旋展开，再折返切过前方。",
+        "steps": [
+          [
+            0.32,
+            0.4,
+            225,
+            30,
+            0,
+            0,
+            "heavy",
+            "circle",
+            1,
+            75,
+            0
+          ],
+          [
+            0.27,
+            0.6,
+            255,
+            -20,
+            0,
+            0.28,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 601,
+      "name": "鸦喙刺剑",
+      "family": 1,
+      "batch": 2,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-b5348117-46ce-4811-b52d-b3223ab7b90e.png",
+      "normal": "cold silver needle and black feather",
+      "heavy": "concentrated long silver thrust",
+      "finisher": "three convergent silver raven beak punctures",
+      "mist": "cold grey air",
+      "shard": "black feather barb",
+      "art_kind": "thrust",
+      "spell": "star",
+      "original_art": {
+        "name": "鸦喙穿心",
+        "kind": "thrust",
+        "damage": 2.1,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 180,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "沿瞄准方向突刺。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-90a89584-921e-41f3-80bf-6887d57d4241.png",
+      "atlas": "assets/combat/weapon-reference-v2/601/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-02.png",
+      "sha256": "3d886d13422acc8bd06fae3cbab14c1314b29ffe13081856905305dc19883ab3",
+      "qa": {
+        "cuts": [
+          0,
+          384,
+          768,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            384
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            384
+          ],
+          "art": [
+            0,
+            384,
+            512,
+            768
+          ],
+          "impact": [
+            512,
+            384,
+            1024,
+            768
+          ],
+          "charge": [
+            0,
+            768,
+            512,
+            1152
+          ],
+          "shard": [
+            512,
+            768,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "鸦喙·一线穿心",
+        "desc": "短暂压低重心，沿直线高速穿刺。",
+        "steps": [
+          [
+            0.48,
+            1,
+            290,
+            115,
+            0,
+            0,
+            "finisher",
+            "thrust",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 602,
+      "name": "回环弯刀",
+      "family": 1,
+      "batch": 2,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-504940bb-7bb4-4195-93d8-09fc39effb00.png",
+      "normal": "ivory gold folded silk hook",
+      "heavy": "thick descending silk hook",
+      "finisher": "open returning ivory gold silk crescent",
+      "mist": "warm ivory mist",
+      "shard": "torn silk flap",
+      "art_kind": "circle",
+      "spell": "star",
+      "original_art": {
+        "name": "回环风轮·环",
+        "kind": "circle",
+        "damage": 1.8,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 130,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "环斩周围敌人。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-17b3ef78-47b3-41ed-ac1c-a9db99175872.png",
+      "atlas": "assets/combat/weapon-reference-v2/602/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-02.png",
+      "sha256": "a3c13a94af2b63bf3c7090bc61cc111b415554d0f1b1a411f2b7b979559c34e4",
+      "qa": {
+        "cuts": [
+          0,
+          407,
+          791,
+          1193,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            407
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            407
+          ],
+          "art": [
+            0,
+            407,
+            593,
+            791
+          ],
+          "impact": [
+            593,
+            407,
+            1024,
+            791
+          ],
+          "charge": [
+            0,
+            791,
+            512,
+            1193
+          ],
+          "shard": [
+            512,
+            791,
+            1024,
+            1193
+          ],
+          "mist": [
+            0,
+            1193,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1193,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "绢刃·往返",
+        "desc": "向外甩出绢刃，再反向回卷。",
+        "steps": [
+          [
+            0.35,
+            0.45,
+            230,
+            0,
+            0,
+            -0.3,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.38,
+            0.55,
+            245,
+            -25,
+            0,
+            0.3,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 603,
+      "name": "血棘双刃",
+      "family": 1,
+      "batch": 2,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-bd5d7f5c-0652-4aaf-b3df-3ae04c8e9a8d.png",
+      "normal": "paired offset crimson thorn hooks",
+      "heavy": "inward convergent thorn wedges",
+      "finisher": "crossing broad dark red thorn hooks",
+      "mist": "red grey haze",
+      "shard": "ruby thorn",
+      "art_kind": "thrust",
+      "spell": "star",
+      "original_art": {
+        "name": "血棘刺绣",
+        "kind": "thrust",
+        "damage": 2.2,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 180,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "沿瞄准方向突刺。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-382d6e69-b11a-4986-8b6d-115ac08887a3.png",
+      "atlas": "assets/combat/weapon-reference-v2/603/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-02.png",
+      "sha256": "331db9c99bfe4d54f1076d79495b1921782ebd28d03e4526f3b2fe1ab5d60bb9",
+      "qa": {
+        "cuts": [
+          0,
+          406,
+          768,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            524,
+            406
+          ],
+          "heavy": [
+            524,
+            0,
+            1024,
+            406
+          ],
+          "art": [
+            0,
+            406,
+            604,
+            768
+          ],
+          "impact": [
+            604,
+            406,
+            1024,
+            768
+          ],
+          "charge": [
+            0,
+            768,
+            518,
+            1152
+          ],
+          "shard": [
+            518,
+            768,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "荆棘·交绞",
+        "desc": "两次快速交叉切割，收束成一次重斩。",
+        "steps": [
+          [
+            0.16,
+            0.2,
+            215,
+            0,
+            0,
+            -0.32,
+            "normal",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.15,
+            0.2,
+            215,
+            0,
+            0,
+            0.32,
+            "heavy",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.38,
+            0.6,
+            265,
+            45,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 604,
+      "name": "银月细剑",
+      "family": 1,
+      "batch": 2,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-db6ee3ba-c629-4f28-a62b-47719723fd76.png",
+      "normal": "thin silver lunar sliver",
+      "heavy": "falling narrow silver lunar edge",
+      "finisher": "three staggered silver moon crescents",
+      "mist": "cold grey moon dust",
+      "shard": "silver sliver",
+      "art_kind": "thrust",
+      "spell": "star",
+      "original_art": {
+        "name": "银月返刃",
+        "kind": "thrust",
+        "damage": 2.0,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 180,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "沿瞄准方向突刺。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a75096b5-a009-4717-a822-702d58f8dd8d.png",
+      "atlas": "assets/combat/weapon-reference-v2/604/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-02.png",
+      "sha256": "f23168124db5ae6ae280164716d383c35930d9f3603b5f69f06b8884e649252c",
+      "qa": {
+        "cuts": [
+          0,
+          470,
+          875,
+          1162,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            536,
+            470
+          ],
+          "heavy": [
+            536,
+            0,
+            1024,
+            470
+          ],
+          "art": [
+            0,
+            470,
+            632,
+            875
+          ],
+          "impact": [
+            632,
+            470,
+            1024,
+            875
+          ],
+          "charge": [
+            0,
+            875,
+            512,
+            1162
+          ],
+          "shard": [
+            512,
+            875,
+            1024,
+            1162
+          ],
+          "mist": [
+            0,
+            1162,
+            514,
+            1536
+          ],
+          "trail": [
+            514,
+            1162,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "残月·跃返",
+        "desc": "跃进斩出月弧，后撤时再留一道残月。",
+        "steps": [
+          [
+            0.42,
+            0.65,
+            255,
+            75,
+            42,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.25,
+            0.35,
+            240,
+            -45,
+            0,
+            -0.25,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 605,
+      "name": "烛影短刀",
+      "family": 1,
+      "batch": 3,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-cea1c3e9-bcb6-4aa3-8a64-c1857f7a346f.png",
+      "normal": "short warm ivory wax edge with black trailing smoke",
+      "heavy": "compressed black wax wedge with amber rim",
+      "finisher": "three sweeping burnt wax folds with glowing candle edges",
+      "mist": "charcoal warm grey smoke",
+      "shard": "small black wax chip",
+      "art_kind": "thrust",
+      "spell": "star",
+      "original_art": {
+        "name": "烛影掠火",
+        "kind": "thrust",
+        "damage": 2.1,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 180,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "沿瞄准方向突刺。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-c65eba8e-d909-49c6-a0fe-dd20d0620d0e.png",
+      "atlas": "assets/combat/weapon-reference-v2/605/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-03.png",
+      "sha256": "ca7bc0b9b496d974cedaac314ebb3d9f9524f259b1a48ccf949a6b4b2b14990c",
+      "qa": {
+        "cuts": [
+          0,
+          384,
+          800,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            384
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            384
+          ],
+          "art": [
+            0,
+            384,
+            603,
+            800
+          ],
+          "impact": [
+            603,
+            384,
+            1024,
+            800
+          ],
+          "charge": [
+            0,
+            800,
+            546,
+            1152
+          ],
+          "shard": [
+            546,
+            800,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            523,
+            1536
+          ],
+          "trail": [
+            523,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "烛影·掠灭",
+        "desc": "低身冲过目标，留下骤然熄灭的烛刃。",
+        "steps": [
+          [
+            0.36,
+            1,
+            245,
+            100,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 609,
+      "name": "镜花曲剑",
+      "family": 1,
+      "batch": 3,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-db6ee3ba-c629-4f28-a62b-47719723fd76.png",
+      "normal": "one pale lavender glass arc with offset reflection",
+      "heavy": "two converging mirror plates",
+      "finisher": "three offset mirrored silver lavender crescent facets",
+      "mist": "cool lavender grey haze",
+      "shard": "one clear glass triangular shard",
+      "art_kind": "circle",
+      "spell": "star",
+      "original_art": {
+        "name": "镜花折返·环",
+        "kind": "circle",
+        "damage": 1.9,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 130,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "环斩周围敌人。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-8c11df9f-36c7-493b-b526-a0679950da40.png",
+      "atlas": "assets/combat/weapon-reference-v2/609/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-03.png",
+      "sha256": "565ff5e7853a698e11ca64d971e513aa8de79436e0bba9f25c8d6201d6718aa5",
+      "qa": {
+        "cuts": [
+          0,
+          396,
+          779,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            396
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            396
+          ],
+          "art": [
+            0,
+            396,
+            512,
+            779
+          ],
+          "impact": [
+            512,
+            396,
+            1024,
+            779
+          ],
+          "charge": [
+            0,
+            779,
+            512,
+            1152
+          ],
+          "shard": [
+            512,
+            779,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "镜刃·错身双映",
+        "desc": "左右错身，各留一道相反的镜刃。",
+        "steps": [
+          [
+            0.28,
+            0.5,
+            245,
+            0,
+            0,
+            -0.28,
+            "finisher",
+            "cone",
+            1,
+            75,
+            45
+          ],
+          [
+            0.28,
+            0.5,
+            245,
+            0,
+            0,
+            0.28,
+            "finisher",
+            "cone",
+            1,
+            75,
+            -80
+          ]
+        ]
+      }
+    },
+    {
+      "id": 610,
+      "name": "葬铃仪剑",
+      "family": 1,
+      "batch": 3,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-504940bb-7bb4-4195-93d8-09fc39effb00.png",
+      "normal": "slender bronze slash with a curved sound rib",
+      "heavy": "dense bronze blade edge and three close vibration ribs",
+      "finisher": "open fan of bronze sound ribs and narrow ivory resonance edges",
+      "mist": "warm pale grey incense",
+      "shard": "one bronze bell chip",
+      "art_kind": "thrust",
+      "spell": "star",
+      "original_art": {
+        "name": "葬铃归声",
+        "kind": "thrust",
+        "damage": 2.0,
+        "mana": 16.0,
+        "cooldown": 5.5,
+        "reach": 180,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "沿瞄准方向突刺。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-74685f74-422b-42dc-b885-3fcacfefcb97.png",
+      "atlas": "assets/combat/weapon-reference-v2/610/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-03.png",
+      "sha256": "cdd2ab7dc2266f4439f717cdf48751492106bc5cf790e6a9320c5878aac27775",
+      "qa": {
+        "cuts": [
+          0,
+          384,
+          768,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            384
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            384
+          ],
+          "art": [
+            0,
+            384,
+            591,
+            768
+          ],
+          "impact": [
+            591,
+            384,
+            1024,
+            768
+          ],
+          "charge": [
+            0,
+            768,
+            512,
+            1152
+          ],
+          "shard": [
+            512,
+            768,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "钟鸣·四叠震",
+        "desc": "一次定身起振，三次短促余震沿前方传开。",
+        "steps": [
+          [
+            0.42,
+            0.4,
+            195,
+            0,
+            0,
+            0,
+            "heavy",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.13,
+            0.2,
+            220,
+            0,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.13,
+            0.2,
+            245,
+            0,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.16,
+            0.2,
+            270,
+            0,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 611,
+      "name": "黑曜戒律剑",
+      "family": 1,
+      "batch": 3,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ea889bcc-3c18-47a0-b2f1-c7bb8023ba0d.png",
+      "normal": "short dark obsidian wedge with silver violet rim",
+      "heavy": "solid angular obsidian falling plate",
+      "finisher": "three overlapping angular dark obsidian cutting planes, bright narrow rims",
+      "mist": "dark slate violet dust",
+      "shard": "one glossy black obsidian flake",
+      "art_kind": "thrust",
+      "spell": "star",
+      "original_art": {
+        "name": "黑曜审判",
+        "kind": "thrust",
+        "damage": 2.3,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 180,
+        "radius": 100,
+        "width": 35,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "沿瞄准方向突刺。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-90fd7bbb-0b62-456c-87dc-3d6aac8c5dc3.png",
+      "atlas": "assets/combat/weapon-reference-v2/611/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-03.png",
+      "sha256": "0defc14fa9f65e121f0b37402296b6f30ea628bc7fa404865b0077aed26f141d",
+      "qa": {
+        "cuts": [
+          0,
+          411,
+          790,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            411
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            411
+          ],
+          "art": [
+            0,
+            411,
+            565,
+            790
+          ],
+          "impact": [
+            565,
+            411,
+            1024,
+            790
+          ],
+          "charge": [
+            0,
+            790,
+            534,
+            1152
+          ],
+          "shard": [
+            534,
+            790,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "黑曜·断面",
+        "desc": "蓄势后以完整黑曜断面一击劈落。",
+        "steps": [
+          [
+            0.64,
+            1,
+            265,
+            32,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 613,
+      "name": "断潮巨刃",
+      "family": 2,
+      "batch": 3,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-a6489fc0-9198-4536-bdbc-c0a220f0349f.png",
+      "normal": "short translucent teal water hook",
+      "heavy": "heavy folded teal water crest with white foam lip",
+      "finisher": "open layered turquoise wave crest and white edge spray",
+      "mist": "soft sea grey spray",
+      "shard": "one clear water droplet",
+      "art_kind": "cone",
+      "spell": "star",
+      "original_art": {
+        "name": "断潮开山",
+        "kind": "cone",
+        "damage": 1.7,
+        "mana": 24.0,
+        "cooldown": 6.5,
+        "reach": 220,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "震击前方扇面。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-9267b306-e1df-46c8-807d-aeb6981f7556.png",
+      "atlas": "assets/combat/weapon-reference-v2/613/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-03.png",
+      "sha256": "a78ba122a4f8357a101a9dc64b2f3436176044d741b957925b35d45317f5f47e",
+      "qa": {
+        "cuts": [
+          0,
+          292,
+          587,
+          810,
+          1024
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            768,
+            292
+          ],
+          "heavy": [
+            768,
+            0,
+            1536,
+            292
+          ],
+          "art": [
+            0,
+            292,
+            768,
+            587
+          ],
+          "impact": [
+            768,
+            292,
+            1536,
+            587
+          ],
+          "charge": [
+            0,
+            587,
+            768,
+            810
+          ],
+          "shard": [
+            768,
+            587,
+            1536,
+            810
+          ],
+          "mist": [
+            0,
+            810,
+            768,
+            1024
+          ],
+          "trail": [
+            768,
+            810,
+            1536,
+            1024
+          ]
+        },
+        "max_solid_gutter_coverage": 0.03463541666666667,
+        "all_risks": [
+          0.03463541666666667,
+          0.0,
+          0.0005208333333333333,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "潮涌·推浪",
+        "desc": "前冲推起一道厚重潮峰。",
+        "steps": [
+          [
+            0.62,
+            1,
+            285,
+            95,
+            20,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 615,
+      "name": "熔炉巨锤",
+      "family": 2,
+      "batch": 4,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c416c1d5-cf07-4a99-a7be-8388d24f5c97.png",
+      "normal": "short low molten orange slag shear",
+      "heavy": "one heavy charcoal hammer contact with thin molten seams",
+      "finisher": "forward fan of dark furnace slag plates and amber thin seams",
+      "mist": "dense soft brown grey dust",
+      "shard": "one charred slag fragment",
+      "art_kind": "circle",
+      "spell": "star",
+      "original_art": {
+        "name": "熔炉倾覆·圆",
+        "kind": "circle",
+        "damage": 1.7,
+        "mana": 26.0,
+        "cooldown": 7.0,
+        "reach": 170,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "环斩周围敌人。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a518ab40-73ff-45ee-9053-72d6e49b46a9.png",
+      "atlas": "assets/combat/weapon-reference-v2/615/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-04.png",
+      "sha256": "d298b11542bb6f48b1b2abfcd301adaac8a1bec8ecf6984ed8fb0925d602a211",
+      "qa": {
+        "cuts": [
+          0,
+          406,
+          814,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            406
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            406
+          ],
+          "art": [
+            0,
+            406,
+            562,
+            814
+          ],
+          "impact": [
+            562,
+            406,
+            1024,
+            814
+          ],
+          "charge": [
+            0,
+            814,
+            514,
+            1152
+          ],
+          "shard": [
+            514,
+            814,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "熔炉·锤震",
+        "desc": "重锤落地后接一次短促的炉渣反冲。",
+        "steps": [
+          [
+            0.58,
+            0.8,
+            275,
+            30,
+            32,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.18,
+            0.2,
+            230,
+            0,
+            0,
+            0,
+            "heavy",
+            "circle",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 616,
+      "name": "霜骨战斧",
+      "family": 2,
+      "batch": 4,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "normal": "compact ivory ice axe hook",
+      "heavy": "dense bone-white icy axe wedge",
+      "finisher": "three forward ivory ice ridges with cold blue transparent planes",
+      "mist": "low cold grey frost mist",
+      "shard": "one pale ivory ice splinter",
+      "art_kind": "cone",
+      "spell": "star",
+      "original_art": {
+        "name": "霜骨破庭",
+        "kind": "cone",
+        "damage": 1.8,
+        "mana": 24.0,
+        "cooldown": 6.5,
+        "reach": 220,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "震击前方扇面。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:/Users/wangk/.codex/generated_images/01a1575a-b51f-7823-8a0e-d02dc8b742de/exec-503e3525-5956-4d71-aa61-21ad9c734b8b.png",
+      "atlas": "assets/combat/weapon-reference-v2/616/atlas-v2.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-04.png",
+      "sha256": "51591640e0b785d93ad69d8c688ace9806531775c6b578bfa2c374d6be080797",
+      "qa": {
+        "cuts": [
+          0,
+          390,
+          768,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            390
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            390
+          ],
+          "art": [
+            0,
+            390,
+            530,
+            768
+          ],
+          "impact": [
+            530,
+            390,
+            1024,
+            768
+          ],
+          "charge": [
+            0,
+            768,
+            512,
+            1152
+          ],
+          "shard": [
+            512,
+            768,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "霜骨·冰脊",
+        "desc": "跃落一击，沿前方顶出冰脊。",
+        "steps": [
+          [
+            0.65,
+            1,
+            280,
+            65,
+            48,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 618,
+      "name": "血狱斩首刃",
+      "family": 2,
+      "batch": 4,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-bd5d7f5c-0652-4aaf-b3df-3ae04c8e9a8d.png",
+      "normal": "low dark blood red execution edge",
+      "heavy": "steep tall crimson guillotine blade face",
+      "finisher": "broad falling dark red execution crescent with few thin crimson tears",
+      "mist": "dark muted red mist",
+      "shard": "one dark red flake",
+      "art_kind": "cone",
+      "spell": "star",
+      "original_art": {
+        "name": "血狱落冠",
+        "kind": "cone",
+        "damage": 1.8,
+        "mana": 26.0,
+        "cooldown": 7.0,
+        "reach": 220,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "震击前方扇面。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-e29b4136-7439-4196-83d3-cd56c4c006ef.png",
+      "atlas": "assets/combat/weapon-reference-v2/618/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-04.png",
+      "sha256": "7559d5046b05f0fd16f13bb02483efaa0b5f1607613ec3fed389402390e2b4d2",
+      "qa": {
+        "cuts": [
+          0,
+          457,
+          879,
+          1162,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            543,
+            457
+          ],
+          "heavy": [
+            543,
+            0,
+            1024,
+            457
+          ],
+          "art": [
+            0,
+            457,
+            597,
+            879
+          ],
+          "impact": [
+            597,
+            457,
+            1024,
+            879
+          ],
+          "charge": [
+            0,
+            879,
+            575,
+            1162
+          ],
+          "shard": [
+            575,
+            879,
+            1024,
+            1162
+          ],
+          "mist": [
+            0,
+            1162,
+            560,
+            1536
+          ],
+          "trail": [
+            560,
+            1162,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "断罪·铡落",
+        "desc": "长蓄势后跃进，铡刃一次落下。",
+        "steps": [
+          [
+            0.78,
+            1,
+            290,
+            85,
+            52,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 619,
+      "name": "星陨石槌",
+      "family": 2,
+      "batch": 4,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2097f3bb-e91a-4570-ab48-a2b587630c28.png",
+      "normal": "short grey starstone hammer wake with tiny gold flecks",
+      "heavy": "one dark stone slab shock with fine pale gold seams",
+      "finisher": "layered open fan of dark starstone plates with tiny gold star flecks",
+      "mist": "soft mineral grey dust",
+      "shard": "one grey stone chip with tiny gold fleck",
+      "art_kind": "circle",
+      "spell": "star",
+      "original_art": {
+        "name": "星陨断层·圆",
+        "kind": "circle",
+        "damage": 1.6,
+        "mana": 26.0,
+        "cooldown": 7.0,
+        "reach": 170,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "环斩周围敌人。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-17bc273d-678f-42a7-aa30-a6059968986b.png",
+      "atlas": "assets/combat/weapon-reference-v2/619/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-04.png",
+      "sha256": "8ce2c74255443b99e455f2a54b59fb3e52c1d556f79d9107f9eb39f1488bcd38",
+      "qa": {
+        "cuts": [
+          0,
+          397,
+          805,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            397
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            397
+          ],
+          "art": [
+            0,
+            397,
+            532,
+            805
+          ],
+          "impact": [
+            532,
+            397,
+            1024,
+            805
+          ],
+          "charge": [
+            0,
+            805,
+            512,
+            1152
+          ],
+          "shard": [
+            512,
+            805,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            514,
+            1536
+          ],
+          "trail": [
+            514,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "星陨·震荡",
+        "desc": "重击星石，随后三次衰减石浪向外展开。",
+        "steps": [
+          [
+            0.48,
+            0.55,
+            260,
+            30,
+            36,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.17,
+            0.2,
+            275,
+            0,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.17,
+            0.15,
+            285,
+            0,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.21,
+            0.1,
+            290,
+            0,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 620,
+      "name": "余烬壁刃",
+      "family": 2,
+      "batch": 4,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c416c1d5-cf07-4a99-a7be-8388d24f5c97.png",
+      "normal": "charcoal low shearing edge with ember rim",
+      "heavy": "one thick charcoal wall plate with glowing cracks",
+      "finisher": "forward broken fan of charred wall plates with fine amber edges",
+      "mist": "low charcoal brown dust",
+      "shard": "one black charcoal flake",
+      "art_kind": "cone",
+      "spell": "star",
+      "original_art": {
+        "name": "余烬回城",
+        "kind": "cone",
+        "damage": 1.8,
+        "mana": 22.0,
+        "cooldown": 6.5,
+        "reach": 220,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "震击前方扇面。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-58496784-2cb7-46bc-b77a-5707036790ed.png",
+      "atlas": "assets/combat/weapon-reference-v2/620/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-04.png",
+      "sha256": "46aa395ea34814da1d96da9816e5dc22413d587aa0da755c35d1be244f1fe278",
+      "qa": {
+        "cuts": [
+          0,
+          407,
+          805,
+          1152,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            407
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            407
+          ],
+          "art": [
+            0,
+            407,
+            547,
+            805
+          ],
+          "impact": [
+            547,
+            407,
+            1024,
+            805
+          ],
+          "charge": [
+            0,
+            805,
+            512,
+            1152
+          ],
+          "shard": [
+            512,
+            805,
+            1024,
+            1152
+          ],
+          "mist": [
+            0,
+            1152,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1152,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "城垣·破壁",
+        "desc": "向前猛推断壁，缓慢而沉重的一击。",
+        "steps": [
+          [
+            0.68,
+            1,
+            285,
+            70,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 621,
+      "name": "风暴战戟",
+      "family": 2,
+      "batch": 5,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-a6489fc0-9198-4536-bdbc-c0a220f0349f.png",
+      "normal": "thin pale green long halberd wind cut",
+      "heavy": "one stretched folded wind banner sheet",
+      "finisher": "open three-lobed pale jade wind banner sweep with thin white cutting edge",
+      "mist": "airy pale green grey wisps",
+      "shard": "one torn green cloth thread",
+      "art_kind": "cone",
+      "spell": "star",
+      "original_art": {
+        "name": "风暴折旗",
+        "kind": "cone",
+        "damage": 1.7,
+        "mana": 24.0,
+        "cooldown": 6.5,
+        "reach": 220,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "震击前方扇面。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-54322045-c7bc-4f3a-ba14-8f1473cc6fa9.png",
+      "atlas": "assets/combat/weapon-reference-v2/621/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-05.png",
+      "sha256": "fd15807aacb7f99f5a4aca83393e520e8275ccbbcd2a3e661a9aeeec40f2bb23",
+      "qa": {
+        "cuts": [
+          0,
+          428,
+          812,
+          1168,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            428
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            428
+          ],
+          "art": [
+            0,
+            428,
+            512,
+            812
+          ],
+          "impact": [
+            512,
+            428,
+            1024,
+            812
+          ],
+          "charge": [
+            0,
+            812,
+            512,
+            1168
+          ],
+          "shard": [
+            512,
+            812,
+            1024,
+            1168
+          ],
+          "mist": [
+            0,
+            1168,
+            520,
+            1536
+          ],
+          "trail": [
+            520,
+            1168,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "青岚·横扫返挑",
+        "desc": "长柄横扫后反手上挑。",
+        "steps": [
+          [
+            0.34,
+            0.45,
+            270,
+            45,
+            0,
+            -0.3,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ],
+          [
+            0.34,
+            0.55,
+            285,
+            15,
+            28,
+            0.18,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 622,
+      "name": "冥潮仪镰",
+      "family": 2,
+      "batch": 5,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c34b8121-6315-4d18-ab15-540d8ca8806d.png",
+      "normal": "short deep purple inward soul hook",
+      "heavy": "one heavy smoky violet hooked blade face",
+      "finisher": "three open interwoven violet soul cloth hooks with few blue ghost motes",
+      "mist": "soft grey purple soul mist",
+      "shard": "one violet translucent soul cloth scrap",
+      "art_kind": "circle",
+      "spell": "star",
+      "original_art": {
+        "name": "冥潮迁葬·圆",
+        "kind": "circle",
+        "damage": 1.6,
+        "mana": 22.0,
+        "cooldown": 6.0,
+        "reach": 170,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "环斩周围敌人。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-41444ff6-ecd7-47af-a6e3-fd32e7b8d902.png",
+      "atlas": "assets/combat/weapon-reference-v2/622/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-05.png",
+      "sha256": "baff58ca915144be58ed1ee7c65c013b89010f51fab5119b3c807c14895188cf",
+      "qa": {
+        "cuts": [
+          0,
+          416,
+          846,
+          1158,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            416
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            416
+          ],
+          "art": [
+            0,
+            416,
+            610,
+            846
+          ],
+          "impact": [
+            610,
+            416,
+            1024,
+            846
+          ],
+          "charge": [
+            0,
+            846,
+            549,
+            1158
+          ],
+          "shard": [
+            549,
+            846,
+            1024,
+            1158
+          ],
+          "mist": [
+            0,
+            1158,
+            545,
+            1536
+          ],
+          "trail": [
+            545,
+            1158,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "幽镰·环收",
+        "desc": "环形勾取后后撤收镰。",
+        "steps": [
+          [
+            0.37,
+            0.4,
+            250,
+            0,
+            0,
+            0,
+            "heavy",
+            "circle",
+            1,
+            75,
+            0
+          ],
+          [
+            0.42,
+            0.6,
+            280,
+            -35,
+            0,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 623,
+      "name": "无名王剑",
+      "family": 2,
+      "batch": 5,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2097f3bb-e91a-4570-ab48-a2b587630c28.png",
+      "normal": "short old silver gold steel cut",
+      "heavy": "one broad aged steel falling edge",
+      "finisher": "three staggered worn silver gold crown blade planes with tiny metal chips",
+      "mist": "low warm grey mineral dust",
+      "shard": "one old gold steel plate chip",
+      "art_kind": "cone",
+      "spell": "star",
+      "original_art": {
+        "name": "无名终誓",
+        "kind": "cone",
+        "damage": 1.9,
+        "mana": 26.0,
+        "cooldown": 7.0,
+        "reach": 220,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "震击前方扇面。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-8d02cd5c-de01-40c0-9fb3-4f2b72fbcd35.png",
+      "atlas": "assets/combat/weapon-reference-v2/623/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-05.png",
+      "sha256": "582fe909907c3b40416a9711ac038932c3d185ace4a3c65de2fcec22e1e740a1",
+      "qa": {
+        "cuts": [
+          0,
+          466,
+          897,
+          1160,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            540,
+            466
+          ],
+          "heavy": [
+            540,
+            0,
+            1024,
+            466
+          ],
+          "art": [
+            0,
+            466,
+            592,
+            897
+          ],
+          "impact": [
+            592,
+            466,
+            1024,
+            897
+          ],
+          "charge": [
+            0,
+            897,
+            623,
+            1160
+          ],
+          "shard": [
+            623,
+            897,
+            1024,
+            1160
+          ],
+          "mist": [
+            0,
+            1160,
+            512,
+            1536
+          ],
+          "trail": [
+            512,
+            1160,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "王刃·裁断",
+        "desc": "沉稳迈步后以王刃完整劈落。",
+        "steps": [
+          [
+            0.7,
+            1,
+            285,
+            60,
+            24,
+            0,
+            "finisher",
+            "cone",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 624,
+      "name": "守夜步枪",
+      "family": 0,
+      "batch": 5,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-b5348117-46ce-4811-b52d-b3223ab7b90e.png",
+      "normal": "small cold silver rifle muzzle needle flash",
+      "heavy": "one concentrated narrow silver muzzle flash",
+      "finisher": "three silver muzzle spokes and small cold gas puff",
+      "mist": "pale grey ballistic smoke",
+      "shard": "one brass metal chip",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "银鸦齐射",
+        "kind": "volley",
+        "damage": 2.4,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-b9e72829-9ff6-48ac-88d6-ddcb7e57417f.png",
+      "atlas": "assets/combat/weapon-reference-v2/624/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-05.png",
+      "sha256": "77014388cdcfdc8de5c96d56655bfc7496bf54bdfa1155a7d2ca56af898da832",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            614
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "寒鸦·点射",
+        "desc": "短促四连点射，最后一发稍作瞄准。",
+        "steps": [
+          [
+            0.22,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.12,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.12,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.3,
+            0.4,
+            650,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 625,
+      "name": "暮羽长弓",
+      "family": 0,
+      "batch": 5,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c67a3c19-e624-4ca9-81a7-328e8f00d6e9.png",
+      "normal": "small teal white feathered bow release",
+      "heavy": "one taut long teal feather release",
+      "finisher": "open three-feather teal bow release fan",
+      "mist": "soft sea green grey air",
+      "shard": "one teal feather barb",
+      "art_kind": "volley",
+      "spell": "arrow",
+      "original_art": {
+        "name": "暮羽追魂·贯",
+        "kind": "volley",
+        "damage": 2.0,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 3,
+        "spell": "arrow",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-601eee4c-133e-4ad7-bd13-13387e88a433.png",
+      "atlas": "assets/combat/weapon-reference-v2/625/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-05.png",
+      "sha256": "077b7b2e2fb3b7e35359e3f55f728ab35149372f9e07f6cfd896e0f97c1a18ae",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          668,
+          959,
+          1244,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            668
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            668
+          ],
+          "charge": [
+            0,
+            668,
+            512,
+            959
+          ],
+          "shard": [
+            512,
+            668,
+            1024,
+            959
+          ],
+          "mist": [
+            0,
+            959,
+            512,
+            1244
+          ],
+          "trail": [
+            512,
+            959,
+            1024,
+            1244
+          ],
+          "projectile": [
+            0,
+            1244,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1244,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "暮羽·追魂",
+        "desc": "拉满弓弦，一箭贯穿。",
+        "steps": [
+          [
+            0.64,
+            1,
+            700,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 626,
+      "name": "血棘连弩",
+      "family": 0,
+      "batch": 6,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ea17a0b9-8c01-4a15-acb6-ad94325b1d5a.png",
+      "normal": "small crimson thorn crossbow release",
+      "heavy": "concentrated dark crimson thorn release",
+      "finisher": "three tiny thorn tipped crimson release spokes",
+      "mist": "muted red grey air",
+      "shard": "one crimson thorn chip",
+      "art_kind": "volley",
+      "spell": "arrow",
+      "original_art": {
+        "name": "血棘攒射",
+        "kind": "volley",
+        "damage": 2.4,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "arrow",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-2c98c83f-98bd-4f90-ad59-44a0d286a392.png",
+      "atlas": "assets/combat/weapon-reference-v2/626/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-06.png",
+      "sha256": "895c97d866622037389983e3b3e9fef41f484e8d9be299291ab9703d5c091a8a",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          625,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            625
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            625
+          ],
+          "charge": [
+            0,
+            625,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            625,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "血棘·双簇",
+        "desc": "两簇交错的荆棘箭，侧移后补射。",
+        "steps": [
+          [
+            0.28,
+            0.5,
+            600,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            3,
+            75,
+            0
+          ],
+          [
+            0.32,
+            0.5,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            3,
+            75,
+            35
+          ]
+        ]
+      }
+    },
+    {
+      "id": 627,
+      "name": "烬鸦火铳",
+      "family": 0,
+      "batch": 6,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-cea1c3e9-bcb6-4aa3-8a64-c1857f7a346f.png",
+      "normal": "short amber black cinder muzzle flash",
+      "heavy": "one dense ember-cored muzzle tongue",
+      "finisher": "three forked ember muzzle tongues with short black smoke curl",
+      "mist": "soft charcoal grey gun smoke",
+      "shard": "one burnt ember flake",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "烬鸦引火",
+        "kind": "volley",
+        "damage": 2.1,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-2d0130cd-2bd2-4387-a4b5-c44bb76c9ee3.png",
+      "atlas": "assets/combat/weapon-reference-v2/627/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-06.png",
+      "sha256": "00bb875ef8fb8dcc858de7a7e207bdb8f7b42c1470163066e7fd283070c506a8",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            545,
+            614
+          ],
+          "impact": [
+            545,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "焰鸦·爆响",
+        "desc": "近距单次扇形齐射，后坐力推人后退。",
+        "steps": [
+          [
+            0.38,
+            1,
+            540,
+            -35,
+            0,
+            0,
+            "finisher",
+            "volley",
+            5,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 628,
+      "name": "霜月猎弓",
+      "family": 0,
+      "batch": 6,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "normal": "short pale blue ice bowstring flash",
+      "heavy": "one crystalline ice needle release",
+      "finisher": "three fine ice vane release spokes",
+      "mist": "soft cold grey frost air",
+      "shard": "one icy feather vane",
+      "art_kind": "volley",
+      "spell": "arrow",
+      "original_art": {
+        "name": "霜月封喉·贯",
+        "kind": "volley",
+        "damage": 1.9,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 3,
+        "spell": "arrow",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-557e06ad-b537-41b2-8c20-95d1b3ef533e.png",
+      "atlas": "assets/combat/weapon-reference-v2/628/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-06.png",
+      "sha256": "f896c7a9460d40ba39916b8a13e82b626e955fa9ff8272d8961ad3838ca98f63",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            516,
+            614
+          ],
+          "impact": [
+            516,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "霜翎·封线",
+        "desc": "蓄力一次放出五道冰箭封锁前方。",
+        "steps": [
+          [
+            0.62,
+            1,
+            650,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            5,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 629,
+      "name": "雷翼卡宾枪",
+      "family": 0,
+      "batch": 6,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-e03632b1-4f07-496f-b59a-f1f3994529c1.png",
+      "normal": "very compact lilac silver electric muzzle spike",
+      "heavy": "one concentrated white violet electric muzzle needle",
+      "finisher": "three short branching white violet release spokes",
+      "mist": "faint lavender grey ion air",
+      "shard": "one silver metal sliver",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "雷翼点射",
+        "kind": "volley",
+        "damage": 2.3,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-fc15f236-1656-4f9f-b058-c45f14441871.png",
+      "atlas": "assets/combat/weapon-reference-v2/629/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-06.png",
+      "sha256": "50e7016efe428f89dc7b16d38fb29486e3be76eba4b3114cdf1c29d493e93dbe",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          615,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            615
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            615
+          ],
+          "charge": [
+            0,
+            615,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            615,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "鸣电·急雨",
+        "desc": "五次快速电脉冲，节奏紧凑。",
+        "steps": [
+          [
+            0.22,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.1,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.1,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.1,
+            0.2,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.16,
+            0.2,
+            650,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 630,
+      "name": "黑曜长枪",
+      "family": 0,
+      "batch": 6,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-e201d39b-f971-4a24-9842-c79226daac5f.png",
+      "normal": "short black purple armour piercing muzzle wedge",
+      "heavy": "one dense black obsidian muzzle wedge with narrow violet edge",
+      "finisher": "three dark angular muzzle splinters with silver purple rim",
+      "mist": "soft dark slate grey smoke",
+      "shard": "one black obsidian fleck",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "黑曜定裁·贯",
+        "kind": "volley",
+        "damage": 1.8,
+        "mana": 22.0,
+        "cooldown": 6.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 3,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-c9429b41-63c8-4d72-aa7f-d899c85e095e.png",
+      "atlas": "assets/combat/weapon-reference-v2/630/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-06.png",
+      "sha256": "45dbe336f93edc9146f231d4c711bbd47a1d6f5205ac096a2a4b7c32ebc6d8a4",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          624,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            624
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            624
+          ],
+          "charge": [
+            0,
+            624,
+            523,
+            922
+          ],
+          "shard": [
+            523,
+            624,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "黑曜·破甲",
+        "desc": "长瞄准后射出一发破甲弹。",
+        "steps": [
+          [
+            0.72,
+            1,
+            740,
+            -18,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 631,
+      "name": "镜轨双铳",
+      "family": 0,
+      "batch": 7,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-db6ee3ba-c629-4f28-a62b-47719723fd76.png",
+      "normal": "TWO short silver lavender mirror muzzle spikes",
+      "heavy": "two converging mirrored silver muzzle wedges",
+      "finisher": "three offset pairs of reflective muzzle spokes",
+      "mist": "cool pale grey smoke",
+      "shard": "one small reflective glass chip",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "镜轨交叉",
+        "kind": "volley",
+        "damage": 2.2,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a0640438-78f5-4988-8313-c16991ceedea.png",
+      "atlas": "assets/combat/weapon-reference-v2/631/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-07.png",
+      "sha256": "6bf271f077f7d286ff78b707d07fc5e84c6561b40dc1b7c18ef8516959b37bb2",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          676,
+          925,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            569,
+            676
+          ],
+          "impact": [
+            569,
+            307,
+            1024,
+            676
+          ],
+          "charge": [
+            0,
+            676,
+            512,
+            925
+          ],
+          "shard": [
+            512,
+            676,
+            1024,
+            925
+          ],
+          "mist": [
+            0,
+            925,
+            549,
+            1229
+          ],
+          "trail": [
+            549,
+            925,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "镜铳·交映",
+        "desc": "左右错身交替双枪齐射。",
+        "steps": [
+          [
+            0.25,
+            0.5,
+            600,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            2,
+            75,
+            35
+          ],
+          [
+            0.25,
+            0.5,
+            600,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            2,
+            75,
+            -70
+          ]
+        ]
+      }
+    },
+    {
+      "id": 632,
+      "name": "逐风短弓",
+      "family": 0,
+      "batch": 7,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-7835d2fb-c135-4b58-bcb1-cb8355ed9d44.png",
+      "normal": "short pale olive white feather bow flash",
+      "heavy": "one fine bright wind needle release",
+      "finisher": "three swept wind feather release spokes",
+      "mist": "faint olive grey air",
+      "shard": "one small pale feather barb",
+      "art_kind": "volley",
+      "spell": "arrow",
+      "original_art": {
+        "name": "逐风三羽",
+        "kind": "volley",
+        "damage": 2.2,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "arrow",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a7e8240d-fa07-4b2b-9533-33de5f4dbc4f.png",
+      "atlas": "assets/combat/weapon-reference-v2/632/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-07.png",
+      "sha256": "43dc5a6e40d385cc216a7a72464d713637d762072c2157bcdeb4c867822c2f23",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          628,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            563,
+            628
+          ],
+          "impact": [
+            563,
+            307,
+            1024,
+            628
+          ],
+          "charge": [
+            0,
+            628,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            628,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "风翎·掠射",
+        "desc": "侧滑时一次放出宽幅羽箭。",
+        "steps": [
+          [
+            0.4,
+            1,
+            630,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            5,
+            75,
+            65
+          ]
+        ]
+      }
+    },
+    {
+      "id": 633,
+      "name": "断誓穿甲枪",
+      "family": 0,
+      "batch": 7,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-2808c8bc-f995-43bd-8c4b-b4efe7df526c.png",
+      "normal": "small bronze gold muzzle spike with tiny broken red seal",
+      "heavy": "one concentrated bronze sabot release",
+      "finisher": "three narrow bronze release spokes with small red wax chips",
+      "mist": "warm grey powder smoke",
+      "shard": "one brass sabot chip",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "断誓破甲·贯",
+        "kind": "volley",
+        "damage": 1.9,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 3,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-344515d1-8a75-4957-8239-af91a715ffc2.png",
+      "atlas": "assets/combat/weapon-reference-v2/633/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-07.png",
+      "sha256": "1c8ff859d06afe7a76db0e67e1b194e052c4d3e053879421f6c97fe559d16afd",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            614
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            507,
+            1536
+          ],
+          "projectile_art": [
+            507,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "封印·破甲",
+        "desc": "定点压缩火药，单发贯穿封印。",
+        "steps": [
+          [
+            0.66,
+            1,
+            720,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 634,
+      "name": "葬铃灵弩",
+      "family": 0,
+      "batch": 7,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-504940bb-7bb4-4195-93d8-09fc39effb00.png",
+      "normal": "small bronze ivory spirit crossbow release",
+      "heavy": "one narrow bronze resonant release with sound rib",
+      "finisher": "three bronze ivory release spokes and fine sound ribs",
+      "mist": "pale warm grey incense",
+      "shard": "one bronze vane chip",
+      "art_kind": "volley",
+      "spell": "arrow",
+      "original_art": {
+        "name": "葬铃送行",
+        "kind": "volley",
+        "damage": 2.1,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "arrow",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-904c1508-8a54-4016-b774-18cb073fa57f.png",
+      "atlas": "assets/combat/weapon-reference-v2/634/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-07.png",
+      "sha256": "5e20920d92ddcca82ef3a0fb7fccacf62a0bd4c47fec11cc4af6d85e85c66866",
+      "qa": {
+        "cuts": [
+          0,
+          311,
+          633,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            311
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            311
+          ],
+          "art": [
+            0,
+            311,
+            512,
+            633
+          ],
+          "impact": [
+            512,
+            311,
+            1024,
+            633
+          ],
+          "charge": [
+            0,
+            633,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            633,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "鸣钟·回响箭",
+        "desc": "一发引弦，停顿后两箭回响。",
+        "steps": [
+          [
+            0.3,
+            0.4,
+            620,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            1,
+            75,
+            0
+          ],
+          [
+            0.4,
+            0.6,
+            640,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            2,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 635,
+      "name": "晨曦信号枪",
+      "family": 0,
+      "batch": 7,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-cea1c3e9-bcb6-4aa3-8a64-c1857f7a346f.png",
+      "normal": "small orange white signal flare muzzle tongue",
+      "heavy": "one dense amber signal flare release",
+      "finisher": "three warm gold muzzle tongues with small star flecks",
+      "mist": "soft warm grey flare smoke",
+      "shard": "one tiny gold spark chip",
+      "art_kind": "volley",
+      "spell": "bullet",
+      "original_art": {
+        "name": "晨曦引路",
+        "kind": "volley",
+        "damage": 2.0,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 3,
+        "pierce": 1,
+        "spell": "bullet",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-b8ada101-1cec-44dc-ae00-085e57400be6.png",
+      "atlas": "assets/combat/weapon-reference-v2/635/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-07.png",
+      "sha256": "97e5e6f504dee9ad6a79c8ea690be095de4d7a8eaa9d34111eec16b9e2380ce4",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            614
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "信标·照路",
+        "desc": "一次发射三枚扇形信号弹。",
+        "steps": [
+          [
+            0.48,
+            1,
+            580,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            3,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 636,
+      "name": "星辉法杖",
+      "family": 3,
+      "batch": 8,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-d9193724-198f-408e-a704-c7295158c338.png",
+      "normal": "small lavender star focus pulse",
+      "heavy": "one compact silver purple star lance release",
+      "finisher": "long lavender silver stream with three small aligned star contacts",
+      "mist": "faint lavender grey star dust",
+      "shard": "one tiny crystalline star chip",
+      "art_kind": "beam",
+      "spell": "star",
+      "original_art": {
+        "name": "星辉贯流·线",
+        "kind": "beam",
+        "damage": 2.0,
+        "mana": 18.0,
+        "cooldown": 5.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "贯穿前方直线。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-98a792ef-d292-4b87-b6c8-7f7928d8ad72.png",
+      "atlas": "assets/combat/weapon-reference-v2/636/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-08.png",
+      "sha256": "dc397e3e6125741acd0d841054e565d1c838c5d33d1845ee5231a7564d954afb",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            558,
+            614
+          ],
+          "impact": [
+            558,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "星辉·贯流",
+        "desc": "短暂聚星后，一束细长星辉贯穿前方。",
+        "steps": [
+          [
+            0.56,
+            1,
+            390,
+            0,
+            0,
+            0,
+            "finisher",
+            "beam",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 637,
+      "name": "赤陨法杖",
+      "family": 3,
+      "batch": 8,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c416c1d5-cf07-4a99-a7be-8388d24f5c97.png",
+      "normal": "small molten rock seed release",
+      "heavy": "one dense ember rock focus release",
+      "finisher": "one descending dark meteor shell and compact amber contact fan",
+      "mist": "soft charcoal brown smoke",
+      "shard": "one black meteor rock fragment",
+      "art_kind": "burst",
+      "spell": "meteor",
+      "original_art": {
+        "name": "赤陨坠星",
+        "kind": "burst",
+        "damage": 1.6,
+        "mana": 26.0,
+        "cooldown": 7.0,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "meteor",
+        "desc": "在瞄准落点产生法术爆发。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-48cd2efa-209c-460f-a144-595b2bf6045c.png",
+      "atlas": "assets/combat/weapon-reference-v2/637/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-08.png",
+      "sha256": "a7829b3bce4d5501b4cc0faf3bbf9ce1ee40e0a73f5ab9a89e16bc4419ebd66e",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          645,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            547,
+            645
+          ],
+          "impact": [
+            547,
+            307,
+            1024,
+            645
+          ],
+          "charge": [
+            0,
+            645,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            645,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            520,
+            1229
+          ],
+          "trail": [
+            520,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "陨火·坠落",
+        "desc": "在瞄准位置落下一颗陨石，单次爆裂。",
+        "steps": [
+          [
+            0.76,
+            1,
+            345,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            78,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 638,
+      "name": "霜针短杖",
+      "family": 3,
+      "batch": 8,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ac059584-d5ad-4e22-9dfd-91c5e86a6bf6.png",
+      "normal": "small white blue frost needle release",
+      "heavy": "one tight clustered ice needle focus",
+      "finisher": "five finely spaced white blue frost needle spokes",
+      "mist": "soft cold grey mist",
+      "shard": "one tiny blue ice splinter",
+      "art_kind": "volley",
+      "spell": "needle",
+      "original_art": {
+        "name": "霜针暴雨·散",
+        "kind": "volley",
+        "damage": 2.4,
+        "mana": 16.0,
+        "cooldown": 5.0,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 5,
+        "pierce": 1,
+        "spell": "scatter",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-0af5e454-c8ce-41b6-a08e-e7c005368455.png",
+      "atlas": "assets/combat/weapon-reference-v2/638/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-08.png",
+      "sha256": "f05e7940b66693382a3b2348aee3c16abbc3efefe04121f2951e0e0458e8ecdf",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          654,
+          931,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            542,
+            654
+          ],
+          "impact": [
+            542,
+            307,
+            1024,
+            654
+          ],
+          "charge": [
+            0,
+            654,
+            512,
+            931
+          ],
+          "shard": [
+            512,
+            654,
+            1024,
+            931
+          ],
+          "mist": [
+            0,
+            931,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            931,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "霜针·骤雨",
+        "desc": "两阵快慢相间的冰针齐射。",
+        "steps": [
+          [
+            0.3,
+            0.35,
+            370,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            3,
+            75,
+            0
+          ],
+          [
+            0.42,
+            0.65,
+            400,
+            0,
+            0,
+            0,
+            "finisher",
+            "volley",
+            5,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 639,
+      "name": "鸣雷之杖",
+      "family": 3,
+      "batch": 8,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ff66f7ba-0eb0-4ed1-bc77-b5edf32a9477.png",
+      "normal": "small sharp white violet lightning focus",
+      "heavy": "one compact branching violet focus",
+      "finisher": "one forked white violet lightning contact crown with dark central gap",
+      "mist": "faint lavender grey ion mist",
+      "shard": "one tiny violet white spark shard",
+      "art_kind": "burst",
+      "spell": "chain",
+      "original_art": {
+        "name": "鸣雷连锁",
+        "kind": "burst",
+        "damage": 1.8,
+        "mana": 22.0,
+        "cooldown": 6.0,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "chain",
+        "desc": "在瞄准落点产生法术爆发。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-22f92abf-8a26-4fb1-83b8-2cc3463a8b9d.png",
+      "atlas": "assets/combat/weapon-reference-v2/639/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-08.png",
+      "sha256": "185ec01f84a15daf555283cf98c9876e7d1e78e31d6972107ec577142e6b7259",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          614,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            524,
+            614
+          ],
+          "impact": [
+            524,
+            307,
+            1024,
+            614
+          ],
+          "charge": [
+            0,
+            614,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            614,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "雷枝·连闪",
+        "desc": "同一区域四次短促递减落雷。",
+        "steps": [
+          [
+            0.36,
+            0.4,
+            350,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            62,
+            0
+          ],
+          [
+            0.12,
+            0.25,
+            350,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            65,
+            0
+          ],
+          [
+            0.14,
+            0.2,
+            350,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            68,
+            0
+          ],
+          [
+            0.18,
+            0.15,
+            350,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            72,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 640,
+      "name": "月弧法杖",
+      "family": 3,
+      "batch": 8,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-db6ee3ba-c629-4f28-a62b-47719723fd76.png",
+      "normal": "small silver lunar focus slash",
+      "heavy": "one compact falling silver crescent release",
+      "finisher": "three aligned silver lunar cutting planes on a long thin axis",
+      "mist": "soft cold grey moon dust",
+      "shard": "one silver blue lunar flake",
+      "art_kind": "beam",
+      "spell": "moon",
+      "original_art": {
+        "name": "月弧三叠·线",
+        "kind": "beam",
+        "damage": 1.9,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "moon",
+        "desc": "贯穿前方直线。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-8aea14db-e1da-4c90-b37d-24462283abfb.png",
+      "atlas": "assets/combat/weapon-reference-v2/640/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-08.png",
+      "sha256": "7f3e18dfa81c418d0230c6434946f47447e2ca8f221bd99f049a63a44cec2b51",
+      "qa": {
+        "cuts": [
+          0,
+          377,
+          679,
+          967,
+          1231,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            377
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            377
+          ],
+          "art": [
+            0,
+            377,
+            584,
+            679
+          ],
+          "impact": [
+            584,
+            377,
+            1024,
+            679
+          ],
+          "charge": [
+            0,
+            679,
+            512,
+            967
+          ],
+          "shard": [
+            512,
+            679,
+            1024,
+            967
+          ],
+          "mist": [
+            0,
+            967,
+            512,
+            1231
+          ],
+          "trail": [
+            512,
+            967,
+            1024,
+            1231
+          ],
+          "projectile": [
+            0,
+            1231,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1231,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "月华·双弦",
+        "desc": "两道交错月刃，第二道略作停顿。",
+        "steps": [
+          [
+            0.33,
+            0.45,
+            365,
+            0,
+            0,
+            -0.1,
+            "finisher",
+            "beam",
+            1,
+            75,
+            0
+          ],
+          [
+            0.4,
+            0.55,
+            390,
+            0,
+            0,
+            0.1,
+            "finisher",
+            "beam",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 641,
+      "name": "曦光棱镜杖",
+      "family": 3,
+      "batch": 9,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c56de925-8212-49aa-a98f-4579ff1c271f.png",
+      "normal": "small sharp gold ivory prism alignment",
+      "heavy": "one tight convergent gold prism pulse",
+      "finisher": "long thin gold white beam with three diamond shaped prism facets",
+      "mist": "faint warm grey gold dust",
+      "shard": "one tiny clear gold prism chip",
+      "art_kind": "beam",
+      "spell": "prism",
+      "original_art": {
+        "name": "曦光裁决·线",
+        "kind": "beam",
+        "damage": 1.8,
+        "mana": 24.0,
+        "cooldown": 6.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "prism",
+        "desc": "贯穿前方直线。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-eb540319-7c25-4aa3-974e-55bd5d50a209.png",
+      "atlas": "assets/combat/weapon-reference-v2/641/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-09.png",
+      "sha256": "5e44ed6573a281b46898d51f7c60f7dcb2c59f1e7a76c79ba1c7e70df4edaf75",
+      "qa": {
+        "cuts": [
+          0,
+          337,
+          645,
+          936,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            337
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            337
+          ],
+          "art": [
+            0,
+            337,
+            669,
+            645
+          ],
+          "impact": [
+            669,
+            337,
+            1024,
+            645
+          ],
+          "charge": [
+            0,
+            645,
+            512,
+            936
+          ],
+          "shard": [
+            512,
+            645,
+            1024,
+            936
+          ],
+          "mist": [
+            0,
+            936,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            936,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "棱镜·聚焦",
+        "desc": "较长聚焦后一次射出窄幅金色光束。",
+        "steps": [
+          [
+            0.72,
+            1,
+            420,
+            0,
+            0,
+            0,
+            "finisher",
+            "beam",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 642,
+      "name": "烬羽散华杖",
+      "family": 3,
+      "batch": 9,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-cea1c3e9-bcb6-4aa3-8a64-c1857f7a346f.png",
+      "normal": "small glowing amber feather release",
+      "heavy": "one focused dark ember feather release",
+      "finisher": "five open amber fire feather spokes with dark feather cores",
+      "mist": "soft warm grey ash mist",
+      "shard": "one burnt black feather vane",
+      "art_kind": "volley",
+      "spell": "scatter",
+      "original_art": {
+        "name": "烬羽燎原·散",
+        "kind": "volley",
+        "damage": 2.0,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 5,
+        "pierce": 1,
+        "spell": "scatter",
+        "desc": "发射灵能弹；同目标全部命中仍共用总伤害预算。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-2d763c59-62aa-4883-a29a-c02d8dcb4457.png",
+      "atlas": "assets/combat/weapon-reference-v2/642/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-09.png",
+      "sha256": "492589cf4c084131d301f9ed6711e61abf088593e02215bb3af3aa3f28a385e6",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          645,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            512,
+            645
+          ],
+          "impact": [
+            512,
+            307,
+            1024,
+            645
+          ],
+          "charge": [
+            0,
+            645,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            645,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "焰羽·展翼",
+        "desc": "后撤时一次展开七枚火羽。",
+        "steps": [
+          [
+            0.5,
+            1,
+            375,
+            -28,
+            0,
+            0,
+            "finisher",
+            "volley",
+            7,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 643,
+      "name": "虚涡法杖",
+      "family": 3,
+      "batch": 9,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-ed145ea1-b809-46d9-ab85-26688336fcee.png",
+      "normal": "small dark violet inward spiral focus",
+      "heavy": "one compact compressed dark void core",
+      "finisher": "asymmetric dark violet inward folded vortex with thin purple rim and large dark gaps",
+      "mist": "soft dark violet grey vapour",
+      "shard": "one dark violet space flake",
+      "art_kind": "burst",
+      "spell": "vortex",
+      "original_art": {
+        "name": "虚涡塌缩",
+        "kind": "burst",
+        "damage": 1.7,
+        "mana": 24.0,
+        "cooldown": 6.5,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "vortex",
+        "desc": "在瞄准落点产生法术爆发。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-273b33aa-fdb3-4550-8657-9a515a075b78.png",
+      "atlas": "assets/combat/weapon-reference-v2/643/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-09.png",
+      "sha256": "7c18c3e974493e48efceb1c99491d53fd173586cd3023c36381792ca2f69e04b",
+      "qa": {
+        "cuts": [
+          0,
+          346,
+          708,
+          959,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            346
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            346
+          ],
+          "art": [
+            0,
+            346,
+            608,
+            708
+          ],
+          "impact": [
+            608,
+            346,
+            1024,
+            708
+          ],
+          "charge": [
+            0,
+            708,
+            546,
+            959
+          ],
+          "shard": [
+            546,
+            708,
+            1024,
+            959
+          ],
+          "mist": [
+            0,
+            959,
+            512,
+            1229
+          ],
+          "trail": [
+            512,
+            959,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "虚空·塌缩",
+        "desc": "小范围起涡，停顿后向内塌缩。",
+        "steps": [
+          [
+            0.34,
+            0.2,
+            330,
+            0,
+            0,
+            0,
+            "heavy",
+            "burst",
+            1,
+            48,
+            0
+          ],
+          [
+            0.53,
+            0.8,
+            330,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            78,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 644,
+      "name": "蚀月长枪杖",
+      "family": 3,
+      "batch": 9,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-e201d39b-f971-4a24-9842-c79226daac5f.png",
+      "normal": "small black crimson eclipse lance release",
+      "heavy": "one focused dark shell lance release",
+      "finisher": "long black violet narrow eclipse spear beam with fine magenta red edge",
+      "mist": "soft dark slate purple vapour",
+      "shard": "one black purple shell chip",
+      "art_kind": "beam",
+      "spell": "eclipse",
+      "original_art": {
+        "name": "蚀月破界·线",
+        "kind": "beam",
+        "damage": 1.5,
+        "mana": 28.0,
+        "cooldown": 7.5,
+        "reach": 650,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "eclipse",
+        "desc": "贯穿前方直线。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-358c0962-6ef6-4d3d-a072-a3d72f4d39ed.png",
+      "atlas": "assets/combat/weapon-reference-v2/644/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-09.png",
+      "sha256": "8f9bb1999fa99ad1a6f13a2e8676a8f8c7fb3dc287f7ec36c735dd439a3f5c66",
+      "qa": {
+        "cuts": [
+          0,
+          307,
+          640,
+          922,
+          1229,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            307
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            307
+          ],
+          "art": [
+            0,
+            307,
+            655,
+            640
+          ],
+          "impact": [
+            655,
+            307,
+            1024,
+            640
+          ],
+          "charge": [
+            0,
+            640,
+            512,
+            922
+          ],
+          "shard": [
+            512,
+            640,
+            1024,
+            922
+          ],
+          "mist": [
+            0,
+            922,
+            541,
+            1229
+          ],
+          "trail": [
+            541,
+            922,
+            1024,
+            1229
+          ],
+          "projectile": [
+            0,
+            1229,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1229,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "蚀月·破界",
+        "desc": "压缩黑色枪芒，一次窄幅穿透。",
+        "steps": [
+          [
+            0.78,
+            1,
+            430,
+            -15,
+            0,
+            0,
+            "finisher",
+            "beam",
+            1,
+            75,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 645,
+      "name": "血契仪杖",
+      "family": 3,
+      "batch": 9,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-bd5d7f5c-0652-4aaf-b3df-3ae04c8e9a8d.png",
+      "normal": "small crimson ink page fold release",
+      "heavy": "one condensed red ink contract page focus",
+      "finisher": "open fan of crimson ink parchment folds and tiny wax fragments",
+      "mist": "soft muted red grey ink mist",
+      "shard": "one torn crimson parchment scrap",
+      "art_kind": "burst",
+      "spell": "moon",
+      "original_art": {
+        "name": "血契书庭",
+        "kind": "burst",
+        "damage": 1.8,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "moon",
+        "desc": "在瞄准落点产生法术爆发。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-fc354194-4d55-4de5-92a2-ee7d1fe42d53.png",
+      "atlas": "assets/combat/weapon-reference-v2/645/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-09.png",
+      "sha256": "42e127806f7477775419cd5d371c69eba863608aed5d87e3643caa3d4d6ce072",
+      "qa": {
+        "cuts": [
+          0,
+          380,
+          731,
+          989,
+          1259,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            380
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            380
+          ],
+          "art": [
+            0,
+            380,
+            519,
+            731
+          ],
+          "impact": [
+            519,
+            380,
+            1024,
+            731
+          ],
+          "charge": [
+            0,
+            731,
+            613,
+            989
+          ],
+          "shard": [
+            613,
+            731,
+            1024,
+            989
+          ],
+          "mist": [
+            0,
+            989,
+            512,
+            1259
+          ],
+          "trail": [
+            512,
+            989,
+            1024,
+            1259
+          ],
+          "projectile": [
+            0,
+            1259,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1259,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0005859375000000001,
+        "all_risks": [
+          0.0,
+          0.0005859375000000001,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "血契·开庭",
+        "desc": "定点展开血契，一次裁决爆发。",
+        "steps": [
+          [
+            0.64,
+            1,
+            335,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            82,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 646,
+      "name": "冥庭唤魂杖",
+      "family": 3,
+      "batch": 10,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-c34b8121-6315-4d18-ab15-540d8ca8806d.png",
+      "normal": "small blue violet soul cloth release",
+      "heavy": "one compact folded violet soul focus",
+      "finisher": "three violet soul cloth sheets with small blue ghost motes converging inward",
+      "mist": "soft pale grey violet mist",
+      "shard": "one blue violet cloth scrap",
+      "art_kind": "burst",
+      "spell": "vortex",
+      "original_art": {
+        "name": "冥庭点名",
+        "kind": "burst",
+        "damage": 1.7,
+        "mana": 22.0,
+        "cooldown": 6.5,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "vortex",
+        "desc": "在瞄准落点产生法术爆发。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-ef963510-63e6-411b-b869-f56118637cc5.png",
+      "atlas": "assets/combat/weapon-reference-v2/646/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-10.png",
+      "sha256": "bb89ebe68ad17ce4fbfa49ded8d903c69d7f4ba00882088a0ff6aaf7b3629ae3",
+      "qa": {
+        "cuts": [
+          0,
+          328,
+          730,
+          968,
+          1252,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            512,
+            328
+          ],
+          "heavy": [
+            512,
+            0,
+            1024,
+            328
+          ],
+          "art": [
+            0,
+            328,
+            550,
+            730
+          ],
+          "impact": [
+            550,
+            328,
+            1024,
+            730
+          ],
+          "charge": [
+            0,
+            730,
+            523,
+            968
+          ],
+          "shard": [
+            523,
+            730,
+            1024,
+            968
+          ],
+          "mist": [
+            0,
+            968,
+            524,
+            1252
+          ],
+          "trail": [
+            524,
+            968,
+            1024,
+            1252
+          ],
+          "projectile": [
+            0,
+            1252,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1252,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.010156249999999999,
+        "all_risks": [
+          0.010156249999999999,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "冥庭·引魂",
+        "desc": "先聚拢魂片，再于原处收束爆裂。",
+        "steps": [
+          [
+            0.4,
+            0.3,
+            330,
+            0,
+            0,
+            0,
+            "heavy",
+            "burst",
+            1,
+            58,
+            0
+          ],
+          [
+            0.46,
+            0.7,
+            330,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            76,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": 647,
+      "name": "晨钟祈愿杖",
+      "family": 3,
+      "batch": 10,
+      "reference": "D:\\develop\\school\\CrimsonTide-godot\\output\\texiaocankao\\exec-504940bb-7bb4-4195-93d8-09fc39effb00.png",
+      "normal": "small warm gold ivory prayer fold release",
+      "heavy": "one compact bronze white prayer focus",
+      "finisher": "three flowing warm ivory gold prayer cloth folds and fine resonance ribs",
+      "mist": "soft warm pale grey incense",
+      "shard": "one tiny bronze prayer bell chip",
+      "art_kind": "burst",
+      "spell": "star",
+      "original_art": {
+        "name": "晨钟赦光",
+        "kind": "burst",
+        "damage": 1.8,
+        "mana": 20.0,
+        "cooldown": 6.0,
+        "reach": 500,
+        "radius": 100,
+        "width": 30,
+        "count": 1,
+        "pierce": 1,
+        "spell": "star",
+        "desc": "在瞄准落点产生法术爆发。"
+      },
+      "status": "recorded_pending_user_review",
+      "original": "C:\\Users\\wangk\\.codex\\generated_images\\01a1575a-b51f-7823-8a0e-d02dc8b742de\\exec-a515e626-dd4b-4c1c-999e-74e4cb0c75ee.png",
+      "atlas": "assets/combat/weapon-reference-v2/647/atlas-v1.png",
+      "storyboard": "output/weapon-all-v2/storyboards/batch-10.png",
+      "sha256": "5f31324caef87534006c55890bffd8f3c7144fc8a46cf28b9bb264e08f64b363",
+      "qa": {
+        "cuts": [
+          0,
+          371,
+          708,
+          1006,
+          1294,
+          1536
+        ],
+        "regions": {
+          "normal": [
+            0,
+            0,
+            520,
+            371
+          ],
+          "heavy": [
+            520,
+            0,
+            1024,
+            371
+          ],
+          "art": [
+            0,
+            371,
+            626,
+            708
+          ],
+          "impact": [
+            626,
+            371,
+            1024,
+            708
+          ],
+          "charge": [
+            0,
+            708,
+            540,
+            1006
+          ],
+          "shard": [
+            540,
+            708,
+            1024,
+            1006
+          ],
+          "mist": [
+            0,
+            1006,
+            512,
+            1294
+          ],
+          "trail": [
+            512,
+            1006,
+            1024,
+            1294
+          ],
+          "projectile": [
+            0,
+            1294,
+            512,
+            1536
+          ],
+          "projectile_art": [
+            512,
+            1294,
+            1024,
+            1536
+          ]
+        },
+        "max_solid_gutter_coverage": 0.0,
+        "all_risks": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "current_choreography": {
+        "name": "祈愿·钟鸣",
+        "desc": "四次渐强钟鸣，范围缓缓展开。",
+        "steps": [
+          [
+            0.36,
+            0.1,
+            320,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            45,
+            0
+          ],
+          [
+            0.18,
+            0.2,
+            320,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            55,
+            0
+          ],
+          [
+            0.2,
+            0.3,
+            320,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            65,
+            0
+          ],
+          [
+            0.28,
+            0.4,
+            320,
+            0,
+            0,
+            0,
+            "finisher",
+            "burst",
+            1,
+            78,
+            0
+          ]
+        ]
+      }
+    }
+  ],
+  "runtime_revision": "varied-arts-ground-3",
+  "review": "output/weapon-revision-v3/index.html"
+}
