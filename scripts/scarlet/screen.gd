@@ -366,11 +366,15 @@ func show_menu() -> void:
 	var speed:=HSlider.new(); speed.position=Vector2(660,326); speed.size=Vector2(440,35); speed.min_value=15; speed.max_value=80; speed.value=campaign.state.settings.speed
 	speed.value_changed.connect(func(value: float): campaign.state.settings.speed=value; campaign.save_campaign()); p.add_child(speed)
 	label(p,"打字音效",Vector2(660,374),Vector2(180,35),21)
-	var type_check:=CheckBox.new(); type_check.name="TypeSoundCheck"; type_check.text="启用"
-	type_check.position=Vector2(850,368); type_check.size=Vector2(160,40); type_check.custom_minimum_size=Vector2(160,40)
-	type_check.add_theme_font_size_override("font_size",20)
-	type_check.button_pressed=bool(campaign.state.settings.get("type_sound",true))
-	type_check.toggled.connect(func(on: bool): campaign.state.settings["type_sound"]=on; campaign.save_campaign())
+	var type_check:=Button.new(); type_check.name="TypeSoundCheck"; type_check.position=Vector2(850,368); type_check.size=Vector2(160,40)
+	type_check.custom_minimum_size=Vector2(160,40)
+	UISkin.check_button(type_check)
+	type_check.text="✓ 启用" if bool(campaign.state.settings.get("type_sound",true)) else "□ 启用"
+	type_check.pressed.connect(func():
+		var on:=!bool(campaign.state.settings.get("type_sound",true))
+		campaign.state.settings["type_sound"]=on
+		type_check.text="✓ 启用" if on else "□ 启用"
+		campaign.save_campaign())
 	p.add_child(type_check)
 	label(p,"打字音量",Vector2(660,422),Vector2(180,35),21)
 	var volume:=HSlider.new(); volume.name="TypeVolumeSlider"

@@ -47,6 +47,13 @@ func click(design: Vector2) -> void:
 	await button_event(design,true)
 	await button_event(design,false)
 
+func hover(design: Vector2) -> void:
+	var event:=InputEventMouseMotion.new()
+	event.position=design
+	event.global_position=design
+	screen.get_viewport().push_input(event)
+	await process_frame
+
 func _initialize() -> void:
 	call_deferred("run")
 
@@ -62,23 +69,47 @@ func run() -> void:
 	screen.show_menu()
 	for i in 3: await process_frame
 
-	var enable: CheckBox=named(screen.overlay,"TypeSoundCheck")
+	var enable: Button=named(screen.overlay,"TypeSoundCheck")
 	var volume: HSlider=named(screen.overlay,"TypeVolumeSlider")
-	check(enable!=null,"sound checkbox exists")
+	check(enable!=null,"sound toggle exists")
 	check(volume!=null,"volume slider exists")
 	if enable==null or volume==null:
 		quit(1); return
-	check(enable.button_pressed and bool(screen.campaign.state.settings.type_sound),"default is enabled")
+	check(enable.text.begins_with("✓") and bool(screen.campaign.state.settings.type_sound),"default is enabled")
 	check(is_equal_approx(float(screen.campaign.state.settings.type_volume),50.0),"default volume is medium 50%")
 
-	# checkbox: real click, and it must not touch the volume value.
-	var saved_volume:=float(screen.campaign.state.settings.type_volume)
-	await click(enable.get_global_rect().get_center())
-	check(not bool(screen.campaign.state.settings.type_sound) and not enable.button_pressed,"click unchecks the sound")
-	check(is_equal_approx(float(screen.campaign.state.settings.type_volume),saved_volume),"unchecking leaves the volume alone")
-	await click(enable.get_global_rect().get_center())
-	check(bool(screen.campaign.state.settings.type_sound) and enable.button_pressed,"click re-enables the sound")
-	check(is_equal_approx(float(screen.campaign.state.settings.type_volume),saved_volume),"re-enabling leaves the volume alone")
+	# The toggle uses the same gothic material; hover/pressed are code modulates, not second textures.
+	var hover_style: StyleBoxTexture=enable.get_theme_stylebox("hover")
+	check(hover_style is StyleBoxTexture and hover_style.modulate_color.r<0.85,"hover style is code-dimmed")
+	check(hover_style.modulate_color.g<hover_style.modulate_color.r*0.7,"hover keeps the warm dark-red hue")
+	var pressed_style: StyleBoxTexture=enable.get_theme_stylebox("pressed")
+	check(pressed_style is StyleBoxTexture and pressed_style.modulate_color.r<0.7,"pressed style is darker than normal")
+	var plain_button:=by_text(screen.overlay,"继续游戏")
+	if plain_button:
+		var plain_hover: StyleBoxTexture=plain_button.get_theme_stylebox("hover")
+		check(plain_hover is StyleBoxTexture and plain_hover.modulate_color.g<plain_hover.modulate_color.r*0.7,"every story button shares the same dark-red hover")
+	else:
+		check(false,"plain story button is present for the shared-hover check")
+	var center:=enable.get_global_rect().get_center()
+	await hover(center)
+	RenderingServer.force_draw(false)
+	root.get_texture().get_image().save_png("res://build/typewriter-toggle-hover.png")
+	# Press: real press must scale the button, then release must restore it.
+	await button_event(center,true)
+	await create_timer(0.09).timeout
+	check(enable.scale.x<0.99,"pressing scales the toggle down")
+	RenderingServer.force_draw(false)
+	root.get_texture().get_image().save_png("res://build/typewriter-toggle-pressed.png")
+	await button_event(center,false)
+	await create_timer(0.24).timeout
+	check(enable.scale.x>0.99,"releasing restores the toggle scale")
+	check(not bool(screen.campaign.state.settings.type_sound),"click unchecks the sound")
+	check(enable.text.begins_with("□"),"unchecked toggle shows an empty box")
+	check(is_equal_approx(float(screen.campaign.state.settings.type_volume),50.0),"unchecking leaves the volume alone")
+	await click(center)
+	check(bool(screen.campaign.state.settings.type_sound),"click re-enables the sound")
+	check(enable.text.begins_with("✓"),"checked toggle shows a tick")
+	check(is_equal_approx(float(screen.campaign.state.settings.type_volume),50.0),"re-enabling leaves the volume alone")
 
 	# slider: click near the left and right ends of the track.
 	var rect:=volume.get_global_rect()
@@ -96,11 +127,12 @@ func run() -> void:
 		var above: float=restore_button.get_global_rect().position.y+restore_button.get_global_rect().size.y
 		check(top>=above+8.0,"reading speed moved below the restore button")
 
-	# leave the screenshot at the intended defaults.
-	enable.button_pressed=true
+	# leave the screenshot at the intended defaults, with the pointer away.
+	enable.text="✓ 启用"
 	screen.campaign.state.settings.type_sound=true
 	volume.value=50
 	screen.campaign.state.settings.type_volume=50.0
+	await hover(Vector2(8,8))
 	for i in 2: await process_frame
 	RenderingServer.force_draw(false)
 	root.get_texture().get_image().save_png("res://build/typewriter-settings.png")
