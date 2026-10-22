@@ -67,16 +67,23 @@ func populate_chunk(r, chunk: Node3D) -> void:
 	if not authoring and ResourceLoader.exists(scene_path(r.stage,r.act)):
 		var path := scene_path(r.stage,r.act)
 		var packed: PackedScene=ResourceLoader.load_threaded_get(path) if ResourceLoader.load_threaded_get_status(path)==ResourceLoader.THREAD_LOAD_LOADED else load(path)
-		var authored: Node3D=packed.instantiate()
-		if DisplayServer.get_name()=="headless":
-			for node in authored.find_children("*","LightmapGI",true,false): node.light_data=null; node.free()
-			for node in authored.find_children("*","ReflectionProbe",true,false): node.free()
-		chunk.add_child(authored)
-		register_authored(authored,r)
-		if r.act>=2:
-			Regional.feature_lights(self,r,authored); Regional.wall_joints(self,r,authored)
-		world.scenery=saved
-		return
+		# 烘焙切片是「.scn + .lmbake 光照贴图」两份二进制：缺任何一份，整份 PackedScene
+		# 都会加载成 null。以前这里直接 `instantiate()`，空值一崩整块地图就没了，报错还
+		# 只剩下游一句 "Cannot call method 'instantiate' on a null value"（2026-10-22
+		# 用户报「故事模式地图丢失」就是这么被遮住的）。现在先点名告警、再退回程序化地形。
+		if packed==null:
+			push_warning("Story slice failed to load: %s（多半是 .lmbake/光照贴图缺件；跑 tests/asset_refs.gd 点名）" % path)
+		else:
+			var authored: Node3D=packed.instantiate()
+			if DisplayServer.get_name()=="headless":
+				for node in authored.find_children("*","LightmapGI",true,false): node.light_data=null; node.free()
+				for node in authored.find_children("*","ReflectionProbe",true,false): node.free()
+			chunk.add_child(authored)
+			register_authored(authored,r)
+			if r.act>=2:
+				Regional.feature_lights(self,r,authored); Regional.wall_joints(self,r,authored)
+			world.scenery=saved
+			return
 	terrain(r)
 	if r.indoor: dungeon_walls(r)
 	for b in r.buildings: house(r,b)
