@@ -3,10 +3,12 @@ extends SceneTree
 ## 要真窗口，所以命名 `*_visual`。
 ##
 ## 钉住四件事：
-##   ① 复选框能点（上一版「开/关」按钮报点不动，不能再靠 `pressed.emit()` 自证）；
-##   ② 复选框只改 `type_sound`，不碰 `type_volume`；
+##   ① 勾选按钮能点（上一版「开/关」按钮报点不动，不能再靠 `pressed.emit()` 自证）；
+##   ② 勾选按钮只改 `type_sound`，不碰 `type_volume`；
 ##   ③ 音量滑杆真的改 `type_volume`（左右两端都点一次）；
 ##   ④ 「阅读速度」整块已下移，不再压住「从王冠回答前重新选择」按钮。
+## 另外钉住按钮规范：勾选按钮必须和普通按钮共用 default 模板；danger 模板独立暗红。
+const UISkin=preload("res://scripts/story_ui_skin.gd")
 var screen
 var checks := 0
 var failures := 0
@@ -78,18 +80,24 @@ func run() -> void:
 	check(enable.text.begins_with("✓") and bool(screen.campaign.state.settings.type_sound),"default is enabled")
 	check(is_equal_approx(float(screen.campaign.state.settings.type_volume),50.0),"default volume is medium 50%")
 
-	# The toggle uses the same gothic material; hover/pressed are code modulates, not second textures.
+	# The toggle must use the same default template as the page's other buttons.
 	var hover_style: StyleBoxTexture=enable.get_theme_stylebox("hover")
-	check(hover_style is StyleBoxTexture and hover_style.modulate_color.r<0.85,"hover style is code-dimmed")
-	check(hover_style.modulate_color.g<hover_style.modulate_color.r*0.7,"hover keeps the warm dark-red hue")
 	var pressed_style: StyleBoxTexture=enable.get_theme_stylebox("pressed")
-	check(pressed_style is StyleBoxTexture and pressed_style.modulate_color.r<0.7,"pressed style is darker than normal")
+	check(hover_style is StyleBoxTexture and hover_style.modulate_color==Color(0.82,0.72,0.58),"toggle hover uses the shared warm-gold template")
+	check(pressed_style is StyleBoxTexture and pressed_style.modulate_color==Color(0.62,0.52,0.42),"toggle pressed uses the shared warm-gold template")
+	check(hover_style.modulate_color.g>=hover_style.modulate_color.r*0.7,"default hover is not the red danger tone")
 	var plain_button:=by_text(screen.overlay,"继续游戏")
 	if plain_button:
 		var plain_hover: StyleBoxTexture=plain_button.get_theme_stylebox("hover")
-		check(plain_hover is StyleBoxTexture and plain_hover.modulate_color.g<plain_hover.modulate_color.r*0.7,"every story button shares the same dark-red hover")
+		check(hover_style.texture==plain_hover.texture and hover_style.modulate_color==plain_hover.modulate_color,"toggle and plain buttons share one skin")
 	else:
-		check(false,"plain story button is present for the shared-hover check")
+		check(false,"plain story button is present for the shared-skin check")
+	# danger is an independent template; it must not leak into the normal button.
+	var danger:=Button.new()
+	UISkin.button(danger,false,true)
+	var danger_hover: StyleBoxTexture=danger.get_theme_stylebox("hover")
+	check(danger_hover is StyleBoxTexture and danger_hover.modulate_color.g<danger_hover.modulate_color.r*0.7,"danger template stays independently dark-red")
+	danger.free()
 	var center:=enable.get_global_rect().get_center()
 	await hover(center)
 	RenderingServer.force_draw(false)
