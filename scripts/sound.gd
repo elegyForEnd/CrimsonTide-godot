@@ -7,17 +7,24 @@ const VARIANTS := {"shot":3,"hit":5,"loot":3,"skill":3,"dash":4,"bell":2,
 	"impact-metal":4,"impact-magic":4,"magic-windup":4,"step":8,"run":8,"land":4,
 	"ui":3,"ui-open":2,"ui-close":2,"equip":4,"reload":2,"reload-end":2,
 	"heal":2,"burn":2,"death":3,"enemy-cast":2,"chest":2,
-	"search-open":1,"search-reveal":6}
+	"search-open":1,"search-reveal":6,"type":3}
 const LEVELS := {"shot":-12.0,"hit":-10.0,"loot":-14.0,"skill":-5.0,"dash":-11.0,
 	"bell":-10.0,"hurt":-8.0,"down":-7.0,"slash":-8.0,"heavy":-7.0,"magic":-10.0,
 	"impact-heavy":-7.0,"impact-metal":-13.0,"impact-magic":-11.0,"magic-windup":-17.0,
 	"step":-17.0,"run":-14.0,"land":-13.0,"ui":-14.0,"ui-open":-17.0,"ui-close":-17.0,
 	"equip":-12.0,"reload":-13.0,"reload-end":-12.0,"heal":-11.0,"burn":-12.0,
 	"death":-16.0,"enemy-cast":-14.0,"chest":-13.0,
-	"search-open":-16.0,"search-reveal":-13.0}
+	"search-open":-16.0,"search-reveal":-13.0,"type":-17.0}
 const UI_CUES := ["ui","ui-open","ui-close"]
+## 逐字台词音要压在台词下面，不能和按钮/战斗抢声部；独立小池 6 个足够
+## 同时接住「光标字 + 自动播放 + 一段快读」，满了就按轮转复用最早的。
+const TYPE_VOICES := 6
+const TYPE_MIN_GAP_MS := 12
 var voices: Array[AudioStreamPlayer2D] = []
 var ui_voices: Array[AudioStreamPlayer] = []
+var type_voices: Array[AudioStreamPlayer] = []
+var type_turn := 0
+var last_type_ms := -1000
 var listener: AudioListener2D
 var clips: Dictionary = {}
 var ambience: AudioStreamPlayer
@@ -76,6 +83,10 @@ func _ready() -> void:
 		var voice := make_voice(true)
 		voice.bus="Interface"
 		ui_voices.append(voice)
+	for i in TYPE_VOICES:
+		var voice := make_voice(true)
+		voice.bus="Interface"
+		type_voices.append(voice)
 	for kind in VARIANTS:
 		var variants: Array[AudioStream] = []
 		for i in int(VARIANTS[kind]):
@@ -218,6 +229,35 @@ func stop_cue(kind: String, emitter: int) -> void:
 		if voice.get_meta("cue","")==kind and int(voice.get_meta("emitter",0))==emitter:
 			voice.stop()
 
+## 故事台词逐字显示时的 8-bit 小音。与普通 `play()` 分开：它不走 2D 定位、
+## 不受战斗声部优先级影响，也不进 `last_played` 的公共冷却（否则会被战斗音撞掉）。
+## `glyph` 只用于语气：句末更沉、逗号略沉、空白不出声。
+func play_type(glyph: String = "") -> void:
+	if not clips.has("type") or type_voices.is_empty(): return
+	if glyph.strip_edges()=="": return
+	var now := Time.get_ticks_msec()
+	if now-last_type_ms<TYPE_MIN_GAP_MS: return
+	last_type_ms=now
+	var voice: AudioStreamPlayer
+	for candidate in type_voices:
+		if not candidate.playing:
+			voice=candidate
+			break
+	if not voice:
+		voice=type_voices[type_turn % type_voices.size()]
+		type_turn+=1
+	var pitch := 1.0
+	if glyph.contains("。") or glyph.contains("！") or glyph.contains("？") or glyph.contains("…"):
+		pitch=0.76
+	elif glyph.contains("，") or glyph.contains("、") or glyph.contains("；") or glyph.contains("："):
+		pitch=0.86
+	var samples: Array=clips["type"]
+	var index := randi_range(0,samples.size()-1)
+	voice.stream=samples[index]
+	voice.pitch_scale=pitch*randf_range(.96,1.05)
+	voice.volume_db=float(LEVELS["type"])+randf_range(-1.5,0.5)
+	voice.play()
+
 func boss(data: Dictionary) -> void:
 	var cue := BossPresentation.cue(data)
 	var emitter := int(data.id)
@@ -245,6 +285,8 @@ func set_scene(value: String) -> void:
 	motion_state.clear()
 	last_played.clear()
 	for voice in voices:
+		voice.stop()
+	for voice in type_voices:
 		voice.stop()
 	duck_ambience(-24.0 if value=="game" else -29.0)
 

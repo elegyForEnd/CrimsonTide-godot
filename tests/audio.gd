@@ -18,6 +18,41 @@ func run() -> void:
 	for kind in sound.clips:
 		for clip in sound.clips[kind]:
 			check(clip is AudioStreamWAV and clip.get_length()>.05,"Imported sample exists: "+kind)
+	check(sound.clips.has("type") and sound.clips["type"].size()==3,"Story typewriter ships three blip variants")
+	var type_wav: AudioStreamWAV=sound.clips["type"][0]
+	var peak:=0
+	for sample in int(type_wav.data.size()/2):
+		peak=maxi(peak,absi(type_wav.data.decode_s16(sample*2)))
+	check(peak>3000,"A typewriter blip is audible, not a silent placeholder")
+	for voice in sound.type_voices: voice.stop()
+	sound.last_type_ms=-1000
+	sound.play_type("血")
+	var typed: AudioStreamPlayer=null
+	for voice in sound.type_voices:
+		if voice.playing: typed=voice
+	check(typed!=null and typed.stream!=null,"A glyph starts a real typewriter voice")
+	check(typed.pitch_scale>.9 and typed.pitch_scale<1.1,"An ordinary glyph keeps the natural pitch band")
+	for voice in sound.type_voices: voice.stop()
+	sound.last_type_ms=-1000
+	sound.play_type("。")
+	var punctuation_pitch:=0.0
+	for voice in sound.type_voices:
+		if voice.playing: punctuation_pitch=voice.pitch_scale
+	check(punctuation_pitch<.85,"A full stop drops the blip to a closing pitch")
+	sound.last_type_ms=-1000
+	sound.play_type(" ")
+	check(sound.last_type_ms==-1000,"Whitespace never spends a typewriter voice")
+	var stamp:=Time.get_ticks_msec()
+	sound.last_type_ms=stamp
+	sound.play_type("血")
+	check(sound.last_type_ms==stamp,"An immediate repeat is throttled to one blip per gap")
+	for i in 40:
+		sound.last_type_ms=-1000
+		sound.play_type("潮")
+	var type_playing:=0
+	for voice in sound.type_voices:
+		if voice.playing: type_playing+=1
+	check(type_playing<=sound.TYPE_VOICES,"The typewriter pool caps simultaneous blips")
 	check(sound.ambience.stream is AudioStreamOggVorbis and sound.ambience.stream.loop,"Offline ambience loops")
 	check(AudioServer.get_bus_effect_count(0)>0 and AudioServer.get_bus_effect(0,0) is AudioEffectHardLimiter,"Crowded combat has master peak protection")
 	for combo in 3:

@@ -365,6 +365,13 @@ func show_menu() -> void:
 	label(p,"阅读速度",Vector2(660,212),Vector2(440,35),21)
 	var speed:=HSlider.new(); speed.position=Vector2(660,270); speed.size=Vector2(440,35); speed.min_value=15; speed.max_value=80; speed.value=campaign.state.settings.speed
 	speed.value_changed.connect(func(value: float): campaign.state.settings.speed=value; campaign.save_campaign()); p.add_child(speed)
+	label(p,"打字音效",Vector2(660,316),Vector2(180,35),21)
+	var type_button: Button
+	type_button=button(p,"开" if bool(campaign.state.settings.get("type_sound",true)) else "关",Vector2(835,314),Vector2(140,38),func():
+		var enabled:=!bool(campaign.state.settings.get("type_sound",true))
+		campaign.state.settings["type_sound"]=enabled
+		type_button.text="开" if enabled else "关"
+		campaign.save_campaign())
 	label(p,"当前记录：\n"+campaign.path+"\n\n旧版战役记录不会被覆盖。\n视频尚未制作，当前用对应场景文字衔接。",Vector2(660,365),Vector2(450,200),17)
 func new_slot() -> void:
 	var p:=panel("新建一条独立的旅程")

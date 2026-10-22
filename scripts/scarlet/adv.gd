@@ -2,6 +2,7 @@ extends Control
 ## ADV stage with authored whole-image expression/pose changes, persistent cursor,
 ## CG camera motion, history, deliberate choices and choice-safe skipping.
 const Art=preload("res://scripts/scarlet/art.gd")
+const TypeReveal=preload("res://scripts/type_reveal.gd")
 var campaign
 var screen
 var event: Dictionary={}
@@ -9,6 +10,7 @@ var replay := false
 var index := 0
 var elapsed := 0.0
 var revealed := 0.0
+var typer=TypeReveal.new()
 var wait := 0.0
 var auto := false
 var hidden_box := false
@@ -40,6 +42,9 @@ var cg_fit_above_dialogue:=false
 
 func _ready() -> void:
 	size=Vector2(1440,900); mouse_filter=MOUSE_FILTER_STOP
+	typer.on_char=func(_index: int,glyph: String):
+		if bool(campaign.state.settings.get("type_sound",true)) and screen and screen.sound:
+			screen.sound.play_type(glyph)
 	shade=ColorRect.new(); shade.size=size; shade.color=Color(.014,.016,.03,.55); shade.mouse_filter=MOUSE_FILTER_IGNORE; add_child(shade)
 	backdrop=TextureRect.new(); backdrop.size=size; backdrop.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; backdrop.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_COVERED; backdrop.mouse_filter=MOUSE_FILTER_IGNORE
 	if event.get("background","")!="": backdrop.texture=Art.texture("res://assets/story/scarlet/bg/"+event.background+".png")
@@ -101,7 +106,10 @@ func clear_actions() -> void:
 func show_page() -> void:
 	choosing=false; wait=0; revealed=0; action_scroll.hide()
 	var page: Dictionary=event.pages[index]
-	body.text=page.text; body.visible_characters=0; name_label.text=page.get("speaker","旁白")
+	body.text=page.text
+	typer.begin(str(page.text),body.get_total_character_count(),float(campaign.state.settings.get("speed",35.0)),abs(page_key(page).hash()))
+	body.visible_characters=typer.shown()
+	name_label.text=page.get("speaker","旁白")
 	counter.text="%02d / %02d   ·   点击 / 空格继续" % [index+1,event.pages.size()]
 	var actor: String=page.get("actor","")
 	if event.has("cast"):
@@ -167,7 +175,8 @@ func advance() -> void:
 	if choosing or is_instance_valid(log_panel) or is_instance_valid(video): return
 	if hidden_box: toggle_box(); return
 	if event.kind=="scene":
-		if body.visible_characters>=0 and revealed<body.get_total_character_count(): revealed=body.get_total_character_count(); body.visible_characters=-1; return
+		if not typer.finished and typer.total>0:
+			typer.finish(); revealed=typer.total; body.visible_characters=-1; return
 		record_page()
 		if index+1<event.pages.size(): index+=1; show_page()
 		elif not event.get("choices",[]).is_empty(): show_choices()
@@ -175,7 +184,7 @@ func advance() -> void:
 	elif event.kind=="cinematic": finish()
 
 func show_choices() -> void:
-	clear_actions(); choosing=true; auto=false; action_scroll.show()
+	typer.finish(); body.visible_characters=-1; clear_actions(); choosing=true; auto=false; action_scroll.show()
 	for i in event.choices.size():
 		var slot: int=i
 		var entry: Dictionary=event.choices[i]
@@ -189,6 +198,7 @@ func show_choices() -> void:
 	counter.text="请选择 · 自动播放已暂停"
 
 func show_prompt() -> void:
+	typer.finish()
 	for n in actors.values(): n.hide()
 	speaker_portrait.hide()
 	choosing=true; auto=false
@@ -209,6 +219,7 @@ func show_prompt() -> void:
 		if event.kind!="death": button(actions,"先停留，稍后继续",func(): campaign.state.pending={}; campaign.save_campaign(); screen.dismiss_adv()).custom_minimum_size=Vector2(730,48)
 
 func show_cinematic() -> void:
+	typer.finish()
 	for n in actors.values(): n.hide()
 	speaker_portrait.hide()
 	name_label.text=event.title; body.visible_characters=-1
@@ -230,7 +241,7 @@ func finish() -> void:
 func skip_scene() -> void:
 	if choosing or event.kind in ["question","choices","confirm","death"]: return
 	if event.kind=="scene":
-		index=event.pages.size()-1; show_page(); revealed=body.get_total_character_count(); body.visible_characters=-1; record_page()
+		index=event.pages.size()-1; show_page(); typer.finish(); revealed=body.get_total_character_count(); body.visible_characters=-1; record_page()
 		if not event.get("choices",[]).is_empty(): show_choices()
 		else: finish()
 	elif event.kind=="cinematic":
@@ -287,8 +298,16 @@ func _process(dt: float) -> void:
 		cg_view.scale=Vector2.ONE*zoom; cg_view.position=(size-size*zoom)*.5
 	if choosing or hidden_box or is_instance_valid(log_panel) or event.kind!="scene": return
 	var count:=body.get_total_character_count()
-	if revealed<count:
-		revealed=minf(count,revealed+dt*float(campaign.state.settings.speed)); body.visible_characters=int(revealed)
+	if not typer.finished:
+		_tick_type(dt)
 	else:
 		wait+=dt
 		if auto and wait>float(campaign.state.settings.auto_delay)+count*.035: advance()
+
+## 把节奏器放出来的字数抄进 RichTextLabel。放完后 `shown()` 直接返回 -1，
+## 一次把 visible_characters 收成"全显"，不留半开状态。
+func _tick_type(dt: float) -> void:
+	typer.tick(dt)
+	revealed=typer.revealed
+	body.visible_characters=typer.shown()
+	if typer.finished: revealed=typer.total
