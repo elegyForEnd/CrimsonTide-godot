@@ -15,8 +15,10 @@ static func impact(profile: Dictionary) -> ShaderMaterial:
 	var key := impact_key(profile)
 	if not manifest.has(key): return null
 	var row: Dictionary=manifest[key]
+	var texture: Texture2D=load(str(row.file)) if ResourceLoader.exists(str(row.file)) else null
+	if texture==null: return missing_art_material()
 	var mat := ShaderMaterial.new(); mat.shader=preload("res://resources/weapon_crystal_painted.gdshader")
-	mat.set_shader_parameter("painted_texture",load(str(row.file)))
+	mat.set_shader_parameter("painted_texture",texture)
 	var uv: Array=row.uv
 	mat.set_shader_parameter("painted_rect",Vector4(uv[0],uv[1],uv[2],uv[3]))
 	mat.set_shader_parameter("ribbon_mode",false)
@@ -67,6 +69,9 @@ static func material(profile: Dictionary,ribbon: bool=true,solid: bool=false) ->
 	var key := material_key(profile)
 	var source := str(profile.get("blade_source","weapon_%d_surface_v5" % int(profile.get("canonical",600))))
 	var identity: Texture2D=Art.mechanic_texture(source)
+	# 原画缺件（刚 pull 还没导入）时不能再往下走：identity 是 null，`get_size()`
+	# 会直接抛错，而把 null 交给 shader 又会画出整片白块。给一层透明材质兜底。
+	if identity==null: return missing_art_material()
 	var rect := Art.mechanic_ink(source)
 	var size := identity.get_size()
 	var row: Dictionary=manifest.get(key,{})
@@ -81,4 +86,20 @@ static func material(profile: Dictionary,ribbon: bool=true,solid: bool=false) ->
 	mat.set_shader_parameter("ribbon_mode",ribbon)
 	mat.set_shader_parameter("solid_mode",solid)
 	mat.set_shader_parameter("energy_gain",1.35 if key in ["storm","star","sun","heat"] else .72 if key in ["stone","void"] else 1.0)
+	return mat
+
+## 素材缺件时的兜底：用同一套 painted shader + 一张全透明贴图，渲染结果等于"什么都不画"。
+## 为什么不是直接返回 null：调用方会把材质直接塞给 `material_override` /
+## `body_material` 并在后面调 `set_shader_parameter()`，null 会二次崩；而把 null 贴图
+## 交给 shader 会因为 uniform 默认白图画出整片白块（2026-10-22 用户报"特效变成白色方块"）。
+static var _blank_texture: ImageTexture
+static func missing_art_material() -> ShaderMaterial:
+	if _blank_texture==null:
+		var image := Image.create(2,2,false,Image.FORMAT_RGBA8)
+		image.fill(Color(1,1,1,0))
+		_blank_texture=ImageTexture.create_from_image(image)
+	var mat := ShaderMaterial.new()
+	mat.shader=preload("res://resources/weapon_crystal_painted.gdshader")
+	mat.set_shader_parameter("painted_texture",_blank_texture)
+	mat.set_shader_parameter("ribbon_mode",false)
 	return mat

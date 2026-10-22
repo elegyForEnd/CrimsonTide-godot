@@ -2,11 +2,25 @@ extends "res://scripts/weapon_motion_design.gd"
 ## One trial: weapon 600 art. Painted components bend/fly on native trajectories.
 const CRYSTAL=preload("res://resources/weapon_crystal_cut.gdshader")
 const PAINTED=preload("res://resources/weapon_crystal_painted.gdshader")
-const RIBBON_ART=preload("res://assets/combat/crystal-cut-v1/ribbon.png")
-const SHARD_ART=preload("res://assets/combat/crystal-cut-v1/shard.png")
+# ⚠️ 贴图**不能** preload（2026-10-22 实测事故，见 PROJECT-GUIDE §11.99）：
+# 刚 pull 下来、还没导入的素材会让 `preload()` 在解析期报 "Could not preload
+# resource file"，连带 combat_visuals.gd / main.gd 一起编译失败，游戏连启动都起不来。
+# 改成首次使用时 load；拿不到就给纯 shader 表现，既不崩也不会画出白块。
+const RIBBON_PATH := "res://assets/combat/crystal-cut-v1/ribbon.png"
+const SHARD_PATH := "res://assets/combat/crystal-cut-v1/shard.png"
+static var _ribbon_art: Texture2D
+static var _shard_art: Texture2D
 var target := Vector3.ZERO
 var glow: MeshInstance3D
 var glow_material: ShaderMaterial
+
+func ribbon_art() -> Texture2D:
+	if _ribbon_art==null and ResourceLoader.exists(RIBBON_PATH): _ribbon_art=load(RIBBON_PATH)
+	return _ribbon_art
+
+func shard_art() -> Texture2D:
+	if _shard_art==null and ResourceLoader.exists(SHARD_PATH): _shard_art=load(SHARD_PATH)
+	return _shard_art
 
 func crystal_material(ribbon_mode: bool) -> ShaderMaterial:
 	var mat := ShaderMaterial.new(); mat.shader=CRYSTAL
@@ -14,6 +28,9 @@ func crystal_material(ribbon_mode: bool) -> ShaderMaterial:
 	return mat
 
 func painted_material(texture: Texture2D,is_ribbon: bool) -> ShaderMaterial:
+	# 贴图缺件时退回纯水晶 shader：否则 painted_texture 为 null，shader 的默认白图
+	# 会被画成一整片白块（用户 2026-10-22 报"特效变成白色方块"）。
+	if texture==null: return crystal_material(is_ribbon)
 	var mat := ShaderMaterial.new(); mat.shader=PAINTED
 	mat.set_shader_parameter("painted_texture",texture)
 	mat.set_shader_parameter("ribbon_mode",is_ribbon)
@@ -22,9 +39,9 @@ func painted_material(texture: Texture2D,is_ribbon: bool) -> ShaderMaterial:
 func setup(effect: Node3D) -> void:
 	super.setup(effect)
 	target=captured+axis*span*.82-across*span*.06
-	host.body_material=painted_material(RIBBON_ART,true); host.ribbon.material_override=host.body_material
+	host.body_material=painted_material(ribbon_art(),true); host.ribbon.material_override=host.body_material
 	trail_material=crystal_material(false); trail.material_override=trail_material
-	host.debris.material_override=painted_material(SHARD_ART,false)
+	host.debris.material_override=painted_material(shard_art(),false)
 	trail_material.render_priority=2
 	glow_material=ShaderMaterial.new()
 	glow_material.shader=preload("res://resources/weapon_crystal_glow.gdshader")
